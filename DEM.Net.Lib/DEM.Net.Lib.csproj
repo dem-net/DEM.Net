@@ -78,6 +78,7 @@
     <Compile Include="Repository\CoordReader.cs" />
     <Compile Include="Repository\SqlDemRepository.cs" />
     <Compile Include="Repository\SqlPoint.cs" />
+    <Compile Include="Services\GeoTiffService.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
   </ItemGroup>
   <ItemGroup>

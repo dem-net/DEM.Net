@@ -29,5 +29,8 @@ namespace DEM.Net.Lib
 		public double StartLat { get; internal set; }
 		public double pixelSizeX { get; internal set; }
 		public double pixelSizeY { get; internal set; }
+
+		public float MininumAltitude { get; internal set; }
+		public float MaximumAltitude { get; internal set; }
 	}
 }
