@@ -30,9 +30,7 @@ namespace SampleApp
 
         private static void GetGeometryDEM(string geomWKT, string geoTiffRepository)
         {
-            SqlGeometry geom = GeometryService.GetNativeGeometry(geomWKT);
-            SqlGeography geog = GeometryService.GetNativeGeography(geomWKT);
-            BoundingBox bbox = GeometryService.GetBoundingBox(geom);
+            BoundingBox bbox = GeometryService.GetBoundingBox(geomWKT);
             HeightMap heightMap = GeoTiffService.GetHeightMap(bbox, geoTiffRepository);
         }
 

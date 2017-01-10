@@ -9,14 +9,14 @@ namespace DEM.Net.Lib
     public struct BoundingBox
     {
         private double _xMin;
-        public double XMin
+        public double xMin
         {
             get { return _xMin; }
             set { _xMin = value; }
         }
 
         private double _xMax;
-        public double XMax
+        public double xMax
         {
             get { return _xMax; }
             set { _xMax = value; }
@@ -60,21 +60,21 @@ namespace DEM.Net.Lib
 
         public BoundingBox Scale(double scale)
         {
-            return new BoundingBox(XMin * scale, XMax * scale, yMin * scale, yMax * scale);
+            return new BoundingBox(xMin * scale, xMax * scale, yMin * scale, yMax * scale);
         }
 
         public BoundingBox Transform(System.Drawing.Drawing2D.Matrix matrix)
         {
             System.Drawing.PointF[] points = new System.Drawing.PointF[2];
-            points[0] = new System.Drawing.PointF((float)XMin, (float)yMin);
-            points[1] = new System.Drawing.PointF((float)XMax, (float)yMax);
+            points[0] = new System.Drawing.PointF((float)xMin, (float)yMin);
+            points[1] = new System.Drawing.PointF((float)xMax, (float)yMax);
             matrix.TransformPoints(points);
             return new BoundingBox(points[0].X, points[1].X, points[0].Y, points[1].Y);
         }
 
         public override string ToString()
         {
-            return $"Xmin: {XMin}, Xmax: {XMax}, Ymin: {yMin}, Ymax: {yMax}";
+            return $"Xmin: {xMin}, Xmax: {xMax}, Ymin: {yMin}, Ymax: {yMax}";
         }
     }
 }

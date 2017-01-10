@@ -320,39 +320,48 @@ namespace DEM.Net.Lib
 			return geom.STNumInteriorRing().Value > 0;
 		}
 
-		#endregion
+        public static BoundingBox GetBoundingBox(this SqlGeometry geom)
+        {
+            SqlGeometry envelope = geom.STEnvelope();
+            return new BoundingBox(envelope.Points().Min(pt => pt.STX.Value)
+                                    , envelope.Points().Max(pt => pt.STX.Value)
+                                    , envelope.Points().Min(pt => pt.STY.Value)
+                                    , envelope.Points().Max(pt => pt.STY.Value));
+        }
 
-		#region Serialization
+        #endregion
 
-		//private void ToFile(SqlGeometry geom)
-		//{
+        #region Serialization
 
-		//	// To serialize the hashtable and its key/value pairs,  
-		//	// you must first open a stream for writing. 
-		//	// In this case, use a file stream.
-		//	using (FileStream fs = new FileStream("geom.dat", FileMode.Create))
-		//	{
+        //private void ToFile(SqlGeometry geom)
+        //{
 
-		//		// Construct a BinaryFormatter and use it to serialize the data to the stream.
-		//		BinaryFormatter formatter = new BinaryFormatter();
-		//		try
-		//		{
-		//			formatter.Serialize(fs, geom.STAsBinary().Value);
-		//		}
-		//		catch (SerializationException e)
-		//		{
-		//			Console.WriteLine("Failed to serialize. Reason: " + e.Message);
-		//			throw;
-		//		}
+        //	// To serialize the hashtable and its key/value pairs,  
+        //	// you must first open a stream for writing. 
+        //	// In this case, use a file stream.
+        //	using (FileStream fs = new FileStream("geom.dat", FileMode.Create))
+        //	{
 
-		//	}
+        //		// Construct a BinaryFormatter and use it to serialize the data to the stream.
+        //		BinaryFormatter formatter = new BinaryFormatter();
+        //		try
+        //		{
+        //			formatter.Serialize(fs, geom.STAsBinary().Value);
+        //		}
+        //		catch (SerializationException e)
+        //		{
+        //			Console.WriteLine("Failed to serialize. Reason: " + e.Message);
+        //			throw;
+        //		}
 
-		/// <summary>
-		/// Reads a serialized SqlGeometry
-		/// </summary>
-		/// <param name="path"></param>
-		/// <returns></returns>
-		public static SqlGeometry Read(string path)
+        //	}
+
+        /// <summary>
+        /// Reads a serialized SqlGeometry
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static SqlGeometry Read(string path)
 		{
 			SqlGeometry geom = null;
 			// To serialize the hashtable and its key/value pairs,  

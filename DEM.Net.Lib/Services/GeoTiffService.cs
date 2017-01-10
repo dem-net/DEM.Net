@@ -77,36 +77,48 @@ namespace DEM.Net.Lib.Services
             List<FileMetadata> metadataCatalog = GetManifestMetadata(tiffPath);
 
             // Find files matching coords
-            List<FileMetadata> bboxMetadata = metadataCatalog.Where(m => m.OriginLatitude <= Math.Round(bbox.yMax, 0)
-                                && m.OriginLatitude >= Math.Round(bbox.yMin, 0)
-                                && m.OriginLongitude >= Math.Round(bbox.XMin, 0)
-                                && m.OriginLongitude <= Math.Round(bbox.XMax, 0)).ToList();
+            List<FileMetadata> bboxMetadata = metadataCatalog.Where(m => IsBboxInTile(m.OriginLatitude, m.OriginLongitude, bbox)).ToList();
 
             if (bboxMetadata.Count == 0)
             {
                 throw new Exception($"No coverage found matching provided bounding box {bbox}.");
             }
-            else if (bboxMetadata.Count == 0)
+            else if (bboxMetadata.Count > 1)
             {
                 throw new NotImplementedException($"Bounding box {bbox} covers more than one tile, which is not implemented yet. Consider dividing onto smaller parts covering one tile.");
             }
 
-            //// get height map for each file at bbox
-            //foreach (FileMetadata meta in bboxMetadata)
-            //{
-            //    HeightMap heightMap = null;
-            //    using (GeoTiff tiffConverter = new GeoTiff(meta.Filename))
-            //    {
-            //        heightMap = tiffConverter.ConvertToHeightMap(bbox, meta);
-            //    }
-            //}
             HeightMap heightMap = null;
+            // get height map for each file at bbox
+            foreach (FileMetadata metadata in bboxMetadata)
+            {
+                using (GeoTiff tiffConverter = new GeoTiff(metadata.Filename))
+                {
+                    heightMap = tiffConverter.ConvertToHeightMap(bbox, metadata);
+                }
+            }
+
             FileMetadata meta = bboxMetadata.First();
             using (GeoTiff tiffConverter = new GeoTiff(meta.Filename))
             {
                 heightMap = tiffConverter.ConvertToHeightMap(bbox, meta);
             }
             return heightMap;
+        }
+
+        private static bool IsBboxInTile(double originLatitude, double originLongitude, BoundingBox bbox)
+        {
+
+            //bool isInsideY = originLatitude <= Math.Ceiling(bbox.yMax)
+            //                   && originLatitude >= bbox.yMin;
+            //bool isInsideX = originLongitude >= bbox.xMin
+            //                   && originLongitude <= Math.Ceiling(bbox.xMax);
+            bool isInsideY = originLatitude >= bbox.yMin && (originLatitude - 1) <= bbox.yMax;
+            bool isInsideX = (originLongitude + 1) >= bbox.xMin && originLongitude <= bbox.xMax;
+            bool isInside = isInsideX && isInsideY;
+            return isInside;
+
+            // (X2' >= X1 && X1' <= X2) && (Y2' >= Y1 && Y1' <= Y2)
         }
 
         private static List<FileMetadata> GetManifestMetadata(string tiffPath)
@@ -192,13 +204,13 @@ namespace DEM.Net.Lib.Services
 
             int yStart = (int)Math.Floor((bbox.yMax - metadata.StartLat) / metadata.pixelSizeY);
             int yEnd = (int)Math.Ceiling((bbox.yMin - metadata.StartLat) / metadata.pixelSizeY);
-            int xStart = (int)Math.Floor((bbox.XMin - metadata.StartLon) / metadata.pixelSizeX);
-            int xEnd = (int)Math.Ceiling((bbox.XMax - metadata.StartLon) / metadata.pixelSizeX);
+            int xStart = (int)Math.Floor((bbox.xMin - metadata.StartLon) / metadata.pixelSizeX);
+            int xEnd = (int)Math.Ceiling((bbox.xMax - metadata.StartLon) / metadata.pixelSizeX);
 
             xStart = Math.Max(0, xStart);
-            xEnd = Math.Min(scanline16Bit.Length, xEnd);
+            xEnd = Math.Min(scanline16Bit.Length - 1, xEnd);
             yStart = Math.Max(0, yStart);
-            yEnd = Math.Min(metadata.Height, yEnd);
+            yEnd = Math.Min(metadata.Height - 1, yEnd);
 
             for (int y = yStart; y <= yEnd; y++)
             {
@@ -226,6 +238,60 @@ namespace DEM.Net.Lib.Services
             }
 
             return heightMap;
+        }
+
+        internal static HeightMap ParseGeoDataForPoints(Tiff tiff, List<GeoPoint> points, FileMetadata metadata)
+        {
+            throw new NotImplementedException();
+
+            //points = points.OrderByDescending(pt => pt.Latitude)
+            //                .ThenBy(pt => pt.Longitude)
+            //                .ToList();
+
+            //HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
+            //heightMap.FileMetadata = metadata;
+
+            //byte[] scanline = new byte[metadata.ScanlineSize];
+            //ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
+            //Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
+
+
+            //int yStart = (int)Math.Floor((bbox.yMax - metadata.StartLat) / metadata.pixelSizeY);
+            //int yEnd = (int)Math.Ceiling((bbox.yMin - metadata.StartLat) / metadata.pixelSizeY);
+            //int xStart = (int)Math.Floor((bbox.xMin - metadata.StartLon) / metadata.pixelSizeX);
+            //int xEnd = (int)Math.Ceiling((bbox.xMax - metadata.StartLon) / metadata.pixelSizeX);
+
+            //xStart = Math.Max(0, xStart);
+            //xEnd = Math.Min(scanline16Bit.Length - 1, xEnd);
+            //yStart = Math.Max(0, yStart);
+            //yEnd = Math.Min(metadata.Height - 1, yEnd);
+
+            //for (int y = yStart; y <= yEnd; y++)
+            //{
+            //    tiff.ReadScanline(scanline, y);
+            //    Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
+
+            //    double latitude = metadata.StartLat + (metadata.pixelSizeY * y);
+            //    for (int x = xStart; x <= xEnd; x++)
+            //    {
+            //        double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
+
+            //        float heightValue = (float)scanline16Bit[x];
+            //        if (heightValue < 32768)
+            //        {
+            //            heightMap.Mininum = Math.Min(heightMap.Mininum, heightValue);
+            //            heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
+            //        }
+            //        else
+            //        {
+            //            heightValue = -10000;
+            //        }
+            //        heightMap.Coordinates.Add(new GeoPoint(latitude, longitude, heightValue, x, y));
+
+            //    }
+            //}
+
+            //return heightMap;
         }
 
         public static void GenerateDirectoryMetadata(string directoryPath)

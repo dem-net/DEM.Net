@@ -22,13 +22,12 @@ namespace DEM.Net.Lib.Services
             return geom;
         }
 
-        public static BoundingBox GetBoundingBox(SqlGeometry geom)
+        
+
+        public static BoundingBox GetBoundingBox(string geomWKT)
         {
-            SqlGeometry envelope = geom.STEnvelope();
-            return new BoundingBox(envelope.Points().Min(pt => pt.STX.Value)
-                                    , envelope.Points().Max(pt => pt.STX.Value)
-                                    , envelope.Points().Min(pt => pt.STY.Value)
-                                    , envelope.Points().Max(pt => pt.STY.Value));
+            SqlGeometry geom = GetNativeGeometry(geomWKT);
+            return geom.GetBoundingBox();
         }
     }
 }
