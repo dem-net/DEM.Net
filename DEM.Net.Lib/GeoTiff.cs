@@ -18,14 +18,12 @@ namespace DEM.Net.Lib
 	public class GeoTiff : IDisposable
 	{
 		Tiff _tiff;
-		FileMetadata _metadata;
 		string _tiffPath;
 
 		public GeoTiff(string tiffPath)
 		{
 			_tiffPath = tiffPath;
 			_tiff = Tiff.Open(tiffPath, "r");
-			_metadata = GeoTiffService.ParseMetadata(_tiff, _tiffPath);
 		}
 
 		protected virtual void Dispose(bool disposing)
@@ -49,8 +47,15 @@ namespace DEM.Net.Lib
 
 		public HeightMap ConvertToHeightMap()
 		{
-			HeightMap heightMap = GeoTiffService.ParseGeoData(_tiff, _metadata);
+            FileMetadata metadata = GeoTiffService.ParseMetadata(_tiff, _tiffPath);
+            HeightMap heightMap = GeoTiffService.ParseGeoData(_tiff, metadata);
 			return heightMap;
 		}
+
+        public HeightMap ConvertToHeightMap(BoundingBox bbox, FileMetadata metadata)
+        {
+            HeightMap heightMap = GeoTiffService.ParseGeoDataInBBox(_tiff, bbox, metadata);
+            return heightMap;
+        }
 	}
 }

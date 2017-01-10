@@ -69,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BoundingBox.cs" />
     <Compile Include="DiagnosticUtils.cs" />
     <Compile Include="FileMetadata.cs" />
     <Compile Include="GeoPoint.cs" />
@@ -78,8 +79,10 @@
     <Compile Include="Repository\CoordReader.cs" />
     <Compile Include="Repository\SqlDemRepository.cs" />
     <Compile Include="Repository\SqlPoint.cs" />
+    <Compile Include="Services\GeometryService.cs" />
     <Compile Include="Services\GeoTiffService.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
+    <Compile Include="SqlTypesExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
