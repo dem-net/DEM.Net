@@ -29,9 +29,9 @@ namespace SampleApp
 			if (File.Exists(bitmapPath)) File.Delete(bitmapPath);
 
 			HeightMap heightMap = null;
-			using (GeoTiff tiffConverter = new GeoTiff())
+			using (GeoTiff tiffConverter = new GeoTiff(tiffPath))
 			{
-				heightMap = tiffConverter.ConvertToHeightMap(tiffPath);
+				heightMap = tiffConverter.ConvertToHeightMap();
 			}
 			// Json manifest
 			File.WriteAllText(outputJsonPath, JsonConvert.SerializeObject(heightMap.FileMetadata, Formatting.Indented));

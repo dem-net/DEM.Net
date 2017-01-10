@@ -17,6 +17,13 @@ namespace DEM.Net.Lib
 	public class GeoTiff : IDisposable
 	{
 		Tiff _tiff;
+		string _tiffPath;
+
+		public GeoTiff(string tiffPath)
+		{
+			_tiffPath = tiffPath;
+			_tiff = Tiff.Open(tiffPath, "r");
+		}
 
 		protected virtual void Dispose(bool disposing)
 		{
@@ -37,33 +44,30 @@ namespace DEM.Net.Lib
 			GC.SuppressFinalize(this);
 		}
 
-		private FileMetadata ParseMetadata(string filename)
+		private FileMetadata ParseMetadata()
 		{
-			FileMetadata metadata = new FileMetadata(filename);
-			_tiff = Tiff.Open(filename, "r");
-
+			FileMetadata metadata = new FileMetadata(_tiffPath);
 			///
+			FieldValue[] modelPixelScaleTag = _tiff.GetField(TiffTag.GEOTIFF_MODELPIXELSCALETAG);
+			FieldValue[] modelTiepointTag = _tiff.GetField(TiffTag.GEOTIFF_MODELTIEPOINTTAG);
 
-			int height = _tiff.GetField(TiffTag.IMAGELENGTH)[0].ToInt();
-			FieldValue[] modelPixelScaleTagTest = _tiff.GetField((TiffTag)33550);
-			FieldValue[] modelTiepointTagTest = _tiff.GetField((TiffTag)33922);
-
-			byte[] modelPixelScaleTest = modelPixelScaleTagTest[1].GetBytes();
-			double pixelSizeX = BitConverter.ToDouble(modelPixelScaleTest, 0);
-			double pixelSizeY = BitConverter.ToDouble(modelPixelScaleTest, 8) * -1;
+			byte[] modelPixelScale = modelPixelScaleTag[1].GetBytes();
+			double pixelSizeX = BitConverter.ToDouble(modelPixelScale, 0);
+			double pixelSizeY = BitConverter.ToDouble(modelPixelScale, 8) * -1;
 			metadata.pixelSizeX = pixelSizeX;
 			metadata.pixelSizeY = pixelSizeY;
+			metadata.PixelScaleX = BitConverter.ToDouble(modelPixelScale, 0);
+			metadata.PixelScaleY = BitConverter.ToDouble(modelPixelScale, 8);
 
-			byte[] modelTransformationTest = modelTiepointTagTest[1].GetBytes();
-			double originLon = BitConverter.ToDouble(modelTransformationTest, 24);
-			double originLat = BitConverter.ToDouble(modelTransformationTest, 32);
-
+			// Ignores first set of model points (3 bytes) and assumes they are 0's...
+			byte[] modelTransformation = modelTiepointTag[1].GetBytes();
+			double originLon = BitConverter.ToDouble(modelTransformation, 24);
+			double originLat = BitConverter.ToDouble(modelTransformation, 32);
 
 			double startLat = originLat + (pixelSizeY / 2.0);
 			double startLon = originLon + (pixelSizeX / 2.0);
 			metadata.StartLat = startLat;
 			metadata.StartLon = startLon;
-
 
 			var scanline = new byte[_tiff.ScanlineSize()];
 			metadata.ScanlineSize = _tiff.ScanlineSize();
@@ -74,80 +78,43 @@ namespace DEM.Net.Lib
 
 
 			///
-
-
-
 			metadata.Height = _tiff.GetField(TiffTag.IMAGELENGTH)[0].ToInt();
 			metadata.Width = _tiff.GetField(TiffTag.IMAGEWIDTH)[0].ToInt();
 
-			FieldValue[] modelPixelScaleTag = _tiff.GetField((TiffTag)33550);
-			FieldValue[] modelTiepointTag = _tiff.GetField((TiffTag)33922);
-
-			byte[] modelPixelScale = modelPixelScaleTag[1].GetBytes();
-			metadata.PixelScaleX = BitConverter.ToDouble(modelPixelScale, 0);
-			metadata.PixelScaleY = BitConverter.ToDouble(modelPixelScale, 8);
-
-			// Ignores first set of model points (3 bytes) and assumes they are 0's...
-			byte[] modelTransformation = modelTiepointTag[1].GetBytes();
-			metadata.OriginLongitude = BitConverter.ToDouble(modelTransformation, 24);
-			metadata.OriginLatitude = BitConverter.ToDouble(modelTransformation, 32);
-
 			// Grab some raster metadata
 			metadata.BitsPerSample = _tiff.GetField(TiffTag.BITSPERSAMPLE)[0].ToInt();
-
+			var sampleFormat = _tiff.GetField(TiffTag.SAMPLEFORMAT);
 			// Add other information about the data
-			metadata.SampleFormat = "Single";
+			metadata.SampleFormat = sampleFormat[0].Value.ToString();
 			// TODO: Read this from tiff metadata or determine after parsing
 			metadata.NoDataValue = "-10000";
 
 			metadata.WorldUnits = "meter";
 
+			DumpTiffTags();
+
 			return metadata;
-
-
 		}
 
-		private static void PrintTagInfo(Tiff tiff, TiffTag tiffTag)
+		public void DumpTiffTags()
 		{
-			try
+			StringBuilder sb = new StringBuilder();
+			foreach (var value in Enum.GetValues(typeof(TiffTag)))
 			{
-				var field = tiff.GetField(tiffTag);
-				if (field != null)
+				TiffTag tag = (TiffTag)value;
+				FieldValue[] values = _tiff.GetField(tag);
+				if (values != null)
 				{
-					Console.WriteLine($"{tiffTag}");
-					for (int i = 0; i < field.Length; i++)
+					sb.AppendLine(value + ": ");
+					foreach (var fieldValue in values)
 					{
-						Console.WriteLine($"  [{i}] {field[i].Value}");
-						byte[] bytes = field[i].Value as byte[];
-						if (bytes != null)
-						{
-							Console.WriteLine($"    Length: {bytes.Length}");
-							if (bytes.Length % 8 == 0)
-							{
-								for (int k = 0; k < bytes.Length / 8; k++)
-								{
-									Console.WriteLine($"      [{k}] {BitConverter.ToDouble(bytes, k * 8)}");
-								}
-							}
-
-							try
-							{
-								Console.WriteLine($"   > {System.Text.Encoding.ASCII.GetString(bytes).Trim()} < ");
-							}
-							catch (Exception ex)
-							{
-
-							}
-						}
+						sb.Append("\t");
+						sb.AppendLine(fieldValue.Value.ToString());
 					}
 				}
 			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"ERROR: {tiffTag}");
-			}
+			Console.WriteLine(sb.ToString());
 		}
-
 
 		private HeightMap ParseGeoData(FileMetadata metadata)
 		{
@@ -190,9 +157,9 @@ namespace DEM.Net.Lib
 		}
 
 
-		public HeightMap ConvertToHeightMap(string inputFile)
+		public HeightMap ConvertToHeightMap()
 		{
-			var metadata = ParseMetadata(inputFile);
+			var metadata = ParseMetadata();
 			HeightMap heightMap = ParseGeoData(metadata);
 			return heightMap;
 		}
