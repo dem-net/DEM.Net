@@ -26,7 +26,7 @@ bld/
 SampleData/
 
 # Sql Server types
-SqlServerTypes/
+#SqlServerTypes/
 
 # Visual Studio 2015 cache/options directory
 .vs/
