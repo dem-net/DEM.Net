@@ -52,6 +52,11 @@ namespace DEM.Net.Lib
 			return heightMap;
 		}
 
+        public float ParseGeoDataAtPoint(FileMetadata metadata, double lat, double lon)
+        {
+           return GeoTiffService.ParseGeoDataAtPoint(_tiff, metadata, lat, lon);
+        }
+
         public HeightMap ConvertToHeightMap(BoundingBox bbox, FileMetadata metadata)
         {
             HeightMap heightMap = GeoTiffService.ParseGeoDataInBBox(_tiff, bbox, metadata);

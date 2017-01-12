@@ -23,7 +23,7 @@ namespace SampleApp
         {
             //GeoTiffService.GenerateDirectoryMetadata(samplePath);
 
-            GetGeometryDEM(WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES, samplePath);
+            GetGeometryDEM(WKT_GRANDE_BOUCLE, samplePath);
         }
 
 
@@ -32,6 +32,13 @@ namespace SampleApp
         {
             BoundingBox bbox = GeometryService.GetBoundingBox(geomWKT);
             HeightMap heightMap = GeoTiffService.GetHeightMap(bbox, geoTiffRepository);
+
+            using (GeoTiff tiffConverter = new GeoTiff(heightMap.FileMetadata.Filename))
+            {
+                heightMap = tiffConverter.ConvertToHeightMap(bbox, heightMap.FileMetadata);
+                SqlGeometry g = GeometryService.GetNativeGeometry(geomWKT);
+                List<float> heights = new List<float>(g.Points().Select(pt => tiffConverter.ParseGeoDataAtPoint(heightMap.FileMetadata, pt.STY.Value, pt.STX.Value)));
+            }
         }
 
 

@@ -192,7 +192,7 @@ namespace DEM.Net.Lib.Services
             return heightMap;
         }
 
-        internal static HeightMap ParseGeoDataInBBox(Tiff tiff, BoundingBox bbox, FileMetadata metadata)
+        public static HeightMap ParseGeoDataInBBox(Tiff tiff, BoundingBox bbox, FileMetadata metadata)
         {
             HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
             heightMap.FileMetadata = metadata;
@@ -240,6 +240,33 @@ namespace DEM.Net.Lib.Services
             return heightMap;
         }
 
+        public static float ParseGeoDataAtPoint(Tiff tiff, FileMetadata metadata, double lat, double lon)
+        {
+            byte[] scanline = new byte[metadata.ScanlineSize];
+            ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
+
+            int yStart = (int)Math.Floor((lat - metadata.StartLat) / metadata.pixelSizeY);
+            int yEnd = (int)Math.Ceiling((lat - metadata.StartLat) / metadata.pixelSizeY);
+            int xStart = (int)Math.Floor((lon - metadata.StartLon) / metadata.pixelSizeX);
+            int xEnd = (int)Math.Ceiling((lon - metadata.StartLon) / metadata.pixelSizeX);
+
+            int y = yStart;
+            int x = xStart;
+            tiff.ReadScanline(scanline, y);
+            Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
+
+            double latitude = metadata.StartLat + (metadata.pixelSizeY * y);
+            double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
+
+            float heightValue = (float)scanline16Bit[x];
+            if (heightValue > 32768)
+            {
+               
+                heightValue = -10000;
+            }           
+
+            return heightValue;
+        }
         internal static HeightMap ParseGeoDataForPoints(Tiff tiff, List<GeoPoint> points, FileMetadata metadata)
         {
             throw new NotImplementedException();
