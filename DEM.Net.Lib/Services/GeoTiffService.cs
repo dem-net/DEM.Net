@@ -67,26 +67,11 @@ namespace DEM.Net.Lib.Services
             return metadata;
         }
 
-
-
         public static HeightMap GetHeightMap(BoundingBox bbox, string tiffPath)
         {
             // Locate which files are needed
-
-            // Load metadata catalog
-            List<FileMetadata> metadataCatalog = GetManifestMetadata(tiffPath);
-
             // Find files matching coords
-            List<FileMetadata> bboxMetadata = metadataCatalog.Where(m => IsBboxInTile(m.OriginLatitude, m.OriginLongitude, bbox)).ToList();
-
-            if (bboxMetadata.Count == 0)
-            {
-                throw new Exception($"No coverage found matching provided bounding box {bbox}.");
-            }
-            else if (bboxMetadata.Count > 1)
-            {
-                throw new NotImplementedException($"Bounding box {bbox} covers more than one tile, which is not implemented yet. Consider dividing onto smaller parts covering one tile.");
-            }
+            List<FileMetadata> bboxMetadata = GetCoveringFiles(bbox, tiffPath);
 
             HeightMap heightMap = null;
             // get height map for each file at bbox
@@ -106,6 +91,28 @@ namespace DEM.Net.Lib.Services
             return heightMap;
         }
 
+        public static List<FileMetadata> GetCoveringFiles(BoundingBox bbox, string tiffPath)
+        {
+            // Locate which files are needed
+
+            // Load metadata catalog
+            List<FileMetadata> metadataCatalog = LoadManifestMetadata(tiffPath);
+
+            // Find files matching coords
+            List<FileMetadata> bboxMetadata = new List<FileMetadata>(metadataCatalog.Where(m => IsBboxInTile(m.OriginLatitude, m.OriginLongitude, bbox)));
+
+            if (bboxMetadata.Count == 0)
+            {
+                throw new Exception($"No coverage found matching provided bounding box {bbox}.");
+            }
+            else if (bboxMetadata.Count > 1)
+            {
+                throw new NotImplementedException($"Bounding box {bbox} covers more than one tile, which is not implemented yet. Consider dividing onto smaller parts covering one tile.");
+            }
+
+            return bboxMetadata;
+        }
+
         private static bool IsBboxInTile(double originLatitude, double originLongitude, BoundingBox bbox)
         {
 
@@ -121,18 +128,24 @@ namespace DEM.Net.Lib.Services
             // (X2' >= X1 && X1' <= X2) && (Y2' >= Y1 && Y1' <= Y2)
         }
 
-        private static List<FileMetadata> GetManifestMetadata(string tiffPath)
+        private static List<FileMetadata> _metadataCatalogCache = null;
+        private static List<FileMetadata> LoadManifestMetadata(string tiffPath)
         {
-            string manifestDir = Path.Combine(tiffPath, MANIFEST_DIR);
-            string[] manifestFiles = Directory.GetFiles(manifestDir, "*.json");
-            List<FileMetadata> metaList = new List<FileMetadata>(manifestFiles.Length);
-
-            foreach (var file in manifestFiles)
+            if (_metadataCatalogCache == null)
             {
-                string jsonContent = File.ReadAllText(file);
-                metaList.Add(JsonConvert.DeserializeObject<FileMetadata>(jsonContent));
+                string manifestDir = Path.Combine(tiffPath, MANIFEST_DIR);
+                string[] manifestFiles = Directory.GetFiles(manifestDir, "*.json");
+                List<FileMetadata> metaList = new List<FileMetadata>(manifestFiles.Length);
+
+                foreach (var file in manifestFiles)
+                {
+                    string jsonContent = File.ReadAllText(file);
+                    metaList.Add(JsonConvert.DeserializeObject<FileMetadata>(jsonContent));
+                }
+
+                _metadataCatalogCache = metaList;
             }
-            return metaList;
+            return _metadataCatalogCache;
         }
 
         public static void DumpTiffTags(Tiff tiff)
@@ -261,9 +274,9 @@ namespace DEM.Net.Lib.Services
             float heightValue = (float)scanline16Bit[x];
             if (heightValue > 32768)
             {
-               
+
                 heightValue = -10000;
-            }           
+            }
 
             return heightValue;
         }

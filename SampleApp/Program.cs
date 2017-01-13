@@ -25,7 +25,7 @@ namespace SampleApp
             //GeoTiffService.GenerateDirectoryMetadata(samplePath);
 
             LineIntersectionTest();
-            GetGeometryDEM(WKT_GRANDE_BOUCLE, samplePath);
+            GetLineGeometryDEM(WKT_GRANDE_BOUCLE, samplePath);
 
         }
 
@@ -39,21 +39,22 @@ namespace SampleApp
 
             Vector3 outvec = Vector3.Zero;
             Vector3 linePoint1 = new Vector3((float)geom1.STStartPoint().STX, (float)geom1.STStartPoint().STY,0);
-            Vector3 lineVec1 = new Vector3((float)(geom1.STEndPoint().STX- geom1.STStartPoint().STX), (float)(geom1.STEndPoint().STY - geom1.STStartPoint().STY), 0);
+            Vector3 lineVec1 = Vector3.Normalize(new Vector3((float)(geom1.STEndPoint().STX - geom1.STStartPoint().STX), (float)(geom1.STEndPoint().STY - geom1.STStartPoint().STY), 0));
             Vector3 linePoint2 = new Vector3((float)geom2.STStartPoint().STX, (float)geom2.STStartPoint().STY, 0);
-            Vector3 lineVec2 = new Vector3((float)(geom2.STEndPoint().STX - geom2.STStartPoint().STX), (float)(geom2.STEndPoint().STY - geom2.STStartPoint().STY), 0);
+            Vector3 lineVec2 = Vector3.Normalize(new Vector3((float)(geom2.STEndPoint().STX - geom2.STStartPoint().STX), (float)(geom2.STEndPoint().STY - geom2.STStartPoint().STY), 0));
+
             bool intersects = GeometryService.LineLineIntersection(out outvec, linePoint1, lineVec1, linePoint2, lineVec2);
         }
 
-        private static void GetGeometryDEM(string geomWKT, string geoTiffRepository)
+        private static void GetLineGeometryDEM(string lineWKT, string geoTiffRepository)
         {
-            BoundingBox bbox = GeometryService.GetBoundingBox(geomWKT);
+            BoundingBox bbox = GeometryService.GetBoundingBox(lineWKT);
             HeightMap heightMap = GeoTiffService.GetHeightMap(bbox, geoTiffRepository);
 
             using (GeoTiff tiffConverter = new GeoTiff(heightMap.FileMetadata.Filename))
             {
                 heightMap = tiffConverter.ConvertToHeightMap(bbox, heightMap.FileMetadata);
-                SqlGeometry g = GeometryService.GetNativeGeometry(geomWKT);
+                SqlGeometry g = GeometryService.GetNativeGeometry(lineWKT);
                 List<float> heights = new List<float>(g.Points().Select(pt => tiffConverter.ParseGeoDataAtPoint(heightMap.FileMetadata, pt.STY.Value, pt.STX.Value)));
             }
         }
