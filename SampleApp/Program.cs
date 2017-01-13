@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,10 +24,26 @@ namespace SampleApp
         {
             //GeoTiffService.GenerateDirectoryMetadata(samplePath);
 
+            LineIntersectionTest();
             GetGeometryDEM(WKT_GRANDE_BOUCLE, samplePath);
+
         }
 
+        private static void LineIntersectionTest()
+        {
+            string wkt1 = "LINESTRING(-5.888671875 47.90161354142077,3.4716796875 44.11914151643737)";
+            string wkt2 = "LINESTRING(-2.8564453125 44.30812668488613,5.625 48.166085419012525)";
+            SqlGeometry geom1 = GeometryService.GetNativeGeometry(wkt1);
+            SqlGeometry geom2 = GeometryService.GetNativeGeometry(wkt2);
+            SqlGeometry intersection = geom1.STIntersection(geom2);
 
+            Vector3 outvec = Vector3.Zero;
+            Vector3 linePoint1 = new Vector3((float)geom1.STStartPoint().STX, (float)geom1.STStartPoint().STY,0);
+            Vector3 lineVec1 = new Vector3((float)(geom1.STEndPoint().STX- geom1.STStartPoint().STX), (float)(geom1.STEndPoint().STY - geom1.STStartPoint().STY), 0);
+            Vector3 linePoint2 = new Vector3((float)geom2.STStartPoint().STX, (float)geom2.STStartPoint().STY, 0);
+            Vector3 lineVec2 = new Vector3((float)(geom2.STEndPoint().STX - geom2.STStartPoint().STX), (float)(geom2.STEndPoint().STY - geom2.STStartPoint().STY), 0);
+            bool intersects = GeometryService.LineLineIntersection(out outvec, linePoint1, lineVec1, linePoint2, lineVec2);
+        }
 
         private static void GetGeometryDEM(string geomWKT, string geoTiffRepository)
         {

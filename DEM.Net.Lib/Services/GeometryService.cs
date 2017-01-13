@@ -29,31 +29,29 @@ namespace DEM.Net.Lib.Services
 			return geom.GetBoundingBox();
 		}
 
-		//Calculate the intersection point of two lines. Returns true if lines intersect, otherwise false.
-		//Note that in 3d, two lines do not intersect most of the time. So if the two lines are not in the 
-		//same plane, use ClosestPointsOnTwoLines() instead.
-		public static bool LineLineIntersection(out Vector2 intersection, Vector2 linePoint1, Vector2 lineVec1, Vector2 linePoint2, Vector2 lineVec2)
-		{
+        //Calculate the intersection point of two lines. Returns true if lines intersect, otherwise false.
+        public static bool LineLineIntersection(out Vector3 intersection, Vector3 linePoint1, Vector3 lineVec1, Vector3 linePoint2, Vector3 lineVec2)
+        {
 
-			Vector2 lineVec3 = linePoint2 - linePoint1;
-			Vector2 crossVec1and2 = lineVec1 * lineVec2;
-			Vector2 crossVec3and2 = lineVec3 * lineVec2;
+            Vector3 lineVec3 = linePoint2 - linePoint1;
+            Vector3 crossVec1and2 = Vector3.Cross(lineVec1, lineVec2);
+            Vector3 crossVec3and2 = Vector3.Cross(lineVec3, lineVec2);
 
-			float planarFactor = Vector2.Dot(lineVec3, crossVec1and2);
+            float planarFactor = Vector3.Dot(lineVec3, crossVec1and2);
 
-			//is coplanar, and not parrallel
-			if (Math.Abs(planarFactor) < 0.0001f && crossVec1and2.LengthSquared() > 0.0001f)
-			{
-				float s = Vector2.Dot(crossVec3and2, crossVec1and2) / crossVec1and2.LengthSquared();
-				intersection = linePoint1 + (lineVec1 * s);
-				return true;
-			}
-			else
-			{
-				intersection = Vector2.Zero;
-				return false;
-			}
-		}
+            //is coplanar, and not parrallel
+            if (Math.Abs(planarFactor) < 0.0001f && crossVec1and2.LengthSquared() > 0.0001f)
+            {
+                float s = Vector3.Dot(crossVec3and2, crossVec1and2) / crossVec1and2.LengthSquared();
+                intersection = linePoint1 + (lineVec1 * s);
+                return true;
+            }
+            else
+            {
+                intersection = Vector3.Zero;
+                return false;
+            }
+        }
 
-	}
+    }
 }
