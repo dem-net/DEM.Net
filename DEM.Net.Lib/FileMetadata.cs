@@ -11,7 +11,9 @@ namespace DEM.Net.Lib
         public FileMetadata(string filename)
         {
             this.Filename = filename;
-        }
+			
+			
+				}
 
         public string Filename { get; set; }
         public int Height { get; set; }
