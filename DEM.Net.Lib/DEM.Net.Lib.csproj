@@ -82,8 +82,12 @@
     <Compile Include="Repository\CoordReader.cs" />
     <Compile Include="Repository\SqlDemRepository.cs" />
     <Compile Include="Repository\SqlPoint.cs" />
+    <Compile Include="Repository\SqlSegment.cs" />
+    <Compile Include="Services\ElevationService.cs" />
+    <Compile Include="Services\enElevationStrategy.cs" />
     <Compile Include="Services\GeometryService.cs" />
-    <Compile Include="Services\GeoTiffService.cs" />
+    <Compile Include="Services\GeoTiffRepositoryService.cs" />
+    <Compile Include="Services\IGeoTiffRepositoryService.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="SqlTypesExtensions.cs" />
   </ItemGroup>

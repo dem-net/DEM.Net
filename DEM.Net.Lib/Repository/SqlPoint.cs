@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Lib.Repository
 {
-	internal class SqlPoints : List<SqlPoint>
+    public class SqlPoints : List<SqlPoint>
 	{
 		public SqlPoints(IEnumerable<SqlPoint> collection) : base(collection)
 		{
 		}
 	}
-	internal class SqlPoint
+    public class SqlPoint
 	{
 		[Key]
 		public long PointId { get; set; }

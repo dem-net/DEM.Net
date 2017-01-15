@@ -25,7 +25,10 @@ namespace SampleApp
             //GeoTiffService.GenerateDirectoryMetadata(samplePath);
 
             LineIntersectionTest();
-            GetLineGeometryDEM(WKT_GRANDE_BOUCLE, samplePath);
+
+            IGeoTiffRepositoryService geoTiffRepo = new GeoTiffRepositoryService(samplePath);
+            
+            GetLineGeometryDEM(WKT_GRANDE_BOUCLE, geoTiffRepo);
 
         }
 
@@ -38,7 +41,7 @@ namespace SampleApp
             SqlGeometry intersection = geom1.STIntersection(geom2);
 
             Vector3 outvec = Vector3.Zero;
-            Vector3 linePoint1 = new Vector3((float)geom1.STStartPoint().STX, (float)geom1.STStartPoint().STY,0);
+            Vector3 linePoint1 = new Vector3((float)geom1.STStartPoint().STX, (float)geom1.STStartPoint().STY, 0);
             Vector3 lineVec1 = Vector3.Normalize(new Vector3((float)(geom1.STEndPoint().STX - geom1.STStartPoint().STX), (float)(geom1.STEndPoint().STY - geom1.STStartPoint().STY), 0));
             Vector3 linePoint2 = new Vector3((float)geom2.STStartPoint().STX, (float)geom2.STStartPoint().STY, 0);
             Vector3 lineVec2 = Vector3.Normalize(new Vector3((float)(geom2.STEndPoint().STX - geom2.STStartPoint().STX), (float)(geom2.STEndPoint().STY - geom2.STStartPoint().STY), 0));
@@ -46,10 +49,10 @@ namespace SampleApp
             bool intersects = GeometryService.LineLineIntersection(out outvec, linePoint1, lineVec1, linePoint2, lineVec2);
         }
 
-        private static void GetLineGeometryDEM(string lineWKT, string geoTiffRepository)
+        private static void GetLineGeometryDEM(string lineWKT, IGeoTiffRepositoryService geoTiffRepo)
         {
             BoundingBox bbox = GeometryService.GetBoundingBox(lineWKT);
-            HeightMap heightMap = GeoTiffService.GetHeightMap(bbox, geoTiffRepository);
+            HeightMap heightMap = geoTiffRepo.GetHeightMap(bbox);
 
             using (GeoTiff tiffConverter = new GeoTiff(heightMap.FileMetadata.Filename))
             {

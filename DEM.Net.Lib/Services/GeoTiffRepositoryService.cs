@@ -10,14 +10,20 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Lib.Services
 {
-    public static class GeoTiffService
+    public class GeoTiffRepositoryService : IGeoTiffRepositoryService
     {
-
+        private readonly string _tiffPath;
+        private static Dictionary<string, List<FileMetadata>> _metadataCatalogCacheByPath = new Dictionary<string, List<FileMetadata>>();
+        public GeoTiffRepositoryService(string tiffPath)
+        {
+            _tiffPath = tiffPath;
+            LoadManifestMetadata(_tiffPath);
+        }
         private const string MANIFEST_DIR = "manifest";
 
-        public static FileMetadata ParseMetadata(Tiff tiff, string tiffPath)
+        public static FileMetadata ParseMetadata(Tiff tiff, string tiffFullFileName)
         {
-            FileMetadata metadata = new FileMetadata(tiffPath);
+            FileMetadata metadata = new FileMetadata(tiffFullFileName);
             ///
             FieldValue[] modelPixelScaleTag = tiff.GetField(TiffTag.GEOTIFF_MODELPIXELSCALETAG);
             FieldValue[] modelTiepointTag = tiff.GetField(TiffTag.GEOTIFF_MODELTIEPOINTTAG);
@@ -67,11 +73,11 @@ namespace DEM.Net.Lib.Services
             return metadata;
         }
 
-        public static HeightMap GetHeightMap(BoundingBox bbox, string tiffPath)
+        public HeightMap GetHeightMap(BoundingBox bbox)
         {
             // Locate which files are needed
             // Find files matching coords
-            List<FileMetadata> bboxMetadata = GetCoveringFiles(bbox, tiffPath);
+            List<FileMetadata> bboxMetadata = GetCoveringFiles(bbox);
 
             HeightMap heightMap = null;
             // get height map for each file at bbox
@@ -91,12 +97,12 @@ namespace DEM.Net.Lib.Services
             return heightMap;
         }
 
-        public static List<FileMetadata> GetCoveringFiles(BoundingBox bbox, string tiffPath)
+        public List<FileMetadata> GetCoveringFiles(BoundingBox bbox, List<FileMetadata> catalogSubSet = null)
         {
             // Locate which files are needed
 
             // Load metadata catalog
-            List<FileMetadata> metadataCatalog = LoadManifestMetadata(tiffPath);
+            List<FileMetadata> metadataCatalog = catalogSubSet ?? LoadManifestMetadata(_tiffPath);
 
             // Find files matching coords
             List<FileMetadata> bboxMetadata = new List<FileMetadata>(metadataCatalog.Where(m => IsBboxInTile(m.OriginLatitude, m.OriginLongitude, bbox)));
@@ -113,7 +119,7 @@ namespace DEM.Net.Lib.Services
             return bboxMetadata;
         }
 
-        private static bool IsBboxInTile(double originLatitude, double originLongitude, BoundingBox bbox)
+        private bool IsBboxInTile(double originLatitude, double originLongitude, BoundingBox bbox)
         {
 
             //bool isInsideY = originLatitude <= Math.Ceiling(bbox.yMax)
@@ -128,10 +134,10 @@ namespace DEM.Net.Lib.Services
             // (X2' >= X1 && X1' <= X2) && (Y2' >= Y1 && Y1' <= Y2)
         }
 
-        private static List<FileMetadata> _metadataCatalogCache = null;
-        private static List<FileMetadata> LoadManifestMetadata(string tiffPath)
+        private List<FileMetadata> LoadManifestMetadata(string tiffPath)
         {
-            if (_metadataCatalogCache == null)
+            tiffPath = Path.GetFullPath(tiffPath);
+            if (_metadataCatalogCacheByPath.ContainsKey(tiffPath) == false)
             {
                 string manifestDir = Path.Combine(tiffPath, MANIFEST_DIR);
                 string[] manifestFiles = Directory.GetFiles(manifestDir, "*.json");
@@ -143,12 +149,12 @@ namespace DEM.Net.Lib.Services
                     metaList.Add(JsonConvert.DeserializeObject<FileMetadata>(jsonContent));
                 }
 
-                _metadataCatalogCache = metaList;
+                _metadataCatalogCacheByPath[tiffPath] = metaList;
             }
-            return _metadataCatalogCache;
+            return _metadataCatalogCacheByPath[tiffPath];
         }
 
-        public static void DumpTiffTags(Tiff tiff)
+        public void DumpTiffTags(Tiff tiff)
         {
             StringBuilder sb = new StringBuilder();
             foreach (var value in Enum.GetValues(typeof(TiffTag)))
@@ -280,7 +286,7 @@ namespace DEM.Net.Lib.Services
 
             return heightValue;
         }
-        internal static HeightMap ParseGeoDataForPoints(Tiff tiff, List<GeoPoint> points, FileMetadata metadata)
+        internal HeightMap ParseGeoDataForPoints(Tiff tiff, List<GeoPoint> points, FileMetadata metadata)
         {
             throw new NotImplementedException();
 
@@ -334,18 +340,18 @@ namespace DEM.Net.Lib.Services
             //return heightMap;
         }
 
-        public static void GenerateDirectoryMetadata(string directoryPath)
+        public void GenerateDirectoryMetadata(string directoryPath)
         {
             foreach (var file in Directory.GetFiles(directoryPath, "*.tif", SearchOption.TopDirectoryOnly))
             {
                 Trace.TraceInformation($"Generating manifest for file {file}.");
-                HeightMap heightMap = GeoTiffService.GetHeightMap(file);
-                GeoTiffService.WriteManifestFiles(heightMap);
+                HeightMap heightMap = this.GetHeightMap(file);
+                this.WriteManifestFiles(heightMap);
                 GC.Collect();
             }
         }
 
-        public static HeightMap GetHeightMap(string fileName)
+        public HeightMap GetHeightMap(string fileName)
         {
             fileName = Path.GetFullPath(fileName);
             string fileTitle = Path.GetFileNameWithoutExtension(fileName);
@@ -358,7 +364,7 @@ namespace DEM.Net.Lib.Services
             return heightMap;
         }
 
-        public static void WriteManifestFiles(HeightMap heightMap)
+        public void WriteManifestFiles(HeightMap heightMap)
         {
 
             var fileName = heightMap.FileMetadata.Filename;
