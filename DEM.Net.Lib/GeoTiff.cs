@@ -47,19 +47,19 @@ namespace DEM.Net.Lib
 
 		public HeightMap ConvertToHeightMap()
 		{
-            FileMetadata metadata = GeoTiffRepositoryService.ParseMetadata(_tiff, _tiffPath);
-            HeightMap heightMap = GeoTiffRepositoryService.ParseGeoData(_tiff, metadata);
+            FileMetadata metadata = GeoTiffService.ParseMetadata(_tiff, _tiffPath);
+            HeightMap heightMap = GeoTiffService.ParseGeoData(_tiff, metadata);
 			return heightMap;
 		}
 
         public float ParseGeoDataAtPoint(FileMetadata metadata, double lat, double lon)
         {
-           return GeoTiffRepositoryService.ParseGeoDataAtPoint(_tiff, metadata, lat, lon);
+           return GeoTiffService.ParseGeoDataAtPoint(_tiff, metadata, lat, lon);
         }
 
         public HeightMap ConvertToHeightMap(BoundingBox bbox, FileMetadata metadata)
         {
-            HeightMap heightMap = GeoTiffRepositoryService.ParseGeoDataInBBox(_tiff, bbox, metadata);
+            HeightMap heightMap = GeoTiffService.ParseGeoDataInBBox(_tiff, bbox, metadata);
             return heightMap;
         }
 	}
