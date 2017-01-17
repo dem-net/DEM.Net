@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using BitMiracle.LibTiff.Classic;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization;
+﻿using BitMiracle.LibTiff.Classic;
 using DEM.Net.Lib.Services;
+using System;
 
 namespace DEM.Net.Lib
 {
@@ -19,6 +8,11 @@ namespace DEM.Net.Lib
 	{
 		Tiff _tiff;
 		string _tiffPath;
+
+		internal Tiff TiffFile
+		{
+			get { return _tiff; }
+		}
 
 		public GeoTiff(string tiffPath)
 		{
@@ -45,22 +39,6 @@ namespace DEM.Net.Lib
 			GC.SuppressFinalize(this);
 		}
 
-		public HeightMap ConvertToHeightMap()
-		{
-            FileMetadata metadata = GeoTiffService.ParseMetadata(_tiff, _tiffPath);
-            HeightMap heightMap = GeoTiffService.ParseGeoData(_tiff, metadata);
-			return heightMap;
-		}
 
-        public float ParseGeoDataAtPoint(FileMetadata metadata, double lat, double lon)
-        {
-           return GeoTiffService.ParseGeoDataAtPoint(_tiff, metadata, lat, lon);
-        }
-
-        public HeightMap ConvertToHeightMap(BoundingBox bbox, FileMetadata metadata)
-        {
-            HeightMap heightMap = GeoTiffService.ParseGeoDataInBBox(_tiff, bbox, metadata);
-            return heightMap;
-        }
 	}
 }

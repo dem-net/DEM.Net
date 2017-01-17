@@ -58,7 +58,7 @@ namespace DEM.Net.Lib
 						normalizedValue = (ushort)((geoPoint.Altitude - heightMap.Mininum) / range * 255);
 					}
 
-					rgbValues[geoPoint.YIndex * bmpData.Stride + geoPoint.XIndex] = (byte)normalizedValue;
+					rgbValues[geoPoint.YIndex.Value * bmpData.Stride + geoPoint.XIndex.Value] = (byte)normalizedValue;
 				}
 
 				Marshal.Copy(rgbValues, 0, ptr, bytes);

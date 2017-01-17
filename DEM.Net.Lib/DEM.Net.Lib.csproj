@@ -74,14 +74,16 @@
   <ItemGroup>
     <Compile Include="BoundingBox.cs" />
     <Compile Include="DiagnosticUtils.cs" />
-    <Compile Include="FileMetadata.cs" />
-    <Compile Include="GeoPoint.cs" />
+    <Compile Include="Model\FileMetadata.cs" />
+    <Compile Include="Model\GeoPoint.cs" />
     <Compile Include="GeoTiff.cs" />
-    <Compile Include="HeightMap.cs" />
+    <Compile Include="Model\GeoSegment.cs" />
+    <Compile Include="Model\HeightMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\CoordReader.cs" />
     <Compile Include="Repository\SqlDemRepository.cs" />
     <Compile Include="Repository\SqlPoint.cs" />
+    <Compile Include="Services\ElevationService.cs" />
     <Compile Include="Services\GeometryService.cs" />
     <Compile Include="Services\GeoTiffService.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />

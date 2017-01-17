@@ -46,7 +46,7 @@ namespace DEM.Net.Lib
 				case 1:
 					double lon = heightmap.Coordinates[_index - 1].Longitude;
 					double lat = heightmap.Coordinates[_index - 1].Latitude;
-					float alt = heightmap.Coordinates[_index - 1].Altitude;
+					float alt = heightmap.Coordinates[_index - 1].Altitude.GetValueOrDefault(0);
 					CultureInfo ci = CultureInfo.InvariantCulture;
 					return SqlGeometry.STPointFromText(new SqlChars(new SqlString($"POINT( {lon.ToString(ci)} {lat.ToString(ci)} {alt.ToString(ci)})")), 4326);
 				default:

@@ -262,7 +262,6 @@ namespace DEM.Net.Lib
 			return geomBase;
 		}
 
-
 		public static SqlGeometry PointEmpty_SqlGeometry(int srid)
 		{
 			return SqlGeometry.STPointFromText(new SqlChars(new SqlString("POINT EMPTY")), srid);
@@ -286,7 +285,7 @@ namespace DEM.Net.Lib
 				return false;
 			}
 		}
-	
+
 
 		#region Enumerators
 
@@ -307,6 +306,40 @@ namespace DEM.Net.Lib
 			}
 		}
 
+		public static IEnumerable<SqlGeometry> Segments(this SqlGeometry lineGeom)
+		{
+			
+			if (lineGeom == null || lineGeom.IsNull || lineGeom.STIsEmpty())
+			{
+				yield return null;
+			}
+			if (lineGeom.STGeometryType().ToString() != OpenGisGeometryType.LineString.ToString())
+			{
+				yield return null;
+			}
+			if (lineGeom.STNumPoints().Value < 2)
+			{
+				yield return null;
+			}
+
+			for ( int i = 1; i < lineGeom.STNumPoints().Value; i++)
+			{
+
+				SqlGeometry ptStart = lineGeom.STPointN(i);
+				SqlGeometry ptNext = lineGeom.STPointN(i + 1);
+
+				SqlGeometryBuilder gb = new SqlGeometryBuilder();
+				gb.SetSrid(lineGeom.STSrid.Value);
+				gb.BeginGeometry(OpenGisGeometryType.LineString);
+				gb.BeginFigure(ptStart.STX.Value, ptStart.STY.Value);
+				gb.AddLine(ptNext.STX.Value, ptNext.STY.Value);
+				gb.EndFigure();
+				gb.EndGeometry();
+
+				yield return gb.ConstructedGeometry;
+			}
+		}
+
 		public static IEnumerable<SqlGeometry> InteriorRings(this SqlGeometry geom)
 		{
 			for (int i = 1; i <= geom.STNumInteriorRing(); i++)
@@ -320,48 +353,48 @@ namespace DEM.Net.Lib
 			return geom.STNumInteriorRing().Value > 0;
 		}
 
-        public static BoundingBox GetBoundingBox(this SqlGeometry geom)
-        {
-            SqlGeometry envelope = geom.STEnvelope();
-            return new BoundingBox(envelope.Points().Min(pt => pt.STX.Value)
-                                    , envelope.Points().Max(pt => pt.STX.Value)
-                                    , envelope.Points().Min(pt => pt.STY.Value)
-                                    , envelope.Points().Max(pt => pt.STY.Value));
-        }
+		public static BoundingBox GetBoundingBox(this SqlGeometry geom)
+		{
+			SqlGeometry envelope = geom.STEnvelope();
+			return new BoundingBox(envelope.Points().Min(pt => pt.STX.Value)
+															, envelope.Points().Max(pt => pt.STX.Value)
+															, envelope.Points().Min(pt => pt.STY.Value)
+															, envelope.Points().Max(pt => pt.STY.Value));
+		}
 
-        #endregion
+		#endregion
 
-        #region Serialization
+		#region Serialization
 
-        //private void ToFile(SqlGeometry geom)
-        //{
+		//private void ToFile(SqlGeometry geom)
+		//{
 
-        //	// To serialize the hashtable and its key/value pairs,  
-        //	// you must first open a stream for writing. 
-        //	// In this case, use a file stream.
-        //	using (FileStream fs = new FileStream("geom.dat", FileMode.Create))
-        //	{
+		//	// To serialize the hashtable and its key/value pairs,  
+		//	// you must first open a stream for writing. 
+		//	// In this case, use a file stream.
+		//	using (FileStream fs = new FileStream("geom.dat", FileMode.Create))
+		//	{
 
-        //		// Construct a BinaryFormatter and use it to serialize the data to the stream.
-        //		BinaryFormatter formatter = new BinaryFormatter();
-        //		try
-        //		{
-        //			formatter.Serialize(fs, geom.STAsBinary().Value);
-        //		}
-        //		catch (SerializationException e)
-        //		{
-        //			Console.WriteLine("Failed to serialize. Reason: " + e.Message);
-        //			throw;
-        //		}
+		//		// Construct a BinaryFormatter and use it to serialize the data to the stream.
+		//		BinaryFormatter formatter = new BinaryFormatter();
+		//		try
+		//		{
+		//			formatter.Serialize(fs, geom.STAsBinary().Value);
+		//		}
+		//		catch (SerializationException e)
+		//		{
+		//			Console.WriteLine("Failed to serialize. Reason: " + e.Message);
+		//			throw;
+		//		}
 
-        //	}
+		//	}
 
-        /// <summary>
-        /// Reads a serialized SqlGeometry
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public static SqlGeometry Read(string path)
+		/// <summary>
+		/// Reads a serialized SqlGeometry
+		/// </summary>
+		/// <param name="path"></param>
+		/// <returns></returns>
+		public static SqlGeometry Read(string path)
 		{
 			SqlGeometry geom = null;
 			// To serialize the hashtable and its key/value pairs,  
