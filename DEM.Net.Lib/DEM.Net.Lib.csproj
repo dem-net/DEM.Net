@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="BoundingBox.cs" />
     <Compile Include="DiagnosticUtils.cs" />
+    <Compile Include="MathHelper.cs" />
     <Compile Include="Model\FileMetadata.cs" />
     <Compile Include="Model\GeoPoint.cs" />
     <Compile Include="GeoTiff.cs" />

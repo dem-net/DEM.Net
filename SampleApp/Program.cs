@@ -33,7 +33,7 @@ namespace SampleApp
 			BoundingBox bbox = GeometryService.GetBoundingBox(lineWKT);
 			//HeightMap heightMap = GeoTiffService.GetHeightMap(bbox, geoTiffRepository);
 			SqlGeometry geom = GeometryService.GetNativeGeometry(lineWKT);
-			List<FileMetadata> tiles = GeoTiffService.GetCoveringFiles(bbox, geoTiffRepository);
+			List<FileMetadata> tiles = ElevationService.GetCoveringFiles(bbox, geoTiffRepository);
 
 			double lengthMeters = GeometryService.GetLength(lineWKT);
 			int totalCapacity = 2 * (int)(lengthMeters / 30d);
@@ -43,15 +43,15 @@ namespace SampleApp
 			bool isFirstSegment = true; // used to return first point only for first segments, for all other segments last point will be returned
 			foreach (SqlGeometry segment in geom.Segments())
 			{
-				List<FileMetadata> segTiles = GeoTiffService.GetCoveringFiles(segment.GetBoundingBox(), geoTiffRepository, tiles);
+				List<FileMetadata> segTiles = ElevationService.GetCoveringFiles(segment.GetBoundingBox(), geoTiffRepository, tiles);
 				
 				// Find all intersection with segment and DEM grid
-				List<GeoPoint> intersections = GeoTiffService.FindSegmentIntersections(segment.STStartPoint().STX.Value, segment.STStartPoint().STY.Value,
+				List<GeoPoint> intersections = ElevationService.FindSegmentIntersections(segment.STStartPoint().STX.Value, segment.STStartPoint().STY.Value,
 																						segment.STEndPoint().STX.Value, segment.STEndPoint().STY.Value,
 																						segTiles, isFirstSegment, true);
 
-				// Get elevation for each point
-				GeoTiffService.GetElevationData(ref intersections, segTiles);
+                // Get elevation for each point
+                ElevationService.GetElevationData(ref intersections, segTiles);
 
 				isFirstSegment = false;
 			}
