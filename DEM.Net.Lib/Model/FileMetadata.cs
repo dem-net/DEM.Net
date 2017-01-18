@@ -46,5 +46,7 @@ namespace DEM.Net.Lib
 				return Height * pixelSizeY + OriginLatitude;
 			}
 		}
-	}
+
+     
+    }
 }

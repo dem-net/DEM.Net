@@ -39,7 +39,17 @@ namespace DEM.Net.Lib
 			return (GeoPoint)this.MemberwiseClone();
 		}
 
-		public static GeoPoint Zero
+        public double DistanceSquaredTo(GeoPoint pt)
+        {
+            return (pt.Longitude - Longitude) * (pt.Longitude - Longitude)
+                    + (pt.Latitude - Latitude) * (pt.Latitude - Latitude);
+        }
+        public double DistanceTo(GeoPoint pt)
+        {
+            return Math.Sqrt(this.DistanceSquaredTo(pt));
+        }
+
+        public static GeoPoint Zero
 		{
 			get { return new GeoPoint(0, 0); }
 		}

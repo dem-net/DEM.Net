@@ -1,4 +1,5 @@
 ﻿using BitMiracle.LibTiff.Classic;
+using Microsoft.SqlServer.Types;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,6 +11,58 @@ namespace DEM.Net.Lib.Services
 {
     public static class ElevationService
     {
+        /// <summary>
+        /// Extract elevation data along line path
+        /// </summary>
+        /// <param name="lineWKT"></param>
+        /// <param name="geoTiffRepository"></param>
+        /// <returns></returns>
+        public static List<GeoPoint> GetLineGeometryElevation(string lineWKT, string geoTiffRepository)
+        {
+            BoundingBox bbox = GeometryService.GetBoundingBox(lineWKT);
+            //HeightMap heightMap = GeoTiffService.GetHeightMap(bbox, geoTiffRepository);
+            SqlGeometry geom = GeometryService.GetNativeGeometry(lineWKT);
+            List<FileMetadata> tiles = ElevationService.GetCoveringFiles(bbox, geoTiffRepository);
+
+            double lengthMeters = GeometryService.GetLength(lineWKT);
+            int totalCapacity = 2 * (int)(lengthMeters / 30d);
+
+            List<GeoPoint> geoPoints = new List<GeoPoint>(totalCapacity);
+
+            bool isFirstSegment = true; // used to return first point only for first segments, for all other segments last point will be returned
+            foreach (SqlGeometry segment in geom.Segments())
+            {
+                List<FileMetadata> segTiles = ElevationService.GetCoveringFiles(segment.GetBoundingBox(), geoTiffRepository, tiles);
+
+                // Find all intersection with segment and DEM grid
+                List<GeoPoint> intersections = ElevationService.FindSegmentIntersections(segment.STStartPoint().STX.Value, segment.STStartPoint().STY.Value,
+                                                                                        segment.STEndPoint().STX.Value, segment.STEndPoint().STY.Value,
+                                                                                        segTiles, isFirstSegment, true);
+
+                // Get elevation for each point
+                ElevationService.GetElevationData(ref intersections, segTiles);
+
+                // Add to output list
+                geoPoints.AddRange(intersections);
+
+                isFirstSegment = false;
+            }
+
+            return geoPoints;
+        }
+
+        public static string ExportElevationTable(List<GeoPoint> lineElevationData)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("X;Z");
+            GeoPoint refPoint = lineElevationData.First();
+            foreach (GeoPoint pt in lineElevationData)
+            {
+                sb.AppendLine($"{pt.DistanceSquaredTo(refPoint).ToString("F7")};{pt.Altitude}");
+            }
+            return sb.ToString();
+        }
+
         public static HeightMap GetHeightMap(BoundingBox bbox, string tiffPath)
         {
             // Locate which files are needed
@@ -127,10 +180,19 @@ namespace DEM.Net.Lib.Services
 
             // sort points in segment order
             //
-
-
+            segmentPointsWithDEMPoints.Sort(new DistanceFromPointComparer(new GeoPoint(startLat, startLon)));
 
             return segmentPointsWithDEMPoints;
+        }
+
+        /// <summary>
+        /// Points will be sorted from closest to referencePoint to farthest from referencePoint
+        /// </summary>
+        /// <param name="points"></param>
+        /// <param name="referencePoint"></param>
+        private static void SortPointByDistance(ref List<GeoPoint> points, GeoPoint referencePoint)
+        {
+
         }
 
         private static IEnumerable<GeoSegment> GetDEMNorthSouthLines(List<FileMetadata> segTiles, GeoPoint westernSegPoint, GeoPoint easternSegPoint)
@@ -368,6 +430,8 @@ namespace DEM.Net.Lib.Services
             //const double epsilon = (Double.Epsilon * 100);
             byte[] scanline = new byte[metadata.ScanlineSize];
             ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
+            float noData = float.Parse(metadata.NoDataValue);
+            const float NO_DATA_OUT = -100;
 
             // precise position on the grid (with commas)
             double ypos = MathHelper.Clamp((lat - metadata.StartLat) / metadata.pixelSizeY, 0, metadata.Height - 1);
@@ -406,7 +470,10 @@ namespace DEM.Net.Lib.Services
                     // We need elevations for upper and lower grid points (along y axis)
                     float bottom = ParseGeoDataAtPoint(tiff, metadata, clampedX, clampedYFloor);
                     float top = ParseGeoDataAtPoint(tiff, metadata, clampedY, clampedYCeiling);
+                    if (bottom == noData) bottom = top;
+                    if (top == noData) top = bottom;
                     heightValue = MathHelper.Lerp(bottom, top, yInterpolationAmount);
+                    heightValue = MathHelper.Clamp(heightValue, NO_DATA_OUT, float.MaxValue);
                 }
                 else if (yOnGrid)
                 {
@@ -414,7 +481,10 @@ namespace DEM.Net.Lib.Services
                     // We need elevations for left and right grid points (along x axis)
                     float left = ParseGeoDataAtPoint(tiff, metadata, clampedXFloor, clampedY);
                     float right = ParseGeoDataAtPoint(tiff, metadata, clampedXCeiling, clampedY);
+                    if (left == noData) left = right;
+                    if (right == noData) right = left;
                     heightValue = MathHelper.Lerp(left, right, xInterpolationAmount);
+                    heightValue = MathHelper.Clamp(heightValue, NO_DATA_OUT, float.MaxValue);
                 }
                 else
                 {
@@ -424,14 +494,19 @@ namespace DEM.Net.Lib.Services
                     float top = ParseGeoDataAtPoint(tiff, metadata, clampedY, clampedYCeiling);
                     float left = ParseGeoDataAtPoint(tiff, metadata, clampedXFloor, clampedY);
                     float right = ParseGeoDataAtPoint(tiff, metadata, clampedXCeiling, clampedY);
+                    if (bottom == noData) bottom = top;
+                    if (top == noData) top = bottom;
+                    if (left == noData) left = right;
+                    if (right == noData) right = left;
                     float heightValueX = MathHelper.Lerp(left, right, xInterpolationAmount);
                     float heightValueY = MathHelper.Lerp(bottom, top, yInterpolationAmount);
+                    if (heightValueX == noData) heightValueX = heightValueY;
+                    if (heightValueY == noData) heightValueY = heightValueX;
                     heightValue = (heightValueX + heightValueY) / 2f;
                 }
             }
             return heightValue;
         }
-
 
 
         private static float ParseGeoDataAtPoint(Tiff tiff, FileMetadata metadata, int x, int y)

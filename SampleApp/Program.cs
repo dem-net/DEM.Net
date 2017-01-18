@@ -25,40 +25,29 @@ namespace SampleApp
 		{
 			//GeoTiffService.GenerateDirectoryMetadata(samplePath);
 
-			GetLineGeometryDEM(WKT_BAYONNE_NICE_DIRECT, samplePath);
-		}
-
-		private static void GetLineGeometryDEM(string lineWKT, string geoTiffRepository)
-		{
-			BoundingBox bbox = GeometryService.GetBoundingBox(lineWKT);
-			//HeightMap heightMap = GeoTiffService.GetHeightMap(bbox, geoTiffRepository);
-			SqlGeometry geom = GeometryService.GetNativeGeometry(lineWKT);
-			List<FileMetadata> tiles = ElevationService.GetCoveringFiles(bbox, geoTiffRepository);
-
-			double lengthMeters = GeometryService.GetLength(lineWKT);
-			int totalCapacity = 2 * (int)(lengthMeters / 30d);
-
-			List<GeoPoint> geoPoints = new List<GeoPoint>(totalCapacity);
-
-			bool isFirstSegment = true; // used to return first point only for first segments, for all other segments last point will be returned
-			foreach (SqlGeometry segment in geom.Segments())
-			{
-				List<FileMetadata> segTiles = ElevationService.GetCoveringFiles(segment.GetBoundingBox(), geoTiffRepository, tiles);
-				
-				// Find all intersection with segment and DEM grid
-				List<GeoPoint> intersections = ElevationService.FindSegmentIntersections(segment.STStartPoint().STX.Value, segment.STStartPoint().STY.Value,
-																						segment.STEndPoint().STX.Value, segment.STEndPoint().STY.Value,
-																						segTiles, isFirstSegment, true);
-
-                // Get elevation for each point
-                ElevationService.GetElevationData(ref intersections, segTiles);
-
-				isFirstSegment = false;
-			}
+			List<GeoPoint> lineElevationData = ElevationService.GetLineGeometryElevation(WKT_BAYONNE_NICE_DIRECT, samplePath);
+            File.WriteAllText($"ElevationData_{nameof(WKT_BAYONNE_NICE_DIRECT)}.txt", ElevationService.ExportElevationTable(lineElevationData));
+            
+             lineElevationData = ElevationService.GetLineGeometryElevation(WKT_GRANDE_BOUCLE, samplePath);
+            File.WriteAllText($"ElevationData_{nameof(WKT_GRANDE_BOUCLE)}.txt", ElevationService.ExportElevationTable(lineElevationData));
 
 
+            lineElevationData = ElevationService.GetLineGeometryElevation(WKT_PETITE_BOUCLE, samplePath);
+            File.WriteAllText($"ElevationData_{nameof(WKT_PETITE_BOUCLE)}.txt", ElevationService.ExportElevationTable(lineElevationData));
+            lineElevationData = ElevationService.GetLineGeometryElevation(WKT_GRAND_TRAJET, samplePath);
+            File.WriteAllText($"ElevationData_{nameof(WKT_GRAND_TRAJET)}.txt", ElevationService.ExportElevationTable(lineElevationData));
+            lineElevationData = ElevationService.GetLineGeometryElevation(WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES, samplePath);
+            File.WriteAllText($"ElevationData_{nameof(WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES)}.txt", ElevationService.ExportElevationTable(lineElevationData));
+            lineElevationData = ElevationService.GetLineGeometryElevation(WKT_BAYONNE_AIX_OUEST_EST, samplePath);
+            File.WriteAllText($"ElevationData_{nameof(WKT_BAYONNE_AIX_OUEST_EST)}.txt", ElevationService.ExportElevationTable(lineElevationData));
+            lineElevationData = ElevationService.GetLineGeometryElevation(WKT_AIX_BAYONNE_EST_OUEST, samplePath);
+            File.WriteAllText($"ElevationData_{nameof(WKT_AIX_BAYONNE_EST_OUEST)}.txt", ElevationService.ExportElevationTable(lineElevationData));
+            lineElevationData = ElevationService.GetLineGeometryElevation(WKT_AIX_BAYONNE_EST_OUEST, samplePath);
+            File.WriteAllText($"ElevationData_{nameof(WKT_AIX_BAYONNE_EST_OUEST)}.txt", ElevationService.ExportElevationTable(lineElevationData));
 
-		}
+        }
+
+		
 
 
 

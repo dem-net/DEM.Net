@@ -84,6 +84,7 @@
     <Compile Include="Repository\CoordReader.cs" />
     <Compile Include="Repository\SqlDemRepository.cs" />
     <Compile Include="Repository\SqlPoint.cs" />
+    <Compile Include="Services\DistanceFromPointComparer.cs" />
     <Compile Include="Services\ElevationService.cs" />
     <Compile Include="Services\GeometryService.cs" />
     <Compile Include="Services\GeoTiffService.cs" />
