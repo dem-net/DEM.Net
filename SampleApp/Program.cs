@@ -25,7 +25,7 @@ namespace SampleApp
 		{
 			//GeoTiffService.GenerateDirectoryMetadata(samplePath);
 
-			LineIntersectionTest();
+			//LineIntersectionTest();
 			GetLineGeometryDEM(WKT_BAYONNE_NICE_DIRECT, samplePath);
 
 		}
