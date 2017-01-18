@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace DEM.Net.Lib
 {
 	[Serializable]
-	public class GeoPoint
+	public class GeoPoint 
 	{
 		public double Latitude;
 		public double Longitude;

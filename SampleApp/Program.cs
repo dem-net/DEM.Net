@@ -25,30 +25,7 @@ namespace SampleApp
 		{
 			//GeoTiffService.GenerateDirectoryMetadata(samplePath);
 
-			//LineIntersectionTest();
 			GetLineGeometryDEM(WKT_BAYONNE_NICE_DIRECT, samplePath);
-
-		}
-
-		private static void LineIntersectionTest()
-		{
-			string wkt1 = "LINESTRING(-5.888671875 47.90161354142077,3.4716796875 44.11914151643737)";
-			string wkt2 = "LINESTRING(-2.8564453125 44.30812668488613,5.625 48.166085419012525)";
-			SqlGeometry geom1 = GeometryService.GetNativeGeometry(wkt1);
-			SqlGeometry geom2 = GeometryService.GetNativeGeometry(wkt2);
-			SqlGeometry intersection = geom1.STIntersection(geom2);
-
-			GeoSegment seg1 = new GeoSegment(new GeoPoint(geom1.STStartPoint().STY.Value, geom1.STStartPoint().STX.Value), new GeoPoint(geom1.STEndPoint().STY.Value, geom1.STEndPoint().STX.Value));
-			GeoSegment seg2 = new GeoSegment(new GeoPoint(geom2.STStartPoint().STY.Value, geom2.STStartPoint().STX.Value), new GeoPoint(geom2.STEndPoint().STY.Value, geom2.STEndPoint().STX.Value));
-			GeoPoint intersectionResult = GeoPoint.Zero;
-
-			bool intersects = GeometryService.LineLineIntersection(out intersectionResult, seg1, seg2);
-
-			SqlGeography geog1 = intersection.ToGeography();
-			SqlGeography geog2 = SqlGeography.Point(intersectionResult.Latitude, intersectionResult.Longitude, 4326);
-			double dist = geog1.STDistance(geog2).Value;
-
-			Debug.Assert(dist < 0.05d, "Problem in intersection calculation.");
 		}
 
 		private static void GetLineGeometryDEM(string lineWKT, string geoTiffRepository)
@@ -62,19 +39,21 @@ namespace SampleApp
 			int totalCapacity = 2 * (int)(lengthMeters / 30d);
 
 			List<GeoPoint> geoPoints = new List<GeoPoint>(totalCapacity);
+
+			bool isFirstSegment = true; // used to return first point only for first segments, for all other segments last point will be returned
 			foreach (SqlGeometry segment in geom.Segments())
 			{
 				List<FileMetadata> segTiles = GeoTiffService.GetCoveringFiles(segment.GetBoundingBox(), geoTiffRepository, tiles);
-
+				
 				// Find all intersection with segment and DEM grid
-				List<GeoPoint> intersections = GeoTiffService.FindLineIntersections(segment.STStartPoint().STX.Value, segment.STStartPoint().STY.Value,
+				List<GeoPoint> intersections = GeoTiffService.FindSegmentIntersections(segment.STStartPoint().STX.Value, segment.STStartPoint().STY.Value,
 																						segment.STEndPoint().STX.Value, segment.STEndPoint().STY.Value,
-																						segTiles);
+																						segTiles, isFirstSegment, true);
 
 				// Get elevation for each point
 				GeoTiffService.GetElevationData(ref intersections, segTiles);
-				
-				geoPoints.AddRange(intersections);
+
+				isFirstSegment = false;
 			}
 
 

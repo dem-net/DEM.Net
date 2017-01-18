@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Net.Lib", "DEM.Net.Lib.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp", "..\SampleApp\SampleApp.csproj", "{6375EA11-8111-4C8F-9840-2E4A04D742BD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Net.Test", "..\DEM.Net.Test\DEM.Net.Test.csproj", "{1C49F486-E950-41A5-8571-3913686A6A6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{6375EA11-8111-4C8F-9840-2E4A04D742BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6375EA11-8111-4C8F-9840-2E4A04D742BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6375EA11-8111-4C8F-9840-2E4A04D742BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C49F486-E950-41A5-8571-3913686A6A6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C49F486-E950-41A5-8571-3913686A6A6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C49F486-E950-41A5-8571-3913686A6A6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C49F486-E950-41A5-8571-3913686A6A6D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
