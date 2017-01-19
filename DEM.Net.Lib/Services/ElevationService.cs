@@ -25,7 +25,8 @@ namespace DEM.Net.Lib.Services
             List<FileMetadata> tiles = ElevationService.GetCoveringFiles(bbox, geoTiffRepository);
 
             double lengthMeters = GeometryService.GetLength(lineWKT);
-            int totalCapacity = 2 * (int)(lengthMeters / 30d);
+            int demResolution = GeoTiffService.GetResolutionMeters(tiles.First());
+            int totalCapacity = 2 * (int)(lengthMeters / demResolution);
 
             List<GeoPoint> geoPoints = new List<GeoPoint>(totalCapacity);
 
