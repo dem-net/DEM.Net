@@ -32,8 +32,10 @@ namespace DEM.Net.Test
 
 			bool intersects = GeometryService.LineLineIntersection(out intersectionResult, seg1, seg2);
 
-			SqlGeography geog1 = intersection.ToGeography();
-			SqlGeography geog2 = SqlGeography.Point(intersectionResult.Latitude, intersectionResult.Longitude, 4326);
+
+            SqlGeography geog1 = null;
+            intersection.TryToGeography(out geog1);
+            SqlGeography geog2 = SqlGeography.Point(intersectionResult.Latitude, intersectionResult.Longitude, 4326);
 			double dist = geog1.STDistance(geog2).Value;
 
 			Assert.IsTrue(dist < 0.05d, "Problem in intersection calculation.");

@@ -33,12 +33,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DotSpatial.Projections, Version=1.9.0.0, Culture=neutral, PublicKeyToken=272632bddd08a38b, processorArchitecture=MSIL">
+      <HintPath>..\DEM.Net.Lib\packages\DotSpatial.Projections.1.9\lib\net40-Client\DotSpatial.Projections.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.SqlServer.Types, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\DEM.Net.Lib\packages\Microsoft.SqlServer.Types.11.0.2\lib\net20\Microsoft.SqlServer.Types.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\DEM.Net.Lib\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="SqlServerSpatial.Toolkit, Version=0.1.4.24399, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\DEM.Net.Lib\packages\SqlServerSpatial.Toolkit.1.0.1\lib\net45\SqlServerSpatial.Toolkit.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -86,6 +95,16 @@
       <Link>SqlServerTypes\x86\SqlServerSpatial110.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\DEM.Net.Lib\packages\SqlServerSpatial.Toolkit.1.0.1\toolkit\SqlServerSpatial.Toolkit.DebuggerVisualizer.VS2013.dll">
+      <Link>SqlServerSpatial.Toolkit\SqlServerSpatial.Toolkit.DebuggerVisualizer.VS2013.dll</Link>
+    </Content>
+    <Content Include="..\DEM.Net.Lib\packages\SqlServerSpatial.Toolkit.1.0.1\toolkit\SqlServerSpatial.Toolkit.DebuggerVisualizer.VS2015.dll">
+      <Link>SqlServerSpatial.Toolkit\SqlServerSpatial.Toolkit.DebuggerVisualizer.VS2015.dll</Link>
+    </Content>
+    <Content Include="..\DEM.Net.Lib\packages\SqlServerSpatial.Toolkit.1.0.1\toolkit\SqlServerSpatial.Toolkit.Viewer.exe">
+      <Link>SqlServerSpatial.Toolkit\SqlServerSpatial.Toolkit.Viewer.exe</Link>
+    </Content>
+    <Content Include="SqlServerSpatial.Toolkit\readme.htm" />
     <Content Include="SqlServerTypes\readme.htm" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

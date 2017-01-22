@@ -1,7 +1,9 @@
 ﻿using BitMiracle.LibTiff.Classic;
+using DEM.Net.Lib.Services.Interpolation;
 using Microsoft.SqlServer.Types;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,12 +19,15 @@ namespace DEM.Net.Lib.Services
         /// <param name="lineWKT"></param>
         /// <param name="geoTiffRepository"></param>
         /// <returns></returns>
-        public static List<GeoPoint> GetLineGeometryElevation(string lineWKT, string geoTiffRepository)
+        public static List<GeoPoint> GetLineGeometryElevation(string lineWKT, string geoTiffRepository, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
             BoundingBox bbox = GeometryService.GetBoundingBox(lineWKT);
             //HeightMap heightMap = GeoTiffService.GetHeightMap(bbox, geoTiffRepository);
             SqlGeometry geom = GeometryService.GetNativeGeometry(lineWKT);
             List<FileMetadata> tiles = ElevationService.GetCoveringFiles(bbox, geoTiffRepository);
+
+            // Init interpolator
+            IInterpolator interpolator = GetInterpolator(interpolationMode);
 
             double lengthMeters = GeometryService.GetLength(lineWKT);
             int demResolution = GeoTiffService.GetResolutionMeters(tiles.First());
@@ -41,7 +46,7 @@ namespace DEM.Net.Lib.Services
                                                                                         segTiles, isFirstSegment, true);
 
                 // Get elevation for each point
-                ElevationService.GetElevationData(ref intersections, segTiles);
+                ElevationService.GetElevationData(ref intersections, segTiles, interpolator);
 
                 // Add to output list
                 geoPoints.AddRange(intersections);
@@ -52,14 +57,27 @@ namespace DEM.Net.Lib.Services
             return geoPoints;
         }
 
+        private static IInterpolator GetInterpolator(InterpolationMode interpolationMode)
+        {
+            switch (interpolationMode)
+            {
+                case InterpolationMode.Hyperbolic:
+                    return new HyperbolicInterpolator();
+                case InterpolationMode.Bilinear:
+                   return new BilinearInterpolator();
+                default:
+                    throw new NotImplementedException($"Interpolator {interpolationMode} is not implemented.");
+            }
+        }
+
         public static string ExportElevationTable(List<GeoPoint> lineElevationData)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("X;Z");
+            sb.AppendLine("Lon Lat\tX\tZ");
             GeoPoint refPoint = lineElevationData.First();
             foreach (GeoPoint pt in lineElevationData)
             {
-                sb.AppendLine($"{pt.DistanceSquaredTo(refPoint).ToString("F7")};{pt.Altitude}");
+                sb.AppendLine($"{pt.Longitude.ToString(CultureInfo.InvariantCulture)} {pt.Latitude.ToString(CultureInfo.InvariantCulture)}\t{pt.DistanceSquaredTo(refPoint).ToString("F7")}\t{pt.Altitude}");
             }
             return sb.ToString();
         }
@@ -88,12 +106,14 @@ namespace DEM.Net.Lib.Services
             return heightMap;
         }
 
+
+
         /// <summary>
         /// Fill altitudes for each GeoPoint provided
         /// </summary>
         /// <param name="intersections"></param>
         /// <param name="segTiles"></param>
-        public static void GetElevationData(ref List<GeoPoint> intersections, List<FileMetadata> segTiles)
+        public static void GetElevationData(ref List<GeoPoint> intersections, List<FileMetadata> segTiles, IInterpolator interpolator)
         {
             // Group by tiff file for sequential and faster access
             var pointsByTileQuery = from point in intersections
@@ -108,7 +128,7 @@ namespace DEM.Net.Lib.Services
                 {
                     foreach (GeoPoint pt in tilePoints.Select(a => a.Point))
                     {
-                        pt.Altitude = ElevationService.ParseGeoDataAtPoint(tiff.TiffFile, tile, pt.Latitude, pt.Longitude);
+                        pt.Altitude = ElevationService.ParseGeoDataAtPoint(tiff.TiffFile, tile, pt.Latitude, pt.Longitude, interpolator);
                     }
                 }
             }
@@ -186,15 +206,6 @@ namespace DEM.Net.Lib.Services
             return segmentPointsWithDEMPoints;
         }
 
-        /// <summary>
-        /// Points will be sorted from closest to referencePoint to farthest from referencePoint
-        /// </summary>
-        /// <param name="points"></param>
-        /// <param name="referencePoint"></param>
-        private static void SortPointByDistance(ref List<GeoPoint> points, GeoPoint referencePoint)
-        {
-
-        }
 
         private static IEnumerable<GeoSegment> GetDEMNorthSouthLines(List<FileMetadata> segTiles, GeoPoint westernSegPoint, GeoPoint easternSegPoint)
         {
@@ -228,8 +239,7 @@ namespace DEM.Net.Lib.Services
                 {
                     break;
                 }
-                GeoSegment line = new GeoSegment(new GeoPoint(curTile.OriginLatitude, curPoint.Longitude)
-                                                                                                                                                , new GeoPoint(curTile.EndLatitude, curPoint.Longitude));
+                GeoSegment line = new GeoSegment(new GeoPoint(curTile.OriginLatitude, curPoint.Longitude), new GeoPoint(curTile.EndLatitude, curPoint.Longitude));
 
                 curIndex++;
                 yield return line;
@@ -426,7 +436,7 @@ namespace DEM.Net.Lib.Services
         /// <param name="lat"></param>
         /// <param name="lon"></param>
         /// <returns></returns>
-        public static float ParseGeoDataAtPoint(Tiff tiff, FileMetadata metadata, double lat, double lon)
+        public static float ParseGeoDataAtPoint_old(Tiff tiff, FileMetadata metadata, double lat, double lon)
         {
             //const double epsilon = (Double.Epsilon * 100);
             byte[] scanline = new byte[metadata.ScanlineSize];
@@ -470,7 +480,7 @@ namespace DEM.Net.Lib.Services
                     // If xOnGrid and not yOnGrid we are on grid vertical line
                     // We need elevations for upper and lower grid points (along y axis)
                     float bottom = ParseGeoDataAtPoint(tiff, metadata, clampedX, clampedYFloor);
-                    float top = ParseGeoDataAtPoint(tiff, metadata, clampedY, clampedYCeiling);
+                    float top = ParseGeoDataAtPoint(tiff, metadata, clampedX, clampedYCeiling);
                     if (bottom == noData) bottom = top;
                     if (top == noData) top = bottom;
                     heightValue = MathHelper.Lerp(bottom, top, yInterpolationAmount);
@@ -492,7 +502,7 @@ namespace DEM.Net.Lib.Services
                     // If not yOnGrid and not xOnGrid we are on grid horizontal line
                     // We need elevations for top, bottom, left and right grid points (along x axis and y axis)
                     float bottom = ParseGeoDataAtPoint(tiff, metadata, clampedX, clampedYFloor);
-                    float top = ParseGeoDataAtPoint(tiff, metadata, clampedY, clampedYCeiling);
+                    float top = ParseGeoDataAtPoint(tiff, metadata, clampedX, clampedYCeiling);
                     float left = ParseGeoDataAtPoint(tiff, metadata, clampedXFloor, clampedY);
                     float right = ParseGeoDataAtPoint(tiff, metadata, clampedXCeiling, clampedY);
                     if (bottom == noData) bottom = top;
@@ -507,6 +517,113 @@ namespace DEM.Net.Lib.Services
                 }
             }
             return heightValue;
+        }
+        public static float ParseGeoDataAtPoint(Tiff tiff, FileMetadata metadata, double lat, double lon, IInterpolator interpolator)
+        {
+            //const double epsilon = (Double.Epsilon * 100);
+            byte[] scanline = new byte[metadata.ScanlineSize];
+            ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
+            float noData = float.Parse(metadata.NoDataValue);
+            const float NO_DATA_OUT = -100;
+
+            // precise position on the grid (with commas)
+            double ypos = MathHelper.Clamp((lat - metadata.StartLat) / metadata.pixelSizeY, 0, metadata.Height - 1);
+            double xpos = MathHelper.Clamp((lon - metadata.StartLon) / metadata.pixelSizeX, 0, metadata.Width - 1);
+
+            // If pure integers, then it's on the grid
+            //bool xOnGrid = Math.Abs(xpos % 1) <= epsilon;
+            //bool yOnGrid = Math.Abs(ypos % 1) <= epsilon;
+            float xInterpolationAmount = (float)xpos % 1;
+            float yInterpolationAmount = (float)ypos % 1;
+
+            bool xOnGrid = xInterpolationAmount == 0;
+            bool yOnGrid = yInterpolationAmount == 0;
+
+            // clamp all values to avoid OutOfRangeExceptions
+            int clampedXCeiling = MathHelper.Clamp((int)Math.Ceiling(xpos), 0, metadata.Width - 1);
+            int clampedXFloor = MathHelper.Clamp((int)Math.Floor(xpos), 0, metadata.Width - 1);
+            int clampedYCeiling = MathHelper.Clamp((int)Math.Ceiling(ypos), 0, metadata.Height - 1);
+            int clampedYFloor = MathHelper.Clamp((int)Math.Floor(ypos), 0, metadata.Height - 1);
+            int clampedX = MathHelper.Clamp((int)Math.Round(xpos, 0), 0, metadata.Width - 1);
+            int clampedY = MathHelper.Clamp((int)Math.Round(ypos, 0), 0, metadata.Height - 1);
+
+
+            float heightValue = 0;
+            // If xOnGrid and yOnGrid, we are on a grid intersection, and that's all
+            if (xOnGrid && yOnGrid)
+            {
+                heightValue = ParseGeoDataAtPoint(tiff, metadata, (int)Math.Round(xpos, 0), (int)Math.Round(ypos, 0));
+            }
+            else
+            {
+
+                // Get 4 grid nearest points (DEM grid corners)
+
+                // If not yOnGrid and not xOnGrid we are on grid horizontal line
+                // We need elevations for top, bottom, left and right grid points (along x axis and y axis)
+                float northWest = ParseGeoDataAtPoint(tiff, metadata, clampedXFloor, clampedYFloor);
+                float northEast = ParseGeoDataAtPoint(tiff, metadata, clampedXCeiling, clampedYFloor);
+                float southWest = ParseGeoDataAtPoint(tiff, metadata, clampedXFloor, clampedYCeiling);
+                float southEast = ParseGeoDataAtPoint(tiff, metadata, clampedXCeiling, clampedYCeiling);
+
+                float avgHeight = GetAverageExceptForValue(noData, NO_DATA_OUT, southWest, southEast, northWest, northEast);
+
+                if (northWest == noData) northWest = avgHeight;
+                if (northEast == noData) northEast = avgHeight;
+                if (southWest == noData) southWest = avgHeight;
+                if (southEast == noData) southEast = avgHeight;
+
+                heightValue = interpolator.Interpolate(southWest, southEast, northWest, northEast, xInterpolationAmount, yInterpolationAmount);
+            }
+            return heightValue;
+        }
+
+        private static float GetAverageExceptForValue(float noData, float valueIfAllBad, params float[] values)
+        {
+            var withValues = values.Where(v => v != noData);
+            if (withValues.Any())
+            {
+                return withValues.Average();
+            }
+            else
+            {
+                return valueIfAllBad;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// 
+        /// The concept of linear interpolation between two points can be extended to bilinear interpolation within 
+        /// the grid cell. The function is said to be linear in each variable when the other is held fixed. 
+        /// 
+        /// For example, to determine the height hi at x, y in Figure 5, the elevations at y on the vertical 
+        /// boundaries of the grid cell can be linearly interpolated between h1 and h3 at ha, and h2 and h4 at hb.
+        /// Finally, the required elevation at x can be linearly interpolated between ha and hb. 
+        /// 
+        /// Source : http://www.geocomputation.org/1999/082/gc_082.htm
+        /// </summary>
+        /// <param name="h1"></param>
+        /// <param name="h2"></param>
+        /// <param name="h3"></param>
+        /// <param name="h4"></param>
+        /// <returns></returns>
+        private static float BilinearInterpolation(float h1, float h2, float h3, float h4, float x, float y)
+        {
+            // bilinear
+            float ha = MathHelper.Lerp(h3, h1, y);
+            float hb = MathHelper.Lerp(h4, h2, y);
+            float hi_linear = MathHelper.Lerp(ha, hb, x);
+
+            // hyperbolic
+            float a00 = h1;
+            float a10 = h2 - h1;
+            float a01 = h3 - h1;
+            float a11 = h1 - h2 - h3 + h4;
+            float hi_hyperbolic = a00 + a10 * x + a01 * y + a11 * x * y;
+
+
+            return hi_linear;
         }
 
 
