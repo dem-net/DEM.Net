@@ -73,11 +73,11 @@ namespace DEM.Net.Lib.Services
         public static string ExportElevationTable(List<GeoPoint> lineElevationData)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Lon Lat\tX\tZ");
+            sb.AppendLine("Lon\tLat\tDistance (meters)\tZ");
             GeoPoint refPoint = lineElevationData.First();
             foreach (GeoPoint pt in lineElevationData)
             {
-                sb.AppendLine($"{pt.Longitude.ToString(CultureInfo.InvariantCulture)} {pt.Latitude.ToString(CultureInfo.InvariantCulture)}\t{pt.DistanceSquaredTo(refPoint).ToString("F7")}\t{pt.Altitude}");
+                sb.AppendLine($"{pt.Longitude.ToString(CultureInfo.InvariantCulture)}\t{pt.Latitude.ToString(CultureInfo.InvariantCulture)}\t{pt.DistanceFromOriginMeters.ToString("F2")}\t{pt.Altitude}");
             }
             return sb.ToString();
         }
