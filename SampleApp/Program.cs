@@ -46,6 +46,7 @@ namespace SampleApp
                 foreach (InterpolationMode mode in modes)
                 {
                     var lineElevationData = ElevationService.GetLineGeometryElevation(wkt.Value, samplePath, mode);
+                    lineElevationData = GeometryService.ComputePointsDistances(lineElevationData);
                     File.WriteAllText($"ElevationData_{wkt.Key}_{mode}.txt", ElevationService.ExportElevationTable(lineElevationData));
                 }
             }

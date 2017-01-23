@@ -16,6 +16,12 @@ namespace DEM.Net.Lib
 		public float? Altitude;
 		public string TileId;
 
+        /// <summary>
+        /// When this point is part of a List and ComputePointsDistances is called, this field
+        /// stores the distance from this point to origin point in meters.
+        /// </summary>
+        public double DistanceFromOriginMeters;
+
 		public GeoPoint(double latitude, double longitude, float altitude, int indexX, int indexY)
 		{
 			Latitude = latitude;
@@ -55,7 +61,9 @@ namespace DEM.Net.Lib
 		}
 		public override string ToString()
 		{
-			return $"Lat/Lon: {Latitude} / {Longitude} " + (Altitude.HasValue ? $", Altitude: {Altitude.Value}" : "");
+			return $"Lat/Lon: {Latitude} / {Longitude} " 
+                + (Altitude.HasValue ? $", Elevation: {Altitude.Value}" : "")
+                + $", DistanceFromOrigin: {DistanceFromOriginMeters}";
 		}
 	}
 
