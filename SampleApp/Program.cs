@@ -20,7 +20,7 @@ namespace SampleApp
 
         static void Main(string[] args)
         {
-            //GeoTiffService.GenerateDirectoryMetadata(samplePath, false);
+            GeoTiffService.GenerateDirectoryMetadata(samplePath, false, false);
 
             // Spatial trace of line + segments + interpolated point + dem grid
             //SpatialTrace_GeometryWithDEM(WKT_DEM_INTERPOLATION_BUG, samplePath);

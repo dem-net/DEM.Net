@@ -129,61 +129,73 @@ namespace DEM.Net.Lib.Services
             double preciseRes = metadata.pixelSizeX * EARTH_CIRCUMFERENCE_METERS / 360d;
             return (int)Math.Floor(preciseRes);
         }
-        public static void GenerateDirectoryMetadata(string directoryPath, bool generateBitmaps)
+
+        /// <summary>
+        /// Generate metadata files for fast in-memory indexing
+        /// </summary>
+        /// <param name="directoryPath">GeoTIFF files directory</param>
+        /// <param name="generateBitmaps">If true, bitmaps with height map will be generated (heavy memory usage and waaaay slower)</param>
+        /// <param name="force">If true, force regeneration of all files. If false, only missing files will be generated.</param>
+        public static void GenerateDirectoryMetadata(string directoryPath, bool generateBitmaps, bool force)
         {
             string[] files = Directory.GetFiles(directoryPath, "*.tif", SearchOption.TopDirectoryOnly);
-            //ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
-            //Parallel.ForEach(files, options, file => GenerateFileMetadata(file, generateBitmaps));
-            Parallel.ForEach(files, file => GenerateFileMetadata(file, generateBitmaps));
-        }
-
-        private static void GenerateFileMetadata(string geoTiffFileName, bool generateBitmap)
-        {
-            Trace.TraceInformation($"Generating manifest for file {geoTiffFileName}.");
-
-            FileMetadata metadata = GeoTiffService.ParseMetadata(geoTiffFileName);
-            HeightMap heightMap = null;
-            if (generateBitmap)
+            ParallelOptions options = new ParallelOptions();
+            if (generateBitmaps)
             {
-                heightMap = ElevationService.GetHeightMap(geoTiffFileName);
+                options.MaxDegreeOfParallelism = 2; // heavy memory usage, so let's do in parallel, but not too much
             }
-            GeoTiffService.WriteManifestFiles(metadata, heightMap);
-            //GC.Collect()
-            Trace.TraceInformation($"Manifest generated for file {geoTiffFileName}.");
+            Parallel.ForEach(files, options, file => GenerateFileMetadata(file, generateBitmaps, force));
         }
 
-        public static void WriteManifestFiles(FileMetadata fileMetadata, HeightMap heightMap)
+        private static void GenerateFileMetadata(string geoTiffFileName, bool generateBitmap, bool force)
         {
 
-            var fileName = fileMetadata.Filename;
+            var fileName = geoTiffFileName;
             var fileTitle = Path.GetFileNameWithoutExtension(fileName);
-
             string outDirPath = Path.Combine(Path.GetDirectoryName(fileName), MANIFEST_DIR);
+            string bmpPath = Path.Combine(outDirPath, fileTitle + ".bmp");
+            string jsonPath = Path.Combine(outDirPath, fileTitle + ".json");
+
+
+            // Output directory "manifest"
             if (!Directory.Exists(outDirPath))
             {
                 Directory.CreateDirectory(outDirPath);
             }
 
-            // Save metadata
-            var outputJsonPath = Path.Combine(outDirPath, fileTitle + ".json");
-            if (File.Exists(outputJsonPath)) File.Delete(outputJsonPath);
-
-            // Generate bitmap
-            if (heightMap != null)
-            {
-                var bitmapPath = Path.Combine(outDirPath, fileTitle + ".bmp");
-                if (File.Exists(bitmapPath)) File.Delete(bitmapPath);
-                // Bitmap
-                DiagnosticUtils.OutputDebugBitmap(heightMap, bitmapPath);
+            if (force)
+            {               
+                if (File.Exists(jsonPath))
+                {
+                    File.Delete(jsonPath);
+                }
+                if (File.Exists(bmpPath))
+                {
+                    File.Delete(bmpPath);
+                }
             }
 
             // Json manifest
-            File.WriteAllText(outputJsonPath, JsonConvert.SerializeObject(fileMetadata, Formatting.Indented));
+            if (File.Exists(jsonPath) == false)
+            {
+                Trace.TraceInformation($"Generating manifest for file {geoTiffFileName}.");
 
+                FileMetadata metadata = GeoTiffService.ParseMetadata(geoTiffFileName);
+                File.WriteAllText(jsonPath, JsonConvert.SerializeObject(metadata, Formatting.Indented));
+
+                Trace.TraceInformation($"Manifest generated for file {geoTiffFileName}.");
+            }
+
+            // Debug bitmap
+            if (File.Exists(bmpPath) == false && generateBitmap)
+            {
+                Trace.TraceInformation($"Generating bitmap for file {geoTiffFileName}.");
+                HeightMap heightMap = ElevationService.GetHeightMap(geoTiffFileName);
+                DiagnosticUtils.OutputDebugBitmap(heightMap, bmpPath);
+
+                Trace.TraceInformation($"Bitmap generated for file {geoTiffFileName}.");
+            }
 
         }
-
-
-
     }
 }
