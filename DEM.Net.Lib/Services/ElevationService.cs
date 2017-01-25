@@ -64,7 +64,7 @@ namespace DEM.Net.Lib.Services
                 case InterpolationMode.Hyperbolic:
                     return new HyperbolicInterpolator();
                 case InterpolationMode.Bilinear:
-                   return new BilinearInterpolator();
+                    return new BilinearInterpolator();
                 default:
                     throw new NotImplementedException($"Interpolator {interpolationMode} is not implemented.");
             }
@@ -145,7 +145,7 @@ namespace DEM.Net.Lib.Services
         /// <param name="returnStartPoint">If true, the segment starting point will be returned. Useful when processing a line segment by segment.</param>
         /// <param name="returnEndPoind">If true, the segment end point will be returned. Useful when processing a line segment by segment.</param>
         /// <returns></returns>
-        public static List<GeoPoint> FindSegmentIntersections(double startLon, double startLat, double endLon, double endLat, List<FileMetadata> segTiles,
+        private static List<GeoPoint> FindSegmentIntersections(double startLon, double startLat, double endLon, double endLat, List<FileMetadata> segTiles,
                                                                                                                     bool returnStartPoint, bool returnEndPoind)
         {
             int estimatedCapacity = (segTiles.Select(t => t.OriginLongitude).Distinct().Count() // num horizontal tiles * width
@@ -345,7 +345,6 @@ namespace DEM.Net.Lib.Services
         public static HeightMap ParseGeoData(GeoTiff tiff, FileMetadata metadata)
         {
             HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
-            heightMap.FileMetadata = metadata;
 
             byte[] scanline = new byte[metadata.ScanlineSize];
             ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
@@ -364,8 +363,8 @@ namespace DEM.Net.Lib.Services
                     float heightValue = (float)scanline16Bit[x];
                     if (heightValue < 32768)
                     {
-                        heightMap.Mininum = Math.Min(heightMap.Mininum, heightValue);
-                        heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
+                        heightMap.Mininum = Math.Min(metadata.MininumAltitude, heightValue);
+                        heightMap.Maximum = Math.Max(metadata.MaximumAltitude, heightValue);
                     }
                     else
                     {
@@ -382,7 +381,6 @@ namespace DEM.Net.Lib.Services
         public static HeightMap ParseGeoDataInBBox(GeoTiff tiff, BoundingBox bbox, FileMetadata metadata)
         {
             HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
-            heightMap.FileMetadata = metadata;
 
             byte[] scanline = new byte[metadata.ScanlineSize];
             ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
@@ -566,7 +564,7 @@ namespace DEM.Net.Lib.Services
                 float southWest = ParseGeoDataAtPoint(tiff, metadata, clampedXFloor, clampedYCeiling);
                 float southEast = ParseGeoDataAtPoint(tiff, metadata, clampedXCeiling, clampedYCeiling);
 
-                float avgHeight = GetAverageExceptForValue(noData, NO_DATA_OUT, southWest, southEast, northWest, northEast);
+                float avgHeight = GetAverageExceptForNoDataValue(noData, NO_DATA_OUT, southWest, southEast, northWest, northEast);
 
                 if (northWest == noData) northWest = avgHeight;
                 if (northEast == noData) northEast = avgHeight;
@@ -578,7 +576,7 @@ namespace DEM.Net.Lib.Services
             return heightValue;
         }
 
-        private static float GetAverageExceptForValue(float noData, float valueIfAllBad, params float[] values)
+        private static float GetAverageExceptForNoDataValue(float noData, float valueIfAllBad, params float[] values)
         {
             var withValues = values.Where(v => v != noData);
             if (withValues.Any())
@@ -650,7 +648,8 @@ namespace DEM.Net.Lib.Services
             return heightValue;
         }
 
-        public static HeightMap GetHeightMap(string fileName)
+        
+        public static HeightMap GetHeightMap(string fileName, FileMetadata metadata = null)
         {
             fileName = Path.GetFullPath(fileName);
             string fileTitle = Path.GetFileNameWithoutExtension(fileName);
@@ -658,9 +657,8 @@ namespace DEM.Net.Lib.Services
             HeightMap heightMap = null;
             using (GeoTiff tiff = new GeoTiff(fileName))
             {
-                FileMetadata metadata = GeoTiffService.ParseMetadata(tiff, fileName);
+                metadata = metadata ?? GeoTiffService.ParseMetadata(tiff, fileName);
                 heightMap = ElevationService.ParseGeoData(tiff, metadata);
-
             }
             return heightMap;
         }

@@ -15,21 +15,21 @@ namespace SampleApp
         //public const string tiffPath = @"..\..\..\SampleData\sample.tif";
         //public const string tiffPath = @"..\..\..\SampleData\srtm_38_04.tif"; // from http://dwtkns.com/srtm/ SRTM Tile Grabber
         //public const string samplePath = @"..\..\..\SampleData"; // from http://www.opentopography.org/
-        public const string samplePath = @"..\..\..\SampleData\JAXA 30m France"; // from http://www.opentopography.org/
+        public const string samplePathFrance = @"..\..\..\SampleData\JAXA 30m France"; // from http://www.opentopography.org/
+        public const string samplePath = @"..\..\..\SampleData\JAXA 30m"; // from http://www.opentopography.org/
 
         static void Main(string[] args)
         {
-            //GeoTiffService.GenerateDirectoryMetadata(samplePath);
-            List<GeoPoint> lineElevationData;
+            //GeoTiffService.GenerateDirectoryMetadata(samplePath, false);
 
             // Spatial trace of line + segments + interpolated point + dem grid
             //SpatialTrace_GeometryWithDEM(WKT_DEM_INTERPOLATION_BUG, samplePath);
 
-            LineDEMTests();
+            LineDEMTests(samplePath);
 
         }
 
-        static void LineDEMTests()
+        static void LineDEMTests(string tiffPath)
         {
             Dictionary<string, string> dicWktByName = new Dictionary<string, string>();
             dicWktByName.Add(nameof(WKT_GRANDE_BOUCLE), WKT_GRANDE_BOUCLE);
@@ -45,7 +45,7 @@ namespace SampleApp
             {
                 foreach (InterpolationMode mode in modes)
                 {
-                    var lineElevationData = ElevationService.GetLineGeometryElevation(wkt.Value, samplePath, mode);
+                    var lineElevationData = ElevationService.GetLineGeometryElevation(wkt.Value, tiffPath, mode);
                     lineElevationData = GeometryService.ComputePointsDistances(lineElevationData);
                     File.WriteAllText($"ElevationData_{wkt.Key}_{mode}.txt", ElevationService.ExportElevationTable(lineElevationData));
                 }
@@ -60,8 +60,8 @@ namespace SampleApp
             SqlGeometry geom = GeometryService.GetNativeGeometry(wkt);
             SpatialTrace.TraceGeometry(geom, "Line");
 
-            var heightMap = ElevationService.GetHeightMap(geom.ToGeography().STBuffer(60).GetBoundingBox(), samplePath);
-            var lineElevationData = ElevationService.GetLineGeometryElevation(WKT_DEM_INTERPOLATION_BUG, samplePath);
+            var heightMap = ElevationService.GetHeightMap(geom.ToGeography().STBuffer(60).GetBoundingBox(), tiffPath);
+            var lineElevationData = ElevationService.GetLineGeometryElevation(WKT_DEM_INTERPOLATION_BUG, tiffPath);
 
             SpatialTrace.Indent("Line Segments");
             int i = 0;
@@ -102,16 +102,6 @@ namespace SampleApp
 
         }
 
-
-
-
-
-        static void ImportHeightMapToSqlServer(HeightMap heightMap)
-        {
-            // Save to SQL
-            SqlDemRepository.ClearFileData(heightMap);
-            SqlDemRepository.SaveHeightmap(heightMap);
-        }
 
         #region Sample WKT
 

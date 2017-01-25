@@ -70,6 +70,19 @@ namespace DEM.Net.Lib.Services
 
             return metadata;
         }
+        public static FileMetadata ParseMetadata(string fileName)
+        {
+            FileMetadata metadata = null;
+
+            fileName = Path.GetFullPath(fileName);
+            string fileTitle = Path.GetFileNameWithoutExtension(fileName);
+
+            using (GeoTiff tiff = new GeoTiff(fileName))
+            {
+                metadata = GeoTiffService.ParseMetadata(tiff, fileName);
+            }
+            return metadata;
+        }
 
         private static List<FileMetadata> _metadataCatalogCache = null;
         public static List<FileMetadata> LoadManifestMetadata(string tiffPath)
@@ -116,24 +129,33 @@ namespace DEM.Net.Lib.Services
             double preciseRes = metadata.pixelSizeX * EARTH_CIRCUMFERENCE_METERS / 360d;
             return (int)Math.Floor(preciseRes);
         }
-        public static void GenerateDirectoryMetadata(string directoryPath)
+        public static void GenerateDirectoryMetadata(string directoryPath, bool generateBitmaps)
         {
-            Parallel.ForEach(Directory.GetFiles(directoryPath, "*.tif", SearchOption.TopDirectoryOnly), new ParallelOptions() { MaxDegreeOfParallelism = 2 }, GenerateFileMetadata);
+            string[] files = Directory.GetFiles(directoryPath, "*.tif", SearchOption.TopDirectoryOnly);
+            //ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
+            //Parallel.ForEach(files, options, file => GenerateFileMetadata(file, generateBitmaps));
+            Parallel.ForEach(files, file => GenerateFileMetadata(file, generateBitmaps));
         }
 
-        private static void GenerateFileMetadata(string geoTiffFileName)
+        private static void GenerateFileMetadata(string geoTiffFileName, bool generateBitmap)
         {
             Trace.TraceInformation($"Generating manifest for file {geoTiffFileName}.");
-            HeightMap heightMap = ElevationService.GetHeightMap(geoTiffFileName);
-            GeoTiffService.WriteManifestFiles(heightMap);
-            //GC.Collect();
+
+            FileMetadata metadata = GeoTiffService.ParseMetadata(geoTiffFileName);
+            HeightMap heightMap = null;
+            if (generateBitmap)
+            {
+                heightMap = ElevationService.GetHeightMap(geoTiffFileName);
+            }
+            GeoTiffService.WriteManifestFiles(metadata, heightMap);
+            //GC.Collect()
             Trace.TraceInformation($"Manifest generated for file {geoTiffFileName}.");
         }
 
-        public static void WriteManifestFiles(HeightMap heightMap)
+        public static void WriteManifestFiles(FileMetadata fileMetadata, HeightMap heightMap)
         {
 
-            var fileName = heightMap.FileMetadata.Filename;
+            var fileName = fileMetadata.Filename;
             var fileTitle = Path.GetFileNameWithoutExtension(fileName);
 
             string outDirPath = Path.Combine(Path.GetDirectoryName(fileName), MANIFEST_DIR);
@@ -143,17 +165,22 @@ namespace DEM.Net.Lib.Services
             }
 
             // Save metadata
-            var outputJsonPath = Path.Combine(Path.GetDirectoryName(fileName), MANIFEST_DIR, fileTitle + ".json");
+            var outputJsonPath = Path.Combine(outDirPath, fileTitle + ".json");
             if (File.Exists(outputJsonPath)) File.Delete(outputJsonPath);
 
-            var bitmapPath = Path.Combine(Path.GetDirectoryName(fileName), MANIFEST_DIR, fileTitle + ".bmp");
-            if (File.Exists(bitmapPath)) File.Delete(bitmapPath);
+            // Generate bitmap
+            if (heightMap != null)
+            {
+                var bitmapPath = Path.Combine(outDirPath, fileTitle + ".bmp");
+                if (File.Exists(bitmapPath)) File.Delete(bitmapPath);
+                // Bitmap
+                DiagnosticUtils.OutputDebugBitmap(heightMap, bitmapPath);
+            }
 
             // Json manifest
-            File.WriteAllText(outputJsonPath, JsonConvert.SerializeObject(heightMap.FileMetadata, Formatting.Indented));
+            File.WriteAllText(outputJsonPath, JsonConvert.SerializeObject(fileMetadata, Formatting.Indented));
 
-            // Bitmap
-            DiagnosticUtils.OutputDebugBitmap(heightMap, bitmapPath);
+
         }
 
 

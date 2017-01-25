@@ -10,21 +10,7 @@ namespace DEM.Net.Lib
 	[Serializable()]
 	public class HeightMap
 	{
-		public FileMetadata FileMetadata { get; internal set; }
-
-		private string _fileTitle;
-
-		public string FileTitle
-		{
-			get
-			{
-				if (_fileTitle == null)
-				{
-					_fileTitle = Path.GetFileName(FileMetadata.Filename);
-				}
-				return _fileTitle;
-			}
-		}
+		
 
 		public HeightMap(int width, int height)
 		{
@@ -35,17 +21,9 @@ namespace DEM.Net.Lib
 
 		public List<GeoPoint> Coordinates { get; set; }
 
-		public float Mininum
-		{
-			get { return FileMetadata.MininumAltitude; }
-			internal set { FileMetadata.MininumAltitude = value; }
-		}
-		public float Maximum
-		{
-			get { return FileMetadata.MaximumAltitude; }
-			internal set { FileMetadata.MaximumAltitude = value; }
-		}
-		public float Range
+		public float Mininum { get; set; }
+        public float Maximum { get; set; }
+        public float Range
 		{
 			get { return Maximum - Mininum; }
 		}

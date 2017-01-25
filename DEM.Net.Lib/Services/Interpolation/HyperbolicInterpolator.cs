@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Lib.Services.Interpolation
 {
+    /// <summary>
+    /// HyperbolicInterpolator : gives smoother results, but can skip small flat areas
+    /// Other implementation described briefly in article.
+    /// 
+    /// Source : http://www.geocomputation.org/1999/082/gc_082.htm
+    /// </summary>
     public class HyperbolicInterpolator : IInterpolator
     {
         public float Interpolate(float southWestHeight, float southEastHeight, float northWestHeight, float northEastHeight, float x, float y)

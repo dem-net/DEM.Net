@@ -11,7 +11,7 @@ using System.Text;
 
 namespace DEM.Net.Lib
 {
-    public static partial class SqlTypesExtensions
+    public static class SqlTypesExtensions
     {
         private const double INVALIDGEOM_BUFFER = 0.000001d;
         private const double INVALIDGEOM_REDUCE = 0.00000025d;
@@ -93,10 +93,6 @@ namespace DEM.Net.Lib
                 return false;
             }
         }
-
-       
-
-      
 
         public static SqlGeometry STGeomFromText(string wkt, int srid)
         {
