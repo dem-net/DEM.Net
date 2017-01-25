@@ -20,7 +20,9 @@ namespace SampleApp
 
         static void Main(string[] args)
         {
-            GeoTiffService.GenerateDirectoryMetadata(samplePath, false, false);
+            IGeoTiffService geoTiffService = new GeoTiffService();
+
+            geoTiffService.GenerateDirectoryMetadata(samplePath, false, false);
 
             // Spatial trace of line + segments + interpolated point + dem grid
             //SpatialTrace_GeometryWithDEM(WKT_DEM_INTERPOLATION_BUG, samplePath);
@@ -41,13 +43,14 @@ namespace SampleApp
 
             InterpolationMode[] modes = { InterpolationMode.Bilinear, InterpolationMode.Hyperbolic };
 
+            IElevationService elevationService = new ElevationService();
             foreach (var wkt in dicWktByName)
             {
                 foreach (InterpolationMode mode in modes)
                 {
-                    var lineElevationData = ElevationService.GetLineGeometryElevation(wkt.Value, tiffPath, mode);
+                    var lineElevationData = elevationService.GetLineGeometryElevation(wkt.Value, tiffPath, mode);
                     lineElevationData = GeometryService.ComputePointsDistances(lineElevationData);
-                    File.WriteAllText($"ElevationData_{wkt.Key}_{mode}.txt", ElevationService.ExportElevationTable(lineElevationData));
+                    File.WriteAllText($"ElevationData_{wkt.Key}_{mode}.txt", elevationService.ExportElevationTable(lineElevationData));
                 }
             }
         }
@@ -60,8 +63,9 @@ namespace SampleApp
             SqlGeometry geom = GeometryService.GetNativeGeometry(wkt);
             SpatialTrace.TraceGeometry(geom, "Line");
 
-            var heightMap = ElevationService.GetHeightMap(geom.ToGeography().STBuffer(60).GetBoundingBox(), tiffPath);
-            var lineElevationData = ElevationService.GetLineGeometryElevation(WKT_DEM_INTERPOLATION_BUG, tiffPath);
+            IElevationService elevationService = new ElevationService();
+            var heightMap = elevationService.GetHeightMap(geom.ToGeography().STBuffer(60).GetBoundingBox(), tiffPath);
+            var lineElevationData = elevationService.GetLineGeometryElevation(WKT_DEM_INTERPOLATION_BUG, tiffPath);
 
             SpatialTrace.Indent("Line Segments");
             int i = 0;

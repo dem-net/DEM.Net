@@ -11,20 +11,26 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Lib.Services
 {
-    public static class ElevationService
+    public class ElevationService : IElevationService
     {
+        private readonly IGeoTiffService _IGeoTiffService;
+        public ElevationService()
+        {
+            _IGeoTiffService = new GeoTiffService();
+        }
+
         /// <summary>
         /// Extract elevation data along line path
         /// </summary>
         /// <param name="lineWKT"></param>
         /// <param name="geoTiffRepository"></param>
         /// <returns></returns>
-        public static List<GeoPoint> GetLineGeometryElevation(string lineWKT, string geoTiffRepository, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
+        public List<GeoPoint> GetLineGeometryElevation(string lineWKT, string geoTiffRepository, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
             BoundingBox bbox = GeometryService.GetBoundingBox(lineWKT);
             //HeightMap heightMap = GeoTiffService.GetHeightMap(bbox, geoTiffRepository);
             SqlGeometry geom = GeometryService.GetNativeGeometry(lineWKT);
-            List<FileMetadata> tiles = ElevationService.GetCoveringFiles(bbox, geoTiffRepository);
+            List<FileMetadata> tiles = this.GetCoveringFiles(bbox, geoTiffRepository);
 
             // Init interpolator
             IInterpolator interpolator = GetInterpolator(interpolationMode);
@@ -38,15 +44,15 @@ namespace DEM.Net.Lib.Services
             bool isFirstSegment = true; // used to return first point only for first segments, for all other segments last point will be returned
             foreach (SqlGeometry segment in geom.Segments())
             {
-                List<FileMetadata> segTiles = ElevationService.GetCoveringFiles(segment.GetBoundingBox(), geoTiffRepository, tiles);
+                List<FileMetadata> segTiles = this.GetCoveringFiles(segment.GetBoundingBox(), geoTiffRepository, tiles);
 
                 // Find all intersection with segment and DEM grid
-                List<GeoPoint> intersections = ElevationService.FindSegmentIntersections(segment.STStartPoint().STX.Value, segment.STStartPoint().STY.Value,
+                List<GeoPoint> intersections = this.FindSegmentIntersections(segment.STStartPoint().STX.Value, segment.STStartPoint().STY.Value,
                                                                                         segment.STEndPoint().STX.Value, segment.STEndPoint().STY.Value,
                                                                                         segTiles, isFirstSegment, true);
 
                 // Get elevation for each point
-                ElevationService.GetElevationData(ref intersections, segTiles, interpolator);
+                this.GetElevationData(ref intersections, segTiles, interpolator);
 
                 // Add to output list
                 geoPoints.AddRange(intersections);
@@ -57,7 +63,7 @@ namespace DEM.Net.Lib.Services
             return geoPoints;
         }
 
-        private static IInterpolator GetInterpolator(InterpolationMode interpolationMode)
+        public IInterpolator GetInterpolator(InterpolationMode interpolationMode)
         {
             switch (interpolationMode)
             {
@@ -70,7 +76,7 @@ namespace DEM.Net.Lib.Services
             }
         }
 
-        public static string ExportElevationTable(List<GeoPoint> lineElevationData)
+        public string ExportElevationTable(List<GeoPoint> lineElevationData)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("Lon\tLat\tDistance (meters)\tZ");
@@ -82,7 +88,7 @@ namespace DEM.Net.Lib.Services
             return sb.ToString();
         }
 
-        public static HeightMap GetHeightMap(BoundingBox bbox, string tiffPath)
+        public HeightMap GetHeightMap(BoundingBox bbox, string tiffPath)
         {
             // Locate which files are needed
             // Find files matching coords
@@ -94,18 +100,64 @@ namespace DEM.Net.Lib.Services
             {
                 using (GeoTiff geoTiff = new GeoTiff(metadata.Filename))
                 {
-                    heightMap = ElevationService.ParseGeoDataInBBox(geoTiff, bbox, metadata);
+                    heightMap = this.ParseGeoDataInBBox(geoTiff, bbox, metadata);
                 }
             }
 
             FileMetadata meta = bboxMetadata.First();
             using (GeoTiff geoTiff = new GeoTiff(meta.Filename))
             {
-                heightMap = ElevationService.ParseGeoDataInBBox(geoTiff, bbox, meta);
+                heightMap = this.ParseGeoDataInBBox(geoTiff, bbox, meta);
             }
             return heightMap;
         }
+        public static HeightMap GetHeightMap(string fileName, FileMetadata metadata)
+        {
+            fileName = Path.GetFullPath(fileName);
+            string fileTitle = Path.GetFileNameWithoutExtension(fileName);
 
+            HeightMap heightMap = null;
+            using (GeoTiff tiff = new GeoTiff(fileName))
+            {
+                heightMap = ParseGeoData(tiff, metadata);
+            }
+            return heightMap;
+        }
+        private static HeightMap ParseGeoData(GeoTiff tiff, FileMetadata metadata)
+        {
+            HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
+
+            byte[] scanline = new byte[metadata.ScanlineSize];
+            ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
+            Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
+
+            for (int y = 0; y < metadata.Height; y++)
+            {
+                tiff.TiffFile.ReadScanline(scanline, y);
+                Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
+
+                double latitude = metadata.StartLat + (metadata.pixelSizeY * y);
+                for (int x = 0; x < scanline16Bit.Length; x++)
+                {
+                    double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
+
+                    float heightValue = (float)scanline16Bit[x];
+                    if (heightValue < 32768)
+                    {
+                        heightMap.Mininum = Math.Min(metadata.MininumAltitude, heightValue);
+                        heightMap.Maximum = Math.Max(metadata.MaximumAltitude, heightValue);
+                    }
+                    else
+                    {
+                        heightValue = -10000;
+                    }
+                    heightMap.Coordinates.Add(new GeoPoint(latitude, longitude, heightValue, x, y));
+
+                }
+            }
+
+            return heightMap;
+        }
 
 
         /// <summary>
@@ -113,11 +165,11 @@ namespace DEM.Net.Lib.Services
         /// </summary>
         /// <param name="intersections"></param>
         /// <param name="segTiles"></param>
-        public static void GetElevationData(ref List<GeoPoint> intersections, List<FileMetadata> segTiles, IInterpolator interpolator)
+        public void GetElevationData(ref List<GeoPoint> intersections, List<FileMetadata> segTiles, IInterpolator interpolator)
         {
             // Group by tiff file for sequential and faster access
             var pointsByTileQuery = from point in intersections
-                                    let pointTile = new { Point = point, Tile = segTiles.First(t => ElevationService.IsPointInTile(t, point)) }
+                                    let pointTile = new { Point = point, Tile = segTiles.First(t => this.IsPointInTile(t, point)) }
                                     group pointTile by pointTile.Tile into pointsByTile
                                     select pointsByTile;
 
@@ -128,7 +180,7 @@ namespace DEM.Net.Lib.Services
                 {
                     foreach (GeoPoint pt in tilePoints.Select(a => a.Point))
                     {
-                        pt.Altitude = ElevationService.ParseGeoDataAtPoint(tiff.TiffFile, tile, pt.Latitude, pt.Longitude, interpolator);
+                        pt.Altitude = this.ParseGeoDataAtPoint(tiff.TiffFile, tile, pt.Latitude, pt.Longitude, interpolator);
                     }
                 }
             }
@@ -145,7 +197,7 @@ namespace DEM.Net.Lib.Services
         /// <param name="returnStartPoint">If true, the segment starting point will be returned. Useful when processing a line segment by segment.</param>
         /// <param name="returnEndPoind">If true, the segment end point will be returned. Useful when processing a line segment by segment.</param>
         /// <returns></returns>
-        private static List<GeoPoint> FindSegmentIntersections(double startLon, double startLat, double endLon, double endLat, List<FileMetadata> segTiles,
+        public List<GeoPoint> FindSegmentIntersections(double startLon, double startLat, double endLon, double endLat, List<FileMetadata> segTiles,
                                                                                                                     bool returnStartPoint, bool returnEndPoind)
         {
             int estimatedCapacity = (segTiles.Select(t => t.OriginLongitude).Distinct().Count() // num horizontal tiles * width
@@ -165,7 +217,7 @@ namespace DEM.Net.Lib.Services
             GeoPoint easternSegPoint = startLon > endLon ? new GeoPoint(startLat, startLon) : new GeoPoint(endLat, endLon);
             GeoSegment inputSegment = new GeoSegment(westernSegPoint, easternSegPoint);
 
-            foreach (GeoSegment demSegment in ElevationService.GetDEMNorthSouthLines(segTiles, westernSegPoint, easternSegPoint))
+            foreach (GeoSegment demSegment in this.GetDEMNorthSouthLines(segTiles, westernSegPoint, easternSegPoint))
             {
                 GeoPoint intersectionPoint = null;
                 if (GeometryService.LineLineIntersection(out intersectionPoint, inputSegment, demSegment))
@@ -179,7 +231,7 @@ namespace DEM.Net.Lib.Services
             GeoPoint northernSegPoint = startLat > endLat ? new GeoPoint(startLat, startLon) : new GeoPoint(endLat, endLon);
             GeoPoint southernSegPoint = startLat < endLat ? new GeoPoint(startLat, startLon) : new GeoPoint(endLat, endLon);
             inputSegment = new GeoSegment(northernSegPoint, southernSegPoint);
-            foreach (GeoSegment demSegment in ElevationService.GetDEMWestEastLines(segTiles, northernSegPoint, southernSegPoint))
+            foreach (GeoSegment demSegment in this.GetDEMWestEastLines(segTiles, northernSegPoint, southernSegPoint))
             {
                 GeoPoint intersectionPoint = null;
                 if (GeometryService.LineLineIntersection(out intersectionPoint, inputSegment, demSegment))
@@ -207,7 +259,7 @@ namespace DEM.Net.Lib.Services
         }
 
 
-        private static IEnumerable<GeoSegment> GetDEMNorthSouthLines(List<FileMetadata> segTiles, GeoPoint westernSegPoint, GeoPoint easternSegPoint)
+        public IEnumerable<GeoSegment> GetDEMNorthSouthLines(List<FileMetadata> segTiles, GeoPoint westernSegPoint, GeoPoint easternSegPoint)
         {
             BoundingBox tilesBbox = GetTilesBoundingBox(segTiles);
 
@@ -245,7 +297,7 @@ namespace DEM.Net.Lib.Services
                 yield return line;
             }
         }
-        private static IEnumerable<GeoSegment> GetDEMWestEastLines(List<FileMetadata> segTiles, GeoPoint northernSegPoint, GeoPoint southernSegPoint)
+        public IEnumerable<GeoSegment> GetDEMWestEastLines(List<FileMetadata> segTiles, GeoPoint northernSegPoint, GeoPoint southernSegPoint)
         {
             BoundingBox tilesBbox = GetTilesBoundingBox(segTiles);
 
@@ -286,7 +338,7 @@ namespace DEM.Net.Lib.Services
         }
 
 
-        public static BoundingBox GetTilesBoundingBox(List<FileMetadata> tiles)
+        public BoundingBox GetTilesBoundingBox(List<FileMetadata> tiles)
         {
             double xmin = tiles.Min(t => t.OriginLongitude);
             double xmax = tiles.Max(t => t.EndLongitude);
@@ -295,7 +347,7 @@ namespace DEM.Net.Lib.Services
             return new BoundingBox(xmin, xmax, ymin, ymax);
         }
 
-        public static BoundingBox GetSegmentBoundingBox(double xStart, double yStart, double xEnd, double yEnd)
+        public BoundingBox GetSegmentBoundingBox(double xStart, double yStart, double xEnd, double yEnd)
         {
             double xmin = Math.Min(xStart, xEnd);
             double xmax = Math.Max(xStart, xEnd);
@@ -304,12 +356,12 @@ namespace DEM.Net.Lib.Services
             return new BoundingBox(xmin, xmax, ymin, ymax);
         }
 
-        public static List<FileMetadata> GetCoveringFiles(BoundingBox bbox, string tiffPath, List<FileMetadata> subSet = null)
+        public List<FileMetadata> GetCoveringFiles(BoundingBox bbox, string tiffPath, List<FileMetadata> subSet = null)
         {
             // Locate which files are needed
 
             // Load metadata catalog
-            List<FileMetadata> metadataCatalog = subSet ?? GeoTiffService.LoadManifestMetadata(tiffPath);
+            List<FileMetadata> metadataCatalog = subSet ?? _IGeoTiffService.LoadManifestMetadata(tiffPath);
 
             // Find files matching coords
             List<FileMetadata> bboxMetadata = new List<FileMetadata>(metadataCatalog.Where(m => IsBboxInTile(m.OriginLatitude, m.OriginLongitude, bbox)));
@@ -322,18 +374,18 @@ namespace DEM.Net.Lib.Services
             return bboxMetadata;
         }
 
-        private static bool IsBboxInTile(double originLatitude, double originLongitude, BoundingBox bbox)
+        public bool IsBboxInTile(double originLatitude, double originLongitude, BoundingBox bbox)
         {
             bool isInsideY = originLatitude >= bbox.yMin && (originLatitude - 1) <= bbox.yMax;
             bool isInsideX = (originLongitude + 1) >= bbox.xMin && originLongitude <= bbox.xMax;
             bool isInside = isInsideX && isInsideY;
             return isInside;
         }
-        private static bool IsPointInTile(FileMetadata tileMetadata, GeoPoint point)
+        public bool IsPointInTile(FileMetadata tileMetadata, GeoPoint point)
         {
             return IsPointInTile(tileMetadata.OriginLatitude, tileMetadata.OriginLongitude, point);
         }
-        private static bool IsPointInTile(double originLatitude, double originLongitude, GeoPoint point)
+        public bool IsPointInTile(double originLatitude, double originLongitude, GeoPoint point)
         {
             bool isInsideY = originLatitude >= point.Latitude && (originLatitude - 1) <= point.Latitude;
             bool isInsideX = (originLongitude + 1) >= point.Longitude && originLongitude <= point.Longitude;
@@ -342,43 +394,9 @@ namespace DEM.Net.Lib.Services
         }
 
 
-        public static HeightMap ParseGeoData(GeoTiff tiff, FileMetadata metadata)
-        {
-            HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
+      
 
-            byte[] scanline = new byte[metadata.ScanlineSize];
-            ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
-            Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
-
-            for (int y = 0; y < metadata.Height; y++)
-            {
-                tiff.TiffFile.ReadScanline(scanline, y);
-                Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
-
-                double latitude = metadata.StartLat + (metadata.pixelSizeY * y);
-                for (int x = 0; x < scanline16Bit.Length; x++)
-                {
-                    double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
-
-                    float heightValue = (float)scanline16Bit[x];
-                    if (heightValue < 32768)
-                    {
-                        heightMap.Mininum = Math.Min(metadata.MininumAltitude, heightValue);
-                        heightMap.Maximum = Math.Max(metadata.MaximumAltitude, heightValue);
-                    }
-                    else
-                    {
-                        heightValue = -10000;
-                    }
-                    heightMap.Coordinates.Add(new GeoPoint(latitude, longitude, heightValue, x, y));
-
-                }
-            }
-
-            return heightMap;
-        }
-
-        public static HeightMap ParseGeoDataInBBox(GeoTiff tiff, BoundingBox bbox, FileMetadata metadata)
+        public HeightMap ParseGeoDataInBBox(GeoTiff tiff, BoundingBox bbox, FileMetadata metadata)
         {
             HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
 
@@ -434,7 +452,7 @@ namespace DEM.Net.Lib.Services
         /// <param name="lat"></param>
         /// <param name="lon"></param>
         /// <returns></returns>
-        public static float ParseGeoDataAtPoint_old(Tiff tiff, FileMetadata metadata, double lat, double lon)
+        public float ParseGeoDataAtPoint_old(Tiff tiff, FileMetadata metadata, double lat, double lon)
         {
             //const double epsilon = (Double.Epsilon * 100);
             byte[] scanline = new byte[metadata.ScanlineSize];
@@ -516,7 +534,7 @@ namespace DEM.Net.Lib.Services
             }
             return heightValue;
         }
-        public static float ParseGeoDataAtPoint(Tiff tiff, FileMetadata metadata, double lat, double lon, IInterpolator interpolator)
+        public float ParseGeoDataAtPoint(Tiff tiff, FileMetadata metadata, double lat, double lon, IInterpolator interpolator)
         {
             //const double epsilon = (Double.Epsilon * 100);
             byte[] scanline = new byte[metadata.ScanlineSize];
@@ -576,7 +594,7 @@ namespace DEM.Net.Lib.Services
             return heightValue;
         }
 
-        private static float GetAverageExceptForNoDataValue(float noData, float valueIfAllBad, params float[] values)
+        public float GetAverageExceptForNoDataValue(float noData, float valueIfAllBad, params float[] values)
         {
             var withValues = values.Where(v => v != noData);
             if (withValues.Any())
@@ -606,7 +624,7 @@ namespace DEM.Net.Lib.Services
         /// <param name="h3"></param>
         /// <param name="h4"></param>
         /// <returns></returns>
-        private static float BilinearInterpolation(float h1, float h2, float h3, float h4, float x, float y)
+        public float BilinearInterpolation(float h1, float h2, float h3, float h4, float x, float y)
         {
             // bilinear
             float ha = MathHelper.Lerp(h3, h1, y);
@@ -625,7 +643,7 @@ namespace DEM.Net.Lib.Services
         }
 
 
-        private static float ParseGeoDataAtPoint(Tiff tiff, FileMetadata metadata, int x, int y)
+        public float ParseGeoDataAtPoint(Tiff tiff, FileMetadata metadata, int x, int y)
         {
             byte[] scanline = new byte[metadata.ScanlineSize];
             ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
@@ -637,7 +655,7 @@ namespace DEM.Net.Lib.Services
 
             return heightValue;
         }
-        private static float ParseGeoDataAtPoint(FileMetadata metadata, int x, ushort[] scanline16Bit)
+        public float ParseGeoDataAtPoint(FileMetadata metadata, int x, ushort[] scanline16Bit)
         {
             float heightValue = (float)scanline16Bit[x];
             if (heightValue > 32768)
@@ -648,19 +666,7 @@ namespace DEM.Net.Lib.Services
             return heightValue;
         }
 
-        
-        public static HeightMap GetHeightMap(string fileName, FileMetadata metadata = null)
-        {
-            fileName = Path.GetFullPath(fileName);
-            string fileTitle = Path.GetFileNameWithoutExtension(fileName);
 
-            HeightMap heightMap = null;
-            using (GeoTiff tiff = new GeoTiff(fileName))
-            {
-                metadata = metadata ?? GeoTiffService.ParseMetadata(tiff, fileName);
-                heightMap = ElevationService.ParseGeoData(tiff, metadata);
-            }
-            return heightMap;
-        }
+
     }
 }

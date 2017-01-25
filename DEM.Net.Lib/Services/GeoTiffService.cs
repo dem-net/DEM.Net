@@ -10,14 +10,18 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Lib.Services
 {
-    public static class GeoTiffService
+    public class GeoTiffService : IGeoTiffService
     {
-
         private const string MANIFEST_DIR = "manifest";
         private const int EARTH_CIRCUMFERENCE_METERS = 40075017;
+        private static Dictionary<string,List<FileMetadata>> _metadataCatalogCache = null;
 
+        static GeoTiffService()
+        {
+            _metadataCatalogCache = new Dictionary<string, List<FileMetadata>>();
+        }
 
-        public static FileMetadata ParseMetadata(GeoTiff tiff, string tiffPath)
+        public FileMetadata ParseMetadata(GeoTiff tiff, string tiffPath)
         {
             FileMetadata metadata = new FileMetadata(tiffPath);
 
@@ -70,7 +74,7 @@ namespace DEM.Net.Lib.Services
 
             return metadata;
         }
-        public static FileMetadata ParseMetadata(string fileName)
+        public FileMetadata ParseMetadata(string fileName)
         {
             FileMetadata metadata = null;
 
@@ -79,15 +83,14 @@ namespace DEM.Net.Lib.Services
 
             using (GeoTiff tiff = new GeoTiff(fileName))
             {
-                metadata = GeoTiffService.ParseMetadata(tiff, fileName);
+                metadata = this.ParseMetadata(tiff, fileName);
             }
             return metadata;
         }
 
-        private static List<FileMetadata> _metadataCatalogCache = null;
-        public static List<FileMetadata> LoadManifestMetadata(string tiffPath)
+        public List<FileMetadata> LoadManifestMetadata(string tiffPath)
         {
-            if (_metadataCatalogCache == null)
+            if (_metadataCatalogCache.ContainsKey(tiffPath) == false)
             {
                 string manifestDir = Path.Combine(tiffPath, MANIFEST_DIR);
                 string[] manifestFiles = Directory.GetFiles(manifestDir, "*.json");
@@ -99,12 +102,12 @@ namespace DEM.Net.Lib.Services
                     metaList.Add(JsonConvert.DeserializeObject<FileMetadata>(jsonContent));
                 }
 
-                _metadataCatalogCache = metaList;
+                _metadataCatalogCache[tiffPath] = metaList;
             }
-            return _metadataCatalogCache;
+            return _metadataCatalogCache[tiffPath];
         }
 
-        public static void DumpTiffTags(Tiff tiff)
+        public void DumpTiffTags(Tiff tiff)
         {
             StringBuilder sb = new StringBuilder();
             foreach (var value in Enum.GetValues(typeof(TiffTag)))
@@ -136,7 +139,7 @@ namespace DEM.Net.Lib.Services
         /// <param name="directoryPath">GeoTIFF files directory</param>
         /// <param name="generateBitmaps">If true, bitmaps with height map will be generated (heavy memory usage and waaaay slower)</param>
         /// <param name="force">If true, force regeneration of all files. If false, only missing files will be generated.</param>
-        public static void GenerateDirectoryMetadata(string directoryPath, bool generateBitmaps, bool force)
+        public void GenerateDirectoryMetadata(string directoryPath, bool generateBitmaps, bool force)
         {
             string[] files = Directory.GetFiles(directoryPath, "*.tif", SearchOption.TopDirectoryOnly);
             ParallelOptions options = new ParallelOptions();
@@ -147,7 +150,7 @@ namespace DEM.Net.Lib.Services
             Parallel.ForEach(files, options, file => GenerateFileMetadata(file, generateBitmaps, force));
         }
 
-        private static void GenerateFileMetadata(string geoTiffFileName, bool generateBitmap, bool force)
+        public void GenerateFileMetadata(string geoTiffFileName, bool generateBitmap, bool force)
         {
 
             var fileName = geoTiffFileName;
@@ -164,7 +167,7 @@ namespace DEM.Net.Lib.Services
             }
 
             if (force)
-            {               
+            {
                 if (File.Exists(jsonPath))
                 {
                     File.Delete(jsonPath);
@@ -180,7 +183,7 @@ namespace DEM.Net.Lib.Services
             {
                 Trace.TraceInformation($"Generating manifest for file {geoTiffFileName}.");
 
-                FileMetadata metadata = GeoTiffService.ParseMetadata(geoTiffFileName);
+                FileMetadata metadata = this.ParseMetadata(geoTiffFileName);
                 File.WriteAllText(jsonPath, JsonConvert.SerializeObject(metadata, Formatting.Indented));
 
                 Trace.TraceInformation($"Manifest generated for file {geoTiffFileName}.");
@@ -190,7 +193,8 @@ namespace DEM.Net.Lib.Services
             if (File.Exists(bmpPath) == false && generateBitmap)
             {
                 Trace.TraceInformation($"Generating bitmap for file {geoTiffFileName}.");
-                HeightMap heightMap = ElevationService.GetHeightMap(geoTiffFileName);
+                FileMetadata metadata = this.ParseMetadata(geoTiffFileName);
+                HeightMap heightMap = ElevationService.GetHeightMap(geoTiffFileName, metadata);
                 DiagnosticUtils.OutputDebugBitmap(heightMap, bmpPath);
 
                 Trace.TraceInformation($"Bitmap generated for file {geoTiffFileName}.");

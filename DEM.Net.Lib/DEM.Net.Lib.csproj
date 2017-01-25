@@ -78,6 +78,8 @@
     <Compile Include="Services\ElevationService.cs" />
     <Compile Include="Services\GeometryService.cs" />
     <Compile Include="Services\GeoTiffService.cs" />
+    <Compile Include="Services\IElevationService.cs" />
+    <Compile Include="Services\IGeoTiffService.cs" />
     <Compile Include="Services\Interpolation\IInterpolator.cs" />
     <Compile Include="Services\Interpolation\HyperbolicInterpolator.cs" />
     <Compile Include="Services\Interpolation\BilinearInterpolator.cs" />
