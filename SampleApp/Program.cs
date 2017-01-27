@@ -37,10 +37,10 @@ namespace SampleApp
         private static void GenerateDownloadReports(IGeoTiffService geoTiffService)
         {
             string report = null;
-            report = geoTiffService.GenerateReport(alos30mPath, "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/AW3D30/AW3D30_alos.vrt.lst");
+            report = geoTiffService.GenerateReport(alos30mPath, "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/AW3D30/AW3D30_alos.vrt.lst", ".tif");
             File.WriteAllText("AW3D30_alos.report.txt", report);
 
-            report = geoTiffService.GenerateReport(GL3_90m_srtmPath, "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL3/GL3_90m_srtm.lst");
+            report = geoTiffService.GenerateReport(GL3_90m_srtmPath, "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL3/GL3_90m_srtm.lst", ".hgt", ".SRTMGL3.hgt.zip");
             File.WriteAllText("GL3_90m_srtm.report.txt", report);
         }
 

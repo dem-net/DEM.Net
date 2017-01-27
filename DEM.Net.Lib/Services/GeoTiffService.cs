@@ -203,13 +203,19 @@ namespace DEM.Net.Lib.Services
 
         }
 
-        public string GenerateReport(string directoryPath, string urlToLstFile)
+        public string GenerateReport(string directoryPath, string urlToLstFile, string remoteFileExtension, string newRemoteFileExtension)
         {
             WebClient webClient = new WebClient();
             Uri lstUri = new Uri(urlToLstFile);
             string lstContent = webClient.DownloadString(lstUri);
-            string[] remoteFiles = lstContent.Split('\n');
-            HashSet<string> localFiles = new HashSet<string>(Directory.GetFiles(directoryPath, "*.tif", SearchOption.TopDirectoryOnly)
+            IEnumerable<string> remoteFilesQuery = lstContent.Split('\n');
+            remoteFilesQuery = remoteFilesQuery.Where(f => f.EndsWith(remoteFileExtension));
+            if (!string.IsNullOrWhiteSpace(newRemoteFileExtension))
+            {
+                remoteFilesQuery = remoteFilesQuery.Select(f => f.Replace(remoteFileExtension, newRemoteFileExtension));
+            }
+            HashSet<string> remoteFiles = new HashSet<string>(remoteFilesQuery);
+            HashSet<string> localFiles = new HashSet<string>(Directory.GetFiles(directoryPath, "*" + newRemoteFileExtension, SearchOption.TopDirectoryOnly)
                                                                        .Select(f => Path.GetFileName(f)));
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("RemoteURL\tIsDownloaded");
