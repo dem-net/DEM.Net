@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,7 +15,7 @@ namespace DEM.Net.Lib.Services
     {
         private const string MANIFEST_DIR = "manifest";
         private const int EARTH_CIRCUMFERENCE_METERS = 40075017;
-        private static Dictionary<string,List<FileMetadata>> _metadataCatalogCache = null;
+        private static Dictionary<string, List<FileMetadata>> _metadataCatalogCache = null;
 
         static GeoTiffService()
         {
@@ -200,6 +201,28 @@ namespace DEM.Net.Lib.Services
                 Trace.TraceInformation($"Bitmap generated for file {geoTiffFileName}.");
             }
 
+        }
+
+        public string GenerateReport(string directoryPath, string urlToLstFile)
+        {
+            WebClient webClient = new WebClient();
+            Uri lstUri = new Uri(urlToLstFile);
+            string lstContent = webClient.DownloadString(lstUri);
+            string[] remoteFiles = lstContent.Split('\n');
+            HashSet<string> localFiles = new HashSet<string>(Directory.GetFiles(directoryPath, "*.tif", SearchOption.TopDirectoryOnly)
+                                                                       .Select(f => Path.GetFileName(f)));
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("RemoteURL\tIsDownloaded");
+            foreach (string remoteFile in remoteFiles)
+            {
+                string fileTitle = remoteFile.Split('/').Last();
+                Uri remoteFileUri = null;
+                Uri.TryCreate(lstUri, remoteFile, out remoteFileUri);
+                bool isDownloaded = localFiles.Contains(fileTitle);
+
+                sb.AppendLine(string.Concat(remoteFileUri.AbsoluteUri, '\t', isDownloaded));
+            }
+            return sb.ToString();
         }
     }
 }

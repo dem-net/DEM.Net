@@ -20,6 +20,15 @@ namespace DEM.Net.Lib.Services
         /// <param name="force">If true, force regeneration of all files. If false, only missing files will be generated.</param>
         void GenerateDirectoryMetadata(string directoryPath, bool generateBitmaps, bool force);
 
+        /// <summary>
+        /// Compare LST file and local directory and generates a report indicatif which files are dowloaded
+        /// and which ones are missing.
+        /// </summary>
+        /// <param name="directoryPath">GeoTIFF local directory</param>
+        /// <param name="urlToLstFile">LST file from server</param>
+        /// <returns></returns>
+        string GenerateReport(string directoryPath, string urlToLstFile);
+
         void GenerateFileMetadata(string geoTiffFileName, bool generateBitmap, bool force);
     }
 }

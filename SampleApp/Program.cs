@@ -16,19 +16,32 @@ namespace SampleApp
         //public const string tiffPath = @"..\..\..\SampleData\srtm_38_04.tif"; // from http://dwtkns.com/srtm/ SRTM Tile Grabber
         //public const string samplePath = @"..\..\..\SampleData"; // from http://www.opentopography.org/
         public const string samplePathFrance = @"..\..\..\SampleData\JAXA 30m France"; // from http://www.opentopography.org/
-        public const string samplePath = @"..\..\..\SampleData\JAXA 30m"; // from http://www.opentopography.org/
+        public const string alos30mPath = @"..\..\..\SampleData\JAXA 30m"; // from http://www.opentopography.org/
+        public const string GL3_90m_srtmPath = @"..\..\..\SampleData\GL3_90m_srtm"; // from http://www.opentopography.org/
 
         static void Main(string[] args)
         {
             IGeoTiffService geoTiffService = new GeoTiffService();
 
-            geoTiffService.GenerateDirectoryMetadata(samplePath, false, false);
+            GenerateDownloadReports(geoTiffService);
+
+            geoTiffService.GenerateDirectoryMetadata(alos30mPath, false, false);
 
             // Spatial trace of line + segments + interpolated point + dem grid
             //SpatialTrace_GeometryWithDEM(WKT_DEM_INTERPOLATION_BUG, samplePath);
 
-            LineDEMTests(samplePath);
+            LineDEMTests(alos30mPath);
 
+        }
+
+        private static void GenerateDownloadReports(IGeoTiffService geoTiffService)
+        {
+            string report = null;
+            report = geoTiffService.GenerateReport(alos30mPath, "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/AW3D30/AW3D30_alos.vrt.lst");
+            File.WriteAllText("AW3D30_alos.report.txt", report);
+
+            report = geoTiffService.GenerateReport(GL3_90m_srtmPath, "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL3/GL3_90m_srtm.lst");
+            File.WriteAllText("GL3_90m_srtm.report.txt", report);
         }
 
         static void LineDEMTests(string tiffPath)
