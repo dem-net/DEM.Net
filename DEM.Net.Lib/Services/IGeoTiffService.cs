@@ -29,7 +29,17 @@ namespace DEM.Net.Lib.Services
         /// <param name="remoteFileExtension">Filter for remote files (ex. .hgt.zip instead of .hgt)</param>
         /// <param name="newRemoteFileExtension">Set if remote LST does not show files with extension. (example with .hgt files listed and .SRTMGL3.hgt.zip on the server)</param>
         /// <returns></returns>
-        string GenerateReport(string directoryPath, string urlToLstFile, string remoteFileExtension, string newRemoteFileExtension = null);
+        string GenerateReportAsString(string directoryPath, string urlToLstFile, string remoteFileExtension, string newRemoteFileExtension = null);
+
+        /// <summary>
+        /// Compare LST file and local directory and generates dictionary with key : remoteFile and value = true if file is present and false if it is not downloaded
+        /// </summary>
+        /// <param name="directoryPath">GeoTIFF local directory</param>
+        /// <param name="urlToLstFile">LST file from server</param>
+        /// <param name="remoteFileExtension">Filter for remote files (ex. .hgt.zip instead of .hgt)</param>
+        /// <param name="newRemoteFileExtension">Set if remote LST does not show files with extension. (example with .hgt files listed and .SRTMGL3.hgt.zip on the server)</param>
+        /// <returns></returns>
+        Dictionary<string, DemFileReport> GenerateReport(string directoryPath, string urlToLstFile, string remoteFileExtension, string newRemoteFileExtension = null);
 
         void GenerateFileMetadata(string geoTiffFileName, bool generateBitmap, bool force);
     }

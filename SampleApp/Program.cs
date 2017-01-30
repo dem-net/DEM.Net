@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Media;
 using System.Linq;
+using System;
+using System.Threading.Tasks;
+using System.Net;
 
 namespace SampleApp
 {
@@ -23,6 +26,9 @@ namespace SampleApp
         {
             IGeoTiffService geoTiffService = new GeoTiffService();
 
+            DownloadMissingFiles_GL3_90m(geoTiffService, GL3_90m_srtmPath);
+            DownloadMissingFiles_ALOS30m(geoTiffService, alos30mPath);
+
             GenerateDownloadReports(geoTiffService);
 
             geoTiffService.GenerateDirectoryMetadata(alos30mPath, false, false);
@@ -34,13 +40,38 @@ namespace SampleApp
 
         }
 
+        private static void DownloadMissingFiles_ALOS30m(IGeoTiffService geoTiffService, string localDirectoryPath)
+        {
+            var report = geoTiffService.GenerateReport(localDirectoryPath, "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/AW3D30/AW3D30_alos.vrt.lst", ".tif");
+            List<DemFileReport> v_files = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
+            //Parallel.ForEach(v_files, new ParallelOptions { MaxDegreeOfParallelism = 1 }, file =>
+            Parallel.ForEach(v_files, file =>
+            {
+                   WebClient wc = new WebClient();
+                   wc.DownloadFile(file.URL, Path.Combine(localDirectoryPath, file.LocalName));
+               });
+        }
+        private static void DownloadMissingFiles_GL3_90m(IGeoTiffService geoTiffService, string localDirectoryPath)
+        {
+            var report = geoTiffService.GenerateReport(localDirectoryPath, "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL3/GL3_90m_srtm.lst", ".hgt", ".SRTMGL3.hgt.zip");
+            List<DemFileReport> v_files = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
+            //Parallel.ForEach(v_files, new ParallelOptions { MaxDegreeOfParallelism = 1 }, file =>
+            Parallel.ForEach(v_files, file =>
+            {
+                WebClient wc = new WebClient();
+                string url = file.URL.Replace("/GL3_90m_srtm", "");
+                wc.DownloadFile(url, Path.Combine(localDirectoryPath, file.LocalName));
+                Console.WriteLine("File " + file.LocalName + " downloaded.");
+            });
+        }
+
         private static void GenerateDownloadReports(IGeoTiffService geoTiffService)
         {
             string report = null;
-            report = geoTiffService.GenerateReport(alos30mPath, "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/AW3D30/AW3D30_alos.vrt.lst", ".tif");
+            report = geoTiffService.GenerateReportAsString(alos30mPath, "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/AW3D30/AW3D30_alos.vrt.lst", ".tif");
             File.WriteAllText("AW3D30_alos.report.txt", report);
 
-            report = geoTiffService.GenerateReport(GL3_90m_srtmPath, "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL3/GL3_90m_srtm.lst", ".hgt", ".SRTMGL3.hgt.zip");
+            report = geoTiffService.GenerateReportAsString(GL3_90m_srtmPath, "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL3/GL3_90m_srtm.lst", ".hgt", ".SRTMGL3.hgt.zip");
             File.WriteAllText("GL3_90m_srtm.report.txt", report);
         }
 
@@ -67,7 +98,6 @@ namespace SampleApp
                 }
             }
         }
-
 
         static void SpatialTrace_GeometryWithDEM(string wkt, string tiffPath)
         {

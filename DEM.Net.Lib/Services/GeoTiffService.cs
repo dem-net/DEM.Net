@@ -203,8 +203,23 @@ namespace DEM.Net.Lib.Services
 
         }
 
-        public string GenerateReport(string directoryPath, string urlToLstFile, string remoteFileExtension, string newRemoteFileExtension)
+        public string GenerateReportAsString(string directoryPath, string urlToLstFile, string remoteFileExtension, string newRemoteFileExtension)
         {
+            Dictionary<string, DemFileReport> report = GenerateReport(directoryPath, urlToLstFile, remoteFileExtension, newRemoteFileExtension);
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("RemoteURL\tIsDownloaded");
+            foreach (var kvp in report)
+            {
+                sb.AppendLine(string.Concat(kvp.Key, '\t', kvp.Value));
+            }
+            return sb.ToString();
+        }
+
+        public Dictionary<string, DemFileReport> GenerateReport(string directoryPath, string urlToLstFile, string remoteFileExtension, string newRemoteFileExtension)
+        {
+            Dictionary<string, DemFileReport> statusByFile = new Dictionary<string, DemFileReport>();
+
             WebClient webClient = new WebClient();
             Uri lstUri = new Uri(urlToLstFile);
             string lstContent = webClient.DownloadString(lstUri);
@@ -217,8 +232,7 @@ namespace DEM.Net.Lib.Services
             HashSet<string> remoteFiles = new HashSet<string>(remoteFilesQuery);
             HashSet<string> localFiles = new HashSet<string>(Directory.GetFiles(directoryPath, "*" + newRemoteFileExtension, SearchOption.TopDirectoryOnly)
                                                                        .Select(f => Path.GetFileName(f)));
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("RemoteURL\tIsDownloaded");
+
             foreach (string remoteFile in remoteFiles)
             {
                 string fileTitle = remoteFile.Split('/').Last();
@@ -226,9 +240,10 @@ namespace DEM.Net.Lib.Services
                 Uri.TryCreate(lstUri, remoteFile, out remoteFileUri);
                 bool isDownloaded = localFiles.Contains(fileTitle);
 
-                sb.AppendLine(string.Concat(remoteFileUri.AbsoluteUri, '\t', isDownloaded));
+
+                statusByFile.Add(remoteFileUri.AbsoluteUri, new DemFileReport { IsExistingLocally = isDownloaded, LocalName = fileTitle, URL = remoteFileUri.AbsoluteUri } );
             }
-            return sb.ToString();
+            return statusByFile;
         }
     }
 }

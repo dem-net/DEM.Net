@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\BoundingBox.cs" />
+    <Compile Include="Model\DemFileReport.cs" />
     <Compile Include="Services\DiagnosticUtils.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="Model\FileMetadata.cs" />
