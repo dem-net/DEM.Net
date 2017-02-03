@@ -2,8 +2,6 @@
 Digital Elevation Model samples in C#. GeoTiff file parsing and DEM querying.
 The goal is to provide on the fly DEM querying from GeoJSON or WKT geometries.
 
-https://ci.appveyor.com/api/projects/status/github/xfischer/DEM.Net?svg=true
-
 # How to run the SampleApp 
 (Work in progress)
 SampleApp is a Console App used for test purposes.
