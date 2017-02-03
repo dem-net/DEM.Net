@@ -41,10 +41,5 @@ namespace DEM.Net.Test
 			Assert.IsTrue(dist < 0.05d, "Problem in intersection calculation.");
 		}
 
-		[TestMethod]
-		public void TestPointOnGeoTiffEdge()
-		{
-			throw new NotImplementedException();
-		}
 	}
 }
