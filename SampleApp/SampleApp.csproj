@@ -34,23 +34,27 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BitMiracle.LibTiff.NET, Version=2.4.560.0, Culture=neutral, PublicKeyToken=53879b3e20e7a7d6, processorArchitecture=MSIL">
+      <HintPath>..\packages\BitMiracle.LibTiff.NET.2.4.560\lib\net20\BitMiracle.LibTiff.NET.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="DotSpatial.Projections, Version=1.9.0.0, Culture=neutral, PublicKeyToken=272632bddd08a38b, processorArchitecture=MSIL">
-      <HintPath>..\DEM.Net.Lib\packages\DotSpatial.Projections.1.9\lib\net40-Client\DotSpatial.Projections.dll</HintPath>
+      <HintPath>..\packages\DotSpatial.Projections.1.9\lib\net40-Client\DotSpatial.Projections.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.SqlServer.Types, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\DEM.Net.Lib\packages\Microsoft.SqlServer.Types.11.0.2\lib\net20\Microsoft.SqlServer.Types.dll</HintPath>
+      <HintPath>..\packages\Microsoft.SqlServer.Types.11.0.2\lib\net20\Microsoft.SqlServer.Types.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="SqlServerSpatial.Toolkit, Version=0.1.4.24399, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\DEM.Net.Lib\packages\SqlServerSpatial.Toolkit.1.0.1\lib\net45\SqlServerSpatial.Toolkit.dll</HintPath>
+      <HintPath>..\packages\SqlServerSpatial.Toolkit.1.0.1\lib\net45\SqlServerSpatial.Toolkit.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics.Vectors, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\DEM.Net.Lib\packages\System.Numerics.Vectors.4.3.0\lib\portable-net45+win8+wp8+wpa81\System.Numerics.Vectors.dll</HintPath>
+      <HintPath>..\packages\System.Numerics.Vectors.4.3.0\lib\portable-net45+win8+wp8+wpa81\System.Numerics.Vectors.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
@@ -76,29 +80,29 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\DEM.Net.Lib\packages\Microsoft.SqlServer.Types.11.0.2\nativeBinaries\x64\msvcr100.dll">
+    <Content Include="..\packages\Microsoft.SqlServer.Types.11.0.2\nativeBinaries\x64\msvcr100.dll">
       <Link>SqlServerTypes\x64\msvcr100.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\DEM.Net.Lib\packages\Microsoft.SqlServer.Types.11.0.2\nativeBinaries\x64\SqlServerSpatial110.dll">
+    <Content Include="..\packages\Microsoft.SqlServer.Types.11.0.2\nativeBinaries\x64\SqlServerSpatial110.dll">
       <Link>SqlServerTypes\x64\SqlServerSpatial110.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\DEM.Net.Lib\packages\Microsoft.SqlServer.Types.11.0.2\nativeBinaries\x86\msvcr100.dll">
+    <Content Include="..\packages\Microsoft.SqlServer.Types.11.0.2\nativeBinaries\x86\msvcr100.dll">
       <Link>SqlServerTypes\x86\msvcr100.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\DEM.Net.Lib\packages\Microsoft.SqlServer.Types.11.0.2\nativeBinaries\x86\SqlServerSpatial110.dll">
+    <Content Include="..\packages\Microsoft.SqlServer.Types.11.0.2\nativeBinaries\x86\SqlServerSpatial110.dll">
       <Link>SqlServerTypes\x86\SqlServerSpatial110.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\DEM.Net.Lib\packages\SqlServerSpatial.Toolkit.1.0.1\toolkit\SqlServerSpatial.Toolkit.DebuggerVisualizer.VS2013.dll">
+    <Content Include="..\packages\SqlServerSpatial.Toolkit.1.0.1\toolkit\SqlServerSpatial.Toolkit.DebuggerVisualizer.VS2013.dll">
       <Link>SqlServerSpatial.Toolkit\SqlServerSpatial.Toolkit.DebuggerVisualizer.VS2013.dll</Link>
     </Content>
-    <Content Include="..\DEM.Net.Lib\packages\SqlServerSpatial.Toolkit.1.0.1\toolkit\SqlServerSpatial.Toolkit.DebuggerVisualizer.VS2015.dll">
+    <Content Include="..\packages\SqlServerSpatial.Toolkit.1.0.1\toolkit\SqlServerSpatial.Toolkit.DebuggerVisualizer.VS2015.dll">
       <Link>SqlServerSpatial.Toolkit\SqlServerSpatial.Toolkit.DebuggerVisualizer.VS2015.dll</Link>
     </Content>
-    <Content Include="..\DEM.Net.Lib\packages\SqlServerSpatial.Toolkit.1.0.1\toolkit\SqlServerSpatial.Toolkit.Viewer.exe">
+    <Content Include="..\packages\SqlServerSpatial.Toolkit.1.0.1\toolkit\SqlServerSpatial.Toolkit.Viewer.exe">
       <Link>SqlServerSpatial.Toolkit\SqlServerSpatial.Toolkit.Viewer.exe</Link>
     </Content>
     <Content Include="SqlServerSpatial.Toolkit\readme.htm" />
