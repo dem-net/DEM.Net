@@ -1,4 +1,6 @@
-#DEM.Net [![Build status](https://ci.appveyor.com/api/projects/status/github/xfischer/DEM.Net)](https://ci.appveyor.com/project/xfischer/dem-net)
+[![Build status](https://ci.appveyor.com/api/projects/status/github/xfischer/DEM.Net)](https://ci.appveyor.com/project/xfischer/dem-net)
+
+#DEM.Net 
 Digital Elevation Model samples in C#. GeoTiff file parsing and DEM querying.
 The goal is to provide on the fly DEM querying from GeoJSON or WKT geometries.
 
