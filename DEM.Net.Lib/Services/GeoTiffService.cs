@@ -216,32 +216,48 @@ namespace DEM.Net.Lib.Services
             return sb.ToString();
         }
 
-        public Dictionary<string, DemFileReport> GenerateReport(string directoryPath, string urlToLstFile, string remoteFileExtension, string newRemoteFileExtension)
+        public Dictionary<string, DemFileReport> GenerateReport(string directoryPath, string urlToLstFile, string remoteFileExtension, string zipExtension)
         {
+            bool isZipped = !string.IsNullOrWhiteSpace(zipExtension) && zipExtension != remoteFileExtension;
+
             Dictionary<string, DemFileReport> statusByFile = new Dictionary<string, DemFileReport>();
 
-            WebClient webClient = new WebClient();
+            // download index file (.LST file)
             Uri lstUri = new Uri(urlToLstFile);
-            string lstContent = webClient.DownloadString(lstUri);
+            string lstContent = null;
+            using (WebClient webClient = new WebClient())
+            {
+                lstContent = webClient.DownloadString(lstUri);
+            }
+
+            // Get list of file matching remoteFileExtension, and replacing it with the local extension
             IEnumerable<string> remoteFilesQuery = lstContent.Split('\n');
             remoteFilesQuery = remoteFilesQuery.Where(f => f.EndsWith(remoteFileExtension));
-            if (!string.IsNullOrWhiteSpace(newRemoteFileExtension))
+            if (isZipped)
             {
-                remoteFilesQuery = remoteFilesQuery.Select(f => f.Replace(remoteFileExtension, newRemoteFileExtension));
+                remoteFilesQuery = remoteFilesQuery.Select(f => f.Replace(remoteFileExtension, zipExtension));
             }
             HashSet<string> remoteFiles = new HashSet<string>(remoteFilesQuery);
-            HashSet<string> localFiles = new HashSet<string>(Directory.GetFiles(directoryPath, "*" + newRemoteFileExtension, SearchOption.TopDirectoryOnly)
-                                                                       .Select(f => Path.GetFileName(f)));
 
+
+            // Get local files
+            HashSet<string> localFiles = new HashSet<string>();
+            if (Directory.Exists(directoryPath))
+            {
+                localFiles.UnionWith(Directory.GetFiles(directoryPath, "*" + remoteFileExtension, SearchOption.TopDirectoryOnly)
+                                                                          .Select(f => Path.GetFileName(f)));
+            }
+
+            // Finds match between remote and local
             foreach (string remoteFile in remoteFiles)
             {
-                string fileTitle = remoteFile.Split('/').Last();
+                string zipFileTitle = isZipped ? remoteFile.Split('/').Last() : null;
+                string fileTitle = isZipped ? zipFileTitle.Replace(zipExtension, remoteFileExtension) : remoteFile.Split('/').Last();
                 Uri remoteFileUri = null;
                 Uri.TryCreate(lstUri, remoteFile, out remoteFileUri);
                 bool isDownloaded = localFiles.Contains(fileTitle);
 
-
-                statusByFile.Add(remoteFileUri.AbsoluteUri, new DemFileReport { IsExistingLocally = isDownloaded, LocalName = fileTitle, URL = remoteFileUri.AbsoluteUri } );
+                statusByFile.Add(remoteFileUri.AbsoluteUri, new DemFileReport { IsExistingLocally = isDownloaded, LocalName = fileTitle, LocalZipName = zipFileTitle, URL = remoteFileUri.AbsoluteUri });
             }
             return statusByFile;
         }
