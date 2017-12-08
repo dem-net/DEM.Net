@@ -46,6 +46,9 @@
       <HintPath>..\packages\Microsoft.SqlServer.Types.11.0.2\lib\net20\Microsoft.SqlServer.Types.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="SqlServerSpatial.Toolkit, Version=0.1.4.24399, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SqlServerSpatial.Toolkit.1.0.1\lib\net45\SqlServerSpatial.Toolkit.dll</HintPath>

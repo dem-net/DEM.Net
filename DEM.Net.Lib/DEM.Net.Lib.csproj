@@ -34,21 +34,12 @@
       <HintPath>..\packages\BitMiracle.LibTiff.NET.2.4.560\lib\net20\BitMiracle.LibTiff.NET.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DotSpatial.Projections, Version=1.9.0.0, Culture=neutral, PublicKeyToken=272632bddd08a38b, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotSpatial.Projections.1.9\lib\net40-Client\DotSpatial.Projections.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.SqlServer.Types, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.SqlServer.Types.11.0.2\lib\net20\Microsoft.SqlServer.Types.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="SqlServerSpatial.Toolkit, Version=0.1.4.24399, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SqlServerSpatial.Toolkit.1.0.1\lib\net45\SqlServerSpatial.Toolkit.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -111,16 +102,6 @@
       <Link>SqlServerTypes\x86\SqlServerSpatial110.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\packages\SqlServerSpatial.Toolkit.1.0.1\toolkit\SqlServerSpatial.Toolkit.DebuggerVisualizer.VS2013.dll">
-      <Link>SqlServerSpatial.Toolkit\SqlServerSpatial.Toolkit.DebuggerVisualizer.VS2013.dll</Link>
-    </Content>
-    <Content Include="..\packages\SqlServerSpatial.Toolkit.1.0.1\toolkit\SqlServerSpatial.Toolkit.DebuggerVisualizer.VS2015.dll">
-      <Link>SqlServerSpatial.Toolkit\SqlServerSpatial.Toolkit.DebuggerVisualizer.VS2015.dll</Link>
-    </Content>
-    <Content Include="..\packages\SqlServerSpatial.Toolkit.1.0.1\toolkit\SqlServerSpatial.Toolkit.Viewer.exe">
-      <Link>SqlServerSpatial.Toolkit\SqlServerSpatial.Toolkit.Viewer.exe</Link>
-    </Content>
-    <Content Include="SqlServerSpatial.Toolkit\readme.htm" />
     <Content Include="SqlServerTypes\readme.htm" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
