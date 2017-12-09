@@ -29,7 +29,7 @@ namespace DEM.Net.Lib.Services
         {
             BoundingBox bbox = GeometryService.GetBoundingBox(lineWKT);
             //HeightMap heightMap = GeoTiffService.GetHeightMap(bbox, geoTiffRepository);
-            SqlGeometry geom = GeometryService.GetNativeGeometry(lineWKT);
+            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(lineWKT);
             List<FileMetadata> tiles = this.GetCoveringFiles(bbox, geoTiffRepository);
 
             // Init interpolator

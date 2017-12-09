@@ -59,8 +59,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\UrlHelper.cs" />
     <Compile Include="Model\BoundingBox.cs" />
+    <Compile Include="Model\DEMDataSet.cs" />
     <Compile Include="Model\DemFileReport.cs" />
+    <Compile Include="Model\GDALSource.cs" />
     <Compile Include="Services\DiagnosticUtils.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="Model\FileMetadata.cs" />
@@ -72,6 +75,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\DistanceFromPointComparer.cs" />
     <Compile Include="Services\ElevationService.cs" />
+    <Compile Include="Services\GDALVRTFileService.cs" />
     <Compile Include="Services\GeometryService.cs" />
     <Compile Include="Services\GeoTiffService.cs" />
     <Compile Include="Services\IElevationService.cs" />

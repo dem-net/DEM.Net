@@ -14,6 +14,11 @@ namespace DEM.Net.Lib
 			get { return _tiff; }
 		}
 
+        public string FilePath
+        {
+            get { return _tiffPath; }
+        }
+
 		public GeoTiff(string tiffPath)
 		{
 			_tiffPath = tiffPath;

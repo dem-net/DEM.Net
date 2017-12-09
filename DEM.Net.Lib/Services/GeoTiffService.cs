@@ -13,18 +13,37 @@ namespace DEM.Net.Lib.Services
 {
     public class GeoTiffService : IGeoTiffService
     {
+        private const string APP_NAME = "DEM.Net";
         private const string MANIFEST_DIR = "manifest";
         private const int EARTH_CIRCUMFERENCE_METERS = 40075017;
+        private static string _localDirectory;
         private static Dictionary<string, List<FileMetadata>> _metadataCatalogCache = null;
+
+        public string LocalDirectory
+        {
+            get { return _localDirectory; }
+        }
 
         static GeoTiffService()
         {
+            _localDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), APP_NAME);
+            if (!Directory.Exists(_localDirectory))
+                Directory.CreateDirectory(_localDirectory);
+
             _metadataCatalogCache = new Dictionary<string, List<FileMetadata>>();
         }
 
-        public FileMetadata ParseMetadata(GeoTiff tiff, string tiffPath)
+        public string GetLocalDEMPath(DEMDataSet dataset)
         {
-            FileMetadata metadata = new FileMetadata(tiffPath);
+            return Path.Combine(_localDirectory, dataset.Name);
+        }
+        public string GetLocalDEMFilePath(DEMDataSet dataset, string fileTitle)
+        {
+            return Path.Combine(GetLocalDEMPath(dataset), fileTitle);
+        }
+        public FileMetadata ParseMetadata(GeoTiff tiff)
+        {
+            FileMetadata metadata = new FileMetadata(tiff.FilePath);
 
             ///
             metadata.Height = tiff.TiffFile.GetField(TiffTag.IMAGELENGTH)[0].ToInt();
@@ -84,7 +103,7 @@ namespace DEM.Net.Lib.Services
 
             using (GeoTiff tiff = new GeoTiff(fileName))
             {
-                metadata = this.ParseMetadata(tiff, fileName);
+                metadata = this.ParseMetadata(tiff);
             }
             return metadata;
         }
@@ -203,9 +222,9 @@ namespace DEM.Net.Lib.Services
 
         }
 
-        public string GenerateReportAsString(string directoryPath, string urlToLstFile, string remoteFileExtension, string newRemoteFileExtension)
+        public string GenerateReportAsString(DEMDataSet dataSet, BoundingBox bbox = null)
         {
-            Dictionary<string, DemFileReport> report = GenerateReport(directoryPath, urlToLstFile, remoteFileExtension, newRemoteFileExtension);
+            Dictionary<string, DemFileReport> report = GenerateReport(dataSet, bbox);
 
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("RemoteURL\tIsDownloaded");
@@ -216,50 +235,60 @@ namespace DEM.Net.Lib.Services
             return sb.ToString();
         }
 
-        public Dictionary<string, DemFileReport> GenerateReport(string directoryPath, string urlToLstFile, string remoteFileExtension, string zipExtension)
+        public Dictionary<string, DemFileReport> GenerateReport(DEMDataSet dataSet, BoundingBox bbox = null)
         {
-            bool isZipped = !string.IsNullOrWhiteSpace(zipExtension) && zipExtension != remoteFileExtension;
-
             Dictionary<string, DemFileReport> statusByFile = new Dictionary<string, DemFileReport>();
-
-            // download index file (.LST file)
-            Uri lstUri = new Uri(urlToLstFile);
-            string lstContent = null;
-            using (WebClient webClient = new WebClient())
+            using (GDALVRTFileService gdalService = new GDALVRTFileService(GetLocalDEMPath(dataSet), dataSet))
             {
-                lstContent = webClient.DownloadString(lstUri);
+                gdalService.Setup();
+
+                int i = 0;
+                foreach(GDALSource source in gdalService.Sources())
+                {
+                    i++;
+                    //Trace.TraceInformation($"Source {source.SourceFileName}");
+                }
+
+                Trace.TraceInformation($"{i} sources");
             }
+                //// download GDAL virtual file (.VRT file)
+                //Uri lstUri = new Uri(urlToLstFile);
+                //string lstContent = null;
+                //using (WebClient webClient = new WebClient())
+                //{
+                //    lstContent = webClient.DownloadString(lstUri);
+                //}
 
-            // Get list of file matching remoteFileExtension, and replacing it with the local extension
-            IEnumerable<string> remoteFilesQuery = lstContent.Split('\n');
-            remoteFilesQuery = remoteFilesQuery.Where(f => f.EndsWith(remoteFileExtension));
-            if (isZipped)
-            {
-                remoteFilesQuery = remoteFilesQuery.Select(f => f.Replace(remoteFileExtension, zipExtension));
-            }
-            HashSet<string> remoteFiles = new HashSet<string>(remoteFilesQuery);
+                //// Get list of file matching remoteFileExtension, and replacing it with the local extension
+                //IEnumerable<string> remoteFilesQuery = lstContent.Split('\n');
+                //remoteFilesQuery = remoteFilesQuery.Where(f => f.EndsWith(remoteFileExtension));
+                //if (isZipped)
+                //{
+                //    remoteFilesQuery = remoteFilesQuery.Select(f => f.Replace(remoteFileExtension, zipExtension));
+                //}
+                //HashSet<string> remoteFiles = new HashSet<string>(remoteFilesQuery);
 
 
-            // Get local files
-            HashSet<string> localFiles = new HashSet<string>();
-            if (Directory.Exists(directoryPath))
-            {
-                localFiles.UnionWith(Directory.GetFiles(directoryPath, "*" + remoteFileExtension, SearchOption.TopDirectoryOnly)
-                                                                          .Select(f => Path.GetFileName(f)));
-            }
+                //// Get local files
+                //HashSet<string> localFiles = new HashSet<string>();
+                //if (Directory.Exists(directoryPath))
+                //{
+                //    localFiles.UnionWith(Directory.GetFiles(directoryPath, "*" + remoteFileExtension, SearchOption.TopDirectoryOnly)
+                //                                                              .Select(f => Path.GetFileName(f)));
+                //}
 
-            // Finds match between remote and local
-            foreach (string remoteFile in remoteFiles)
-            {
-                string zipFileTitle = isZipped ? remoteFile.Split('/').Last() : null;
-                string fileTitle = isZipped ? zipFileTitle.Replace(zipExtension, remoteFileExtension) : remoteFile.Split('/').Last();
-                Uri remoteFileUri = null;
-                Uri.TryCreate(lstUri, remoteFile, out remoteFileUri);
-                bool isDownloaded = localFiles.Contains(fileTitle);
+                //// Finds match between remote and local
+                //foreach (string remoteFile in remoteFiles)
+                //{
+                //    string zipFileTitle = isZipped ? remoteFile.Split('/').Last() : null;
+                //    string fileTitle = isZipped ? zipFileTitle.Replace(zipExtension, remoteFileExtension) : remoteFile.Split('/').Last();
+                //    Uri remoteFileUri = null;
+                //    Uri.TryCreate(lstUri, remoteFile, out remoteFileUri);
+                //    bool isDownloaded = localFiles.Contains(fileTitle);
 
-                statusByFile.Add(remoteFileUri.AbsoluteUri, new DemFileReport { IsExistingLocally = isDownloaded, LocalName = fileTitle, LocalZipName = zipFileTitle, URL = remoteFileUri.AbsoluteUri });
-            }
-            return statusByFile;
+                //    statusByFile.Add(remoteFileUri.AbsoluteUri, new DemFileReport { IsExistingLocally = isDownloaded, LocalName = fileTitle, LocalZipName = zipFileTitle, URL = remoteFileUri.AbsoluteUri });
+                //}
+                return statusByFile;
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Lib
 {
-    public struct BoundingBox
+    public class BoundingBox
     {
         private double _xMin;
         public double xMin

@@ -10,12 +10,14 @@ using System;
 using System.Threading.Tasks;
 using System.Net;
 using System.IO.Compression;
+using System.Xml;
 
 namespace SampleApp
 {
 
     class Program
     {
+
         //public const string tiffPath = @"..\..\..\SampleData\sample.tif";
         //public const string tiffPath = @"..\..\..\SampleData\srtm_38_04.tif"; // from http://dwtkns.com/srtm/ SRTM Tile Grabber
         //public const string samplePath = @"..\..\..\SampleData"; // from http://www.opentopography.org/
@@ -25,10 +27,12 @@ namespace SampleApp
 
         static void Main(string[] args)
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
             IGeoTiffService geoTiffService = new GeoTiffService();
 
-            DownloadMissingFiles_GL3_90m(geoTiffService, GL3_90m_srtmPath);
-            DownloadMissingFiles_ALOS30m(geoTiffService, alos30mPath);
+
+            DownloadMissingFiles(geoTiffService, DEMDataSet.AW3D30, GetBoundingBox(WKT_GRANDE_BOUCLE));
+            DownloadMissingFiles(geoTiffService, DEMDataSet.SRTM_GL3_srtm, GetBoundingBox(WKT_GRANDE_BOUCLE));
 
             GenerateDownloadReports(geoTiffService);
 
@@ -36,50 +40,51 @@ namespace SampleApp
 
             // Spatial trace of line + segments + interpolated point + dem grid
             //SpatialTrace_GeometryWithDEM(WKT_DEM_INTERPOLATION_BUG, samplePath);
-
             LineDEMTests(alos30mPath);
 
         }
 
-        private static void DownloadMissingFiles_ALOS30m(IGeoTiffService geoTiffService, string localDirectoryPath)
+
+
+        private static void DownloadMissingFiles(IGeoTiffService geoTiffService, DEMDataSet dataSet, DEM.Net.Lib.BoundingBox bbox = null)
         {
-            var report = geoTiffService.GenerateReport(localDirectoryPath, "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/AW3D30/AW3D30_alos.vrt.lst", ".tif");
+            var report = geoTiffService.GenerateReport(dataSet, bbox);
             List<DemFileReport> v_files = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
+
             //Parallel.ForEach(v_files, new ParallelOptions { MaxDegreeOfParallelism = 1 }, file =>
             Parallel.ForEach(v_files, file =>
             {
                 WebClient wc = new WebClient();
-                wc.DownloadFile(file.URL, Path.Combine(localDirectoryPath, file.LocalName));
+                wc.DownloadFile(file.URL, geoTiffService.GetLocalDEMFilePath(dataSet, file.LocalName));
             });
         }
-        private static void DownloadMissingFiles_GL3_90m(IGeoTiffService geoTiffService, string localDirectoryPath)
-        {
-            var report = geoTiffService.GenerateReport(localDirectoryPath, "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL3/SRTM_GL3_srtm.vrt.lst", ".hgt");
-            List<DemFileReport> v_files = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
+        //private static void DownloadMissingFiles_GL3_90m(IGeoTiffService geoTiffService, DEMDataSet dataSet)
+        //{
+        //    var report = geoTiffService.GenerateReport(dataSet);
+        //    List<DemFileReport> v_files = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
 
 
-            Directory.CreateDirectory(localDirectoryPath);
-            //Parallel.ForEach(v_files, file =>
-            foreach (var file in v_files)
-            {
-                WebClient wc = new WebClient();
-                string url = file.URL.Replace("/GL3_90m_srtm", "");
-                string localZipFile = Path.Combine(localDirectoryPath, file.LocalZipName);
-                wc.DownloadFile(url, localZipFile);
-                ZipFile.ExtractToDirectory(localZipFile, localDirectoryPath);
-                File.Delete(localZipFile);
-                Console.WriteLine("File " + file.LocalName + " downloaded.");
-            }
-            //);
-        }
+        //    //Parallel.ForEach(v_files, file =>
+        //    foreach (var file in v_files)
+        //    {
+        //        WebClient wc = new WebClient();
+        //        string url = file.URL.Replace("/GL3_90m_srtm", "");
+        //        string localZipFile = Path.Combine(localDirectoryPath, file.LocalZipName);
+        //        wc.DownloadFile(url, localZipFile);
+        //        ZipFile.ExtractToDirectory(localZipFile, localDirectoryPath);
+        //        File.Delete(localZipFile);
+        //        Console.WriteLine("File " + file.LocalName + " downloaded.");
+        //    }
+        //    //);
+        //}
 
         private static void GenerateDownloadReports(IGeoTiffService geoTiffService)
         {
             string report = null;
-            report = geoTiffService.GenerateReportAsString(alos30mPath, "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/AW3D30/AW3D30_alos.vrt.lst", ".tif");
+            report = geoTiffService.GenerateReportAsString(DEMDataSet.AW3D30);
             File.WriteAllText("AW3D30_alos.report.txt", report);
 
-            report = geoTiffService.GenerateReportAsString(GL3_90m_srtmPath, "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL3/GL3_90m_srtm.lst", ".hgt", ".SRTMGL3.hgt.zip");
+            report = geoTiffService.GenerateReportAsString(DEMDataSet.SRTM_GL3_srtm);
             File.WriteAllText("GL3_90m_srtm.report.txt", report);
         }
 
@@ -107,11 +112,17 @@ namespace SampleApp
             }
         }
 
+        static DEM.Net.Lib.BoundingBox GetBoundingBox(string wkt, double buffer = 60)
+        {
+            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
+            return geom.ToGeography().STBuffer(60).GetBoundingBox();
+        }
+
         static void SpatialTrace_GeometryWithDEM(string wkt, string tiffPath)
         {
             SpatialTrace.Enable();
 
-            SqlGeometry geom = GeometryService.GetNativeGeometry(wkt);
+            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
             SpatialTrace.TraceGeometry(geom, "Line");
 
             IElevationService elevationService = new ElevationService();

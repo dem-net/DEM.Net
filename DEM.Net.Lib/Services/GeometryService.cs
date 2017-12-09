@@ -14,13 +14,13 @@ namespace DEM.Net.Lib.Services
         private const double EARTH_RADIUS = 6371008.0; // [m]
         private const double RADIAN = Math.PI / 180;
 
-        public static SqlGeometry GetNativeGeometry(string geomWKT)
+        public static SqlGeometry ParseWKTAsGeometry(string geomWKT)
         {
             SqlGeometry geom = SqlGeometry.STGeomFromText(new System.Data.SqlTypes.SqlChars(new System.Data.SqlTypes.SqlString(geomWKT)), WGS84_SRID);
             return geom;
         }
 
-        public static SqlGeography GetNativeGeography(string geomWKT)
+        public static SqlGeography ParseWKTAsGeography(string geomWKT)
         {
             SqlGeography geom = SqlGeography.STGeomFromText(new System.Data.SqlTypes.SqlChars(new System.Data.SqlTypes.SqlString(geomWKT)), WGS84_SRID);
             return geom;
@@ -28,7 +28,7 @@ namespace DEM.Net.Lib.Services
 
         public static BoundingBox GetBoundingBox(string geomWKT)
         {
-            SqlGeometry geom = GetNativeGeometry(geomWKT);
+            SqlGeometry geom = ParseWKTAsGeometry(geomWKT);
             return geom.GetBoundingBox();
         }
 
@@ -95,7 +95,7 @@ namespace DEM.Net.Lib.Services
 
         public static double GetLength(string lineWKT)
         {
-            return GeometryService.GetNativeGeography(lineWKT).STLength().Value;
+            return GeometryService.ParseWKTAsGeography(lineWKT).STLength().Value;
         }
 
         public static double GetDistanceBetweenPoints(GeoPoint pt1, GeoPoint pt2)

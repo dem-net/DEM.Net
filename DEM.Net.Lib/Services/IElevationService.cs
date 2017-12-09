@@ -36,7 +36,7 @@ namespace DEM.Net.Lib.Services
         /// <param name="startLat">Segment start latitude</param>
         /// <param name="endLon">Segment end longitude</param>
         /// <param name="endLat">Segment end latitude</param>
-        /// <param name="segTiles">Metadata files <see cref="GeoTiffService.GetCoveringFiles"/> to see how to get them relative to segment geometry</param>
+        /// <param name="segTiles">Metadata files <see cref="IElevationService.GetCoveringFiles"/> to see how to get them relative to segment geometry</param>
         /// <param name="returnStartPoint">If true, the segment starting point will be returned. Useful when processing a line segment by segment.</param>
         /// <param name="returnEndPoind">If true, the segment end point will be returned. Useful when processing a line segment by segment.</param>
         /// <returns></returns>
