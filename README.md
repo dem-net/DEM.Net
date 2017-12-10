@@ -7,8 +7,17 @@ The goal is to provide on the fly DEM querying from GeoJSON or WKT geometries.
 # How to run the SampleApp 
 (Work in progress)
 SampleApp is a Console App used for test purposes.
-Use `GeoTiffService.GenerateDirectoryMetadata(samplePath);`to generate metadata files for your GeoTIFF tiles.
+
+- Use `new GeoTiffService().GenerateReport(DEMDataSet.AW3D30, <bounding box>)` to download only necessary tiles using remote VRT file.
+
+- Use `GeoTiffService.GenerateDirectoryMetadata(samplePath);`to generate metadata files for your GeoTIFF tiles.
 These metadata files will be used as an index when querying Digital Elevation Model data.
+
+# Next steps
+
+- Provide a simple sample for getting Height Maps (Unity based samples) and vizualising DEM as 3D meshes
+- Provide a simple sample to drape a line onto a DEM
+- If you have specific needs, let me know (create an issue)
 
 # Sample data
 GeoTiff from http://www.opentopography.org
