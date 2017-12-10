@@ -13,7 +13,7 @@ SampleApp is a Console App used for test purposes.
 - Use `GeoTiffService.GenerateDirectoryMetadata(samplePath);`to generate metadata files for your GeoTIFF tiles.
 These metadata files will be used as an index when querying Digital Elevation Model data.
 
-# Next steps
+# Coming soon...
 
 - Provide a simple sample for getting Height Maps (Unity based samples) and vizualising DEM as 3D meshes
 - Provide a simple sample to drape a line onto a DEM
