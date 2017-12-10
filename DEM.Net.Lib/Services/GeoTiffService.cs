@@ -230,9 +230,17 @@ namespace DEM.Net.Lib.Services
             sb.AppendLine("RemoteURL\tIsDownloaded");
             foreach (var kvp in report)
             {
-                sb.AppendLine(string.Concat(kvp.Key, '\t', kvp.Value));
+                sb.AppendLine(string.Concat(kvp.Key, '\t', kvp.Value.IsExistingLocally));
             }
             return sb.ToString();
+        }
+
+        public bool BoundingBoxIntersects(BoundingBox bbox1, BoundingBox bbox2)
+        {
+            bool isInsideY = bbox1.yMax >= bbox2.yMin && bbox1.yMin <= bbox2.yMax;
+            bool isInsideX = bbox1.xMax >= bbox2.xMin && bbox1.xMin <= bbox2.xMax;
+            bool isInside = isInsideX && isInsideY;
+            return isInside;
         }
 
         public Dictionary<string, DemFileReport> GenerateReport(DEMDataSet dataSet, BoundingBox bbox = null)
@@ -242,53 +250,62 @@ namespace DEM.Net.Lib.Services
             {
                 gdalService.Setup();
 
-                int i = 0;
-                foreach(GDALSource source in gdalService.Sources())
+                foreach (GDALSource source in gdalService.Sources())
                 {
-                    i++;
+
+                    if (bbox == null || BoundingBoxIntersects(source.BBox, bbox))
+                    {
+
+                        statusByFile.Add(source.SourceFileNameAbsolute, new DemFileReport()
+                        {
+                            IsExistingLocally = File.Exists(source.LocalFileName),
+                            LocalName = source.LocalFileName,
+                            URL = source.SourceFileNameAbsolute
+                        });
+
+                    }
                     //Trace.TraceInformation($"Source {source.SourceFileName}");
                 }
 
-                Trace.TraceInformation($"{i} sources");
             }
-                //// download GDAL virtual file (.VRT file)
-                //Uri lstUri = new Uri(urlToLstFile);
-                //string lstContent = null;
-                //using (WebClient webClient = new WebClient())
-                //{
-                //    lstContent = webClient.DownloadString(lstUri);
-                //}
+            //// download GDAL virtual file (.VRT file)
+            //Uri lstUri = new Uri(urlToLstFile);
+            //string lstContent = null;
+            //using (WebClient webClient = new WebClient())
+            //{
+            //    lstContent = webClient.DownloadString(lstUri);
+            //}
 
-                //// Get list of file matching remoteFileExtension, and replacing it with the local extension
-                //IEnumerable<string> remoteFilesQuery = lstContent.Split('\n');
-                //remoteFilesQuery = remoteFilesQuery.Where(f => f.EndsWith(remoteFileExtension));
-                //if (isZipped)
-                //{
-                //    remoteFilesQuery = remoteFilesQuery.Select(f => f.Replace(remoteFileExtension, zipExtension));
-                //}
-                //HashSet<string> remoteFiles = new HashSet<string>(remoteFilesQuery);
+            //// Get list of file matching remoteFileExtension, and replacing it with the local extension
+            //IEnumerable<string> remoteFilesQuery = lstContent.Split('\n');
+            //remoteFilesQuery = remoteFilesQuery.Where(f => f.EndsWith(remoteFileExtension));
+            //if (isZipped)
+            //{
+            //    remoteFilesQuery = remoteFilesQuery.Select(f => f.Replace(remoteFileExtension, zipExtension));
+            //}
+            //HashSet<string> remoteFiles = new HashSet<string>(remoteFilesQuery);
 
 
-                //// Get local files
-                //HashSet<string> localFiles = new HashSet<string>();
-                //if (Directory.Exists(directoryPath))
-                //{
-                //    localFiles.UnionWith(Directory.GetFiles(directoryPath, "*" + remoteFileExtension, SearchOption.TopDirectoryOnly)
-                //                                                              .Select(f => Path.GetFileName(f)));
-                //}
+            //// Get local files
+            //HashSet<string> localFiles = new HashSet<string>();
+            //if (Directory.Exists(directoryPath))
+            //{
+            //    localFiles.UnionWith(Directory.GetFiles(directoryPath, "*" + remoteFileExtension, SearchOption.TopDirectoryOnly)
+            //                                                              .Select(f => Path.GetFileName(f)));
+            //}
 
-                //// Finds match between remote and local
-                //foreach (string remoteFile in remoteFiles)
-                //{
-                //    string zipFileTitle = isZipped ? remoteFile.Split('/').Last() : null;
-                //    string fileTitle = isZipped ? zipFileTitle.Replace(zipExtension, remoteFileExtension) : remoteFile.Split('/').Last();
-                //    Uri remoteFileUri = null;
-                //    Uri.TryCreate(lstUri, remoteFile, out remoteFileUri);
-                //    bool isDownloaded = localFiles.Contains(fileTitle);
+            //// Finds match between remote and local
+            //foreach (string remoteFile in remoteFiles)
+            //{
+            //    string zipFileTitle = isZipped ? remoteFile.Split('/').Last() : null;
+            //    string fileTitle = isZipped ? zipFileTitle.Replace(zipExtension, remoteFileExtension) : remoteFile.Split('/').Last();
+            //    Uri remoteFileUri = null;
+            //    Uri.TryCreate(lstUri, remoteFile, out remoteFileUri);
+            //    bool isDownloaded = localFiles.Contains(fileTitle);
 
-                //    statusByFile.Add(remoteFileUri.AbsoluteUri, new DemFileReport { IsExistingLocally = isDownloaded, LocalName = fileTitle, LocalZipName = zipFileTitle, URL = remoteFileUri.AbsoluteUri });
-                //}
-                return statusByFile;
+            //    statusByFile.Add(remoteFileUri.AbsoluteUri, new DemFileReport { IsExistingLocally = isDownloaded, LocalName = fileTitle, LocalZipName = zipFileTitle, URL = remoteFileUri.AbsoluteUri });
+            //}
+            return statusByFile;
         }
     }
 }

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.IO.Compression;
 using System.Xml;
+using System.Diagnostics;
 
 namespace SampleApp
 {
@@ -31,8 +32,8 @@ namespace SampleApp
             IGeoTiffService geoTiffService = new GeoTiffService();
 
 
-            DownloadMissingFiles(geoTiffService, DEMDataSet.AW3D30, GetBoundingBox(WKT_GRANDE_BOUCLE));
-            DownloadMissingFiles(geoTiffService, DEMDataSet.SRTM_GL3_srtm, GetBoundingBox(WKT_GRANDE_BOUCLE));
+            DownloadMissingFiles(geoTiffService, DEMDataSet.AW3D30, GetBoundingBox(WKT_AIX_BAYONNE_EST_OUEST));
+            DownloadMissingFiles(geoTiffService, DEMDataSet.SRTM_GL3_srtm, GetBoundingBox(WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES));
 
             GenerateDownloadReports(geoTiffService);
 
@@ -51,32 +52,21 @@ namespace SampleApp
             var report = geoTiffService.GenerateReport(dataSet, bbox);
             List<DemFileReport> v_files = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
 
+            Trace.TraceInformation($"Downloading {v_files.Count} missing file(s).");
             //Parallel.ForEach(v_files, new ParallelOptions { MaxDegreeOfParallelism = 1 }, file =>
             Parallel.ForEach(v_files, file =>
             {
-                WebClient wc = new WebClient();
-                wc.DownloadFile(file.URL, geoTiffService.GetLocalDEMFilePath(dataSet, file.LocalName));
+                using (WebClient wc = new WebClient())
+                {
+                    // Create directories if not existing
+                    new FileInfo(file.LocalName).Directory.Create();
+
+                    Trace.TraceInformation($"Downloading file {file.URL}...");
+                    wc.DownloadFile(file.URL, geoTiffService.GetLocalDEMFilePath(dataSet, file.LocalName)); 
+                }
             });
         }
-        //private static void DownloadMissingFiles_GL3_90m(IGeoTiffService geoTiffService, DEMDataSet dataSet)
-        //{
-        //    var report = geoTiffService.GenerateReport(dataSet);
-        //    List<DemFileReport> v_files = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
-
-
-        //    //Parallel.ForEach(v_files, file =>
-        //    foreach (var file in v_files)
-        //    {
-        //        WebClient wc = new WebClient();
-        //        string url = file.URL.Replace("/GL3_90m_srtm", "");
-        //        string localZipFile = Path.Combine(localDirectoryPath, file.LocalZipName);
-        //        wc.DownloadFile(url, localZipFile);
-        //        ZipFile.ExtractToDirectory(localZipFile, localDirectoryPath);
-        //        File.Delete(localZipFile);
-        //        Console.WriteLine("File " + file.LocalName + " downloaded.");
-        //    }
-        //    //);
-        //}
+        
 
         private static void GenerateDownloadReports(IGeoTiffService geoTiffService)
         {

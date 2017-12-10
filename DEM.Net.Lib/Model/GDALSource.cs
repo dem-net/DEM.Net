@@ -18,6 +18,13 @@ namespace DEM.Net.Lib
         public int DstxSize { get; internal set; }
         public int DstySize { get; internal set; }
         public double NoData { get; internal set; }
+        public string SourceFileNameAbsolute { get; internal set; }
+        public string LocalFileName { get; internal set; }
+        public double OriginLon { get; internal set; }
+        public double OriginLat { get; internal set; }
+        public double DestLon { get; internal set; }
+        public double DestLat { get; internal set; }
+        public BoundingBox BBox { get; internal set; }
 
         public GDALSource()
         {

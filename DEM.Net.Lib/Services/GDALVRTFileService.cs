@@ -15,6 +15,8 @@ namespace DEM.Net.Lib.Services
     {
         private readonly string localDirectory;
         private string _vrtFileName;
+        private Uri _remoteVrtUri;
+        private Uri _localVrtUri;
         private readonly DEMDataSet dataSet;
 
         public GDALVRTFileService(string localDirectory, DEMDataSet dataSet)
@@ -39,13 +41,15 @@ namespace DEM.Net.Lib.Services
                     throw new ArgumentNullException("Dataset is null.");
 
                 Trace.TraceInformation($"Setup for {dataSet.Name} dataset.");
-                
+
                 if (!Directory.Exists(localDirectory))
                 {
                     Directory.CreateDirectory(localDirectory);
                 }
 
                 _vrtFileName = Path.Combine(localDirectory, UrlHelper.GetFileNameFromUrl(dataSet.VRTFileUrl));
+                _localVrtUri = new Uri(_vrtFileName, UriKind.Absolute);
+                _remoteVrtUri = new Uri(dataSet.VRTFileUrl, UriKind.Absolute);
 
                 bool download = true;
                 if (File.Exists(_vrtFileName))
@@ -90,8 +94,6 @@ namespace DEM.Net.Lib.Services
         public IEnumerable<GDALSource> Sources()
         {
 
-
-
             // Create an XmlReader
             using (XmlReader reader = XmlReader.Create(_vrtFileName))
             {
@@ -124,13 +126,25 @@ namespace DEM.Net.Lib.Services
                     {
                         GDALSource source = ParseGDALSource(reader);
 
+                        // SetLocalFileName
+                        source.SourceFileNameAbsolute = new Uri(_remoteVrtUri, source.SourceFileName).ToString();
+                        source.LocalFileName = new Uri(_localVrtUri, source.SourceFileName).AbsolutePath;
+
+                        // Transform origin
+                        // Xp = padfTransform[0] + P * padfTransform[1] + L * padfTransform[2];
+                        // Yp = padfTransform[3] + P * padfTransform[4] + L * padfTransform[5];
+                        source.OriginLon = _geoTransform[0] + source.DstxOff * _geoTransform[1] + source.DstyOff * _geoTransform[2];
+                        source.OriginLat = _geoTransform[3] + source.DstxOff * _geoTransform[4] + source.DstyOff * _geoTransform[5];
+                        source.DestLon = _geoTransform[0] + (source.DstxOff + source.DstxSize) * _geoTransform[1] + (source.DstyOff + source.DstySize) * _geoTransform[2];
+                        source.DestLat = _geoTransform[3] + (source.DstxOff + source.DstxSize) * _geoTransform[4] + (source.DstyOff + source.DstySize) * _geoTransform[5];
+                        source.BBox = new BoundingBox(source.OriginLon, source.DestLon, source.DestLat, source.OriginLat);
                         isOnFirstSource = false;
 
                         yield return source;
                     }
                 }
             }
-            
+
         }
 
         private GDALSource ParseGDALSource(XmlReader reader)
@@ -154,7 +168,7 @@ namespace DEM.Net.Lib.Services
                         //<xs:element name="SrcRect" type="RectType"/>
                         //<xs:element name="DstRect" type="RectType"/>
 
-                        switch(reader.Name)
+                        switch (reader.Name)
                         {
                             case "SourceFilename":
 
@@ -217,7 +231,7 @@ namespace DEM.Net.Lib.Services
                                 break;
                         }
                     }
-                    
+
                 }
             }
             catch (Exception ex)
@@ -230,7 +244,14 @@ namespace DEM.Net.Lib.Services
 
         private double[] ParseGeoTransform(string geoTransform)
         {
-            return geoTransform.Trim().Split(',').Select(val => double.Parse(val, CultureInfo.InvariantCulture)).ToArray();
+            double[] geoTransformArray = geoTransform.Trim().Split(',').Select(val => double.Parse(val, CultureInfo.InvariantCulture)).ToArray();
+
+            if (geoTransformArray.Length != 6)
+            {
+                throw new Exception("GeoTransform is not valid. 6 elements accounted.");
+            }
+
+            return geoTransformArray;
         }
     }
 }
