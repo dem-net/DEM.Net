@@ -26,11 +26,12 @@ namespace SampleApp
             IGeoTiffService geoTiffService = new GeoTiffService();
             IElevationService elevationService = new ElevationService(geoTiffService);
 
-
+            Test_GetMetadataFromVRT(elevationService, DEMDataSet.AW3D30);
+           
             elevationService.DownloadMissingFiles(DEMDataSet.AW3D30, GetBoundingBox(WKT_AIX_BAYONNE_EST_OUEST));
-            elevationService.DownloadMissingFiles(DEMDataSet.SRTM_GL3_srtm, GetBoundingBox(WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES));
+            //elevationService.DownloadMissingFiles(DEMDataSet.SRTM_GL3_srtm, GetBoundingBox(WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES));
 
-            GenerateDownloadReports(geoTiffService);
+            //GenerateDownloadReports(geoTiffService);
 
             geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, false);
 
@@ -40,7 +41,17 @@ namespace SampleApp
 
         }
 
+        private static void Test_GetMetadataFromVRT(IElevationService elevationService, DEMDataSet dataSet)
+        {
+            using (GDALVRTFileService gdalService = new GDALVRTFileService(elevationService.GetDEMLocalPath(dataSet), dataSet))
+            {
+                gdalService.Setup();
 
+                GDALSource source = gdalService.Sources().FirstOrDefault(s => s.SourceFileName.EndsWith("N043E006_AVE_DSM.tif"));
+              
+
+            }
+        }
 
         private static void DownloadMissingFiles(IGeoTiffService geoTiffService, DEMDataSet dataSet, DEM.Net.Lib.BoundingBox bbox = null)
         {

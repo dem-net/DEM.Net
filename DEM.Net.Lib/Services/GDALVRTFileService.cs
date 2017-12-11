@@ -33,7 +33,7 @@ namespace DEM.Net.Lib.Services
         /// Ensures local directories are created and download VRT file if needed
         /// TODO : check local file age and download again if obsolete
         /// </summary>
-        internal void Setup()
+        public void Setup()
         {
             try
             {

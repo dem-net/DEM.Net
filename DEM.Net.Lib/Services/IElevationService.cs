@@ -5,6 +5,7 @@ namespace DEM.Net.Lib.Services
 {
     public interface IElevationService
     {
+        string GetDEMLocalPath(DEMDataSet dataSet);
 
         void DownloadMissingFiles(DEMDataSet dataSet, BoundingBox bbox = null);
 

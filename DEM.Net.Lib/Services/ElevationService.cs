@@ -21,6 +21,12 @@ namespace DEM.Net.Lib.Services
             _IGeoTiffService = geoTiffService;
         }
 
+
+        public string GetDEMLocalPath(DEMDataSet dataSet)
+        {
+            return _IGeoTiffService.GetLocalDEMPath(dataSet);
+        }
+
         public void DownloadMissingFiles(DEMDataSet dataSet, BoundingBox bbox = null)
         {
             var report = _IGeoTiffService.GenerateReport(dataSet, bbox);
