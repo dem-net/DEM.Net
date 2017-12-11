@@ -9,7 +9,6 @@ namespace DEM.Net.Test
 	[TestClass]
 	public class DEMTests
 	{
-		public const string samplePath = @"..\..\..\SampleData\JAXA 30m France"; // from http://www.opentopography.org/
 
 		[TestInitialize()]
 		public void Initialize()
@@ -18,6 +17,7 @@ namespace DEM.Net.Test
 		}
 
 		[TestMethod]
+        [TestCategory("Geometry")]
 		public void LineLineIntersectionTest()
 		{
 			string wkt1 = "LINESTRING(-5.888671875 47.90161354142077,3.4716796875 44.11914151643737)";

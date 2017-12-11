@@ -19,29 +19,24 @@ namespace SampleApp
     class Program
     {
 
-        //public const string tiffPath = @"..\..\..\SampleData\sample.tif";
-        //public const string tiffPath = @"..\..\..\SampleData\srtm_38_04.tif"; // from http://dwtkns.com/srtm/ SRTM Tile Grabber
-        //public const string samplePath = @"..\..\..\SampleData"; // from http://www.opentopography.org/
-        public const string samplePathFrance = @"..\..\..\SampleData\JAXA 30m France"; // from http://www.opentopography.org/
-        public const string alos30mPath = @"..\..\..\SampleData\JAXA 30m"; // from http://www.opentopography.org/
-        public const string GL3_90m_srtmPath = @"..\..\..\SampleData\GL3_90m_srtm"; // from http://www.opentopography.org/
 
         static void Main(string[] args)
         {
             SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
             IGeoTiffService geoTiffService = new GeoTiffService();
+            IElevationService elevationService = new ElevationService(geoTiffService);
 
 
-            DownloadMissingFiles(geoTiffService, DEMDataSet.AW3D30, GetBoundingBox(WKT_AIX_BAYONNE_EST_OUEST));
-            DownloadMissingFiles(geoTiffService, DEMDataSet.SRTM_GL3_srtm, GetBoundingBox(WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES));
+            elevationService.DownloadMissingFiles(DEMDataSet.AW3D30, GetBoundingBox(WKT_AIX_BAYONNE_EST_OUEST));
+            elevationService.DownloadMissingFiles(DEMDataSet.SRTM_GL3_srtm, GetBoundingBox(WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES));
 
             GenerateDownloadReports(geoTiffService);
 
-            geoTiffService.GenerateDirectoryMetadata(alos30mPath, false, false);
+            geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, false);
 
             // Spatial trace of line + segments + interpolated point + dem grid
             //SpatialTrace_GeometryWithDEM(WKT_DEM_INTERPOLATION_BUG, samplePath);
-            LineDEMTests(alos30mPath);
+            LineDEMTests(elevationService, DEMDataSet.AW3D30);
 
         }
 
@@ -52,9 +47,16 @@ namespace SampleApp
             var report = geoTiffService.GenerateReport(dataSet, bbox);
             List<DemFileReport> v_files = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
 
-            Trace.TraceInformation($"Downloading {v_files.Count} missing file(s).");
-            //Parallel.ForEach(v_files, new ParallelOptions { MaxDegreeOfParallelism = 1 }, file =>
-            Parallel.ForEach(v_files, file =>
+            if (v_files.Count == 0)
+            {
+                Trace.TraceInformation("No missing file(s).");
+            }
+            else
+            {
+                Trace.TraceInformation($"Downloading {v_files.Count} missing file(s).");
+            }
+            Parallel.ForEach(v_files, new ParallelOptions { MaxDegreeOfParallelism = 2 }, file =>
+            //Parallel.ForEach(v_files, file =>
             {
                 using (WebClient wc = new WebClient())
                 {
@@ -78,7 +80,7 @@ namespace SampleApp
             File.WriteAllText("GL3_90m_srtm.report.txt", report);
         }
 
-        static void LineDEMTests(string tiffPath)
+        static void LineDEMTests(IElevationService elevationService, DEMDataSet dataSet)
         {
             Dictionary<string, string> dicWktByName = new Dictionary<string, string>();
             dicWktByName.Add(nameof(WKT_GRANDE_BOUCLE), WKT_GRANDE_BOUCLE);
@@ -90,12 +92,13 @@ namespace SampleApp
 
             InterpolationMode[] modes = { InterpolationMode.Bilinear, InterpolationMode.Hyperbolic };
 
-            IElevationService elevationService = new ElevationService();
             foreach (var wkt in dicWktByName)
             {
+                elevationService.DownloadMissingFiles(dataSet, GetBoundingBox(wkt.Value));
+
                 foreach (InterpolationMode mode in modes)
                 {
-                    var lineElevationData = elevationService.GetLineGeometryElevation(wkt.Value, tiffPath, mode);
+                    var lineElevationData = elevationService.GetLineGeometryElevation(wkt.Value, dataSet, mode);
                     lineElevationData = GeometryService.ComputePointsDistances(lineElevationData);
                     File.WriteAllText($"ElevationData_{wkt.Key}_{mode}.txt", elevationService.ExportElevationTable(lineElevationData));
                 }
@@ -108,16 +111,16 @@ namespace SampleApp
             return geom.ToGeography().STBuffer(60).GetBoundingBox();
         }
 
-        static void SpatialTrace_GeometryWithDEM(string wkt, string tiffPath)
+        static void SpatialTrace_GeometryWithDEM(IElevationService elevationService, string wkt, DEMDataSet dataSet)
         {
             SpatialTrace.Enable();
 
             SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
             SpatialTrace.TraceGeometry(geom, "Line");
 
-            IElevationService elevationService = new ElevationService();
-            var heightMap = elevationService.GetHeightMap(geom.ToGeography().STBuffer(60).GetBoundingBox(), tiffPath);
-            var lineElevationData = elevationService.GetLineGeometryElevation(WKT_DEM_INTERPOLATION_BUG, tiffPath);
+
+            var heightMap = elevationService.GetHeightMap(geom.ToGeography().STBuffer(60).GetBoundingBox(), dataSet);
+            var lineElevationData = elevationService.GetLineGeometryElevation(WKT_DEM_INTERPOLATION_BUG, dataSet);
 
             SpatialTrace.Indent("Line Segments");
             int i = 0;

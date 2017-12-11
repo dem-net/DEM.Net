@@ -108,23 +108,35 @@ namespace DEM.Net.Lib.Services
             return metadata;
         }
 
-        public List<FileMetadata> LoadManifestMetadata(string tiffPath)
+        public List<FileMetadata> LoadManifestMetadata(DEMDataSet dataset, bool force)
         {
-            if (_metadataCatalogCache.ContainsKey(tiffPath) == false)
+            string localPath = GetLocalDEMPath(dataset);
+
+            if (force && _metadataCatalogCache.ContainsKey(localPath))
             {
-                string manifestDir = Path.Combine(tiffPath, MANIFEST_DIR);
-                string[] manifestFiles = Directory.GetFiles(manifestDir, "*.json");
-                List<FileMetadata> metaList = new List<FileMetadata>(manifestFiles.Length);
-
-                foreach (var file in manifestFiles)
-                {
-                    string jsonContent = File.ReadAllText(file);
-                    metaList.Add(JsonConvert.DeserializeObject<FileMetadata>(jsonContent));
-                }
-
-                _metadataCatalogCache[tiffPath] = metaList;
+                _metadataCatalogCache.Remove(localPath);
             }
-            return _metadataCatalogCache[tiffPath];
+            if (_metadataCatalogCache.ContainsKey(localPath) == false)
+            {
+                string manifestDir = Path.Combine(localPath, MANIFEST_DIR);
+                var manifestDirectories = Directory.EnumerateDirectories(localPath, MANIFEST_DIR, SearchOption.AllDirectories);
+
+                List<FileMetadata> metaList = new List<FileMetadata>(32000);
+                foreach (var manifestDirectory in manifestDirectories)
+                {
+                    var manifestFiles = Directory.EnumerateFiles(manifestDirectory, "*.json");
+
+                    foreach (var file in manifestFiles)
+                    {
+                        string jsonContent = File.ReadAllText(file);
+                        metaList.Add(JsonConvert.DeserializeObject<FileMetadata>(jsonContent));
+                    }
+
+                    _metadataCatalogCache[localPath] = metaList;
+                }
+               
+            }
+            return _metadataCatalogCache[localPath];
         }
 
         public void DumpTiffTags(Tiff tiff)
@@ -159,9 +171,10 @@ namespace DEM.Net.Lib.Services
         /// <param name="directoryPath">GeoTIFF files directory</param>
         /// <param name="generateBitmaps">If true, bitmaps with height map will be generated (heavy memory usage and waaaay slower)</param>
         /// <param name="force">If true, force regeneration of all files. If false, only missing files will be generated.</param>
-        public void GenerateDirectoryMetadata(string directoryPath, bool generateBitmaps, bool force)
+        public void GenerateDirectoryMetadata(DEMDataSet dataset, bool generateBitmaps, bool force)
         {
-            string[] files = Directory.GetFiles(directoryPath, "*.tif", SearchOption.TopDirectoryOnly);
+            string directoryPath = GetLocalDEMPath(dataset);
+            var files = Directory.EnumerateFiles(directoryPath, "*" + dataset.FileFormat.FileExtension, SearchOption.AllDirectories);
             ParallelOptions options = new ParallelOptions();
             if (generateBitmaps)
             {

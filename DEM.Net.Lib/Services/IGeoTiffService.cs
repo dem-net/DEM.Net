@@ -7,7 +7,7 @@ namespace DEM.Net.Lib.Services
     {
         FileMetadata ParseMetadata(GeoTiff tiff);
         FileMetadata ParseMetadata(string fileName);
-        List<FileMetadata> LoadManifestMetadata(string tiffPath);
+        List<FileMetadata> LoadManifestMetadata(DEMDataSet dataSet, bool force);
 
         string LocalDirectory { get; }
         string GetLocalDEMPath(DEMDataSet dataset);
@@ -21,7 +21,7 @@ namespace DEM.Net.Lib.Services
         /// <param name="directoryPath">GeoTIFF files directory</param>
         /// <param name="generateBitmaps">If true, bitmaps with height map will be generated (heavy memory usage and waaaay slower)</param>
         /// <param name="force">If true, force regeneration of all files. If false, only missing files will be generated.</param>
-        void GenerateDirectoryMetadata(string directoryPath, bool generateBitmaps, bool force);
+        void GenerateDirectoryMetadata(DEMDataSet dataSet, bool generateBitmaps, bool force);
 
 
         /// <summary>

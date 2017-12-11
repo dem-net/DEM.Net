@@ -62,6 +62,7 @@
     <Compile Include="Helpers\UrlHelper.cs" />
     <Compile Include="Model\BoundingBox.cs" />
     <Compile Include="Model\DEMDataSet.cs" />
+    <Compile Include="Model\DEMFileFormat.cs" />
     <Compile Include="Model\DemFileReport.cs" />
     <Compile Include="Model\GDALSource.cs" />
     <Compile Include="Services\DiagnosticUtils.cs" />

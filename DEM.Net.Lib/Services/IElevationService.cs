@@ -6,19 +6,21 @@ namespace DEM.Net.Lib.Services
     public interface IElevationService
     {
 
+        void DownloadMissingFiles(DEMDataSet dataSet, BoundingBox bbox = null);
+
         /// <summary>
         /// Extract elevation data along line path
         /// </summary>
         /// <param name="lineWKT"></param>
         /// <param name="geoTiffRepository"></param>
         /// <returns></returns>
-        List<GeoPoint> GetLineGeometryElevation(string lineWKT, string geoTiffRepository, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
+        List<GeoPoint> GetLineGeometryElevation(string lineWKT, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
 
         IInterpolator GetInterpolator(InterpolationMode interpolationMode);
 
         string ExportElevationTable(List<GeoPoint> lineElevationData);
 
-        HeightMap GetHeightMap(BoundingBox bbox, string tiffPath);
+        HeightMap GetHeightMap(BoundingBox bbox, DEMDataSet dataSet);
 
 
 
@@ -52,7 +54,7 @@ namespace DEM.Net.Lib.Services
 
         BoundingBox GetSegmentBoundingBox(double xStart, double yStart, double xEnd, double yEnd);
 
-        List<FileMetadata> GetCoveringFiles(BoundingBox bbox, string tiffPath, List<FileMetadata> subSet = null);
+        List<FileMetadata> GetCoveringFiles(BoundingBox bbox, DEMDataSet dataSet, List<FileMetadata> subSet = null);
 
         bool IsBboxInTile(double originLatitude, double originLongitude, BoundingBox bbox);
         bool IsPointInTile(FileMetadata tileMetadata, GeoPoint point);

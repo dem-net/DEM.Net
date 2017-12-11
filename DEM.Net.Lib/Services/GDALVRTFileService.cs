@@ -67,7 +67,7 @@ namespace DEM.Net.Lib.Services
 
                 if (download)
                 {
-                    Trace.TraceInformation($"Donwloading file from {dataSet.VRTFileUrl}...");
+                    Trace.TraceInformation($"Downloading file from {dataSet.VRTFileUrl}...");
                     using (WebClient webClient = new WebClient())
                     {
                         webClient.DownloadFile(dataSet.VRTFileUrl, _vrtFileName);
@@ -84,7 +84,6 @@ namespace DEM.Net.Lib.Services
         }
 
         private double[] _geoTransform;
-        private double _noDataValue;
         private Dictionary<string, string> _properties;
         /// <summary>
         /// Enumerates throught all the sources

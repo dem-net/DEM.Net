@@ -3,9 +3,11 @@ using DEM.Net.Lib.Services.Interpolation;
 using Microsoft.SqlServer.Types;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,9 +16,42 @@ namespace DEM.Net.Lib.Services
     public class ElevationService : IElevationService
     {
         private readonly IGeoTiffService _IGeoTiffService;
-        public ElevationService()
+        public ElevationService(IGeoTiffService geoTiffService)
         {
-            _IGeoTiffService = new GeoTiffService();
+            _IGeoTiffService = geoTiffService;
+        }
+
+        public void DownloadMissingFiles(DEMDataSet dataSet, BoundingBox bbox = null)
+        {
+            var report = _IGeoTiffService.GenerateReport(dataSet, bbox);
+            List<DemFileReport> v_files = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
+
+            if (v_files.Count == 0)
+            {
+                Trace.TraceInformation("No missing file(s).");
+            }
+            else
+            {
+                Trace.TraceInformation($"Downloading {v_files.Count} missing file(s).");
+            }
+            Parallel.ForEach(v_files, new ParallelOptions { MaxDegreeOfParallelism = 2 }, file =>
+            //Parallel.ForEach(v_files, file =>
+            {
+                using (WebClient wc = new WebClient())
+                {
+                    // Create directories if not existing
+                    new FileInfo(file.LocalName).Directory.Create();
+
+                    Trace.TraceInformation($"Downloading file {file.URL}...");
+                    wc.DownloadFile(file.URL, _IGeoTiffService.GetLocalDEMFilePath(dataSet, file.LocalName));
+                }
+            });
+
+            if (v_files.Any())
+            {
+                _IGeoTiffService.GenerateDirectoryMetadata(dataSet, false, false);
+                _IGeoTiffService.LoadManifestMetadata(dataSet, true);
+            }
         }
 
         /// <summary>
@@ -25,12 +60,12 @@ namespace DEM.Net.Lib.Services
         /// <param name="lineWKT"></param>
         /// <param name="geoTiffRepository"></param>
         /// <returns></returns>
-        public List<GeoPoint> GetLineGeometryElevation(string lineWKT, string geoTiffRepository, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
+        public List<GeoPoint> GetLineGeometryElevation(string lineWKT, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
             BoundingBox bbox = GeometryService.GetBoundingBox(lineWKT);
             //HeightMap heightMap = GeoTiffService.GetHeightMap(bbox, geoTiffRepository);
             SqlGeometry geom = GeometryService.ParseWKTAsGeometry(lineWKT);
-            List<FileMetadata> tiles = this.GetCoveringFiles(bbox, geoTiffRepository);
+            List<FileMetadata> tiles = this.GetCoveringFiles(bbox, dataSet);
 
             // Init interpolator
             IInterpolator interpolator = GetInterpolator(interpolationMode);
@@ -44,7 +79,7 @@ namespace DEM.Net.Lib.Services
             bool isFirstSegment = true; // used to return first point only for first segments, for all other segments last point will be returned
             foreach (SqlGeometry segment in geom.Segments())
             {
-                List<FileMetadata> segTiles = this.GetCoveringFiles(segment.GetBoundingBox(), geoTiffRepository, tiles);
+                List<FileMetadata> segTiles = this.GetCoveringFiles(segment.GetBoundingBox(), dataSet, tiles);
 
                 // Find all intersection with segment and DEM grid
                 List<GeoPoint> intersections = this.FindSegmentIntersections(segment.STStartPoint().STX.Value, segment.STStartPoint().STY.Value,
@@ -88,11 +123,11 @@ namespace DEM.Net.Lib.Services
             return sb.ToString();
         }
 
-        public HeightMap GetHeightMap(BoundingBox bbox, string tiffPath)
+        public HeightMap GetHeightMap(BoundingBox bbox, DEMDataSet dataSet)
         {
             // Locate which files are needed
             // Find files matching coords
-            List<FileMetadata> bboxMetadata = GetCoveringFiles(bbox, tiffPath);
+            List<FileMetadata> bboxMetadata = GetCoveringFiles(bbox, dataSet);
 
             HeightMap heightMap = null;
             // get height map for each file at bbox
@@ -356,12 +391,12 @@ namespace DEM.Net.Lib.Services
             return new BoundingBox(xmin, xmax, ymin, ymax);
         }
 
-        public List<FileMetadata> GetCoveringFiles(BoundingBox bbox, string tiffPath, List<FileMetadata> subSet = null)
+        public List<FileMetadata> GetCoveringFiles(BoundingBox bbox, DEMDataSet dataSet, List<FileMetadata> subSet = null)
         {
             // Locate which files are needed
 
             // Load metadata catalog
-            List<FileMetadata> metadataCatalog = subSet ?? _IGeoTiffService.LoadManifestMetadata(tiffPath);
+            List<FileMetadata> metadataCatalog = subSet ?? _IGeoTiffService.LoadManifestMetadata(dataSet, false);
 
             // Find files matching coords
             List<FileMetadata> bboxMetadata = new List<FileMetadata>(metadataCatalog.Where(m => IsBboxInTile(m.OriginLatitude, m.OriginLongitude, bbox)));
@@ -394,7 +429,7 @@ namespace DEM.Net.Lib.Services
         }
 
 
-      
+
 
         public HeightMap ParseGeoDataInBBox(GeoTiff tiff, BoundingBox bbox, FileMetadata metadata)
         {
