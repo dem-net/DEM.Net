@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Lib.Services
 {
-    public class ElevationService : IElevationService
+    public class ElevationService
     {
         private readonly IGeoTiffService _IGeoTiffService;
         public ElevationService(IGeoTiffService geoTiffService)
@@ -388,15 +388,6 @@ namespace DEM.Net.Lib.Services
             return new BoundingBox(xmin, xmax, ymin, ymax);
         }
 
-        public BoundingBox GetSegmentBoundingBox(double xStart, double yStart, double xEnd, double yEnd)
-        {
-            double xmin = Math.Min(xStart, xEnd);
-            double xmax = Math.Max(xStart, xEnd);
-            double ymin = Math.Min(yStart, yEnd);
-            double ymax = Math.Max(yStart, yEnd);
-            return new BoundingBox(xmin, xmax, ymin, ymax);
-        }
-
         public List<FileMetadata> GetCoveringFiles(BoundingBox bbox, DEMDataSet dataSet, List<FileMetadata> subSet = null)
         {
             // Locate which files are needed
@@ -433,9 +424,6 @@ namespace DEM.Net.Lib.Services
             bool isInside = isInsideX && isInsideY;
             return isInside;
         }
-
-
-
 
         public HeightMap ParseGeoDataInBBox(GeoTiff tiff, BoundingBox bbox, FileMetadata metadata)
         {
@@ -484,97 +472,6 @@ namespace DEM.Net.Lib.Services
             return heightMap;
         }
 
-        /// <summary>
-        /// Extract elevation data for given coordinates
-        /// If not exactly on grid DEM, will interpolate elevation from neighbor points
-        /// </summary>
-        /// <param name="tiff"></param>
-        /// <param name="metadata"></param>
-        /// <param name="lat"></param>
-        /// <param name="lon"></param>
-        /// <returns></returns>
-        public float ParseGeoDataAtPoint_old(Tiff tiff, FileMetadata metadata, double lat, double lon)
-        {
-            //const double epsilon = (Double.Epsilon * 100);
-            byte[] scanline = new byte[metadata.ScanlineSize];
-            ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
-            float noData = float.Parse(metadata.NoDataValue);
-            const float NO_DATA_OUT = -100;
-
-            // precise position on the grid (with commas)
-            double ypos = MathHelper.Clamp((lat - metadata.StartLat) / metadata.pixelSizeY, 0, metadata.Height - 1);
-            double xpos = MathHelper.Clamp((lon - metadata.StartLon) / metadata.pixelSizeX, 0, metadata.Width - 1);
-
-            // If pure integers, then it's on the grid
-            //bool xOnGrid = Math.Abs(xpos % 1) <= epsilon;
-            //bool yOnGrid = Math.Abs(ypos % 1) <= epsilon;
-            float xInterpolationAmount = (float)xpos % 1;
-            float yInterpolationAmount = (float)ypos % 1;
-
-            bool xOnGrid = xInterpolationAmount == 0;
-            bool yOnGrid = yInterpolationAmount == 0;
-
-            // clamp all values to avoid OutOfRangeExceptions
-            int clampedXCeiling = MathHelper.Clamp((int)Math.Ceiling(xpos), 0, metadata.Width - 1);
-            int clampedXFloor = MathHelper.Clamp((int)Math.Floor(xpos), 0, metadata.Width - 1);
-            int clampedYCeiling = MathHelper.Clamp((int)Math.Ceiling(ypos), 0, metadata.Height - 1);
-            int clampedYFloor = MathHelper.Clamp((int)Math.Floor(ypos), 0, metadata.Height - 1);
-            int clampedX = MathHelper.Clamp((int)Math.Round(xpos, 0), 0, metadata.Width - 1);
-            int clampedY = MathHelper.Clamp((int)Math.Round(ypos, 0), 0, metadata.Height - 1);
-
-
-            float heightValue = 0;
-            // If xOnGrid and yOnGrid, we are on a grid intersection, and that's all
-            if (xOnGrid && yOnGrid)
-            {
-                heightValue = ParseGeoDataAtPoint(tiff, metadata, (int)Math.Round(xpos, 0), (int)Math.Round(ypos, 0));
-            }
-            else
-            {
-
-                if (xOnGrid)
-                {
-                    // If xOnGrid and not yOnGrid we are on grid vertical line
-                    // We need elevations for upper and lower grid points (along y axis)
-                    float bottom = ParseGeoDataAtPoint(tiff, metadata, clampedX, clampedYFloor);
-                    float top = ParseGeoDataAtPoint(tiff, metadata, clampedX, clampedYCeiling);
-                    if (bottom == noData) bottom = top;
-                    if (top == noData) top = bottom;
-                    heightValue = MathHelper.Lerp(bottom, top, yInterpolationAmount);
-                    heightValue = MathHelper.Clamp(heightValue, NO_DATA_OUT, float.MaxValue);
-                }
-                else if (yOnGrid)
-                {
-                    // If yOnGrid and not xOnGrid we are on grid horizontal line
-                    // We need elevations for left and right grid points (along x axis)
-                    float left = ParseGeoDataAtPoint(tiff, metadata, clampedXFloor, clampedY);
-                    float right = ParseGeoDataAtPoint(tiff, metadata, clampedXCeiling, clampedY);
-                    if (left == noData) left = right;
-                    if (right == noData) right = left;
-                    heightValue = MathHelper.Lerp(left, right, xInterpolationAmount);
-                    heightValue = MathHelper.Clamp(heightValue, NO_DATA_OUT, float.MaxValue);
-                }
-                else
-                {
-                    // If not yOnGrid and not xOnGrid we are on grid horizontal line
-                    // We need elevations for top, bottom, left and right grid points (along x axis and y axis)
-                    float bottom = ParseGeoDataAtPoint(tiff, metadata, clampedX, clampedYFloor);
-                    float top = ParseGeoDataAtPoint(tiff, metadata, clampedX, clampedYCeiling);
-                    float left = ParseGeoDataAtPoint(tiff, metadata, clampedXFloor, clampedY);
-                    float right = ParseGeoDataAtPoint(tiff, metadata, clampedXCeiling, clampedY);
-                    if (bottom == noData) bottom = top;
-                    if (top == noData) top = bottom;
-                    if (left == noData) left = right;
-                    if (right == noData) right = left;
-                    float heightValueX = MathHelper.Lerp(left, right, xInterpolationAmount);
-                    float heightValueY = MathHelper.Lerp(bottom, top, yInterpolationAmount);
-                    if (heightValueX == noData) heightValueX = heightValueY;
-                    if (heightValueY == noData) heightValueY = heightValueX;
-                    heightValue = (heightValueX + heightValueY) / 2f;
-                }
-            }
-            return heightValue;
-        }
         public float ParseGeoDataAtPoint(Tiff tiff, FileMetadata metadata, double lat, double lon, IInterpolator interpolator)
         {
             //const double epsilon = (Double.Epsilon * 100);
@@ -647,42 +544,6 @@ namespace DEM.Net.Lib.Services
                 return valueIfAllBad;
             }
         }
-
-        /// <summary>
-        /// 
-        /// 
-        /// The concept of linear interpolation between two points can be extended to bilinear interpolation within 
-        /// the grid cell. The function is said to be linear in each variable when the other is held fixed. 
-        /// 
-        /// For example, to determine the height hi at x, y in Figure 5, the elevations at y on the vertical 
-        /// boundaries of the grid cell can be linearly interpolated between h1 and h3 at ha, and h2 and h4 at hb.
-        /// Finally, the required elevation at x can be linearly interpolated between ha and hb. 
-        /// 
-        /// Source : http://www.geocomputation.org/1999/082/gc_082.htm
-        /// </summary>
-        /// <param name="h1"></param>
-        /// <param name="h2"></param>
-        /// <param name="h3"></param>
-        /// <param name="h4"></param>
-        /// <returns></returns>
-        public float BilinearInterpolation(float h1, float h2, float h3, float h4, float x, float y)
-        {
-            // bilinear
-            float ha = MathHelper.Lerp(h3, h1, y);
-            float hb = MathHelper.Lerp(h4, h2, y);
-            float hi_linear = MathHelper.Lerp(ha, hb, x);
-
-            // hyperbolic
-            float a00 = h1;
-            float a10 = h2 - h1;
-            float a01 = h3 - h1;
-            float a11 = h1 - h2 - h3 + h4;
-            float hi_hyperbolic = a00 + a10 * x + a01 * y + a11 * x * y;
-
-
-            return hi_linear;
-        }
-
 
         public float ParseGeoDataAtPoint(Tiff tiff, FileMetadata metadata, int x, int y)
         {

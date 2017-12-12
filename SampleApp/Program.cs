@@ -12,6 +12,7 @@ using System.Net;
 using System.IO.Compression;
 using System.Xml;
 using System.Diagnostics;
+using System.Windows.Media.Imaging;
 
 namespace SampleApp
 {
@@ -24,82 +25,109 @@ namespace SampleApp
         {
             SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
             IGeoTiffService geoTiffService = new GeoTiffService();
-            IElevationService elevationService = new ElevationService(geoTiffService);
+            ElevationService elevationService = new ElevationService(geoTiffService);
 
-            Test_GetMetadataFromVRT(elevationService, DEMDataSet.AW3D30);
-           
-            elevationService.DownloadMissingFiles(DEMDataSet.AW3D30, GetBoundingBox(WKT_AIX_BAYONNE_EST_OUEST));
-            //elevationService.DownloadMissingFiles(DEMDataSet.SRTM_GL3_srtm, GetBoundingBox(WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES));
+            //GeoTiffBenchmark(geoTiffService);
 
-            //GenerateDownloadReports(geoTiffService);
+            //Test_GetMetadataFromVRT(elevationService, DEMDataSet.AW3D30);
 
-            geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, false);
+            //elevationService.DownloadMissingFiles(DEMDataSet.AW3D30, GetBoundingBox(WKT_AIX_BAYONNE_EST_OUEST));
+            ////elevationService.DownloadMissingFiles(DEMDataSet.SRTM_GL3_srtm, GetBoundingBox(WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES));
 
-            // Spatial trace of line + segments + interpolated point + dem grid
-            //SpatialTrace_GeometryWithDEM(WKT_DEM_INTERPOLATION_BUG, samplePath);
-            LineDEMTests(elevationService, DEMDataSet.AW3D30);
+            ////GenerateDownloadReports(geoTiffService);
+
+            //geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, false);
+
+            //// Spatial trace of line + segments + interpolated point + dem grid
+            ////SpatialTrace_GeometryWithDEM(WKT_DEM_INTERPOLATION_BUG, samplePath);
+            LineDEMTests(elevationService, DEMDataSet.AW3D30, 100);
+
+            Console.ReadLine();
 
         }
 
-        private static void Test_GetMetadataFromVRT(IElevationService elevationService, DEMDataSet dataSet)
+        private static void GeoTiffBenchmark(IGeoTiffService geoTiffService)
+        {
+            string[] geoTiffFiles = Directory.GetFiles(@"C:\Users\ext.dev.xfi\AppData\Roaming\DEM.Net\AW3D30\AW3D30_alos", "*.tif", SearchOption.AllDirectories);
+
+
+
+            Stopwatch swCoreTiff = Stopwatch.StartNew();
+            for (int i = 0; i < 10; i++)
+            {
+                foreach (var file in geoTiffFiles)
+                {
+                    GeoTiffToInf.GeoTiff geotiff = GeoTiffToInf.GeoTiff.FromFile(file);
+                }
+            }
+            swCoreTiff.Stop();
+
+
+
+            Stopwatch swGeoTiff = Stopwatch.StartNew();
+            for (int i = 0; i < 10; i++)
+            {
+                foreach (var file in geoTiffFiles)
+                {
+                    FileMetadata metaData = geoTiffService.ParseMetadata(file);
+                }
+            }
+            swGeoTiff.Stop();
+
+            swCoreTiff.Start();
+            for (int i = 0; i < 10; i++)
+            {
+                foreach (var file in geoTiffFiles)
+                {
+                    GeoTiffToInf.GeoTiff geotiff = GeoTiffToInf.GeoTiff.FromFile(file);
+                }
+            }
+            swCoreTiff.Stop();
+
+
+
+            swGeoTiff.Start();
+            for (int i = 0; i < 10; i++)
+            {
+                foreach (var file in geoTiffFiles)
+                {
+                    FileMetadata metaData = geoTiffService.ParseMetadata(file);
+                }
+            }
+            swGeoTiff.Stop();
+
+            long geoTiffMs = swGeoTiff.ElapsedMilliseconds;
+
+            long codeTiffMs = swCoreTiff.ElapsedMilliseconds;
+
+            Trace.WriteLine($"GeoTiff : {geoTiffMs} ms, Native : {codeTiffMs}");
+        }
+
+        private static void Test_GetMetadataFromVRT(ElevationService elevationService, DEMDataSet dataSet)
         {
             using (GDALVRTFileService gdalService = new GDALVRTFileService(elevationService.GetDEMLocalPath(dataSet), dataSet))
             {
                 gdalService.Setup();
 
                 GDALSource source = gdalService.Sources().FirstOrDefault(s => s.SourceFileName.EndsWith("N043E006_AVE_DSM.tif"));
-              
+
 
             }
         }
 
-        private static void DownloadMissingFiles(IGeoTiffService geoTiffService, DEMDataSet dataSet, DEM.Net.Lib.BoundingBox bbox = null)
+
+        static void LineDEMTests(ElevationService elevationService, DEMDataSet dataSet, int numSamples)
         {
-            var report = geoTiffService.GenerateReport(dataSet, bbox);
-            List<DemFileReport> v_files = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
 
-            if (v_files.Count == 0)
-            {
-                Trace.TraceInformation("No missing file(s).");
-            }
-            else
-            {
-                Trace.TraceInformation($"Downloading {v_files.Count} missing file(s).");
-            }
-            Parallel.ForEach(v_files, new ParallelOptions { MaxDegreeOfParallelism = 2 }, file =>
-            //Parallel.ForEach(v_files, file =>
-            {
-                using (WebClient wc = new WebClient())
-                {
-                    // Create directories if not existing
-                    new FileInfo(file.LocalName).Directory.Create();
-
-                    Trace.TraceInformation($"Downloading file {file.URL}...");
-                    wc.DownloadFile(file.URL, geoTiffService.GetLocalDEMFilePath(dataSet, file.LocalName)); 
-                }
-            });
-        }
-        
-
-        private static void GenerateDownloadReports(IGeoTiffService geoTiffService)
-        {
-            string report = null;
-            report = geoTiffService.GenerateReportAsString(DEMDataSet.AW3D30);
-            File.WriteAllText("AW3D30_alos.report.txt", report);
-
-            report = geoTiffService.GenerateReportAsString(DEMDataSet.SRTM_GL3_srtm);
-            File.WriteAllText("GL3_90m_srtm.report.txt", report);
-        }
-
-        static void LineDEMTests(IElevationService elevationService, DEMDataSet dataSet)
-        {
             Dictionary<string, string> dicWktByName = new Dictionary<string, string>();
-            dicWktByName.Add(nameof(WKT_GRANDE_BOUCLE), WKT_GRANDE_BOUCLE);
-            dicWktByName.Add(nameof(WKT_PETITE_BOUCLE), WKT_PETITE_BOUCLE);
-            dicWktByName.Add(nameof(WKT_GRAND_TRAJET), WKT_GRAND_TRAJET);
-            dicWktByName.Add(nameof(WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES), WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES);
-            dicWktByName.Add(nameof(WKT_AIX_BAYONNE_EST_OUEST), WKT_AIX_BAYONNE_EST_OUEST);
-            dicWktByName.Add(nameof(WKT_BAYONNE_NICE_DIRECT), WKT_BAYONNE_NICE_DIRECT);
+            //dicWktByName.Add(nameof(WKT_EXAMPLE_GOOGLE), WKT_EXAMPLE_GOOGLE);
+            dicWktByName.Add(nameof(WKT_BREST_NICE), WKT_BREST_NICE); 
+            //dicWktByName.Add(nameof(WKT_GRANDE_BOUCLE), WKT_GRANDE_BOUCLE);
+            //dicWktByName.Add(nameof(WKT_PETITE_BOUCLE), WKT_PETITE_BOUCLE);
+            //dicWktByName.Add(nameof(WKT_GRAND_TRAJET), WKT_GRAND_TRAJET);
+            //dicWktByName.Add(nameof(WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES), WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES);
+            //dicWktByName.Add(nameof(WKT_AIX_BAYONNE_EST_OUEST), WKT_AIX_BAYONNE_EST_OUEST);
+            //dicWktByName.Add(nameof(WKT_BAYONNE_NICE_DIRECT), WKT_BAYONNE_NICE_DIRECT);
 
             InterpolationMode[] modes = { InterpolationMode.Bilinear, InterpolationMode.Hyperbolic };
 
@@ -111,8 +139,34 @@ namespace SampleApp
                 {
                     var lineElevationData = elevationService.GetLineGeometryElevation(wkt.Value, dataSet, mode);
                     lineElevationData = GeometryService.ComputePointsDistances(lineElevationData);
+                    var sampledLineElevationData = SampleList(lineElevationData, numSamples).ToList();
                     File.WriteAllText($"ElevationData_{wkt.Key}_{mode}.txt", elevationService.ExportElevationTable(lineElevationData));
+                    File.WriteAllText($"ElevationData_{wkt.Key}_{mode}_sampled.txt", elevationService.ExportElevationTable(sampledLineElevationData));
                 }
+            }
+        }
+
+        private static List<GeoPoint> SampleList(List<GeoPoint> lineElevationData, int numSamples)
+        {
+
+            int chunksize = lineElevationData.Count / numSamples;
+            if (lineElevationData.Count <= numSamples)
+            {
+                return lineElevationData;
+            }
+
+            List<GeoPoint> result = GetNth(lineElevationData, chunksize).ToList();
+            return result;
+        }
+
+        private static IEnumerable<T> GetNth<T>(List<T> list, int n)
+        {
+            for (int i = 0; i < list.Count; i += n)
+                yield return list[i];
+
+            if (list.Count % n != 0)
+            {
+                yield return list.Last();
             }
         }
 
@@ -122,7 +176,7 @@ namespace SampleApp
             return geom.ToGeography().STBuffer(60).GetBoundingBox();
         }
 
-        static void SpatialTrace_GeometryWithDEM(IElevationService elevationService, string wkt, DEMDataSet dataSet)
+        static void SpatialTrace_GeometryWithDEM(ElevationService elevationService, string wkt, DEMDataSet dataSet)
         {
             SpatialTrace.Enable();
 
@@ -175,6 +229,9 @@ namespace SampleApp
 
         #region Sample WKT
 
+        private const string WKT_EXAMPLE_GOOGLE = "LINESTRING(-118.291994 36.578581,-116.83171 36.23998)";
+        private const string WKT_BREST_NICE = "LINESTRING(-4.482421875 48.45539196446375,6.943359375 43.5612374716474)";
+        private const string WKT_PARIS_AIX = "LINESTRING(2.340087890625 48.87047363512827,2.362060546875 48.71124007358497,2.581787109375 48.376663195419056,3.043212890625 48.091266595037794,3.31787109375 47.92220925866507,3.779296875 47.789516887184,4.010009765625 47.48600498307925,4.39453125 47.426577530514564,4.833984375 47.068601854632306,4.833984375 46.86617699946977,4.921875 46.35297057957134,4.735107421875 46.102161444290594,4.779052734375 45.80427288878466,4.81201171875 45.46627091868822,4.910888671875 44.9321165649521,4.7021484375 44.282939125313995,4.888916015625 44.01491649204199,5.1416015625 43.554893125282966,5.460205078125 43.53896711771029)";
         private const string WKT_GRANDE_BOUCLE = "LINESTRING(5.4471588134765625 43.54239685275213,5.447598695755005 43.54232686010967,5.448499917984009 43.54240462970736,5.450270175933838 43.54189912552898,5.451364517211914 43.54155693567945,5.451589822769165 43.54143250252535,5.452630519866943 43.5414247254447,5.452491044998169 43.54078700141682,5.453864336013794 43.54060034920576,5.454164743423462 43.541385840026344,5.455001592636108 43.54261460712012,5.455162525177002 43.54268459942852,5.455119609832764 43.54283236070161,5.454883575439453 43.54277014547287,5.453628301620483 43.54329897287061,5.452373027801514 43.54342340217237,5.452415943145752 43.54387445623844,5.452297925949097 43.544457710803165,5.452029705047607 43.54497874677534,5.452061891555786 43.545134279028574,5.4524266719818115 43.545305364043664,5.452308654785156 43.54640185193005,5.45246958732605 43.54694620020958,5.452094078063965 43.54795711968697,5.452297925949097 43.54830704940204,5.451525449752808 43.54905355933778,5.451074838638306 43.549014678840194,5.450838804244995 43.54906133543429,5.4500555992126465 43.54995557984124,5.449733734130859 43.550849810980594,5.449916124343872 43.55092756958308,5.450259447097778 43.55180623481941,5.450087785720825 43.552140590792334,5.449733734130859 43.55249827187253,5.449519157409668 43.553019238343815,5.4480063915252686 43.55332248541017,5.447877645492554 43.5532680565619,5.4470837116241455 43.55270043850059,5.447072982788086 43.55255270141602,5.449637174606323 43.55090424201289,5.449744462966919 43.55084203511484,5.449948310852051 43.55034437761901,5.450077056884766 43.549940027877945,5.450377464294434 43.549574555585714,5.448800325393677 43.54892136554366,5.448875427246094 43.54864142478726,5.448735952377319 43.54834593035609,5.448349714279175 43.54784047599715,5.447491407394409 43.54718726716287,5.44721245765686 43.54707062198327,5.446654558181763 43.5473272410804,5.44622540473938 43.547412780536675,5.4457855224609375 43.54737389898068,5.445528030395508 43.547412780536675,5.445120334625244 43.54584972222492,5.445195436477661 43.54501762987626,5.445624589920044 43.54444215742132,5.445399284362793 43.542715707095056,5.445302724838257 43.5425912763326,5.445420742034912 43.54254461473046,5.445570945739746 43.54261460712012,5.4471588134765625 43.54239685275213)";
         private const string WKT_PETITE_BOUCLE = "LINESTRING(5.44771671295166 43.54234241403722,5.450162887573242 43.54196911866801,5.452415943145752 43.541378062939685,5.452544689178467 43.54070922973245,5.453896522521973 43.54063145794773,5.454990863800049 43.542715707095056,5.453681945800781 43.543275642347915,5.4500555992126465 43.544177749316354,5.448317527770996 43.544768777596964,5.445957183837891 43.54703951656395,5.44546365737915 43.547506096168696,5.445120334625244 43.54526648112833,5.445678234100342 43.544177749316354,5.445399284362793 43.54256016860185,5.44771671295166 43.54234241403722)";
         private const string WKT_GRAND_TRAJET = "LINESTRING(5.447738170623779 43.54234241403722,5.4471588134765625 43.54238907579587,5.4467082023620605 43.54249795309221,5.445442199707031 43.54263793789861,5.445570945739746 43.544457710803165,5.445120334625244 43.545313140623726,5.445120334625244 43.54605968763827,5.4454851150512695 43.54755275393054,5.445050597190857 43.54756830650979,5.444814562797546 43.54747499097408,5.44447660446167 43.547319464760186,5.4441118240356445 43.547319464760186,5.443317890167236 43.54747110282363,5.44297456741333 43.54743610945823,5.442625880241394 43.54730002395522,5.442357659339905 43.54709395103727,5.4420894384384155 43.54691898291237,5.441558361053467 43.54686066009121,5.441048741340637 43.54690731835265,5.440464019775391 43.54705895745292,5.440303087234497 43.547163938145005,5.440260171890259 43.54748665542395,5.4400938749313354 43.54761107608205,5.439755916595459 43.547661621901064,5.439584255218506 43.54812042047349,5.439535975456238 43.548551998993865,5.439498424530029 43.549636763791966,5.439112186431885 43.55005666750473,5.436794757843018 43.55179845907704,5.4358720779418945 43.55228055320695,5.435550212860107 43.552902604450466,5.435013771057129 43.553275832114664,5.434691905975342 43.553213627664476,5.434584617614746 43.55259157963129,5.434906482696533 43.552296104566295,5.434370040893555 43.55102087977367,5.433297157287598 43.550538775567375,5.431044101715088 43.54999445973189,5.429842472076416 43.549870043993536,5.428211688995361 43.55019663475889,5.427310466766357 43.55010332329225,5.426774024963379 43.54962121174641,5.426902770996094 43.548936917769765,5.427439212799072 43.5485014539215,5.4283833503723145 43.54730391211671,5.432267189025879 43.54119141255846,5.432717800140381 43.54008705264584,5.432631969451904 43.53862491121964,5.4320526123046875 43.53730273153031,5.426838397979736 43.52692650336303,5.426516532897949 43.52547960110387,5.426580905914307 43.52390819482177,5.427052974700928 43.522072242564995,5.428190231323242 43.51914705066751,5.428404808044434 43.5178400041918,5.428125858306885 43.51623727760756,5.427138805389404 43.51440109191845,5.4253363609313965 43.51287608167312,5.423233509063721 43.51200462994486,5.419907569885254 43.51124209936016,5.416581630706787 43.51010606653939,5.41301965713501 43.508300819714854,5.411109924316406 43.50694684916336,5.409865379333496 43.50582629884247,5.408470630645752 43.50398979639134,5.406968593597412 43.50089251739086,5.406453609466553 43.49846438857513,5.406582355499268 43.49513333506259,5.406625270843506 43.49427719349613,5.406560897827148 43.49329650733292,5.4062819480896 43.49320310782013,5.405981540679932 43.49331207390435,5.404994487762451 43.49480644607877,5.404157638549805 43.495569184288435,5.402441024780273 43.4985733451658,5.402162075042725 43.49805969094556,5.401604175567627 43.49712576298661,5.401303768157959 43.49588050323809,5.401153564453125 43.494977673862394,5.401260852813721 43.49385690137624,5.400681495666504 43.49317197461708,5.400488376617432 43.49187993253735,5.400831699371338 43.49077466978604,5.401153564453125 43.48904668326483,5.400295257568359 43.4879102327493,5.399415493011475 43.48706955696546,5.398836135864258 43.48649353161793,5.396690368652344 43.483021694960314,5.394952297210693 43.48095095299566,5.39379358291626 43.47917597482142,5.388686656951904 43.48093538323836,5.384116172790527 43.48292827955829,5.3827643394470215 43.484236082041896,5.38029670715332 43.482165381701805,5.37954568862915 43.481277916971784,5.377528667449951 43.479425097710845,5.376412868499756 43.47880228856128,5.375125408172607 43.47782135113263,5.373859405517578 43.47853759272874,5.372421741485596 43.47861544456456,5.371134281158447 43.478989131980235,5.369589328765869 43.47771235710197,5.368494987487793 43.47705838878934,5.368280410766602 43.47696496416688,5.367722511291504 43.476575693351926,5.368366241455078 43.474707158532745,5.368945598602295 43.47375729784957)";
