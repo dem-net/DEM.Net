@@ -52,7 +52,6 @@
     <Reference Include="PresentationCore" />
     <Reference Include="SqlServerSpatial.Toolkit, Version=0.1.4.24399, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SqlServerSpatial.Toolkit.1.0.1\lib\net45\SqlServerSpatial.Toolkit.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

@@ -16,11 +16,11 @@ using System.Windows.Media.Imaging;
 
 namespace SampleApp
 {
-
     class Program
     {
 
 
+        [STAThread]
         static void Main(string[] args)
         {
             SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
@@ -38,8 +38,8 @@ namespace SampleApp
 
             //geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, false);
 
-            //// Spatial trace of line + segments + interpolated point + dem grid
-            ////SpatialTrace_GeometryWithDEM(WKT_DEM_INTERPOLATION_BUG, samplePath);
+            //Spatial trace of line +segments + interpolated point + dem grid
+           // SpatialTrace_GeometryWithDEM(elevationService, WKT_BREST_SPAIN_OCEAN, DEMDataSet.AW3D30);
             LineDEMTests(elevationService, DEMDataSet.AW3D30, 100);
 
             Console.ReadLine();
@@ -121,7 +121,7 @@ namespace SampleApp
 
             Dictionary<string, string> dicWktByName = new Dictionary<string, string>();
             //dicWktByName.Add(nameof(WKT_EXAMPLE_GOOGLE), WKT_EXAMPLE_GOOGLE);
-            dicWktByName.Add(nameof(WKT_BREST_NICE), WKT_BREST_NICE); 
+            dicWktByName.Add(nameof(WKT_BREST_SPAIN_OCEAN), WKT_BREST_SPAIN_OCEAN); 
             //dicWktByName.Add(nameof(WKT_GRANDE_BOUCLE), WKT_GRANDE_BOUCLE);
             //dicWktByName.Add(nameof(WKT_PETITE_BOUCLE), WKT_PETITE_BOUCLE);
             //dicWktByName.Add(nameof(WKT_GRAND_TRAJET), WKT_GRAND_TRAJET);
@@ -183,10 +183,8 @@ namespace SampleApp
             SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
             SpatialTrace.TraceGeometry(geom, "Line");
 
-
-            var heightMap = elevationService.GetHeightMap(geom.ToGeography().STBuffer(60).GetBoundingBox(), dataSet);
-            var lineElevationData = elevationService.GetLineGeometryElevation(WKT_DEM_INTERPOLATION_BUG, dataSet);
-
+            List<FileMetadata> tiles = elevationService.GetCoveringFiles(geom.ToGeography().STBuffer(60).GetBoundingBox(), dataSet);
+           
             SpatialTrace.Indent("Line Segments");
             int i = 0;
             foreach (var seg in geom.Segments())
@@ -198,37 +196,26 @@ namespace SampleApp
             }
 
             SpatialTrace.Unindent();
-            SpatialTrace.Indent("DEM indexes");
+            SpatialTrace.Indent("DEM tiles");
             SpatialTrace.SetLineColor(Colors.Black);
-            foreach (var pt in heightMap.Coordinates)
+            foreach (var tile in tiles)
             {
-                SpatialTrace.TraceGeometry(SqlGeometry.Point(pt.Longitude, pt.Latitude, 4326), $"X: {pt.XIndex}, Y: {pt.YIndex}, Z: {pt.Altitude}", $"{pt.XIndex}/{pt.YIndex}/{pt.Altitude}");
-            }
-            SpatialTrace.Unindent();
-            SpatialTrace.Indent("DEM coords");
-            foreach (var pt in heightMap.Coordinates)
-            {
-                SpatialTrace.TraceGeometry(SqlGeometry.Point(pt.Longitude, pt.Latitude, 4326), $"X: {pt.Longitude:N5}, Y: {pt.Latitude:N5}, Z: {pt.Altitude}", $"{pt.Longitude:N4}/{pt.Latitude:N4}/{pt.Altitude}");
-            }
 
-            SpatialTrace.Unindent();
-            SpatialTrace.Indent("Line Elevation points");
-            SpatialTrace.SetFillColor(Colors.Red);
-            foreach (var pt in lineElevationData)
-            {
-                SpatialTrace.TraceGeometry(SqlGeometry.Point(pt.Longitude, pt.Latitude, 4326), $"X: {pt.XIndex}, Y: {pt.YIndex}, Z: {pt.Altitude}", $"{pt.Longitude:N4}/{pt.Latitude:N4}/{pt.Altitude:N2}");
+                SqlGeometry tileBbox = elevationService.GetTileBoundingBox(tile).AsGeomety();
+                SpatialTrace.TraceGeometry(tileBbox, $"{tile.ToString()}");
             }
-
             SpatialTrace.Unindent();
+
             // View spatial trace in bin\debug with spatial trace viewer
+            SpatialTrace.ShowDialog();
             SpatialTrace.Disable();
-
 
         }
 
 
         #region Sample WKT
 
+        private const string WKT_BREST_SPAIN_OCEAN = "LINESTRING(-4.519500732421875 43.373509919227104,-4.47418212890625 48.39966209090939)";
         private const string WKT_EXAMPLE_GOOGLE = "LINESTRING(-118.291994 36.578581,-116.83171 36.23998)";
         private const string WKT_BREST_NICE = "LINESTRING(-4.482421875 48.45539196446375,6.943359375 43.5612374716474)";
         private const string WKT_PARIS_AIX = "LINESTRING(2.340087890625 48.87047363512827,2.362060546875 48.71124007358497,2.581787109375 48.376663195419056,3.043212890625 48.091266595037794,3.31787109375 47.92220925866507,3.779296875 47.789516887184,4.010009765625 47.48600498307925,4.39453125 47.426577530514564,4.833984375 47.068601854632306,4.833984375 46.86617699946977,4.921875 46.35297057957134,4.735107421875 46.102161444290594,4.779052734375 45.80427288878466,4.81201171875 45.46627091868822,4.910888671875 44.9321165649521,4.7021484375 44.282939125313995,4.888916015625 44.01491649204199,5.1416015625 43.554893125282966,5.460205078125 43.53896711771029)";
