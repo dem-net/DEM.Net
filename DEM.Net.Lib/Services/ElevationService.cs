@@ -210,7 +210,7 @@ namespace DEM.Net.Lib.Services
         {
             // Group by tiff file for sequential and faster access
             var pointsByTileQuery = from point in intersections
-                                    let pointTile = new { Point = point, Tile = segTiles.First(t => this.IsPointInTile(t, point)) }
+                                    let pointTile = new { Point = point, Tile = segTiles.FirstOrDefault(t => this.IsPointInTile(t, point)) }
                                     group pointTile by pointTile.Tile into pointsByTile
                                     select pointsByTile;
 
@@ -338,7 +338,7 @@ namespace DEM.Net.Lib.Services
                 yield return line;
             }
         }
-        public IEnumerable<GeoSegment> GetDEMWestEastLines(List<FileMetadata> segTiles, GeoPoint northernSegPoint, GeoPoint southernSegPoint)
+        public IEnumerable<GeoSegment> GetDEMWestEastLines_old(List<FileMetadata> segTiles, GeoPoint northernSegPoint, GeoPoint southernSegPoint)
         {
             BoundingBox tilesBbox = GetTilesBoundingBox(segTiles);
 
@@ -378,6 +378,60 @@ namespace DEM.Net.Lib.Services
             }
         }
 
+        public IEnumerable<GeoSegment> GetDEMWestEastLines(List<FileMetadata> segTiles, GeoPoint northernSegPoint, GeoPoint southernSegPoint)
+        {
+            BoundingBox tilesBbox = GetTilesBoundingBox(segTiles);
+
+            FileMetadata curTile = segTiles.First(tile => IsPointInTile(tile, northernSegPoint));
+
+            double resolution = curTile.pixelSizeY;
+            double startLat = curTile.StartLat;
+
+            GeoPoint curPoint = northernSegPoint.Clone();
+            // Y Index in tile coords
+            int curIndex = (int)Math.Ceiling((startLat - curPoint.Latitude) / curTile.PixelScaleY);
+            while (IsPointInTile(curTile, curPoint))
+            {
+                if (curIndex >= curTile.Height)
+                {
+                    double latitude = startLat + (resolution * curIndex);
+                    if (latitude < southernSegPoint.Latitude)
+                    {
+                        break;
+                    }
+                    curPoint.Latitude = latitude;
+                    curTile = segTiles.FirstOrDefault(tile => IsPointInTile(tile, curPoint));
+                    if (curTile == null)
+                    {
+                        while (curTile == null && curPoint.Latitude > -90)
+                        {
+                            curIndex++;
+                            curPoint.Latitude = startLat + (resolution * curIndex);
+                            curTile = segTiles.FirstOrDefault(tile => IsPointInTile(tile, curPoint));
+                        }
+                        if (curTile == null) break;
+                    }
+
+                    resolution = curTile.pixelSizeY;
+                    startLat = curTile.StartLat;
+
+                    curIndex = 0;
+                }
+
+                curPoint.Latitude = startLat + (resolution * curIndex);
+                if (curPoint.Latitude < southernSegPoint.Latitude)
+                {
+                    break;
+                }
+                GeoSegment line = new GeoSegment(new GeoPoint(curPoint.Latitude, curTile.OriginLongitude)
+                                                                                                                                                , new GeoPoint(curPoint.Latitude, curTile.EndLongitude));
+
+                curIndex++;
+                yield return line;
+            }
+        }
+
+
 
         public BoundingBox GetTilesBoundingBox(List<FileMetadata> tiles)
         {
@@ -385,6 +439,14 @@ namespace DEM.Net.Lib.Services
             double xmax = tiles.Max(t => t.EndLongitude);
             double ymin = tiles.Min(t => t.EndLatitude);
             double ymax = tiles.Max(t => t.OriginLatitude);
+            return new BoundingBox(xmin, xmax, ymin, ymax);
+        }
+        public BoundingBox GetTileBoundingBox(FileMetadata tile)
+        {
+            double xmin = tile.OriginLongitude;
+            double xmax = tile.EndLongitude;
+            double ymin = tile.EndLatitude;
+            double ymax = tile.OriginLatitude;
             return new BoundingBox(xmin, xmax, ymin, ymax);
         }
 
