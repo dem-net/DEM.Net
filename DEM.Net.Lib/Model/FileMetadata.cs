@@ -47,6 +47,11 @@ namespace DEM.Net.Lib
 			}
 		}
 
-     
+        public override string ToString()
+        {
+            return $"{System.IO.Path.GetFileName(Filename)}: {OriginLatitude} {OriginLongitude} -> {EndLatitude} {EndLongitude}";
+        }
+
+
     }
 }
