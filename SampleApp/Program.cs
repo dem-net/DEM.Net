@@ -39,7 +39,7 @@ namespace SampleApp
             //geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, false);
 
             //Spatial trace of line +segments + interpolated point + dem grid
-           // SpatialTrace_GeometryWithDEM(elevationService, WKT_BREST_SPAIN_OCEAN, DEMDataSet.AW3D30);
+            //SpatialTrace_GeometryWithDEM(elevationService, WKT_BREST_NICE, DEMDataSet.AW3D30);
             LineDEMTests(elevationService, DEMDataSet.AW3D30, 100);
 
             Console.ReadLine();
@@ -121,7 +121,8 @@ namespace SampleApp
 
             Dictionary<string, string> dicWktByName = new Dictionary<string, string>();
             //dicWktByName.Add(nameof(WKT_EXAMPLE_GOOGLE), WKT_EXAMPLE_GOOGLE);
-            dicWktByName.Add(nameof(WKT_BREST_SPAIN_OCEAN), WKT_BREST_SPAIN_OCEAN); 
+            dicWktByName.Add(nameof(WKT_BAYONNE_NICE_DIRECT), WKT_BAYONNE_NICE_DIRECT);
+            dicWktByName.Add(nameof(WKT_NEG100), WKT_NEG100);
             //dicWktByName.Add(nameof(WKT_GRANDE_BOUCLE), WKT_GRANDE_BOUCLE);
             //dicWktByName.Add(nameof(WKT_PETITE_BOUCLE), WKT_PETITE_BOUCLE);
             //dicWktByName.Add(nameof(WKT_GRAND_TRAJET), WKT_GRAND_TRAJET);
@@ -176,7 +177,7 @@ namespace SampleApp
             return geom.ToGeography().STBuffer(60).GetBoundingBox();
         }
 
-        static void SpatialTrace_GeometryWithDEM(ElevationService elevationService, string wkt, DEMDataSet dataSet)
+        static void SpatialTrace_GeometryWithDEMGrid(ElevationService elevationService, string wkt, DEMDataSet dataSet)
         {
             SpatialTrace.Enable();
 
@@ -184,7 +185,7 @@ namespace SampleApp
             SpatialTrace.TraceGeometry(geom, "Line");
 
             List<FileMetadata> tiles = elevationService.GetCoveringFiles(geom.ToGeography().STBuffer(60).GetBoundingBox(), dataSet);
-           
+
             SpatialTrace.Indent("Line Segments");
             int i = 0;
             foreach (var seg in geom.Segments())
@@ -212,9 +213,69 @@ namespace SampleApp
 
         }
 
+        static void SpatialTrace_GeometryWithDEM(ElevationService elevationService, string wkt, DEMDataSet dataSet)
+        {
+            SpatialTrace.Enable();
+
+            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
+            SpatialTrace.TraceGeometry(geom, "Line");
+
+
+            var heightMap = elevationService.GetHeightMap(geom.ToGeography().STBuffer(60).GetBoundingBox(), dataSet);
+            var lineElevationData = elevationService.GetLineGeometryElevation(wkt, dataSet);
+
+            SpatialTrace.Indent("Line Segments");
+            int i = 0;
+            foreach (var seg in geom.Segments())
+            {
+                i++;
+                Color color = (i % 2 == 0) ? Colors.Blue : Colors.Red;
+                SpatialTrace.SetLineColor(color);
+                SpatialTrace.TraceGeometry(seg, "Seg" + i, "Seg" + i);
+            }
+
+            SpatialTrace.Unindent();
+           
+            SpatialTrace.Indent("Line Elevation points");
+            SpatialTrace.SetFillColor(Colors.Red);
+            foreach (var pt in lineElevationData.Where(p => p.Altitude == 0))
+            {
+                SpatialTrace.TraceGeometry(SqlGeometry.Point(pt.Longitude, pt.Latitude, 4326), $"X: {pt.XIndex}, Y: {pt.YIndex}, Z: {pt.Altitude}", $"{pt.Longitude:N4}/{pt.Latitude:N4}/{pt.Altitude:N2}");
+                var dataPoint = heightMap.Coordinates.FirstOrDefault(p => p.DistanceSquaredTo(pt) < 900);
+                if (dataPoint != null)
+                {
+                    SpatialTrace.TraceGeometry(SqlGeometry.Point(pt.Longitude, pt.Latitude, 4326), $"DATA X: {pt.Longitude:N5}, Y: {pt.Latitude:N5}, Z: {pt.Altitude}", $"{pt.Longitude:N4}/{pt.Latitude:N4}/{pt.Altitude}");
+                }
+            }
+
+            SpatialTrace.Unindent();
+
+            List<FileMetadata> tiles = elevationService.GetCoveringFiles(geom.ToGeography().STBuffer(60).GetBoundingBox(), dataSet);
+
+            SpatialTrace.Indent("DEM tiles");
+            SpatialTrace.SetLineColor(Colors.Black);
+            foreach (var tile in tiles)
+            {
+
+                SqlGeometry tileBbox = elevationService.GetTileBoundingBox(tile).AsGeomety();
+                SpatialTrace.TraceGeometry(tileBbox, $"{tile.ToString()}");
+            }
+            SpatialTrace.Unindent();
+
+
+            // View spatial trace in bin\debug with spatial trace viewer
+            SpatialTrace.ShowDialog();
+            SpatialTrace.Disable();
+
+
+        }
+
+
 
         #region Sample WKT
 
+        private const string WKT_ZERO = "LINESTRING(-4.36763906478882	48.4062232971191, -4.35986089706421	48.4028930664063)";
+        private const string WKT_NEG100 = "LINESTRING(-4.04486131668091	48.2679634094238, -4.03826761245728	48.2651405334473)";
         private const string WKT_BREST_SPAIN_OCEAN = "LINESTRING(-4.519500732421875 43.373509919227104,-4.47418212890625 48.39966209090939)";
         private const string WKT_EXAMPLE_GOOGLE = "LINESTRING(-118.291994 36.578581,-116.83171 36.23998)";
         private const string WKT_BREST_NICE = "LINESTRING(-4.482421875 48.45539196446375,6.943359375 43.5612374716474)";

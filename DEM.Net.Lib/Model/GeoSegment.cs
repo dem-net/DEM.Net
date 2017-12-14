@@ -10,8 +10,9 @@ namespace DEM.Net.Lib
 	{
 		public GeoPoint Start { get; set; }
 		public GeoPoint End { get; set; }
+        public  FileMetadata Tile { get; internal set; }
 
-		public GeoSegment()
+        public GeoSegment()
 		{
 
 		}

@@ -212,6 +212,7 @@ namespace DEM.Net.Lib.Services
             var pointsByTileQuery = from point in intersections
                                     let pointTile = new { Point = point, Tile = segTiles.FirstOrDefault(t => this.IsPointInTile(t, point)) }
                                     group pointTile by pointTile.Tile into pointsByTile
+                                    where pointsByTile.Key != null
                                     select pointsByTile;
 
             foreach (var tilePoints in pointsByTileQuery)
@@ -333,51 +334,12 @@ namespace DEM.Net.Lib.Services
                     break;
                 }
                 GeoSegment line = new GeoSegment(new GeoPoint(curTile.OriginLatitude, curPoint.Longitude), new GeoPoint(curTile.EndLatitude, curPoint.Longitude));
-
+                line.Tile = curTile;
                 curIndex++;
                 yield return line;
             }
         }
-        public IEnumerable<GeoSegment> GetDEMWestEastLines_old(List<FileMetadata> segTiles, GeoPoint northernSegPoint, GeoPoint southernSegPoint)
-        {
-            BoundingBox tilesBbox = GetTilesBoundingBox(segTiles);
-
-            FileMetadata curTile = segTiles.First(tile => IsPointInTile(tile, northernSegPoint));
-
-            GeoPoint curPoint = northernSegPoint.Clone();
-            // Y Index in tile coords
-            int curIndex = (int)Math.Ceiling((curTile.StartLat - curPoint.Latitude) / curTile.PixelScaleY);
-            while (IsPointInTile(curTile, curPoint))
-            {
-                if (curIndex >= curTile.Width)
-                {
-                    double latitude = curTile.StartLat + (curTile.pixelSizeY * curIndex);
-                    if (latitude < southernSegPoint.Latitude)
-                    {
-                        break;
-                    }
-                    curPoint.Latitude = latitude;
-                    curTile = segTiles.FirstOrDefault(tile => IsPointInTile(tile, curPoint));
-                    if (curTile == null)
-                    {
-                        throw new Exception("Should not happen, as we check bounds with southernSegPoint.lat");
-                    }
-                    curIndex = 0;
-                }
-
-                curPoint.Latitude = curTile.StartLat + (curTile.pixelSizeY * curIndex);
-                if (curPoint.Latitude < southernSegPoint.Latitude)
-                {
-                    break;
-                }
-                GeoSegment line = new GeoSegment(new GeoPoint(curPoint.Latitude, curTile.OriginLongitude)
-                                                                                                                                                , new GeoPoint(curPoint.Latitude, curTile.EndLongitude));
-
-                curIndex++;
-                yield return line;
-            }
-        }
-
+       
         public IEnumerable<GeoSegment> GetDEMWestEastLines(List<FileMetadata> segTiles, GeoPoint northernSegPoint, GeoPoint southernSegPoint)
         {
             BoundingBox tilesBbox = GetTilesBoundingBox(segTiles);
@@ -423,9 +385,8 @@ namespace DEM.Net.Lib.Services
                 {
                     break;
                 }
-                GeoSegment line = new GeoSegment(new GeoPoint(curPoint.Latitude, curTile.OriginLongitude)
-                                                                                                                                                , new GeoPoint(curPoint.Latitude, curTile.EndLongitude));
-
+                GeoSegment line = new GeoSegment(new GeoPoint(curPoint.Latitude, curTile.OriginLongitude), new GeoPoint(curPoint.Latitude, curTile.EndLongitude));
+                line.Tile = curTile;
                 curIndex++;
                 yield return line;
             }
@@ -551,7 +512,7 @@ namespace DEM.Net.Lib.Services
             //bool yOnGrid = Math.Abs(ypos % 1) <= epsilon;
             float xInterpolationAmount = (float)xpos % 1;
             float yInterpolationAmount = (float)ypos % 1;
-
+            
             bool xOnGrid = xInterpolationAmount == 0;
             bool yOnGrid = yInterpolationAmount == 0;
 
