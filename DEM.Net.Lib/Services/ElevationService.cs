@@ -104,6 +104,63 @@ namespace DEM.Net.Lib.Services
             return geoPoints;
         }
 
+        //GetLineGeometryElevation_Profiled
+        public List<GeoPoint> GetLineGeometryElevation_Profiled(string lineWKT, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
+        {
+            BoundingBox bbox = GeometryService.GetBoundingBox(lineWKT);
+            //HeightMap heightMap = GeoTiffService.GetHeightMap(bbox, geoTiffRepository);
+            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(lineWKT);
+            List<FileMetadata> tiles = this.GetCoveringFiles(bbox, dataSet);
+
+            // Init interpolator
+            IInterpolator interpolator = GetInterpolator(interpolationMode);
+
+            double lengthMeters = GeometryService.GetLength(lineWKT);
+            int demResolution = GeoTiffService.GetResolutionMeters(tiles.First());
+            int totalCapacity = 2 * (int)(lengthMeters / demResolution);
+
+            List<GeoPoint> geoPoints = new List<GeoPoint>(totalCapacity);
+
+            Stopwatch swEnumSegments = new Stopwatch();
+            Stopwatch swCovering = new Stopwatch();
+            Stopwatch swInter = new Stopwatch();
+            Stopwatch swElevation = new Stopwatch();
+            Stopwatch swAdd = new Stopwatch();
+
+
+            bool isFirstSegment = true; // used to return first point only for first segments, for all other segments last point will be returned
+            swEnumSegments.Start();
+            foreach (SqlGeometry segment in geom.Segments())
+            {
+                swEnumSegments.Stop();
+                swCovering.Start();
+                List<FileMetadata> segTiles = this.GetCoveringFiles(segment.GetBoundingBox(), dataSet, tiles);
+                swCovering.Stop();
+                swInter.Start();
+                // Find all intersection with segment and DEM grid
+                List<GeoPoint> intersections = this.FindSegmentIntersections(segment.STStartPoint().STX.Value, segment.STStartPoint().STY.Value,
+                                                                                        segment.STEndPoint().STX.Value, segment.STEndPoint().STY.Value,
+                                                                                        segTiles, isFirstSegment, true);
+                swInter.Stop();
+                swElevation.Start();
+                // Get elevation for each point
+                this.GetElevationData(ref intersections, segTiles, interpolator);
+                swElevation.Stop();
+                swAdd.Start();
+                // Add to output list
+                geoPoints.AddRange(intersections);
+                swAdd.Stop();
+                swEnumSegments.Start();
+                isFirstSegment = false;
+            }
+            swEnumSegments.Stop();
+            swCovering.Stop();
+            swInter.Stop();
+            swElevation.Stop();
+            swAdd.Stop();
+            return geoPoints;
+        }
+
         public IInterpolator GetInterpolator(InterpolationMode interpolationMode)
         {
             switch (interpolationMode)
