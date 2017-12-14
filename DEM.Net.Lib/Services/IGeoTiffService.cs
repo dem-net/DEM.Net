@@ -5,15 +5,17 @@ namespace DEM.Net.Lib.Services
 {
     public interface IGeoTiffService
     {
-        FileMetadata ParseMetadata(GeoTiff tiff);
+        FileMetadata ParseMetadata(IGeoTiff tiff);
         FileMetadata ParseMetadata(string fileName);
         List<FileMetadata> LoadManifestMetadata(DEMDataSet dataSet, bool force);
+
+        IGeoTiff OpenFile(string filePath);
 
         string LocalDirectory { get; }
         string GetLocalDEMPath(DEMDataSet dataset);
         string GetLocalDEMFilePath(DEMDataSet dataset, string fileTitle);
 
-        void DumpTiffTags(Tiff tiff);
+        //void DumpTiffTags(Tiff tiff);
 
         /// <summary>
         /// Generate metadata files for fast in-memory indexing

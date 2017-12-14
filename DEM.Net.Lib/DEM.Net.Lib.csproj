@@ -30,9 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BitMiracle.LibTiff.NET, Version=2.4.560.0, Culture=neutral, PublicKeyToken=53879b3e20e7a7d6, processorArchitecture=MSIL">
-      <HintPath>..\packages\BitMiracle.LibTiff.NET.2.4.560\lib\net20\BitMiracle.LibTiff.NET.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="BitMiracle.LibTiff.NET40, Version=2.4.584.0, Culture=neutral, PublicKeyToken=53879b3e20e7a7d6, processorArchitecture=MSIL">
+      <HintPath>..\packages\BitMiracle.LibTiff.NET.2.4.584.1\lib\net40\BitMiracle.LibTiff.NET40.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SqlServer.Types, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.SqlServer.Types.11.0.2\lib\net20\Microsoft.SqlServer.Types.dll</HintPath>
@@ -56,6 +55,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\UrlHelper.cs" />
+    <Compile Include="IO\GeoTiff.cs" />
+    <Compile Include="IO\IGeoTiff.cs" />
     <Compile Include="Model\BoundingBox.cs" />
     <Compile Include="Model\DEMDataSet.cs" />
     <Compile Include="Model\DEMFileFormat.cs" />
@@ -65,7 +66,6 @@
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="Model\FileMetadata.cs" />
     <Compile Include="Model\GeoPoint.cs" />
-    <Compile Include="Model\GeoTiff.cs" />
     <Compile Include="Model\GeoSegment.cs" />
     <Compile Include="Model\HeightMap.cs" />
     <Compile Include="Model\InterpolationMode.cs" />

@@ -1,5 +1,4 @@
-﻿using BitMiracle.LibTiff.Classic;
-using DEM.Net.Lib.Services.Interpolation;
+﻿using DEM.Net.Lib.Services.Interpolation;
 using Microsoft.SqlServer.Types;
 using System;
 using System.Collections.Generic;
@@ -275,11 +274,11 @@ namespace DEM.Net.Lib.Services
             foreach (var tilePoints in pointsByTileQuery)
             {
                 FileMetadata tile = tilePoints.Key;
-                using (GeoTiff tiff = new GeoTiff(tile.Filename))
+                using (IGeoTiff tiff = _IGeoTiffService.OpenFile(tile.Filename))
                 {
                     foreach (GeoPoint pt in tilePoints.Select(a => a.Point))
                     {
-                        pt.Altitude = this.ParseGeoDataAtPoint(tiff.TiffFile, tile, pt.Latitude, pt.Longitude, interpolator);
+                        pt.Altitude = this.ParseGeoDataAtPoint(tiff, tile, pt.Latitude, pt.Longitude, interpolator);
                     }
                 }
             }
@@ -552,11 +551,9 @@ namespace DEM.Net.Lib.Services
             return heightMap;
         }
 
-        public float ParseGeoDataAtPoint(Tiff tiff, FileMetadata metadata, double lat, double lon, IInterpolator interpolator)
+        public float ParseGeoDataAtPoint(IGeoTiff tiff, FileMetadata metadata, double lat, double lon, IInterpolator interpolator)
         {
             //const double epsilon = (Double.Epsilon * 100);
-            byte[] scanline = new byte[metadata.ScanlineSize];
-            ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
             float noData = float.Parse(metadata.NoDataValue);
             const float NO_DATA_OUT = -100;
 
@@ -586,7 +583,7 @@ namespace DEM.Net.Lib.Services
             // If xOnGrid and yOnGrid, we are on a grid intersection, and that's all
             if (xOnGrid && yOnGrid)
             {
-                heightValue = ParseGeoDataAtPoint(tiff, metadata, (int)Math.Round(xpos, 0), (int)Math.Round(ypos, 0));
+                heightValue = tiff.ParseGeoDataAtPoint( metadata, (int)Math.Round(xpos, 0), (int)Math.Round(ypos, 0));
             }
             else
             {
@@ -595,10 +592,10 @@ namespace DEM.Net.Lib.Services
 
                 // If not yOnGrid and not xOnGrid we are on grid horizontal line
                 // We need elevations for top, bottom, left and right grid points (along x axis and y axis)
-                float northWest = ParseGeoDataAtPoint(tiff, metadata, clampedXFloor, clampedYFloor);
-                float northEast = ParseGeoDataAtPoint(tiff, metadata, clampedXCeiling, clampedYFloor);
-                float southWest = ParseGeoDataAtPoint(tiff, metadata, clampedXFloor, clampedYCeiling);
-                float southEast = ParseGeoDataAtPoint(tiff, metadata, clampedXCeiling, clampedYCeiling);
+                float northWest = tiff.ParseGeoDataAtPoint(metadata, clampedXFloor, clampedYFloor);
+                float northEast = tiff.ParseGeoDataAtPoint(metadata, clampedXCeiling, clampedYFloor);
+                float southWest = tiff.ParseGeoDataAtPoint(metadata, clampedXFloor, clampedYCeiling);
+                float southEast = tiff.ParseGeoDataAtPoint(metadata, clampedXCeiling, clampedYCeiling);
 
                 float avgHeight = GetAverageExceptForNoDataValue(noData, NO_DATA_OUT, southWest, southEast, northWest, northEast);
 
@@ -625,29 +622,7 @@ namespace DEM.Net.Lib.Services
             }
         }
 
-        public float ParseGeoDataAtPoint(Tiff tiff, FileMetadata metadata, int x, int y)
-        {
-            byte[] scanline = new byte[metadata.ScanlineSize];
-            ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
-
-            tiff.ReadScanline(scanline, y);
-            Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
-
-            float heightValue = ParseGeoDataAtPoint(metadata, x, scanline16Bit);
-
-            return heightValue;
-        }
-        public float ParseGeoDataAtPoint(FileMetadata metadata, int x, ushort[] scanline16Bit)
-        {
-            float heightValue = (float)scanline16Bit[x];
-            if (heightValue > 32768)
-            {
-                heightValue = -10000;
-            }
-
-            return heightValue;
-        }
-
+        
 
 
     }

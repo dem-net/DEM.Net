@@ -4,7 +4,6 @@ using Microsoft.SqlServer.Types;
 using SqlServerSpatial.Toolkit;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Media;
 using System.Linq;
 using System;
 using System.Threading.Tasks;
@@ -12,7 +11,7 @@ using System.Net;
 using System.IO.Compression;
 using System.Xml;
 using System.Diagnostics;
-using System.Windows.Media.Imaging;
+using System.Windows.Media;
 
 namespace SampleApp
 {
@@ -24,10 +23,11 @@ namespace SampleApp
         static void Main(string[] args)
         {
             SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
-            IGeoTiffService geoTiffService = new GeoTiffService();
+            IGeoTiffService geoTiffService = new GeoTiffService( GeoTiffReaderType.LibTiff);
             ElevationService elevationService = new ElevationService(geoTiffService);
 
-            //GeoTiffBenchmark(geoTiffService);
+            //GeoTiffTests(geoTiffService, @"C:\Users\xfischer\AppData\Roaming\DEM.Net\AW3D30\AW3D30_alos\North\North_0_45\N044E004_AVE_DSM.tif");
+            GeoTiffBenchmark();
 
             //Test_GetMetadataFromVRT(elevationService, DEMDataSet.AW3D30);
 
@@ -40,67 +40,55 @@ namespace SampleApp
 
             //Spatial trace of line +segments + interpolated point + dem grid
             //SpatialTrace_GeometryWithDEM(elevationService, WKT_BREST_NICE, DEMDataSet.AW3D30);
-            LineDEMTests(elevationService, DEMDataSet.AW3D30, 100);
+            //LineDEMTests(elevationService, DEMDataSet.AW3D30, 100);
 
+            Console.Write("Press any key to exit...");
             Console.ReadLine();
 
         }
 
-        private static void GeoTiffBenchmark(IGeoTiffService geoTiffService)
+        private static void GeoTiffTests(IGeoTiffService geoTiffService, string tiffPath)
         {
-            string[] geoTiffFiles = Directory.GetFiles(@"C:\Users\ext.dev.xfi\AppData\Roaming\DEM.Net\AW3D30\AW3D30_alos", "*.tif", SearchOption.AllDirectories);
-
-
-
-            Stopwatch swCoreTiff = Stopwatch.StartNew();
-            for (int i = 0; i < 10; i++)
+            FileMetadata metaData = geoTiffService.ParseMetadata(tiffPath);
+            float elevation;
+            float elevationgtn;
+            using (GeoTiff tiff = new GeoTiff(tiffPath))
             {
-                foreach (var file in geoTiffFiles)
+                elevation = tiff.ParseGeoDataAtPoint(metaData, 122, 122);
+            }
+            
+        }
+
+        private static void GeoTiffBenchmark()
+        {
+            DEMDataSet dataSet = DEMDataSet.AW3D30;
+            ElevationService elevationServiceLibTiff = new ElevationService(new GeoTiffService(GeoTiffReaderType.LibTiff));
+
+            string wkt = WKT_BREST_NICE;
+            elevationServiceLibTiff.DownloadMissingFiles(dataSet, GetBoundingBox(wkt));
+
+            const int NUM_ITERATIONS = 10;
+
+            Stopwatch swCoreTiff = new Stopwatch();
+            Stopwatch swGeoTiff = new Stopwatch();
+            for (int j = 0; j < 5; j++)
+            {
+                for (int i = 0; i < NUM_ITERATIONS; i++)
                 {
-                    GeoTiffToInf.GeoTiff geotiff = GeoTiffToInf.GeoTiff.FromFile(file);
+                 
+
+                    swGeoTiff.Start();
+                    var lineElevationData = elevationServiceLibTiff.GetLineGeometryElevation(wkt, dataSet, InterpolationMode.Hyperbolic);
+                    swGeoTiff.Stop();
                 }
             }
-            swCoreTiff.Stop();
-
-
-
-            Stopwatch swGeoTiff = Stopwatch.StartNew();
-            for (int i = 0; i < 10; i++)
-            {
-                foreach (var file in geoTiffFiles)
-                {
-                    FileMetadata metaData = geoTiffService.ParseMetadata(file);
-                }
-            }
-            swGeoTiff.Stop();
-
-            swCoreTiff.Start();
-            for (int i = 0; i < 10; i++)
-            {
-                foreach (var file in geoTiffFiles)
-                {
-                    GeoTiffToInf.GeoTiff geotiff = GeoTiffToInf.GeoTiff.FromFile(file);
-                }
-            }
-            swCoreTiff.Stop();
-
-
-
-            swGeoTiff.Start();
-            for (int i = 0; i < 10; i++)
-            {
-                foreach (var file in geoTiffFiles)
-                {
-                    FileMetadata metaData = geoTiffService.ParseMetadata(file);
-                }
-            }
-            swGeoTiff.Stop();
+            
 
             long geoTiffMs = swGeoTiff.ElapsedMilliseconds;
 
             long codeTiffMs = swCoreTiff.ElapsedMilliseconds;
 
-            Trace.WriteLine($"GeoTiff : {geoTiffMs} ms, Native : {codeTiffMs}");
+            Console.WriteLine($"GeoTiff : {geoTiffMs} ms, Native : {codeTiffMs}");
         }
 
         private static void Test_GetMetadataFromVRT(ElevationService elevationService, DEMDataSet dataSet)
@@ -235,7 +223,7 @@ namespace SampleApp
             }
 
             SpatialTrace.Unindent();
-           
+
             SpatialTrace.Indent("Line Elevation points");
             SpatialTrace.SetFillColor(Colors.Red);
             foreach (var pt in lineElevationData.Where(p => p.Altitude == 0))
