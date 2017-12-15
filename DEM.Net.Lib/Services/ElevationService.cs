@@ -76,7 +76,7 @@ namespace DEM.Net.Lib.Services
             IInterpolator interpolator = GetInterpolator(interpolationMode);
 
             double lengthMeters = GeometryService.GetLength(lineWKT);
-            int demResolution = GeoTiffService.GetResolutionMeters(tiles.First());
+            int demResolution = dataSet.ResolutionMeters;
             int totalCapacity = 2 * (int)(lengthMeters / demResolution);
 
             List<GeoPoint> geoPoints = new List<GeoPoint>(totalCapacity);
@@ -88,8 +88,8 @@ namespace DEM.Net.Lib.Services
 
                 // Find all intersection with segment and DEM grid
                 List<GeoPoint> intersections = this.FindSegmentIntersections(segment.STStartPoint().STX.Value, segment.STStartPoint().STY.Value,
-                                                                                        segment.STEndPoint().STX.Value, segment.STEndPoint().STY.Value,
-                                                                                        segTiles, isFirstSegment, true);
+                                                                                                                                                                segment.STEndPoint().STX.Value, segment.STEndPoint().STY.Value,
+                                                                                                                                                                segTiles, isFirstSegment, true);
 
                 // Get elevation for each point
                 this.GetElevationData(ref intersections, segTiles, interpolator);
@@ -138,8 +138,8 @@ namespace DEM.Net.Lib.Services
                 swInter.Start();
                 // Find all intersection with segment and DEM grid
                 List<GeoPoint> intersections = this.FindSegmentIntersections(segment.STStartPoint().STX.Value, segment.STStartPoint().STY.Value,
-                                                                                        segment.STEndPoint().STX.Value, segment.STEndPoint().STY.Value,
-                                                                                        segTiles, isFirstSegment, true);
+                                                                                                                                                                segment.STEndPoint().STX.Value, segment.STEndPoint().STY.Value,
+                                                                                                                                                                segTiles, isFirstSegment, true);
                 swInter.Stop();
                 swElevation.Start();
                 // Get elevation for each point
@@ -296,12 +296,12 @@ namespace DEM.Net.Lib.Services
         /// <param name="returnEndPoind">If true, the segment end point will be returned. Useful when processing a line segment by segment.</param>
         /// <returns></returns>
         public List<GeoPoint> FindSegmentIntersections(double startLon, double startLat, double endLon, double endLat, List<FileMetadata> segTiles,
-                                                                                                                    bool returnStartPoint, bool returnEndPoind)
+                                                                                                                                                                                                                                bool returnStartPoint, bool returnEndPoind)
         {
             int estimatedCapacity = (segTiles.Select(t => t.OriginLongitude).Distinct().Count() // num horizontal tiles * width
-                                                                                                            * segTiles.First().Width)
-                                                                                                            + (segTiles.Select(t => t.OriginLatitude).Distinct().Count() // num vertical tiles * height
-                                                                                                            * segTiles.First().Height);
+                                                                                                                                                                                                            * segTiles.First().Width)
+                                                                                                                                                                                                            + (segTiles.Select(t => t.OriginLatitude).Distinct().Count() // num vertical tiles * height
+                                                                                                                                                                                                            * segTiles.First().Height);
             List<GeoPoint> segmentPointsWithDEMPoints = new List<GeoPoint>(estimatedCapacity);
             bool yAxisDown = segTiles.First().pixelSizeY < 0;
             if (yAxisDown == false)
@@ -395,7 +395,7 @@ namespace DEM.Net.Lib.Services
                 yield return line;
             }
         }
-       
+
         public IEnumerable<GeoSegment> GetDEMWestEastLines(List<FileMetadata> segTiles, GeoPoint northernSegPoint, GeoPoint southernSegPoint)
         {
             BoundingBox tilesBbox = GetTilesBoundingBox(segTiles);
@@ -566,7 +566,7 @@ namespace DEM.Net.Lib.Services
             //bool yOnGrid = Math.Abs(ypos % 1) <= epsilon;
             float xInterpolationAmount = (float)xpos % 1;
             float yInterpolationAmount = (float)ypos % 1;
-            
+
             bool xOnGrid = xInterpolationAmount == 0;
             bool yOnGrid = yInterpolationAmount == 0;
 
@@ -583,7 +583,7 @@ namespace DEM.Net.Lib.Services
             // If xOnGrid and yOnGrid, we are on a grid intersection, and that's all
             if (xOnGrid && yOnGrid)
             {
-                heightValue = tiff.ParseGeoDataAtPoint( metadata, (int)Math.Round(xpos, 0), (int)Math.Round(ypos, 0));
+                heightValue = tiff.ParseGeoDataAtPoint(metadata, (int)Math.Round(xpos, 0), (int)Math.Round(ypos, 0));
             }
             else
             {
@@ -622,7 +622,7 @@ namespace DEM.Net.Lib.Services
             }
         }
 
-        
+
 
 
     }

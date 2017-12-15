@@ -14,5 +14,6 @@ namespace DEM.Net.Lib
         public string LocalZipName { get; set; }
 
         public bool IsExistingLocally { get; set; }
+        public GDALSource Source { get; internal set; }
     }
 }

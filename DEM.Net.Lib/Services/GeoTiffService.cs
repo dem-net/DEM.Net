@@ -245,7 +245,8 @@ namespace DEM.Net.Lib.Services
                         {
                             IsExistingLocally = File.Exists(source.LocalFileName),
                             LocalName = source.LocalFileName,
-                            URL = source.SourceFileNameAbsolute
+                            URL = source.SourceFileNameAbsolute,
+                            Source = source
                         });
 
                     }
