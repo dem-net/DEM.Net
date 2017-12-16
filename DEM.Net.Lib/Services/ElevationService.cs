@@ -68,7 +68,6 @@ namespace DEM.Net.Lib.Services
         public List<GeoPoint> GetLineGeometryElevation(string lineWKT, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
             BoundingBox bbox = GeometryService.GetBoundingBox(lineWKT);
-            //HeightMap heightMap = GeoTiffService.GetHeightMap(bbox, geoTiffRepository);
             SqlGeometry geom = GeometryService.ParseWKTAsGeometry(lineWKT);
             List<FileMetadata> tiles = this.GetCoveringFiles(bbox, dataSet);
 
@@ -295,49 +294,56 @@ namespace DEM.Net.Lib.Services
         /// <param name="returnStartPoint">If true, the segment starting point will be returned. Useful when processing a line segment by segment.</param>
         /// <param name="returnEndPoind">If true, the segment end point will be returned. Useful when processing a line segment by segment.</param>
         /// <returns></returns>
-        public List<GeoPoint> FindSegmentIntersections(double startLon, double startLat, double endLon, double endLat, List<FileMetadata> segTiles,
-                                                                                                                                                                                                                                bool returnStartPoint, bool returnEndPoind)
+        public List<GeoPoint> FindSegmentIntersections(double startLon, double startLat, double endLon, double endLat, List<FileMetadata> segTiles,bool returnStartPoint, bool returnEndPoind)
         {
-            int estimatedCapacity = (segTiles.Select(t => t.OriginLongitude).Distinct().Count() // num horizontal tiles * width
-                                                                                                                                                                                                            * segTiles.First().Width)
-                                                                                                                                                                                                            + (segTiles.Select(t => t.OriginLatitude).Distinct().Count() // num vertical tiles * height
-                                                                                                                                                                                                            * segTiles.First().Height);
-            List<GeoPoint> segmentPointsWithDEMPoints = new List<GeoPoint>(estimatedCapacity);
-            bool yAxisDown = segTiles.First().pixelSizeY < 0;
-            if (yAxisDown == false)
-            {
-                throw new NotImplementedException("DEM with y axis upwards not supported.");
-            }
-
+            List<GeoPoint> segmentPointsWithDEMPoints;
             // Find intersections with north/south lines, 
             // starting form segment western point to easternmost point
             GeoPoint westernSegPoint = startLon < endLon ? new GeoPoint(startLat, startLon) : new GeoPoint(endLat, endLon);
             GeoPoint easternSegPoint = startLon > endLon ? new GeoPoint(startLat, startLon) : new GeoPoint(endLat, endLon);
             GeoSegment inputSegment = new GeoSegment(westernSegPoint, easternSegPoint);
 
-            foreach (GeoSegment demSegment in this.GetDEMNorthSouthLines(segTiles, westernSegPoint, easternSegPoint))
+            if (segTiles.Any())
             {
-                GeoPoint intersectionPoint = null;
-                if (GeometryService.LineLineIntersection(out intersectionPoint, inputSegment, demSegment))
+                int estimatedCapacity = (segTiles.Select(t => t.OriginLongitude).Distinct().Count() // num horizontal tiles * width
+                                        * segTiles.First().Width)
+                                        + (segTiles.Select(t => t.OriginLatitude).Distinct().Count() // num vertical tiles * height
+                                        * segTiles.First().Height);
+                segmentPointsWithDEMPoints = new List<GeoPoint>(estimatedCapacity);
+                bool yAxisDown = segTiles.First().pixelSizeY < 0;
+                if (yAxisDown == false)
                 {
-                    segmentPointsWithDEMPoints.Add(intersectionPoint);
+                    throw new NotImplementedException("DEM with y axis upwards not supported.");
+                }
+
+                foreach (GeoSegment demSegment in this.GetDEMNorthSouthLines(segTiles, westernSegPoint, easternSegPoint))
+                {
+                    GeoPoint intersectionPoint = null;
+                    if (GeometryService.LineLineIntersection(out intersectionPoint, inputSegment, demSegment))
+                    {
+                        segmentPointsWithDEMPoints.Add(intersectionPoint);
+                    }
+                }
+
+                // Find intersections with west/east lines, 
+                // starting form segment northernmost point to southernmost point
+                GeoPoint northernSegPoint = startLat > endLat ? new GeoPoint(startLat, startLon) : new GeoPoint(endLat, endLon);
+                GeoPoint southernSegPoint = startLat < endLat ? new GeoPoint(startLat, startLon) : new GeoPoint(endLat, endLon);
+                inputSegment = new GeoSegment(northernSegPoint, southernSegPoint);
+                foreach (GeoSegment demSegment in this.GetDEMWestEastLines(segTiles, northernSegPoint, southernSegPoint))
+                {
+                    GeoPoint intersectionPoint = null;
+                    if (GeometryService.LineLineIntersection(out intersectionPoint, inputSegment, demSegment))
+                    {
+                        segmentPointsWithDEMPoints.Add(intersectionPoint);
+                    }
                 }
             }
-
-            // Find intersections with west/east lines, 
-            // starting form segment northernmost point to southernmost point
-            GeoPoint northernSegPoint = startLat > endLat ? new GeoPoint(startLat, startLon) : new GeoPoint(endLat, endLon);
-            GeoPoint southernSegPoint = startLat < endLat ? new GeoPoint(startLat, startLon) : new GeoPoint(endLat, endLon);
-            inputSegment = new GeoSegment(northernSegPoint, southernSegPoint);
-            foreach (GeoSegment demSegment in this.GetDEMWestEastLines(segTiles, northernSegPoint, southernSegPoint))
+            else
             {
-                GeoPoint intersectionPoint = null;
-                if (GeometryService.LineLineIntersection(out intersectionPoint, inputSegment, demSegment))
-                {
-                    segmentPointsWithDEMPoints.Add(intersectionPoint);
-                }
+                // No DEM coverage
+                segmentPointsWithDEMPoints = new List<GeoPoint>(2);
             }
-
 
             // add start and/or end point
             if (returnStartPoint)
@@ -479,7 +485,8 @@ namespace DEM.Net.Lib.Services
 
             if (bboxMetadata.Count == 0)
             {
-                throw new Exception($"No coverage found matching provided bounding box {bbox}.");
+                Trace.TraceWarning($"No coverage found matching provided bounding box { bbox}.");
+                //throw new Exception($"No coverage found matching provided bounding box {bbox}.");
             }
 
             return bboxMetadata;
