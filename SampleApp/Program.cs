@@ -17,19 +17,19 @@ namespace SampleApp
 {
     class Program
     {
-
+        const string DATA_DIR = @"C:\Repos\DEM.Net\Data";
 
         [STAThread]
         static void Main(string[] args)
         {
             SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
-            IGeoTiffService geoTiffService = new GeoTiffService(GeoTiffReaderType.LibTiff);
+            IGeoTiffService geoTiffService = new GeoTiffService(GeoTiffReaderType.LibTiff, DATA_DIR);
             ElevationService elevationService = new ElevationService(geoTiffService);
 
-
+            geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true);
             // geoTiffService.GenerateFileMetadata(@"C:\Users\xfischer\AppData\Roaming\DEM.Net\ETOPO1\ETOPO1_Ice_g_geotiff.tif", false, false);
 
-            //SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_TEST, DEMDataSet.AW3D30);
+            SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_DEM_INTERPOLATION_BUG, DEMDataSet.AW3D30);
             LineDEMTests(elevationService, DEMDataSet.AW3D30, 512);
 
 
@@ -67,7 +67,7 @@ namespace SampleApp
         private static void GeoTiffBenchmark()
         {
             DEMDataSet dataSet = DEMDataSet.AW3D30;
-            ElevationService elevationServiceLibTiff = new ElevationService(new GeoTiffService(GeoTiffReaderType.LibTiff));
+            ElevationService elevationServiceLibTiff = new ElevationService(new GeoTiffService(GeoTiffReaderType.LibTiff, DATA_DIR));
 
             string wkt = WKT_BREST_NICE;
             elevationServiceLibTiff.DownloadMissingFiles(dataSet, GetBoundingBox(wkt));
@@ -115,7 +115,7 @@ namespace SampleApp
             Dictionary<string, string> dicWktByName = new Dictionary<string, string>();
             //dicWktByName.Add(nameof(WKT_EXAMPLE_GOOGLE), WKT_EXAMPLE_GOOGLE);
 
-            dicWktByName.Add(nameof(WKT_TEST), WKT_TEST);
+            dicWktByName.Add(nameof(WKT_DEM_INTERPOLATION_BUG), WKT_DEM_INTERPOLATION_BUG);
             //	dicWktByName.Add(nameof(WKT_BAYONNE_NICE_DIRECT), WKT_BAYONNE_NICE_DIRECT);
             //dicWktByName.Add(nameof(WKT_NEG100), WKT_NEG100);
             //dicWktByName.Add(nameof(WKT_GRANDE_BOUCLE), WKT_GRANDE_BOUCLE);
@@ -165,6 +165,7 @@ namespace SampleApp
             double reduceFactor = 10 * ((double)numSamples / (double)(maxElevation == 0 ? float.MaxValue : maxElevation));
             SqlGeometry geomReduced = geom.Reduce(reduceFactor);
             SpatialTrace.Enable();
+            SpatialTrace.Clear();
             SpatialTrace.TraceGeometry(geom,"Geom");
             SpatialTrace.TraceGeometry(geomReduced, "Geom reduced");
             SpatialTrace.ShowDialog();

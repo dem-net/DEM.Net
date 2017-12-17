@@ -36,8 +36,13 @@ namespace DEM.Net.Lib.Services
             _metadataCatalogCache = new Dictionary<string, List<FileMetadata>>();
         }
 
-        public GeoTiffService(GeoTiffReaderType readerType)
+        public GeoTiffService(GeoTiffReaderType readerType, string dataDirectory)
         {
+            if (dataDirectory != null)
+            {
+                Directory.CreateDirectory(dataDirectory);
+                _localDirectory = dataDirectory;
+            }
             _readerType = readerType;
         }
 
