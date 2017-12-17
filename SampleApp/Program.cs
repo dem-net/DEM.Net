@@ -26,8 +26,13 @@ namespace SampleApp
             IGeoTiffService geoTiffService = new GeoTiffService(GeoTiffReaderType.LibTiff);
             ElevationService elevationService = new ElevationService(geoTiffService);
 
-            SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_TEST, DEMDataSet.AW3D30);
-            LineDEMTests(elevationService, DEMDataSet.AW3D30, 100);
+
+            // geoTiffService.GenerateFileMetadata(@"C:\Users\xfischer\AppData\Roaming\DEM.Net\ETOPO1\ETOPO1_Ice_g_geotiff.tif", false, false);
+
+            //SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_TEST, DEMDataSet.AW3D30);
+            LineDEMTests(elevationService, DEMDataSet.AW3D30, 512);
+
+
 
             //GeoTiffBenchmark();
 
@@ -130,16 +135,41 @@ namespace SampleApp
                 {
                     var lineElevationData = elevationService.GetLineGeometryElevation(wkt.Value, dataSet, mode);
                     lineElevationData = GeometryService.ComputePointsDistances(lineElevationData);
-                    var sampledLineElevationData = SampleList(lineElevationData, numSamples).ToList();
+                    var sampledLineElevationData = ReduceList(lineElevationData, numSamples).ToList();
                     File.WriteAllText($"ElevationData_{wkt.Key}_{mode}.txt", elevationService.ExportElevationTable(lineElevationData));
-                    File.WriteAllText($"ElevationData_{wkt.Key}_{mode}_sampled.txt", elevationService.ExportElevationTable(sampledLineElevationData));
+                    File.WriteAllText($"ElevationData_{wkt.Key}_{mode}_{numSamples}samples.txt", elevationService.ExportElevationTable(sampledLineElevationData));
                 }
             }
         }
 
-        private static List<GeoPoint> SampleList(List<GeoPoint> lineElevationData, int numSamples)
+        private static List<GeoPoint> ReduceList(List<GeoPoint> lineElevationData, int numSamples)
         {
+            // Aim is to use DouglasPeucker to reduce points without getting rid of peaks and other steep changes
+            // Let's create a geometry with x = distnace from origin and y = elevation
+            // and run douglas peucker on it
 
+            SqlGeometryBuilder gb = new SqlGeometryBuilder();
+            gb.SetSrid(0); // custom SRID
+            gb.BeginGeometry(OpenGisGeometryType.LineString);
+
+            gb.BeginFigure(lineElevationData[0].DistanceFromOriginMeters, lineElevationData[0].Altitude.GetValueOrDefault(0));
+            for (int i = 1; i < lineElevationData.Count; i++)
+            {
+                gb.AddLine(lineElevationData[i].DistanceFromOriginMeters, lineElevationData[i].Altitude.GetValueOrDefault(0));
+            }
+            gb.EndFigure();
+            gb.EndGeometry();
+            SqlGeometry geom = gb.ConstructedGeometry;
+            float maxElevation = lineElevationData.Max(pt => pt.Altitude.GetValueOrDefault(0));
+
+            double reduceFactor = 10 * ((double)numSamples / (double)(maxElevation == 0 ? float.MaxValue : maxElevation));
+            SqlGeometry geomReduced = geom.Reduce(reduceFactor);
+            SpatialTrace.Enable();
+            SpatialTrace.TraceGeometry(geom,"Geom");
+            SpatialTrace.TraceGeometry(geomReduced, "Geom reduced");
+            SpatialTrace.ShowDialog();
+
+            List<GeoPoint> reducedList = new DouglasPeucker(lineElevationData, reduceFactor * 1.8).Compress();
             int chunksize = lineElevationData.Count / numSamples;
             if (lineElevationData.Count <= numSamples)
             {
@@ -147,7 +177,7 @@ namespace SampleApp
             }
 
             List<GeoPoint> result = GetNth(lineElevationData, chunksize).ToList();
-            return result;
+            return reducedList;
         }
 
         private static IEnumerable<T> GetNth<T>(List<T> list, int n)

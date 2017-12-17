@@ -20,11 +20,14 @@ These metadata files will be used as an index when querying Digital Elevation Mo
 - If you have specific needs, let me know (create an issue)
 
 # Sample data
-GeoTiff from http://www.opentopography.org
+- GeoTiff from http://www.opentopography.org
 Dataset used is "ALOS World 3D - 30m" : http://opentopo.sdsc.edu/lidar?format=sd&platform=Satellite%20Data&collector=JAXA
 *For development and tests, files covering France were used.*
+- Not used yet but worth mentionning :
+For sea bed elevation : ETOPO1 Global Relief Model https://www.ngdc.noaa.gov/mgg/global/global.html
 
 # Acknowledgements / Sources
 - https://github.com/stefangordon/GeoTiffSharp from @stefangordon which provided a good starting point.
 - Pedro Sousa : http://build-failed.blogspot.fr/2014/12/processing-geotiff-files-in-net-without.html for good explanations.
 - Mathieu Leplatre for http://blog.mathieu-leplatre.info/drape-lines-on-a-dem-with-postgis.html
+- Andy9FromSpace : HGT file reader in https://github.com/Andy9FromSpace/map-elevation

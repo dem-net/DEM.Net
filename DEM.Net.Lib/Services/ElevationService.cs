@@ -365,93 +365,74 @@ namespace DEM.Net.Lib.Services
 
         public IEnumerable<GeoSegment> GetDEMNorthSouthLines(List<FileMetadata> segTiles, GeoPoint westernSegPoint, GeoPoint easternSegPoint)
         {
-            BoundingBox tilesBbox = GetTilesBoundingBox(segTiles);
-
-            FileMetadata curTile = segTiles.First(tile => IsPointInTile(tile, westernSegPoint));
-
-            GeoPoint curPoint = westernSegPoint.Clone();
-            // X Index in tile coords
-            int curIndex = (int)Math.Ceiling((curPoint.Longitude - curTile.StartLon) / curTile.PixelScaleX);
-            while (IsPointInTile(curTile, curPoint))
+            // Get the first north west tile and last south east tile. 
+            // The lines are bounded by those tiles
+           
+            foreach (var tilesByX in segTiles.GroupBy(t=>t.StartLon).OrderBy(g=>g.Key))
             {
-                if (curIndex >= curTile.Width)
+                List<FileMetadata> NSTilesOrdered = tilesByX.OrderByDescending(t => t.StartLat).ToList();
+
+                FileMetadata top = NSTilesOrdered.First();
+                FileMetadata bottom = NSTilesOrdered.Last();
+
+                // TIP: can optimize here starting with min(westernSegPoint, startlon) but careful !
+                GeoPoint curPoint = new GeoPoint(top.StartLat, top.StartLon);
+
+                // X Index in tile coords
+                int curIndex = (int)Math.Ceiling((curPoint.Longitude - top.StartLon) / top.PixelScaleX);
+                while (IsPointInTile(top, curPoint))
                 {
-                    double longitude = curTile.StartLon + (curTile.pixelSizeX * curIndex);
-                    if (longitude > easternSegPoint.Longitude)
+                    if (curIndex >= top.Width)
                     {
                         break;
                     }
-                    curPoint.Longitude = longitude;
-                    curTile = segTiles.FirstOrDefault(tile => IsPointInTile(tile, curPoint));
-                    if (curTile == null)
-                    {
-                        throw new Exception("Should not happen, as we check bounds with easternSegPoint.lon");
-                    }
-                    curIndex = 0;
-                }
 
-                curPoint.Longitude = curTile.StartLon + (curTile.pixelSizeX * curIndex);
-                if (curPoint.Longitude > easternSegPoint.Longitude)
-                {
-                    break;
+                    curPoint.Longitude = top.StartLon + (top.pixelSizeX * curIndex);
+                    if (curPoint.Longitude > easternSegPoint.Longitude)
+                    {
+                        break;
+                    }
+                    GeoSegment line = new GeoSegment(new GeoPoint(top.OriginLatitude, curPoint.Longitude), new GeoPoint(bottom.EndLatitude, curPoint.Longitude));
+                    curIndex++;
+                    yield return line;
                 }
-                GeoSegment line = new GeoSegment(new GeoPoint(curTile.OriginLatitude, curPoint.Longitude), new GeoPoint(curTile.EndLatitude, curPoint.Longitude));
-                line.Tile = curTile;
-                curIndex++;
-                yield return line;
             }
         }
 
         public IEnumerable<GeoSegment> GetDEMWestEastLines(List<FileMetadata> segTiles, GeoPoint northernSegPoint, GeoPoint southernSegPoint)
         {
-            BoundingBox tilesBbox = GetTilesBoundingBox(segTiles);
+            // Get the first north west tile and last south east tile. 
+            // The lines are bounded by those tiles
 
-            FileMetadata curTile = segTiles.First(tile => IsPointInTile(tile, northernSegPoint));
-
-            double resolution = curTile.pixelSizeY;
-            double startLat = curTile.StartLat;
-
-            GeoPoint curPoint = northernSegPoint.Clone();
-            // Y Index in tile coords
-            int curIndex = (int)Math.Ceiling((startLat - curPoint.Latitude) / curTile.PixelScaleY);
-            while (IsPointInTile(curTile, curPoint))
+            foreach (var tilesByY in segTiles.GroupBy(t => t.StartLat).OrderByDescending(g => g.Key))
             {
-                if (curIndex >= curTile.Height)
+                List<FileMetadata> WETilesOrdered = tilesByY.OrderBy(t => t.StartLon).ToList();
+
+                FileMetadata left = WETilesOrdered.First();
+                FileMetadata right = WETilesOrdered.Last();
+
+                GeoPoint curPoint = new GeoPoint(left.StartLat, left.StartLon);
+
+                // Y Index in tile coords
+                int curIndex = (int)Math.Ceiling((left.StartLat - curPoint.Latitude) / left.PixelScaleY);
+                while (IsPointInTile(left, curPoint))
                 {
-                    double latitude = startLat + (resolution * curIndex);
-                    if (latitude < southernSegPoint.Latitude)
+                    if (curIndex >= left.Height)
                     {
                         break;
                     }
-                    curPoint.Latitude = latitude;
-                    curTile = segTiles.FirstOrDefault(tile => IsPointInTile(tile, curPoint));
-                    if (curTile == null)
+
+                    curPoint.Latitude = left.StartLat + (left.pixelSizeY * curIndex);
+                    if (curPoint.Latitude < southernSegPoint.Latitude)
                     {
-                        while (curTile == null && curPoint.Latitude > -90)
-                        {
-                            curIndex++;
-                            curPoint.Latitude = startLat + (resolution * curIndex);
-                            curTile = segTiles.FirstOrDefault(tile => IsPointInTile(tile, curPoint));
-                        }
-                        if (curTile == null) break;
+                        break;
                     }
-
-                    resolution = curTile.pixelSizeY;
-                    startLat = curTile.StartLat;
-
-                    curIndex = 0;
+                    GeoSegment line = new GeoSegment(new GeoPoint(curPoint.Latitude, left.OriginLongitude), new GeoPoint(curPoint.Latitude, right.EndLongitude));
+                    curIndex++;
+                    yield return line;
                 }
-
-                curPoint.Latitude = startLat + (resolution * curIndex);
-                if (curPoint.Latitude < southernSegPoint.Latitude)
-                {
-                    break;
-                }
-                GeoSegment line = new GeoSegment(new GeoPoint(curPoint.Latitude, curTile.OriginLongitude), new GeoPoint(curPoint.Latitude, curTile.EndLongitude));
-                line.Tile = curTile;
-                curIndex++;
-                yield return line;
             }
+          
         }
 
 

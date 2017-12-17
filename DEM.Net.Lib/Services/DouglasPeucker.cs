@@ -85,11 +85,19 @@ namespace DEM.Net.Lib.Services
 
         private double Distance(GeoPoint p, GeoSegment line)
         {
+            //var p1 = line.Start;
+            //var p2 = line.End;
+            //return Math.Abs(
+            //        ((p2.Longitude - p1.Longitude) * p.Latitude + (p1.Latitude - p2.Latitude) * p.Longitude + (p1.Longitude - p2.Longitude) * p1.Latitude + (p2.Latitude - p1.Latitude) * p1.Longitude) /
+            //        Math.Sqrt((p2.Longitude - p1.Longitude) * (p2.Longitude - p1.Longitude) + (p1.Latitude - p2.Latitude) * (p1.Latitude - p2.Latitude))
+            //    );
             var p1 = line.Start;
             var p2 = line.End;
+            var p1Alt = p1.Altitude.GetValueOrDefault(0);
+            var p2Alt = p2.Altitude.GetValueOrDefault(0);
             return Math.Abs(
-                    ((p2.Longitude - p1.Longitude) * p.Latitude + (p1.Latitude - p2.Latitude) * p.Longitude + (p1.Longitude - p2.Longitude) * p1.Latitude + (p2.Latitude - p1.Latitude) * p1.Longitude) /
-                    Math.Sqrt((p2.Longitude - p1.Longitude) * (p2.Longitude - p1.Longitude) + (p1.Latitude - p2.Latitude) * (p1.Latitude - p2.Latitude))
+                    ((p2.DistanceFromOriginMeters - p1.DistanceFromOriginMeters) * p.Altitude.GetValueOrDefault(0) + (p1Alt - p2Alt) * p.DistanceFromOriginMeters + (p1.DistanceFromOriginMeters - p2.DistanceFromOriginMeters) * p1Alt + (p2Alt - p1Alt) * p1.DistanceFromOriginMeters) /
+                    Math.Sqrt((p2.DistanceFromOriginMeters - p1.DistanceFromOriginMeters) * (p2.DistanceFromOriginMeters - p1.DistanceFromOriginMeters) + (p1Alt - p2Alt) * (p1Alt - p2Alt))
                 );
         }
     }
