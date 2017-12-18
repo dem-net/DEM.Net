@@ -6,7 +6,13 @@ The goal is to provide on the fly DEM querying from GeoJSON or WKT geometries :
 - No big RAM cache
 - Fast and optimized data retrieval as precise as possible
 
-# How to run the SampleApp 
+# Coming soon...
+- All incoming features are listed in the Issues here : https://github.com/xfischer/DEM.Net/issues. Feel free to suggest any idea you'd like to see covered here.
+- Provide a simple sample for getting Height Maps (Unity based samples) and vizualising DEM as 3D meshes
+- Provide a simple sample to drape a line onto a DEM
+- If you have specific needs, let me know (create an issue)
+
+# SampleApp 
 (Work in progress)
 SampleApp is a Console App used for test purposes.
 
@@ -14,12 +20,6 @@ SampleApp is a Console App used for test purposes.
 
 - Use `GeoTiffService.GenerateDirectoryMetadata(samplePath);`to generate metadata files for your GeoTIFF tiles.
 These metadata files will be used as an index when querying Digital Elevation Model data.
-
-# Coming soon...
-
-- Provide a simple sample for getting Height Maps (Unity based samples) and vizualising DEM as 3D meshes
-- Provide a simple sample to drape a line onto a DEM
-- If you have specific needs, let me know (create an issue)
 
 # Sample data
 GeoTiff from http://www.opentopography.org
