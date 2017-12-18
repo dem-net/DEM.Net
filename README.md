@@ -2,7 +2,9 @@
 
 #DEM.Net 
 Digital Elevation Model samples in C#. GeoTiff file parsing and DEM querying.
-The goal is to provide on the fly DEM querying from GeoJSON or WKT geometries.
+The goal is to provide on the fly DEM querying from GeoJSON or WKT geometries :
+- No big RAM cache
+- Fast and optimized data retrieval as precise as possible
 
 # How to run the SampleApp 
 (Work in progress)
