@@ -17,7 +17,7 @@ namespace SampleApp
 {
     class Program
     {
-        const string DATA_DIR = @"C:\Repos\DEM.Net\Data";
+        const string DATA_DIR = null; //@"C:\Repos\DEM.Net\Data";
 
         [STAThread]
         static void Main(string[] args)
@@ -26,10 +26,11 @@ namespace SampleApp
             IGeoTiffService geoTiffService = new GeoTiffService(GeoTiffReaderType.LibTiff, DATA_DIR);
             ElevationService elevationService = new ElevationService(geoTiffService);
 
-            geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true);
+            //geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true);
             // geoTiffService.GenerateFileMetadata(@"C:\Users\xfischer\AppData\Roaming\DEM.Net\ETOPO1\ETOPO1_Ice_g_geotiff.tif", false, false);
 
-            SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_DEM_INTERPOLATION_BUG, DEMDataSet.AW3D30);
+            //SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_HORIZONTAL_DEM_EDGE, DEMDataSet.AW3D30);
+
             LineDEMTests(elevationService, DEMDataSet.AW3D30, 512);
 
 
@@ -115,7 +116,7 @@ namespace SampleApp
             Dictionary<string, string> dicWktByName = new Dictionary<string, string>();
             //dicWktByName.Add(nameof(WKT_EXAMPLE_GOOGLE), WKT_EXAMPLE_GOOGLE);
 
-            dicWktByName.Add(nameof(WKT_DEM_INTERPOLATION_BUG), WKT_DEM_INTERPOLATION_BUG);
+            dicWktByName.Add(nameof(WKT_HORIZONTAL_DEM_EDGE), WKT_HORIZONTAL_DEM_EDGE);
             //	dicWktByName.Add(nameof(WKT_BAYONNE_NICE_DIRECT), WKT_BAYONNE_NICE_DIRECT);
             //dicWktByName.Add(nameof(WKT_NEG100), WKT_NEG100);
             //dicWktByName.Add(nameof(WKT_GRANDE_BOUCLE), WKT_GRANDE_BOUCLE);
@@ -243,11 +244,9 @@ namespace SampleApp
 
         }
 
-
-
-
-
         #region Sample WKT
+        const string WKT_HORIZONTAL_DEM_EDGE = "LINESTRING (6.1 43.99, 6.9 44.01)";
+        const string WKT_VERTICAL_DEM_EDGE = "LINESTRING (6.001 43.1, 5.99 43.9)";
         const string WKT_MONACO = "LINESTRING (7.0806884765625 45.37916094640917, 7.48443603515625 43.77307711737606)";
         const string WKT_TEST = "LINESTRING (8.668212890625 40.58058466412761, 5.438232421875 43.389081939117496)";
         const string WKT_NO_DEM = "LINESTRING (7.492675781249999 41.582579601430346, 7.5146484375 39.791654835253425)";

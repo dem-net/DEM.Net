@@ -272,11 +272,18 @@ namespace DEM.Net.Lib.Services
 
             foreach (var tilePoints in pointsByTileQuery)
             {
+
                 FileMetadata tile = tilePoints.Key;
+
+
+
                 using (IGeoTiff tiff = _IGeoTiffService.OpenFile(tile.Filename))
                 {
                     foreach (GeoPoint pt in tilePoints.Select(a => a.Point))
                     {
+                        bool isPointOnTileEdge = (IsPointInTile(tile.OriginLatitude, tile.OriginLongitude, pt) != IsPointInTile(tile.StartLat, tile.StartLon, pt));
+                        // TODO : make something when isPointOnTileEdge == true
+
                         pt.Altitude = this.ParseGeoDataAtPoint(tiff, tile, pt.Latitude, pt.Longitude, interpolator);
                     }
                 }
@@ -294,7 +301,7 @@ namespace DEM.Net.Lib.Services
         /// <param name="returnStartPoint">If true, the segment starting point will be returned. Useful when processing a line segment by segment.</param>
         /// <param name="returnEndPoind">If true, the segment end point will be returned. Useful when processing a line segment by segment.</param>
         /// <returns></returns>
-        public List<GeoPoint> FindSegmentIntersections(double startLon, double startLat, double endLon, double endLat, List<FileMetadata> segTiles,bool returnStartPoint, bool returnEndPoind)
+        public List<GeoPoint> FindSegmentIntersections(double startLon, double startLat, double endLon, double endLat, List<FileMetadata> segTiles, bool returnStartPoint, bool returnEndPoind)
         {
             List<GeoPoint> segmentPointsWithDEMPoints;
             // Find intersections with north/south lines, 
@@ -367,8 +374,8 @@ namespace DEM.Net.Lib.Services
         {
             // Get the first north west tile and last south east tile. 
             // The lines are bounded by those tiles
-           
-            foreach (var tilesByX in segTiles.GroupBy(t=>t.StartLon).OrderBy(g=>g.Key))
+
+            foreach (var tilesByX in segTiles.GroupBy(t => t.StartLon).OrderBy(g => g.Key))
             {
                 List<FileMetadata> NSTilesOrdered = tilesByX.OrderByDescending(t => t.StartLat).ToList();
 
@@ -432,7 +439,7 @@ namespace DEM.Net.Lib.Services
                     yield return line;
                 }
             }
-          
+
         }
 
 
