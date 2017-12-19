@@ -257,7 +257,7 @@ namespace DEM.Net.Lib.Services
 
 
         /// <summary>
-        /// Fill altitudes for each GeoPoint provided
+        /// Fill altitudes for each GeoPoint provided, opening as few GeoTiffs as possible
         /// </summary>
         /// <param name="intersections"></param>
         /// <param name="segTiles"></param>
@@ -265,29 +265,72 @@ namespace DEM.Net.Lib.Services
         {
             // Group by tiff file for sequential and faster access
             var pointsByTileQuery = from point in intersections
-                                    let pointTile = new { Point = point, Tile = segTiles.FirstOrDefault(t => this.IsPointInTile(t, point)) }
+                                    let pointTile = new
+                                    {
+                                        Point = point,
+                                        Tile = segTiles.FirstOrDefault(t => this.IsPointInTile(t, point)),
+                                        AdjacentTiles = segTiles.Where(t => this.IsPointInAdjacentTile(t, point)).ToList()
+                                    }
                                     group pointTile by pointTile.Tile into pointsByTile
                                     where pointsByTile.Key != null
                                     select pointsByTile;
 
-            foreach (var tilePoints in pointsByTileQuery)
+
+            try
             {
-
-                FileMetadata tile = tilePoints.Key;
-
-
-
-                using (IGeoTiff tiff = _IGeoTiffService.OpenFile(tile.Filename))
+                // To interpolate well points close to tile edges, we need all adjacent tiles
+                using (GeoTiffDictionary adjacentGeoTiffs = new GeoTiffDictionary())
                 {
-                    foreach (GeoPoint pt in tilePoints.Select(a => a.Point))
+                    // For each group (key = tile, values = points within this tile)
+                    // TIP: test use of Parallel (warning : a lot of files may be opened at the same time)
+                    foreach (var tilePoints in pointsByTileQuery)
                     {
-                        bool isPointOnTileEdge = (IsPointInTile(tile.OriginLatitude, tile.OriginLongitude, pt) != IsPointInTile(tile.StartLat, tile.StartLon, pt));
-                        // TODO : make something when isPointOnTileEdge == true
+                        // Get the tile
+                        FileMetadata mainTile = tilePoints.Key;
 
-                        pt.Altitude = this.ParseGeoDataAtPoint(tiff, tile, pt.Latitude, pt.Longitude, interpolator);
-                    }
+
+                        // We open geotiffs first, then we iterate
+                        PopulateGeoTiffDictionary(adjacentGeoTiffs, mainTile, _IGeoTiffService, tilePoints.SelectMany(tp => tp.AdjacentTiles));
+
+                        foreach (var pointile in tilePoints)
+                        {
+                            GeoPoint current = pointile.Point;
+                            current.Altitude = this.ParseGeoDataAtPoint(adjacentGeoTiffs, mainTile, current.Latitude, current.Longitude, interpolator);
+                        }
+
+                        adjacentGeoTiffs.Clear();
+
+                    } // Ensures all geotifs are properly closed
                 }
             }
+
+            catch (Exception e)
+            {
+                Trace.TraceError($"Error while getting elevation data : {e.Message}{Environment.NewLine}{e.ToString()}");
+            }
+
+        }
+
+        private void PopulateGeoTiffDictionary(GeoTiffDictionary dictionary, FileMetadata mainTile, IGeoTiffService geoTiffService, IEnumerable<FileMetadata> fileMetadataList)
+        {
+            // Add main tile
+            dictionary[mainTile] = geoTiffService.OpenFile(mainTile.Filename);
+
+            foreach (var fileMetadata in fileMetadataList)
+            {
+                if (!dictionary.ContainsKey(fileMetadata))
+                {
+                    dictionary[fileMetadata] = geoTiffService.OpenFile(fileMetadata.Filename);
+                }
+            }
+        }
+
+        private bool IsPointInAdjacentTile(FileMetadata tile, GeoPoint point)
+        {
+            bool isInsideY = tile.OriginLatitude + 1 >= point.Latitude && (tile.OriginLatitude - 2) <= point.Latitude;
+            bool isInsideX = (tile.OriginLongitude + 2) >= point.Longitude && (tile.OriginLongitude - 2) <= point.Longitude;
+            bool isInside = isInsideX && isInsideY;
+            return isInside;
         }
 
         /// <summary>
@@ -546,63 +589,114 @@ namespace DEM.Net.Lib.Services
             return heightMap;
         }
 
-        public float ParseGeoDataAtPoint(IGeoTiff tiff, FileMetadata metadata, double lat, double lon, IInterpolator interpolator)
+        public float ParseGeoDataAtPoint(GeoTiffDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, IInterpolator interpolator)
         {
-            //const double epsilon = (Double.Epsilon * 100);
-            float noData = float.Parse(metadata.NoDataValue);
-            const float NO_DATA_OUT = -100;
-
-            // precise position on the grid (with commas)
-            double ypos = MathHelper.Clamp((lat - metadata.StartLat) / metadata.pixelSizeY, 0, metadata.Height - 1);
-            double xpos = MathHelper.Clamp((lon - metadata.StartLon) / metadata.pixelSizeX, 0, metadata.Width - 1);
-
-            // If pure integers, then it's on the grid
-            //bool xOnGrid = Math.Abs(xpos % 1) <= epsilon;
-            //bool yOnGrid = Math.Abs(ypos % 1) <= epsilon;
-            float xInterpolationAmount = (float)xpos % 1;
-            float yInterpolationAmount = (float)ypos % 1;
-
-            bool xOnGrid = xInterpolationAmount == 0;
-            bool yOnGrid = yInterpolationAmount == 0;
-
-            // clamp all values to avoid OutOfRangeExceptions
-            int clampedXCeiling = MathHelper.Clamp((int)Math.Ceiling(xpos), 0, metadata.Width - 1);
-            int clampedXFloor = MathHelper.Clamp((int)Math.Floor(xpos), 0, metadata.Width - 1);
-            int clampedYCeiling = MathHelper.Clamp((int)Math.Ceiling(ypos), 0, metadata.Height - 1);
-            int clampedYFloor = MathHelper.Clamp((int)Math.Floor(ypos), 0, metadata.Height - 1);
-            int clampedX = MathHelper.Clamp((int)Math.Round(xpos, 0), 0, metadata.Width - 1);
-            int clampedY = MathHelper.Clamp((int)Math.Round(ypos, 0), 0, metadata.Height - 1);
-
-
             float heightValue = 0;
-            // If xOnGrid and yOnGrid, we are on a grid intersection, and that's all
-            if (xOnGrid && yOnGrid)
+            try
             {
-                heightValue = tiff.ParseGeoDataAtPoint(metadata, (int)Math.Round(xpos, 0), (int)Math.Round(ypos, 0));
+
+                IGeoTiff mainTiff = adjacentTiles[metadata];
+
+                //const double epsilon = (Double.Epsilon * 100);
+                float noData = float.Parse(metadata.NoDataValue);
+                const float NO_DATA_OUT = -100;
+
+                // precise position on the grid (with commas)
+                double ypos = (lat - metadata.StartLat) / metadata.pixelSizeY;
+                double xpos = (lon - metadata.StartLon) / metadata.pixelSizeX;
+
+                // If pure integers, then it's on the grid
+                float xInterpolationAmount = (float)xpos % 1;
+                float yInterpolationAmount = (float)ypos % 1;
+
+                bool xOnGrid = xInterpolationAmount == 0;
+                bool yOnGrid = yInterpolationAmount == 0;
+
+                // If xOnGrid and yOnGrid, we are on a grid intersection, and that's all
+                if (xOnGrid && yOnGrid)
+                {
+                    int x = (int)Math.Round(xpos, 0);
+                    int y = (int)Math.Round(ypos, 0);
+                    var tile = FindTile(metadata, adjacentTiles, x, y, out x, out y);
+                    heightValue = mainTiff.ParseGeoDataAtPoint(tile, x, y);
+                }
+                else
+                {
+                    int xCeiling = (int)Math.Ceiling(xpos);
+                    int xFloor = (int)Math.Floor(xpos);
+                    int yCeiling = (int)Math.Ceiling(ypos);
+                    int yFloor = (int)Math.Floor(ypos);
+                    // Get 4 grid nearest points (DEM grid corners)
+
+                    // If not yOnGrid and not xOnGrid we are on grid horizontal line
+                    // We need elevations for top, bottom, left and right grid points (along x axis and y axis)
+                    float northWest  = GetElevationAtPoint(metadata, adjacentTiles, xFloor, yFloor, NO_DATA_OUT);
+                    float northEast = GetElevationAtPoint(metadata, adjacentTiles, xCeiling, yFloor, NO_DATA_OUT);
+                    float southWest = GetElevationAtPoint(metadata, adjacentTiles, xFloor, yCeiling, NO_DATA_OUT);
+                    float southEast = GetElevationAtPoint(metadata, adjacentTiles, xCeiling, yCeiling, NO_DATA_OUT);
+
+                    float avgHeight = GetAverageExceptForNoDataValue(noData, NO_DATA_OUT, southWest, southEast, northWest, northEast);
+
+                    if (northWest == noData) northWest = avgHeight;
+                    if (northEast == noData) northEast = avgHeight;
+                    if (southWest == noData) southWest = avgHeight;
+                    if (southEast == noData) southEast = avgHeight;
+
+                    heightValue = interpolator.Interpolate(southWest, southEast, northWest, northEast, xInterpolationAmount, yInterpolationAmount);
+                }
             }
-            else
+            catch (Exception e)
             {
-
-                // Get 4 grid nearest points (DEM grid corners)
-
-                // If not yOnGrid and not xOnGrid we are on grid horizontal line
-                // We need elevations for top, bottom, left and right grid points (along x axis and y axis)
-                float northWest = tiff.ParseGeoDataAtPoint(metadata, clampedXFloor, clampedYFloor);
-                float northEast = tiff.ParseGeoDataAtPoint(metadata, clampedXCeiling, clampedYFloor);
-                float southWest = tiff.ParseGeoDataAtPoint(metadata, clampedXFloor, clampedYCeiling);
-                float southEast = tiff.ParseGeoDataAtPoint(metadata, clampedXCeiling, clampedYCeiling);
-
-                float avgHeight = GetAverageExceptForNoDataValue(noData, NO_DATA_OUT, southWest, southEast, northWest, northEast);
-
-                if (northWest == noData) northWest = avgHeight;
-                if (northEast == noData) northEast = avgHeight;
-                if (southWest == noData) southWest = avgHeight;
-                if (southEast == noData) southEast = avgHeight;
-
-                heightValue = interpolator.Interpolate(southWest, southEast, northWest, northEast, xInterpolationAmount, yInterpolationAmount);
+                Trace.TraceError($"Error while getting elevation data : {e.Message}{Environment.NewLine}{e.ToString()}");
             }
             return heightValue;
         }
+
+        private float GetElevationAtPoint(FileMetadata mainTile, GeoTiffDictionary tiles, int x, int y, float nullValue)
+        {
+            int xRemap, yRemap;
+            FileMetadata goodTile = FindTile(mainTile, tiles, x, y, out xRemap, out yRemap);
+            if (goodTile == null )
+            {
+                return nullValue;
+            }
+
+            if (tiles.ContainsKey(goodTile))
+            {
+                return tiles[goodTile].ParseGeoDataAtPoint(goodTile, xRemap, yRemap);
+
+            }
+            else
+            {
+                throw new Exception("Tile not found. Should not happen.");
+            }
+
+        }
+
+        private FileMetadata FindTile(FileMetadata mainTile, GeoTiffDictionary tiles, int x, int y, out int newX, out int newY)
+        {
+            int xTileOffset = x < 0 ? -1 : x >= mainTile.Width ? 1 : 0;
+            int yTileOffset = y < 0 ? -1 : y >= mainTile.Height ? 1 : 0;
+            if (xTileOffset == 0 && yTileOffset == 0)
+            {
+                newX = x;
+                newY = y;
+                return mainTile;
+            }
+            else
+            {
+                int yScale = Math.Sign(mainTile.pixelSizeY);
+                FileMetadata tile = tiles.Keys.FirstOrDefault(
+                    t => t.OriginLatitude == mainTile.OriginLatitude + yScale * yTileOffset
+                    && t.OriginLongitude == mainTile.OriginLongitude + xTileOffset);
+                newX = xTileOffset > 0 ? x % mainTile.Width : (mainTile.Width + x) % mainTile.Width;
+                newY = yTileOffset < 0 ? (mainTile.Height + y) % mainTile.Height : y % mainTile.Height;
+                return tile;
+            }
+        }
+
+
+
 
         public float GetAverageExceptForNoDataValue(float noData, float valueIfAllBad, params float[] values)
         {

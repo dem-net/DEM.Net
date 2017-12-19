@@ -17,7 +17,7 @@ namespace SampleApp
 {
     class Program
     {
-        const string DATA_DIR = null; //@"C:\Repos\DEM.Net\Data";
+        const string DATA_DIR = @"C:\Repos\DEM.Net\Data";
 
         [STAThread]
         static void Main(string[] args)
@@ -29,7 +29,7 @@ namespace SampleApp
             //geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true);
             // geoTiffService.GenerateFileMetadata(@"C:\Users\xfischer\AppData\Roaming\DEM.Net\ETOPO1\ETOPO1_Ice_g_geotiff.tif", false, false);
 
-            //SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_HORIZONTAL_DEM_EDGE, DEMDataSet.AW3D30);
+            //SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_TEST, DEMDataSet.AW3D30);
 
             LineDEMTests(elevationService, DEMDataSet.AW3D30, 512);
 
@@ -99,14 +99,14 @@ namespace SampleApp
 
         private static void Test_GetMetadataFromVRT(ElevationService elevationService, DEMDataSet dataSet)
         {
-            using (GDALVRTFileService gdalService = new GDALVRTFileService(elevationService.GetDEMLocalPath(dataSet), dataSet))
-            {
-                gdalService.Setup();
+            GDALVRTFileService gdalService = new GDALVRTFileService(elevationService.GetDEMLocalPath(dataSet), dataSet);
 
-                GDALSource source = gdalService.Sources().FirstOrDefault(s => s.SourceFileName.EndsWith("N043E006_AVE_DSM.tif"));
+            gdalService.Setup(false);
+
+            GDALSource source = gdalService.Sources().FirstOrDefault(s => s.SourceFileName.EndsWith("N043E006_AVE_DSM.tif"));
 
 
-            }
+
         }
 
 
@@ -116,15 +116,25 @@ namespace SampleApp
             Dictionary<string, string> dicWktByName = new Dictionary<string, string>();
             //dicWktByName.Add(nameof(WKT_EXAMPLE_GOOGLE), WKT_EXAMPLE_GOOGLE);
 
-            dicWktByName.Add(nameof(WKT_HORIZONTAL_DEM_EDGE), WKT_HORIZONTAL_DEM_EDGE);
-            //	dicWktByName.Add(nameof(WKT_BAYONNE_NICE_DIRECT), WKT_BAYONNE_NICE_DIRECT);
-            //dicWktByName.Add(nameof(WKT_NEG100), WKT_NEG100);
-            //dicWktByName.Add(nameof(WKT_GRANDE_BOUCLE), WKT_GRANDE_BOUCLE);
-            //dicWktByName.Add(nameof(WKT_PETITE_BOUCLE), WKT_PETITE_BOUCLE);
-            //dicWktByName.Add(nameof(WKT_GRAND_TRAJET), WKT_GRAND_TRAJET);
-            //dicWktByName.Add(nameof(WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES), WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES);
-            //dicWktByName.Add(nameof(WKT_AIX_BAYONNE_EST_OUEST), WKT_AIX_BAYONNE_EST_OUEST);
-            //dicWktByName.Add(nameof(WKT_BAYONNE_NICE_DIRECT), WKT_BAYONNE_NICE_DIRECT);
+            //dicWktByName.Add(nameof(WKT_BREST_NICE), WKT_BREST_NICE);
+            //dicWktByName.Add(nameof(WKT_HORIZONTAL_DEM_EDGE), WKT_HORIZONTAL_DEM_EDGE);
+            //dicWktByName.Add(nameof(WKT_VERTICAL_DEM_EDGE), WKT_VERTICAL_DEM_EDGE);
+            //dicWktByName.Add(nameof(WKT_MONACO), WKT_MONACO);
+            //dicWktByName.Add(nameof(WKT_TEST), WKT_TEST);
+            //dicWktByName.Add(nameof(WKT_NO_DEM), WKT_NO_DEM);
+            //dicWktByName.Add(nameof(WKT_ZERO), WKT_ZERO);
+            dicWktByName.Add(nameof(WKT_NEG100), WKT_NEG100);
+            dicWktByName.Add(nameof(WKT_BREST_SPAIN_OCEAN), WKT_BREST_SPAIN_OCEAN);
+            dicWktByName.Add(nameof(WKT_EXAMPLE_GOOGLE), WKT_EXAMPLE_GOOGLE);
+            dicWktByName.Add(nameof(WKT_PARIS_AIX), WKT_PARIS_AIX);
+            dicWktByName.Add(nameof(WKT_PETITE_BOUCLE), WKT_PETITE_BOUCLE);
+            dicWktByName.Add(nameof(WKT_GRAND_TRAJET), WKT_GRAND_TRAJET);
+            dicWktByName.Add(nameof(WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES), WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES);
+            dicWktByName.Add(nameof(WKT_BAYONNE_AIX_OUEST_EST), WKT_BAYONNE_AIX_OUEST_EST);
+            dicWktByName.Add(nameof(WKT_AIX_BAYONNE_EST_OUEST), WKT_AIX_BAYONNE_EST_OUEST);
+            dicWktByName.Add(nameof(WKT_BAYONNE_NICE_DIRECT), WKT_BAYONNE_NICE_DIRECT);
+            dicWktByName.Add(nameof(WKT_DEM_INTERPOLATION_BUG), WKT_DEM_INTERPOLATION_BUG);
+
 
             InterpolationMode[] modes = { InterpolationMode.Bilinear, InterpolationMode.Hyperbolic };
 
@@ -149,29 +159,30 @@ namespace SampleApp
             // Let's create a geometry with x = distnace from origin and y = elevation
             // and run douglas peucker on it
 
-            SqlGeometryBuilder gb = new SqlGeometryBuilder();
-            gb.SetSrid(0); // custom SRID
-            gb.BeginGeometry(OpenGisGeometryType.LineString);
+            //SqlGeometryBuilder gb = new SqlGeometryBuilder();
+            //gb.SetSrid(0); // custom SRID
+            //gb.BeginGeometry(OpenGisGeometryType.LineString);
 
-            gb.BeginFigure(lineElevationData[0].DistanceFromOriginMeters, lineElevationData[0].Altitude.GetValueOrDefault(0));
-            for (int i = 1; i < lineElevationData.Count; i++)
-            {
-                gb.AddLine(lineElevationData[i].DistanceFromOriginMeters, lineElevationData[i].Altitude.GetValueOrDefault(0));
-            }
-            gb.EndFigure();
-            gb.EndGeometry();
-            SqlGeometry geom = gb.ConstructedGeometry;
+            //gb.BeginFigure(lineElevationData[0].DistanceFromOriginMeters, lineElevationData[0].Altitude.GetValueOrDefault(0));
+            //for (int i = 1; i < lineElevationData.Count; i++)
+            //{
+            //    gb.AddLine(lineElevationData[i].DistanceFromOriginMeters, lineElevationData[i].Altitude.GetValueOrDefault(0));
+            //}
+            //gb.EndFigure();
+            //gb.EndGeometry();
+            //SqlGeometry geom = gb.ConstructedGeometry;
+
             float maxElevation = lineElevationData.Max(pt => pt.Altitude.GetValueOrDefault(0));
 
             double reduceFactor = 10 * ((double)numSamples / (double)(maxElevation == 0 ? float.MaxValue : maxElevation));
-            SqlGeometry geomReduced = geom.Reduce(reduceFactor);
-            SpatialTrace.Enable();
-            SpatialTrace.Clear();
-            SpatialTrace.TraceGeometry(geom,"Geom");
-            SpatialTrace.TraceGeometry(geomReduced, "Geom reduced");
-            SpatialTrace.ShowDialog();
+            //SqlGeometry geomReduced = geom.Reduce(reduceFactor);
+            //SpatialTrace.Enable();
+            //SpatialTrace.Clear();
+            //SpatialTrace.TraceGeometry(geom, "Geom");
+            //SpatialTrace.TraceGeometry(geomReduced, "Geom reduced");
+            //SpatialTrace.ShowDialog();
 
-            List<GeoPoint> reducedList = new DouglasPeucker(lineElevationData, reduceFactor * 1.8).Compress();
+           // List<GeoPoint> reducedList = new DouglasPeucker(lineElevationData, reduceFactor * 1.8).Compress();
             int chunksize = lineElevationData.Count / numSamples;
             if (lineElevationData.Count <= numSamples)
             {
@@ -179,7 +190,7 @@ namespace SampleApp
             }
 
             List<GeoPoint> result = GetNth(lineElevationData, chunksize).ToList();
-            return reducedList;
+            return result;
         }
 
         private static IEnumerable<T> GetNth<T>(List<T> list, int n)

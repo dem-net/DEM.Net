@@ -4,65 +4,80 @@ using System;
 
 namespace DEM.Net.Lib
 {
-	public class GeoTiff : IGeoTiff
-	{
-		Tiff _tiff;
-		string _tiffPath;
+    public class GeoTiff : IGeoTiff
+    {
+        Tiff _tiff;
+        string _tiffPath;
 
-		internal Tiff TiffFile
-		{
-			get { return _tiff; }
-		}
+        internal Tiff TiffFile
+        {
+            get { return _tiff; }
+        }
 
         public string FilePath
         {
             get { return _tiffPath; }
         }
 
-		public GeoTiff(string tiffPath)
-		{
-			_tiffPath = tiffPath;
-			_tiff = Tiff.Open(tiffPath, "r");
-		}
+        public GeoTiff(string tiffPath)
+        {
+            _tiffPath = tiffPath;
+            _tiff = Tiff.Open(tiffPath, "r");
+        }
 
-		protected virtual void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				_tiff?.Dispose();
-			}
-		}
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _tiff?.Dispose();
+            }
+        }
 
-		~GeoTiff()
-		{
-			Dispose(false);
-		}
+        ~GeoTiff()
+        {
+            Dispose(false);
+        }
 
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
         public float ParseGeoDataAtPoint(FileMetadata metadata, int x, int y)
         {
-            byte[] scanline = new byte[metadata.ScanlineSize];
-            ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
+            float heightValue = 0;
+            try
+            {
+                byte[] scanline = new byte[metadata.ScanlineSize];
+                ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
 
-            TiffFile.ReadScanline(scanline, y);
-            Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
+                TiffFile.ReadScanline(scanline, y);
+                Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
 
-            float heightValue = ParseGeoDataAtPoint(metadata, x, scanline16Bit);
-
+                heightValue = ParseGeoDataAtPoint(metadata, x, scanline16Bit);
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Error in ParseGeoDataAtPoint: {e.Message}");
+            }
             return heightValue;
         }
 
         public float ParseGeoDataAtPoint(FileMetadata metadata, int x, ushort[] scanline16Bit)
         {
-            float heightValue = (float)scanline16Bit[x];
-            if (heightValue > 32768)
+            float heightValue = 0;
+            try
             {
-                heightValue = -10000;
+                heightValue = (float)scanline16Bit[x];
+                if (heightValue > 32768)
+                {
+                    heightValue = -10000;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Error in ParseGeoDataAtPoint: {e.Message}");
             }
 
             return heightValue;

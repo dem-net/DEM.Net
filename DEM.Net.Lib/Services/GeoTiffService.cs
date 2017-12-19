@@ -12,10 +12,11 @@ namespace DEM.Net.Lib.Services
 {
     public class GeoTiffService : IGeoTiffService
     {
-        private const string APP_NAME = "DEM.Net";
-        private const string MANIFEST_DIR = "manifest";
-        private const int EARTH_CIRCUMFERENCE_METERS = 40075017;
-        private readonly GeoTiffReaderType _readerType;
+        const string APP_NAME = "DEM.Net";
+        const string MANIFEST_DIR = "manifest";
+        const int EARTH_CIRCUMFERENCE_METERS = 40075017;
+        readonly GeoTiffReaderType _readerType;
+        GDALVRTFileService _gdalService;
 
 
         private static string _localDirectory;
@@ -236,29 +237,31 @@ namespace DEM.Net.Lib.Services
         public Dictionary<string, DemFileReport> GenerateReport(DEMDataSet dataSet, BoundingBox bbox = null)
         {
             Dictionary<string, DemFileReport> statusByFile = new Dictionary<string, DemFileReport>();
-            using (GDALVRTFileService gdalService = new GDALVRTFileService(GetLocalDEMPath(dataSet), dataSet))
+            if (_gdalService == null)
             {
-                gdalService.Setup();
+                _gdalService = new GDALVRTFileService(GetLocalDEMPath(dataSet), dataSet);
+                _gdalService.Setup(true);
+            }
 
-                foreach (GDALSource source in gdalService.Sources())
+            foreach (GDALSource source in _gdalService.Sources())
+            {
+
+                if (bbox == null || BoundingBoxIntersects(source.BBox, bbox))
                 {
 
-                    if (bbox == null || BoundingBoxIntersects(source.BBox, bbox))
+                    statusByFile.Add(source.SourceFileNameAbsolute, new DemFileReport()
                     {
+                        IsExistingLocally = File.Exists(source.LocalFileName),
+                        LocalName = source.LocalFileName,
+                        URL = source.SourceFileNameAbsolute,
+                        Source = source
+                    });
 
-                        statusByFile.Add(source.SourceFileNameAbsolute, new DemFileReport()
-                        {
-                            IsExistingLocally = File.Exists(source.LocalFileName),
-                            LocalName = source.LocalFileName,
-                            URL = source.SourceFileNameAbsolute,
-                            Source = source
-                        });
-
-                    }
-                    //Trace.TraceInformation($"Source {source.SourceFileName}");
                 }
-
+                //Trace.TraceInformation($"Source {source.SourceFileName}");
             }
+
+
             //// download GDAL virtual file (.VRT file)
             //Uri lstUri = new Uri(urlToLstFile);
             //string lstContent = null;
