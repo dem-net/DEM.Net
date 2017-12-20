@@ -31,7 +31,8 @@ namespace SampleApp
 
             //SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_TEST, DEMDataSet.AW3D30);
 
-            LineDEMTests(elevationService, DEMDataSet.AW3D30, 512);
+            LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
+            //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_BREST_NICE, 100);
 
 
 
@@ -110,7 +111,7 @@ namespace SampleApp
         }
 
 
-        static void LineDEMTests(ElevationService elevationService, DEMDataSet dataSet, int numSamples)
+        static void LineDEMBenchmark(ElevationService elevationService, DEMDataSet dataSet, int numSamples)
         {
 
             Dictionary<string, string> dicWktByName = new Dictionary<string, string>();
@@ -119,7 +120,7 @@ namespace SampleApp
             // Before GeoTiff window optim : 90s
             // After GeoTiff optim : 77s / release : 60s;
 
-            
+
             dicWktByName.Add(nameof(WKT_BREST_NICE), WKT_BREST_NICE);
             dicWktByName.Add(nameof(WKT_HORIZONTAL_DEM_EDGE), WKT_HORIZONTAL_DEM_EDGE);
             dicWktByName.Add(nameof(WKT_VERTICAL_DEM_EDGE), WKT_VERTICAL_DEM_EDGE);
@@ -161,6 +162,25 @@ namespace SampleApp
 
             sw.Stop();
             Console.WriteLine($"LineDEMTests performed in {sw.Elapsed:g}.");
+        }
+
+        static void LineDEMTest(ElevationService elevationService, DEMDataSet dataSet, string wkt, int numSamples)
+        {
+
+            Stopwatch sw = Stopwatch.StartNew();
+
+            elevationService.DownloadMissingFiles(dataSet, GetBoundingBox(wkt));
+
+
+            var lineElevationData = elevationService.GetLineGeometryElevation(wkt, dataSet, InterpolationMode.Hyperbolic);
+            lineElevationData = GeometryService.ComputePointsDistances(lineElevationData);
+            //var sampledLineElevationData = ReduceList(lineElevationData, numSamples).ToList();
+            File.WriteAllText($"ElevationData_LineDEMTesttest.txt", elevationService.ExportElevationTable(lineElevationData));
+            //File.WriteAllText($"ElevationData_{wkt.Key}_{mode}_{numSamples}samples.txt", elevationService.ExportElevationTable(sampledLineElevationData));
+
+
+            sw.Stop();
+            Console.WriteLine($"LineDEMTest performed in {sw.Elapsed:g}.");
         }
 
         private static List<GeoPoint> ReduceList(List<GeoPoint> lineElevationData, int numSamples)

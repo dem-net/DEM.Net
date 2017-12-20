@@ -104,7 +104,8 @@ namespace DEM.Net.Lib.Services
 
                     isFirstSegment = false;
                 }
-            }
+                //Debug.WriteLine(adjacentGeoTiffs.Count);
+            }  // Ensures all geotifs are properly closed
 
             return geoPoints;
         }
@@ -250,7 +251,7 @@ namespace DEM.Net.Lib.Services
 
                     //adjacentGeoTiffs.Clear();
 
-                } // Ensures all geotifs are properly closed
+                }
             }
             //}
 
@@ -276,14 +277,6 @@ namespace DEM.Net.Lib.Services
                     dictionary[fileMetadata] = geoTiffService.OpenFile(fileMetadata.Filename);
                 }
             }
-        }
-
-        private bool IsPointInAdjacentTile(FileMetadata tile, GeoPoint point)
-        {
-            bool isInsideY = tile.OriginLatitude + 1 >= point.Latitude && (tile.OriginLatitude - 2) <= point.Latitude;
-            bool isInsideX = (tile.OriginLongitude + 2) >= point.Longitude && (tile.OriginLongitude - 2) <= point.Longitude;
-            bool isInside = isInsideX && isInsideY;
-            return isInside;
         }
 
         /// <summary>
@@ -489,11 +482,27 @@ namespace DEM.Net.Lib.Services
         }
         public bool IsPointInTile(double originLatitude, double originLongitude, GeoPoint point)
         {
-            bool isInsideY = originLatitude >= point.Latitude && (originLatitude - 1) <= point.Latitude;
-            bool isInsideX = (originLongitude + 1) >= point.Longitude && originLongitude <= point.Longitude;
+            bool isInsideY = (originLatitude - 1) <= point.Latitude && point.Latitude <= originLatitude;
+            bool isInsideX = originLongitude <= point.Longitude && point.Longitude <= (originLongitude + 1);
             bool isInside = isInsideX && isInsideY;
             return isInside;
         }
+        private bool IsPointInAdjacentTile(FileMetadata tile, GeoPoint point)
+        {
+            double sX = tile.PixelScaleX * 2;
+            double sY = tile.PixelScaleY * 2;
+            bool isInsideY = (tile.OriginLatitude - 1 - sY) <= point.Latitude && point.Latitude <= (tile.OriginLatitude + sY);
+            bool isInsideX = (tile.OriginLongitude - sX) <= point.Longitude && point.Longitude <= (tile.OriginLongitude + 1 + sX);
+            bool isInside = isInsideX && isInsideY;
+            return isInside;
+            //bool isInsideY = tile.OriginLatitude + 1 >= point.Latitude && (tile.OriginLatitude - 2) <= point.Latitude;
+            //bool isInsideX = (tile.OriginLongitude + 2) >= point.Longitude && (tile.OriginLongitude - 2) <= point.Longitude;
+            //bool isInside = isInsideX && isInsideY;
+            //return isInside;
+        }
+
+
+
 
         public HeightMap ParseGeoDataInBBox(GeoTiff tiff, BoundingBox bbox, FileMetadata metadata)
         {
