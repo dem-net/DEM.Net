@@ -80,82 +80,32 @@ namespace DEM.Net.Lib.Services
 
             List<GeoPoint> geoPoints = new List<GeoPoint>(totalCapacity);
 
-            bool isFirstSegment = true; // used to return first point only for first segments, for all other segments last point will be returned
-            foreach (SqlGeometry segment in geom.Segments())
+            using (GeoTiffDictionary adjacentGeoTiffs = new GeoTiffDictionary())
             {
-                List<FileMetadata> segTiles = this.GetCoveringFiles(segment.GetBoundingBox(), dataSet, tiles);
+                bool isFirstSegment = true; // used to return first point only for first segments, for all other segments last point will be returned
+                foreach (SqlGeometry segment in geom.Segments())
+                {
+                    List<FileMetadata> segTiles = this.GetCoveringFiles(segment.GetBoundingBox(), dataSet, tiles);
 
-                // Find all intersection with segment and DEM grid
-                List<GeoPoint> intersections = this.FindSegmentIntersections(segment.STStartPoint().STX.Value, segment.STStartPoint().STY.Value,
-                                                                                                                                                                segment.STEndPoint().STX.Value, segment.STEndPoint().STY.Value,
-                                                                                                                                                                segTiles, isFirstSegment, true);
+                    // Find all intersection with segment and DEM grid
+                    List<GeoPoint> intersections = this.FindSegmentIntersections(segment.STStartPoint().STX.Value
+                        , segment.STStartPoint().STY.Value
+                        , segment.STEndPoint().STX.Value
+                        , segment.STEndPoint().STY.Value
+                        , segTiles
+                        , isFirstSegment
+                        , true);
 
-                // Get elevation for each point
-                this.GetElevationData(ref intersections, segTiles, interpolator);
+                    // Get elevation for each point
+                    this.GetElevationData(ref intersections, adjacentGeoTiffs, segTiles, interpolator);
 
-                // Add to output list
-                geoPoints.AddRange(intersections);
+                    // Add to output list
+                    geoPoints.AddRange(intersections);
 
-                isFirstSegment = false;
+                    isFirstSegment = false;
+                }
             }
 
-            return geoPoints;
-        }
-
-        //GetLineGeometryElevation_Profiled
-        public List<GeoPoint> GetLineGeometryElevation_Profiled(string lineWKT, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
-        {
-            BoundingBox bbox = GeometryService.GetBoundingBox(lineWKT);
-            //HeightMap heightMap = GeoTiffService.GetHeightMap(bbox, geoTiffRepository);
-            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(lineWKT);
-            List<FileMetadata> tiles = this.GetCoveringFiles(bbox, dataSet);
-
-            // Init interpolator
-            IInterpolator interpolator = GetInterpolator(interpolationMode);
-
-            double lengthMeters = GeometryService.GetLength(lineWKT);
-            int demResolution = GeoTiffService.GetResolutionMeters(tiles.First());
-            int totalCapacity = 2 * (int)(lengthMeters / demResolution);
-
-            List<GeoPoint> geoPoints = new List<GeoPoint>(totalCapacity);
-
-            Stopwatch swEnumSegments = new Stopwatch();
-            Stopwatch swCovering = new Stopwatch();
-            Stopwatch swInter = new Stopwatch();
-            Stopwatch swElevation = new Stopwatch();
-            Stopwatch swAdd = new Stopwatch();
-
-
-            bool isFirstSegment = true; // used to return first point only for first segments, for all other segments last point will be returned
-            swEnumSegments.Start();
-            foreach (SqlGeometry segment in geom.Segments())
-            {
-                swEnumSegments.Stop();
-                swCovering.Start();
-                List<FileMetadata> segTiles = this.GetCoveringFiles(segment.GetBoundingBox(), dataSet, tiles);
-                swCovering.Stop();
-                swInter.Start();
-                // Find all intersection with segment and DEM grid
-                List<GeoPoint> intersections = this.FindSegmentIntersections(segment.STStartPoint().STX.Value, segment.STStartPoint().STY.Value,
-                                                                                                                                                                segment.STEndPoint().STX.Value, segment.STEndPoint().STY.Value,
-                                                                                                                                                                segTiles, isFirstSegment, true);
-                swInter.Stop();
-                swElevation.Start();
-                // Get elevation for each point
-                this.GetElevationData(ref intersections, segTiles, interpolator);
-                swElevation.Stop();
-                swAdd.Start();
-                // Add to output list
-                geoPoints.AddRange(intersections);
-                swAdd.Stop();
-                swEnumSegments.Start();
-                isFirstSegment = false;
-            }
-            swEnumSegments.Stop();
-            swCovering.Stop();
-            swInter.Stop();
-            swElevation.Stop();
-            swAdd.Stop();
             return geoPoints;
         }
 
@@ -261,7 +211,7 @@ namespace DEM.Net.Lib.Services
         /// </summary>
         /// <param name="intersections"></param>
         /// <param name="segTiles"></param>
-        public void GetElevationData(ref List<GeoPoint> intersections, List<FileMetadata> segTiles, IInterpolator interpolator)
+        public void GetElevationData(ref List<GeoPoint> intersections, GeoTiffDictionary adjacentGeoTiffs, List<FileMetadata> segTiles, IInterpolator interpolator)
         {
             // Group by tiff file for sequential and faster access
             var pointsByTileQuery = from point in intersections
@@ -279,30 +229,30 @@ namespace DEM.Net.Lib.Services
             try
             {
                 // To interpolate well points close to tile edges, we need all adjacent tiles
-                using (GeoTiffDictionary adjacentGeoTiffs = new GeoTiffDictionary())
+                //using (GeoTiffDictionary adjacentGeoTiffs = new GeoTiffDictionary())
+                //{
+                // For each group (key = tile, values = points within this tile)
+                // TIP: test use of Parallel (warning : a lot of files may be opened at the same time)
+                foreach (var tilePoints in pointsByTileQuery)
                 {
-                    // For each group (key = tile, values = points within this tile)
-                    // TIP: test use of Parallel (warning : a lot of files may be opened at the same time)
-                    foreach (var tilePoints in pointsByTileQuery)
+                    // Get the tile
+                    FileMetadata mainTile = tilePoints.Key;
+
+
+                    // We open geotiffs first, then we iterate
+                    PopulateGeoTiffDictionary(adjacentGeoTiffs, mainTile, _IGeoTiffService, tilePoints.SelectMany(tp => tp.AdjacentTiles));
+
+                    foreach (var pointile in tilePoints)
                     {
-                        // Get the tile
-                        FileMetadata mainTile = tilePoints.Key;
+                        GeoPoint current = pointile.Point;
+                        current.Altitude = this.ParseGeoDataAtPoint(adjacentGeoTiffs, mainTile, current.Latitude, current.Longitude, interpolator);
+                    }
 
+                    //adjacentGeoTiffs.Clear();
 
-                        // We open geotiffs first, then we iterate
-                        PopulateGeoTiffDictionary(adjacentGeoTiffs, mainTile, _IGeoTiffService, tilePoints.SelectMany(tp => tp.AdjacentTiles));
-
-                        foreach (var pointile in tilePoints)
-                        {
-                            GeoPoint current = pointile.Point;
-                            current.Altitude = this.ParseGeoDataAtPoint(adjacentGeoTiffs, mainTile, current.Latitude, current.Longitude, interpolator);
-                        }
-
-                        adjacentGeoTiffs.Clear();
-
-                    } // Ensures all geotifs are properly closed
-                }
+                } // Ensures all geotifs are properly closed
             }
+            //}
 
             catch (Exception e)
             {
@@ -314,7 +264,10 @@ namespace DEM.Net.Lib.Services
         private void PopulateGeoTiffDictionary(GeoTiffDictionary dictionary, FileMetadata mainTile, IGeoTiffService geoTiffService, IEnumerable<FileMetadata> fileMetadataList)
         {
             // Add main tile
-            dictionary[mainTile] = geoTiffService.OpenFile(mainTile.Filename);
+            if (!dictionary.ContainsKey(mainTile))
+            {
+                dictionary[mainTile] = geoTiffService.OpenFile(mainTile.Filename);
+            }
 
             foreach (var fileMetadata in fileMetadataList)
             {
@@ -630,7 +583,7 @@ namespace DEM.Net.Lib.Services
 
                     // If not yOnGrid and not xOnGrid we are on grid horizontal line
                     // We need elevations for top, bottom, left and right grid points (along x axis and y axis)
-                    float northWest  = GetElevationAtPoint(metadata, adjacentTiles, xFloor, yFloor, NO_DATA_OUT);
+                    float northWest = GetElevationAtPoint(metadata, adjacentTiles, xFloor, yFloor, NO_DATA_OUT);
                     float northEast = GetElevationAtPoint(metadata, adjacentTiles, xCeiling, yFloor, NO_DATA_OUT);
                     float southWest = GetElevationAtPoint(metadata, adjacentTiles, xFloor, yCeiling, NO_DATA_OUT);
                     float southEast = GetElevationAtPoint(metadata, adjacentTiles, xCeiling, yCeiling, NO_DATA_OUT);
@@ -656,7 +609,7 @@ namespace DEM.Net.Lib.Services
         {
             int xRemap, yRemap;
             FileMetadata goodTile = FindTile(mainTile, tiles, x, y, out xRemap, out yRemap);
-            if (goodTile == null )
+            if (goodTile == null)
             {
                 return nullValue;
             }

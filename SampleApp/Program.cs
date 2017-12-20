@@ -47,7 +47,7 @@ namespace SampleApp
             //geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, false);
 
             //Spatial trace of line +segments + interpolated point + dem grid
-            SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_TEST, DEMDataSet.AW3D30);
+            //SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_TEST, DEMDataSet.AW3D30);
 
             Console.Write("Press any key to exit...");
             Console.ReadLine();
@@ -116,13 +116,17 @@ namespace SampleApp
             Dictionary<string, string> dicWktByName = new Dictionary<string, string>();
             //dicWktByName.Add(nameof(WKT_EXAMPLE_GOOGLE), WKT_EXAMPLE_GOOGLE);
 
-            //dicWktByName.Add(nameof(WKT_BREST_NICE), WKT_BREST_NICE);
-            //dicWktByName.Add(nameof(WKT_HORIZONTAL_DEM_EDGE), WKT_HORIZONTAL_DEM_EDGE);
-            //dicWktByName.Add(nameof(WKT_VERTICAL_DEM_EDGE), WKT_VERTICAL_DEM_EDGE);
-            //dicWktByName.Add(nameof(WKT_MONACO), WKT_MONACO);
-            //dicWktByName.Add(nameof(WKT_TEST), WKT_TEST);
-            //dicWktByName.Add(nameof(WKT_NO_DEM), WKT_NO_DEM);
-            //dicWktByName.Add(nameof(WKT_ZERO), WKT_ZERO);
+            // Before GeoTiff window optim : 90s
+            // After GeoTiff optim : 77s / release : 60s;
+
+            
+            dicWktByName.Add(nameof(WKT_BREST_NICE), WKT_BREST_NICE);
+            dicWktByName.Add(nameof(WKT_HORIZONTAL_DEM_EDGE), WKT_HORIZONTAL_DEM_EDGE);
+            dicWktByName.Add(nameof(WKT_VERTICAL_DEM_EDGE), WKT_VERTICAL_DEM_EDGE);
+            dicWktByName.Add(nameof(WKT_MONACO), WKT_MONACO);
+            dicWktByName.Add(nameof(WKT_TEST), WKT_TEST);
+            dicWktByName.Add(nameof(WKT_NO_DEM), WKT_NO_DEM);
+            dicWktByName.Add(nameof(WKT_ZERO), WKT_ZERO);
             dicWktByName.Add(nameof(WKT_NEG100), WKT_NEG100);
             dicWktByName.Add(nameof(WKT_BREST_SPAIN_OCEAN), WKT_BREST_SPAIN_OCEAN);
             dicWktByName.Add(nameof(WKT_EXAMPLE_GOOGLE), WKT_EXAMPLE_GOOGLE);
@@ -135,22 +139,28 @@ namespace SampleApp
             dicWktByName.Add(nameof(WKT_BAYONNE_NICE_DIRECT), WKT_BAYONNE_NICE_DIRECT);
             dicWktByName.Add(nameof(WKT_DEM_INTERPOLATION_BUG), WKT_DEM_INTERPOLATION_BUG);
 
+            Stopwatch sw = Stopwatch.StartNew();
 
             InterpolationMode[] modes = { InterpolationMode.Bilinear, InterpolationMode.Hyperbolic };
-
-            foreach (var wkt in dicWktByName)
+            for (int i = 0; i < 5; i++)
             {
-                elevationService.DownloadMissingFiles(dataSet, GetBoundingBox(wkt.Value));
-
-                foreach (InterpolationMode mode in modes)
+                foreach (var wkt in dicWktByName)
                 {
-                    var lineElevationData = elevationService.GetLineGeometryElevation(wkt.Value, dataSet, mode);
-                    lineElevationData = GeometryService.ComputePointsDistances(lineElevationData);
-                    var sampledLineElevationData = ReduceList(lineElevationData, numSamples).ToList();
-                    File.WriteAllText($"ElevationData_{wkt.Key}_{mode}.txt", elevationService.ExportElevationTable(lineElevationData));
-                    File.WriteAllText($"ElevationData_{wkt.Key}_{mode}_{numSamples}samples.txt", elevationService.ExportElevationTable(sampledLineElevationData));
+                    elevationService.DownloadMissingFiles(dataSet, GetBoundingBox(wkt.Value));
+
+                    foreach (InterpolationMode mode in modes)
+                    {
+                        var lineElevationData = elevationService.GetLineGeometryElevation(wkt.Value, dataSet, mode);
+                        lineElevationData = GeometryService.ComputePointsDistances(lineElevationData);
+                        //var sampledLineElevationData = ReduceList(lineElevationData, numSamples).ToList();
+                        //File.WriteAllText($"ElevationData_{wkt.Key}_{mode}.txt", elevationService.ExportElevationTable(lineElevationData));
+                        //File.WriteAllText($"ElevationData_{wkt.Key}_{mode}_{numSamples}samples.txt", elevationService.ExportElevationTable(sampledLineElevationData));
+                    }
                 }
             }
+
+            sw.Stop();
+            Console.WriteLine($"LineDEMTests performed in {sw.Elapsed:g}.");
         }
 
         private static List<GeoPoint> ReduceList(List<GeoPoint> lineElevationData, int numSamples)
@@ -182,7 +192,7 @@ namespace SampleApp
             //SpatialTrace.TraceGeometry(geomReduced, "Geom reduced");
             //SpatialTrace.ShowDialog();
 
-           // List<GeoPoint> reducedList = new DouglasPeucker(lineElevationData, reduceFactor * 1.8).Compress();
+            // List<GeoPoint> reducedList = new DouglasPeucker(lineElevationData, reduceFactor * 1.8).Compress();
             int chunksize = lineElevationData.Count / numSamples;
             if (lineElevationData.Count <= numSamples)
             {
