@@ -31,8 +31,8 @@ namespace SampleApp
 
             //SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_TEST, DEMDataSet.AW3D30);
 
-            LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
-            //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_BREST_NICE, 100);
+            //LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
+            LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_SCL_MENDOZA, 100);
 
 
 
@@ -172,10 +172,10 @@ namespace SampleApp
             elevationService.DownloadMissingFiles(dataSet, GetBoundingBox(wkt));
 
 
-            var lineElevationData = elevationService.GetLineGeometryElevation(wkt, dataSet, InterpolationMode.Hyperbolic);
+            var lineElevationData = elevationService.GetLineGeometryElevation(wkt, dataSet, InterpolationMode.Bilinear);
             lineElevationData = GeometryService.ComputePointsDistances(lineElevationData);
-            //var sampledLineElevationData = ReduceList(lineElevationData, numSamples).ToList();
-            File.WriteAllText($"ElevationData_LineDEMTesttest.txt", elevationService.ExportElevationTable(lineElevationData));
+            var sampledLineElevationData = ReduceList(lineElevationData, numSamples).ToList();
+            //File.WriteAllText($"ElevationData_LineDEMTesttest.txt", elevationService.ExportElevationTable(lineElevationData));
             //File.WriteAllText($"ElevationData_{wkt.Key}_{mode}_{numSamples}samples.txt", elevationService.ExportElevationTable(sampledLineElevationData));
 
 
@@ -189,28 +189,38 @@ namespace SampleApp
             // Let's create a geometry with x = distnace from origin and y = elevation
             // and run douglas peucker on it
 
-            //SqlGeometryBuilder gb = new SqlGeometryBuilder();
-            //gb.SetSrid(0); // custom SRID
-            //gb.BeginGeometry(OpenGisGeometryType.LineString);
+            const int DEFAULT_HEIGHT = 300;
+            // Say that 1 sample is one pixel and a graph is usually 300px tall
+            // So 300px = 300 samples = max height (H)
+            // So for numSamples, (H * numSamples / 300) = height of 1px
 
-            //gb.BeginFigure(lineElevationData[0].DistanceFromOriginMeters, lineElevationData[0].Altitude.GetValueOrDefault(0));
-            //for (int i = 1; i < lineElevationData.Count; i++)
-            //{
-            //    gb.AddLine(lineElevationData[i].DistanceFromOriginMeters, lineElevationData[i].Altitude.GetValueOrDefault(0));
-            //}
-            //gb.EndFigure();
-            //gb.EndGeometry();
-            //SqlGeometry geom = gb.ConstructedGeometry;
 
-            float maxElevation = lineElevationData.Max(pt => pt.Altitude.GetValueOrDefault(0));
+            float minH = lineElevationData.Min(p => p.Altitude.GetValueOrDefault(0));
+            float maxH = lineElevationData.Max(p => p.Altitude.GetValueOrDefault(0));
+            float H = maxH - minH;
+            double ratio_11 = lineElevationData.Last().DistanceFromOriginMeters / H;
+            double ratio = ratio_11 / 4;
+            double tolerance = H  / DEFAULT_HEIGHT;
 
-            double reduceFactor = 10 * ((double)numSamples / (double)(maxElevation == 0 ? float.MaxValue : maxElevation));
-            //SqlGeometry geomReduced = geom.Reduce(reduceFactor);
-            //SpatialTrace.Enable();
-            //SpatialTrace.Clear();
-            //SpatialTrace.TraceGeometry(geom, "Geom");
-            //SpatialTrace.TraceGeometry(geomReduced, "Geom reduced");
-            //SpatialTrace.ShowDialog();
+            // Make 4:1 geom
+            SqlGeometryBuilder gb = new SqlGeometryBuilder();
+            gb.SetSrid(0); // custom SRID
+            gb.BeginGeometry(OpenGisGeometryType.LineString);
+
+            gb.BeginFigure(lineElevationData[0].DistanceFromOriginMeters/ ratio, lineElevationData[0].Altitude.GetValueOrDefault(0));
+            for (int i = 1; i < lineElevationData.Count; i++)
+            {
+                gb.AddLine(lineElevationData[i].DistanceFromOriginMeters/ ratio, lineElevationData[i].Altitude.GetValueOrDefault(0));
+            }
+            gb.EndFigure();
+            gb.EndGeometry();
+            SqlGeometry geom = gb.ConstructedGeometry;            
+            SqlGeometry geomReduced = geom.Reduce(tolerance);
+            SpatialTrace.Enable();
+            SpatialTrace.Clear();
+            SpatialTrace.TraceGeometry(geom, "Geom");
+            SpatialTrace.TraceGeometry(geomReduced, "Geom reduced");
+            SpatialTrace.ShowDialog();
 
             // List<GeoPoint> reducedList = new DouglasPeucker(lineElevationData, reduceFactor * 1.8).Compress();
             int chunksize = lineElevationData.Count / numSamples;
@@ -286,6 +296,11 @@ namespace SampleApp
         }
 
         #region Sample WKT
+        const string WKT_SCL_MENDOZA = "LINESTRING (-70.66131591796875 -33.45435978951701, -70.74234008789062 -33.29380355834659, -70.6915283203125 -33.14215083110535, -70.68466186523438 -32.8922726541885, -70.64346313476562 -32.82074894982262, -70.46493530273438 -32.828827094089085, -70.345458984375 -32.82074894982262, -70.22048950195312 -32.802281861547314, -70.09414672851562 -32.795355714148315, -69.91012573242188 -32.83344284664949, -69.68490600585938 -32.832288931002395, -69.46929931640624 -32.83805835927704, -69.14794921875 -32.83805835927704, -68.83621215820312 -32.88881315761995)";
+        const string WKT_SANTIAGO_EL_PLOMO = "LINESTRING (-70.79933166503906 -33.55598734171233, -70.213371 -33.236214)";
+        const string WKT_VUE_MAISON = "LINESTRING (5.446987152099609 43.542482399204786, 5.58079719543457 43.53100253601927)";
+        const string WKT_STE_VICTOIRE_A8 = "LINESTRING (5.57830810546875 43.4249985081581, 5.575561523437499 43.555515149559746)";
+        const string WKT_PLATEAU_PUYRICARD = "LINESTRING (5.447373390197754 43.54238907579587, 5.445485115051269 43.54260683019196, 5.445613861083984 43.544379943853905, 5.445270538330078 43.54525092795516, 5.445442199707031 43.546961752945364, 5.445613861083984 43.54764606934588, 5.445613861083984 43.54801932956258, 5.445184707641602 43.54910799199228, 5.444240570068359 43.55041436095265, 5.444025993347167 43.55134746430302, 5.443682670593262 43.55389787308514, 5.443682670593262 43.55489312528296, 5.443940162658691 43.55560845264746, 5.443382263183594 43.55685248001281, 5.442523956298828 43.55962034875577, 5.44222354888916 43.56251248024762, 5.441923141479492 43.56372526826544, 5.441751480102539 43.56636843960813, 5.441622734069824 43.56770552917119, 5.440893173217773 43.570503992650366, 5.440464019775391 43.57174771246127, 5.440206527709961 43.57339560165024, 5.439519882202148 43.575012354767935, 5.439176559448241 43.5778726578)";
         const string WKT_HORIZONTAL_DEM_EDGE = "LINESTRING (6.1 43.99, 6.9 44.01)";
         const string WKT_VERTICAL_DEM_EDGE = "LINESTRING (6.001 43.1, 5.99 43.9)";
         const string WKT_MONACO = "LINESTRING (7.0806884765625 45.37916094640917, 7.48443603515625 43.77307711737606)";

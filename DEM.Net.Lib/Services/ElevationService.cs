@@ -44,6 +44,8 @@ namespace DEM.Net.Lib.Services
             {
                 using (WebClient wc = new WebClient())
                 {
+                    wc.Proxy = GlobalProxySelection.GetEmptyWebProxy();
+                    //wc.Headers.Add(HttpRequestHeader.UserAgent, "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36");
                     // Create directories if not existing
                     new FileInfo(file.LocalName).Directory.Create();
 
