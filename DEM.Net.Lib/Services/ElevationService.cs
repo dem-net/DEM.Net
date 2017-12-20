@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -39,25 +40,59 @@ namespace DEM.Net.Lib.Services
             {
                 Trace.TraceInformation($"Downloading {v_files.Count} missing file(s).");
             }
-            Parallel.ForEach(v_files, new ParallelOptions { MaxDegreeOfParallelism = 2 }, file =>
-            //Parallel.ForEach(v_files, file =>
-            {
-                using (WebClient wc = new WebClient())
-                {
-                    wc.Proxy = GlobalProxySelection.GetEmptyWebProxy();
-                    //wc.Headers.Add(HttpRequestHeader.UserAgent, "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36");
-                    // Create directories if not existing
-                    new FileInfo(file.LocalName).Directory.Create();
 
-                    Trace.TraceInformation($"Downloading file {file.URL}...");
-                    wc.DownloadFile(file.URL, _IGeoTiffService.GetLocalDEMFilePath(dataSet, file.LocalName));
-                }
-            });
+
+            List<Task> tasks = new List<Task>();
+
+            foreach (var file in v_files)
+            {
+                tasks.Add(DownloadDEMTile(file.URL, file.LocalName));
+            }
+
+            Task.WaitAll(tasks.ToArray());
+
 
             if (v_files.Any())
             {
                 _IGeoTiffService.GenerateDirectoryMetadata(dataSet, false, false);
                 _IGeoTiffService.LoadManifestMetadata(dataSet, true);
+            }
+        }
+
+        async Task DownloadDEMTile(string url, string localFileName)
+        {
+            try
+            {
+                // Create directories if not existing
+                new FileInfo(localFileName).Directory.Create();
+
+                Trace.TraceInformation($"Downloading file {url}...");
+
+
+                using (var client = new HttpClient())
+                {
+                    client.Timeout = TimeSpan.FromMinutes(5);
+                    string requestUrl = url;
+
+
+
+                    var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+                    var sendTask = client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    var response = sendTask.Result.EnsureSuccessStatusCode();
+                    var httpStream = await response.Content.ReadAsStreamAsync();
+
+
+                    using (var fileStream = File.Create(localFileName))
+                    using (var reader = new StreamReader(httpStream))
+                    {
+                        httpStream.CopyTo(fileStream);
+                        fileStream.Flush();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error, try again!");
             }
         }
 
