@@ -31,6 +31,29 @@ namespace DEM.Net.Lib.Services
             return geom.GetBoundingBox();
         }
 
+		public static SqlGeometry ParseGeoPointAsGeometryLine(IEnumerable<GeoPoint> points)
+		{
+			SqlGeometryBuilder gb = new SqlGeometryBuilder();
+			gb.SetSrid(4326);
+			gb.BeginGeometry(OpenGisGeometryType.LineString);
+			bool first = true;
+			foreach(var pt in points)
+			{
+				if (first)
+				{
+					gb.BeginFigure(pt.Longitude, pt.Latitude);
+					first = false;
+				}
+				else
+				{
+					gb.AddLine(pt.Longitude, pt.Latitude);
+				}
+			}
+			gb.EndFigure();
+			gb.EndGeometry();
+			return gb.ConstructedGeometry;
+		}
+
         
         //Check if the lines are interescting in 2d space
         //Alternative version from http://thirdpartyninjas.com/blog/2008/10/07/line-segment-intersection/

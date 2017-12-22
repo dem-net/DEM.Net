@@ -46,7 +46,7 @@ namespace DEM.Net.Lib
 				// fill in rgbValues, e.g. with a for loop over an input array
 				foreach (GeoPoint geoPoint in heightMap.Coordinates)
 				{
-					var dataValue = geoPoint.Altitude;
+					var dataValue = geoPoint.Elevation;
 
 					ushort normalizedValue = 0;
 					if (filterNodata && dataValue == noDataValue)
@@ -55,7 +55,7 @@ namespace DEM.Net.Lib
 					}
 					else
 					{
-						normalizedValue = (ushort)((geoPoint.Altitude - heightMap.Mininum) / range * 255);
+						normalizedValue = (ushort)((geoPoint.Elevation - heightMap.Mininum) / range * 255);
 					}
 
 					rgbValues[geoPoint.YIndex.Value * bmpData.Stride + geoPoint.XIndex.Value] = (byte)normalizedValue;

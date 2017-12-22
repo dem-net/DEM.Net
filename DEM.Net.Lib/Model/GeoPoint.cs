@@ -13,7 +13,7 @@ namespace DEM.Net.Lib
 		public double Longitude;
 		public int? XIndex;
 		public int? YIndex;
-		public float? Altitude;
+		public double? Elevation;
 		public string TileId;
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace DEM.Net.Lib
 		{
 			Latitude = latitude;
 			Longitude = longitude;
-			Altitude = altitude;
+			Elevation = altitude;
 			XIndex = indexX;
 			YIndex = indexY;
 		}
@@ -35,7 +35,7 @@ namespace DEM.Net.Lib
 		{
 			Latitude = latitude;
 			Longitude = longitude;
-			Altitude = null;
+			Elevation = null;
 			XIndex = null;
 			YIndex = null;
 		}
@@ -62,7 +62,7 @@ namespace DEM.Net.Lib
 		public override string ToString()
 		{
 			return $"Lat/Lon: {Latitude} / {Longitude} " 
-                + (Altitude.HasValue ? $", Elevation: {Altitude.Value}" : "")
+                + (Elevation.HasValue ? $", Elevation: {Elevation.Value}" : "")
                 + $", DistanceFromOrigin: {DistanceFromOriginMeters}";
 		}
 	}
