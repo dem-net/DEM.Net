@@ -29,10 +29,10 @@ namespace SampleApp
 			//geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true);
 			// geoTiffService.GenerateFileMetadata(@"C:\Users\xfischer\AppData\Roaming\DEM.Net\ETOPO1\ETOPO1_Ice_g_geotiff.tif", false, false);
 
-			//SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_TEST, DEMDataSet.AW3D30);
+			SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_EXAMPLE_GOOGLE, DEMDataSet.AW3D30);
 
 			//LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
-			LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_SCL_MENDOZA, 100);
+			LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_EXAMPLE_GOOGLE, 100);
 
 
 
