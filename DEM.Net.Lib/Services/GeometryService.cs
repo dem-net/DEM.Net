@@ -92,19 +92,31 @@ namespace DEM.Net.Lib.Services
             return isIntersecting;
         }
 
-        public static List<GeoPoint> ComputePointsDistances(List<GeoPoint> points)
+        public static ElevationMetrics ComputeMetrics(ref List<GeoPoint> points)
         {
+			ElevationMetrics metrics = new ElevationMetrics();
             double total = 0;
+			double minElevation = double.MaxValue;
+			double maxElevation = double.MinValue;
             if (points.Count > 1)
             {
                 for (int i = 1; i < points.Count; i++)
                 {
-                    double v_dist = GetDistanceBetweenPoints(points[i], points[i - 1]);
+					GeoPoint curPoint = points[i];
+                    double v_dist = GetDistanceBetweenPoints(curPoint, points[i - 1]);
                     total += v_dist;
-                    points[i].DistanceFromOriginMeters = total;
-                }
-            }
-            return points;
+					curPoint.DistanceFromOriginMeters = total;
+
+					minElevation = Math.Min(minElevation, curPoint.Elevation.GetValueOrDefault(double.MaxValue));
+					maxElevation = Math.Max(maxElevation, curPoint.Elevation.GetValueOrDefault(double.MinValue));
+
+				}
+			}
+			metrics.Distance = total;
+			metrics.MinElevation = minElevation;
+			metrics.MaxElevation = maxElevation;
+
+			return metrics;
         }
 
         public static double GetLength(string lineWKT)

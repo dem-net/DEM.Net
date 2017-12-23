@@ -34,9 +34,7 @@ namespace DEM.Net.Lib
 				b.Palette = ncp;
 
 				var BoundsRect = new Rectangle(0, 0, b.Width, b.Height);
-				BitmapData bmpData = b.LockBits(BoundsRect,
-																				ImageLockMode.WriteOnly,
-																				b.PixelFormat);
+				BitmapData bmpData = b.LockBits(BoundsRect, ImageLockMode.WriteOnly, b.PixelFormat);
 
 				IntPtr ptr = bmpData.Scan0;
 

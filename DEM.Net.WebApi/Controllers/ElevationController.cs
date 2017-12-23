@@ -34,7 +34,11 @@ namespace DEM.Net.WebApi.Controllers
 			{
 				var geoPoints = ModelFactory.Create(path);
 				var geom = GeometryService.ParseGeoPointAsGeometryLine(geoPoints);
+				_elevationService.DownloadMissingFiles(DEMDataSet.AW3D30, geom.GetBoundingBox());
 				geoPoints = _elevationService.GetLineGeometryElevation(geom, DEMDataSet.AW3D30, InterpolationMode.Bilinear);
+				ElevationMetrics metrics = GeometryService.ComputeMetrics(ref geoPoints);
+
+				geoPoints = DouglasPeucker.DouglasPeuckerReduction(geoPoints, (metrics.MaxElevation - metrics.MinElevation) / 200);
 
 				return Ok(ModelFactory.CreateElevationResults(geoPoints));
 			}
@@ -43,6 +47,8 @@ namespace DEM.Net.WebApi.Controllers
 				return InternalServerError(new Exception(ex.Message));
 			}
 		}
+
 		
+
 	}
 }

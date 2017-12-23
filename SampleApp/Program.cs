@@ -29,7 +29,7 @@ namespace SampleApp
 			//geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true);
 			// geoTiffService.GenerateFileMetadata(@"C:\Users\xfischer\AppData\Roaming\DEM.Net\ETOPO1\ETOPO1_Ice_g_geotiff.tif", false, false);
 
-			SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_EXAMPLE_GOOGLE, DEMDataSet.AW3D30);
+			//SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_EXAMPLE_GOOGLE, DEMDataSet.AW3D30);
 
 			//LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
 			LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_EXAMPLE_GOOGLE, 100);
@@ -152,7 +152,7 @@ namespace SampleApp
 					foreach (InterpolationMode mode in modes)
 					{
 						var lineElevationData = elevationService.GetLineGeometryElevation(wkt.Value, dataSet, mode);
-						lineElevationData = GeometryService.ComputePointsDistances(lineElevationData);
+						ElevationMetrics metrics = GeometryService.ComputeMetrics(ref lineElevationData);
 						//var sampledLineElevationData = ReduceList(lineElevationData, numSamples).ToList();
 						//File.WriteAllText($"ElevationData_{wkt.Key}_{mode}.txt", elevationService.ExportElevationTable(lineElevationData));
 						//File.WriteAllText($"ElevationData_{wkt.Key}_{mode}_{numSamples}samples.txt", elevationService.ExportElevationTable(sampledLineElevationData));
@@ -171,24 +171,28 @@ namespace SampleApp
 
 			elevationService.DownloadMissingFiles(dataSet, GetBoundingBox(wkt));
 
-
 			var lineElevationData = elevationService.GetLineGeometryElevation(wkt, dataSet, InterpolationMode.Bilinear);
-			lineElevationData = GeometryService.ComputePointsDistances(lineElevationData);
-			var sampledLineElevationData = ReduceList(lineElevationData, numSamples).ToList();
-			//File.WriteAllText($"ElevationData_LineDEMTesttest.txt", elevationService.ExportElevationTable(lineElevationData));
-			//File.WriteAllText($"ElevationData_{wkt.Key}_{mode}_{numSamples}samples.txt", elevationService.ExportElevationTable(sampledLineElevationData));
-
+			ElevationMetrics metrics = GeometryService.ComputeMetrics(ref lineElevationData);
+			var lineElevationData_Reduced = DouglasPeucker.DouglasPeuckerReduction(lineElevationData, (metrics.MaxElevation - metrics.MinElevation) / 200);
 
 			sw.Stop();
 			Console.WriteLine($"LineDEMTest performed in {sw.Elapsed:g}.");
+
+			SpatialTrace.Enable();
+			SpatialTrace.Clear();
+			SpatialTraceLine(lineElevationData, $"Full resolution line ({lineElevationData.Count} points)");
+
+
+			SpatialTraceLine(lineElevationData_Reduced, $"Reduced line ({lineElevationData_Reduced.Count} points)");
+
+			SpatialTrace.ShowDialog();
+
+
 		}
 
-		private static List<GeoPoint> ReduceList(List<GeoPoint> lineElevationData, int numSamples)
+		private static void SpatialTraceLine(List<GeoPoint> lineElevationData, string message)
 		{
-			// Aim is to use DouglasPeucker to reduce points without getting rid of peaks and other steep changes
-			// Let's create a geometry with x = distnace from origin and y = elevation
-			// and run douglas peucker on it
-
+			
 			const int DEFAULT_HEIGHT = 300;
 			// Say that 1 sample is one pixel and a graph is usually 300px tall
 			// So 300px = 300 samples = max height (H)
@@ -215,22 +219,11 @@ namespace SampleApp
 			gb.EndFigure();
 			gb.EndGeometry();
 			SqlGeometry geom = gb.ConstructedGeometry;
-			SqlGeometry geomReduced = geom.Reduce(tolerance);
 			SpatialTrace.Enable();
-			SpatialTrace.Clear();
-			SpatialTrace.TraceGeometry(geom, "Geom");
-			SpatialTrace.TraceGeometry(geomReduced, "Geom reduced");
-			SpatialTrace.ShowDialog();
+			SpatialTrace.TraceGeometry(geom, message);
+			SpatialTrace.Disable();
 
-			// List<GeoPoint> reducedList = new DouglasPeucker(lineElevationData, reduceFactor * 1.8).Compress();
-			int chunksize = lineElevationData.Count / numSamples;
-			if (lineElevationData.Count <= numSamples)
-			{
-				return lineElevationData;
-			}
-
-			List<GeoPoint> result = GetNth(lineElevationData, chunksize).ToList();
-			return result;
+			
 		}
 
 		private static IEnumerable<T> GetNth<T>(List<T> list, int n)

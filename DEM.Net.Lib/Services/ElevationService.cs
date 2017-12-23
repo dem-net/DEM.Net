@@ -15,6 +15,7 @@ namespace DEM.Net.Lib.Services
 {
 	public class ElevationService
 	{
+		public const float NO_DATA_OUT = float.MinValue;
 		private readonly IGeoTiffService _IGeoTiffService;
 		public ElevationService(IGeoTiffService geoTiffService)
 		{
@@ -243,7 +244,7 @@ namespace DEM.Net.Lib.Services
 					}
 					else
 					{
-						heightValue = -10000;
+						heightValue = NO_DATA_OUT;
 					}
 					heightMap.Coordinates.Add(new GeoPoint(latitude, longitude, heightValue, x, y));
 
@@ -276,6 +277,8 @@ namespace DEM.Net.Lib.Services
 
 			try
 			{
+				float lastElevation = 0;
+
 				// To interpolate well points close to tile edges, we need all adjacent tiles
 				//using (GeoTiffDictionary adjacentGeoTiffs = new GeoTiffDictionary())
 				//{
@@ -290,10 +293,12 @@ namespace DEM.Net.Lib.Services
 					// We open geotiffs first, then we iterate
 					PopulateGeoTiffDictionary(adjacentGeoTiffs, mainTile, _IGeoTiffService, tilePoints.SelectMany(tp => tp.AdjacentTiles));
 
+					
 					foreach (var pointile in tilePoints)
 					{
 						GeoPoint current = pointile.Point;
-						current.Elevation = this.ParseGeoDataAtPoint(adjacentGeoTiffs, mainTile, current.Latitude, current.Longitude, interpolator);
+						lastElevation = this.ParseGeoDataAtPoint(adjacentGeoTiffs, mainTile, current.Latitude, current.Longitude, lastElevation, interpolator);
+						current.Elevation = lastElevation;
 					}
 
 					//adjacentGeoTiffs.Clear();
@@ -588,7 +593,7 @@ namespace DEM.Net.Lib.Services
 					}
 					else
 					{
-						heightValue = -10000;
+						heightValue = NO_DATA_OUT;
 					}
 					heightMap.Coordinates.Add(new GeoPoint(latitude, longitude, heightValue, x, y));
 
@@ -598,7 +603,7 @@ namespace DEM.Net.Lib.Services
 			return heightMap;
 		}
 
-		public float ParseGeoDataAtPoint(GeoTiffDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, IInterpolator interpolator)
+		public float ParseGeoDataAtPoint(GeoTiffDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float lastElevation, IInterpolator interpolator)
 		{
 			float heightValue = 0;
 			try
@@ -607,8 +612,8 @@ namespace DEM.Net.Lib.Services
 				IGeoTiff mainTiff = adjacentTiles[metadata];
 
 				//const double epsilon = (Double.Epsilon * 100);
-				float noData = float.Parse(metadata.NoDataValue);
-				const float NO_DATA_OUT = -100;
+				float noData = metadata.NoDataValueFloat;
+				
 
 				// precise position on the grid (with commas)
 				double ypos = (lat - metadata.StartLat) / metadata.pixelSizeY;
@@ -652,6 +657,11 @@ namespace DEM.Net.Lib.Services
 					if (southEast == noData) southEast = avgHeight;
 
 					heightValue = interpolator.Interpolate(southWest, southEast, northWest, northEast, xInterpolationAmount, yInterpolationAmount);
+				}
+
+				if (heightValue == NO_DATA_OUT)
+				{
+					heightValue = lastElevation;
 				}
 			}
 			catch (Exception e)

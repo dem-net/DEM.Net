@@ -9,9 +9,9 @@ namespace DEM.Net.WebApi.Models
 {
 	public static class ModelFactory
 	{
-		public static IEnumerable<GeoPoint> Create(IEnumerable<Location> locations)
+		public static List<GeoPoint> Create(IEnumerable<Location> locations)
 		{
-			return locations.Select(l => new GeoPoint(l.lat, l.lng));
+			return locations.Select(l => new GeoPoint(l.lat, l.lng)).ToList();
 		}
 
 		internal static ElevationResults CreateElevationResults(IEnumerable<GeoPoint> geoPoints)

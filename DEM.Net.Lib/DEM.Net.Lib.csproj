@@ -72,6 +72,8 @@
     <Compile Include="Model\InterpolationMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\DistanceFromPointComparer.cs" />
+    <Compile Include="Services\DouglasPeuckerReduction.cs" />
+    <Compile Include="Services\ElevationMetrics.cs" />
     <Compile Include="Services\ElevationService.cs" />
     <Compile Include="Services\GDALVRTFileService.cs" />
     <Compile Include="Services\GeometryService.cs" />

@@ -72,7 +72,7 @@ namespace DEM.Net.Lib
                 heightValue = (float)scanline16Bit[x];
                 if (heightValue > 32768)
                 {
-                    heightValue = -10000;
+                    heightValue = metadata.NoDataValueFloat;
                 }
             }
             catch (Exception e)
