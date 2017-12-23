@@ -3,6 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.SqlServer.Types;
 using DEM.Net.Lib.Services;
 using DEM.Net.Lib;
+using System.Windows.Media.Imaging;
+using System.IO;
 
 namespace DEM.Net.Test
 {
@@ -41,5 +43,22 @@ namespace DEM.Net.Test
 			Assert.IsTrue(dist < 0.05d, "Problem in intersection calculation.");
 		}
 
+        [TestMethod]
+        [TestCategory("Raster")]
+        public void GeoTiffTags()
+        {
+            string geoTiffFileName = @"C:\Users\ext.dev.xfi\AppData\Roaming\DEM.Net\AW3D30\AW3D30_alos\North\North_0_45\N043E004_AVE_DSM.tif";
+            using (Stream tiffStream = new FileStream(geoTiffFileName, FileMode.Open))
+            {
+                var tiffDecoder = new TiffBitmapDecoder(tiffStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.None);
+                if (tiffDecoder.Frames.Count == 1)
+                {
+                    var tiffFrameCopy = tiffDecoder.Frames[0];
+                    var pixels = new Int16[tiffFrameCopy.PixelWidth * tiffFrameCopy.PixelHeight];
+                   // tiffFrameCopy.CopyPixels(pixels, tiffFrameCopy.PixelWidth * 2, 0);
+                   // cache.Add(filename, pixels);
+                }
+            }
+        }
 	}
 }

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
-using System.Numerics;
 
 namespace DEM.Net.Lib.Services
 {
@@ -32,65 +31,92 @@ namespace DEM.Net.Lib.Services
             return geom.GetBoundingBox();
         }
 
+		public static SqlGeometry ParseGeoPointAsGeometryLine(IEnumerable<GeoPoint> points)
+		{
+			SqlGeometryBuilder gb = new SqlGeometryBuilder();
+			gb.SetSrid(4326);
+			gb.BeginGeometry(OpenGisGeometryType.LineString);
+			bool first = true;
+			foreach(var pt in points)
+			{
+				if (first)
+				{
+					gb.BeginFigure(pt.Longitude, pt.Latitude);
+					first = false;
+				}
+				else
+				{
+					gb.AddLine(pt.Longitude, pt.Latitude);
+				}
+			}
+			gb.EndFigure();
+			gb.EndGeometry();
+			return gb.ConstructedGeometry;
+		}
+
+        
+        //Check if the lines are interescting in 2d space
+        //Alternative version from http://thirdpartyninjas.com/blog/2008/10/07/line-segment-intersection/
         public static bool LineLineIntersection(out GeoPoint intersection, GeoSegment line1, GeoSegment line2)
         {
-            const float Z_FIXED = 0f;
-            Vector3 linePoint1V3 = new Vector3((float)line1.Start.Longitude, (float)line1.Start.Latitude, Z_FIXED);
-            Vector3 linePoint2V3 = new Vector3((float)line2.Start.Longitude, (float)line2.Start.Latitude, Z_FIXED);
+            bool isIntersecting = false;
+            intersection = GeoPoint.Zero;
 
-            Vector3 lineVec1V3 = new Vector3((float)(line1.End.Longitude - line1.Start.Longitude), (float)(line1.End.Latitude - line1.Start.Latitude), Z_FIXED);
-            Vector3 lineVec2V3 = new Vector3((float)(line2.End.Longitude - line2.Start.Longitude), (float)(line2.End.Latitude - line2.Start.Latitude), Z_FIXED);
+            //3d -> 2d
+            double p1_x = line1.Start.Longitude;
+            double p1_y = line1.Start.Latitude;
+            double p2_x = line1.End.Longitude;
+            double p2_y = line1.End.Latitude;
+            double p3_x = line2.Start.Longitude;
+            double p3_y = line2.Start.Latitude;
+            double p4_x = line2.End.Longitude;
+            double p4_y = line2.End.Latitude;
+       
 
-            Vector3 intersectionV3 = Vector3.Zero;
-            if (LineLineIntersection_Internal(out intersectionV3, linePoint1V3, lineVec1V3, linePoint2V3, lineVec2V3))
+            double denominator = (p4_y - p3_y) * (p2_x - p1_x) - (p4_x - p3_x) * (p2_y - p1_y);
+
+            //Make sure the denominator is > 0, if so the lines are parallel
+            if (denominator != 0)
             {
-                intersection = new GeoPoint(intersectionV3.Y, intersectionV3.X);
-                return true;
+                double u_a = ((p4_x - p3_x) * (p1_y - p3_y) - (p4_y - p3_y) * (p1_x - p3_x)) / denominator;
+                double u_b = ((p2_x - p1_x) * (p1_y - p3_y) - (p2_y - p1_y) * (p1_x - p3_x)) / denominator;
+
+                //Is intersecting if u_a and u_b are between 0 and 1
+                if (u_a >= 0 && u_a <= 1 && u_b >= 0 && u_b <= 1)
+                {
+                    intersection = new GeoPoint(p1_y + u_a * (p2_y - p1_y), p1_x + u_a * (p2_x - p1_x));
+                    isIntersecting = true;
+                }
             }
-            else
-            {
-                intersection = GeoPoint.Zero;
-                return false;
-            }
+
+            return isIntersecting;
         }
 
-        public static List<GeoPoint> ComputePointsDistances(List<GeoPoint> points)
+        public static ElevationMetrics ComputeMetrics(ref List<GeoPoint> points)
         {
+			ElevationMetrics metrics = new ElevationMetrics();
             double total = 0;
+			double minElevation = double.MaxValue;
+			double maxElevation = double.MinValue;
             if (points.Count > 1)
             {
                 for (int i = 1; i < points.Count; i++)
                 {
-                    double v_dist = GetDistanceBetweenPoints(points[i], points[i - 1]);
+					GeoPoint curPoint = points[i];
+                    double v_dist = GetDistanceBetweenPoints(curPoint, points[i - 1]);
                     total += v_dist;
-                    points[i].DistanceFromOriginMeters = total;
-                }
-            }
-            return points;
-        }
+					curPoint.DistanceFromOriginMeters = total;
 
-        //Calculate the intersection point of two lines. Returns true if lines intersect, otherwise false.
-        private static bool LineLineIntersection_Internal(out Vector3 intersection, Vector3 linePoint1, Vector3 lineVec1, Vector3 linePoint2, Vector3 lineVec2)
-        {
+					minElevation = Math.Min(minElevation, curPoint.Elevation.GetValueOrDefault(double.MaxValue));
+					maxElevation = Math.Max(maxElevation, curPoint.Elevation.GetValueOrDefault(double.MinValue));
 
-            Vector3 lineVec3 = linePoint2 - linePoint1;
-            Vector3 crossVec1and2 = Vector3.Cross(lineVec1, lineVec2);
-            Vector3 crossVec3and2 = Vector3.Cross(lineVec3, lineVec2);
+				}
+			}
+			metrics.Distance = total;
+			metrics.MinElevation = minElevation;
+			metrics.MaxElevation = maxElevation;
 
-            float planarFactor = Vector3.Dot(lineVec3, crossVec1and2);
-
-            //is coplanar, and not parrallel
-            if (Math.Abs(planarFactor) < 0.0001f && crossVec1and2.LengthSquared() > 0.0001f)
-            {
-                float s = Vector3.Dot(crossVec3and2, crossVec1and2) / crossVec1and2.LengthSquared();
-                intersection = linePoint1 + (lineVec1 * s);
-                return true;
-            }
-            else
-            {
-                intersection = Vector3.Zero;
-                return false;
-            }
+			return metrics;
         }
 
         public static double GetLength(string lineWKT)

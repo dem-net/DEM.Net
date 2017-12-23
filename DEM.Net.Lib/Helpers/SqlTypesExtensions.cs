@@ -240,6 +240,20 @@ namespace DEM.Net.Lib
                                                             , envelope.Points().Min(pt => pt.STY.Value)
                                                             , envelope.Points().Max(pt => pt.STY.Value));
         }
+        public static SqlGeometry AsGeomety(this BoundingBox bbox, int srid = 4326)
+        {
+            SqlGeometryBuilder gb = new SqlGeometryBuilder();
+            gb.SetSrid(srid);
+            gb.BeginGeometry(OpenGisGeometryType.Polygon);
+            gb.BeginFigure(bbox.xMin, bbox.yMax);
+            gb.AddLine(bbox.xMax, bbox.yMax);
+            gb.AddLine(bbox.xMax, bbox.yMin);
+            gb.AddLine(bbox.xMin, bbox.yMin);
+            gb.AddLine(bbox.xMin, bbox.yMax);
+            gb.EndFigure();
+            gb.EndGeometry();
+            return gb.ConstructedGeometry;
+        }
 
         public static BoundingBox GetBoundingBox(this SqlGeography geog)
         {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Lib
 {
-	public class FileMetadata
+	public class FileMetadata : IEquatable<FileMetadata>
 	{
 		public FileMetadata(string filename)
 		{
@@ -47,6 +47,47 @@ namespace DEM.Net.Lib
 			}
 		}
 
-     
-    }
+		private float _noDataValue;
+		private bool _noDataValueSet = false;
+
+		public float NoDataValueFloat
+		{
+			get
+			{
+				if (!_noDataValueSet)
+				{
+					_noDataValue = float.Parse(NoDataValue);
+					_noDataValueSet = true;
+				}
+				return _noDataValue;
+			}
+			set { _noDataValue = value; }
+		}
+
+
+		public override string ToString()
+		{
+			return $"{System.IO.Path.GetFileName(Filename)}: {OriginLatitude} {OriginLongitude} -> {EndLatitude} {EndLongitude}";
+		}
+
+		public override bool Equals(object obj)
+		{
+			FileMetadata objTyped = obj as FileMetadata;
+			if (objTyped == null)
+				return false;
+
+			return this.Equals(objTyped);
+		}
+		public override int GetHashCode()
+		{
+			return Filename.GetHashCode();
+		}
+
+		public bool Equals(FileMetadata other)
+		{
+			if (this == null || other == null)
+				return false;
+			return this.GetHashCode().Equals(other.GetHashCode());
+		}
+	}
 }

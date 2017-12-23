@@ -1,5 +1,4 @@
-﻿using BitMiracle.LibTiff.Classic;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,9 +12,13 @@ namespace DEM.Net.Lib.Services
 {
     public class GeoTiffService : IGeoTiffService
     {
-        private const string APP_NAME = "DEM.Net";
-        private const string MANIFEST_DIR = "manifest";
-        private const int EARTH_CIRCUMFERENCE_METERS = 40075017;
+        const string APP_NAME = "DEM.Net";
+        const string MANIFEST_DIR = "manifest";
+        const int EARTH_CIRCUMFERENCE_METERS = 40075017;
+        readonly GeoTiffReaderType _readerType;
+        GDALVRTFileService _gdalService;
+
+
         private static string _localDirectory;
         private static Dictionary<string, List<FileMetadata>> _metadataCatalogCache = null;
 
@@ -26,11 +29,33 @@ namespace DEM.Net.Lib.Services
 
         static GeoTiffService()
         {
+
             _localDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), APP_NAME);
             if (!Directory.Exists(_localDirectory))
                 Directory.CreateDirectory(_localDirectory);
 
             _metadataCatalogCache = new Dictionary<string, List<FileMetadata>>();
+        }
+
+        public GeoTiffService(GeoTiffReaderType readerType, string dataDirectory)
+        {
+            if (dataDirectory != null)
+            {
+                Directory.CreateDirectory(dataDirectory);
+                _localDirectory = dataDirectory;
+            }
+            _readerType = readerType;
+        }
+
+        public IGeoTiff OpenFile(string filePath)
+        {
+            switch (_readerType)
+            {
+                case GeoTiffReaderType.LibTiff:
+                    return new GeoTiff(filePath);
+                default:
+                    throw new NotSupportedException($"Reader type {_readerType} not implemented.");
+            }
         }
 
         public string GetLocalDEMPath(DEMDataSet dataset)
@@ -41,58 +66,11 @@ namespace DEM.Net.Lib.Services
         {
             return Path.Combine(GetLocalDEMPath(dataset), fileTitle);
         }
-        public FileMetadata ParseMetadata(GeoTiff tiff)
+        public FileMetadata ParseMetadata(IGeoTiff tiff)
         {
-            FileMetadata metadata = new FileMetadata(tiff.FilePath);
-
-            ///
-            metadata.Height = tiff.TiffFile.GetField(TiffTag.IMAGELENGTH)[0].ToInt();
-            metadata.Width = tiff.TiffFile.GetField(TiffTag.IMAGEWIDTH)[0].ToInt();
-
-            ///
-            FieldValue[] modelPixelScaleTag = tiff.TiffFile.GetField(TiffTag.GEOTIFF_MODELPIXELSCALETAG);
-            FieldValue[] modelTiepointTag = tiff.TiffFile.GetField(TiffTag.GEOTIFF_MODELTIEPOINTTAG);
-
-            byte[] modelPixelScale = modelPixelScaleTag[1].GetBytes();
-            double pixelSizeX = BitConverter.ToDouble(modelPixelScale, 0);
-            double pixelSizeY = BitConverter.ToDouble(modelPixelScale, 8) * -1;
-            metadata.pixelSizeX = pixelSizeX;
-            metadata.pixelSizeY = pixelSizeY;
-            metadata.PixelScaleX = BitConverter.ToDouble(modelPixelScale, 0);
-            metadata.PixelScaleY = BitConverter.ToDouble(modelPixelScale, 8);
-
-            // Ignores first set of model points (3 bytes) and assumes they are 0's...
-            byte[] modelTransformation = modelTiepointTag[1].GetBytes();
-            metadata.OriginLongitude = BitConverter.ToDouble(modelTransformation, 24);
-            metadata.OriginLatitude = BitConverter.ToDouble(modelTransformation, 32);
+            return tiff.ParseMetaData();
 
 
-            double startLat = metadata.OriginLatitude + (pixelSizeY / 2.0);
-            double startLon = metadata.OriginLongitude + (pixelSizeX / 2.0);
-            metadata.StartLat = startLat;
-            metadata.StartLon = startLon;
-
-            var scanline = new byte[tiff.TiffFile.ScanlineSize()];
-            metadata.ScanlineSize = tiff.TiffFile.ScanlineSize();
-            //TODO: Check if band is stored in 1 byte or 2 bytes. 
-            //If 2, the following code would be required
-            var scanline16Bit = new ushort[tiff.TiffFile.ScanlineSize() / 2];
-            Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
-
-
-            // Grab some raster metadata
-            metadata.BitsPerSample = tiff.TiffFile.GetField(TiffTag.BITSPERSAMPLE)[0].ToInt();
-            var sampleFormat = tiff.TiffFile.GetField(TiffTag.SAMPLEFORMAT);
-            // Add other information about the data
-            metadata.SampleFormat = sampleFormat[0].Value.ToString();
-            // TODO: Read this from tiff metadata or determine after parsing
-            metadata.NoDataValue = "-10000";
-
-            metadata.WorldUnits = "meter";
-
-            //DumpTiffTags(tiff);
-
-            return metadata;
         }
         public FileMetadata ParseMetadata(string fileName)
         {
@@ -101,7 +79,7 @@ namespace DEM.Net.Lib.Services
             fileName = Path.GetFullPath(fileName);
             string fileTitle = Path.GetFileNameWithoutExtension(fileName);
 
-            using (GeoTiff tiff = new GeoTiff(fileName))
+            using (IGeoTiff tiff = OpenFile(fileName))
             {
                 metadata = this.ParseMetadata(tiff);
             }
@@ -134,30 +112,30 @@ namespace DEM.Net.Lib.Services
 
                     _metadataCatalogCache[localPath] = metaList;
                 }
-               
+
             }
             return _metadataCatalogCache[localPath];
         }
 
-        public void DumpTiffTags(Tiff tiff)
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (var value in Enum.GetValues(typeof(TiffTag)))
-            {
-                TiffTag tag = (TiffTag)value;
-                FieldValue[] values = tiff.GetField(tag);
-                if (values != null)
-                {
-                    sb.AppendLine(value + ": ");
-                    foreach (var fieldValue in values)
-                    {
-                        sb.Append("\t");
-                        sb.AppendLine(fieldValue.Value.ToString());
-                    }
-                }
-            }
-            Console.WriteLine(sb.ToString());
-        }
+        //public void DumpTiffTags(Tiff tiff)
+        //{
+        //    StringBuilder sb = new StringBuilder();
+        //    foreach (var value in Enum.GetValues(typeof(TiffTag)))
+        //    {
+        //        TiffTag tag = (TiffTag)value;
+        //        FieldValue[] values = tiff.GetField(tag);
+        //        if (values != null)
+        //        {
+        //            sb.AppendLine(value + ": ");
+        //            foreach (var fieldValue in values)
+        //            {
+        //                sb.Append("\t");
+        //                sb.AppendLine(fieldValue.Value.ToString());
+        //            }
+        //        }
+        //    }
+        //    Console.WriteLine(sb.ToString());
+        //}
 
         public static int GetResolutionMeters(FileMetadata metadata)
         {
@@ -259,28 +237,31 @@ namespace DEM.Net.Lib.Services
         public Dictionary<string, DemFileReport> GenerateReport(DEMDataSet dataSet, BoundingBox bbox = null)
         {
             Dictionary<string, DemFileReport> statusByFile = new Dictionary<string, DemFileReport>();
-            using (GDALVRTFileService gdalService = new GDALVRTFileService(GetLocalDEMPath(dataSet), dataSet))
+            if (_gdalService == null)
             {
-                gdalService.Setup();
+                _gdalService = new GDALVRTFileService(GetLocalDEMPath(dataSet), dataSet);
+                _gdalService.Setup(true);
+            }
 
-                foreach (GDALSource source in gdalService.Sources())
+            foreach (GDALSource source in _gdalService.Sources())
+            {
+
+                if (bbox == null || BoundingBoxIntersects(source.BBox, bbox))
                 {
 
-                    if (bbox == null || BoundingBoxIntersects(source.BBox, bbox))
+                    statusByFile.Add(source.SourceFileNameAbsolute, new DemFileReport()
                     {
+                        IsExistingLocally = File.Exists(source.LocalFileName),
+                        LocalName = source.LocalFileName,
+                        URL = source.SourceFileNameAbsolute,
+                        Source = source
+                    });
 
-                        statusByFile.Add(source.SourceFileNameAbsolute, new DemFileReport()
-                        {
-                            IsExistingLocally = File.Exists(source.LocalFileName),
-                            LocalName = source.LocalFileName,
-                            URL = source.SourceFileNameAbsolute
-                        });
-
-                    }
-                    //Trace.TraceInformation($"Source {source.SourceFileName}");
                 }
-
+                //Trace.TraceInformation($"Source {source.SourceFileName}");
             }
+
+
             //// download GDAL virtual file (.VRT file)
             //Uri lstUri = new Uri(urlToLstFile);
             //string lstContent = null;
@@ -320,5 +301,11 @@ namespace DEM.Net.Lib.Services
             //}
             return statusByFile;
         }
+    }
+
+    public enum GeoTiffReaderType
+    {
+        LibTiff,
+        //WPF
     }
 }

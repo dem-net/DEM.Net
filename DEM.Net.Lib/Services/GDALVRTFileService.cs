@@ -11,8 +11,10 @@ using System.Xml;
 
 namespace DEM.Net.Lib.Services
 {
-    public class GDALVRTFileService : IDisposable
+    public class GDALVRTFileService
     {
+        private bool _useMemCache = false;
+        Dictionary<string, List<GDALSource>> _cacheByDemName;
         private readonly string localDirectory;
         private string _vrtFileName;
         private Uri _remoteVrtUri;
@@ -25,18 +27,16 @@ namespace DEM.Net.Lib.Services
             this.dataSet = dataSet;
         }
 
-        public void Dispose()
-        {
-        }
-
         /// <summary>
         /// Ensures local directories are created and download VRT file if needed
         /// TODO : check local file age and download again if obsolete
         /// </summary>
-        public void Setup()
+        public void Setup(bool useMemoryCache)
         {
             try
             {
+                _useMemCache = useMemoryCache;
+
                 if (dataSet == null)
                     throw new ArgumentNullException("Dataset is null.");
 
@@ -74,6 +74,20 @@ namespace DEM.Net.Lib.Services
                     }
                 }
 
+                // Cache
+                if (_useMemCache)
+                {
+                    if (_cacheByDemName == null)
+                    {
+                        _cacheByDemName = new Dictionary<string, List<GDALSource>>();
+                    }
+                    if (_cacheByDemName.ContainsKey(_vrtFileName) == false)
+                    {
+                        _cacheByDemName[_vrtFileName] = this.Sources().ToList();
+                    }
+
+                }
+
             }
             catch (Exception ex)
             {
@@ -92,54 +106,63 @@ namespace DEM.Net.Lib.Services
         /// <returns></returns>
         public IEnumerable<GDALSource> Sources()
         {
-
-            // Create an XmlReader
-            using (XmlReader reader = XmlReader.Create(_vrtFileName))
+            if (_useMemCache && _cacheByDemName.ContainsKey(_vrtFileName))
             {
-                if (reader.ReadToFollowing("GeoTransform"))
+                foreach(var item in _cacheByDemName[_vrtFileName])
                 {
-                    _geoTransform = ParseGeoTransform(reader.ReadElementContentAsString());
+                    yield return item;
                 }
-                else
-                    throw new Exception("GeoTransform element not found!");
-
-                string sourceName = "";
-                if (reader.ReadToFollowing("VRTRasterBand"))
+            }
+            else
+            {
+                // Create an XmlReader
+                using (XmlReader reader = XmlReader.Create(_vrtFileName))
                 {
-                    _properties = new Dictionary<string, string>();
-                    while (reader.Read())
+                    if (reader.ReadToFollowing("GeoTransform"))
                     {
-                        if (reader.NodeType == XmlNodeType.Element)
-                        {
-                            if (reader.Name == "ComplexSource" || reader.Name == "SimpleSource")
-                            {
-                                sourceName = reader.Name;
-                                break;
-                            }
-                            _properties[reader.Name] = reader.ReadElementContentAsString();
-                        }
+                        _geoTransform = ParseGeoTransform(reader.ReadElementContentAsString());
                     }
+                    else
+                        throw new Exception("GeoTransform element not found!");
 
-                    bool isOnFirstSource = true;
-                    while (isOnFirstSource || reader.ReadToFollowing(sourceName))
+                    string sourceName = "";
+                    if (reader.ReadToFollowing("VRTRasterBand"))
                     {
-                        GDALSource source = ParseGDALSource(reader);
+                        _properties = new Dictionary<string, string>();
+                        while (reader.Read())
+                        {
+                            if (reader.NodeType == XmlNodeType.Element)
+                            {
+                                if (reader.Name == "ComplexSource" || reader.Name == "SimpleSource")
+                                {
+                                    sourceName = reader.Name;
+                                    break;
+                                }
+                                _properties[reader.Name] = reader.ReadElementContentAsString();
+                            }
+                        }
 
-                        // SetLocalFileName
-                        source.SourceFileNameAbsolute = new Uri(_remoteVrtUri, source.SourceFileName).ToString();
-                        source.LocalFileName = new Uri(_localVrtUri, source.SourceFileName).AbsolutePath;
+                        bool isOnFirstSource = true;
+                        while (isOnFirstSource || reader.ReadToFollowing(sourceName))
+                        {
+                            GDALSource source = ParseGDALSource(reader);
 
-                        // Transform origin
-                        // Xp = padfTransform[0] + P * padfTransform[1] + L * padfTransform[2];
-                        // Yp = padfTransform[3] + P * padfTransform[4] + L * padfTransform[5];
-                        source.OriginLon = _geoTransform[0] + source.DstxOff * _geoTransform[1] + source.DstyOff * _geoTransform[2];
-                        source.OriginLat = _geoTransform[3] + source.DstxOff * _geoTransform[4] + source.DstyOff * _geoTransform[5];
-                        source.DestLon = _geoTransform[0] + (source.DstxOff + source.DstxSize) * _geoTransform[1] + (source.DstyOff + source.DstySize) * _geoTransform[2];
-                        source.DestLat = _geoTransform[3] + (source.DstxOff + source.DstxSize) * _geoTransform[4] + (source.DstyOff + source.DstySize) * _geoTransform[5];
-                        source.BBox = new BoundingBox(source.OriginLon, source.DestLon, source.DestLat, source.OriginLat);
-                        isOnFirstSource = false;
+                            // SetLocalFileName
+                            source.SourceFileNameAbsolute = new Uri(_remoteVrtUri, source.SourceFileName).ToString();
+                            source.LocalFileName = new Uri(_localVrtUri, source.SourceFileName).AbsolutePath;
 
-                        yield return source;
+                            // Transform origin
+                            // Xp = padfTransform[0] + P * padfTransform[1] + L * padfTransform[2];
+                            // Yp = padfTransform[3] + P * padfTransform[4] + L * padfTransform[5];
+                            source.OriginLon = _geoTransform[0] + source.DstxOff * _geoTransform[1] + source.DstyOff * _geoTransform[2];
+                            source.OriginLat = _geoTransform[3] + source.DstxOff * _geoTransform[4] + source.DstyOff * _geoTransform[5];
+                            source.DestLon = _geoTransform[0] + (source.DstxOff + source.DstxSize) * _geoTransform[1] + (source.DstyOff + source.DstySize) * _geoTransform[2];
+                            source.DestLat = _geoTransform[3] + (source.DstxOff + source.DstxSize) * _geoTransform[4] + (source.DstyOff + source.DstySize) * _geoTransform[5];
+                            source.BBox = new BoundingBox(source.OriginLon, source.DestLon, source.DestLat, source.OriginLat);
+                            isOnFirstSource = false;
+
+                            yield return source;
+                        }
                     }
                 }
             }
