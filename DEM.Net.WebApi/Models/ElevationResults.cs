@@ -7,6 +7,12 @@ namespace DEM.Net.WebApi.Models
 {
 	public class ElevationResults
 	{
-		public List<ElevationResult> results { get; set; }
+
+		public ElevationMetricsModel metrics { get; set; }
+
+		public IEnumerable<ElevationResult> results { get; set; }
+
+		
+
 	}
 }

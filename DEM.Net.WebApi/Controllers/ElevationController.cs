@@ -28,7 +28,7 @@ namespace DEM.Net.WebApi.Controllers
 		}
 
 		[LocationArrayInput("path", Separator = '|')]
-		public IHttpActionResult Get(Location[] path)
+		public IHttpActionResult Get(Location[] path, int samples = 100)
 		{
 			try
 			{
@@ -38,9 +38,14 @@ namespace DEM.Net.WebApi.Controllers
 				geoPoints = _elevationService.GetLineGeometryElevation(geom, DEMDataSet.AW3D30, InterpolationMode.Bilinear);
 				ElevationMetrics metrics = GeometryService.ComputeMetrics(ref geoPoints);
 
-				geoPoints = DouglasPeucker.DouglasPeuckerReduction(geoPoints, (metrics.MaxElevation - metrics.MinElevation) / 200);
+				if (samples > 2)
+				{
+					double ratio = 4 / 2;
+					double tolerance = (metrics.MaxElevation - metrics.MinElevation) / (samples / ratio);
+					geoPoints = DouglasPeucker.DouglasPeuckerReduction(geoPoints, tolerance);
+				}
 
-				return Ok(ModelFactory.CreateElevationResults(geoPoints));
+				return Ok(ModelFactory.CreateElevationResults(geoPoints, metrics));
 			}
 			catch (Exception ex)
 			{
@@ -48,7 +53,7 @@ namespace DEM.Net.WebApi.Controllers
 			}
 		}
 
-		
+
 
 	}
 }

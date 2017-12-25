@@ -9,5 +9,6 @@ namespace DEM.Net.WebApi.Models
 	{
 		public Location location { get; set; }
 		public double elevation { get; set; }
+		public double distanceFromOrigin { get; set; }
 	}
 }
