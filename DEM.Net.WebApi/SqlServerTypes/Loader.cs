@@ -2,7 +2,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace SqlServerTypes
+namespace DEM.Net.WebApi.SqlServerTypes
 {
     /// <summary>
     /// Utility methods related to CLR Types for SQL Server 

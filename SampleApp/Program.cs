@@ -173,7 +173,7 @@ namespace SampleApp
 
 			var lineElevationData = elevationService.GetLineGeometryElevation(wkt, dataSet, InterpolationMode.Bilinear);
 			ElevationMetrics metrics = GeometryService.ComputeMetrics(ref lineElevationData);
-			var lineElevationData_Reduced = DouglasPeucker.DouglasPeuckerReduction(lineElevationData, (metrics.MaxElevation - metrics.MinElevation) / 200);
+			var lineElevationData_Reduced = DouglasPeucker.DouglasPeuckerReduction(lineElevationData, (metrics.MaxElevation - metrics.MinElevation) / numSamples);
 
 			sw.Stop();
 			Console.WriteLine($"LineDEMTest performed in {sw.Elapsed:g}.");

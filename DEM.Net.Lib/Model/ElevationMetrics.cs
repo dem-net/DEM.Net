@@ -1,4 +1,4 @@
-﻿namespace DEM.Net.Lib.Services
+﻿namespace DEM.Net.Lib
 {
 	public class ElevationMetrics
 	{

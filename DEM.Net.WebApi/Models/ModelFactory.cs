@@ -14,9 +14,24 @@ namespace DEM.Net.WebApi.Models
 			return locations.Select(l => new GeoPoint(l.lat, l.lng)).ToList();
 		}
 
-		internal static ElevationResults CreateElevationResults(IEnumerable<GeoPoint> geoPoints)
+		internal static ElevationResults CreateElevationResults(IEnumerable<GeoPoint> geoPoints, ElevationMetrics metrics)
 		{
-			return new ElevationResults() { results = geoPoints.Select(pt => new ElevationResult() { elevation = pt.Elevation.GetValueOrDefault(0), location = new Location(pt.Latitude, pt.Longitude) }).ToList() };
+			return new ElevationResults
+			{
+				results = geoPoints.Select(pt => new ElevationResult()
+				{
+					elevation = pt.Elevation.GetValueOrDefault(0),
+					location = new Location(pt.Latitude, pt.Longitude),
+					distanceFromOrigin = pt.DistanceFromOriginMeters
+				}),
+				metrics = new ElevationMetricsModel
+				{
+					length = metrics.Distance,
+					maxElevation = metrics.MaxElevation,
+					minElevation = metrics.MinElevation,
+					numSamples = geoPoints.Count()
+				}
+			};
 		}
 	}
 }
