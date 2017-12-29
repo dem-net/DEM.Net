@@ -98,8 +98,11 @@ namespace DEM.Net.Lib.Services
             double total = 0;
 			double minElevation = double.MaxValue;
 			double maxElevation = double.MinValue;
+			double totalClimb = 0;
+			double totalDescent = 0;
             if (points.Count > 1)
             {
+				double lastElevation = points[0].Elevation.GetValueOrDefault(0);
                 for (int i = 1; i < points.Count; i++)
                 {
 					GeoPoint curPoint = points[i];
@@ -110,8 +113,23 @@ namespace DEM.Net.Lib.Services
 					minElevation = Math.Min(minElevation, curPoint.Elevation.GetValueOrDefault(double.MaxValue));
 					maxElevation = Math.Max(maxElevation, curPoint.Elevation.GetValueOrDefault(double.MinValue));
 
+					double currentElevation = curPoint.Elevation.GetValueOrDefault(lastElevation);
+					double diff = currentElevation - lastElevation;
+					if (diff>0)
+					{
+						totalClimb += diff;
+					}
+					else
+					{
+						totalDescent += diff;
+					}
+					lastElevation = currentElevation;
+
 				}
 			}
+			metrics.Climb = totalClimb;
+			metrics.Descent = totalDescent;
+			metrics.NumPoints = points.Count;
 			metrics.Distance = total;
 			metrics.MinElevation = minElevation;
 			metrics.MaxElevation = maxElevation;

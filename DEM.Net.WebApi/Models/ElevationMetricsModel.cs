@@ -11,5 +11,8 @@ namespace DEM.Net.WebApi.Models
 		public double maxElevation { get; internal set; }
 		public double length { get; internal set; }
 		public int numSamples { get; internal set; }
+		public int numPointsUsed { get; internal set; }
+		public double totalClimb { get; internal set; }
+		public double totalDescent { get; internal set; }
 	}
 }

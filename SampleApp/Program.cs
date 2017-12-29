@@ -23,7 +23,7 @@ namespace SampleApp
 		static void Main(string[] args)
 		{
 			SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
-			IGeoTiffService geoTiffService = new GeoTiffService(GeoTiffReaderType.LibTiff, DATA_DIR);
+			IGeoTiffService geoTiffService = new GeoTiffService(DATA_DIR);
 			ElevationService elevationService = new ElevationService(geoTiffService);
 
 			//geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true);
@@ -69,7 +69,7 @@ namespace SampleApp
 		private static void GeoTiffBenchmark()
 		{
 			DEMDataSet dataSet = DEMDataSet.AW3D30;
-			ElevationService elevationServiceLibTiff = new ElevationService(new GeoTiffService(GeoTiffReaderType.LibTiff, DATA_DIR));
+			ElevationService elevationServiceLibTiff = new ElevationService(new GeoTiffService(DATA_DIR));
 
 			string wkt = WKT_BREST_NICE;
 			elevationServiceLibTiff.DownloadMissingFiles(dataSet, GetBoundingBox(wkt));

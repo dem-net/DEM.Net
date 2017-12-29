@@ -29,7 +29,10 @@ namespace DEM.Net.WebApi.Models
 					length = metrics.Distance,
 					maxElevation = metrics.MaxElevation,
 					minElevation = metrics.MinElevation,
-					numSamples = geoPoints.Count()
+					numSamples = geoPoints.Count(),
+					numPointsUsed = metrics.NumPoints,
+					totalClimb = metrics.Climb,
+					totalDescent = metrics.Descent,
 				}
 			};
 		}

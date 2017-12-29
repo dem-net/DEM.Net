@@ -15,7 +15,6 @@ namespace DEM.Net.Lib.Services
         const string APP_NAME = "DEM.Net";
         const string MANIFEST_DIR = "manifest";
         const int EARTH_CIRCUMFERENCE_METERS = 40075017;
-        readonly GeoTiffReaderType _readerType;
         GDALVRTFileService _gdalService;
 
 
@@ -37,26 +36,19 @@ namespace DEM.Net.Lib.Services
             _metadataCatalogCache = new Dictionary<string, List<FileMetadata>>();
         }
 
-        public GeoTiffService(GeoTiffReaderType readerType, string dataDirectory)
+        public GeoTiffService(string dataDirectory)
         {
             if (dataDirectory != null)
             {
                 Directory.CreateDirectory(dataDirectory);
                 _localDirectory = dataDirectory;
             }
-            _readerType = readerType;
         }
 
         public IGeoTiff OpenFile(string filePath)
         {
-            switch (_readerType)
-            {
-                case GeoTiffReaderType.LibTiff:
-                    return new GeoTiff(filePath);
-                default:
-                    throw new NotSupportedException($"Reader type {_readerType} not implemented.");
-            }
-        }
+			return new GeoTiff(filePath);
+		}
 
         public string GetLocalDEMPath(DEMDataSet dataset)
         {
@@ -303,9 +295,5 @@ namespace DEM.Net.Lib.Services
         }
     }
 
-    public enum GeoTiffReaderType
-    {
-        LibTiff,
-        //WPF
-    }
+    
 }
