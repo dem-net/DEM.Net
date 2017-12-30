@@ -11,6 +11,7 @@ using DEM.Net.WebApi.Models;
 using DEM.Net.WebApi.Utility;
 using DEM.Net.Lib;
 using DEM.Net.Lib.Services;
+using GeoJSON.Net.Feature;
 
 namespace DEM.Net.WebApi.Controllers
 {
@@ -28,7 +29,7 @@ namespace DEM.Net.WebApi.Controllers
 		}
 
 		[LocationArrayInput("path", Separator = '|')]
-		public IHttpActionResult Get(Location[] path, int samples = 100)
+		public IHttpActionResult Get(Location[] path, int samples = 100, ResponseFormat format = ResponseFormat.Google)
 		{
 			try
 			{
@@ -45,7 +46,24 @@ namespace DEM.Net.WebApi.Controllers
 					geoPoints = DouglasPeucker.DouglasPeuckerReduction(geoPoints, tolerance);
 				}
 
-				return Ok(ModelFactory.CreateElevationResults(geoPoints, metrics));
+
+				// Model
+				ElevationMetricsModel metricsModel = ModelFactory.CreateElevationMetricsModel(geoPoints, metrics);
+
+				switch (format)
+				{
+
+					case ResponseFormat.GeoJSON:
+
+						var feature = ModelFactory.CreateFeature(geoPoints, metricsModel);
+						return Ok(feature);
+
+					case ResponseFormat.Google:
+					default:
+						return Ok(ModelFactory.CreateElevationResults(geoPoints, metricsModel));
+				}
+
+				return BadRequest();
 			}
 			catch (Exception ex)
 			{
@@ -55,5 +73,8 @@ namespace DEM.Net.WebApi.Controllers
 
 
 
+
 	}
+
+
 }
