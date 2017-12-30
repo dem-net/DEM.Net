@@ -16,7 +16,8 @@ namespace DEM.Net.Lib.Services
         public static SqlGeometry ParseWKTAsGeometry(string geomWKT)
         {
             SqlGeometry geom = SqlGeometry.STGeomFromText(new System.Data.SqlTypes.SqlChars(new System.Data.SqlTypes.SqlString(geomWKT)), WGS84_SRID);
-            return geom;
+			geom = geom.MakeValidIfInvalid();
+			return geom;
         }
 
         public static SqlGeography ParseWKTAsGeography(string geomWKT)

@@ -15,5 +15,6 @@ namespace DEM.Net.Lib
 
         public bool IsExistingLocally { get; set; }
         public GDALSource Source { get; internal set; }
-    }
+		public bool IsMetadataGenerated { get; internal set; }
+	}
 }

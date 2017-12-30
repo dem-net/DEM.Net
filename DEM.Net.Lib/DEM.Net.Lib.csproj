@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\ExceptionHelper.cs" />
     <Compile Include="Helpers\GeoTiffDictionary.cs" />
     <Compile Include="Helpers\UrlHelper.cs" />
     <Compile Include="IO\GeoTiff.cs" />

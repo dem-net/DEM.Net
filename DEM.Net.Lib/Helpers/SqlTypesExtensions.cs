@@ -23,7 +23,11 @@ namespace DEM.Net.Lib
                 return geom;
 
             if (geom.STIsValid().IsFalse)
-                geom = geom.MakeValid();
+			{
+				Trace.TraceWarning($"Invalid geometry: {geom.IsValidDetailed()}");
+				geom = geom.MakeValid();
+			}
+              
 
             SqlGeometry retGeom = geom;
             if (retainDimension.HasValue)

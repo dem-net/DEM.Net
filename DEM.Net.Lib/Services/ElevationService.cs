@@ -31,64 +31,76 @@ namespace DEM.Net.Lib.Services
 		public void DownloadMissingFiles(DEMDataSet dataSet, BoundingBox bbox = null)
 		{
 			var report = _IGeoTiffService.GenerateReport(dataSet, bbox);
-			List<DemFileReport> v_files = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
 
-			if (v_files.Count == 0)
+			// Generate metadata files if missing
+			foreach(var file in report.Where(kvp => kvp.Value.IsMetadataGenerated == false).Select(kvp => kvp.Value))
+			{
+				_IGeoTiffService.GenerateFileMetadata(file.LocalName, false, false);
+			}
+			List<DemFileReport> v_filesToDownload = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
+
+			if (v_filesToDownload.Count == 0)
 			{
 				Trace.TraceInformation("No missing file(s).");
 			}
 			else
 			{
-				Trace.TraceInformation($"Downloading {v_files.Count} missing file(s).");
+				Trace.TraceInformation($"Downloading {v_filesToDownload.Count} missing file(s).");
 
 				List<Task> tasks = new List<Task>();
-				foreach (var file in v_files)
+				foreach (var file in v_filesToDownload)
 				{
 					tasks.Add(DownloadDEMTile(file.URL, file.LocalName));
 				}
-				Task.WaitAll(tasks.ToArray());
+				try
+				{
 
-				_IGeoTiffService.GenerateDirectoryMetadata(dataSet, false, false);
-				_IGeoTiffService.LoadManifestMetadata(dataSet, true);
+					Task.WaitAll(tasks.ToArray());
+
+					_IGeoTiffService.GenerateDirectoryMetadata(dataSet, false, false);
+					_IGeoTiffService.LoadManifestMetadata(dataSet, true);
+
+				}
+				catch (AggregateException ex)
+				{
+					Trace.TraceError($"Error downloading missing files. Check internet connection or retry later. {ex.GetInnerMostException().Message}");
+				}
+
 			}
 
 		}
 
 		async Task DownloadDEMTile(string url, string localFileName)
 		{
-			try
+
+			// Create directories if not existing
+			new FileInfo(localFileName).Directory.Create();
+
+			Trace.TraceInformation($"Downloading file {url}...");
+
+
+			using (var client = new HttpClient())
 			{
-				// Create directories if not existing
-				new FileInfo(localFileName).Directory.Create();
-
-				Trace.TraceInformation($"Downloading file {url}...");
+				client.Timeout = TimeSpan.FromMinutes(5);
+				string requestUrl = url;
 
 
-				using (var client = new HttpClient())
+
+				var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+				var sendTask = client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+				var response = sendTask.Result.EnsureSuccessStatusCode();
+				var httpStream = await response.Content.ReadAsStreamAsync();
+
+
+				using (var fileStream = File.Create(localFileName))
+				using (var reader = new StreamReader(httpStream))
 				{
-					client.Timeout = TimeSpan.FromMinutes(5);
-					string requestUrl = url;
-
-
-
-					var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-					var sendTask = client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-					var response = sendTask.Result.EnsureSuccessStatusCode();
-					var httpStream = await response.Content.ReadAsStreamAsync();
-
-
-					using (var fileStream = File.Create(localFileName))
-					using (var reader = new StreamReader(httpStream))
-					{
-						httpStream.CopyTo(fileStream);
-						fileStream.Flush();
-					}
+					httpStream.CopyTo(fileStream);
+					fileStream.Flush();
 				}
 			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"Error, try again! ({ex.Message})");
-			}
+
+
 		}
 
 		/// <summary>
@@ -100,6 +112,12 @@ namespace DEM.Net.Lib.Services
 		public List<GeoPoint> GetLineGeometryElevation(string lineWKT, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
 		{
 			SqlGeometry geom = GeometryService.ParseWKTAsGeometry(lineWKT);
+
+			if (geom.STGeometryType().Value == "MultiLineString")
+			{
+				Trace.TraceWarning("Geometry is a multi line string. Only the longest segment will be processed.");
+				geom = geom.Geometries().OrderByDescending(g => g.STNumPoints().Value).First();
+			}
 			return GetLineGeometryElevation(geom, dataSet, interpolationMode);
 		}
 
@@ -293,7 +311,7 @@ namespace DEM.Net.Lib.Services
 					// We open geotiffs first, then we iterate
 					PopulateGeoTiffDictionary(adjacentGeoTiffs, mainTile, _IGeoTiffService, tilePoints.SelectMany(tp => tp.AdjacentTiles));
 
-					
+
 					foreach (var pointile in tilePoints)
 					{
 						GeoPoint current = pointile.Point;
@@ -613,7 +631,7 @@ namespace DEM.Net.Lib.Services
 
 				//const double epsilon = (Double.Epsilon * 100);
 				float noData = metadata.NoDataValueFloat;
-				
+
 
 				// precise position on the grid (with commas)
 				double ypos = (lat - metadata.StartLat) / metadata.pixelSizeY;
