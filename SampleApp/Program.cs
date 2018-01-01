@@ -12,18 +12,20 @@ using System.IO.Compression;
 using System.Xml;
 using System.Diagnostics;
 using System.Windows.Media;
+using System.Configuration;
 
 namespace SampleApp
 {
 	class Program
 	{
-		const string DATA_DIR = @"C:\Repos\DEM.Net\Data";
+		static string _DataDirectory;
 
 		[STAThread]
 		static void Main(string[] args)
 		{
 			SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
-			IGeoTiffService geoTiffService = new GeoTiffService(DATA_DIR);
+			_DataDirectory = ConfigurationManager.AppSettings["DataDir"];
+			IGeoTiffService geoTiffService = new GeoTiffService(_DataDirectory);
 			ElevationService elevationService = new ElevationService(geoTiffService);
 
 			//geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true);
@@ -69,7 +71,7 @@ namespace SampleApp
 		private static void GeoTiffBenchmark()
 		{
 			DEMDataSet dataSet = DEMDataSet.AW3D30;
-			ElevationService elevationServiceLibTiff = new ElevationService(new GeoTiffService(DATA_DIR));
+			ElevationService elevationServiceLibTiff = new ElevationService(new GeoTiffService(_DataDirectory));
 
 			string wkt = WKT_BREST_NICE;
 			elevationServiceLibTiff.DownloadMissingFiles(dataSet, GetBoundingBox(wkt));
@@ -192,7 +194,7 @@ namespace SampleApp
 
 		private static void SpatialTraceLine(List<GeoPoint> lineElevationData, string message)
 		{
-			
+
 			const int DEFAULT_HEIGHT = 300;
 			// Say that 1 sample is one pixel and a graph is usually 300px tall
 			// So 300px = 300 samples = max height (H)
@@ -223,7 +225,7 @@ namespace SampleApp
 			SpatialTrace.TraceGeometry(geom, message);
 			SpatialTrace.Disable();
 
-			
+
 		}
 
 		private static IEnumerable<T> GetNth<T>(List<T> list, int n)
