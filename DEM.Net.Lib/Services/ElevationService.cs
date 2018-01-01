@@ -33,7 +33,7 @@ namespace DEM.Net.Lib.Services
 			var report = _IGeoTiffService.GenerateReport(dataSet, bbox);
 
 			// Generate metadata files if missing
-			foreach(var file in report.Where(kvp => kvp.Value.IsMetadataGenerated == false).Select(kvp => kvp.Value))
+			foreach(var file in report.Where(kvp => kvp.Value.IsMetadataGenerated == false && kvp.Value.IsExistingLocally == true).Select(kvp => kvp.Value))
 			{
 				_IGeoTiffService.GenerateFileMetadata(file.LocalName, false, false);
 			}
