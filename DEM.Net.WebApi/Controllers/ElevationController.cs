@@ -27,9 +27,12 @@ namespace DEM.Net.WebApi.Controllers
 			}
 			_elevationService = new ElevationService(new GeoTiffService(dataDirectory));
 		}
+		
 
 		[LocationArrayInput("path", Separator = '|')]
-		public IHttpActionResult Get(Location[] path, int samples = 100, ResponseFormat format = ResponseFormat.Google)
+		//[Route("api/elevation/{path}/{samples}/{format}", Name = "GetPathElevation")]
+		[Route("api/elevation", Name = "GetPathElevation")]
+		public IHttpActionResult GetPathElevation(Location[] path, int samples, ResponseFormat format = ResponseFormat.Google)
 		{
 			try
 			{
@@ -70,6 +73,22 @@ namespace DEM.Net.WebApi.Controllers
 				return InternalServerError(new Exception(ex.Message));
 			}
 		}
+
+		[LocationArrayInput("locations", Separator = '|')]
+		[Route("api/elevation", Name = "GetLocationElevation")]
+		public IHttpActionResult GetLocationElevation(Location[] locations, ResponseFormat format = ResponseFormat.Google)
+		{
+			try
+			{
+				return Ok("Test OK");
+			}
+			catch (Exception ex)
+			{
+				return InternalServerError(new Exception(ex.Message));
+			}
+		}
+
+
 
 
 
