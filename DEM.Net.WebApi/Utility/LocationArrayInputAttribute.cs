@@ -90,6 +90,24 @@ namespace DEM.Net.WebApi.Utility
 		}
 	}
 
+	public class LocationArrayConstraint : IHttpRouteConstraint
+	{
+		public bool Match(HttpRequestMessage request, IHttpRoute route, string parameterName,
+			IDictionary<string, object> values, HttpRouteDirection routeDirection)
+		{
+			object value;
+			if (values.TryGetValue(parameterName, out value) && value != null)
+			{
+				if (value != null)
+				{
+					Location[] loc;
+					return LocationHelper.TryParseArray(value.ToString(), out loc);
+				}
+			}
+			return false;
+		}
+	}
+
 	public static class LocationHelper
 	{
 		public static Location Parse(string latlng)
@@ -107,6 +125,21 @@ namespace DEM.Net.WebApi.Utility
 			try
 			{
 				location = Parse(latlng);
+			}
+			catch (Exception)
+			{
+				ok = false;
+			}
+			return ok;
+		}
+
+		public static bool TryParseArray(string latlngArray, out Location[] location)
+		{
+			bool ok = true;
+			location = null;
+			try
+			{
+				location = latlngArray.Split('|').Select(LocationHelper.Parse).ToArray();
 			}
 			catch (Exception)
 			{

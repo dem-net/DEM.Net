@@ -1,9 +1,11 @@
-﻿using System;
+﻿using DEM.Net.WebApi.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Controllers;
+using System.Web.Http.Routing;
 
 namespace DEM.Net.WebApi
 {
@@ -15,10 +17,14 @@ namespace DEM.Net.WebApi
 			// Configuration et services API Web
 
 			// Itinéraires de l'API Web
-			config.MapHttpAttributeRoutes();
-			//var constraintResolver = new DefaultInlineConstraintResolver();
-			//constraintResolver.ConstraintMap.Add("location", typeof(LocationConstraint));
-			//config.MapHttpAttributeRoutes(constraintResolver);
+			//config.MapHttpAttributeRoutes();
+
+			// Init custom constraints
+			var constraintResolver = new DefaultInlineConstraintResolver();
+			constraintResolver.ConstraintMap.Add("location", typeof(LocationConstraint));
+			constraintResolver.ConstraintMap.Add("locations", typeof(LocationArrayConstraint));
+			constraintResolver.ConstraintMap.Add("enum", typeof(EnumConstraint));
+			config.MapHttpAttributeRoutes(constraintResolver);
 
 			//Suppression du formatteur XML pour que les réponses soient en json
 			config.Formatters.Remove(config.Formatters.XmlFormatter);
@@ -29,7 +35,7 @@ namespace DEM.Net.WebApi
 			);
 
 			// Add custom action selector to mimic Google rest API (couldn't do it without implementing my own selector)
-			config.Services.Replace(typeof(IHttpActionSelector), new ElevationActionSelector(config));
+			//config.Services.Replace(typeof(IHttpActionSelector), new ElevationActionSelector(config));
 		}
 	}
 }

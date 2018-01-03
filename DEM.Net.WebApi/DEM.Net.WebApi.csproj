@@ -207,6 +207,7 @@
     <Compile Include="Models\ModelFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
+    <Compile Include="Utility\EnumConstraint.cs" />
     <Compile Include="Utility\LocationArrayInputAttribute.cs" />
   </ItemGroup>
   <ItemGroup>

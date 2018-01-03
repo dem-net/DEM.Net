@@ -36,8 +36,6 @@ namespace SampleApp
 			//LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
 			LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_LEAFLET_ELEVATION, 100);
 
-
-
 			//GeoTiffBenchmark();
 
 			//Test_GetMetadataFromVRT(elevationService, DEMDataSet.AW3D30);

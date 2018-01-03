@@ -31,7 +31,8 @@ namespace DEM.Net.WebApi.Controllers
 
 		[LocationArrayInput("path", Separator = '|')]
 		//[Route("api/elevation/{path}/{samples}/{format}", Name = "GetPathElevation")]
-		[Route("api/elevation", Name = "GetPathElevation")]
+		[Route("")]
+		[Route("api/elevation/path/{path:locations}/{samples:int}/{format:enum(DEM.Net.WebApi.Models.ResponseFormat)}", Name = "GetPathElevation")]
 		public IHttpActionResult GetPathElevation(Location[] path, int samples, ResponseFormat format = ResponseFormat.Google)
 		{
 			try
@@ -75,7 +76,8 @@ namespace DEM.Net.WebApi.Controllers
 		}
 
 		[LocationArrayInput("locations", Separator = '|')]
-		[Route("api/elevation", Name = "GetLocationElevation")]
+		[Route("")]
+		[Route("api/elevation/locations/{locations:locations}/{format:enum(DEM.Net.WebApi.Models.ResponseFormat)}", Name = "GetLocationElevation")]
 		public IHttpActionResult GetLocationElevation(Location[] locations, ResponseFormat format = ResponseFormat.Google)
 		{
 			try

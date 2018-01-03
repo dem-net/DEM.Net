@@ -18,6 +18,7 @@ namespace DEM.Net.WebApi
 	{
 		private readonly ApiControllerActionSelector _defaultSelector;
 		private HttpConfiguration config;
+		
 
 		public ElevationActionSelector(HttpConfiguration config)
 		{
@@ -50,10 +51,8 @@ namespace DEM.Net.WebApi
 				}
 				throw new Exception("No action found. Check parameters.");
 			}
-			else
-			{
-				return _defaultSelector.SelectAction(controllerContext);
-			}
+
+			return _defaultSelector.SelectAction(controllerContext);
 		}
 
 		private HttpActionDescriptor FindActionByParamName(string paramName, ILookup<string, HttpActionDescriptor> actions)
