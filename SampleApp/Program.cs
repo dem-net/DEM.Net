@@ -34,6 +34,8 @@ namespace SampleApp
 			//SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_EXAMPLE_GOOGLE, DEMDataSet.AW3D30);
 
 			//LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
+
+			PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
 			LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_LEAFLET_ELEVATION, 100);
 
 			//GeoTiffBenchmark();
@@ -164,6 +166,20 @@ namespace SampleApp
 			Console.WriteLine($"LineDEMTests performed in {sw.Elapsed:g}.");
 		}
 
+		static void PointDEMTest(ElevationService elevationService, DEMDataSet dataSet, double lat, double lon)
+		{
+
+			elevationService.DownloadMissingFiles(dataSet, lat, lon);
+
+			var geoPoint_Bilinear = elevationService.GetPointElevation(lat, lon, dataSet, InterpolationMode.Bilinear);
+			Console.WriteLine($"Elevation with Bilinear model : {geoPoint_Bilinear.Elevation}");
+
+			var geoPoint_Hyperbolic = elevationService.GetPointElevation(lat, lon, dataSet, InterpolationMode.Hyperbolic);
+			Console.WriteLine($"Elevation with Hyperbolic model : {geoPoint_Hyperbolic.Elevation}");
+
+
+
+		}
 		static void LineDEMTest(ElevationService elevationService, DEMDataSet dataSet, string wkt, int numSamples)
 		{
 

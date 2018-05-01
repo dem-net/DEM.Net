@@ -33,7 +33,8 @@ namespace DEM.Net.Lib.Services
         /// <param name="bbox">Bbox for filtering</param>
         /// <returns></returns>
         Dictionary<string, DemFileReport> GenerateReport(DEMDataSet dataSet, BoundingBox bbox = null);
-        string GenerateReportAsString(DEMDataSet dataSet, BoundingBox bbox = null);
+		Dictionary<string, DemFileReport> GenerateReportForLocation(DEMDataSet dataSet, double lat, double lon);
+		string GenerateReportAsString(DEMDataSet dataSet, BoundingBox bbox = null);
 
 
         void GenerateFileMetadata(string geoTiffFileName, bool generateBitmap, bool force);

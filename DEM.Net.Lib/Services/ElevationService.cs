@@ -69,6 +69,47 @@ namespace DEM.Net.Lib.Services
 			}
 
 		}
+		public void DownloadMissingFiles(DEMDataSet dataSet, double lat, double lon)
+		{
+			var report = _IGeoTiffService.GenerateReportForLocation(dataSet, lat, lon);
+
+			// Generate metadata files if missing
+			foreach (var file in report.Where(kvp => kvp.Value.IsMetadataGenerated == false && kvp.Value.IsExistingLocally == true).Select(kvp => kvp.Value))
+			{
+				_IGeoTiffService.GenerateFileMetadata(file.LocalName, false, false);
+			}
+			List<DemFileReport> v_filesToDownload = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
+
+			if (v_filesToDownload.Count == 0)
+			{
+				Trace.TraceInformation("No missing file(s).");
+			}
+			else
+			{
+				Trace.TraceInformation($"Downloading {v_filesToDownload.Count} missing file(s).");
+
+				List<Task> tasks = new List<Task>();
+				foreach (var file in v_filesToDownload)
+				{
+					tasks.Add(DownloadDEMTile(file.URL, file.LocalName));
+				}
+				try
+				{
+
+					Task.WaitAll(tasks.ToArray());
+
+					_IGeoTiffService.GenerateDirectoryMetadata(dataSet, false, false);
+					_IGeoTiffService.LoadManifestMetadata(dataSet, true);
+
+				}
+				catch (AggregateException ex)
+				{
+					Trace.TraceError($"Error downloading missing files. Check internet connection or retry later. {ex.GetInnerMostException().Message}");
+				}
+
+			}
+
+		}
 
 		async Task DownloadDEMTile(string url, string localFileName)
 		{
@@ -174,6 +215,29 @@ namespace DEM.Net.Lib.Services
 			}  // Ensures all geotifs are properly closed
 
 			return geoPoints;
+		}
+
+		public GeoPoint GetPointElevation(double lat, double lon, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
+		{
+			GeoPoint geoPoint = new GeoPoint(lat, lon);
+			List<FileMetadata> tiles = this.GetCoveringFiles(lat,lon, dataSet);
+
+			// Init interpolator
+			IInterpolator interpolator = GetInterpolator(interpolationMode);
+			
+			List<GeoPoint> geoPoints = new List<GeoPoint>();
+
+			using (GeoTiffDictionary adjacentGeoTiffs = new GeoTiffDictionary())
+			{
+				PopulateGeoTiffDictionary(adjacentGeoTiffs, tiles.First(), _IGeoTiffService, tiles);
+
+				geoPoint.Elevation = ParseGeoDataAtPoint(adjacentGeoTiffs, tiles.First(), lat, lon, 0, interpolator);
+				
+				
+				//Debug.WriteLine(adjacentGeoTiffs.Count);
+			}  // Ensures all geotifs are properly closed
+
+			return geoPoint;
 		}
 
 		public IInterpolator GetInterpolator(InterpolationMode interpolationMode)
@@ -533,6 +597,25 @@ namespace DEM.Net.Lib.Services
 			if (bboxMetadata.Count == 0)
 			{
 				Trace.TraceWarning($"No coverage found matching provided bounding box { bbox}.");
+				//throw new Exception($"No coverage found matching provided bounding box {bbox}.");
+			}
+
+			return bboxMetadata;
+		}
+		public List<FileMetadata> GetCoveringFiles(double lat, double lon, DEMDataSet dataSet, List<FileMetadata> subSet = null)
+		{
+			// Locate which files are needed
+
+			// Load metadata catalog
+			List<FileMetadata> metadataCatalog = subSet ?? _IGeoTiffService.LoadManifestMetadata(dataSet, false);
+
+			var geoPoint = new GeoPoint(lat, lon);
+			// Find files matching coords
+			List<FileMetadata> bboxMetadata = new List<FileMetadata>(metadataCatalog.Where(m => IsPointInTile(m, geoPoint)));
+
+			if (bboxMetadata.Count == 0)
+			{
+				Trace.TraceWarning($"No coverage found matching provided point {geoPoint}.");
 				//throw new Exception($"No coverage found matching provided bounding box {bbox}.");
 			}
 
