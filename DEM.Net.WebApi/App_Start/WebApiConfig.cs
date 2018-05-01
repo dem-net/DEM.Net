@@ -30,8 +30,9 @@ namespace DEM.Net.WebApi
 			config.Formatters.Remove(config.Formatters.XmlFormatter);
 
 			config.Routes.MapHttpRoute(
-				name: "ElevationApi",
-				routeTemplate: "api/{controller}" 
+				name: "DefaultApi",
+				routeTemplate: "api/{controller}/{id}",
+				defaults: new { id = RouteParameter.Optional }
 			);
 
 			// Add custom action selector to mimic Google rest API (couldn't do it without implementing my own selector)

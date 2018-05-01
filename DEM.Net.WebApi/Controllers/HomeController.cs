@@ -8,6 +8,7 @@ namespace DEM.Net.WebApi.Controllers
 {
 	public class HomeController : Controller
 	{
+		[Route("")]
 		public ActionResult Index()
 		{
 			ViewBag.Title = "Home Page";

@@ -27,13 +27,13 @@ namespace DEM.Net.WebApi.Controllers
 			}
 			_elevationService = new ElevationService(new GeoTiffService(dataDirectory));
 		}
-		
 
+
+		[HttpGet]
 		[LocationArrayInput("path", Separator = '|')]
 		//[Route("api/elevation/{path}/{samples}/{format}", Name = "GetPathElevation")]
-		[Route("")]
-		[Route("api/elevation/path/{path:locations}/{samples:int}/{format:enum(DEM.Net.WebApi.Models.ResponseFormat)}", Name = "GetPathElevation")]
-		public IHttpActionResult GetPathElevation(Location[] path, int samples, ResponseFormat format = ResponseFormat.Google)
+		[Route("api/elevation/path/{path:locations}/{samples:int?}", Name = "GetPathElevation")]
+		public IHttpActionResult GetPathElevation(Location[] path, int samples = 100)
 		{
 			try
 			{
@@ -53,21 +53,43 @@ namespace DEM.Net.WebApi.Controllers
 
 				// Model
 				ElevationMetricsModel metricsModel = ModelFactory.CreateElevationMetricsModel(geoPoints, metrics);
+				var feature = ModelFactory.CreateFeature(geoPoints, metricsModel);
+				return Ok(feature);
 
-				switch (format)
-				{
+			}
+			catch (Exception ex)
+			{
+				return InternalServerError(new Exception(ex.Message));
+			}
+		}
 
-					case ResponseFormat.GeoJSON:
+		[HttpPost]
+		[Route("api/elevation/path", Name = "PostPathElevation")]
+		public IHttpActionResult PostPathElevation([FromBody] string geojson)
+		{
+			try
+			{
+				return Ok(geojson);
+				//path.
+				//var geoPoints = ModelFactory.Create(path);
+				//var geom = GeometryService.ParseGeoPointAsGeometryLine(geoPoints);
+				//_elevationService.DownloadMissingFiles(DEMDataSet.AW3D30, geom.GetBoundingBox());
+				//geoPoints = _elevationService.GetLineGeometryElevation(geom, DEMDataSet.AW3D30, InterpolationMode.Bilinear);
+				//ElevationMetrics metrics = GeometryService.ComputeMetrics(ref geoPoints);
 
-						var feature = ModelFactory.CreateFeature(geoPoints, metricsModel);
-						return Ok(feature);
+				//if (samples > 2)
+				//{
+				//	double ratio = 4 / 2;
+				//	double tolerance = (metrics.MaxElevation - metrics.MinElevation) / (samples / ratio);
+				//	geoPoints = DouglasPeucker.DouglasPeuckerReduction(geoPoints, tolerance);
+				//}
 
-					case ResponseFormat.Google:
-					default:
-						return Ok(ModelFactory.CreateElevationResults(geoPoints, metricsModel));
-				}
 
-				return BadRequest();
+				//// Model
+				//ElevationMetricsModel metricsModel = ModelFactory.CreateElevationMetricsModel(geoPoints, metrics);
+				//var feature = ModelFactory.CreateFeature(geoPoints, metricsModel);
+				//return Ok(feature);
+
 			}
 			catch (Exception ex)
 			{
@@ -76,9 +98,8 @@ namespace DEM.Net.WebApi.Controllers
 		}
 
 		[LocationArrayInput("locations", Separator = '|')]
-		[Route("")]
-		[Route("api/elevation/locations/{locations:locations}/{format:enum(DEM.Net.WebApi.Models.ResponseFormat)}", Name = "GetLocationElevation")]
-		public IHttpActionResult GetLocationElevation(Location[] locations, ResponseFormat format = ResponseFormat.Google)
+		[Route("api/elevation/locations/{locations:locations}", Name = "GetLocationElevation")]
+		public IHttpActionResult GetLocationElevation(Location[] locations)
 		{
 			try
 			{

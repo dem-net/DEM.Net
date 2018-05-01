@@ -37,7 +37,7 @@ namespace DEM.Net.WebApi.Utility
 				else if (actionContext.ControllerContext.Request.RequestUri.ParseQueryString()[_parameterName] != null)
 					parameters = actionContext.ControllerContext.Request.RequestUri.ParseQueryString()[_parameterName];
 
-				actionContext.ActionArguments[_parameterName] = parameters.Split(Separator).Select(LocationHelper.Parse).ToArray();
+				actionContext.ActionArguments[_parameterName] = string.IsNullOrEmpty(parameters) ? null :  parameters.Split(Separator).Select(LocationHelper.Parse).ToArray();
 			}
 		}
 
