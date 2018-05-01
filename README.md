@@ -1,6 +1,5 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/github/xfischer/DEM.Net)](https://ci.appveyor.com/project/xfischer/dem-net)
 
-*Note : this is still a work in progress. Except first version at end of January 2018*
 
 # DEM.Net 
 Digital Elevation Model samples in C#. GeoTiff file parsing and DEM querying.
