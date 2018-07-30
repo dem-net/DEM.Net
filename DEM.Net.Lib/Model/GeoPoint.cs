@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DEM.Net.Lib.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -63,10 +64,7 @@ namespace DEM.Net.Lib
 			return (pt.Longitude - Longitude) * (pt.Longitude - Longitude)
 					+ (pt.Latitude - Latitude) * (pt.Latitude - Latitude);
 		}
-		public double DistanceTo(GeoPoint pt)
-		{
-			return Math.Sqrt(this.DistanceSquaredTo(pt));
-		}
+		
 
 		public static GeoPoint Zero
 		{

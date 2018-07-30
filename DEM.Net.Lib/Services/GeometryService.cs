@@ -107,7 +107,7 @@ namespace DEM.Net.Lib.Services
                 for (int i = 1; i < points.Count; i++)
                 {
 					GeoPoint curPoint = points[i];
-                    double v_dist = GetDistanceBetweenPoints(curPoint, points[i - 1]);
+                    double v_dist = DistanceTo(curPoint, points[i - 1]);
                     total += v_dist;
 					curPoint.DistanceFromOriginMeters = total;
 
@@ -143,7 +143,7 @@ namespace DEM.Net.Lib.Services
             return GeometryService.ParseWKTAsGeography(lineWKT).STLength().Value;
         }
 
-        public static double GetDistanceBetweenPoints(GeoPoint pt1, GeoPoint pt2)
+        public static double DistanceTo(this GeoPoint pt1, GeoPoint pt2)
         {
             if ((pt1 == null) || (pt2 == null))
                 return 0;
@@ -185,7 +185,7 @@ namespace DEM.Net.Lib.Services
                 {
                     for (int v_i = 1; v_i < points.Count; v_i++)
                     {
-                        double v_dist = GetDistanceBetweenPoints(points[v_i], points[v_i - 1]);
+                        double v_dist = DistanceTo(points[v_i], points[v_i - 1]);
                         total += v_dist;
                     }
                 }
