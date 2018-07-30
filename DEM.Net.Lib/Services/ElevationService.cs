@@ -119,6 +119,9 @@ namespace DEM.Net.Lib.Services
 
 			Trace.TraceInformation($"Downloading file {url}...");
 
+			Uri uri = new Uri(url);
+			ServicePoint sp = ServicePointManager.FindServicePoint(uri);
+			sp.ConnectionLimit = 50;
 
 			using (var client = new HttpClient())
 			{
@@ -140,6 +143,8 @@ namespace DEM.Net.Lib.Services
 					fileStream.Flush();
 				}
 			}
+
+			_IGeoTiffService.GenerateFileMetadata(localFileName, false, false);
 
 
 		}

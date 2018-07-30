@@ -111,6 +111,18 @@ namespace DEM.Net.WebApi.Controllers
 			}
 		}
 
+		public IHttpActionResult GetCountryElevation(string countryName, string demDataset)
+		{
+			try
+			{
+				return Ok("Test OK");
+			}
+			catch (Exception ex)
+			{
+				return InternalServerError(new Exception(ex.Message));
+			}
+		}
+
 
 
 

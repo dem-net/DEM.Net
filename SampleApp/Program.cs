@@ -36,7 +36,7 @@ namespace SampleApp
 			//LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
 
 			PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
-			LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_LEAFLET_ELEVATION, 100);
+			LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_BREST_NICE, 100);
 
 			//GeoTiffBenchmark();
 
