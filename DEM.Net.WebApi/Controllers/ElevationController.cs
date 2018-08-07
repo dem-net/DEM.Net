@@ -41,7 +41,7 @@ namespace DEM.Net.WebApi.Controllers
 				var geom = GeometryService.ParseGeoPointAsGeometryLine(geoPoints);
 				_elevationService.DownloadMissingFiles(DEMDataSet.AW3D30, geom.GetBoundingBox());
 				geoPoints = _elevationService.GetLineGeometryElevation(geom, DEMDataSet.AW3D30, InterpolationMode.Bilinear);
-				ElevationMetrics metrics = GeometryService.ComputeMetrics(ref geoPoints);
+				ElevationMetrics metrics = GeometryService.ComputeMetrics(geoPoints);
 
 				if (samples > 2)
 				{
