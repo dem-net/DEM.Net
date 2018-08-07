@@ -18,5 +18,130 @@ namespace DEM.Net.Lib
                                     : value;
 
         }
-    }
+
+		#region Max/Min/Average
+
+		#region Max
+
+		public static double Max(params double[] args)
+		{
+			return args.Max();
+		}
+		public static decimal Max(params decimal[] args)
+		{
+			return args.Max();
+		}
+		public static float Max(params float[] args)
+		{
+			return args.Max();
+		}
+		public static long Max(params long[] args)
+		{
+			return args.Max();
+		}
+		public static int Max(params int[] args)
+		{
+			return args.Max();
+		}
+		public static double? Max(params double?[] args)
+		{
+			return args.Max();
+		}
+		public static decimal? Max(params decimal?[] args)
+		{
+			return args.Max();
+		}
+		public static float? Max(params float?[] args)
+		{
+			return args.Max();
+		}
+		public static long? Max(params long?[] args)
+		{
+			return args.Max();
+		}
+		public static int? Max(params int?[] args)
+		{
+			return args.Max();
+		}
+
+		#endregion
+
+		#region Min
+
+		public static double Min(params double[] args)
+		{
+			return args.Min();
+		}
+		public static decimal Min(params decimal[] args)
+		{
+			return args.Min();
+		}
+		public static float Min(params float[] args)
+		{
+			return args.Min();
+		}
+		public static long Min(params long[] args)
+		{
+			return args.Min();
+		}
+		public static int Min(params int[] args)
+		{
+			return args.Min();
+		}
+		public static double? Min(params double?[] args)
+		{
+			return args.Min();
+		}
+		public static decimal? Min(params decimal?[] args)
+		{
+			return args.Min();
+		}
+		public static float? Min(params float?[] args)
+		{
+			return args.Min();
+		}
+		public static long? Min(params long?[] args)
+		{
+			return args.Min();
+		}
+		public static int? Min(params int?[] args)
+		{
+			return args.Min();
+		}
+
+		#endregion
+
+		#region Average
+
+		public static double Average(params double[] args)
+		{
+			return args.Average();
+		}
+		public static decimal Average(params decimal[] args)
+		{
+			return args.Average();
+		}
+		public static float Average(params float[] args)
+		{
+			return args.Average();
+		}
+		public static double? Average(params double?[] args)
+		{
+			return args.Average();
+		}
+		public static decimal? Average(params decimal?[] args)
+		{
+			return args.Average();
+		}
+		public static float? Average(params float?[] args)
+		{
+			return args.Average();
+		}
+
+
+		#endregion
+
+		#endregion
+
+	}
 }

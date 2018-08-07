@@ -33,7 +33,7 @@ namespace DEM.Net.Lib.Services
 			var report = _IGeoTiffService.GenerateReport(dataSet, bbox);
 
 			// Generate metadata files if missing
-			foreach(var file in report.Where(kvp => kvp.Value.IsMetadataGenerated == false && kvp.Value.IsExistingLocally == true).Select(kvp => kvp.Value))
+			foreach (var file in report.Where(kvp => kvp.Value.IsMetadataGenerated == false && kvp.Value.IsExistingLocally == true).Select(kvp => kvp.Value))
 			{
 				_IGeoTiffService.GenerateFileMetadata(file.LocalName, false, false);
 			}
@@ -186,7 +186,12 @@ namespace DEM.Net.Lib.Services
 			// Init interpolator
 			IInterpolator interpolator = GetInterpolator(interpolationMode);
 
-			double lengthMeters = lineStringGeometry.STLength().Value;
+			int numPointsSql = lineStringGeometry.STNumPoints().Value;
+			var sqlStart = lineStringGeometry.STPointN(1);
+			var sqlEnd = lineStringGeometry.STPointN(numPointsSql);
+			GeoPoint start = new GeoPoint(sqlStart.STY.Value, sqlStart.STX.Value);
+			GeoPoint end = new GeoPoint(sqlEnd.STY.Value, sqlEnd.STX.Value);
+			double lengthMeters = start.DistanceTo(end);
 			int demResolution = dataSet.ResolutionMeters;
 			int totalCapacity = 2 * (int)(lengthMeters / demResolution);
 
@@ -225,11 +230,11 @@ namespace DEM.Net.Lib.Services
 		public GeoPoint GetPointElevation(double lat, double lon, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
 		{
 			GeoPoint geoPoint = new GeoPoint(lat, lon);
-			List<FileMetadata> tiles = this.GetCoveringFiles(lat,lon, dataSet);
+			List<FileMetadata> tiles = this.GetCoveringFiles(lat, lon, dataSet);
 
 			// Init interpolator
 			IInterpolator interpolator = GetInterpolator(interpolationMode);
-			
+
 			List<GeoPoint> geoPoints = new List<GeoPoint>();
 
 			using (GeoTiffDictionary adjacentGeoTiffs = new GeoTiffDictionary())
@@ -237,8 +242,8 @@ namespace DEM.Net.Lib.Services
 				PopulateGeoTiffDictionary(adjacentGeoTiffs, tiles.First(), _IGeoTiffService, tiles);
 
 				geoPoint.Elevation = ParseGeoDataAtPoint(adjacentGeoTiffs, tiles.First(), lat, lon, 0, interpolator);
-				
-				
+
+
 				//Debug.WriteLine(adjacentGeoTiffs.Count);
 			}  // Ensures all geotifs are properly closed
 

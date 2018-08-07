@@ -154,7 +154,7 @@ namespace SampleApp
 					foreach (InterpolationMode mode in modes)
 					{
 						var lineElevationData = elevationService.GetLineGeometryElevation(wkt.Value, dataSet, mode);
-						ElevationMetrics metrics = GeometryService.ComputeMetrics(ref lineElevationData);
+						ElevationMetrics metrics = GeometryService.ComputeMetrics(lineElevationData);
 						//var sampledLineElevationData = ReduceList(lineElevationData, numSamples).ToList();
 						//File.WriteAllText($"ElevationData_{wkt.Key}_{mode}.txt", elevationService.ExportElevationTable(lineElevationData));
 						//File.WriteAllText($"ElevationData_{wkt.Key}_{mode}_{numSamples}samples.txt", elevationService.ExportElevationTable(sampledLineElevationData));
@@ -188,7 +188,7 @@ namespace SampleApp
 			elevationService.DownloadMissingFiles(dataSet, GetBoundingBox(wkt));
 
 			var lineElevationData = elevationService.GetLineGeometryElevation(wkt, dataSet, InterpolationMode.Bilinear);
-			ElevationMetrics metrics = GeometryService.ComputeMetrics(ref lineElevationData);
+			ElevationMetrics metrics = GeometryService.ComputeMetrics(lineElevationData);
 			var lineElevationData_Reduced = DouglasPeucker.DouglasPeuckerReduction(lineElevationData, (metrics.MaxElevation - metrics.MinElevation) / numSamples);
 
 			sw.Stop();
