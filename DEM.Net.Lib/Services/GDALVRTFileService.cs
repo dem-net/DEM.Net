@@ -55,7 +55,7 @@ namespace DEM.Net.Lib.Services
                 if (File.Exists(_vrtFileName))
                 {
                     // Download if too old file
-                    if ((DateTime.Now - File.GetCreationTime(_vrtFileName)).TotalDays > 30)
+                    if ((DateTime.Now - File.GetLastWriteTime(_vrtFileName)).TotalDays > 30)
                     {
                         Trace.TraceInformation("VRT file is too old.");
                     }
