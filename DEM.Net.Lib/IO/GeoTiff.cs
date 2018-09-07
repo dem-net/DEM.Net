@@ -50,7 +50,7 @@ namespace DEM.Net.Lib
 			GC.SuppressFinalize(this);
 		}
 
-		public float ParseGeoDataAtPoint(FileMetadata metadata, int x, int y)
+		public float GetElevationAtPoint(FileMetadata metadata, int x, int y)
 		{
 			float heightValue = 0;
 			try
@@ -139,6 +139,53 @@ namespace DEM.Net.Lib
 			metadata.WorldUnits = "meter";
 
 			return metadata;
+		}
+
+		public HeightMap ParseGeoDataInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = float.MinValue)
+		{
+			HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
+
+			byte[] scanline = new byte[metadata.ScanlineSize];
+			ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
+			Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
+
+
+			int yStart = (int)Math.Floor((bbox.yMax - metadata.StartLat) / metadata.pixelSizeY);
+			int yEnd = (int)Math.Ceiling((bbox.yMin - metadata.StartLat) / metadata.pixelSizeY);
+			int xStart = (int)Math.Floor((bbox.xMin - metadata.StartLon) / metadata.pixelSizeX);
+			int xEnd = (int)Math.Ceiling((bbox.xMax - metadata.StartLon) / metadata.pixelSizeX);
+
+			xStart = Math.Max(0, xStart);
+			xEnd = Math.Min(scanline16Bit.Length - 1, xEnd);
+			yStart = Math.Max(0, yStart);
+			yEnd = Math.Min(metadata.Height - 1, yEnd);
+
+			for (int y = yStart; y <= yEnd; y++)
+			{
+				TiffFile.ReadScanline(scanline, y);
+				Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
+
+				double latitude = metadata.StartLat + (metadata.pixelSizeY * y);
+				for (int x = xStart; x <= xEnd; x++)
+				{
+					double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
+
+					float heightValue = (float)scanline16Bit[x];
+					if (heightValue < 32768)
+					{
+						heightMap.Mininum = Math.Min(heightMap.Mininum, heightValue);
+						heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
+					}
+					else
+					{
+						heightValue = noDataValue;
+					}
+					heightMap.Coordinates.Add(new GeoPoint(latitude, longitude, heightValue, x, y));
+
+				}
+			}
+
+			return heightMap;
 		}
 	}
 }

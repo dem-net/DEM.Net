@@ -244,7 +244,24 @@ namespace DEM.Net.Lib
                                                             , envelope.Points().Min(pt => pt.STY.Value)
                                                             , envelope.Points().Max(pt => pt.STY.Value));
         }
-        public static SqlGeometry AsGeomety(this BoundingBox bbox, int srid = 4326)
+		public static BoundingBox GetBoundingBox(this IEnumerable<SqlGeometry> geoms)
+		{
+			SqlGeometry envelope = null;
+			foreach (var geom in geoms)
+			{
+				if (envelope == null)
+					envelope = geom.STEnvelope();
+				else
+				{
+					envelope = envelope.STUnion(geom.STEnvelope()).STEnvelope();
+				}
+			}
+			return new BoundingBox(envelope.Points().Min(pt => pt.STX.Value)
+															, envelope.Points().Max(pt => pt.STX.Value)
+															, envelope.Points().Min(pt => pt.STY.Value)
+															, envelope.Points().Max(pt => pt.STY.Value));
+		}
+		public static SqlGeometry AsGeomety(this BoundingBox bbox, int srid = 4326)
         {
             SqlGeometryBuilder gb = new SqlGeometryBuilder();
             gb.SetSrid(srid);

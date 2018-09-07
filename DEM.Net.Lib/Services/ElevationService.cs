@@ -285,16 +285,16 @@ namespace DEM.Net.Lib.Services
 			// get height map for each file at bbox
 			foreach (FileMetadata metadata in bboxMetadata)
 			{
-				using (GeoTiff geoTiff = new GeoTiff(metadata.Filename))
+				using (IGeoTiff geoTiff = _IGeoTiffService.OpenFile(metadata.Filename))
 				{
-					heightMap = this.ParseGeoDataInBBox(geoTiff, bbox, metadata);
+					heightMap = geoTiff.ParseGeoDataInBBox( bbox, metadata, NO_DATA_OUT);
 				}
 			}
 
 			FileMetadata meta = bboxMetadata.First();
-			using (GeoTiff geoTiff = new GeoTiff(meta.Filename))
+			using (IGeoTiff geoTiff = _IGeoTiffService.OpenFile(meta.Filename))
 			{
-				heightMap = this.ParseGeoDataInBBox(geoTiff, bbox, meta);
+				heightMap = geoTiff.ParseGeoDataInBBox(bbox, meta, NO_DATA_OUT);
 			}
 			return heightMap;
 		}
@@ -664,56 +664,6 @@ namespace DEM.Net.Lib.Services
 			//return isInside;
 		}
 
-
-
-
-		public HeightMap ParseGeoDataInBBox(GeoTiff tiff, BoundingBox bbox, FileMetadata metadata)
-		{
-			HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
-
-			byte[] scanline = new byte[metadata.ScanlineSize];
-			ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
-			Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
-
-
-			int yStart = (int)Math.Floor((bbox.yMax - metadata.StartLat) / metadata.pixelSizeY);
-			int yEnd = (int)Math.Ceiling((bbox.yMin - metadata.StartLat) / metadata.pixelSizeY);
-			int xStart = (int)Math.Floor((bbox.xMin - metadata.StartLon) / metadata.pixelSizeX);
-			int xEnd = (int)Math.Ceiling((bbox.xMax - metadata.StartLon) / metadata.pixelSizeX);
-
-			xStart = Math.Max(0, xStart);
-			xEnd = Math.Min(scanline16Bit.Length - 1, xEnd);
-			yStart = Math.Max(0, yStart);
-			yEnd = Math.Min(metadata.Height - 1, yEnd);
-
-			for (int y = yStart; y <= yEnd; y++)
-			{
-				tiff.TiffFile.ReadScanline(scanline, y);
-				Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
-
-				double latitude = metadata.StartLat + (metadata.pixelSizeY * y);
-				for (int x = xStart; x <= xEnd; x++)
-				{
-					double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
-
-					float heightValue = (float)scanline16Bit[x];
-					if (heightValue < 32768)
-					{
-						heightMap.Mininum = Math.Min(heightMap.Mininum, heightValue);
-						heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
-					}
-					else
-					{
-						heightValue = NO_DATA_OUT;
-					}
-					heightMap.Coordinates.Add(new GeoPoint(latitude, longitude, heightValue, x, y));
-
-				}
-			}
-
-			return heightMap;
-		}
-
 		public float ParseGeoDataAtPoint(GeoTiffDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float lastElevation, IInterpolator interpolator)
 		{
 			float heightValue = 0;
@@ -743,7 +693,7 @@ namespace DEM.Net.Lib.Services
 					int x = (int)Math.Round(xpos, 0);
 					int y = (int)Math.Round(ypos, 0);
 					var tile = FindTile(metadata, adjacentTiles, x, y, out x, out y);
-					heightValue = mainTiff.ParseGeoDataAtPoint(tile, x, y);
+					heightValue = mainTiff.GetElevationAtPoint(tile, x, y);
 				}
 				else
 				{
@@ -793,7 +743,7 @@ namespace DEM.Net.Lib.Services
 
 			if (tiles.ContainsKey(goodTile))
 			{
-				return tiles[goodTile].ParseGeoDataAtPoint(goodTile, xRemap, yRemap);
+				return tiles[goodTile].GetElevationAtPoint(goodTile, xRemap, yRemap);
 
 			}
 			else

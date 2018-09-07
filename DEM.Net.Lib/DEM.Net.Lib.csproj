@@ -61,6 +61,7 @@
     <Compile Include="Helpers\GeoTiffDictionary.cs" />
     <Compile Include="Helpers\UrlHelper.cs" />
     <Compile Include="IO\GeoTiff.cs" />
+    <Compile Include="IO\HGTFile.cs" />
     <Compile Include="IO\IGeoTiff.cs" />
     <Compile Include="IO\NoLogTiffErrorHandler.cs" />
     <Compile Include="Model\BoundingBox.cs" />
