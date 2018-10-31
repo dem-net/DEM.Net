@@ -36,28 +36,39 @@ namespace SampleApp
 			//LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
 
 			PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
-			LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_BREST_NICE, 100);
+			LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_PLATEAU_PUYRICARD, 100);
 
-			//GeoTiffBenchmark();
+            HeightMapTest(elevationService, DEMDataSet.AW3D30, WKT_PLATEAU_PUYRICARD);
 
-			//Test_GetMetadataFromVRT(elevationService, DEMDataSet.AW3D30);
+            //GeoTiffBenchmark();
 
-			//elevationService.DownloadMissingFiles(DEMDataSet.AW3D30, GetBoundingBox(WKT_AIX_BAYONNE_EST_OUEST));
-			////elevationService.DownloadMissingFiles(DEMDataSet.SRTM_GL3_srtm, GetBoundingBox(WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES));
+            //Test_GetMetadataFromVRT(elevationService, DEMDataSet.AW3D30);
 
-			////GenerateDownloadReports(geoTiffService);
+            //elevationService.DownloadMissingFiles(DEMDataSet.AW3D30, GetBoundingBox(WKT_AIX_BAYONNE_EST_OUEST));
+            ////elevationService.DownloadMissingFiles(DEMDataSet.SRTM_GL3_srtm, GetBoundingBox(WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES));
 
-			//geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, false);
+            ////GenerateDownloadReports(geoTiffService);
 
-			//Spatial trace of line +segments + interpolated point + dem grid
-			//SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_TEST, DEMDataSet.AW3D30);
+            //geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, false);
 
-			Console.Write("Press any key to exit...");
+            //Spatial trace of line +segments + interpolated point + dem grid
+            //SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_TEST, DEMDataSet.AW3D30);
+
+            Console.Write("Press any key to exit...");
 			Console.ReadLine();
 
 		}
 
-		private static void GeoTiffTests(IGeoTiffService geoTiffService, string tiffPath)
+        private static void HeightMapTest(ElevationService elevationService, DEMDataSet dataSet, string wkt)
+        {
+            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
+            var bbox =  geom.GetBoundingBox();
+
+            HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
+
+        }
+
+        private static void GeoTiffTests(IGeoTiffService geoTiffService, string tiffPath)
 		{
 			FileMetadata metaData = geoTiffService.ParseMetadata(tiffPath);
 			float elevation;
