@@ -3,33 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZeroFormatter;
 
 namespace DEM.Net.Lib
 {
-    public sealed class DEMFileFormat
-    {
+	[ZeroFormattable]
+	public class DEMFileFormat
+	{
 
-        private readonly string name;
-        private readonly string _fileExtension;
+		[Index(0)]
+		public virtual string Name { get; set; }
 
-        public string FileExtension
-        {
-            get { return _fileExtension; }
-        }
 
-        public static readonly DEMFileFormat SRTM_HGT = new DEMFileFormat("Shuttle Radar Topography Mission (SRTM) Data file.", ".hgt");
-        public static readonly DEMFileFormat GEOTIFF = new DEMFileFormat("GeoTIFF file", ".tif");
+		[Index(1)]
+		public virtual string FileExtension { get; set; }
 
-        private DEMFileFormat(string name, string fileExtension)
-        {
-            this.name = name;
-            this._fileExtension = fileExtension;
-        }
+		public static readonly DEMFileFormat SRTM_HGT = new DEMFileFormat("Shuttle Radar Topography Mission (SRTM) Data file.", ".hgt");
+		public static readonly DEMFileFormat GEOTIFF = new DEMFileFormat("GeoTIFF file", ".tif");
 
-        public override string ToString()
-        {
-            return name;
-        }
+		private DEMFileFormat(string name, string fileExtension)
+		{
+			this.Name = name;
+			this.FileExtension = fileExtension;
+		}
 
-    }
+		public DEMFileFormat()
+		{
+
+		}
+
+		public override string ToString()
+		{
+			return Name;
+		}
+
+	}
 }
