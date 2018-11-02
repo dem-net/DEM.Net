@@ -74,7 +74,7 @@ namespace SampleApp
 			float elevation;
 			using (GeoTiff tiff = new GeoTiff(tiffPath))
 			{
-				elevation = tiff.ParseGeoDataAtPoint(metaData, 122, 122);
+				elevation = tiff.GetElevationAtPoint(metaData, 122, 122);
 			}
 
 		}

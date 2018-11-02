@@ -61,7 +61,7 @@ namespace DEM.Net.Lib
 				TiffFile.ReadScanline(scanline, y);
 				Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
 
-				heightValue = ParseGeoDataAtPoint(metadata, x, scanline16Bit);
+				heightValue = GetElevationAtPoint(metadata, x, scanline16Bit);
 			}
 			catch (Exception e)
 			{
@@ -70,7 +70,7 @@ namespace DEM.Net.Lib
 			return heightValue;
 		}
 
-		public float ParseGeoDataAtPoint(FileMetadata metadata, int x, ushort[] scanline16Bit)
+		public float GetElevationAtPoint(FileMetadata metadata, int x, ushort[] scanline16Bit)
 		{
 			float heightValue = 0;
 			try
