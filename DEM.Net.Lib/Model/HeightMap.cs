@@ -10,8 +10,6 @@ namespace DEM.Net.Lib
 	[Serializable()]
 	public class HeightMap
 	{
-		
-
 		public HeightMap(int width, int height)
 		{
 			Width = width;
@@ -30,5 +28,10 @@ namespace DEM.Net.Lib
 
 		public int Width { get; private set; }
 		public int Height { get; private set; }
+
+        public HeightMap Clone()
+        {
+            return (HeightMap)this.MemberwiseClone();
+        }
 	}
 }
