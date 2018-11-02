@@ -30,15 +30,15 @@ namespace SampleApp
 
             //geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true);
             // geoTiffService.GenerateFileMetadata(@"C:\Users\xfischer\AppData\Roaming\DEM.Net\ETOPO1\ETOPO1_Ice_g_geotiff.tif", false, false);
-
-            SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, "POLYGON ((5.446751 43.542374, 5.446773 43.539387, 5.448039 43.539636, 5.450678 43.537972, 5.452931 43.537241, 5.453553 43.539574, 5.454969 43.542653, 5.452373 43.543369, 5.450656 43.543556, 5.448403 43.544193, 5.447137 43.544084, 5.446751 43.542374))", DEMDataSet.AW3D30);
+            string wkt4Tiles = "POLYGON ((5.9735200000000006 43.979698, 6.021922 43.979698, 6.021922 44.002967, 5.9735200000000006 44.002967, 5.9735200000000006 43.979698))";
+            SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, wkt4Tiles, DEMDataSet.AW3D30);
 
             //LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
 
             //PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
             //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_PLATEAU_PUYRICARD, 100);
 
-            HeightMapTest(elevationService, DEMDataSet.AW3D30, "POLYGON ((5.446751 43.542374, 5.446773 43.539387, 5.448039 43.539636, 5.450678 43.537972, 5.452931 43.537241, 5.453553 43.539574, 5.454969 43.542653, 5.452373 43.543369, 5.450656 43.543556, 5.448403 43.544193, 5.447137 43.544084, 5.446751 43.542374))");
+            HeightMapTest(elevationService, DEMDataSet.AW3D30, wkt4Tiles);
 
             //GeoTiffBenchmark();
 

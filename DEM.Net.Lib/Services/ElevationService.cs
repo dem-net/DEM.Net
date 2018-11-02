@@ -277,9 +277,11 @@ namespace DEM.Net.Lib.Services
 
 		public HeightMap GetHeightMap(BoundingBox bbox, DEMDataSet dataSet)
 		{
-			// Locate which files are needed
-			// Find files matching coords
-			List<FileMetadata> bboxMetadata = GetCoveringFiles(bbox, dataSet);
+            DownloadMissingFiles(dataSet, bbox);
+
+            // Locate which files are needed
+            // Find files matching coords
+            List<FileMetadata> bboxMetadata = GetCoveringFiles(bbox, dataSet);
 
 			HeightMap heightMap = null;
 			// get height map for each file at bbox
