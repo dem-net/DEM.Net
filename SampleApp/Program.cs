@@ -31,14 +31,14 @@ namespace SampleApp
             //geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true);
             // geoTiffService.GenerateFileMetadata(@"C:\Users\xfischer\AppData\Roaming\DEM.Net\ETOPO1\ETOPO1_Ice_g_geotiff.tif", false, false);
 
-            //SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_EXAMPLE_GOOGLE, DEMDataSet.AW3D30);
+            SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, "POLYGON ((5.446751 43.542374, 5.446773 43.539387, 5.448039 43.539636, 5.450678 43.537972, 5.452931 43.537241, 5.453553 43.539574, 5.454969 43.542653, 5.452373 43.543369, 5.450656 43.543556, 5.448403 43.544193, 5.447137 43.544084, 5.446751 43.542374))", DEMDataSet.AW3D30);
 
             //LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
 
             //PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
             //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_PLATEAU_PUYRICARD, 100);
 
-            HeightMapTest(elevationService, DEMDataSet.AW3D30, "POLYGON ((5.479774 43.509966, 5.479774 43.599041, 5.40905 43.599041, 5.40905 43.509966, 5.479774 43.509966))");
+            HeightMapTest(elevationService, DEMDataSet.AW3D30, "POLYGON ((5.446751 43.542374, 5.446773 43.539387, 5.448039 43.539636, 5.450678 43.537972, 5.452931 43.537241, 5.453553 43.539574, 5.454969 43.542653, 5.452373 43.543369, 5.450656 43.543556, 5.448403 43.544193, 5.447137 43.544084, 5.446751 43.542374))");
 
             //GeoTiffBenchmark();
 
@@ -67,6 +67,7 @@ namespace SampleApp
             HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
 
             HeightMap hMap_L93 = hMap.ReprojectTo(4326, 2154);
+            //HeightMapExport.Export(hMap_L93, "Aix Puyricard");
 
         }
 
@@ -272,30 +273,17 @@ namespace SampleApp
             return geom.ToGeography().STBuffer(60).GetBoundingBox();
         }
 
-        static void SpatialTrace_GeometryWithDEMGrid(ElevationService elevationService, IGeoTiffService geoTiffService, string wktBbox, DEMDataSet dataSet)
+        static void SpatialTrace_GeometryWithDEMGrid(ElevationService elevationService, IGeoTiffService geoTiffService, string wktBbox, DEMDataSet dataSet, double rangeKm = 100)
         {
             SpatialTrace.Enable();
+            SpatialTrace.Clear();
             DEM.Net.Lib.BoundingBox bbox = null;
             if (wktBbox != null)
             {
                 SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wktBbox);
                 SpatialTrace.TraceGeometry(geom, "Bbox");
-                bbox = geom.ToGeography().STBuffer(60).GetBoundingBox();
-
-                //SpatialTrace.Indent("Line Segments");
-                //int i = 0;
-                //foreach (var seg in geom.Segments())
-                //{
-                //	i++;
-                //	Color color = (i % 2 == 0) ? Colors.Blue : Colors.Red;
-                //	SpatialTrace.SetLineColor(color);
-                //	SpatialTrace.TraceGeometry(seg, "Seg" + i, "Seg" + i);
-                //}
-
-                SpatialTrace.Unindent();
+                bbox = geom.ToGeography().STBuffer(rangeKm * 1000).GetBoundingBox();
             }
-
-
 
 
             Dictionary<string, DemFileReport> tiles = geoTiffService.GenerateReport(dataSet, bbox);
