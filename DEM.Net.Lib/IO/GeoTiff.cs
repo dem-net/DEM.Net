@@ -143,8 +143,6 @@ namespace DEM.Net.Lib
 
 		public HeightMap ParseGeoDataInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = float.MinValue)
 		{
-			HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
-
 			byte[] scanline = new byte[metadata.ScanlineSize];
 			ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
 			Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
@@ -160,7 +158,8 @@ namespace DEM.Net.Lib
 			yStart = Math.Max(0, yStart);
 			yEnd = Math.Min(metadata.Height - 1, yEnd);
 
-			for (int y = yStart; y <= yEnd; y++)
+            HeightMap heightMap = new HeightMap(xEnd-xStart, yEnd-yStart);
+            for (int y = yStart; y <= yEnd; y++)
 			{
 				TiffFile.ReadScanline(scanline, y);
 				Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);

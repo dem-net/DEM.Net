@@ -277,27 +277,28 @@ namespace DEM.Net.Lib.Services
 
 		public HeightMap GetHeightMap(BoundingBox bbox, DEMDataSet dataSet)
 		{
-            DownloadMissingFiles(dataSet, bbox);
+			DownloadMissingFiles(dataSet, bbox);
 
-            // Locate which files are needed
-            // Find files matching coords
-            List<FileMetadata> bboxMetadata = GetCoveringFiles(bbox, dataSet);
+			// Locate which files are needed
+			// Find files matching coords
+			List<FileMetadata> bboxMetadata = GetCoveringFiles(bbox, dataSet);
 
-			HeightMap heightMap = null;
 			// get height map for each file at bbox
+			List<HeightMap> tilesHeightMap = new List<HeightMap>();
 			foreach (FileMetadata metadata in bboxMetadata)
 			{
 				using (IGeoTiff geoTiff = _IGeoTiffService.OpenFile(metadata.Filename))
 				{
-					heightMap = geoTiff.ParseGeoDataInBBox( bbox, metadata, NO_DATA_OUT);
+					tilesHeightMap.Add(geoTiff.ParseGeoDataInBBox(bbox, metadata, NO_DATA_OUT));
 				}
 			}
 
-			FileMetadata meta = bboxMetadata.First();
-			using (IGeoTiff geoTiff = _IGeoTiffService.OpenFile(meta.Filename))
-			{
-				heightMap = geoTiff.ParseGeoDataInBBox(bbox, meta, NO_DATA_OUT);
-			}
+			// Merge height maps
+			HeightMap heightMap = new HeightMap(tilesHeightMap.Sum(hmap => hmap.Width), tilesHeightMap.Sum(hmap => hmap.Height));
+			heightMap.Coordinates.AddRange(tilesHeightMap.SelectMany(hmap => hmap.Coordinates));
+			heightMap.Mininum = tilesHeightMap.Min(hmap => hmap.Mininum);
+			heightMap.Maximum = tilesHeightMap.Min(hmap => hmap.Maximum);
+
 			return heightMap;
 		}
 		public static HeightMap GetHeightMap(string fileName, FileMetadata metadata)

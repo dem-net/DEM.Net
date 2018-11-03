@@ -31,7 +31,7 @@ namespace SampleApp
             //geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true);
             // geoTiffService.GenerateFileMetadata(@"C:\Users\xfischer\AppData\Roaming\DEM.Net\ETOPO1\ETOPO1_Ice_g_geotiff.tif", false, false);
             string wkt4Tiles = "POLYGON ((5.9735200000000006 43.979698, 6.021922 43.979698, 6.021922 44.002967, 5.9735200000000006 44.002967, 5.9735200000000006 43.979698))";
-            SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, wkt4Tiles, DEMDataSet.AW3D30);
+            //SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, wkt4Tiles, DEMDataSet.AW3D30);
 
             //LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
 
