@@ -35,10 +35,12 @@ namespace SampleApp
 
             //LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
 
-            //PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
-            //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_PLATEAU_PUYRICARD, 100);
+            PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
+            LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_PLATEAU_PUYRICARD, 100);
 
             HeightMapTest(elevationService, DEMDataSet.AW3D30, wkt4Tiles);
+
+            //mrpoup : welcome !!
 
             //GeoTiffBenchmark();
 
