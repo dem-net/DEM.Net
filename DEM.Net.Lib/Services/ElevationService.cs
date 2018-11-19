@@ -293,13 +293,17 @@ namespace DEM.Net.Lib.Services
 				}
 			}
 
+            
+
 			// Merge height maps
 			HeightMap heightMap = new HeightMap(tilesHeightMap.Sum(hmap => hmap.Width), tilesHeightMap.Sum(hmap => hmap.Height));
 			heightMap.Coordinates.AddRange(tilesHeightMap.SelectMany(hmap => hmap.Coordinates));
 			heightMap.Mininum = tilesHeightMap.Min(hmap => hmap.Mininum);
 			heightMap.Maximum = tilesHeightMap.Min(hmap => hmap.Maximum);
+            
 
-			return heightMap;
+
+            return heightMap;
 		}
 		public static HeightMap GetHeightMap(string fileName, FileMetadata metadata)
 		{

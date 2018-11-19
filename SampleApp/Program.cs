@@ -35,10 +35,13 @@ namespace SampleApp
 
             //LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
 
-            PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
-            LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_PLATEAU_PUYRICARD, 100);
+            //PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
+            //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_PLATEAU_PUYRICARD, 100);
 
             HeightMapTest(elevationService, DEMDataSet.AW3D30, wkt4Tiles);
+
+            string WKT_AIX_LESMILLES = "POLYGON ((5.359268188476562 43.47285413777968, 5.49041748046875 43.47285413777968, 5.49041748046875 43.56024232423529, 5.359268188476562 43.56024232423529, 5.359268188476562 43.47285413777968))";
+            MeshDecimationTest(elevationService, DEMDataSet.AW3D30, WKT_AIX_LESMILLES);
 
             //mrpoup : welcome !!
 
@@ -59,6 +62,21 @@ namespace SampleApp
             Console.Write("Press any key to exit...");
             Console.ReadLine();
 
+        }
+
+        private static void MeshDecimationTest(ElevationService elevationService, DEMDataSet dataSet, string wkt)
+        {
+            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
+            var bbox = geom.GetBoundingBox();
+
+            HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
+
+            HeightMap hMap_L93 = hMap.ReprojectTo(4326, 2154)
+                                    .CenterOnOrigin();
+
+
+
+            //HeightMapExport.Export(hMap_L93, "Aix Puyricard");
         }
 
         private static void HeightMapTest(ElevationService elevationService, DEMDataSet dataSet, string wkt)

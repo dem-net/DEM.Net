@@ -33,5 +33,7 @@ namespace DEM.Net.Lib
         {
             return (HeightMap)this.MemberwiseClone();
         }
-	}
+
+        
+    }
 }
