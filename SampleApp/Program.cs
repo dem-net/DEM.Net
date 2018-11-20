@@ -1,5 +1,5 @@
 ﻿using DEM.Net.Lib;
-using DEM.Net.Lib.Services;
+using DEM.Net.Lib;
 using Microsoft.SqlServer.Types;
 using SqlServerSpatial.Toolkit;
 using System.Collections.Generic;

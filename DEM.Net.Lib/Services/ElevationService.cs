@@ -1,4 +1,4 @@
-﻿using DEM.Net.Lib.Services.Interpolation;
+﻿using DEM.Net.Lib.Interpolation;
 using Microsoft.SqlServer.Types;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Lib.Services
+namespace DEM.Net.Lib
 {
 	public class ElevationService
 	{

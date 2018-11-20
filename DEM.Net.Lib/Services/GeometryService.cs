@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
 
-namespace DEM.Net.Lib.Services
+namespace DEM.Net.Lib
 {
 	public static class GeometryService
 	{

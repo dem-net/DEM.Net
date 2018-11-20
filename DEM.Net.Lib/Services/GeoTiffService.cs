@@ -8,7 +8,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Lib.Services
+namespace DEM.Net.Lib
 {
 	public class GeoTiffService : IGeoTiffService
 	{

@@ -1,6 +1,6 @@
 ﻿using BitMiracle.LibTiff.Classic;
 using DEM.Net.Lib.IO;
-using DEM.Net.Lib.Services;
+using DEM.Net.Lib;
 using System;
 
 namespace DEM.Net.Lib

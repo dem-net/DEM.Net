@@ -90,6 +90,7 @@
     <Compile Include="Services\Interpolation\HyperbolicInterpolator.cs" />
     <Compile Include="Services\Interpolation\BilinearInterpolator.cs" />
     <Compile Include="Helpers\SqlTypesExtensions.cs" />
+    <Compile Include="Services\Logger.cs" />
     <Compile Include="Services\Smoothing.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
   </ItemGroup>
