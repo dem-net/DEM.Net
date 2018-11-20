@@ -208,25 +208,6 @@ namespace AssetGenerator
 
     public enum ModelGroupId
     {
-        Animation_Node,
-        Animation_NodeMisc,
-        Buffer_Interleaved,
-        Compatibility,
-        Material,
-        Material_AlphaBlend,
-        Material_AlphaMask,
-        Material_DoubleSided,
-        Material_MetallicRoughness,
-        Material_Mixed,
-        Material_SpecularGlossiness,
-        Mesh_PrimitiveAttribute,
-        Mesh_PrimitiveMode,
-        Mesh_PrimitiveVertexColor,
-		Mesh_LineAtlas,
-        Mesh_Primitives,
-        Mesh_PrimitivesUV,
-        Node_Attribute,
-        Node_NegativeScale,
-        Texture_Sampler,
+        Custom
     }
 }
