@@ -13,6 +13,9 @@ using System.Xml;
 using System.Diagnostics;
 using System.Windows.Media;
 using System.Configuration;
+using DEM.Net.glTF;
+using AssetGenerator.Runtime;
+using AssetGenerator;
 
 namespace SampleApp
 {
@@ -38,7 +41,7 @@ namespace SampleApp
             //PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
             //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_PLATEAU_PUYRICARD, 100);
 
-            HeightMapTest(elevationService, DEMDataSet.AW3D30, wkt4Tiles);
+            //HeightMapTest(elevationService, DEMDataSet.AW3D30, wkt4Tiles);
 
             string WKT_AIX_LESMILLES = "POLYGON ((5.359268188476562 43.47285413777968, 5.49041748046875 43.47285413777968, 5.49041748046875 43.56024232423529, 5.359268188476562 43.56024232423529, 5.359268188476562 43.47285413777968))";
             MeshDecimationTest(elevationService, DEMDataSet.AW3D30, WKT_AIX_LESMILLES);
@@ -74,8 +77,10 @@ namespace SampleApp
             HeightMap hMap_L93 = hMap.ReprojectTo(4326, 2154)
                                     .CenterOnOrigin();
 
-
-
+            glTFService glTF = new glTFService();
+            MeshPrimitive meshPrimitive = glTF.GenerateTriangleMesh(hMap_L93);
+            Model model = glTF.GenerateModel(meshPrimitive, "Raw DEM");
+            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", "Raw DEM");
             //HeightMapExport.Export(hMap_L93, "Aix Puyricard");
         }
 

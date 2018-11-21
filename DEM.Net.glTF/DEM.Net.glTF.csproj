@@ -1,16 +1,106 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{31079223-207D-4075-9C4C-AB001E978C94}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DEM.Net.glTF</RootNamespace>
+    <AssemblyName>DEM.Net.glTF</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
-
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="glTF2Loader" Version="1.0.0" />
-    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+    <Reference Include="glTFLoader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\glTF2Loader.1.0.0\lib\net452\glTFLoader.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\DEM.Net.Lib\DEM.Net.Lib.csproj" />
+    <Compile Include="glTFService.cs" />
+    <Compile Include="glTFSource\Data.cs" />
+    <Compile Include="glTFSource\FileHelper.cs" />
+    <Compile Include="glTFSource\FloatMath.cs" />
+    <Compile Include="glTFSource\ModelGroup.cs" />
+    <Compile Include="glTFSource\ModelGroups\Mesh_DEMHeightMap.cs" />
+    <Compile Include="glTFSource\Property.cs" />
+    <Compile Include="glTFSource\ReadmeStringHelper.cs" />
+    <Compile Include="glTFSource\Runtime\Animation.cs" />
+    <Compile Include="glTFSource\Runtime\AnimationChannel.cs" />
+    <Compile Include="glTFSource\Runtime\AnimationChannelTarget.cs" />
+    <Compile Include="glTFSource\Runtime\AnimationSampler.cs" />
+    <Compile Include="glTFSource\Runtime\Asset.cs" />
+    <Compile Include="glTFSource\Runtime\ExtensionMethods\IEnumerableExtensionMethods.cs" />
+    <Compile Include="glTFSource\Runtime\ExtensionMethods\ImageExtensionMethods.cs" />
+    <Compile Include="glTFSource\Runtime\ExtensionMethods\NumericExtensionMethods.cs" />
+    <Compile Include="glTFSource\Runtime\ExtensionMethods\SamplerExtensionMethods.cs" />
+    <Compile Include="glTFSource\Runtime\ExtensionMethods\TextureExtensionMethods.cs" />
+    <Compile Include="glTFSource\Runtime\Extensions\Extension.cs" />
+    <Compile Include="glTFSource\Runtime\Extensions\FAKE_materials_quantumRendering.cs" />
+    <Compile Include="glTFSource\Runtime\Extensions\KHR_materials_pbrSpecularGlossiness.cs" />
+    <Compile Include="glTFSource\Runtime\Extras.cs" />
+    <Compile Include="glTFSource\Runtime\GLTF.cs" />
+    <Compile Include="glTFSource\Runtime\GLTFConverter.cs" />
+    <Compile Include="glTFSource\Runtime\Image.cs" />
+    <Compile Include="glTFSource\Runtime\JointWeight.cs" />
+    <Compile Include="glTFSource\Runtime\Material.cs" />
+    <Compile Include="glTFSource\Runtime\Mesh.cs" />
+    <Compile Include="glTFSource\Runtime\MeshPrimitive.cs" />
+    <Compile Include="glTFSource\Runtime\Node.cs" />
+    <Compile Include="glTFSource\Runtime\PbrMetallicRoughness.cs" />
+    <Compile Include="glTFSource\Runtime\Sampler.cs" />
+    <Compile Include="glTFSource\Runtime\Scene.cs" />
+    <Compile Include="glTFSource\Runtime\Skin.cs" />
+    <Compile Include="glTFSource\Runtime\SkinJoint.cs" />
+    <Compile Include="glTFSource\Runtime\Texture.cs" />
+    <Compile Include="glTFSource\Schema\FAKE_materials_quantumRendering.cs" />
+    <Compile Include="glTFSource\Schema\KHR_materials_pbrSpecularGlossiness.cs" />
+    <Compile Include="IglTFService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="..\DEM.Net.Lib\DEM.Net.Lib.csproj">
+      <Project>{7a31b996-9f8c-4abf-ac33-e80d2914bc0f}</Project>
+      <Name>DEM.Net.Lib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

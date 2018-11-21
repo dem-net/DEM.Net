@@ -1,5 +1,4 @@
 ﻿using DEM.Net.Lib;
-using LineAtlas.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
