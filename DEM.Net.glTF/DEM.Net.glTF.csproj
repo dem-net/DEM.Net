@@ -32,9 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="glTFLoader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\glTF2Loader.1.0.0\lib\net452\glTFLoader.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -88,8 +85,6 @@
     <Compile Include="glTFSource\Runtime\Skin.cs" />
     <Compile Include="glTFSource\Runtime\SkinJoint.cs" />
     <Compile Include="glTFSource\Runtime\Texture.cs" />
-    <Compile Include="glTFSource\Schema\FAKE_materials_quantumRendering.cs" />
-    <Compile Include="glTFSource\Schema\KHR_materials_pbrSpecularGlossiness.cs" />
     <Compile Include="IglTFService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -97,6 +92,10 @@
     <ProjectReference Include="..\DEM.Net.Lib\DEM.Net.Lib.csproj">
       <Project>{7a31b996-9f8c-4abf-ac33-e80d2914bc0f}</Project>
       <Name>DEM.Net.Lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\glTF-CSharp-Loader\glTFLoader\glTFLoader.csproj">
+      <Project>{ae62364c-710d-4d5c-a71c-bdb44ab03455}</Project>
+      <Name>glTFLoader</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

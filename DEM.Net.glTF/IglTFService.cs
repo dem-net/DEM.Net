@@ -33,6 +33,11 @@ namespace DEM.Net.glTF
         /// <param name="model"></param>
         /// <param name="directoryName"></param>
         /// <param name="modelName"></param>
-		void Export(Model model, string directoryName, string modelName);
-	}
+        /// <param name="exportglTF">If true then glTF file and all associated .bin will be exported.</param>
+        /// <param name="exportGLB">If true then a single packed GLB file will be exported.</param>
+		void Export(Model model, string outputFolder, string modelName, bool exportglTF = true, bool exportGLB = true);
+
+        glTFLoader.Schema.Gltf Import(string path);
+
+    }
 }

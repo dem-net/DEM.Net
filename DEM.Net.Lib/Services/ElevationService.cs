@@ -15,7 +15,7 @@ namespace DEM.Net.Lib
 {
     public class ElevationService
     {
-        public const float NO_DATA_OUT = float.MinValue;
+        public const float NO_DATA_OUT = 0;
         private readonly IGeoTiffService _IGeoTiffService;
         public ElevationService(IGeoTiffService geoTiffService)
         {
@@ -300,11 +300,16 @@ namespace DEM.Net.Lib
             int totalWidth = tilesHeightMap.GroupBy(h => h.BoundingBox.yMin).Select(g => g.Sum(v => v.Width)).First();
 
             HeightMap heightMap = new HeightMap(totalWidth, totalHeight);
-            heightMap.Coordinates.AddRange(tilesHeightMap.SelectMany(hmap => hmap.Coordinates));
+            heightMap.BoundingBox = new BoundingBox(xmin: tilesHeightMap.Min(h => h.BoundingBox.xMin)
+                                                    , xmax: tilesHeightMap.Max(h => h.BoundingBox.xMax)
+                                                    , ymin: tilesHeightMap.Min(h => h.BoundingBox.yMin)
+                                                    , ymax: tilesHeightMap.Max(h => h.BoundingBox.yMax));
+            heightMap.Coordinates = tilesHeightMap.SelectMany(hmap => hmap.Coordinates);
+            heightMap.Count = totalWidth * totalHeight;
             heightMap.Mininum = tilesHeightMap.Min(hmap => hmap.Mininum);
             heightMap.Maximum = tilesHeightMap.Min(hmap => hmap.Maximum);
 
-            Debug.Assert(heightMap.Width * heightMap.Height == heightMap.Coordinates.Count);
+           Debug.Assert(heightMap.Count== tilesHeightMap.Sum(h => h.Count));
 
 
             return heightMap;
@@ -324,6 +329,8 @@ namespace DEM.Net.Lib
         private static HeightMap ParseGeoData(GeoTiff tiff, FileMetadata metadata)
         {
             HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
+            heightMap.Count = heightMap.Width * heightMap.Height;
+            var coords = new List<GeoPoint>(heightMap.Count);
 
             byte[] scanline = new byte[metadata.ScanlineSize];
             ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
@@ -349,11 +356,12 @@ namespace DEM.Net.Lib
                     {
                         heightValue = NO_DATA_OUT;
                     }
-                    heightMap.Coordinates.Add(new GeoPoint(latitude, longitude, heightValue, x, y));
+                    coords.Add(new GeoPoint(latitude, longitude, heightValue, x, y));
 
                 }
             }
 
+            heightMap.Coordinates = coords;
             return heightMap;
         }
 

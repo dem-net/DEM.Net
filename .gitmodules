@@ -1,0 +1,3 @@
+[submodule "glTF-CSharp-Loader"]
+	path = glTF-CSharp-Loader
+	url = https://github.com/KhronosGroup/glTF-CSharp-Loader

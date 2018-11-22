@@ -15,7 +15,7 @@ namespace DEM.Net.glTF
 {
     public class glTFService : IglTFService
     {
-        public void Export(Model model, string outputFolder, string modelName)
+        public void Export(Model model, string outputFolder, string modelName, bool exportglTF = true, bool exportGLB = true)
         {
             try
             {
@@ -30,6 +30,7 @@ namespace DEM.Net.glTF
 
 
                 var filename = $"{modelName}.gltf";
+                var glbFilename = $"{modelName}.glb";
 
                 using (var data = new Data($"{modelName}.bin"))
                 {
@@ -42,13 +43,28 @@ namespace DEM.Net.glTF
                     // in order to add features that don't really exist otherwise
                     model.PostRuntimeChanges(gltf);
 
-                    // Creates the .gltf file and writes the model's data to it
-                    var assetFile = Path.Combine(outputFolder, filename);
-                    glTFLoader.Interface.SaveModel(gltf, assetFile);
+                    if (exportglTF)
+                    {
+                        // Creates the .gltf file and writes the model's data to it
+                        var assetFile = Path.Combine(outputFolder, filename);
+                        glTFLoader.Interface.SaveModel(gltf, assetFile);
 
-                    // Creates the .bin file and writes the model's data to it
-                    var dataFile = Path.Combine(outputFolder, data.Name);
-                    File.WriteAllBytes(dataFile, data.ToArray());
+
+                        // Creates the .bin file and writes the model's data to it
+                        var dataFile = Path.Combine(outputFolder, data.Name);
+                        File.WriteAllBytes(dataFile, data.ToArray());
+                    }
+
+                    if (exportGLB)
+                    {
+                        var glbFile = Path.Combine(outputFolder, glbFilename);
+                        foreach (var buf in gltf.Buffers)
+                        {
+                            buf.Uri = null;
+                        }
+                        // gltf.Buffers = null;
+                        glTFLoader.Interface.SaveBinaryModel(gltf, data.ToArray(), glbFile);
+                    }
                 }
 
 
@@ -62,6 +78,11 @@ namespace DEM.Net.glTF
             }
         }
 
+        public glTFLoader.Schema.Gltf Import(string path)
+        {
+            glTFLoader.Schema.Gltf gltf = glTFLoader.Interface.LoadModel(path);
+            return gltf;
+        }
         public Model GenerateModel(MeshPrimitive meshPrimitive, string name)
         {
             // Create the gltf object
@@ -104,7 +125,7 @@ namespace DEM.Net.glTF
             const int TRIANGULATION_MODE = 1; // 2
             try
             {
-                if (heightMap == null || heightMap.Coordinates == null || heightMap.Coordinates.Count == 0)
+                if (heightMap == null || heightMap.Coordinates == null || heightMap.Count == 0)
                 {
                     Logger.Warning("Height map is empty.");
                 }
@@ -124,7 +145,7 @@ namespace DEM.Net.glTF
                         ,
                         Positions = positions
                         ,
-                        Material=new Material()
+                        Material = new Material()
                     };
 
                     int capacity = ((heightMap.Width - 1) * 6) * (heightMap.Height - 1);
@@ -157,12 +178,12 @@ namespace DEM.Net.glTF
 
                                     // Triangulation 2
                                     indices.Add((x + 0) + (y + 0) * heightMap.Width);
-                                    indices.Add((x + 0) + (y + 1) * heightMap.Width);
                                     indices.Add((x + 1) + (y + 1) * heightMap.Width);
+                                    indices.Add((x + 0) + (y + 1) * heightMap.Width);
 
                                     indices.Add((x + 0) + (y + 0) * heightMap.Width);
-                                    indices.Add((x + 1) + (y + 1) * heightMap.Width);
                                     indices.Add((x + 1) + (y + 0) * heightMap.Width);
+                                    indices.Add((x + 1) + (y + 1) * heightMap.Width);
                                 }
                             }
                         }
@@ -170,13 +191,13 @@ namespace DEM.Net.glTF
                     mesh.Indices = indices;
 
                     //The number of the vertices
-                    int nV = heightMap.Coordinates.Count;
+                    int nV = heightMap.Count;
                     //The number of the triangles
                     int nT = indices.Count / 3;
 
                     Vector3[] norm = new Vector3[nV]; //Array for the normals
-                                               //Scan all the triangles. For each triangle add its
-                                               //normal to norm's vectors of triangle's vertices
+                                                      //Scan all the triangles. For each triangle add its
+                                                      //normal to norm's vectors of triangle's vertices
                     for (int t = 0; t < nT; t++)
                     {
                         //Get indices of the triangle t
@@ -188,7 +209,7 @@ namespace DEM.Net.glTF
                         Vector3 v2 = positions[i2];
                         Vector3 v3 = positions[i3];
                         //Compute the triangle's normal
-                        Vector3 dir = Vector3.Normalize(Vector3.Cross(v2 - v1,v3 - v1));
+                        Vector3 dir = Vector3.Normalize(Vector3.Cross(v2 - v1, v3 - v1));
                         //Accumulate it to norm array for i1, i2, i3
                         norm[i1] += dir;
                         norm[i2] += dir;
@@ -220,7 +241,7 @@ namespace DEM.Net.glTF
 
         private Vector3 ToVector3(GeoPoint geoPoint)
         {
-            return new Vector3((float)geoPoint.Longitude, (float)geoPoint.Latitude, (float)geoPoint.Elevation);
+            return new Vector3((float)geoPoint.Longitude, (float)geoPoint.Elevation, -(float)geoPoint.Latitude);
         }
     }
 }

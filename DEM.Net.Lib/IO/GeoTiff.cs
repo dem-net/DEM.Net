@@ -3,6 +3,8 @@ using DEM.Net.Lib.IO;
 using DEM.Net.Lib;
 using System;
 using System.Diagnostics;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DEM.Net.Lib
 {
@@ -142,7 +144,7 @@ namespace DEM.Net.Lib
             return metadata;
         }
 
-        public HeightMap ParseGeoDataInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = float.MinValue)
+        public HeightMap ParseGeoDataInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = 0)
         {
             byte[] scanline = new byte[metadata.ScanlineSize];
             ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
@@ -160,6 +162,8 @@ namespace DEM.Net.Lib
             yEnd = Math.Min(metadata.Height - 1, yEnd);
 
             HeightMap heightMap = new HeightMap(xEnd - xStart + 1, yEnd - yStart + 1);
+            heightMap.Count = heightMap.Width * heightMap.Height;
+            var coords = new List<GeoPoint>(heightMap.Count);
             heightMap.BoundingBox = new BoundingBox(0, 0, 0, 0);
 
             for (int y = yStart; y <= yEnd; y++)
@@ -195,12 +199,13 @@ namespace DEM.Net.Lib
                     {
                         heightValue = noDataValue;
                     }
-                    heightMap.Coordinates.Add(new GeoPoint(latitude, longitude, heightValue, x, y));
+                    coords.Add(new GeoPoint(latitude, longitude, heightValue, x, y));
 
                 }
             }
-            Debug.Assert(heightMap.Width * heightMap.Height == heightMap.Coordinates.Count);
-
+            Debug.Assert(heightMap.Width * heightMap.Height == coords.Count);
+            
+            heightMap.Coordinates = coords;
             return heightMap;
         }
     }

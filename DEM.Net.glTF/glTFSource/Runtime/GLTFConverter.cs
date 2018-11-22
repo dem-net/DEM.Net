@@ -802,12 +802,6 @@ namespace AssetGenerator.Runtime
                     object extension;
                     switch (runtimeExtension.Name)
                     {
-                        case nameof(Extensions.KHR_materials_pbrSpecularGlossiness):
-                            extension = ConvertPbrSpecularGlossinessExtensionToSchema((Extensions.KHR_materials_pbrSpecularGlossiness)runtimeExtension, gltf);
-                            break;
-                        case nameof(Extensions.FAKE_materials_quantumRendering):
-                            extension = ConvertExtQuantumRenderingToSchema((Extensions.FAKE_materials_quantumRendering)runtimeExtension, gltf);
-                            break;
                         default:
                             throw new NotImplementedException("Extension schema conversion not implemented for " + runtimeExtension.Name);
                     }
@@ -825,113 +819,6 @@ namespace AssetGenerator.Runtime
             return material;
         }
 
-        /// <summary>
-        /// Converts Runtime PbrSpecularGlossiness to Schema.
-        /// </summary>
-        private glTFLoader.Schema.MaterialPbrSpecularGlossiness ConvertPbrSpecularGlossinessExtensionToSchema(Extensions.KHR_materials_pbrSpecularGlossiness specGloss, GLTF gltf)
-        {
-            var materialPbrSpecularGlossiness = CreateInstance<glTFLoader.Schema.MaterialPbrSpecularGlossiness>();
-
-            if (specGloss.DiffuseFactor.HasValue)
-            {
-                materialPbrSpecularGlossiness.DiffuseFactor = specGloss.DiffuseFactor.Value.ToArray();
-            }
-            if (specGloss.DiffuseTexture != null)
-            {
-                TextureIndices textureIndices = AddTexture(specGloss.DiffuseTexture);
-                materialPbrSpecularGlossiness.DiffuseTexture = CreateInstance<glTFLoader.Schema.TextureInfo>();
-                if (textureIndices.ImageIndex.HasValue)
-                {
-                    materialPbrSpecularGlossiness.DiffuseTexture.Index = textureIndices.ImageIndex.Value;
-                }
-                if (textureIndices.TextureCoordIndex.HasValue)
-                {
-                    materialPbrSpecularGlossiness.DiffuseTexture.TexCoord = textureIndices.TextureCoordIndex.Value;
-                }
-            }
-            if (specGloss.SpecularFactor.HasValue)
-            {
-                materialPbrSpecularGlossiness.SpecularFactor = specGloss.SpecularFactor.Value.ToArray();
-            }
-            if (specGloss.GlossinessFactor.HasValue)
-            {
-                materialPbrSpecularGlossiness.GlossinessFactor = specGloss.GlossinessFactor.Value;
-            }
-            if (specGloss.SpecularGlossinessTexture != null)
-            {
-                TextureIndices textureIndices = AddTexture(specGloss.SpecularGlossinessTexture);
-                materialPbrSpecularGlossiness.SpecularGlossinessTexture = CreateInstance<glTFLoader.Schema.TextureInfo>();
-                if (textureIndices.ImageIndex.HasValue)
-                {
-                    materialPbrSpecularGlossiness.SpecularGlossinessTexture.Index = textureIndices.ImageIndex.Value;
-                }
-                if (textureIndices.TextureCoordIndex.HasValue)
-                {
-                    materialPbrSpecularGlossiness.SpecularGlossinessTexture.TexCoord = textureIndices.TextureCoordIndex.Value;
-                }
-            }
-            if (specGloss.GlossinessFactor.HasValue)
-            {
-                materialPbrSpecularGlossiness.GlossinessFactor = specGloss.GlossinessFactor.Value;
-            }
-
-            return materialPbrSpecularGlossiness;
-        }
-
-        /// <summary>
-        /// Converts Runtime Quantum Rendering to Schema (Not an actual glTF feature) 
-        /// </summary>
-        private glTFLoader.Schema.FAKE_materials_quantumRendering ConvertExtQuantumRenderingToSchema(Extensions.FAKE_materials_quantumRendering quantumRendering, GLTF gltf)
-        {
-            var materialEXT_QuantumRendering = CreateInstance<glTFLoader.Schema.FAKE_materials_quantumRendering>();
-
-            if (quantumRendering.PlanckFactor.HasValue)
-            {
-                materialEXT_QuantumRendering.PlanckFactor = quantumRendering.PlanckFactor.Value.ToArray();
-            }
-            if (quantumRendering.CopenhagenTexture != null)
-            {
-                TextureIndices textureIndices = AddTexture(quantumRendering.CopenhagenTexture);
-                materialEXT_QuantumRendering.CopenhagenTexture = CreateInstance<glTFLoader.Schema.TextureInfo>();
-                if (textureIndices.ImageIndex.HasValue)
-                {
-                    materialEXT_QuantumRendering.CopenhagenTexture.Index = textureIndices.ImageIndex.Value;
-                }
-                if (textureIndices.TextureCoordIndex.HasValue)
-                {
-                    materialEXT_QuantumRendering.CopenhagenTexture.TexCoord = textureIndices.TextureCoordIndex.Value;
-                }
-            }
-            if (quantumRendering.EntanglementFactor.HasValue)
-            {
-                materialEXT_QuantumRendering.EntanglementFactor = quantumRendering.EntanglementFactor.Value.ToArray();
-            }
-            if (quantumRendering.ProbabilisticFactor.HasValue)
-            {
-                materialEXT_QuantumRendering.ProbabilisticFactor = quantumRendering.ProbabilisticFactor.Value;
-            }
-            if (quantumRendering.SuperpositionCollapseTexture != null)
-            {
-                TextureIndices textureIndices = AddTexture(quantumRendering.SuperpositionCollapseTexture);
-                materialEXT_QuantumRendering.SuperpositionCollapseTexture = CreateInstance<glTFLoader.Schema.TextureInfo>();
-                if (textureIndices.ImageIndex.HasValue)
-                {
-                    materialEXT_QuantumRendering.SuperpositionCollapseTexture.Index = textureIndices.ImageIndex.Value;
-                }
-                if (textureIndices.TextureCoordIndex.HasValue)
-                {
-                    materialEXT_QuantumRendering.SuperpositionCollapseTexture.TexCoord = textureIndices.TextureCoordIndex.Value;
-                }
-            }
-            if (quantumRendering.ProbabilisticFactor.HasValue)
-            {
-                materialEXT_QuantumRendering.ProbabilisticFactor = quantumRendering.ProbabilisticFactor.Value;
-            }
-
-            return materialEXT_QuantumRendering;
-        }
-
-        
         /// <summary>
         /// Interleaves the primitive attributes to a single bufferview
         /// </summary>

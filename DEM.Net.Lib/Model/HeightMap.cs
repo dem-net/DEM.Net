@@ -14,7 +14,7 @@ namespace DEM.Net.Lib
         {
             Width = width;
             Height = height;
-            Coordinates = new List<GeoPoint>(width * height);
+            Coordinates = null;
         }
 
         private BoundingBox _bbox;
@@ -37,7 +37,9 @@ namespace DEM.Net.Lib
             }
         }
         
-        public List<GeoPoint> Coordinates { get; set; }
+        public IEnumerable<GeoPoint> Coordinates { get; set; }
+
+        public int Count { get; set; }
 
         public float Mininum { get; set; }
         public float Maximum { get; set; }

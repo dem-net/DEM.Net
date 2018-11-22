@@ -13,8 +13,6 @@ namespace DEM.Net.Lib
 
         public static HeightMap ReprojectTo(this HeightMap heightMap, int sourceEpsgCode, int destinationEpsgCode)
         {
-            HeightMap outHeightMap = heightMap.Clone();
-
             if (sourceEpsgCode != destinationEpsgCode)
             {
                 // Defines the starting coordiante system
@@ -22,11 +20,11 @@ namespace DEM.Net.Lib
                 // Defines the starting coordiante system
                 ProjectionInfo pTarget = ProjectionInfo.FromEpsgCode(destinationEpsgCode);
 
-                outHeightMap.Coordinates = outHeightMap.Coordinates.Select(pt => ReprojectPoint(pt, pSource, pTarget)).ToList();
+                heightMap.Coordinates = heightMap.Coordinates.Select(pt => ReprojectPoint(pt, pSource, pTarget));
 
             }
 
-            return outHeightMap;
+            return heightMap;
         }
 
 
@@ -42,24 +40,11 @@ namespace DEM.Net.Lib
 
         public static HeightMap CenterOnOrigin(this HeightMap heightMap, float zFactor = 1f)
         {
-            double xmin = double.MaxValue;
-            double ymin = double.MaxValue;
-            double xmax = double.MinValue;
-            double ymax = double.MinValue;
+            var bbox = heightMap.BoundingBox;
 
-            foreach (var pt in heightMap.Coordinates)
-            {
-                xmin = Math.Min(xmin, pt.Longitude);
-                xmax = Math.Max(xmax, pt.Longitude);
-                ymin = Math.Min(ymin, pt.Latitude);
-                ymax = Math.Max(ymax, pt.Latitude);
-            }
-
-          
-
-            double xOriginOffset = xmax - (xmax - xmin) / 2d;
-            double yOriginOffset = ymax - (ymax - ymin) / 2d;
-            heightMap.Coordinates = heightMap.Coordinates.Select(pt => new GeoPoint(pt.Latitude - yOriginOffset, pt.Longitude - xOriginOffset, (float)pt.Elevation * zFactor, (int)pt.XIndex, (int)pt.YIndex)).ToList();
+            double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
+            double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
+            heightMap.Coordinates = heightMap.Coordinates.Select(pt => new GeoPoint(pt.Latitude - yOriginOffset, pt.Longitude - xOriginOffset, (float)pt.Elevation * zFactor, (int)pt.XIndex, (int)pt.YIndex));
 
             return heightMap;
         }
