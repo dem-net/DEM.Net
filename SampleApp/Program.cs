@@ -47,7 +47,7 @@ namespace SampleApp
             string WKT_AIX_LESMILLES = "POLYGON ((5.359268188476562 43.47285413777968, 5.49041748046875 43.47285413777968, 5.49041748046875 43.56024232423529, 5.359268188476562 43.56024232423529, 5.359268188476562 43.47285413777968))";
             string WKT_STE_VICTOIRE = "POLYGON ((5.4526519775390625 43.44743554895962, 5.73211669921875 43.44743554895962, 5.73211669921875 43.6047590801731, 5.4526519775390625 43.6047590801731, 5.4526519775390625 43.44743554895962))";
             string WKT_SCL_ACONCAGUA = "POLYGON ((-70.82611083984375 -33.603182040520494, -69.55169677734375 -33.603182040520494, -69.55169677734375 -32.57922064287566, -70.82611083984375 -32.57922064287566, -70.82611083984375 -33.603182040520494))";
-                MeshDecimationTest(elevationService, DEMDataSet.AW3D30, WKT_AIX_LESMILLES);
+            MeshDecimationTest(elevationService, DEMDataSet.AW3D30, WKT_AIX_LESMILLES);
 
             //mrpoup : welcome !!
 
@@ -101,13 +101,20 @@ namespace SampleApp
 
         private static void GeoTiffTests(IGeoTiffService geoTiffService, string tiffPath)
         {
-            FileMetadata metaData = geoTiffService.ParseMetadata(tiffPath);
-            float elevation;
-            using (GeoTiff tiff = new GeoTiff(tiffPath))
-            {
-                elevation = tiff.GetElevationAtPoint(metaData, 122, 122);
-            }
 
+            DEM.Net.Lib.BoundingBox bbox = new DEM.Net.Lib.BoundingBox(1897950, 1898106, 3150520, 3150700);
+
+            HeightMap hmap = null;
+            FileMetadata metaData = geoTiffService.ParseMetadata(tiffPath);
+            using (IGeoTiff geoTiff = geoTiffService.OpenFile(tiffPath))
+            {
+                hmap = geoTiff.ParseGeoDataInBBox(bbox, metaData, 0);
+            }
+            hmap = hmap.CenterOnOrigin(0.1f);
+            glTFService glTF = new glTFService();
+            MeshPrimitive meshPrimitive = glTF.GenerateTriangleMesh(hmap);
+            Model model = glTF.GenerateModel(meshPrimitive, "FBA");
+            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF_FBA", "FBA DEM");
         }
 
         private static void GeoTiffBenchmark()
