@@ -129,7 +129,7 @@ namespace DEM.Net.glTF
 
                     int capacity = ((heightMap.Width - 1) * 6) * (heightMap.Height - 1);
                     List<int> indices = new List<int>(capacity);
-                    // Triangulate mesh
+                    // Triangulate mesh -- anti clockwise winding
                     for (int y = 0; y < heightMap.Height; y++)
                     {
                         for (int x = 0; x < heightMap.Width; x++)
@@ -145,24 +145,24 @@ namespace DEM.Net.glTF
                                 {
                                     // Triangulation 1
                                     indices.Add((x + 0) + (y + 0) * heightMap.Width);
-                                    indices.Add((x + 1) + (y + 0) * heightMap.Width);
                                     indices.Add((x + 0) + (y + 1) * heightMap.Width);
+                                    indices.Add((x + 1) + (y + 0) * heightMap.Width);
 
                                     indices.Add((x + 1) + (y + 0) * heightMap.Width);
-                                    indices.Add((x + 1) + (y + 1) * heightMap.Width);
                                     indices.Add((x + 0) + (y + 1) * heightMap.Width);
+                                    indices.Add((x + 1) + (y + 1) * heightMap.Width);
                                 }
                                 else
                                 {
 
                                     // Triangulation 2
                                     indices.Add((x + 0) + (y + 0) * heightMap.Width);
-                                    indices.Add((x + 1) + (y + 1) * heightMap.Width);
                                     indices.Add((x + 0) + (y + 1) * heightMap.Width);
+                                    indices.Add((x + 1) + (y + 1) * heightMap.Width);
 
                                     indices.Add((x + 0) + (y + 0) * heightMap.Width);
-                                    indices.Add((x + 1) + (y + 0) * heightMap.Width);
                                     indices.Add((x + 1) + (y + 1) * heightMap.Width);
+                                    indices.Add((x + 1) + (y + 0) * heightMap.Width);
                                 }
                             }
                         }

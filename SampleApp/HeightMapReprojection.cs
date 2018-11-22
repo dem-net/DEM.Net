@@ -40,7 +40,7 @@ namespace DEM.Net.Lib
             return new GeoPoint(coords[1], coords[0], (float)sourcePoint.Elevation, sourcePoint.XIndex.GetValueOrDefault(), sourcePoint.YIndex.GetValueOrDefault());
         }
 
-        public static HeightMap CenterOnOrigin(this HeightMap heightMap)
+        public static HeightMap CenterOnOrigin(this HeightMap heightMap, float zFactor = 1f)
         {
             double xmin = double.MaxValue;
             double ymin = double.MaxValue;
@@ -59,7 +59,7 @@ namespace DEM.Net.Lib
 
             double xOriginOffset = xmax - (xmax - xmin) / 2d;
             double yOriginOffset = ymax - (ymax - ymin) / 2d;
-            heightMap.Coordinates = heightMap.Coordinates.Select(pt => new GeoPoint(pt.Latitude - yOriginOffset, pt.Longitude - xOriginOffset, (float)pt.Elevation, (int)pt.XIndex, (int)pt.YIndex)).ToList();
+            heightMap.Coordinates = heightMap.Coordinates.Select(pt => new GeoPoint(pt.Latitude - yOriginOffset, pt.Longitude - xOriginOffset, (float)pt.Elevation * zFactor, (int)pt.XIndex, (int)pt.YIndex)).ToList();
 
             return heightMap;
         }

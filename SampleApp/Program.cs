@@ -36,6 +36,7 @@ namespace SampleApp
             string wkt4Tiles = "POLYGON ((5.9735200000000006 43.979698, 6.021922 43.979698, 6.021922 44.002967, 5.9735200000000006 44.002967, 5.9735200000000006 43.979698))";
             //SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, wkt4Tiles, DEMDataSet.AW3D30);
 
+            GeoTiffTests(geoTiffService, @"C:\Repos\DEM.Net\Data\18953150_dhm.tif");
             //LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
 
             //PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
@@ -44,7 +45,9 @@ namespace SampleApp
             //HeightMapTest(elevationService, DEMDataSet.AW3D30, wkt4Tiles);
 
             string WKT_AIX_LESMILLES = "POLYGON ((5.359268188476562 43.47285413777968, 5.49041748046875 43.47285413777968, 5.49041748046875 43.56024232423529, 5.359268188476562 43.56024232423529, 5.359268188476562 43.47285413777968))";
-            MeshDecimationTest(elevationService, DEMDataSet.AW3D30, WKT_AIX_LESMILLES);
+            string WKT_STE_VICTOIRE = "POLYGON ((5.4526519775390625 43.44743554895962, 5.73211669921875 43.44743554895962, 5.73211669921875 43.6047590801731, 5.4526519775390625 43.6047590801731, 5.4526519775390625 43.44743554895962))";
+            string WKT_SCL_ACONCAGUA = "POLYGON ((-70.82611083984375 -33.603182040520494, -69.55169677734375 -33.603182040520494, -69.55169677734375 -32.57922064287566, -70.82611083984375 -32.57922064287566, -70.82611083984375 -33.603182040520494))";
+                MeshDecimationTest(elevationService, DEMDataSet.AW3D30, WKT_AIX_LESMILLES);
 
             //mrpoup : welcome !!
 
@@ -75,7 +78,7 @@ namespace SampleApp
             HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
 
             HeightMap hMap_L93 = hMap.ReprojectTo(4326, 2154)
-                                    .CenterOnOrigin();
+                                    .CenterOnOrigin(3);
 
             glTFService glTF = new glTFService();
             MeshPrimitive meshPrimitive = glTF.GenerateTriangleMesh(hMap_L93);
