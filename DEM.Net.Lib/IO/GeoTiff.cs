@@ -146,9 +146,10 @@ namespace DEM.Net.Lib
 
         public HeightMap ParseGeoDataInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = 0)
         {
-            byte[] scanline = new byte[metadata.ScanlineSize];
-            ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
-            Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
+            byte[] byteScanline = new byte[metadata.ScanlineSize];
+
+            uint[] scanline = new uint[metadata.ScanlineSize / (metadata.BitsPerSample == 32 ? 1 : 2)];
+            Buffer.BlockCopy(byteScanline, 0, scanline, 0, byteScanline.Length);
 
 
             int yStart = (int)Math.Floor((bbox.yMax - metadata.StartLat) / metadata.pixelSizeY);
@@ -157,7 +158,7 @@ namespace DEM.Net.Lib
             int xEnd = (int)Math.Ceiling((bbox.xMax - metadata.StartLon) / metadata.pixelSizeX);
 
             xStart = Math.Max(0, xStart);
-            xEnd = Math.Min(scanline16Bit.Length - 1, xEnd);
+            xEnd = Math.Min(scanline.Length - 1, xEnd);
             yStart = Math.Max(0, yStart);
             yEnd = Math.Min(metadata.Height - 1, yEnd);
 
@@ -168,8 +169,8 @@ namespace DEM.Net.Lib
 
             for (int y = yStart; y <= yEnd; y++)
             {
-                TiffFile.ReadScanline(scanline, y);
-                Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
+                TiffFile.ReadScanline(byteScanline, y);
+                Buffer.BlockCopy(byteScanline, 0, scanline, 0, byteScanline.Length);
 
                 double latitude = metadata.StartLat + (metadata.pixelSizeY * y);
 
@@ -189,7 +190,7 @@ namespace DEM.Net.Lib
                 {
                     double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
 
-                    float heightValue = (float)scanline16Bit[x];
+                    float heightValue = (float)scanline[x];
                     if (heightValue < 32768)
                     {
                         heightMap.Mininum = Math.Min(heightMap.Mininum, heightValue);
