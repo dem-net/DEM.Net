@@ -10,7 +10,7 @@ using System.Web.Http;
 using DEM.Net.WebApi.Models;
 using DEM.Net.WebApi.Utility;
 using DEM.Net.Lib;
-using DEM.Net.Lib.Services;
+using DEM.Net.Lib;
 using GeoJSON.Net.Feature;
 
 namespace DEM.Net.WebApi.Controllers

@@ -1,7 +1,7 @@
 ﻿using BitMiracle.LibTiff.Classic;
 using System.Collections.Generic;
 
-namespace DEM.Net.Lib.Services
+namespace DEM.Net.Lib
 {
     public interface IGeoTiffService
     {

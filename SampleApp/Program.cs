@@ -1,5 +1,5 @@
 ﻿using DEM.Net.Lib;
-using DEM.Net.Lib.Services;
+using DEM.Net.Lib;
 using Microsoft.SqlServer.Types;
 using SqlServerSpatial.Toolkit;
 using System.Collections.Generic;
@@ -13,6 +13,9 @@ using System.Xml;
 using System.Diagnostics;
 using System.Windows.Media;
 using System.Configuration;
+using DEM.Net.glTF;
+using AssetGenerator.Runtime;
+using AssetGenerator;
 
 namespace SampleApp
 {
@@ -33,15 +36,22 @@ namespace SampleApp
             string wkt4Tiles = "POLYGON ((5.9735200000000006 43.979698, 6.021922 43.979698, 6.021922 44.002967, 5.9735200000000006 44.002967, 5.9735200000000006 43.979698))";
             //SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, wkt4Tiles, DEMDataSet.AW3D30);
 
-            //LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
+            GeoTiffTests(geoTiffService, @"C:\Repos\DEM.Net\Data\18953150_dhm.tif");
 
-            //PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
-            //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_PLATEAU_PUYRICARD, 100);
+            GeoTiffTests(geoTiffService, @"C:\Repos\DEM.Net\Data\18953150_dhm_expo.tif");
+            LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
+
+            PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
+            LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_PLATEAU_PUYRICARD, 100);
 
             HeightMapTest(elevationService, DEMDataSet.AW3D30, wkt4Tiles);
 
             string WKT_AIX_LESMILLES = "POLYGON ((5.359268188476562 43.47285413777968, 5.49041748046875 43.47285413777968, 5.49041748046875 43.56024232423529, 5.359268188476562 43.56024232423529, 5.359268188476562 43.47285413777968))";
-            MeshDecimationTest(elevationService, DEMDataSet.AW3D30, WKT_AIX_LESMILLES);
+            string WKT_STE_VICTOIRE = "POLYGON ((5.361328125 43.440954591707445, 5.80352783203125 43.440954591707445, 5.80352783203125 43.700644071512464, 5.361328125 43.700644071512464, 5.361328125 43.440954591707445))";
+            string WKT_SCL_PLOMO = "POLYGON ((-70.81924438476562 -33.55169563498065, -70.0653076171875 -33.55169563498065, -70.0653076171875 -33.059320463472105, -70.81924438476562 -33.059320463472105, -70.81924438476562 -33.55169563498065))";
+            string WKT_MT_BLANC = "POLYGON ((6.772385 45.882318, 6.772385 45.772313, 6.956124 45.772313, 6.956124 45.882318, 6.772385 45.882318))";
+            string WKT_TRAIL = "POLYGON ((2.620153 42.653948, 2.563506 42.653948, 2.563506 42.61318, 2.620153 42.61318, 2.620153 42.653948))";
+            MeshDecimationTest(elevationService, DEMDataSet.AW3D30, WKT_TRAIL);
 
             //mrpoup : welcome !!
 
@@ -71,11 +81,13 @@ namespace SampleApp
 
             HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
 
-            HeightMap hMap_L93 = hMap.ReprojectTo(4326, 2154)
-                                    .CenterOnOrigin();
+            //hMap = hMap.ReprojectTo(4326, 2154);
+            hMap = hMap.CenterOnOrigin(0.00002f);
 
-
-
+            glTFService glTF = new glTFService();
+            MeshPrimitive meshPrimitive = glTF.GenerateTriangleMesh(hMap);
+            Model model = glTF.GenerateModel(meshPrimitive, "Raw DEM");
+            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", "Raw DEM", false, true);
             //HeightMapExport.Export(hMap_L93, "Aix Puyricard");
         }
 
@@ -93,12 +105,20 @@ namespace SampleApp
 
         private static void GeoTiffTests(IGeoTiffService geoTiffService, string tiffPath)
         {
+
+            DEM.Net.Lib.BoundingBox bbox = new DEM.Net.Lib.BoundingBox(1897950, 1898106, 3150520, 3150700);
+
+            HeightMap hmap = null;
             FileMetadata metaData = geoTiffService.ParseMetadata(tiffPath);
-            float elevation;
-            using (GeoTiff tiff = new GeoTiff(tiffPath))
+            using (IGeoTiff geoTiff = geoTiffService.OpenFile(tiffPath))
             {
-                elevation = tiff.GetElevationAtPoint(metaData, 122, 122);
+                hmap = geoTiff.ParseGeoDataInBBox(bbox, metaData, 0);
             }
+            //hmap = hmap.CenterOnOrigin(0.1f);
+            glTFService glTF = new glTFService();
+            MeshPrimitive meshPrimitive = glTF.GenerateTriangleMesh(hmap);
+            Model model = glTF.GenerateModel(meshPrimitive, "FBA");
+            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF_FBA", "FBA DEM");
 
         }
 

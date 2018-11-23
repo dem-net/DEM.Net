@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace DEM.Net.Lib.Services
+namespace DEM.Net.Lib
 {
     public class GDALVRTFileService
     {
