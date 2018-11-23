@@ -36,22 +36,22 @@ namespace SampleApp
             string wkt4Tiles = "POLYGON ((5.9735200000000006 43.979698, 6.021922 43.979698, 6.021922 44.002967, 5.9735200000000006 44.002967, 5.9735200000000006 43.979698))";
             //SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, wkt4Tiles, DEMDataSet.AW3D30);
 
-            GeoTiffTests(geoTiffService, @"C:\Repos\DEM.Net\Data\18953150_dhm.tif");
+            //GeoTiffTests(geoTiffService, @"C:\Repos\DEM.Net\Data\18953150_dhm.tif");
 
-            GeoTiffTests(geoTiffService, @"C:\Repos\DEM.Net\Data\18953150_dhm_expo.tif");
-            LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
+            //GeoTiffTests(geoTiffService, @"C:\Repos\DEM.Net\Data\18953150_dhm_expo.tif");
+            //LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
 
-            PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
-            LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_PLATEAU_PUYRICARD, 100);
+            //PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
+            //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_PLATEAU_PUYRICARD, 100);
 
-            HeightMapTest(elevationService, DEMDataSet.AW3D30, wkt4Tiles);
+            //HeightMapTest(elevationService, DEMDataSet.AW3D30, wkt4Tiles);
 
             string WKT_AIX_LESMILLES = "POLYGON ((5.359268188476562 43.47285413777968, 5.49041748046875 43.47285413777968, 5.49041748046875 43.56024232423529, 5.359268188476562 43.56024232423529, 5.359268188476562 43.47285413777968))";
             string WKT_STE_VICTOIRE = "POLYGON ((5.361328125 43.440954591707445, 5.80352783203125 43.440954591707445, 5.80352783203125 43.700644071512464, 5.361328125 43.700644071512464, 5.361328125 43.440954591707445))";
             string WKT_SCL_PLOMO = "POLYGON ((-70.81924438476562 -33.55169563498065, -70.0653076171875 -33.55169563498065, -70.0653076171875 -33.059320463472105, -70.81924438476562 -33.059320463472105, -70.81924438476562 -33.55169563498065))";
             string WKT_MT_BLANC = "POLYGON ((6.772385 45.882318, 6.772385 45.772313, 6.956124 45.772313, 6.956124 45.882318, 6.772385 45.882318))";
             string WKT_TRAIL = "POLYGON ((2.620153 42.653948, 2.563506 42.653948, 2.563506 42.61318, 2.620153 42.61318, 2.620153 42.653948))";
-            MeshDecimationTest(elevationService, DEMDataSet.AW3D30, WKT_TRAIL);
+            MeshDecimationTest(elevationService, DEMDataSet.AW3D30, WKT_SCL_PLOMO);
 
             //mrpoup : welcome !!
 
