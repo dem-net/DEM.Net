@@ -309,7 +309,7 @@ namespace DEM.Net.Lib
             heightMap.Mininum = tilesHeightMap.Min(hmap => hmap.Mininum);
             heightMap.Maximum = tilesHeightMap.Min(hmap => hmap.Maximum);
 
-           Debug.Assert(heightMap.Count== tilesHeightMap.Sum(h => h.Count));
+            Debug.Assert(heightMap.Count == tilesHeightMap.Sum(h => h.Count));
 
 
             return heightMap;
@@ -332,21 +332,36 @@ namespace DEM.Net.Lib
             heightMap.Count = heightMap.Width * heightMap.Height;
             var coords = new List<GeoPoint>(heightMap.Count);
 
-            byte[] scanline = new byte[metadata.ScanlineSize];
-            ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
-            Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
+            // metadata.BitsPerSample
+            // When 16 we have 2 bytes per sample
+            // When 32 we have 4 bytes per sample
+            int bytesPerSample = metadata.BitsPerSample / 8;
+            byte[] byteScanline = new byte[metadata.ScanlineSize];
 
             for (int y = 0; y < metadata.Height; y++)
             {
-                tiff.TiffFile.ReadScanline(scanline, y);
-                Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
+                tiff.TiffFile.ReadScanline(byteScanline, y);
 
                 double latitude = metadata.StartLat + (metadata.pixelSizeY * y);
-                for (int x = 0; x < scanline16Bit.Length; x++)
+                for (int x = 0; x < metadata.Width; x++)
                 {
                     double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
 
-                    float heightValue = (float)scanline16Bit[x];
+                    float heightValue = 0;
+                    switch (metadata.SampleFormat)
+                    {
+                        case "IEEEFP":
+                            heightValue = BitConverter.ToSingle(byteScanline, x * metadata.BitsPerSample / 8);
+                            break;
+                        case "INT":
+                            heightValue = BitConverter.ToInt16(byteScanline, x * metadata.BitsPerSample / 8);
+                            break;
+                        case "UINT":
+                            heightValue = BitConverter.ToUInt16(byteScanline, x * metadata.BitsPerSample / 8);
+                            break;
+                        default:
+                            throw new Exception("Sample format unsupported.");
+                    }
                     if (heightValue < 32768)
                     {
                         heightMap.Mininum = Math.Min(metadata.MininumAltitude, heightValue);

@@ -39,12 +39,12 @@ namespace SampleApp
             GeoTiffTests(geoTiffService, @"C:\Repos\DEM.Net\Data\18953150_dhm.tif");
 
             GeoTiffTests(geoTiffService, @"C:\Repos\DEM.Net\Data\18953150_dhm_expo.tif");
-            //LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
+            LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
 
-            //PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
-            //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_PLATEAU_PUYRICARD, 100);
+            PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
+            LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_PLATEAU_PUYRICARD, 100);
 
-            //HeightMapTest(elevationService, DEMDataSet.AW3D30, wkt4Tiles);
+            HeightMapTest(elevationService, DEMDataSet.AW3D30, wkt4Tiles);
 
             string WKT_AIX_LESMILLES = "POLYGON ((5.359268188476562 43.47285413777968, 5.49041748046875 43.47285413777968, 5.49041748046875 43.56024232423529, 5.359268188476562 43.56024232423529, 5.359268188476562 43.47285413777968))";
             string WKT_STE_VICTOIRE = "POLYGON ((5.361328125 43.440954591707445, 5.80352783203125 43.440954591707445, 5.80352783203125 43.700644071512464, 5.361328125 43.700644071512464, 5.361328125 43.440954591707445))";

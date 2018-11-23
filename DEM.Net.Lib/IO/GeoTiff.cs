@@ -58,13 +58,15 @@ namespace DEM.Net.Lib
             float heightValue = 0;
             try
             {
-                byte[] scanline = new byte[metadata.ScanlineSize];
-                ushort[] scanline16Bit = new ushort[metadata.ScanlineSize / 2];
+                // metadata.BitsPerSample
+                // When 16 we have 2 bytes per sample
+                // When 32 we have 4 bytes per sample
+                int bytesPerSample = metadata.BitsPerSample / 8;
+                byte[] byteScanline = new byte[metadata.ScanlineSize];
 
-                TiffFile.ReadScanline(scanline, y);
-                Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
+                TiffFile.ReadScanline(byteScanline, y);
 
-                heightValue = GetElevationAtPoint(metadata, x, scanline16Bit);
+                heightValue = GetElevationAtPoint(metadata, x, byteScanline);
             }
             catch (Exception e)
             {
@@ -73,12 +75,25 @@ namespace DEM.Net.Lib
             return heightValue;
         }
 
-        public float GetElevationAtPoint(FileMetadata metadata, int x, ushort[] scanline16Bit)
+        public float GetElevationAtPoint(FileMetadata metadata, int x, byte[] byteScanline)
         {
             float heightValue = 0;
             try
             {
-                heightValue = (float)scanline16Bit[x];
+                switch (metadata.SampleFormat)
+                {
+                    case "IEEEFP":
+                        heightValue = BitConverter.ToSingle(byteScanline, x * metadata.BitsPerSample / 8);
+                        break;
+                    case "INT":
+                        heightValue = BitConverter.ToInt16(byteScanline, x * metadata.BitsPerSample / 8);
+                        break;
+                    case "UINT":
+                        heightValue = BitConverter.ToUInt16(byteScanline, x * metadata.BitsPerSample / 8);
+                        break;
+                    default:
+                        throw new Exception("Sample format unsupported.");
+                }
                 if (heightValue > 32768)
                 {
                     heightValue = metadata.NoDataValueFloat;
@@ -146,10 +161,11 @@ namespace DEM.Net.Lib
 
         public HeightMap ParseGeoDataInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = 0)
         {
+            // metadata.BitsPerSample
+            // When 16 we have 2 bytes per sample
+            // When 32 we have 4 bytes per sample
+            int bytesPerSample = metadata.BitsPerSample / 8;
             byte[] byteScanline = new byte[metadata.ScanlineSize];
-
-            uint[] scanline = new uint[metadata.ScanlineSize / (metadata.BitsPerSample == 32 ? 1 : 2)];
-            Buffer.BlockCopy(byteScanline, 0, scanline, 0, byteScanline.Length);
 
 
             int yStart = (int)Math.Floor((bbox.yMax - metadata.StartLat) / metadata.pixelSizeY);
@@ -158,7 +174,7 @@ namespace DEM.Net.Lib
             int xEnd = (int)Math.Ceiling((bbox.xMax - metadata.StartLon) / metadata.pixelSizeX);
 
             xStart = Math.Max(0, xStart);
-            xEnd = Math.Min(scanline.Length - 1, xEnd);
+            xEnd = Math.Min(metadata.Width - 1, xEnd);
             yStart = Math.Max(0, yStart);
             yEnd = Math.Min(metadata.Height - 1, yEnd);
 
@@ -170,7 +186,6 @@ namespace DEM.Net.Lib
             for (int y = yStart; y <= yEnd; y++)
             {
                 TiffFile.ReadScanline(byteScanline, y);
-                Buffer.BlockCopy(byteScanline, 0, scanline, 0, byteScanline.Length);
 
                 double latitude = metadata.StartLat + (metadata.pixelSizeY * y);
 
@@ -190,7 +205,21 @@ namespace DEM.Net.Lib
                 {
                     double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
 
-                    float heightValue = (float)scanline[x];
+                    float heightValue = 0;
+                    switch (metadata.SampleFormat)
+                    {
+                        case "IEEEFP":
+                            heightValue = BitConverter.ToSingle(byteScanline, x * bytesPerSample);
+                            break;
+                        case "INT":
+                            heightValue = BitConverter.ToInt16(byteScanline, x * bytesPerSample);
+                            break;
+                        case "UINT":
+                            heightValue = BitConverter.ToUInt16(byteScanline, x * bytesPerSample);
+                            break;
+                        default:
+                            throw new Exception("Sample format unsupported.");
+                    }
                     if (heightValue < 32768)
                     {
                         heightMap.Mininum = Math.Min(heightMap.Mininum, heightValue);
@@ -198,14 +227,14 @@ namespace DEM.Net.Lib
                     }
                     else
                     {
-                        heightValue = noDataValue;
+                        heightValue = (float)noDataValue;
                     }
                     coords.Add(new GeoPoint(latitude, longitude, heightValue, x, y));
 
                 }
             }
             Debug.Assert(heightMap.Width * heightMap.Height == coords.Count);
-            
+
             heightMap.Coordinates = coords;
             return heightMap;
         }
