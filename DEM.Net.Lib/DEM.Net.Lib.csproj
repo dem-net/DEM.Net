@@ -67,8 +67,14 @@
   <ItemGroup>
     <Compile Include="Helpers\ExceptionHelper.cs" />
     <Compile Include="Helpers\GeoTiffDictionary.cs" />
+    <Compile Include="Helpers\HeightMapExtensions.cs" />
     <Compile Include="Helpers\UrlHelper.cs" />
     <Compile Include="IO\GeoTiff.cs" />
+    <Compile Include="IO\gpx\GpsLocation.cs" />
+    <Compile Include="IO\gpx\Gpx.cs" />
+    <Compile Include="IO\gpx\GpxProperties.cs" />
+    <Compile Include="IO\gpx\GpxReader.cs" />
+    <Compile Include="IO\gpx\GpxWriter.cs" />
     <Compile Include="IO\HGTFile.cs" />
     <Compile Include="IO\IGeoTiff.cs" />
     <Compile Include="IO\NoLogTiffErrorHandler.cs" />
@@ -106,6 +112,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="IO\gpx\licence.txt" />
     <Content Include="SqlServerTypes\readme.htm" />
     <Content Include="SqlServerTypes\x64\msvcr120.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

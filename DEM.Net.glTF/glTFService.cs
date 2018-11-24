@@ -19,7 +19,7 @@ namespace DEM.Net.glTF
         {
             try
             {
-                Stopwatch.StartNew();
+                var sw = Stopwatch.StartNew();
 
                 Directory.CreateDirectory(outputFolder);
                 var jsonSerializer = new Newtonsoft.Json.JsonSerializer
@@ -69,7 +69,7 @@ namespace DEM.Net.glTF
 
 
                 Console.WriteLine("Model Creation Complete!");
-                Console.WriteLine("Completed in : " + TimeSpan.FromTicks(Stopwatch.GetTimestamp()).ToString());
+                Console.WriteLine("Completed in : " + sw.Elapsed.ToString());
             }
             catch (Exception ex)
             {
