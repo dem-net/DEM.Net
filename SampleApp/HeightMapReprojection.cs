@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,17 +37,6 @@ namespace DEM.Net.Lib
             Reproject.ReprojectPoints(coords, new double[] { sourcePoint.Elevation.GetValueOrDefault(0) }, sourceProj, destProj, 0, 1);
 
             return new GeoPoint(coords[1], coords[0], (float)sourcePoint.Elevation, sourcePoint.XIndex.GetValueOrDefault(), sourcePoint.YIndex.GetValueOrDefault());
-        }
-
-        public static HeightMap CenterOnOrigin(this HeightMap heightMap, float zFactor = 1f)
-        {
-            var bbox = heightMap.BoundingBox;
-
-            double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
-            double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
-            heightMap.Coordinates = heightMap.Coordinates.Select(pt => new GeoPoint(pt.Latitude - yOriginOffset, pt.Longitude - xOriginOffset, (float)pt.Elevation * zFactor, (int)pt.XIndex, (int)pt.YIndex));
-
-            return heightMap;
         }
 
 
