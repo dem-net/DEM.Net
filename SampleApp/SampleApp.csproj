@@ -72,6 +72,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MeshDecimationWrapper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="HeightMapReprojection.cs" />
@@ -84,6 +85,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\MeshDecimator\MeshDecimator\MeshDecimator.csproj">
+      <Project>{f49d5d98-df95-4a31-a42f-da6d92c242dd}</Project>
+      <Name>MeshDecimator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DEM.Net.glTF\DEM.Net.glTF.csproj">
       <Project>{31079223-207d-4075-9c4c-ab001e978c94}</Project>
       <Name>DEM.Net.glTF</Name>

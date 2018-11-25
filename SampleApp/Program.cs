@@ -47,6 +47,7 @@ namespace SampleApp
             //HeightMapTest(elevationService, DEMDataSet.AW3D30, wkt4Tiles);
 
             string WKT_AIX_LESMILLES = "POLYGON ((5.359268188476562 43.47285413777968, 5.49041748046875 43.47285413777968, 5.49041748046875 43.56024232423529, 5.359268188476562 43.56024232423529, 5.359268188476562 43.47285413777968))";
+            string WKT_AIX_PUYRICARD = "POLYGON ((5.429993 43.537854, 5.459132 43.537854, 5.459132 43.58151, 5.429993 43.58151, 5.429993 43.537854))";
             string WKT_STE_VICTOIRE = "POLYGON ((5.361328125 43.440954591707445, 5.80352783203125 43.440954591707445, 5.80352783203125 43.700644071512464, 5.361328125 43.700644071512464, 5.361328125 43.440954591707445))";
             string WKT_SCL_PLOMO = "POLYGON ((-70.81924438476562 -33.55169563498065, -70.0653076171875 -33.55169563498065, -70.0653076171875 -33.059320463472105, -70.81924438476562 -33.059320463472105, -70.81924438476562 -33.55169563498065))";
             string WKT_MT_BLANC = "POLYGON ((6.772385 45.882318, 6.772385 45.772313, 6.956124 45.772313, 6.956124 45.882318, 6.772385 45.882318))";
@@ -57,7 +58,11 @@ namespace SampleApp
             string WKT_VENTOUX = "POLYGON ((5.495911 44.32876, 4.818878 44.32876, 4.818878 43.909766, 5.495911 43.909766, 5.495911 44.32876))";
             string WKT_EIGER_LARGE = "POLYGON ((8.157349 46.674197, 7.821587 46.674197, 7.821587 46.441642, 8.157349 46.441642, 8.157349 46.674197))";
             string WKT_EIGER_SMALL = "POLYGON ((8.070711 46.604713, 7.969817 46.603966, 7.961006 46.538228, 8.063903 46.539715, 8.070711 46.604713))";
-            MeshDecimationTest(elevationService, DEMDataSet.AW3D30, WKT_LAPAZ);
+            string WKT_TOCOPILLA = "POLYGON ((-69.99115 -21.964002, -70.239247 -21.964002, -70.239247 -22.21792, -69.99115 -22.21792, -69.99115 -21.964002))";
+            string WKT_VERDON = "POLYGON ((6.423912 43.829697, 6.239099 43.829697, 6.239099 43.713053, 6.423912 43.713053, 6.423912 43.829697))";
+            ExportGLBTest(elevationService, DEMDataSet.AW3D30, WKT_VERDON);
+
+            MeshDecimationTest(elevationService, DEMDataSet.AW3D30, WKT_VERDON, 0.3f);
 
 
             //mrpoup : welcome !!
@@ -80,8 +85,33 @@ namespace SampleApp
             Console.ReadLine();
 
         }
+        private static void MeshDecimationTest(ElevationService elevationService, DEMDataSet dataSet, string wkt, float quality = 0.5f)
+        {
+            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
+            var bbox = geom.GetBoundingBox();
 
-        private static void MeshDecimationTest(ElevationService elevationService, DEMDataSet dataSet, string wkt)
+            Console.Write("Height map...");
+            HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
+
+            //hMap = hMap.ReprojectTo(4326, 2154);
+            hMap = hMap.CenterOnOrigin(0.00002f);
+
+            Console.Write("GenerateTriangleMesh...");
+            glTFService glTF = new glTFService();
+            MeshPrimitive meshPrimitive = glTF.GenerateTriangleMesh(hMap);
+
+
+            Console.Write($"Decimate {quality * 100}...");
+            meshPrimitive = MeshDecimationWrapper.Decimate(meshPrimitive, quality);
+
+
+            Console.Write("GenerateModel...");
+            Model model = glTF.GenerateModel(meshPrimitive, "Raw DEM");
+            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", $"Raw DEM decimated {quality * 100}", false, true);
+            ////HeightMapExport.Export(hMap_L93, "Aix Puyricard");
+        }
+
+        private static void ExportGLBTest(ElevationService elevationService, DEMDataSet dataSet, string wkt)
         {
             SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
             var bbox = geom.GetBoundingBox();
