@@ -60,9 +60,13 @@ namespace SampleApp
             string WKT_EIGER_SMALL = "POLYGON ((8.070711 46.604713, 7.969817 46.603966, 7.961006 46.538228, 8.063903 46.539715, 8.070711 46.604713))";
             string WKT_TOCOPILLA = "POLYGON ((-69.99115 -21.964002, -70.239247 -21.964002, -70.239247 -22.21792, -69.99115 -22.21792, -69.99115 -21.964002))";
             string WKT_VERDON = "POLYGON ((6.423912 43.829697, 6.239099 43.829697, 6.239099 43.713053, 6.423912 43.713053, 6.423912 43.829697))";
-            ExportGLBTest(elevationService, DEMDataSet.AW3D30, WKT_VERDON);
+            string WKT_GAP = "POLYGON ((6.281433 44.674833, 5.929474 44.674833, 5.929474 44.437702, 6.281433 44.437702, 6.281433 44.674833))";
+            string WKT_VALGO = "POLYGON ((6.373444 44.913277, 5.971403 44.913277, 5.971403 44.73893, 6.373444 44.73893, 6.373444 44.913277))"; 
+            ExportGLBTest(elevationService, DEMDataSet.AW3D30, WKT_GAP,"Gap");
+            MeshDecimationTest(elevationService, DEMDataSet.AW3D30, WKT_GAP, "Gap",0.5f) ;
 
-            MeshDecimationTest(elevationService, DEMDataSet.AW3D30, WKT_VERDON, 0.3f);
+            ExportGLBTest(elevationService, DEMDataSet.AW3D30, WKT_VALGO, "Valgo");
+            MeshDecimationTest(elevationService, DEMDataSet.AW3D30, WKT_VALGO, "Valgo", 0.5f); ;
 
 
             //mrpoup : welcome !!
@@ -85,7 +89,7 @@ namespace SampleApp
             Console.ReadLine();
 
         }
-        private static void MeshDecimationTest(ElevationService elevationService, DEMDataSet dataSet, string wkt, float quality = 0.5f)
+        private static void MeshDecimationTest(ElevationService elevationService, DEMDataSet dataSet, string wkt, string name, float quality = 0.5f)
         {
             SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
             var bbox = geom.GetBoundingBox();
@@ -106,12 +110,12 @@ namespace SampleApp
 
 
             Console.Write("GenerateModel...");
-            Model model = glTF.GenerateModel(meshPrimitive, "Raw DEM");
-            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", $"Raw DEM decimated {quality * 100}", false, true);
+            Model model = glTF.GenerateModel(meshPrimitive, name);
+            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", $"{name} decimated {quality * 100}", false, true);
             ////HeightMapExport.Export(hMap_L93, "Aix Puyricard");
         }
 
-        private static void ExportGLBTest(ElevationService elevationService, DEMDataSet dataSet, string wkt)
+        private static void ExportGLBTest(ElevationService elevationService, DEMDataSet dataSet, string wkt, string name)
         {
             SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
             var bbox = geom.GetBoundingBox();
@@ -123,8 +127,8 @@ namespace SampleApp
 
             glTFService glTF = new glTFService();
             MeshPrimitive meshPrimitive = glTF.GenerateTriangleMesh(hMap);
-            Model model = glTF.GenerateModel(meshPrimitive, "Raw DEM");
-            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", "Raw DEM", false, true);
+            Model model = glTF.GenerateModel(meshPrimitive, name);
+            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", name, false, true);
             //HeightMapExport.Export(hMap_L93, "Aix Puyricard");
         }
 
