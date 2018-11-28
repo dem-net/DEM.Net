@@ -322,18 +322,6 @@ namespace DEM.Net.Lib
 
             return heightMap;
         }
-        public static HeightMap GetHeightMap(string fileName, FileMetadata metadata)
-        {
-            fileName = Path.GetFullPath(fileName);
-            string fileTitle = Path.GetFileNameWithoutExtension(fileName);
-
-            HeightMap heightMap = null;
-            using (IRasterFile raster = RasterService.OpenRasterFile(fileName, metadata.fileFormat))
-            {
-                heightMap = ParseGeoData(raster, metadata);
-            }
-            return heightMap;
-        }
         private static HeightMap ParseGeoData(IRasterFile raster, FileMetadata metadata)
         {
             return raster.ParseGeoData(metadata);

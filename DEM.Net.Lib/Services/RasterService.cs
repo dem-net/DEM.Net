@@ -47,12 +47,29 @@ namespace DEM.Net.Lib
 
         public IRasterFile OpenFile(string filePath, DEMFileFormat fileFormat)
         {
-            return new GeoTiff(filePath);
+            if (fileFormat == DEMFileFormat.GEOTIFF)
+            {
+                return new GeoTiff(filePath);
+            }
+            else if (fileFormat == DEMFileFormat.SRTM_HGT)
+            {
+                return new HGTFile(filePath);
+            }
+            else
+                throw new NotImplementedException($"{fileFormat} file format not implemented.");
+
         }
-        public static IRasterFile OpenRasterFile(string filePath, DEMFileFormat fileFormat)
-        {
-            return new GeoTiff(filePath);
-        }
+
+        ///// <summary>
+        ///// Static method
+        ///// </summary>
+        ///// <param name="filePath"></param>
+        ///// <param name="fileFormat"></param>
+        ///// <returns></returns>
+        //public static IRasterFile OpenRasterFile(string filePath, DEMFileFormat fileFormat)
+        //{
+        //    return new GeoTiff(filePath);
+        //}
 
         public string GetLocalDEMPath(DEMDataSet dataset)
         {
@@ -220,7 +237,7 @@ namespace DEM.Net.Lib
             {
                 Trace.TraceInformation($"Generating bitmap for file {rasterFileName}.");
                 FileMetadata metadata = this.ParseMetadata(rasterFileName, fileFormat);
-                HeightMap heightMap = ElevationService.GetHeightMap(rasterFileName, metadata);
+                HeightMap heightMap =  GetHeightMap(rasterFileName, metadata);
                 DiagnosticUtils.OutputDebugBitmap(heightMap, bmpPath);
 
                 Trace.TraceInformation($"Bitmap generated for file {rasterFileName}.");
@@ -228,6 +245,17 @@ namespace DEM.Net.Lib
 
         }
 
+        private HeightMap GetHeightMap(string fileName, FileMetadata metadata)
+        {
+            fileName = Path.GetFullPath(fileName);
+
+            HeightMap heightMap = null;
+            using (IRasterFile raster = OpenFile(fileName, metadata.fileFormat))
+            {
+                heightMap = raster.ParseGeoData(metadata);
+            }
+            return heightMap;
+        }
         public string GenerateReportAsString(DEMDataSet dataSet, BoundingBox bbox = null)
         {
             Dictionary<string, DemFileReport> report = GenerateReport(dataSet, bbox);
