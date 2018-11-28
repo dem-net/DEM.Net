@@ -11,7 +11,7 @@ using System.Globalization;
 using System.IO;
 using System.Xml;
 
-namespace Gpx
+namespace DEM.Net.Lib.Gpx
 {
     public class GpxWriter : IDisposable
     {

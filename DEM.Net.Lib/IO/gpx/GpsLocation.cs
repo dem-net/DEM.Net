@@ -10,7 +10,7 @@ using System;
 using System.Globalization;
 using System.Text;
 
-namespace Gps
+namespace DEM.Net.Lib.Gpx
 {
     struct GpsLocation
     {
