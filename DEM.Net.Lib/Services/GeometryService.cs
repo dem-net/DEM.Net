@@ -32,7 +32,12 @@ namespace DEM.Net.Lib
 			return geom.GetBoundingBox();
 		}
 
-		public static List<SqlGeometry> ParseGeoPointAsGeometryLine(IEnumerable<GeoPoint> points)
+        /// <summary>
+        /// Problem here : self intersecting lines are not supported. Not ideal for GPS tracks...
+        /// </summary>
+        /// <param name="points"></param>
+        /// <returns></returns>
+		public static SqlGeometry ParseGeoPointAsGeometryLine(IEnumerable<GeoPoint> points)
 		{
 			SqlGeometryBuilder gb = new SqlGeometryBuilder();
 			gb.SetSrid(4326);
@@ -55,7 +60,7 @@ namespace DEM.Net.Lib
 
             SqlGeometry geom = gb.ConstructedGeometry.MakeValidIfInvalid(1);
 
-            return geom.Geometries().ToList();
+            return geom;
 
 		}
 

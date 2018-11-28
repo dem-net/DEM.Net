@@ -231,14 +231,9 @@ namespace DEM.Net.Lib
             if (lineGeoPoints == null)
                 throw new ArgumentNullException("lineGeoPoints", "Point list is null");
 
-            List<SqlGeometry> geometry = GeometryService.ParseGeoPointAsGeometryLine(lineGeoPoints);
+            SqlGeometry geometry = GeometryService.ParseGeoPointAsGeometryLine(lineGeoPoints);
 
-            List<GeoPoint> lst = new List<GeoPoint>();
-            foreach (var geom in geometry)
-            {
-                lst.AddRange(GetLineGeometryElevation(geom, dataSet, interpolationMode));
-            }
-            return lst;
+            return GetLineGeometryElevation(geometry, dataSet, interpolationMode);
         }
 
         public GeoPoint GetPointElevation(double lat, double lon, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
