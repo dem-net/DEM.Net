@@ -105,8 +105,8 @@ namespace SampleApp
             MeshPrimitive meshPrimitive = glTF.GenerateTriangleMesh(hMap);
 
 
-            Console.Write($"Decimate {quality * 100}...");
-            meshPrimitive = MeshDecimationWrapper.Decimate(meshPrimitive, quality);
+            //Console.Write($"Decimate {quality * 100}...");
+            //meshPrimitive = MeshDecimationWrapper.Decimate(meshPrimitive, quality);
 
 
             Console.Write("GenerateModel...");
