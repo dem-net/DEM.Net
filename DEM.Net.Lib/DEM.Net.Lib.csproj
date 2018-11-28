@@ -72,6 +72,7 @@
     <Compile Include="IO\GeoTiff.cs" />
     <Compile Include="IO\gpx\GpsLocation.cs" />
     <Compile Include="IO\gpx\Gpx.cs" />
+    <Compile Include="IO\gpx\GpxImport.cs" />
     <Compile Include="IO\gpx\GpxProperties.cs" />
     <Compile Include="IO\gpx\GpxReader.cs" />
     <Compile Include="IO\gpx\GpxWriter.cs" />

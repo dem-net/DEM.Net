@@ -18,6 +18,35 @@ namespace DEM.Net.Lib
 
             return heightMap;
         }
+        public static IEnumerable<GeoPoint> CenterOnOrigin(this IEnumerable<GeoPoint> points, float zFactor = 1f)
+        {
+            var bbox = points.GetBoundingBox();
+
+            return points.CenterOnOrigin(bbox, zFactor);
+        }
+        public static IEnumerable<GeoPoint> CenterOnOrigin(this IEnumerable<GeoPoint> points,BoundingBox bbox, float zFactor = 1f)
+        {
+            double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
+            double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
+            points = points.Select(pt => new GeoPoint(pt.Latitude - yOriginOffset, pt.Longitude - xOriginOffset, (float)pt.Elevation * zFactor, (int)pt.XIndex, (int)pt.YIndex));
+
+            return points;
+        }
+
+        public static BoundingBox GetBoundingBox(this IEnumerable<GeoPoint> points)
+        {
+            BoundingBox bbox = new BoundingBox(double.MaxValue, double.MinValue, double.MaxValue, double.MinValue);
+
+            foreach(var pt in points)
+            {
+                bbox.xMin = Math.Min(bbox.xMin, pt.Longitude);
+                bbox.xMax = Math.Max(bbox.xMax, pt.Longitude);
+
+                bbox.yMin = Math.Min(bbox.yMin, pt.Latitude);
+                bbox.yMax = Math.Max(bbox.yMax, pt.Latitude);
+            }
+            return bbox;
+        }
 
 
         public static HeightMap Sort(this HeightMap heightMap)

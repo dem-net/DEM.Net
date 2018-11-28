@@ -46,6 +46,9 @@ namespace SampleApp
 
             //HeightMapTest(elevationService, DEMDataSet.AW3D30, wkt4Tiles);
 
+
+            
+
             string WKT_AIX_LESMILLES = "POLYGON ((5.359268188476562 43.47285413777968, 5.49041748046875 43.47285413777968, 5.49041748046875 43.56024232423529, 5.359268188476562 43.56024232423529, 5.359268188476562 43.47285413777968))";
             string WKT_AIX_PUYRICARD = "POLYGON ((5.429993 43.537854, 5.459132 43.537854, 5.459132 43.58151, 5.429993 43.58151, 5.429993 43.537854))";
             string WKT_STE_VICTOIRE = "POLYGON ((5.361328125 43.440954591707445, 5.80352783203125 43.440954591707445, 5.80352783203125 43.700644071512464, 5.361328125 43.700644071512464, 5.361328125 43.440954591707445))";
@@ -61,7 +64,15 @@ namespace SampleApp
             string WKT_TOCOPILLA = "POLYGON ((-69.99115 -21.964002, -70.239247 -21.964002, -70.239247 -22.21792, -69.99115 -22.21792, -69.99115 -21.964002))";
             string WKT_VERDON = "POLYGON ((6.423912 43.829697, 6.239099 43.829697, 6.239099 43.713053, 6.423912 43.713053, 6.423912 43.829697))";
             string WKT_GAP = "POLYGON ((6.281433 44.674833, 5.929474 44.674833, 5.929474 44.437702, 6.281433 44.437702, 6.281433 44.674833))";
-            string WKT_VALGO = "POLYGON ((6.373444 44.913277, 5.971403 44.913277, 5.971403 44.73893, 6.373444 44.73893, 6.373444 44.913277))"; 
+            string WKT_VALGO = "POLYGON ((6.373444 44.913277, 5.971403 44.913277, 5.971403 44.73893, 6.373444 44.73893, 6.373444 44.913277))";
+
+
+            // TODO correct this
+            //TestGpxElevation(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
+           // TestGpxMesh(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx", "Bouleternere");
+            TestCombinedGpxMesh(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx", WKT_TRAIL, "Bouleternere");
+
+
             ExportGLBTest(elevationService, DEMDataSet.AW3D30, WKT_GAP,"Gap");
             MeshDecimationTest(elevationService, DEMDataSet.AW3D30, WKT_GAP, "Gap",0.5f) ;
 
@@ -89,6 +100,90 @@ namespace SampleApp
             Console.ReadLine();
 
         }
+
+        private static void TestGpxElevation(ElevationService elevationService, DEMDataSet dataSet, string gpxFile)
+        {
+            var segments =  GpxImport.ReadGPX_Segments(gpxFile);
+
+            SpatialTrace.Enable();
+            SpatialTrace.Clear();
+
+            foreach (var line in segments)
+            {
+                List<GeoPoint> inputLine = line.ToList();
+
+
+
+                var lineOut = elevationService.GetLineGeometryElevation(inputLine, dataSet);
+
+                GeometryService.ComputeMetrics(inputLine);
+                GeometryService.ComputeMetrics(lineOut);
+
+                // Compare
+                SpatialTraceLine(inputLine, "Input");
+
+                // Compare
+                SpatialTraceLine(lineOut.ToList(), "Output");
+
+            }
+
+            SpatialTrace.ShowDialog();
+        }
+
+        private static void TestGpxMesh(ElevationService elevationService, DEMDataSet dataSet, string gpxFile, string name)
+        {
+            var segments = GpxImport.ReadGPX_Segments(gpxFile);
+
+
+            var points = segments.SelectMany(pt => pt);
+            points = points.CenterOnOrigin(0.00002f);
+
+
+            glTFService glTF = new glTFService();
+            MeshPrimitive meshPrimitive = glTF.GenerateLine(points,new System.Numerics.Vector4(1,0,0,0),1f);
+            
+            Console.Write("GenerateModel...");
+            Model model = glTF.GenerateModel(meshPrimitive, name);
+            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", $"{name} line", false, true);
+        }
+
+        private static void TestCombinedGpxMesh(ElevationService elevationService, DEMDataSet dataSet, string gpxFile, string wkt, string name)
+        {
+            glTFService glTF = new glTFService();
+            List<MeshPrimitive> meshes = new List<MeshPrimitive>();
+
+            
+
+            // MESH 3D terrain
+            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
+            var bbox = geom.GetBoundingBox();
+
+            Console.Write("Height map...");
+            HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
+
+            //hMap = hMap.ReprojectTo(4326, 2154);
+            hMap = hMap.CenterOnOrigin(0.00002f);
+
+            Console.Write("GenerateTriangleMesh...");
+            MeshPrimitive triangleMesh = glTF.GenerateTriangleMesh(hMap);
+            meshes.Add(triangleMesh);
+
+            /// Line strip from GPX
+            var segments = GpxImport.ReadGPX_Segments(gpxFile);
+
+            var points = segments.SelectMany(pt => pt);
+            points = points.CenterOnOrigin(hMap.BoundingBox, 0.00002f);
+
+            MeshPrimitive meshPrimitive = glTF.GenerateLine(points, new System.Numerics.Vector4(1, 0, 0, 0), 0);
+            meshes.Add(meshPrimitive);
+
+            // model export
+            Console.Write("GenerateModel...");
+            Model model = glTF.GenerateModel(meshes, name);
+            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", $"{name} combined", false, true);
+        }
+
+
         private static void MeshDecimationTest(ElevationService elevationService, DEMDataSet dataSet, string wkt, string name, float quality = 0.5f)
         {
             SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
@@ -330,6 +425,7 @@ namespace SampleApp
             gb.EndFigure();
             gb.EndGeometry();
             SqlGeometry geom = gb.ConstructedGeometry;
+            geom = DEM.Net.Lib.SqlTypesExtensions.MakeValidIfInvalid(geom,1);
             SpatialTrace.Enable();
             SpatialTrace.TraceGeometry(geom, message);
             SpatialTrace.Disable();

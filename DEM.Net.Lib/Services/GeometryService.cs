@@ -32,7 +32,7 @@ namespace DEM.Net.Lib
 			return geom.GetBoundingBox();
 		}
 
-		public static SqlGeometry ParseGeoPointAsGeometryLine(IEnumerable<GeoPoint> points)
+		public static List<SqlGeometry> ParseGeoPointAsGeometryLine(IEnumerable<GeoPoint> points)
 		{
 			SqlGeometryBuilder gb = new SqlGeometryBuilder();
 			gb.SetSrid(4326);
@@ -52,7 +52,11 @@ namespace DEM.Net.Lib
 			}
 			gb.EndFigure();
 			gb.EndGeometry();
-			return gb.ConstructedGeometry;
+
+            SqlGeometry geom = gb.ConstructedGeometry.MakeValidIfInvalid(1);
+
+            return geom.Geometries().ToList();
+
 		}
 
 
