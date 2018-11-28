@@ -4,6 +4,7 @@ using DEM.Net.Lib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,12 +20,29 @@ namespace DEM.Net.glTF
         MeshPrimitive GenerateTriangleMesh(HeightMap heightMap);
 
         /// <summary>
+        /// Build a line mesh from given points
+        /// </summary>
+        /// <param name="points"></param>
+        /// <param name="color">Line color</param>
+        /// <param name="width">If width > 1 then line will be a mesh of given width</param>
+        /// <returns></returns>
+        MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector4 color, float width = 1f);
+
+        /// <summary>
         /// Generate a full glTF model from a mesh
         /// </summary>
         /// <param name="meshPrimitive"></param>
         /// <param name="name"></param>
         /// <returns></returns>
         Model GenerateModel(MeshPrimitive meshPrimitive, string name);
+
+        /// <summary>
+        /// Generate a full glTF model from a mesh
+        /// </summary>
+        /// <param name="meshPrimitive"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        Model GenerateModel(IEnumerable<MeshPrimitive> meshPrimitives, string name);
 
 
         /// <summary>

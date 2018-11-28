@@ -119,6 +119,39 @@ namespace DEM.Net.glTF
             return model;
         }
 
+        public Model GenerateModel(IEnumerable<MeshPrimitive> meshPrimitives, string name)
+        {
+            // Create the gltf object
+            Model model = new Model
+            {
+                GLTF = new GLTF
+                {
+                    Asset = new Asset
+                    {
+                        Generator = "glTF Asset Generator",
+                        Version = "2.0",
+                    },
+                    Scenes = new List<Scene>
+                    {
+                        new Scene {
+                        Nodes = new List<Node>
+                        {
+                            new Node
+                            {
+                                Mesh = new Mesh
+                                {
+                                    MeshPrimitives = meshPrimitives
+                                },
+                            },
+                        },
+                        }
+                    }
+                }
+            };
+
+            return model;
+        }
+
         public MeshPrimitive GenerateTriangleMesh(HeightMap heightMap)
         {
             MeshPrimitive mesh = null;
@@ -166,12 +199,12 @@ namespace DEM.Net.glTF
                                 {
                                     // Triangulation 1
                                     indices.Add((x + 0) + (y + 0) * heightMap.Width);
-                                    indices.Add((x + 0) + (y + 1) * heightMap.Width);
                                     indices.Add((x + 1) + (y + 0) * heightMap.Width);
+                                    indices.Add((x + 0) + (y + 1) * heightMap.Width);
 
                                     indices.Add((x + 1) + (y + 0) * heightMap.Width);
-                                    indices.Add((x + 0) + (y + 1) * heightMap.Width);
                                     indices.Add((x + 1) + (y + 1) * heightMap.Width);
+                                    indices.Add((x + 0) + (y + 1) * heightMap.Width);
                                 }
                                 else
                                 {
@@ -234,14 +267,120 @@ namespace DEM.Net.glTF
             return mesh;
         }
 
-        private IEnumerable<int> Triangulate(HeightMap heightMap)
+        public MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector4 color, float width)
         {
-            throw new NotImplementedException();
+            MeshPrimitive mesh = null;
+            try
+            {
+                if (points == null)
+                {
+                    Logger.Warning("Points are empty.");
+                }
+                else
+                {
+                    if (width == 0)
+                    {
+                        // Basic line strip  declaration
+                        mesh = new MeshPrimitive()
+                        {
+                            Colors = points.Select(c => color)
+                            ,
+                            ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
+                            ,
+                            ColorType = MeshPrimitive.ColorTypeEnum.VEC3
+                            ,
+                            Mode = MeshPrimitive.ModeEnum.LINE_STRIP
+                            ,
+                            Positions = points.Select(pt => ToVector3(pt))
+                            ,
+                            Material = new Material()
+                        };
+                    }
+                    else
+                    {
+                        // https://gist.github.com/gszauer/5718441
+                        // Line triangle mesh
+                        var sections = points.Select(pt => ToVector3(pt)).ToList();
+
+                        var vertices = new Vector3[sections.Count * 2];
+
+                        var previousSection = sections[0];
+                        var currentSection = sections[0];
+
+                        // Use matrix instead of transform.TransformPoint for performance reasons
+                        //  var localSpaceTransform = transform.worldToLocalMatrix;
+
+                        // Generate vertex, uv and colors
+                        for (var i = 0; i < sections.Count; i++)
+                        {
+                            previousSection = currentSection;
+                            currentSection = sections[i];
+
+                            // Calculate upwards direction
+                            var upDir = Vector3.UnitX;  // currentSection.upDir;
+
+                            // Generate vertices
+                            //vertices[i * 2 + 0] = localSpaceTransform.MultiplyPoint(currentSection);
+                            //vertices[i * 2 + 1] = localSpaceTransform.MultiplyPoint(currentSection + upDir * width);
+                            vertices[i * 2 + 0] = currentSection;
+                            vertices[i * 2 + 1] = currentSection + upDir * width;
+
+                        }
+
+                        // Generate triangles indices
+                        int[] triangles = new int[((sections.Count - 1) * 2 * 3)];
+                        for (int i = 0; i < triangles.Length / 6; i++)
+                        {
+                            triangles[i * 6 + 0] = i * 2;
+                            triangles[i * 6 + 1] = i * 2 + 1;
+                            triangles[i * 6 + 2] = i * 2 + 2;
+
+                            triangles[i * 6 + 3] = i * 2 + 2;
+                            triangles[i * 6 + 4] = i * 2 + 1;
+                            triangles[i * 6 + 5] = i * 2 + 3;
+                        }
+
+                        // Basic line strip  declaration
+                        mesh = new MeshPrimitive()
+                        {
+                            Colors = vertices.Select(c => color)
+                            ,
+                            ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
+                            ,
+                            ColorType = MeshPrimitive.ColorTypeEnum.VEC3
+                            ,
+                            Mode = MeshPrimitive.ModeEnum.TRIANGLES
+                            ,
+                            Positions = vertices
+                            ,
+                            Material = new Material()
+                            ,
+                            Indices = triangles
+                            ,
+                            IndexComponentType = MeshPrimitive.IndexComponentTypeEnum.UNSIGNED_INT
+                        };
+
+
+                    }
+
+
+
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.ToString());
+                throw;
+            }
+            return mesh;
         }
+
 
         private Vector3 ToVector3(GeoPoint geoPoint)
         {
-            return new Vector3((float)geoPoint.Longitude, (float)geoPoint.Elevation, -(float)geoPoint.Latitude);
+            return new Vector3((float)geoPoint.Longitude, (float)geoPoint.Elevation, (float)geoPoint.Latitude);
         }
     }
 }
