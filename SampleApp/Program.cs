@@ -28,8 +28,8 @@ namespace SampleApp
         {
             SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
             _DataDirectory = ConfigurationManager.AppSettings["DataDir"];
-            IGeoTiffService geoTiffService = new GeoTiffService(_DataDirectory);
-            ElevationService elevationService = new ElevationService(geoTiffService);
+            IRasterService rasterService = new RasterService(_DataDirectory);
+            ElevationService elevationService = new ElevationService(rasterService);
 
 
             //FileMetaDataVersionMigration(geoTiffService, DEMDataSet.AW3D30);
@@ -42,7 +42,7 @@ namespace SampleApp
 
         }
 
-        private static void FileMetaDataVersionMigration(IGeoTiffService geoTiffService, DEMDataSet dataSet)
+        private static void FileMetaDataVersionMigration(IRasterService geoTiffService, DEMDataSet dataSet)
         {
             geoTiffService.GenerateDirectoryMetadata(dataSet, false, true);
         }
@@ -69,23 +69,23 @@ namespace SampleApp
         {
             SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
             _DataDirectory = ConfigurationManager.AppSettings["DataDir"];
-            IGeoTiffService geoTiffService = new GeoTiffService(_DataDirectory);
-            ElevationService elevationService = new ElevationService(geoTiffService);
+            IRasterService rasterService = new RasterService(_DataDirectory);
+            ElevationService elevationService = new ElevationService(rasterService);
 
-            //geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true);
-            // geoTiffService.GenerateFileMetadata(@"C:\Users\xfischer\AppData\Roaming\DEM.Net\ETOPO1\ETOPO1_Ice_g_geotiff.tif", false, false);
+            rasterService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true);
+            rasterService.GenerateFileMetadata(@"C:\Users\xfischer\AppData\Roaming\DEM.Net\ETOPO1\ETOPO1_Ice_g_geotiff.tif",DEMFileFormat.GEOTIFF, false, false);
             string wkt4Tiles = "POLYGON ((5.9735200000000006 43.979698, 6.021922 43.979698, 6.021922 44.002967, 5.9735200000000006 44.002967, 5.9735200000000006 43.979698))";
-            //SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, wkt4Tiles, DEMDataSet.AW3D30);
+            SpatialTrace_GeometryWithDEMGrid(elevationService, rasterService, wkt4Tiles, DEMDataSet.AW3D30);
 
-            //GeoTiffTests(geoTiffService, @"C:\Repos\DEM.Net\Data\18953150_dhm.tif");
+            GeoTiffTests(rasterService, @"C:\Repos\DEM.Net\Data\18953150_dhm.tif", DEMFileFormat.GEOTIFF);
 
-            //GeoTiffTests(geoTiffService, @"C:\Repos\DEM.Net\Data\18953150_dhm_expo.tif");
-            //LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
+            GeoTiffTests(rasterService, @"C:\Repos\DEM.Net\Data\18953150_dhm_expo.tif", DEMFileFormat.GEOTIFF);
+            LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
 
-            //PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
-            //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_PLATEAU_PUYRICARD, 100);
+            PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
+            LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_PLATEAU_PUYRICARD, 100);
 
-            //HeightMapTest(elevationService, DEMDataSet.AW3D30, wkt4Tiles);
+            HeightMapTest(elevationService, DEMDataSet.AW3D30, wkt4Tiles);
 
 
 
@@ -123,19 +123,18 @@ namespace SampleApp
 
             //mrpoup : welcome !!
 
-            //GeoTiffBenchmark();
+            GeoTiffBenchmark();
 
-            //Test_GetMetadataFromVRT(elevationService, DEMDataSet.AW3D30);
+            Test_GetMetadataFromVRT(elevationService, DEMDataSet.AW3D30);
 
-            //elevationService.DownloadMissingFiles(DEMDataSet.AW3D30, GetBoundingBox(WKT_AIX_BAYONNE_EST_OUEST));
-            ////elevationService.DownloadMissingFiles(DEMDataSet.SRTM_GL3_srtm, GetBoundingBox(WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES));
+            elevationService.DownloadMissingFiles(DEMDataSet.AW3D30, GetBoundingBox(WKT_AIX_BAYONNE_EST_OUEST));
+            //elevationService.DownloadMissingFiles(DEMDataSet.SRTM_GL3_srtm, GetBoundingBox(WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES));
 
-            ////GenerateDownloadReports(geoTiffService);
-
-            //geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, false);
+            
+            rasterService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, false);
 
             //Spatial trace of line +segments + interpolated point + dem grid
-            //SpatialTrace_GeometryWithDEMGrid(elevationService, geoTiffService, WKT_TEST, DEMDataSet.AW3D30);
+            SpatialTrace_GeometryWithDEMGrid(elevationService, rasterService, WKT_TEST, DEMDataSet.AW3D30);
 
             Console.Write("Press any key to exit...");
             Console.ReadLine();
@@ -283,14 +282,14 @@ namespace SampleApp
 
         }
 
-        private static void GeoTiffTests(IGeoTiffService geoTiffService, string tiffPath, DEMFileFormat fileFormat)
+        private static void GeoTiffTests(IRasterService geoTiffService, string tiffPath, DEMFileFormat fileFormat)
         {
 
             DEM.Net.Lib.BoundingBox bbox = new DEM.Net.Lib.BoundingBox(1897950, 1898106, 3150520, 3150700);
 
             HeightMap hmap = null;
             FileMetadata metaData = geoTiffService.ParseMetadata(tiffPath, fileFormat);
-            using (IGeoTiff geoTiff = geoTiffService.OpenFile(tiffPath, fileFormat))
+            using (IRasterFile geoTiff = geoTiffService.OpenFile(tiffPath, fileFormat))
             {
                 hmap = geoTiff.ParseGeoDataInBBox(bbox, metaData, 0);
             }
@@ -305,7 +304,7 @@ namespace SampleApp
         private static void GeoTiffBenchmark()
         {
             DEMDataSet dataSet = DEMDataSet.AW3D30;
-            ElevationService elevationServiceLibTiff = new ElevationService(new GeoTiffService(_DataDirectory));
+            ElevationService elevationServiceLibTiff = new ElevationService(new RasterService(_DataDirectory));
 
             string wkt = WKT_BREST_NICE;
             elevationServiceLibTiff.DownloadMissingFiles(dataSet, GetBoundingBox(wkt));
@@ -494,7 +493,7 @@ namespace SampleApp
             return geom.ToGeography().STBuffer(60).GetBoundingBox();
         }
 
-        static void SpatialTrace_GeometryWithDEMGrid(ElevationService elevationService, IGeoTiffService geoTiffService, string wktBbox, DEMDataSet dataSet, double rangeKm = 100)
+        static void SpatialTrace_GeometryWithDEMGrid(ElevationService elevationService, IRasterService geoTiffService, string wktBbox, DEMDataSet dataSet, double rangeKm = 100)
         {
             SpatialTrace.Enable();
             SpatialTrace.Clear();

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace DEM.Net.Lib
 {
-    public interface IGeoTiffService
+    public interface IRasterService
     {
-        FileMetadata ParseMetadata(IGeoTiff tiff);
+        FileMetadata ParseMetadata(IRasterFile tiff);
         FileMetadata ParseMetadata(string fileName, DEMFileFormat fileFormat);
         List<FileMetadata> LoadManifestMetadata(DEMDataSet dataSet, bool force);
 
-        IGeoTiff OpenFile(string filePath, DEMFileFormat fileFormat);
+        IRasterFile OpenFile(string filePath, DEMFileFormat fileFormat);
 
         string LocalDirectory { get; }
         string GetLocalDEMPath(DEMDataSet dataset);
@@ -20,7 +20,7 @@ namespace DEM.Net.Lib
         /// <summary>
         /// Generate metadata files for fast in-memory indexing
         /// </summary>
-        /// <param name="directoryPath">GeoTIFF files directory</param>
+        /// <param name="directoryPath">Raster files directory</param>
         /// <param name="generateBitmaps">If true, bitmaps with height map will be generated (heavy memory usage and waaaay slower)</param>
         /// <param name="force">If true, force regeneration of all files. If false, only missing files will be generated.</param>
         void GenerateDirectoryMetadata(DEMDataSet dataSet, bool generateBitmaps, bool force);
@@ -37,6 +37,6 @@ namespace DEM.Net.Lib
         string GenerateReportAsString(DEMDataSet dataSet, BoundingBox bbox = null);
 
 
-        void GenerateFileMetadata(string geoTiffFileName, DEMFileFormat fileFormat, bool generateBitmap, bool force);
+        void GenerateFileMetadata(string rasterFileName, DEMFileFormat fileFormat, bool generateBitmap, bool force);
     }
 }

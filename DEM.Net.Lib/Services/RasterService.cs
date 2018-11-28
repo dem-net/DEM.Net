@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Lib
 {
-    public class GeoTiffService : IGeoTiffService
+    public class RasterService : IRasterService
     {
         const string APP_NAME = "DEM.Net";
         const string MANIFEST_DIR = "manifest";
@@ -26,7 +26,7 @@ namespace DEM.Net.Lib
             get { return _localDirectory; }
         }
 
-        static GeoTiffService()
+        static RasterService()
         {
 
             _localDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), APP_NAME);
@@ -36,7 +36,7 @@ namespace DEM.Net.Lib
             _metadataCatalogCache = new Dictionary<string, List<FileMetadata>>();
         }
 
-        public GeoTiffService(string dataDirectory)
+        public RasterService(string dataDirectory)
         {
             if (dataDirectory != null)
             {
@@ -45,7 +45,11 @@ namespace DEM.Net.Lib
             }
         }
 
-        public IGeoTiff OpenFile(string filePath, DEMFileFormat fileFormat)
+        public IRasterFile OpenFile(string filePath, DEMFileFormat fileFormat)
+        {
+            return new GeoTiff(filePath);
+        }
+        public static IRasterFile OpenRasterFile(string filePath, DEMFileFormat fileFormat)
         {
             return new GeoTiff(filePath);
         }
@@ -58,7 +62,7 @@ namespace DEM.Net.Lib
         {
             return Path.Combine(GetLocalDEMPath(dataset), fileTitle);
         }
-        public FileMetadata ParseMetadata(IGeoTiff tiff)
+        public FileMetadata ParseMetadata(IRasterFile tiff)
         {
             return tiff.ParseMetaData();
 
@@ -71,7 +75,7 @@ namespace DEM.Net.Lib
             fileName = Path.GetFullPath(fileName);
             string fileTitle = Path.GetFileNameWithoutExtension(fileName);
 
-            using (IGeoTiff tiff = OpenFile(fileName, fileFormat))
+            using (IRasterFile tiff = OpenFile(fileName, fileFormat))
             {
                 metadata = this.ParseMetadata(tiff);
             }
@@ -144,7 +148,7 @@ namespace DEM.Net.Lib
         /// <summary>
         /// Generate metadata files for fast in-memory indexing
         /// </summary>
-        /// <param name="directoryPath">GeoTIFF files directory</param>
+        /// <param name="directoryPath">Raster files directory</param>
         /// <param name="generateBitmaps">If true, bitmaps with height map will be generated (heavy memory usage and waaaay slower)</param>
         /// <param name="force">If true, force regeneration of all files. If false, only missing files will be generated.</param>
         public void GenerateDirectoryMetadata(DEMDataSet dataset, bool generateBitmaps, bool force)
@@ -159,27 +163,27 @@ namespace DEM.Net.Lib
             Parallel.ForEach(files, options, file => GenerateFileMetadata(file, dataset.FileFormat, generateBitmaps, force));
         }
 
-        private string GetMetadataFileName(string geoTiffFileName, string outDirPath, string extension = ".json")
+        private string GetMetadataFileName(string rasterFileName, string outDirPath, string extension = ".json")
         {
-            var fileTitle = Path.GetFileNameWithoutExtension(geoTiffFileName);
+            var fileTitle = Path.GetFileNameWithoutExtension(rasterFileName);
             return Path.Combine(outDirPath, fileTitle + extension);
         }
-        private string GetManifestDirectory(string geoTiffFileName)
+        private string GetManifestDirectory(string rasterFileName)
         {
-            return Path.Combine(Path.GetDirectoryName(geoTiffFileName), MANIFEST_DIR);
+            return Path.Combine(Path.GetDirectoryName(rasterFileName), MANIFEST_DIR);
         }
-        private string GetMetadataFileName(string geoTiffFileName, string extension = ".json")
+        private string GetMetadataFileName(string rasterFileName, string extension = ".json")
         {
-            string outDirPath = GetManifestDirectory(geoTiffFileName);
-            return GetMetadataFileName(geoTiffFileName, outDirPath, extension);
+            string outDirPath = GetManifestDirectory(rasterFileName);
+            return GetMetadataFileName(rasterFileName, outDirPath, extension);
         }
 
 
-        public void GenerateFileMetadata(string geoTiffFileName, DEMFileFormat fileFormat, bool generateBitmap, bool force)
+        public void GenerateFileMetadata(string rasterFileName, DEMFileFormat fileFormat, bool generateBitmap, bool force)
         {
-            string outDirPath = GetManifestDirectory(geoTiffFileName);
-            string bmpPath = GetMetadataFileName(geoTiffFileName, outDirPath, ".bmp");
-            string jsonPath = GetMetadataFileName(geoTiffFileName, outDirPath, ".json");
+            string outDirPath = GetManifestDirectory(rasterFileName);
+            string bmpPath = GetMetadataFileName(rasterFileName, outDirPath, ".bmp");
+            string jsonPath = GetMetadataFileName(rasterFileName, outDirPath, ".json");
 
 
             // Output directory "manifest"
@@ -203,23 +207,23 @@ namespace DEM.Net.Lib
             // Json manifest
             if (File.Exists(jsonPath) == false)
             {
-                Trace.TraceInformation($"Generating manifest for file {geoTiffFileName}.");
+                Trace.TraceInformation($"Generating manifest for file {rasterFileName}.");
 
-                FileMetadata metadata = this.ParseMetadata(geoTiffFileName, fileFormat);
+                FileMetadata metadata = this.ParseMetadata(rasterFileName, fileFormat);
                 File.WriteAllText(jsonPath, JsonConvert.SerializeObject(metadata, Formatting.Indented));
 
-                Trace.TraceInformation($"Manifest generated for file {geoTiffFileName}.");
+                Trace.TraceInformation($"Manifest generated for file {rasterFileName}.");
             }
 
             // Debug bitmap
             if (File.Exists(bmpPath) == false && generateBitmap)
             {
-                Trace.TraceInformation($"Generating bitmap for file {geoTiffFileName}.");
-                FileMetadata metadata = this.ParseMetadata(geoTiffFileName, fileFormat);
-                HeightMap heightMap = ElevationService.GetHeightMap(geoTiffFileName, metadata);
+                Trace.TraceInformation($"Generating bitmap for file {rasterFileName}.");
+                FileMetadata metadata = this.ParseMetadata(rasterFileName, fileFormat);
+                HeightMap heightMap = ElevationService.GetHeightMap(rasterFileName, metadata);
                 DiagnosticUtils.OutputDebugBitmap(heightMap, bmpPath);
 
-                Trace.TraceInformation($"Bitmap generated for file {geoTiffFileName}.");
+                Trace.TraceInformation($"Bitmap generated for file {rasterFileName}.");
             }
 
         }

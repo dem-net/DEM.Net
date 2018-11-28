@@ -33,6 +33,6 @@ namespace DEM.Net.Lib
         }
     }
 
-    public class GeoTiffDictionary : DisposableValueDictionary<FileMetadata, IGeoTiff>
+    public class RasterFileDictionary : DisposableValueDictionary<FileMetadata, IRasterFile>
     { }
 }

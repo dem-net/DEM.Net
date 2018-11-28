@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Lib
 {
-	public class HGTFile : IGeoTiff
+	public class HGTFile : IRasterFile
 	{
 		private readonly string _filename;
 		public HGTFile(string filename)
@@ -61,7 +61,12 @@ namespace DEM.Net.Lib
 		{
 			throw new NotImplementedException();
 		}
-		#endregion
 
-	}
+        public HeightMap ParseGeoData(FileMetadata metadata)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+    }
 }

@@ -66,7 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\ExceptionHelper.cs" />
-    <Compile Include="Helpers\GeoTiffDictionary.cs" />
+    <Compile Include="Helpers\RasterFileDictionary.cs" />
     <Compile Include="Helpers\HeightMapExtensions.cs" />
     <Compile Include="Helpers\UrlHelper.cs" />
     <Compile Include="IO\GeoTiff.cs" />
@@ -77,7 +77,7 @@
     <Compile Include="IO\gpx\GpxReader.cs" />
     <Compile Include="IO\gpx\GpxWriter.cs" />
     <Compile Include="IO\HGTFile.cs" />
-    <Compile Include="IO\IGeoTiff.cs" />
+    <Compile Include="IO\IRasterFile.cs" />
     <Compile Include="IO\NoLogTiffErrorHandler.cs" />
     <Compile Include="Model\BoundingBox.cs" />
     <Compile Include="Model\DEMDataSet.cs" />
@@ -99,8 +99,8 @@
     <Compile Include="Services\ElevationService.cs" />
     <Compile Include="Services\GDALVRTFileService.cs" />
     <Compile Include="Services\GeometryService.cs" />
-    <Compile Include="Services\GeoTiffService.cs" />
-    <Compile Include="Services\IGeoTiffService.cs" />
+    <Compile Include="Services\RasterService.cs" />
+    <Compile Include="Services\IRasterService.cs" />
     <Compile Include="Services\Interpolation\IInterpolator.cs" />
     <Compile Include="Services\Interpolation\HyperbolicInterpolator.cs" />
     <Compile Include="Services\Interpolation\BilinearInterpolator.cs" />

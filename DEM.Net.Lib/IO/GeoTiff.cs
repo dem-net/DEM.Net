@@ -9,7 +9,7 @@ using System.Linq;
 namespace DEM.Net.Lib
 {
 
-    public class GeoTiff : IGeoTiff
+    public class GeoTiff : IRasterFile
     {
         Tiff _tiff;
         string _tiffPath;
@@ -238,5 +238,60 @@ namespace DEM.Net.Lib
             heightMap.Coordinates = coords;
             return heightMap;
         }
+
+        public HeightMap ParseGeoData(FileMetadata metadata)
+        {
+            HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
+            heightMap.Count = heightMap.Width * heightMap.Height;
+            var coords = new List<GeoPoint>(heightMap.Count);
+
+            // metadata.BitsPerSample
+            // When 16 we have 2 bytes per sample
+            // When 32 we have 4 bytes per sample
+            int bytesPerSample = metadata.BitsPerSample / 8;
+            byte[] byteScanline = new byte[metadata.ScanlineSize];
+
+            for (int y = 0; y < metadata.Height; y++)
+            {
+                TiffFile.ReadScanline(byteScanline, y);
+
+                double latitude = metadata.StartLat + (metadata.pixelSizeY * y);
+                for (int x = 0; x < metadata.Width; x++)
+                {
+                    double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
+
+                    float heightValue = 0;
+                    switch (metadata.SampleFormat)
+                    {
+                        case "IEEEFP":
+                            heightValue = BitConverter.ToSingle(byteScanline, x * metadata.BitsPerSample / 8);
+                            break;
+                        case "INT":
+                            heightValue = BitConverter.ToInt16(byteScanline, x * metadata.BitsPerSample / 8);
+                            break;
+                        case "UINT":
+                            heightValue = BitConverter.ToUInt16(byteScanline, x * metadata.BitsPerSample / 8);
+                            break;
+                        default:
+                            throw new Exception("Sample format unsupported.");
+                    }
+                    if (heightValue < 32768)
+                    {
+                        heightMap.Mininum = Math.Min(metadata.MininumAltitude, heightValue);
+                        heightMap.Maximum = Math.Max(metadata.MaximumAltitude, heightValue);
+                    }
+                    else
+                    {
+                        heightValue = 0;
+                    }
+                    coords.Add(new GeoPoint(latitude, longitude, heightValue, x, y));
+
+                }
+            }
+
+            heightMap.Coordinates = coords;
+            return heightMap;
+        }
+
     }
 }
