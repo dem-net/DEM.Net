@@ -31,6 +31,47 @@ namespace SampleApp
             IGeoTiffService geoTiffService = new GeoTiffService(_DataDirectory);
             ElevationService elevationService = new ElevationService(geoTiffService);
 
+
+            //FileMetaDataVersionMigration(geoTiffService, DEMDataSet.AW3D30);
+
+            HGTTest(WKT_STE_VICTOIRE, elevationService);
+
+
+            Console.Write("Press any key to exit...");
+            Console.ReadLine();
+
+        }
+
+        private static void FileMetaDataVersionMigration(IGeoTiffService geoTiffService, DEMDataSet dataSet)
+        {
+            geoTiffService.GenerateDirectoryMetadata(dataSet, false, true);
+        }
+
+        private static void HGTTest(string wkt, ElevationService elevationService)
+        {
+            string name = "HGT test";
+            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
+            var bbox = geom.GetBoundingBox();
+
+            HeightMap hMap = elevationService.GetHeightMap(bbox, DEMDataSet.AW3D30);
+
+            //hMap = hMap.ReprojectTo(4326, 2154);
+            hMap = hMap.CenterOnOrigin(0.00002f);
+
+            glTFService glTF = new glTFService();
+            MeshPrimitive meshPrimitive = glTF.GenerateTriangleMesh(hMap);
+            Model model = glTF.GenerateModel(meshPrimitive, name);
+            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", name, false, true);
+            //HeightMapExport.Export(hMap_L93, "Aix Puyricard");
+        }
+
+        static void Main_Archived(string[] args)
+        {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+            _DataDirectory = ConfigurationManager.AppSettings["DataDir"];
+            IGeoTiffService geoTiffService = new GeoTiffService(_DataDirectory);
+            ElevationService elevationService = new ElevationService(geoTiffService);
+
             //geoTiffService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true);
             // geoTiffService.GenerateFileMetadata(@"C:\Users\xfischer\AppData\Roaming\DEM.Net\ETOPO1\ETOPO1_Ice_g_geotiff.tif", false, false);
             string wkt4Tiles = "POLYGON ((5.9735200000000006 43.979698, 6.021922 43.979698, 6.021922 44.002967, 5.9735200000000006 44.002967, 5.9735200000000006 43.979698))";
@@ -47,7 +88,7 @@ namespace SampleApp
             //HeightMapTest(elevationService, DEMDataSet.AW3D30, wkt4Tiles);
 
 
-            
+
 
             string WKT_AIX_LESMILLES = "POLYGON ((5.359268188476562 43.47285413777968, 5.49041748046875 43.47285413777968, 5.49041748046875 43.56024232423529, 5.359268188476562 43.56024232423529, 5.359268188476562 43.47285413777968))";
             string WKT_AIX_PUYRICARD = "POLYGON ((5.429993 43.537854, 5.459132 43.537854, 5.459132 43.58151, 5.429993 43.58151, 5.429993 43.537854))";
@@ -69,12 +110,12 @@ namespace SampleApp
 
             // TODO correct this
             //TestGpxElevation(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
-           // TestGpxMesh(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx", "Bouleternere");
+            // TestGpxMesh(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx", "Bouleternere");
             TestCombinedGpxMesh(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx", WKT_TRAIL, "Bouleternere");
 
 
-            ExportGLBTest(elevationService, DEMDataSet.AW3D30, WKT_GAP,"Gap");
-            MeshDecimationTest(elevationService, DEMDataSet.AW3D30, WKT_GAP, "Gap",0.5f) ;
+            ExportGLBTest(elevationService, DEMDataSet.AW3D30, WKT_GAP, "Gap");
+            MeshDecimationTest(elevationService, DEMDataSet.AW3D30, WKT_GAP, "Gap", 0.5f);
 
             ExportGLBTest(elevationService, DEMDataSet.AW3D30, WKT_VALGO, "Valgo");
             MeshDecimationTest(elevationService, DEMDataSet.AW3D30, WKT_VALGO, "Valgo", 0.5f); ;
@@ -100,6 +141,9 @@ namespace SampleApp
             Console.ReadLine();
 
         }
+
+
+        #region All tests
 
         private static void TestGpxElevation(ElevationService elevationService, DEMDataSet dataSet, string gpxFile)
         {
@@ -239,14 +283,14 @@ namespace SampleApp
 
         }
 
-        private static void GeoTiffTests(IGeoTiffService geoTiffService, string tiffPath)
+        private static void GeoTiffTests(IGeoTiffService geoTiffService, string tiffPath, DEMFileFormat fileFormat)
         {
 
             DEM.Net.Lib.BoundingBox bbox = new DEM.Net.Lib.BoundingBox(1897950, 1898106, 3150520, 3150700);
 
             HeightMap hmap = null;
-            FileMetadata metaData = geoTiffService.ParseMetadata(tiffPath);
-            using (IGeoTiff geoTiff = geoTiffService.OpenFile(tiffPath))
+            FileMetadata metaData = geoTiffService.ParseMetadata(tiffPath, fileFormat);
+            using (IGeoTiff geoTiff = geoTiffService.OpenFile(tiffPath, fileFormat))
             {
                 hmap = geoTiff.ParseGeoDataInBBox(bbox, metaData, 0);
             }
@@ -510,8 +554,28 @@ namespace SampleApp
         const string WKT_BAYONNE_NICE_DIRECT = "LINESTRING(-1.51611328125 43.50075243569041,7.261962890625 43.711564246658504)";
         const string WKT_DEM_INTERPOLATION_BUG = "LINESTRING(5.42859268188477 43.5304183959961, 5.42845249176025 43.5301399230957,5.4283127784729 43.5298614501953,5.42817258834839 43.5295829772949,5.42803287506104 43.5293045043945,5.42789268493652 43.5290260314941,5.4277548789978 43.528751373291,5.42761468887329 43.5284729003906)";
 
+        const string WKT_AIX_LESMILLES = "POLYGON ((5.359268188476562 43.47285413777968, 5.49041748046875 43.47285413777968, 5.49041748046875 43.56024232423529, 5.359268188476562 43.56024232423529, 5.359268188476562 43.47285413777968))";
+        const string WKT_AIX_PUYRICARD = "POLYGON ((5.429993 43.537854, 5.459132 43.537854, 5.459132 43.58151, 5.429993 43.58151, 5.429993 43.537854))";
+        const string WKT_STE_VICTOIRE = "POLYGON ((5.361328125 43.440954591707445, 5.80352783203125 43.440954591707445, 5.80352783203125 43.700644071512464, 5.361328125 43.700644071512464, 5.361328125 43.440954591707445))";
+        const string WKT_SCL_PLOMO = "POLYGON ((-70.81924438476562 -33.55169563498065, -70.0653076171875 -33.55169563498065, -70.0653076171875 -33.059320463472105, -70.81924438476562 -33.059320463472105, -70.81924438476562 -33.55169563498065))";
+        const string WKT_MT_BLANC = "POLYGON ((6.772385 45.882318, 6.772385 45.772313, 6.956124 45.772313, 6.956124 45.882318, 6.772385 45.882318))";
+        const string WKT_TRAIL = "POLYGON ((2.620153 42.653948, 2.563506 42.653948, 2.563506 42.61318, 2.620153 42.61318, 2.620153 42.653948))";
+        const string WKT_LAPAZ = "POLYGON ((-67.922789 -16.390452, -68.293022 -16.384976, -68.297279 -16.69934, -67.932587 -16.69934, -67.922789 -16.390452))";
+        const string WKT_LAPAZ_DBG = "POLYGON ((-67.998969 -16.390233, -68.000813 -16.390262, -68.000836 -16.391898, -67.998996 -16.391889, -67.998969 -16.390233))";
+        const string WKT_BOGOTA = "POLYGON ((-74.454346 4.434044, -73.850098 4.434044, -73.850098 5.041699, -74.454346 5.041699, -74.454346 4.434044))";
+        const string WKT_VENTOUX = "POLYGON ((5.495911 44.32876, 4.818878 44.32876, 4.818878 43.909766, 5.495911 43.909766, 5.495911 44.32876))";
+        const string WKT_EIGER_LARGE = "POLYGON ((8.157349 46.674197, 7.821587 46.674197, 7.821587 46.441642, 8.157349 46.441642, 8.157349 46.674197))";
+        const string WKT_EIGER_SMALL = "POLYGON ((8.070711 46.604713, 7.969817 46.603966, 7.961006 46.538228, 8.063903 46.539715, 8.070711 46.604713))";
+        const string WKT_TOCOPILLA = "POLYGON ((-69.99115 -21.964002, -70.239247 -21.964002, -70.239247 -22.21792, -69.99115 -22.21792, -69.99115 -21.964002))";
+        const string WKT_VERDON = "POLYGON ((6.423912 43.829697, 6.239099 43.829697, 6.239099 43.713053, 6.423912 43.713053, 6.423912 43.829697))";
+        const string WKT_GAP = "POLYGON ((6.281433 44.674833, 5.929474 44.674833, 5.929474 44.437702, 6.281433 44.437702, 6.281433 44.674833))";
+        const string WKT_VALGO = "POLYGON ((6.373444 44.913277, 5.971403 44.913277, 5.971403 44.73893, 6.373444 44.73893, 6.373444 44.913277))";
+
+
         const string WKT_POLY_FRANCE = "POLYGON ((-6.328125 41.21172151054787, 10.01953125 41.21172151054787, 10.01953125 51.37178037591737, -6.328125 51.37178037591737, -6.328125 41.21172151054787))";
 
+
+        #endregion
 
         #endregion
     }

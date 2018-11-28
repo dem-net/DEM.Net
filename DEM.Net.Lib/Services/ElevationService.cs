@@ -35,7 +35,7 @@ namespace DEM.Net.Lib
             // Generate metadata files if missing
             foreach (var file in report.Where(kvp => kvp.Value.IsMetadataGenerated == false && kvp.Value.IsExistingLocally == true).Select(kvp => kvp.Value))
             {
-                _IGeoTiffService.GenerateFileMetadata(file.LocalName, false, false);
+                _IGeoTiffService.GenerateFileMetadata(file.LocalName, dataSet.FileFormat, false, false);
             }
             List<DemFileReport> v_filesToDownload = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
 
@@ -50,7 +50,7 @@ namespace DEM.Net.Lib
                 List<Task> tasks = new List<Task>();
                 foreach (var file in v_filesToDownload)
                 {
-                    tasks.Add(DownloadDEMTile(file.URL, file.LocalName));
+                    tasks.Add(DownloadDEMTile(file.URL, dataSet.FileFormat, file.LocalName));
                 }
                 try
                 {
@@ -76,7 +76,7 @@ namespace DEM.Net.Lib
             // Generate metadata files if missing
             foreach (var file in report.Where(kvp => kvp.Value.IsMetadataGenerated == false && kvp.Value.IsExistingLocally == true).Select(kvp => kvp.Value))
             {
-                _IGeoTiffService.GenerateFileMetadata(file.LocalName, false, false);
+                _IGeoTiffService.GenerateFileMetadata(file.LocalName, dataSet.FileFormat, false, false);
             }
             List<DemFileReport> v_filesToDownload = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
 
@@ -91,7 +91,7 @@ namespace DEM.Net.Lib
                 List<Task> tasks = new List<Task>();
                 foreach (var file in v_filesToDownload)
                 {
-                    tasks.Add(DownloadDEMTile(file.URL, file.LocalName));
+                    tasks.Add(DownloadDEMTile(file.URL, dataSet.FileFormat, file.LocalName));
                 }
                 try
                 {
@@ -111,7 +111,7 @@ namespace DEM.Net.Lib
 
         }
 
-        async Task DownloadDEMTile(string url, string localFileName)
+        async Task DownloadDEMTile(string url, DEMFileFormat fileFormat, string localFileName)
         {
 
             // Create directories if not existing
@@ -144,7 +144,7 @@ namespace DEM.Net.Lib
                 }
             }
 
-            _IGeoTiffService.GenerateFileMetadata(localFileName, false, false);
+            _IGeoTiffService.GenerateFileMetadata(localFileName, fileFormat, false, false);
 
 
         }
@@ -214,7 +214,7 @@ namespace DEM.Net.Lib
                         , true);
 
                     // Get elevation for each point
-                    this.GetElevationData(ref intersections, adjacentGeoTiffs, segTiles, interpolator);
+                    this.GetElevationData(ref intersections, dataSet, adjacentGeoTiffs, segTiles, interpolator);
 
                     // Add to output list
                     geoPoints.AddRange(intersections);
@@ -296,7 +296,7 @@ namespace DEM.Net.Lib
             List<HeightMap> tilesHeightMap = new List<HeightMap>();
             foreach (FileMetadata metadata in bboxMetadata)
             {
-                using (IGeoTiff geoTiff = _IGeoTiffService.OpenFile(metadata.Filename))
+                using (IGeoTiff geoTiff = _IGeoTiffService.OpenFile(metadata.Filename, dataSet.FileFormat))
                 {
                     tilesHeightMap.Add(geoTiff.ParseGeoDataInBBox(bbox, metadata, NO_DATA_OUT));
                 }
@@ -395,7 +395,7 @@ namespace DEM.Net.Lib
         /// </summary>
         /// <param name="intersections"></param>
         /// <param name="segTiles"></param>
-        public void GetElevationData(ref List<GeoPoint> intersections, GeoTiffDictionary adjacentGeoTiffs, List<FileMetadata> segTiles, IInterpolator interpolator)
+        public void GetElevationData(ref List<GeoPoint> intersections, DEMDataSet dataSet, GeoTiffDictionary adjacentGeoTiffs, List<FileMetadata> segTiles, IInterpolator interpolator)
         {
             // Group by tiff file for sequential and faster access
             var pointsByTileQuery = from point in intersections
@@ -454,14 +454,14 @@ namespace DEM.Net.Lib
             // Add main tile
             if (!dictionary.ContainsKey(mainTile))
             {
-                dictionary[mainTile] = geoTiffService.OpenFile(mainTile.Filename);
+                dictionary[mainTile] = geoTiffService.OpenFile(mainTile.Filename, mainTile.fileFormat);
             }
 
             foreach (var fileMetadata in fileMetadataList)
             {
                 if (!dictionary.ContainsKey(fileMetadata))
                 {
-                    dictionary[fileMetadata] = geoTiffService.OpenFile(fileMetadata.Filename);
+                    dictionary[fileMetadata] = geoTiffService.OpenFile(fileMetadata.Filename, fileMetadata.fileFormat);
                 }
             }
         }

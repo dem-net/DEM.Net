@@ -6,10 +6,10 @@ namespace DEM.Net.Lib
     public interface IGeoTiffService
     {
         FileMetadata ParseMetadata(IGeoTiff tiff);
-        FileMetadata ParseMetadata(string fileName);
+        FileMetadata ParseMetadata(string fileName, DEMFileFormat fileFormat);
         List<FileMetadata> LoadManifestMetadata(DEMDataSet dataSet, bool force);
 
-        IGeoTiff OpenFile(string filePath);
+        IGeoTiff OpenFile(string filePath, DEMFileFormat fileFormat);
 
         string LocalDirectory { get; }
         string GetLocalDEMPath(DEMDataSet dataset);
@@ -33,10 +33,10 @@ namespace DEM.Net.Lib
         /// <param name="bbox">Bbox for filtering</param>
         /// <returns></returns>
         Dictionary<string, DemFileReport> GenerateReport(DEMDataSet dataSet, BoundingBox bbox = null);
-		Dictionary<string, DemFileReport> GenerateReportForLocation(DEMDataSet dataSet, double lat, double lon);
-		string GenerateReportAsString(DEMDataSet dataSet, BoundingBox bbox = null);
+        Dictionary<string, DemFileReport> GenerateReportForLocation(DEMDataSet dataSet, double lat, double lon);
+        string GenerateReportAsString(DEMDataSet dataSet, BoundingBox bbox = null);
 
 
-        void GenerateFileMetadata(string geoTiffFileName, bool generateBitmap, bool force);
+        void GenerateFileMetadata(string geoTiffFileName, DEMFileFormat fileFormat, bool generateBitmap, bool force);
     }
 }

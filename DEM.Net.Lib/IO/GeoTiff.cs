@@ -109,7 +109,7 @@ namespace DEM.Net.Lib
 
         public FileMetadata ParseMetaData()
         {
-            FileMetadata metadata = new FileMetadata(FilePath);
+            FileMetadata metadata = new FileMetadata(FilePath, DEMFileFormat.GEOTIFF);
 
             ///
             metadata.Height = TiffFile.GetField(TiffTag.IMAGELENGTH)[0].ToInt();
