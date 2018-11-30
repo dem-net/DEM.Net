@@ -82,13 +82,13 @@ namespace DEM.Net.Lib
             {
                 switch (metadata.SampleFormat)
                 {
-                    case "IEEEFP":
+                    case RasterSampleFormat.FLOATING_POINT:
                         heightValue = BitConverter.ToSingle(byteScanline, x * metadata.BitsPerSample / 8);
                         break;
-                    case "INT":
+                    case RasterSampleFormat.INTEGER:
                         heightValue = BitConverter.ToInt16(byteScanline, x * metadata.BitsPerSample / 8);
                         break;
-                    case "UINT":
+                    case RasterSampleFormat.UNSIGNED_INTEGER:
                         heightValue = BitConverter.ToUInt16(byteScanline, x * metadata.BitsPerSample / 8);
                         break;
                     default:
@@ -208,13 +208,13 @@ namespace DEM.Net.Lib
                     float heightValue = 0;
                     switch (metadata.SampleFormat)
                     {
-                        case "IEEEFP":
+                        case RasterSampleFormat.FLOATING_POINT:
                             heightValue = BitConverter.ToSingle(byteScanline, x * bytesPerSample);
                             break;
-                        case "INT":
+                        case RasterSampleFormat.INTEGER:
                             heightValue = BitConverter.ToInt16(byteScanline, x * bytesPerSample);
                             break;
-                        case "UINT":
+                        case RasterSampleFormat.UNSIGNED_INTEGER:
                             heightValue = BitConverter.ToUInt16(byteScanline, x * bytesPerSample);
                             break;
                         default:
@@ -263,13 +263,13 @@ namespace DEM.Net.Lib
                     float heightValue = 0;
                     switch (metadata.SampleFormat)
                     {
-                        case "IEEEFP":
+                        case RasterSampleFormat.FLOATING_POINT:
                             heightValue = BitConverter.ToSingle(byteScanline, x * metadata.BitsPerSample / 8);
                             break;
-                        case "INT":
+                        case RasterSampleFormat.INTEGER:
                             heightValue = BitConverter.ToInt16(byteScanline, x * metadata.BitsPerSample / 8);
                             break;
-                        case "UINT":
+                        case RasterSampleFormat.UNSIGNED_INTEGER:
                             heightValue = BitConverter.ToUInt16(byteScanline, x * metadata.BitsPerSample / 8);
                             break;
                         default:

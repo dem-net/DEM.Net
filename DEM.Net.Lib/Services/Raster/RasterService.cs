@@ -47,11 +47,11 @@ namespace DEM.Net.Lib
 
         public IRasterFile OpenFile(string filePath, DEMFileFormat fileFormat)
         {
-            if (fileFormat == DEMFileFormat.GEOTIFF)
+            if (fileFormat.Name == DEMFileFormat.GEOTIFF.Name)
             {
                 return new GeoTiff(filePath);
             }
-            else if (fileFormat == DEMFileFormat.SRTM_HGT)
+            else if (fileFormat.Name == DEMFileFormat.SRTM_HGT.Name)
             {
                 return new HGTFile(filePath);
             }
@@ -59,17 +59,6 @@ namespace DEM.Net.Lib
                 throw new NotImplementedException($"{fileFormat} file format not implemented.");
 
         }
-
-        ///// <summary>
-        ///// Static method
-        ///// </summary>
-        ///// <param name="filePath"></param>
-        ///// <param name="fileFormat"></param>
-        ///// <returns></returns>
-        //public static IRasterFile OpenRasterFile(string filePath, DEMFileFormat fileFormat)
-        //{
-        //    return new GeoTiff(filePath);
-        //}
 
         public string GetLocalDEMPath(DEMDataSet dataset)
         {
@@ -79,9 +68,9 @@ namespace DEM.Net.Lib
         {
             return Path.Combine(GetLocalDEMPath(dataset), fileTitle);
         }
-        public FileMetadata ParseMetadata(IRasterFile tiff)
+        public FileMetadata ParseMetadata(IRasterFile rasterFile)
         {
-            return tiff.ParseMetaData();
+            return rasterFile.ParseMetaData();
 
 
         }
@@ -92,9 +81,9 @@ namespace DEM.Net.Lib
             fileName = Path.GetFullPath(fileName);
             string fileTitle = Path.GetFileNameWithoutExtension(fileName);
 
-            using (IRasterFile tiff = OpenFile(fileName, fileFormat))
+            using (IRasterFile rasterFile = OpenFile(fileName, fileFormat))
             {
-                metadata = this.ParseMetadata(tiff);
+                metadata = this.ParseMetadata(rasterFile);
             }
             return metadata;
         }

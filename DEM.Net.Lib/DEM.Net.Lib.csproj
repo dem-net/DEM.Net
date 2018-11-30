@@ -99,6 +99,7 @@
     <Compile Include="Services\Elevation\ElevationService.cs" />
     <Compile Include="Services\Raster\GDALVRTFileService.cs" />
     <Compile Include="Services\GeometryService.cs" />
+    <Compile Include="Services\Raster\RasterSampleFormat.cs" />
     <Compile Include="Services\Raster\RasterService.cs" />
     <Compile Include="Services\Raster\IRasterService.cs" />
     <Compile Include="Services\Interpolation\IInterpolator.cs" />

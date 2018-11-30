@@ -322,9 +322,14 @@ namespace DEM.Net.Lib
 
             return heightMap;
         }
-        private static HeightMap ParseGeoData(IRasterFile raster, FileMetadata metadata)
+        public HeightMap GetHeightMap(FileMetadata metadata)
         {
-            return raster.ParseGeoData(metadata);
+            HeightMap map = null;
+            using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, metadata.fileFormat))
+            {
+                map = raster.ParseGeoData(metadata);
+            }
+            return map;
         }
 
 
@@ -335,7 +340,7 @@ namespace DEM.Net.Lib
         /// <param name="segTiles"></param>
         public void GetElevationData(ref List<GeoPoint> intersections, DEMDataSet dataSet, RasterFileDictionary adjacentRasters, List<FileMetadata> segTiles, IInterpolator interpolator)
         {
-            // Group by tiff file for sequential and faster access
+            // Group by raster file for sequential and faster access
             var pointsByTileQuery = from point in intersections
                                     let pointTile = new
                                     {
@@ -651,7 +656,7 @@ namespace DEM.Net.Lib
             try
             {
 
-                IRasterFile mainTiff = adjacentTiles[metadata];
+                IRasterFile mainRaster = adjacentTiles[metadata];
 
                 //const double epsilon = (Double.Epsilon * 100);
                 float noData = metadata.NoDataValueFloat;
@@ -674,7 +679,7 @@ namespace DEM.Net.Lib
                     int x = (int)Math.Round(xpos, 0);
                     int y = (int)Math.Round(ypos, 0);
                     var tile = FindTile(metadata, adjacentTiles, x, y, out x, out y);
-                    heightValue = mainTiff.GetElevationAtPoint(tile, x, y);
+                    heightValue = mainRaster.GetElevationAtPoint(tile, x, y);
                 }
                 else
                 {

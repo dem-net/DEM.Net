@@ -32,7 +32,7 @@ namespace SampleApp
             ElevationService elevationService = new ElevationService(rasterService);
 
 
-            //FileMetaDataVersionMigration(geoTiffService, DEMDataSet.AW3D30);
+            //FileMetaDataVersionMigration(rasterService, DEMDataSet.AW3D30);
 
             HGTTest(WKT_STE_VICTOIRE, elevationService);
 
@@ -42,9 +42,9 @@ namespace SampleApp
 
         }
 
-        private static void FileMetaDataVersionMigration(IRasterService geoTiffService, DEMDataSet dataSet)
+        private static void FileMetaDataVersionMigration(IRasterService rasterService, DEMDataSet dataSet)
         {
-            geoTiffService.GenerateDirectoryMetadata(dataSet, false, true);
+            rasterService.GenerateDirectoryMetadata(dataSet, false, true);
         }
 
         private static void HGTTest(string wkt, ElevationService elevationService)
@@ -52,8 +52,13 @@ namespace SampleApp
             string name = "HGT test";
             SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
             var bbox = geom.GetBoundingBox();
+            DEMDataSet dataSet = DEMDataSet.SRTM_GL3_srtm;
 
-            HeightMap hMap = elevationService.GetHeightMap(bbox, DEMDataSet.AW3D30);
+            FileMetadata file = elevationService.GetCoveringFiles(bbox, dataSet).FirstOrDefault();
+
+            HeightMap hMapFull = elevationService.GetHeightMap(file);
+
+            HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
 
             //hMap = hMap.ReprojectTo(4326, 2154);
             hMap = hMap.CenterOnOrigin(0.00002f);
@@ -73,7 +78,7 @@ namespace SampleApp
             ElevationService elevationService = new ElevationService(rasterService);
 
             rasterService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true);
-            rasterService.GenerateFileMetadata(@"C:\Users\xfischer\AppData\Roaming\DEM.Net\ETOPO1\ETOPO1_Ice_g_geotiff.tif",DEMFileFormat.GEOTIFF, false, false);
+            rasterService.GenerateFileMetadata(@"C:\Users\xfischer\AppData\Roaming\DEM.Net\ETOPO1\ETOPO1_Ice_g_geotiff.tif", DEMFileFormat.GEOTIFF, false, false);
             string wkt4Tiles = "POLYGON ((5.9735200000000006 43.979698, 6.021922 43.979698, 6.021922 44.002967, 5.9735200000000006 44.002967, 5.9735200000000006 43.979698))";
             SpatialTrace_GeometryWithDEMGrid(elevationService, rasterService, wkt4Tiles, DEMDataSet.AW3D30);
 
@@ -130,7 +135,7 @@ namespace SampleApp
             elevationService.DownloadMissingFiles(DEMDataSet.AW3D30, GetBoundingBox(WKT_AIX_BAYONNE_EST_OUEST));
             //elevationService.DownloadMissingFiles(DEMDataSet.SRTM_GL3_srtm, GetBoundingBox(WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES));
 
-            
+
             rasterService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, false);
 
             //Spatial trace of line +segments + interpolated point + dem grid
@@ -146,7 +151,7 @@ namespace SampleApp
 
         private static void TestGpxElevation(ElevationService elevationService, DEMDataSet dataSet, string gpxFile)
         {
-            var segments =  GpxImport.ReadGPX_Segments(gpxFile);
+            var segments = GpxImport.ReadGPX_Segments(gpxFile);
 
             SpatialTrace.Enable();
             SpatialTrace.Clear();
@@ -183,8 +188,8 @@ namespace SampleApp
 
 
             glTFService glTF = new glTFService();
-            MeshPrimitive meshPrimitive = glTF.GenerateLine(points,new System.Numerics.Vector4(1,0,0,0),1f);
-            
+            MeshPrimitive meshPrimitive = glTF.GenerateLine(points, new System.Numerics.Vector4(1, 0, 0, 0), 1f);
+
             Console.Write("GenerateModel...");
             Model model = glTF.GenerateModel(meshPrimitive, name);
             glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", $"{name} line", false, true);
@@ -195,7 +200,7 @@ namespace SampleApp
             glTFService glTF = new glTFService();
             List<MeshPrimitive> meshes = new List<MeshPrimitive>();
 
-            
+
 
             // MESH 3D terrain
             SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
@@ -282,14 +287,14 @@ namespace SampleApp
 
         }
 
-        private static void GeoTiffTests(IRasterService geoTiffService, string tiffPath, DEMFileFormat fileFormat)
+        private static void GeoTiffTests(IRasterService rasterService, string tiffPath, DEMFileFormat fileFormat)
         {
 
             DEM.Net.Lib.BoundingBox bbox = new DEM.Net.Lib.BoundingBox(1897950, 1898106, 3150520, 3150700);
 
             HeightMap hmap = null;
-            FileMetadata metaData = geoTiffService.ParseMetadata(tiffPath, fileFormat);
-            using (IRasterFile geoTiff = geoTiffService.OpenFile(tiffPath, fileFormat))
+            FileMetadata metaData = rasterService.ParseMetadata(tiffPath, fileFormat);
+            using (IRasterFile geoTiff = rasterService.OpenFile(tiffPath, fileFormat))
             {
                 hmap = geoTiff.ParseGeoDataInBBox(bbox, metaData, 0);
             }
@@ -468,7 +473,7 @@ namespace SampleApp
             gb.EndFigure();
             gb.EndGeometry();
             SqlGeometry geom = gb.ConstructedGeometry;
-            geom = DEM.Net.Lib.SqlTypesExtensions.MakeValidIfInvalid(geom,1);
+            geom = DEM.Net.Lib.SqlTypesExtensions.MakeValidIfInvalid(geom, 1);
             SpatialTrace.Enable();
             SpatialTrace.TraceGeometry(geom, message);
             SpatialTrace.Disable();
@@ -493,7 +498,7 @@ namespace SampleApp
             return geom.ToGeography().STBuffer(60).GetBoundingBox();
         }
 
-        static void SpatialTrace_GeometryWithDEMGrid(ElevationService elevationService, IRasterService geoTiffService, string wktBbox, DEMDataSet dataSet, double rangeKm = 100)
+        static void SpatialTrace_GeometryWithDEMGrid(ElevationService elevationService, IRasterService rasterService, string wktBbox, DEMDataSet dataSet, double rangeKm = 100)
         {
             SpatialTrace.Enable();
             SpatialTrace.Clear();
@@ -506,7 +511,7 @@ namespace SampleApp
             }
 
 
-            Dictionary<string, DemFileReport> tiles = geoTiffService.GenerateReport(dataSet, bbox);
+            Dictionary<string, DemFileReport> tiles = rasterService.GenerateReport(dataSet, bbox);
 
             SpatialTrace.Indent("DEM tiles");
             SpatialTrace.SetLineColor(Colors.Black);

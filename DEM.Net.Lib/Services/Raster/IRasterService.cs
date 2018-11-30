@@ -5,7 +5,7 @@ namespace DEM.Net.Lib
 {
     public interface IRasterService
     {
-        FileMetadata ParseMetadata(IRasterFile tiff);
+        FileMetadata ParseMetadata(IRasterFile rasterFile);
         FileMetadata ParseMetadata(string fileName, DEMFileFormat fileFormat);
         List<FileMetadata> LoadManifestMetadata(DEMDataSet dataSet, bool force);
 
@@ -14,8 +14,7 @@ namespace DEM.Net.Lib
         string LocalDirectory { get; }
         string GetLocalDEMPath(DEMDataSet dataset);
         string GetLocalDEMFilePath(DEMDataSet dataset, string fileTitle);
-
-        //void DumpTiffTags(Tiff tiff);
+        
 
         /// <summary>
         /// Generate metadata files for fast in-memory indexing
