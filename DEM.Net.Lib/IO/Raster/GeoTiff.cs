@@ -140,12 +140,7 @@ namespace DEM.Net.Lib
 
             var scanline = new byte[TiffFile.ScanlineSize()];
             metadata.ScanlineSize = TiffFile.ScanlineSize();
-            //TODO: Check if band is stored in 1 byte or 2 bytes. 
-            //If 2, the following code would be required
-            var scanline16Bit = new ushort[TiffFile.ScanlineSize() / 2];
-            Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
-
-
+            
             // Grab some raster metadata
             metadata.BitsPerSample = TiffFile.GetField(TiffTag.BITSPERSAMPLE)[0].ToInt();
             var sampleFormat = TiffFile.GetField(TiffTag.SAMPLEFORMAT);
@@ -159,7 +154,7 @@ namespace DEM.Net.Lib
             return metadata;
         }
 
-        public HeightMap ParseGeoDataInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = 0)
+        public HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = 0)
         {
             // metadata.BitsPerSample
             // When 16 we have 2 bytes per sample
@@ -220,11 +215,17 @@ namespace DEM.Net.Lib
                         default:
                             throw new Exception("Sample format unsupported.");
                     }
-                    if (heightValue < 32768)
+                    if (heightValue <= 0)
                     {
                         heightMap.Mininum = Math.Min(heightMap.Mininum, heightValue);
                         heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
                     }
+                    else if (heightValue < 32768)
+                    {
+                        heightMap.Mininum = Math.Min(heightMap.Mininum, heightValue);
+                        heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
+                    }
+                     
                     else
                     {
                         heightValue = (float)noDataValue;
@@ -239,7 +240,7 @@ namespace DEM.Net.Lib
             return heightMap;
         }
 
-        public HeightMap ParseGeoData(FileMetadata metadata)
+        public HeightMap GetHeightMap(FileMetadata metadata)
         {
             HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
             heightMap.Count = heightMap.Width * heightMap.Height;

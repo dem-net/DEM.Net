@@ -241,7 +241,7 @@ namespace DEM.Net.Lib
             HeightMap heightMap = null;
             using (IRasterFile raster = OpenFile(fileName, metadata.fileFormat))
             {
-                heightMap = raster.ParseGeoData(metadata);
+                heightMap = raster.GetHeightMap(metadata);
             }
             return heightMap;
         }

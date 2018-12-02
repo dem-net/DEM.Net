@@ -16,6 +16,7 @@ using System.Configuration;
 using DEM.Net.glTF;
 using AssetGenerator.Runtime;
 using AssetGenerator;
+using System.Numerics;
 
 namespace SampleApp
 {
@@ -32,16 +33,21 @@ namespace SampleApp
             ElevationService elevationService = new ElevationService(rasterService);
 
 
-            //FileMetaDataVersionMigration(rasterService, DEMDataSet.AW3D30);
+            rasterService.GenerateFileMetadata(@"C:\Repos\DEM.Net\Data\ETOPO1\ETOPO1_Bed_g_geotiff.tif", DEMFileFormat.GEOTIFF, false, false);
 
-            HGTTest(WKT_BBOX_EIGER_MEDIUM, elevationService, DEMDataSet.AW3D30, DEMDataSet.AW3D30.Name);
-            HGTTest(WKT_BBOX_EIGER_MEDIUM, elevationService, DEMDataSet.SRTM_GL3_srtm, DEMDataSet.SRTM_GL3_srtm.Name);
+            //FileMetaDataVersionMigration(rasterService, DEMDataSet.AW3D30);
+            //HGTTest(WKT_BBOX_MARSEILLE, elevationService, DEMDataSet.SRTM_GL3, DEMDataSet.SRTM_GL3.Name);
+            HGTTest(WKT_BBOX_MARSEILLE, elevationService, DEMDataSet.SRTM_GL1, DEMDataSet.SRTM_GL1.Name);
+            //HGTTest(WKT_BBOX_EIGER_MEDIUM, elevationService, DEMDataSet.AW3D30, DEMDataSet.AW3D30.Name);
+            //TestFillVoids(WKT_BBOX_EIGER_MEDIUM, elevationService, DEMDataSet.AW3D30, DEMDataSet.SRTM_GL3_srtm, "Eiger");
 
 
             Console.Write("Press any key to exit...");
             Console.ReadLine();
 
         }
+
+
 
         private static void FileMetaDataVersionMigration(IRasterService rasterService, DEMDataSet dataSet)
         {
@@ -69,6 +75,43 @@ namespace SampleApp
 
             glTFService glTF = new glTFService();
             MeshPrimitive meshPrimitive = glTF.GenerateTriangleMesh(hMap);
+            //Matrix4x4 mat = Matrix4x4.CreateRotationY((float)Math.PI);
+            //meshPrimitive.Positions = meshPrimitive.Positions.Select(p => Vector3.Transform(p, mat));
+            //meshPrimitive.Normals = meshPrimitive.Normals.Select(p => Vector3.Transform(p, mat));
+
+
+            Logger.Info("Generating glTF Model...");
+
+            Model model = glTF.GenerateModel(meshPrimitive, name);
+
+            Logger.Info("Export glTF binary file...");
+
+            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", name, false, true);
+            //HeightMapExport.Export(hMap_L93, "Aix Puyricard");
+        }
+        private static void TestFillVoids(string wkt, ElevationService elevationService, DEMDataSet dataSet, DEMDataSet backupDataSet, string name)
+        {
+            Logger.Info("Parsing WKT...");
+            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
+            var bbox = geom.GetBoundingBox();
+
+            Logger.Info("Get HeightMap...");
+            HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
+            Logger.Info("Get backup HeightMap...");
+            HeightMap backupHmap = elevationService.GetHeightMap(bbox, backupDataSet);
+
+            Logger.Info("Coord transform...");
+            //hMap = hMap.ReprojectTo(4326, 2154);
+            hMap = hMap.CenterOnOrigin(0.00002f);
+
+            Logger.Info("Convert to glTF Model Primitive...");
+
+            glTFService glTF = new glTFService();
+            MeshPrimitive meshPrimitive = glTF.GenerateTriangleMesh(hMap);
+            //Matrix4x4 mat = Matrix4x4.CreateRotationY((float)Math.PI);
+            //meshPrimitive.Positions = meshPrimitive.Positions.Select(p => Vector3.Transform(p, mat));
+            //meshPrimitive.Normals = meshPrimitive.Normals.Select(p => Vector3.Transform(p, mat));
+
 
             Logger.Info("Generating glTF Model...");
 
@@ -306,7 +349,7 @@ namespace SampleApp
             FileMetadata metaData = rasterService.ParseMetadata(tiffPath, fileFormat);
             using (IRasterFile geoTiff = rasterService.OpenFile(tiffPath, fileFormat))
             {
-                hmap = geoTiff.ParseGeoDataInBBox(bbox, metaData, 0);
+                hmap = geoTiff.GetHeightMapInBBox(bbox, metaData, 0);
             }
             //hmap = hmap.CenterOnOrigin(0.1f);
             glTFService glTF = new glTFService();
@@ -568,15 +611,19 @@ namespace SampleApp
         const string WKT_BAYONNE_NICE_DIRECT = "LINESTRING(-1.51611328125 43.50075243569041,7.261962890625 43.711564246658504)";
         const string WKT_DEM_INTERPOLATION_BUG = "LINESTRING(5.42859268188477 43.5304183959961, 5.42845249176025 43.5301399230957,5.4283127784729 43.5298614501953,5.42817258834839 43.5295829772949,5.42803287506104 43.5293045043945,5.42789268493652 43.5290260314941,5.4277548789978 43.528751373291,5.42761468887329 43.5284729003906)";
 
+        const string WKT_BBOX_MARSEILLE = "POLYGON ((5.2178192138671875 43.18314981723581, 5.5474090576171875 43.18314981723581, 5.5474090576171875 43.380099469356374, 5.2178192138671875 43.380099469356374, 5.2178192138671875 43.18314981723581))";
         const string WKT_BBOX_AIX_LESMILLES = "POLYGON ((5.359268188476562 43.47285413777968, 5.49041748046875 43.47285413777968, 5.49041748046875 43.56024232423529, 5.359268188476562 43.56024232423529, 5.359268188476562 43.47285413777968))";
         const string WKT_BBOX_AIX_PUYRICARD = "POLYGON ((5.429993 43.537854, 5.459132 43.537854, 5.459132 43.58151, 5.429993 43.58151, 5.429993 43.537854))";
         const string WKT_BBOX_STE_VICTOIRE = "POLYGON ((5.361328125 43.440954591707445, 5.80352783203125 43.440954591707445, 5.80352783203125 43.700644071512464, 5.361328125 43.700644071512464, 5.361328125 43.440954591707445))";
         const string WKT_BBOX_SCL_ACONCAGUA = "POLYGON ((-70.960693359375 -33.63291573870476, -69.27978515625 -33.63291573870476, -69.27978515625 -32.37068286611426, -70.960693359375 -32.37068286611426, -70.960693359375 -33.63291573870476))";
+        const string WKT_BBOX_SCL_VALPO = "POLYGON ((-71.8560791015625 -33.779147331286474, -70.46630859375 -33.779147331286474, -70.46630859375 -32.73646168396554, -71.8560791015625 -32.73646168396554, -71.8560791015625 -33.779147331286474))";
+        const string WKT_BBOX_EVEREST = "POLYGON ((86.60522460937499 27.737022779516813, 87.21771240234375 27.737022779516813, 87.21771240234375 28.38173504322308, 86.60522460937499 28.38173504322308, 86.60522460937499 27.737022779516813))";
         const string WKT_BBOX_AIX_MARSEILLE = "POLYGON ((4.94659423828125 43.1450861841603, 6.0040283203125 43.1450861841603, 6.0040283203125 43.93152797296857, 4.94659423828125 43.93152797296857, 4.94659423828125 43.1450861841603))";
-        const string WKT_BBOX_MT_BLANC = "POLYGON ((6.772385 45.882318, 6.772385 45.772313, 6.956124 45.772313, 6.956124 45.882318, 6.772385 45.882318))";
+        const string WKT_BBOX_MT_BLANC = "POLYGON ((7.108154 46.01222, 6.735101 46.01222, 6.735101 45.771355, 7.108154 45.771355, 7.108154 46.01222))";
         const string WKT_BBOX_TRAIL = "POLYGON ((2.620153 42.653948, 2.563506 42.653948, 2.563506 42.61318, 2.620153 42.61318, 2.620153 42.653948))";
         const string WKT_BBOX_LAPAZ = "POLYGON ((-67.922789 -16.390452, -68.293022 -16.384976, -68.297279 -16.69934, -67.932587 -16.69934, -67.922789 -16.390452))";
         const string WKT_BBOX_LAPAZ_DBG = "POLYGON ((-67.998969 -16.390233, -68.000813 -16.390262, -68.000836 -16.391898, -67.998996 -16.391889, -67.998969 -16.390233))";
+        const string WKT_BBOX_LAPAZ_LARGE = "POLYGON ((-68.45581054687499 -16.92019465044387, -67.6043701171875 -16.92019465044387, -67.6043701171875 -16.1724728083975, -68.45581054687499 -16.1724728083975, -68.45581054687499 -16.92019465044387))";
         const string WKT_BBOX_BOGOTA = "POLYGON ((-74.454346 4.434044, -73.850098 4.434044, -73.850098 5.041699, -74.454346 5.041699, -74.454346 4.434044))";
         const string WKT_BBOX_VENTOUX = "POLYGON ((5.495911 44.32876, 4.818878 44.32876, 4.818878 43.909766, 5.495911 43.909766, 5.495911 44.32876))";
         const string WKT_BBOX_EIGER_LARGE = "POLYGON ((8.157349 46.674197, 7.821587 46.674197, 7.821587 46.441642, 8.157349 46.441642, 8.157349 46.674197))";

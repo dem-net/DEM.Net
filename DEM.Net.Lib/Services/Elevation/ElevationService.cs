@@ -66,6 +66,7 @@ namespace DEM.Net.Lib
                     Trace.TraceError($"Error downloading missing files. Check internet connection or retry later. {ex.GetInnerMostException().Message}");
                 }
 
+
             }
 
         }
@@ -89,6 +90,8 @@ namespace DEM.Net.Lib
                 Trace.TraceInformation($"Downloading {v_filesToDownload.Count} missing file(s).");
 
                 List<Task> tasks = new List<Task>();
+
+
                 foreach (var file in v_filesToDownload)
                 {
                     tasks.Add(DownloadDEMTile(file.URL, dataSet.FileFormat, file.LocalName));
@@ -106,6 +109,7 @@ namespace DEM.Net.Lib
                 {
                     Trace.TraceError($"Error downloading missing files. Check internet connection or retry later. {ex.GetInnerMostException().Message}");
                 }
+
 
             }
 
@@ -131,8 +135,8 @@ namespace DEM.Net.Lib
 
 
                 var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-                var sendTask = client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-                var response = sendTask.Result.EnsureSuccessStatusCode();
+                var sendTask = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                var response = sendTask.EnsureSuccessStatusCode();
                 var httpStream = await response.Content.ReadAsStreamAsync();
 
 
@@ -143,6 +147,7 @@ namespace DEM.Net.Lib
                     fileStream.Flush();
                 }
             }
+
 
             _IRasterService.GenerateFileMetadata(localFileName, fileFormat, false, false);
 
@@ -249,7 +254,7 @@ namespace DEM.Net.Lib
             {
                 PopulateRasterFileDictionary(adjacentRasters, tiles.First(), _IRasterService, tiles);
 
-                geoPoint.Elevation = ParseGeoDataAtPoint(adjacentRasters, tiles.First(), lat, lon, 0, interpolator);
+                geoPoint.Elevation = GetElevationAtPoint(adjacentRasters, tiles.First(), lat, lon, 0, interpolator);
 
 
                 //Debug.WriteLine(adjacentRasters.Count);
@@ -297,7 +302,7 @@ namespace DEM.Net.Lib
             {
                 using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, dataSet.FileFormat))
                 {
-                    tilesHeightMap.Add(raster.ParseGeoDataInBBox(bbox, metadata, NO_DATA_OUT));
+                    tilesHeightMap.Add(raster.GetHeightMapInBBox(bbox, metadata, NO_DATA_OUT));
                 }
             }
 
@@ -327,7 +332,7 @@ namespace DEM.Net.Lib
             HeightMap map = null;
             using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, metadata.fileFormat))
             {
-                map = raster.ParseGeoData(metadata);
+                map = raster.GetHeightMap(metadata);
             }
             return map;
         }
@@ -375,7 +380,7 @@ namespace DEM.Net.Lib
                     foreach (var pointile in tilePoints)
                     {
                         GeoPoint current = pointile.Point;
-                        lastElevation = this.ParseGeoDataAtPoint(adjacentRasters, mainTile, current.Latitude, current.Longitude, lastElevation, interpolator);
+                        lastElevation = this.GetElevationAtPoint(adjacentRasters, mainTile, current.Latitude, current.Longitude, lastElevation, interpolator);
                         current.Elevation = lastElevation;
                     }
 
@@ -650,7 +655,7 @@ namespace DEM.Net.Lib
             //return isInside;
         }
 
-        public float ParseGeoDataAtPoint(RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float lastElevation, IInterpolator interpolator)
+        public float GetElevationAtPoint(RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float lastElevation, IInterpolator interpolator)
         {
             float heightValue = 0;
             try

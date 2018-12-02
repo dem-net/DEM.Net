@@ -142,7 +142,7 @@ namespace DEM.Net.Lib
             return metadata;
         }
 
-        public HeightMap ParseGeoDataInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = float.MinValue)
+        public HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = float.MinValue)
         {
             // metadata.BitsPerSample
             // When 16 we have 2 bytes per sample
@@ -232,8 +232,12 @@ namespace DEM.Net.Lib
                         }
                     }
 
-
-                    if (heightValue < 32768)
+                    if (heightValue < -10)
+                    {
+                        heightMap.Mininum = Math.Min(heightMap.Mininum, heightValue);
+                        heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
+                    }
+                    else if (heightValue < 32768)
                     {
                         heightMap.Mininum = Math.Min(heightMap.Mininum, heightValue);
                         heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
@@ -252,7 +256,7 @@ namespace DEM.Net.Lib
             return heightMap;
         }
 
-        public HeightMap ParseGeoData(FileMetadata metadata)
+        public HeightMap GetHeightMap(FileMetadata metadata)
         {
             HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
             heightMap.Count = heightMap.Width * heightMap.Height;

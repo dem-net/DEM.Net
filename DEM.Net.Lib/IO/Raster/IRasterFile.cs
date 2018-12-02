@@ -9,8 +9,8 @@ namespace DEM.Net.Lib
     public interface IRasterFile : IDisposable
     {
         float GetElevationAtPoint(FileMetadata metadata, int x, int y);
-		HeightMap ParseGeoDataInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = float.MinValue);
-        HeightMap ParseGeoData(FileMetadata metadata);
+		HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = float.MinValue);
+        HeightMap GetHeightMap(FileMetadata metadata);
 
         FileMetadata ParseMetaData();
     }
