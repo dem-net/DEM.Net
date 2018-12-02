@@ -31,8 +31,8 @@ namespace SampleApp
             IRasterService rasterService = new RasterService(_DataDirectory);
             ElevationService elevationService = new ElevationService(rasterService);
 
-            LineDEMTest(elevationService, DEMDataSet.SRTM_GL3, WKT_SCL_MENDOZA, 100);
-            LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_SCL_MENDOZA, 100);
+            //LineDEMTest(elevationService, DEMDataSet.SRTM_GL3, WKT_SCL_MENDOZA, 100);
+            //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_SCL_MENDOZA, 100);
             
 
             TestGpxElevation(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
@@ -200,19 +200,21 @@ namespace SampleApp
 
             foreach (var line in segments)
             {
-                List<GeoPoint> inputLine = line.ToList();
+                List<GeoPoint> inputLineBak = line.Select(pt => pt.Clone()).ToList();
 
 
-                var lineOut = elevationService.GetPointsElevation(inputLine, dataSet);
+                var lineOut = elevationService.GetPointsElevation(line, dataSet).ToList();
 
-                GeometryService.ComputeMetrics(inputLine);
-                GeometryService.ComputeMetrics(lineOut.ToList());
-
-                // Compare
-                SpatialTraceLine(inputLine, "Input");
+                GeometryService.ComputeMetrics(inputLineBak);
+                GeometryService.ComputeMetrics(lineOut);
 
                 // Compare
-                SpatialTraceLine(lineOut.ToList(), "Output");
+                SpatialTraceLine(inputLineBak, "Input");
+
+                SpatialTrace.SetLineWidth(3);
+                SpatialTrace.SetLineColor(Colors.Red);
+                // Compare
+                SpatialTraceLine(lineOut, "Output");
 
             }
 
