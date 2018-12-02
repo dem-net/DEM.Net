@@ -1,6 +1,6 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/github/xfischer/DEM.Net)](https://ci.appveyor.com/project/xfischer/dem-net)
 
-[[https://github.com/xfischer/DEM.Net/blob/master/valgo.png|alt=3D model]]
+ ![3D model](/valgo.jpg?raw=true "3D model")
 
 
 # DEM.Net 
