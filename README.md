@@ -18,12 +18,21 @@ The goal is to provide on the fly DEM querying from GeoJSON or WKT geometries :
 SampleApp is a Console App used for test purposes, full of samples. It's pretty messy and lacks documentation but names are self explanatory.
 
 # How do I use the API ?
+## Raster operations
 - Use `elevationService.DownloadMissingFiles(DEMDataSet.AW3D30, <bbox>)` to download and generate metadata for a given dataset.
 - Supported datasets : SRTM GL1 and GL3 (HGT files), AWD30 (GeoTIFF)
 - Use `new RasterService().GenerateReport(DEMDataSet.AW3D30, <bounding box>)` to download only necessary tiles using remote VRT file.
 - Use `rasterService.GenerateFileMetadata(<path to file>, DEMFileFormat.GEOTIFF, false, false)` to generate metada for an arbitrary file.
 - Use `RasterService.GenerateDirectoryMetadata(samplePath);`to generate metadata files for your raster tiles.
 These metadata files will be used as an index when querying Digital Elevation Model data.
+
+## Elevation operations
+- GetLineGeometryElevation
+- GetPointElevation
+
+## glTF export
+- `glTFService` can generate triangulated MeshPrimitives from height maps
+- Export to .gtlf or .glb
 
 # Sample data
 - Rasters from http://www.opentopography.org
