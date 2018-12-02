@@ -178,7 +178,7 @@ namespace DEM.Net.Lib
                     List<FileMetadata> segTiles = this.GetCoveringFiles(segment.GetBoundingBox(), dataSet, tiles);
 
                     // Find all intersection with segment and DEM grid
-                    List<GeoPoint> intersections = this.FindSegmentIntersections(segment.STStartPoint().STX.Value
+                    IEnumerable<GeoPoint> intersections = this.FindSegmentIntersections(segment.STStartPoint().STX.Value
                         , segment.STStartPoint().STY.Value
                         , segment.STEndPoint().STX.Value
                         , segment.STEndPoint().STY.Value
@@ -230,6 +230,28 @@ namespace DEM.Net.Lib
             }  // Ensures all geotifs are properly closed
 
             return geoPoint;
+        }
+        public IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
+        {
+            if (points == null )
+                return null;
+           
+            BoundingBox bbox = points.GetBoundingBox();
+            List<FileMetadata> tiles = this.GetCoveringFiles(bbox, dataSet);
+
+            // Init interpolator
+            IInterpolator interpolator = GetInterpolator(interpolationMode);
+
+            using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
+            {
+               
+                    // Get elevation for each point
+                    this.GetElevationData(ref points, dataSet, adjacentRasters, tiles, interpolator);
+
+                //Debug.WriteLine(adjacentRasters.Count);
+            }  // Ensures all rasters are properly closed
+
+            return points;
         }
 
         public IInterpolator GetInterpolator(InterpolationMode interpolationMode)
@@ -312,7 +334,7 @@ namespace DEM.Net.Lib
         /// </summary>
         /// <param name="intersections"></param>
         /// <param name="segTiles"></param>
-        public void GetElevationData(ref List<GeoPoint> intersections, DEMDataSet dataSet, RasterFileDictionary adjacentRasters, List<FileMetadata> segTiles, IInterpolator interpolator)
+        public void GetElevationData(ref IEnumerable<GeoPoint> intersections, DEMDataSet dataSet, RasterFileDictionary adjacentRasters, List<FileMetadata> segTiles, IInterpolator interpolator)
         {
             // Group by raster file for sequential and faster access
             var pointsByTileQuery = from point in intersections
@@ -596,8 +618,7 @@ namespace DEM.Net.Lib
         {
             BoundingBox tileBBox = GetTileBoundingBox(tileMetadata);
 
-            return BoundingBox.Contains(tileBBox, bbox.xMin, bbox.yMin)
-                   || BoundingBox.Contains(tileBBox, bbox.xMax, bbox.yMax);
+            return (tileBBox.xMax >= bbox.xMin && tileBBox.xMin <= bbox.xMax) && (tileBBox.yMax >= bbox.yMin && tileBBox.yMin <= bbox.yMax);
         }
         public bool IsPointInTile(FileMetadata tileMetadata, GeoPoint point)
         {

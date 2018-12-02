@@ -31,78 +31,69 @@ namespace DEM.Net.Lib
         public float GetElevationAtPoint(FileMetadata metadata, int x, int y)
         {
             float value = -32768;
-            switch (_fileBytesCount)
-            {
-                case HGTFile.HGT1201:
-                    value = 0;// GetHGTValue(x, y, latAdj, lonAdj, 1200, 2402);
-                    break;
-                case HGTFile.HGT3601:
-                    value = 0;// GetHGTValue(x, y, latAdj, lonAdj, 3600, 7202);
-                    break;
-            }
+            value = GetHGTValue(metadata, x, y);
 
             return value;
         }
 
 
-        //private float GetHGTValue(int x, int y, Stream hgtDataStream, int latAdj, int lonAdj, int width, int stride)
-        //{
-        //    hgtDataStream.Seek(0, SeekOrigin.Begin);
+        private float GetHGTValue(FileMetadata metadata, int x, int y)
+        {
+           
+            int bytesPerSample = metadata.BitsPerSample / 8;
+            byte[] byteScanline = new byte[metadata.ScanlineSize];
 
-        //    double y = node.Latitude;
-        //    double x = node.Longitude;
-        //    var offset = ((int)((x - (int)x + lonAdj) * width) * 2 + (width - (int)((y - (int)y + latAdj) * width)) * stride);
-        //    var h1 = hgtData[offset + 1] + hgtData[offset + 0] * 256;
-        //    var h2 = hgtData[offset + 3] + hgtData[offset + 2] * 256;
-        //    var h3 = hgtData[offset - stride + 1] + hgtData[offset - stride + 0] * 256;
-        //    var h4 = hgtData[offset - stride + 3] + hgtData[offset - stride + 2] * 256;
+            _hgtStream.Seek(metadata.ScanlineSize * y, SeekOrigin.Begin);
+            _hgtStream.Read(byteScanline,0, metadata.ScanlineSize);
 
-        //    var m = Math.Max(h1, Math.Max(h2, Math.Max(h3, h4)));
-        //    if (h1 == -32768)
-        //        h1 = m;
-        //    if (h2 == -32768)
-        //        h2 = m;
-        //    if (h3 == -32768)
-        //        h3 = m;
-        //    if (h4 == -32768)
-        //        h4 = m;
+            double latitude = metadata.StartLat + (metadata.pixelSizeY * y);
+            double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
 
-        //    var fx = node.Longitude - (int)(node.Longitude);
-        //    var fy = node.Latitude - (int)(node.Latitude);
-
-        //    var elevation = (int)Math.Round((h1 * (1 - fx) + h2 * fx) * (1 - fy) + (h3 * (1 - fx) + h4 * fx) * fy);
-
-        //    node.Elevation = elevation < -1000 ? 0 : elevation;
-        //}
-        //private float GetHGTValue(int x, int y, byte[] hgtData, int latAdj, int lonAdj, int width, int stride)
-        //{
-
-        //    double y = node.Latitude;
-        //    double x = node.Longitude;
-        //    var offset = ((int)((x - (int)x + lonAdj) * width) * 2 + (width - (int)((y - (int)y + latAdj) * width)) * stride);
-        //    var h1 = hgtData[offset + 1] + hgtData[offset + 0] * 256;
-        //    var h2 = hgtData[offset + 3] + hgtData[offset + 2] * 256;
-        //    var h3 = hgtData[offset - stride + 1] + hgtData[offset - stride + 0] * 256;
-        //    var h4 = hgtData[offset - stride + 3] + hgtData[offset - stride + 2] * 256;
-
-        //    var m = Math.Max(h1, Math.Max(h2, Math.Max(h3, h4)));
-        //    if (h1 == -32768)
-        //        h1 = m;
-        //    if (h2 == -32768)
-        //        h2 = m;
-        //    if (h3 == -32768)
-        //        h3 = m;
-        //    if (h4 == -32768)
-        //        h4 = m;
-
-        //    var fx = node.Longitude - (int)(node.Longitude);
-        //    var fy = node.Latitude - (int)(node.Latitude);
-
-        //    var elevation = (int)Math.Round((h1 * (1 - fx) + h2 * fx) * (1 - fy) + (h3 * (1 - fx) + h4 * fx) * fy);
-
-        //    node.Elevation = elevation < -1000 ? 0 : elevation;
-        //}
-
+            float heightValue = 0;
+            byte[] heightBytes = new byte[bytesPerSample]; ;
+            if (BitConverter.IsLittleEndian)
+            {
+                // reverse bytes
+                for (int i = 0; i < bytesPerSample; i++)
+                {
+                    heightBytes[i] = byteScanline[x * bytesPerSample + bytesPerSample - i - 1];
+                }
+                switch (metadata.SampleFormat)
+                {
+                    case RasterSampleFormat.FLOATING_POINT:
+                        heightValue = BitConverter.ToSingle(heightBytes, 0);
+                        break;
+                    case RasterSampleFormat.INTEGER:
+                        heightValue = BitConverter.ToInt16(heightBytes, 0);
+                        break;
+                    case RasterSampleFormat.UNSIGNED_INTEGER:
+                        heightValue = BitConverter.ToUInt16(heightBytes, 0);
+                        break;
+                    default:
+                        throw new Exception("Sample format unsupported.");
+                }
+            }
+            else
+            {
+                switch (metadata.SampleFormat)
+                {
+                    case RasterSampleFormat.FLOATING_POINT:
+                        heightValue = BitConverter.ToSingle(byteScanline, x * bytesPerSample);
+                        break;
+                    case RasterSampleFormat.INTEGER:
+                        heightValue = BitConverter.ToInt16(byteScanline, x * bytesPerSample);
+                        break;
+                    case RasterSampleFormat.UNSIGNED_INTEGER:
+                        heightValue = BitConverter.ToUInt16(byteScanline, x * bytesPerSample);
+                        break;
+                    default:
+                        throw new Exception("Sample format unsupported.");
+                }
+            }
+            
+            return heightValue;
+        }
+      
         public FileMetadata ParseMetaData()
         {
             FileMetadata metadata = new FileMetadata(_filename, DEMFileFormat.SRTM_HGT);
@@ -197,7 +188,7 @@ namespace DEM.Net.Lib
                         // reverse bytes
                         for (int i = 0; i < bytesPerSample; i++)
                         {
-                            heightBytes[i] = byteScanline[x * bytesPerSample + bytesPerSample - i-1];
+                            heightBytes[i] = byteScanline[x * bytesPerSample + bytesPerSample - i - 1];
                         }
                         switch (metadata.SampleFormat)
                         {
@@ -280,13 +271,13 @@ namespace DEM.Net.Lib
                     double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
 
                     float heightValue = 0;
-                    byte[] heightBytes = new byte[bytesPerSample];;
+                    byte[] heightBytes = new byte[bytesPerSample]; ;
                     if (BitConverter.IsLittleEndian)
                     {
                         // reverse bytes
                         for (int i = 0; i < bytesPerSample; i++)
                         {
-                            heightBytes[i] = byteScanline[x * bytesPerSample + bytesPerSample - i-1];
+                            heightBytes[i] = byteScanline[x * bytesPerSample + bytesPerSample - i - 1];
                         }
                         switch (metadata.SampleFormat)
                         {

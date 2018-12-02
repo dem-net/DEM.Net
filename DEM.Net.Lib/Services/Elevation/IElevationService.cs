@@ -62,6 +62,14 @@ namespace DEM.Net.Lib
         /// <param name="interpolationMode">Interpolation mode</param>
         /// <returns></returns>
         GeoPoint GetPointElevation(double lat, double lon, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
+        /// <summary>
+        /// High level method that retrieves elevation for each given point
+        /// </summary>
+        /// <param name="points">List of points</param
+        /// <param name="dataSet">DEM dataset to use</param>
+        /// <param name="interpolationMode">Interpolation mode</param>
+        /// <returns></returns>
+        IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
 
         /// <summary>
         /// Returns all elevations in given bbox
@@ -103,16 +111,14 @@ namespace DEM.Net.Lib
         List<FileMetadata> GetCoveringFiles(double lat, double lon, DEMDataSet dataSet, List<FileMetadata> subSet = null);
         string GetDEMLocalPath(DEMDataSet dataSet);
 
-      
 
-        
         List<GeoPoint> FindSegmentIntersections(double startLon, double startLat, double endLon, double endLat, List<FileMetadata> segTiles, bool returnStartPoint, bool returnEndPoind);
         float GetAverageExceptForNoDataValue(float noData, float valueIfAllBad, params float[] values);
         
         IEnumerable<GeoSegment> GetDEMNorthSouthLines(List<FileMetadata> segTiles, GeoPoint westernSegPoint, GeoPoint easternSegPoint);
         IEnumerable<GeoSegment> GetDEMWestEastLines(List<FileMetadata> segTiles, GeoPoint northernSegPoint, GeoPoint southernSegPoint);
         float GetElevationAtPoint(RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float lastElevation, IInterpolator interpolator);
-        void GetElevationData(ref List<GeoPoint> intersections, DEMDataSet dataSet, RasterFileDictionary adjacentRasters, List<FileMetadata> segTiles, IInterpolator interpolator);
+        void GetElevationData(ref IEnumerable<GeoPoint> intersections, DEMDataSet dataSet, RasterFileDictionary adjacentRasters, List<FileMetadata> segTiles, IInterpolator interpolator);
        
         IInterpolator GetInterpolator(InterpolationMode interpolationMode);
        
