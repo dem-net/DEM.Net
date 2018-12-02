@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Lib
 {
-    public class ElevationService
+    public class ElevationService : IElevationService
     {
         public const float NO_DATA_OUT = 0;
         private readonly IRasterService _IRasterService;
@@ -32,48 +32,18 @@ namespace DEM.Net.Lib
         {
             var report = _IRasterService.GenerateReport(dataSet, bbox);
 
-            // Generate metadata files if missing
-            foreach (var file in report.Where(kvp => kvp.Value.IsMetadataGenerated == false && kvp.Value.IsExistingLocally == true).Select(kvp => kvp.Value))
-            {
-                _IRasterService.GenerateFileMetadata(file.LocalName, dataSet.FileFormat, false, false);
-            }
-            List<DemFileReport> v_filesToDownload = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
-
-            if (v_filesToDownload.Count == 0)
-            {
-                Trace.TraceInformation("No missing file(s).");
-            }
-            else
-            {
-                Trace.TraceInformation($"Downloading {v_filesToDownload.Count} missing file(s).");
-
-                List<Task> tasks = new List<Task>();
-                foreach (var file in v_filesToDownload)
-                {
-                    tasks.Add(DownloadDEMTile(file.URL, dataSet.FileFormat, file.LocalName));
-                }
-                try
-                {
-
-                    Task.WaitAll(tasks.ToArray());
-
-                    _IRasterService.GenerateDirectoryMetadata(dataSet, false, false);
-                    _IRasterService.LoadManifestMetadata(dataSet, true);
-
-                }
-                catch (AggregateException ex)
-                {
-                    Trace.TraceError($"Error downloading missing files. Check internet connection or retry later. {ex.GetInnerMostException().Message}");
-                }
-
-
-            }
+            DownloadMissingFiles_FromReport(report, dataSet);
 
         }
         public void DownloadMissingFiles(DEMDataSet dataSet, double lat, double lon)
         {
             var report = _IRasterService.GenerateReportForLocation(dataSet, lat, lon);
 
+            DownloadMissingFiles_FromReport(report, dataSet);
+
+        }
+        private void DownloadMissingFiles_FromReport(Dictionary<string, DemFileReport> report, DEMDataSet dataSet)
+        {
             // Generate metadata files if missing
             foreach (var file in report.Where(kvp => kvp.Value.IsMetadataGenerated == false && kvp.Value.IsExistingLocally == true).Select(kvp => kvp.Value))
             {
@@ -112,7 +82,6 @@ namespace DEM.Net.Lib
 
 
             }
-
         }
 
         async Task DownloadDEMTile(string url, DEMFileFormat fileFormat, string localFileName)
@@ -593,7 +562,7 @@ namespace DEM.Net.Lib
             List<FileMetadata> metadataCatalog = subSet ?? _IRasterService.LoadManifestMetadata(dataSet, false);
 
             // Find files matching coords
-            List<FileMetadata> bboxMetadata = new List<FileMetadata>(metadataCatalog.Where(m => IsBboxInTile(m.OriginLatitude, m.OriginLongitude, bbox)));
+            List<FileMetadata> bboxMetadata = new List<FileMetadata>(metadataCatalog.Where(m => IsBboxIntersectingTile(m, bbox)));
 
             if (bboxMetadata.Count == 0)
             {
@@ -623,36 +592,31 @@ namespace DEM.Net.Lib
             return bboxMetadata;
         }
 
-        public bool IsBboxInTile(double originLatitude, double originLongitude, BoundingBox bbox)
+        public bool IsBboxIntersectingTile(FileMetadata tileMetadata, BoundingBox bbox)
         {
-            bool isInsideY = originLatitude >= bbox.yMin && (originLatitude - 1) <= bbox.yMax;
-            bool isInsideX = (originLongitude + 1) >= bbox.xMin && originLongitude <= bbox.xMax;
-            bool isInside = isInsideX && isInsideY;
-            return isInside;
+            BoundingBox tileBBox = GetTileBoundingBox(tileMetadata);
+
+            return BoundingBox.Contains(tileBBox, bbox.xMin, bbox.yMin)
+                   || BoundingBox.Contains(tileBBox, bbox.xMax, bbox.yMax);
         }
         public bool IsPointInTile(FileMetadata tileMetadata, GeoPoint point)
         {
-            return IsPointInTile(tileMetadata.OriginLatitude, tileMetadata.OriginLongitude, point);
-        }
-        public bool IsPointInTile(double originLatitude, double originLongitude, GeoPoint point)
-        {
-            bool isInsideY = (originLatitude - 1) <= point.Latitude && point.Latitude <= originLatitude;
-            bool isInsideX = originLongitude <= point.Longitude && point.Longitude <= (originLongitude + 1);
+            BoundingBox bbox = GetTileBoundingBox(tileMetadata);
+
+            bool isInsideY = bbox.yMin <= point.Latitude && point.Latitude <= bbox.yMax;
+            bool isInsideX = bbox.xMin <= point.Longitude && point.Longitude <= bbox.xMax;
             bool isInside = isInsideX && isInsideY;
             return isInside;
         }
         private bool IsPointInAdjacentTile(FileMetadata tile, GeoPoint point)
         {
+            BoundingBox tileBbox = GetTileBoundingBox(tile);
             double sX = tile.PixelScaleX * 2;
             double sY = tile.PixelScaleY * 2;
-            bool isInsideY = (tile.OriginLatitude - 1 - sY) <= point.Latitude && point.Latitude <= (tile.OriginLatitude + sY);
-            bool isInsideX = (tile.OriginLongitude - sX) <= point.Longitude && point.Longitude <= (tile.OriginLongitude + 1 + sX);
+            bool isInsideY = (tileBbox.yMin - sY) <= point.Latitude && point.Latitude <= (tileBbox.yMax + sY);
+            bool isInsideX = (tileBbox.xMin - sX) <= point.Longitude && point.Longitude <= (tileBbox.xMax + sX);
             bool isInside = isInsideX && isInsideY;
             return isInside;
-            //bool isInsideY = tile.OriginLatitude + 1 >= point.Latitude && (tile.OriginLatitude - 2) <= point.Latitude;
-            //bool isInsideX = (tile.OriginLongitude + 2) >= point.Longitude && (tile.OriginLongitude - 2) <= point.Longitude;
-            //bool isInside = isInsideX && isInsideY;
-            //return isInside;
         }
 
         public float GetElevationAtPoint(RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float lastElevation, IInterpolator interpolator)

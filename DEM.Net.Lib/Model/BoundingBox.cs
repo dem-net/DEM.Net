@@ -72,6 +72,13 @@ namespace DEM.Net.Lib
             return new BoundingBox(points[0].X, points[1].X, points[0].Y, points[1].Y);
         }
 
+
+        public static bool Contains(BoundingBox bbox, double x, double y)
+        {
+            return bbox.xMin <= x && x <= bbox.xMax
+                    && bbox.yMin <= y && y <= bbox.yMax;
+        }
+
         public override string ToString()
         {
             return $"Xmin: {xMin}, Xmax: {xMax}, Ymin: {yMin}, Ymax: {yMax}";

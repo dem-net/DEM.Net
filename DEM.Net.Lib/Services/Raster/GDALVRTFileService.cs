@@ -11,6 +11,10 @@ using System.Xml;
 
 namespace DEM.Net.Lib
 {
+    /// <summary>
+    /// Remote GDAL VRT file handling
+    /// Downloads and enumerates through tiles referenced in VRT file
+    /// </summary>
     public class GDALVRTFileService
     {
         private bool _useMemCache = false;
@@ -20,6 +24,7 @@ namespace DEM.Net.Lib
         private Uri _remoteVrtUri;
         private Uri _localVrtUri;
         private readonly DEMDataSet dataSet;
+        private const int MAX_AGE_DAYS = 30;
 
         public GDALVRTFileService(string localDirectory, DEMDataSet dataSet)
         {
@@ -29,7 +34,6 @@ namespace DEM.Net.Lib
 
         /// <summary>
         /// Ensures local directories are created and download VRT file if needed
-        /// TODO : check local file age and download again if obsolete
         /// </summary>
         public void Setup(bool useMemoryCache)
         {
@@ -55,7 +59,7 @@ namespace DEM.Net.Lib
                 if (File.Exists(_vrtFileName))
                 {
                     // Download if too old file
-                    if ((DateTime.Now - File.GetLastWriteTime(_vrtFileName)).TotalDays > 30)
+                    if ((DateTime.Now - File.GetLastWriteTime(_vrtFileName)).TotalDays > MAX_AGE_DAYS)
                     {
                         Trace.TraceInformation("VRT file is too old.");
                     }

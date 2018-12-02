@@ -1,5 +1,4 @@
 ﻿using DEM.Net.Lib;
-using DEM.Net.Lib;
 using Microsoft.SqlServer.Types;
 using SqlServerSpatial.Toolkit;
 using System.Collections.Generic;
@@ -37,7 +36,8 @@ namespace SampleApp
 
             //FileMetaDataVersionMigration(rasterService, DEMDataSet.AW3D30);
             //HGTTest(WKT_BBOX_MARSEILLE, elevationService, DEMDataSet.SRTM_GL3, DEMDataSet.SRTM_GL3.Name);
-            HGTTest(WKT_BBOX_VALGO, elevationService, DEMDataSet.SRTM_GL1, DEMDataSet.SRTM_GL1.Name);
+            HGTTest(WKT_BBOX_LAUZANNIER, elevationService, DEMDataSet.SRTM_GL1, DEMDataSet.SRTM_GL1.Name);
+            HGTTest(WKT_BBOX_LAUZANNIER, elevationService, DEMDataSet.SRTM_GL3, DEMDataSet.SRTM_GL3.Name);
             //HGTTest(WKT_BBOX_EIGER_MEDIUM, elevationService, DEMDataSet.AW3D30, DEMDataSet.AW3D30.Name);
             //TestFillVoids(WKT_BBOX_EIGER_MEDIUM, elevationService, DEMDataSet.AW3D30, DEMDataSet.SRTM_GL3_srtm, "Eiger");
 
@@ -633,7 +633,8 @@ namespace SampleApp
         const string WKT_BBOX_VERDON = "POLYGON ((6.423912 43.829697, 6.239099 43.829697, 6.239099 43.713053, 6.423912 43.713053, 6.423912 43.829697))";
         const string WKT_BBOX_GAP = "POLYGON ((6.281433 44.674833, 5.929474 44.674833, 5.929474 44.437702, 6.281433 44.437702, 6.281433 44.674833))";
         const string WKT_BBOX_VALGO = "POLYGON ((6.373444 44.913277, 5.971403 44.913277, 5.971403 44.73893, 6.373444 44.73893, 6.373444 44.913277))";
-
+        const string WKT_BBOX_VALGO_LARGE = "POLYGON ((6.418762 44.925573, 5.84168 44.925573, 5.84168 44.662793, 6.418762 44.662793, 6.418762 44.925573))";
+        const string WKT_BBOX_LAUZANNIER = "POLYGON ((6.91658 44.347177, 6.91658 44.439908, 6.839028 44.439979, 6.837204 44.347523, 6.91658 44.347177))";
 
         const string WKT_POLY_FRANCE = "POLYGON ((-6.328125 41.21172151054787, 10.01953125 41.21172151054787, 10.01953125 51.37178037591737, -6.328125 51.37178037591737, -6.328125 41.21172151054787))";
 

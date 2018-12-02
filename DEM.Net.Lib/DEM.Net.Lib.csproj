@@ -97,6 +97,7 @@
     <Compile Include="Services\DouglasPeuckerReduction.cs" />
     <Compile Include="Model\ElevationMetrics.cs" />
     <Compile Include="Services\Elevation\ElevationService.cs" />
+    <Compile Include="Services\Elevation\IElevationService.cs" />
     <Compile Include="Services\Raster\GDALVRTFileService.cs" />
     <Compile Include="Services\GeometryService.cs" />
     <Compile Include="Services\Raster\RasterSampleFormat.cs" />

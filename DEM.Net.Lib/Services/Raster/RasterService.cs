@@ -125,25 +125,6 @@ namespace DEM.Net.Lib
             return _metadataCatalogCache[localPath];
         }
 
-        //public void DumpTiffTags(Tiff tiff)
-        //{
-        //    StringBuilder sb = new StringBuilder();
-        //    foreach (var value in Enum.GetValues(typeof(TiffTag)))
-        //    {
-        //        TiffTag tag = (TiffTag)value;
-        //        FieldValue[] values = tiff.GetField(tag);
-        //        if (values != null)
-        //        {
-        //            sb.AppendLine(value + ": ");
-        //            foreach (var fieldValue in values)
-        //            {
-        //                sb.Append("\t");
-        //                sb.AppendLine(fieldValue.Value.ToString());
-        //            }
-        //        }
-        //    }
-        //    Console.WriteLine(sb.ToString());
-        //}
 
         public static int GetResolutionMeters(FileMetadata metadata)
         {
@@ -302,43 +283,6 @@ namespace DEM.Net.Lib
             }
 
 
-            //// download GDAL virtual file (.VRT file)
-            //Uri lstUri = new Uri(urlToLstFile);
-            //string lstContent = null;
-            //using (WebClient webClient = new WebClient())
-            //{
-            //    lstContent = webClient.DownloadString(lstUri);
-            //}
-
-            //// Get list of file matching remoteFileExtension, and replacing it with the local extension
-            //IEnumerable<string> remoteFilesQuery = lstContent.Split('\n');
-            //remoteFilesQuery = remoteFilesQuery.Where(f => f.EndsWith(remoteFileExtension));
-            //if (isZipped)
-            //{
-            //    remoteFilesQuery = remoteFilesQuery.Select(f => f.Replace(remoteFileExtension, zipExtension));
-            //}
-            //HashSet<string> remoteFiles = new HashSet<string>(remoteFilesQuery);
-
-
-            //// Get local files
-            //HashSet<string> localFiles = new HashSet<string>();
-            //if (Directory.Exists(directoryPath))
-            //{
-            //    localFiles.UnionWith(Directory.GetFiles(directoryPath, "*" + remoteFileExtension, SearchOption.TopDirectoryOnly)
-            //                                                              .Select(f => Path.GetFileName(f)));
-            //}
-
-            //// Finds match between remote and local
-            //foreach (string remoteFile in remoteFiles)
-            //{
-            //    string zipFileTitle = isZipped ? remoteFile.Split('/').Last() : null;
-            //    string fileTitle = isZipped ? zipFileTitle.Replace(zipExtension, remoteFileExtension) : remoteFile.Split('/').Last();
-            //    Uri remoteFileUri = null;
-            //    Uri.TryCreate(lstUri, remoteFile, out remoteFileUri);
-            //    bool isDownloaded = localFiles.Contains(fileTitle);
-
-            //    statusByFile.Add(remoteFileUri.AbsoluteUri, new DemFileReport { IsExistingLocally = isDownloaded, LocalName = fileTitle, LocalZipName = zipFileTitle, URL = remoteFileUri.AbsoluteUri });
-            //}
             return statusByFile;
         }
 
@@ -371,43 +315,6 @@ namespace DEM.Net.Lib
             }
 
 
-            //// download GDAL virtual file (.VRT file)
-            //Uri lstUri = new Uri(urlToLstFile);
-            //string lstContent = null;
-            //using (WebClient webClient = new WebClient())
-            //{
-            //    lstContent = webClient.DownloadString(lstUri);
-            //}
-
-            //// Get list of file matching remoteFileExtension, and replacing it with the local extension
-            //IEnumerable<string> remoteFilesQuery = lstContent.Split('\n');
-            //remoteFilesQuery = remoteFilesQuery.Where(f => f.EndsWith(remoteFileExtension));
-            //if (isZipped)
-            //{
-            //    remoteFilesQuery = remoteFilesQuery.Select(f => f.Replace(remoteFileExtension, zipExtension));
-            //}
-            //HashSet<string> remoteFiles = new HashSet<string>(remoteFilesQuery);
-
-
-            //// Get local files
-            //HashSet<string> localFiles = new HashSet<string>();
-            //if (Directory.Exists(directoryPath))
-            //{
-            //    localFiles.UnionWith(Directory.GetFiles(directoryPath, "*" + remoteFileExtension, SearchOption.TopDirectoryOnly)
-            //                                                              .Select(f => Path.GetFileName(f)));
-            //}
-
-            //// Finds match between remote and local
-            //foreach (string remoteFile in remoteFiles)
-            //{
-            //    string zipFileTitle = isZipped ? remoteFile.Split('/').Last() : null;
-            //    string fileTitle = isZipped ? zipFileTitle.Replace(zipExtension, remoteFileExtension) : remoteFile.Split('/').Last();
-            //    Uri remoteFileUri = null;
-            //    Uri.TryCreate(lstUri, remoteFile, out remoteFileUri);
-            //    bool isDownloaded = localFiles.Contains(fileTitle);
-
-            //    statusByFile.Add(remoteFileUri.AbsoluteUri, new DemFileReport { IsExistingLocally = isDownloaded, LocalName = fileTitle, LocalZipName = zipFileTitle, URL = remoteFileUri.AbsoluteUri });
-            //}
             return statusByFile;
         }
 
