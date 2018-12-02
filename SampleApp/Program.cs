@@ -33,11 +33,11 @@ namespace SampleApp
             ElevationService elevationService = new ElevationService(rasterService);
 
 
-            rasterService.GenerateFileMetadata(@"C:\Repos\DEM.Net\Data\ETOPO1\ETOPO1_Bed_g_geotiff.tif", DEMFileFormat.GEOTIFF, false, false);
+            //rasterService.GenerateFileMetadata(@"C:\Repos\DEM.Net\Data\ETOPO1\ETOPO1_Bed_g_geotiff.tif", DEMFileFormat.GEOTIFF, false, false);
 
             //FileMetaDataVersionMigration(rasterService, DEMDataSet.AW3D30);
             //HGTTest(WKT_BBOX_MARSEILLE, elevationService, DEMDataSet.SRTM_GL3, DEMDataSet.SRTM_GL3.Name);
-            HGTTest(WKT_BBOX_MARSEILLE, elevationService, DEMDataSet.SRTM_GL1, DEMDataSet.SRTM_GL1.Name);
+            HGTTest(WKT_BBOX_VALGO, elevationService, DEMDataSet.SRTM_GL1, DEMDataSet.SRTM_GL1.Name);
             //HGTTest(WKT_BBOX_EIGER_MEDIUM, elevationService, DEMDataSet.AW3D30, DEMDataSet.AW3D30.Name);
             //TestFillVoids(WKT_BBOX_EIGER_MEDIUM, elevationService, DEMDataSet.AW3D30, DEMDataSet.SRTM_GL3_srtm, "Eiger");
 
