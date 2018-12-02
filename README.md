@@ -17,6 +17,7 @@ The goal is to provide on the fly DEM querying from GeoJSON or WKT geometries :
 (Work in progress)
 SampleApp is a Console App used for test purposes, full of samples. It's pretty messy and lacks documentation but names are self explanatory.
 
+# How do I use the API ?
 - Use `elevationService.DownloadMissingFiles(DEMDataSet.AW3D30, <bbox>)` to download and generate metadata for a given dataset.
 - Supported datasets : SRTM GL1 and GL3 (HGT files), AWD30 (GeoTIFF)
 - Use `new RasterService().GenerateReport(DEMDataSet.AW3D30, <bounding box>)` to download only necessary tiles using remote VRT file.
