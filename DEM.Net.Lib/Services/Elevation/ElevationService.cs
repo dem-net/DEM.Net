@@ -237,6 +237,7 @@ namespace DEM.Net.Lib
                 return null;
            
             BoundingBox bbox = points.GetBoundingBox();
+            DownloadMissingFiles(dataSet, bbox);
             List<FileMetadata> tiles = this.GetCoveringFiles(bbox, dataSet);
 
             // Init interpolator

@@ -33,7 +33,7 @@ namespace SampleApp
 
             //LineDEMTest(elevationService, DEMDataSet.SRTM_GL3, WKT_SCL_MENDOZA, 100);
             //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_SCL_MENDOZA, 100);
-            
+
 
             TestGpxElevation(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
 
@@ -153,7 +153,7 @@ namespace SampleApp
 
 
 
-         
+
 
             // TODO correct this
             //TestGpxElevation(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
@@ -202,19 +202,21 @@ namespace SampleApp
             {
                 List<GeoPoint> inputLineBak = line.Select(pt => pt.Clone()).ToList();
 
+                List<GeoPoint> inputLineZero = line.Select(pt => new GeoPoint(pt.Latitude, pt.Longitude)).ToList();
 
-                var lineOut = elevationService.GetPointsElevation(line, dataSet).ToList();
+
+                var lineOut = elevationService.GetPointsElevation(inputLineZero, dataSet).ToList();
 
                 GeometryService.ComputeMetrics(inputLineBak);
                 GeometryService.ComputeMetrics(lineOut);
 
                 // Compare
-                SpatialTraceLine(inputLineBak, "Input");
+                double ratio = SpatialTraceLine(inputLineBak, "Input");
 
                 SpatialTrace.SetLineWidth(3);
                 SpatialTrace.SetLineColor(Colors.Red);
                 // Compare
-                SpatialTraceLine(lineOut, "Output");
+                SpatialTraceLine(lineOut, "Output", ratio);
 
             }
 
@@ -487,7 +489,7 @@ namespace SampleApp
 
         }
 
-        private static void SpatialTraceLine(List<GeoPoint> lineElevationData, string message)
+        private static double SpatialTraceLine(List<GeoPoint> lineElevationData, string message, double? fixedRatio = null)
         {
 
             const int DEFAULT_HEIGHT = 300;
@@ -500,8 +502,7 @@ namespace SampleApp
             double maxH = lineElevationData.Max(p => p.Elevation.GetValueOrDefault(0));
             double H = maxH - minH;
             double ratio_11 = lineElevationData.Last().DistanceFromOriginMeters / H;
-            double ratio = ratio_11 / 4;
-            double tolerance = H / DEFAULT_HEIGHT;
+            double ratio = fixedRatio ?? ratio_11 / 4;
 
             // Make 4:1 geom
             SqlGeometryBuilder gb = new SqlGeometryBuilder();
@@ -517,11 +518,10 @@ namespace SampleApp
             gb.EndGeometry();
             SqlGeometry geom = gb.ConstructedGeometry;
             geom = DEM.Net.Lib.SqlTypesExtensions.MakeValidIfInvalid(geom, 1);
-            SpatialTrace.Enable();
+
             SpatialTrace.TraceGeometry(geom, message);
-            SpatialTrace.Disable();
 
-
+            return ratio;
         }
 
         private static IEnumerable<T> GetNth<T>(List<T> list, int n)
