@@ -46,3 +46,10 @@ For sea bed elevation : ETOPO1 Global Relief Model https://www.ngdc.noaa.gov/mgg
 - Pedro Sousa : http://build-failed.blogspot.fr/2014/12/processing-geotiff-files-in-net-without.html for good explanations.
 - Mathieu Leplatre for http://blog.mathieu-leplatre.info/drape-lines-on-a-dem-with-postgis.html
 - Andy9FromSpace : HGT file reader in https://github.com/Andy9FromSpace/map-elevation
+
+# Third party code and librairies
+- glTF : glTF2Loader and AssetGenerator : https://github.com/KhronosGroup/glTF
+- Tiff support : https://github.com/BitMiracle/libtiff.net
+- Serialization : https://github.com/neuecc/ZeroFormatter and https://github.com/JamesNK/Newtonsoft.Json
+- System.Numerics.Vectors for Vector support
+- GPX reader from dlg.krakow.pl
