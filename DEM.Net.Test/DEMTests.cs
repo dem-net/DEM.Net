@@ -18,7 +18,18 @@ namespace DEM.Net.Test
 			SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
 		}
 
-		[TestMethod]
+        [TestMethod]
+        [TestCategory("Dataset")]
+        public void DownloadTile()
+        {
+            const string WKT_BBOX_AIX_PUYRICARD = "POLYGON ((5.429993 43.537854, 5.459132 43.537854, 5.459132 43.58151, 5.429993 43.58151, 5.429993 43.537854))";
+
+            IRasterService rasterService = new RasterService(@"..\..\Data");
+            ElevationService elevationService = new ElevationService(rasterService);
+
+            elevationService.DownloadMissingFiles(DEMDataSet.SRTM_GL3, GeometryService.GetBoundingBox(WKT_BBOX_AIX_PUYRICARD));
+        }
+        [TestMethod]
         [TestCategory("Geometry")]
 		public void LineLineIntersectionTest()
 		{

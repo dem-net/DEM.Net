@@ -48,7 +48,7 @@ namespace DEM.Net.Lib
                 }
 
                 _vrtFileName = Path.Combine(localDirectory, UrlHelper.GetFileNameFromUrl(dataSet.VRTFileUrl));
-                _localVrtUri = new Uri(_vrtFileName, UriKind.Absolute);
+                _localVrtUri =  new Uri(Path.GetFullPath(_vrtFileName), UriKind.Absolute);
                 _remoteVrtUri = new Uri(dataSet.VRTFileUrl, UriKind.Absolute);
 
                 bool download = true;
