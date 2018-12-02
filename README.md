@@ -1,13 +1,13 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/github/xfischer/DEM.Net)](https://ci.appveyor.com/project/xfischer/dem-net)
 
-*Note : this is still a work in progress. Except first version at end of January 2067 (worst case).
-Let me know what you need*
-
 # DEM.Net 
 Digital Elevation Model samples in C#. Raster (GeoTiff, HGT) file parsing and DEM querying.
 The goal is to provide on the fly DEM querying from GeoJSON or WKT geometries :
 - No big RAM cache
 - Fast and optimized data retrieval as precise as possible
+
+ ![3D model](/valgo.jpg?raw=true "3D model")
+
 
 # Current dev status
 - All incoming features are listed in the project board here : https://github.com/xfischer/DEM.Net/projects/1.
