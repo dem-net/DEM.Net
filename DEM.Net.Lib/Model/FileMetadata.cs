@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,13 +8,19 @@ using System.Threading.Tasks;
 namespace DEM.Net.Lib
 {
 	public class FileMetadata : IEquatable<FileMetadata>
-	{
-		public FileMetadata(string filename)
+    {
+        public const string FILEMETADATA_VERSION = "2.0";
+
+        public FileMetadata(string filename, DEMFileFormat fileFormat, string version = FILEMETADATA_VERSION)
 		{
 			this.Filename = filename;
-		}
+            this.fileFormat = fileFormat;
+            this.Version = version;
+        }
 
-		public string Filename { get; set; }
+       
+        public string Version { get; set; }
+        public string Filename { get; set; }
 		public int Height { get; set; }
 		public int Width { get; set; }
 		public double PixelScaleX { get; set; }
@@ -29,8 +36,9 @@ namespace DEM.Net.Lib
 		public double StartLat { get; set; }
 		public double pixelSizeX { get; set; }
 		public double pixelSizeY { get; set; }
+        public DEMFileFormat fileFormat { get; set; }
 
-		public float MininumAltitude { get; set; }
+        public float MininumAltitude { get; set; }
 		public float MaximumAltitude { get; set; }
 		public double EndLongitude
 		{
@@ -90,4 +98,29 @@ namespace DEM.Net.Lib
 			return this.GetHashCode().Equals(other.GetHashCode());
 		}
 	}
+
+    public static class FileMetadataMigrations
+    {
+        public static FileMetadata Migrate(FileMetadata oldMetadata)
+        {
+            if (oldMetadata != null)
+            {
+                Logger.Info($"Migration metadata file from {oldMetadata.Version} to {FileMetadata.FILEMETADATA_VERSION}");
+                // set version and fileFormat
+                oldMetadata.Version = FileMetadata.FILEMETADATA_VERSION;
+                switch(Path.GetExtension(oldMetadata.Filename).ToUpper())
+                {
+                    case ".TIF":
+                    case ".TIFF":
+                        oldMetadata.fileFormat = DEMFileFormat.GEOTIFF;
+                        break;
+                    default:
+                        // not possible since pre V2 files could only be GEOTIFF
+                        throw new Exception("Metadata corrupted.");
+                }
+               
+            }
+            return oldMetadata;
+        }
+    }
 }

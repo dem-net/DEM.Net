@@ -23,7 +23,7 @@ namespace DEM.Net.WebApi.Controllers
 			{
 				dataDirectory = Path.Combine(HostingEnvironment.MapPath("~"), dataDirectory);
 			}
-			_elevationService = new ElevationService(new GeoTiffService(dataDirectory));
+			_elevationService = new ElevationService(new RasterService(dataDirectory));
 		}
 
 

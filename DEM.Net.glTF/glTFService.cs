@@ -199,12 +199,12 @@ namespace DEM.Net.glTF
                                 {
                                     // Triangulation 1
                                     indices.Add((x + 0) + (y + 0) * heightMap.Width);
-                                    indices.Add((x + 1) + (y + 0) * heightMap.Width);
                                     indices.Add((x + 0) + (y + 1) * heightMap.Width);
+                                    indices.Add((x + 1) + (y + 0) * heightMap.Width);
 
                                     indices.Add((x + 1) + (y + 0) * heightMap.Width);
-                                    indices.Add((x + 1) + (y + 1) * heightMap.Width);
                                     indices.Add((x + 0) + (y + 1) * heightMap.Width);
+                                    indices.Add((x + 1) + (y + 1) * heightMap.Width);
                                 }
                                 else
                                 {
@@ -380,7 +380,7 @@ namespace DEM.Net.glTF
 
         private Vector3 ToVector3(GeoPoint geoPoint)
         {
-            return new Vector3((float)geoPoint.Longitude, (float)geoPoint.Elevation, (float)geoPoint.Latitude);
+            return new Vector3((float)geoPoint.Longitude, (float)geoPoint.Elevation, -(float)geoPoint.Latitude);
         }
     }
 }

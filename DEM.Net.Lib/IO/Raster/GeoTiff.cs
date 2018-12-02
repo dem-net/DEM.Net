@@ -9,7 +9,7 @@ using System.Linq;
 namespace DEM.Net.Lib
 {
 
-    public class GeoTiff : IGeoTiff
+    public class GeoTiff : IRasterFile
     {
         Tiff _tiff;
         string _tiffPath;
@@ -82,13 +82,13 @@ namespace DEM.Net.Lib
             {
                 switch (metadata.SampleFormat)
                 {
-                    case "IEEEFP":
+                    case RasterSampleFormat.FLOATING_POINT:
                         heightValue = BitConverter.ToSingle(byteScanline, x * metadata.BitsPerSample / 8);
                         break;
-                    case "INT":
+                    case RasterSampleFormat.INTEGER:
                         heightValue = BitConverter.ToInt16(byteScanline, x * metadata.BitsPerSample / 8);
                         break;
-                    case "UINT":
+                    case RasterSampleFormat.UNSIGNED_INTEGER:
                         heightValue = BitConverter.ToUInt16(byteScanline, x * metadata.BitsPerSample / 8);
                         break;
                     default:
@@ -109,7 +109,7 @@ namespace DEM.Net.Lib
 
         public FileMetadata ParseMetaData()
         {
-            FileMetadata metadata = new FileMetadata(FilePath);
+            FileMetadata metadata = new FileMetadata(FilePath, DEMFileFormat.GEOTIFF);
 
             ///
             metadata.Height = TiffFile.GetField(TiffTag.IMAGELENGTH)[0].ToInt();
@@ -140,12 +140,7 @@ namespace DEM.Net.Lib
 
             var scanline = new byte[TiffFile.ScanlineSize()];
             metadata.ScanlineSize = TiffFile.ScanlineSize();
-            //TODO: Check if band is stored in 1 byte or 2 bytes. 
-            //If 2, the following code would be required
-            var scanline16Bit = new ushort[TiffFile.ScanlineSize() / 2];
-            Buffer.BlockCopy(scanline, 0, scanline16Bit, 0, scanline.Length);
-
-
+            
             // Grab some raster metadata
             metadata.BitsPerSample = TiffFile.GetField(TiffTag.BITSPERSAMPLE)[0].ToInt();
             var sampleFormat = TiffFile.GetField(TiffTag.SAMPLEFORMAT);
@@ -159,7 +154,7 @@ namespace DEM.Net.Lib
             return metadata;
         }
 
-        public HeightMap ParseGeoDataInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = 0)
+        public HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = 0)
         {
             // metadata.BitsPerSample
             // When 16 we have 2 bytes per sample
@@ -208,23 +203,29 @@ namespace DEM.Net.Lib
                     float heightValue = 0;
                     switch (metadata.SampleFormat)
                     {
-                        case "IEEEFP":
+                        case RasterSampleFormat.FLOATING_POINT:
                             heightValue = BitConverter.ToSingle(byteScanline, x * bytesPerSample);
                             break;
-                        case "INT":
+                        case RasterSampleFormat.INTEGER:
                             heightValue = BitConverter.ToInt16(byteScanline, x * bytesPerSample);
                             break;
-                        case "UINT":
+                        case RasterSampleFormat.UNSIGNED_INTEGER:
                             heightValue = BitConverter.ToUInt16(byteScanline, x * bytesPerSample);
                             break;
                         default:
                             throw new Exception("Sample format unsupported.");
                     }
-                    if (heightValue < 32768)
+                    if (heightValue <= 0)
                     {
                         heightMap.Mininum = Math.Min(heightMap.Mininum, heightValue);
                         heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
                     }
+                    else if (heightValue < 32768)
+                    {
+                        heightMap.Mininum = Math.Min(heightMap.Mininum, heightValue);
+                        heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
+                    }
+                     
                     else
                     {
                         heightValue = (float)noDataValue;
@@ -238,5 +239,60 @@ namespace DEM.Net.Lib
             heightMap.Coordinates = coords;
             return heightMap;
         }
+
+        public HeightMap GetHeightMap(FileMetadata metadata)
+        {
+            HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
+            heightMap.Count = heightMap.Width * heightMap.Height;
+            var coords = new List<GeoPoint>(heightMap.Count);
+
+            // metadata.BitsPerSample
+            // When 16 we have 2 bytes per sample
+            // When 32 we have 4 bytes per sample
+            int bytesPerSample = metadata.BitsPerSample / 8;
+            byte[] byteScanline = new byte[metadata.ScanlineSize];
+
+            for (int y = 0; y < metadata.Height; y++)
+            {
+                TiffFile.ReadScanline(byteScanline, y);
+
+                double latitude = metadata.StartLat + (metadata.pixelSizeY * y);
+                for (int x = 0; x < metadata.Width; x++)
+                {
+                    double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
+
+                    float heightValue = 0;
+                    switch (metadata.SampleFormat)
+                    {
+                        case RasterSampleFormat.FLOATING_POINT:
+                            heightValue = BitConverter.ToSingle(byteScanline, x * metadata.BitsPerSample / 8);
+                            break;
+                        case RasterSampleFormat.INTEGER:
+                            heightValue = BitConverter.ToInt16(byteScanline, x * metadata.BitsPerSample / 8);
+                            break;
+                        case RasterSampleFormat.UNSIGNED_INTEGER:
+                            heightValue = BitConverter.ToUInt16(byteScanline, x * metadata.BitsPerSample / 8);
+                            break;
+                        default:
+                            throw new Exception("Sample format unsupported.");
+                    }
+                    if (heightValue < 32768)
+                    {
+                        heightMap.Mininum = Math.Min(metadata.MininumAltitude, heightValue);
+                        heightMap.Maximum = Math.Max(metadata.MaximumAltitude, heightValue);
+                    }
+                    else
+                    {
+                        heightValue = 0;
+                    }
+                    coords.Add(new GeoPoint(latitude, longitude, heightValue, x, y));
+
+                }
+            }
+
+            heightMap.Coordinates = coords;
+            return heightMap;
+        }
+
     }
 }

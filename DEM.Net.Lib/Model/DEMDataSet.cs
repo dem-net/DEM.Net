@@ -7,28 +7,28 @@ using ZeroFormatter;
 
 namespace DEM.Net.Lib
 {
-	[ZeroFormattable]
-	public class DEMDataSet
+    [ZeroFormattable]
+    public class DEMDataSet
     {
 
-		[Index(0)]
-		public virtual string Name { get; set; }
+        [Index(0)]
+        public virtual string Name { get; set; }
 
-		[Index(1)]
-		public virtual string Description { get; set; }
-		[Index(2)]
-		public virtual string PublicUrl { get; set; }
-		[Index(3)]
-		public virtual int ResolutionMeters { get; set; }
+        [Index(1)]
+        public virtual string Description { get; set; }
+        [Index(2)]
+        public virtual string PublicUrl { get; set; }
+        [Index(3)]
+        public virtual int ResolutionMeters { get; set; }
 
-		[Index(4)]
-		public virtual DEMFileFormat FileFormat { get; set; }
+        [Index(4)]
+        public virtual DEMFileFormat FileFormat { get; set; }
 
-		[Index(5)]
-		/// <summary>
-		/// GDAL Virtual 
-		/// </summary>
-		public virtual string VRTFileUrl { get; set; }
+        [Index(5)]
+        /// <summary>
+        /// GDAL Virtual 
+        /// </summary>
+        public virtual string VRTFileUrl { get; set; }
 
         public DEMDataSet()
         {
@@ -36,7 +36,7 @@ namespace DEM.Net.Lib
 
         // Examples datasets
 
-        public static DEMDataSet SRTM_GL3_srtm
+        public static DEMDataSet SRTM_GL3
         {
             get
             {
@@ -51,7 +51,21 @@ namespace DEM.Net.Lib
                 };
             }
         }
-
+        public static DEMDataSet SRTM_GL1
+        {
+            get
+            {
+                return new DEMDataSet()
+                {
+                    Name = "SRTM_GL1",
+                    Description = "Shuttle Radar Topography Mission (SRTM GL1) Global 30m",
+                    PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTSRTM.082015.4326.1",
+                    VRTFileUrl = "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL1/SRTM_GL1_srtm.vrt",
+                    FileFormat = DEMFileFormat.SRTM_HGT,
+                    ResolutionMeters = 30
+                };
+            }
+        }
         public static DEMDataSet AW3D30
         {
             get

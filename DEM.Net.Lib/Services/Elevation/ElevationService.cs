@@ -16,26 +16,26 @@ namespace DEM.Net.Lib
     public class ElevationService
     {
         public const float NO_DATA_OUT = 0;
-        private readonly IGeoTiffService _IGeoTiffService;
-        public ElevationService(IGeoTiffService geoTiffService)
+        private readonly IRasterService _IRasterService;
+        public ElevationService(IRasterService rasterService)
         {
-            _IGeoTiffService = geoTiffService;
+            _IRasterService = rasterService;
         }
 
 
         public string GetDEMLocalPath(DEMDataSet dataSet)
         {
-            return _IGeoTiffService.GetLocalDEMPath(dataSet);
+            return _IRasterService.GetLocalDEMPath(dataSet);
         }
 
         public void DownloadMissingFiles(DEMDataSet dataSet, BoundingBox bbox = null)
         {
-            var report = _IGeoTiffService.GenerateReport(dataSet, bbox);
+            var report = _IRasterService.GenerateReport(dataSet, bbox);
 
             // Generate metadata files if missing
             foreach (var file in report.Where(kvp => kvp.Value.IsMetadataGenerated == false && kvp.Value.IsExistingLocally == true).Select(kvp => kvp.Value))
             {
-                _IGeoTiffService.GenerateFileMetadata(file.LocalName, false, false);
+                _IRasterService.GenerateFileMetadata(file.LocalName, dataSet.FileFormat, false, false);
             }
             List<DemFileReport> v_filesToDownload = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
 
@@ -50,33 +50,34 @@ namespace DEM.Net.Lib
                 List<Task> tasks = new List<Task>();
                 foreach (var file in v_filesToDownload)
                 {
-                    tasks.Add(DownloadDEMTile(file.URL, file.LocalName));
+                    tasks.Add(DownloadDEMTile(file.URL, dataSet.FileFormat, file.LocalName));
                 }
                 try
                 {
 
                     Task.WaitAll(tasks.ToArray());
 
-                    _IGeoTiffService.GenerateDirectoryMetadata(dataSet, false, false);
-                    _IGeoTiffService.LoadManifestMetadata(dataSet, true);
+                    _IRasterService.GenerateDirectoryMetadata(dataSet, false, false);
+                    _IRasterService.LoadManifestMetadata(dataSet, true);
 
                 }
                 catch (AggregateException ex)
                 {
                     Trace.TraceError($"Error downloading missing files. Check internet connection or retry later. {ex.GetInnerMostException().Message}");
                 }
+
 
             }
 
         }
         public void DownloadMissingFiles(DEMDataSet dataSet, double lat, double lon)
         {
-            var report = _IGeoTiffService.GenerateReportForLocation(dataSet, lat, lon);
+            var report = _IRasterService.GenerateReportForLocation(dataSet, lat, lon);
 
             // Generate metadata files if missing
             foreach (var file in report.Where(kvp => kvp.Value.IsMetadataGenerated == false && kvp.Value.IsExistingLocally == true).Select(kvp => kvp.Value))
             {
-                _IGeoTiffService.GenerateFileMetadata(file.LocalName, false, false);
+                _IRasterService.GenerateFileMetadata(file.LocalName, dataSet.FileFormat, false, false);
             }
             List<DemFileReport> v_filesToDownload = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
 
@@ -89,17 +90,19 @@ namespace DEM.Net.Lib
                 Trace.TraceInformation($"Downloading {v_filesToDownload.Count} missing file(s).");
 
                 List<Task> tasks = new List<Task>();
+
+
                 foreach (var file in v_filesToDownload)
                 {
-                    tasks.Add(DownloadDEMTile(file.URL, file.LocalName));
+                    tasks.Add(DownloadDEMTile(file.URL, dataSet.FileFormat, file.LocalName));
                 }
                 try
                 {
 
                     Task.WaitAll(tasks.ToArray());
 
-                    _IGeoTiffService.GenerateDirectoryMetadata(dataSet, false, false);
-                    _IGeoTiffService.LoadManifestMetadata(dataSet, true);
+                    _IRasterService.GenerateDirectoryMetadata(dataSet, false, false);
+                    _IRasterService.LoadManifestMetadata(dataSet, true);
 
                 }
                 catch (AggregateException ex)
@@ -107,11 +110,12 @@ namespace DEM.Net.Lib
                     Trace.TraceError($"Error downloading missing files. Check internet connection or retry later. {ex.GetInnerMostException().Message}");
                 }
 
+
             }
 
         }
 
-        async Task DownloadDEMTile(string url, string localFileName)
+        async Task DownloadDEMTile(string url, DEMFileFormat fileFormat, string localFileName)
         {
 
             // Create directories if not existing
@@ -131,8 +135,8 @@ namespace DEM.Net.Lib
 
 
                 var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-                var sendTask = client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-                var response = sendTask.Result.EnsureSuccessStatusCode();
+                var sendTask = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                var response = sendTask.EnsureSuccessStatusCode();
                 var httpStream = await response.Content.ReadAsStreamAsync();
 
 
@@ -144,7 +148,8 @@ namespace DEM.Net.Lib
                 }
             }
 
-            _IGeoTiffService.GenerateFileMetadata(localFileName, false, false);
+
+            _IRasterService.GenerateFileMetadata(localFileName, fileFormat, false, false);
 
 
         }
@@ -153,7 +158,6 @@ namespace DEM.Net.Lib
         /// Extract elevation data along line path
         /// </summary>
         /// <param name="lineWKT"></param>
-        /// <param name="geoTiffRepository"></param>
         /// <returns></returns>
         public List<GeoPoint> GetLineGeometryElevation(string lineWKT, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
@@ -197,7 +201,7 @@ namespace DEM.Net.Lib
 
             List<GeoPoint> geoPoints = new List<GeoPoint>(totalCapacity);
 
-            using (GeoTiffDictionary adjacentGeoTiffs = new GeoTiffDictionary())
+            using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
             {
                 bool isFirstSegment = true; // used to return first point only for first segments, for all other segments last point will be returned
                 foreach (SqlGeometry segment in lineStringGeometry.Segments())
@@ -214,15 +218,15 @@ namespace DEM.Net.Lib
                         , true);
 
                     // Get elevation for each point
-                    this.GetElevationData(ref intersections, adjacentGeoTiffs, segTiles, interpolator);
+                    this.GetElevationData(ref intersections, dataSet, adjacentRasters, segTiles, interpolator);
 
                     // Add to output list
                     geoPoints.AddRange(intersections);
 
                     isFirstSegment = false;
                 }
-                //Debug.WriteLine(adjacentGeoTiffs.Count);
-            }  // Ensures all geotifs are properly closed
+                //Debug.WriteLine(adjacentRasters.Count);
+            }  // Ensures all rasters are properly closed
 
             return geoPoints;
         }
@@ -246,14 +250,14 @@ namespace DEM.Net.Lib
 
             List<GeoPoint> geoPoints = new List<GeoPoint>();
 
-            using (GeoTiffDictionary adjacentGeoTiffs = new GeoTiffDictionary())
+            using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
             {
-                PopulateGeoTiffDictionary(adjacentGeoTiffs, tiles.First(), _IGeoTiffService, tiles);
+                PopulateRasterFileDictionary(adjacentRasters, tiles.First(), _IRasterService, tiles);
 
-                geoPoint.Elevation = ParseGeoDataAtPoint(adjacentGeoTiffs, tiles.First(), lat, lon, 0, interpolator);
+                geoPoint.Elevation = GetElevationAtPoint(adjacentRasters, tiles.First(), lat, lon, 0, interpolator);
 
 
-                //Debug.WriteLine(adjacentGeoTiffs.Count);
+                //Debug.WriteLine(adjacentRasters.Count);
             }  // Ensures all geotifs are properly closed
 
             return geoPoint;
@@ -296,9 +300,9 @@ namespace DEM.Net.Lib
             List<HeightMap> tilesHeightMap = new List<HeightMap>();
             foreach (FileMetadata metadata in bboxMetadata)
             {
-                using (IGeoTiff geoTiff = _IGeoTiffService.OpenFile(metadata.Filename))
+                using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, dataSet.FileFormat))
                 {
-                    tilesHeightMap.Add(geoTiff.ParseGeoDataInBBox(bbox, metadata, NO_DATA_OUT));
+                    tilesHeightMap.Add(raster.GetHeightMapInBBox(bbox, metadata, NO_DATA_OUT));
                 }
             }
 
@@ -323,81 +327,25 @@ namespace DEM.Net.Lib
 
             return heightMap;
         }
-        public static HeightMap GetHeightMap(string fileName, FileMetadata metadata)
+        public HeightMap GetHeightMap(FileMetadata metadata)
         {
-            fileName = Path.GetFullPath(fileName);
-            string fileTitle = Path.GetFileNameWithoutExtension(fileName);
-
-            HeightMap heightMap = null;
-            using (GeoTiff tiff = new GeoTiff(fileName))
+            HeightMap map = null;
+            using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, metadata.fileFormat))
             {
-                heightMap = ParseGeoData(tiff, metadata);
+                map = raster.GetHeightMap(metadata);
             }
-            return heightMap;
-        }
-        private static HeightMap ParseGeoData(GeoTiff tiff, FileMetadata metadata)
-        {
-            HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
-            heightMap.Count = heightMap.Width * heightMap.Height;
-            var coords = new List<GeoPoint>(heightMap.Count);
-
-            // metadata.BitsPerSample
-            // When 16 we have 2 bytes per sample
-            // When 32 we have 4 bytes per sample
-            int bytesPerSample = metadata.BitsPerSample / 8;
-            byte[] byteScanline = new byte[metadata.ScanlineSize];
-
-            for (int y = 0; y < metadata.Height; y++)
-            {
-                tiff.TiffFile.ReadScanline(byteScanline, y);
-
-                double latitude = metadata.StartLat + (metadata.pixelSizeY * y);
-                for (int x = 0; x < metadata.Width; x++)
-                {
-                    double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
-
-                    float heightValue = 0;
-                    switch (metadata.SampleFormat)
-                    {
-                        case "IEEEFP":
-                            heightValue = BitConverter.ToSingle(byteScanline, x * metadata.BitsPerSample / 8);
-                            break;
-                        case "INT":
-                            heightValue = BitConverter.ToInt16(byteScanline, x * metadata.BitsPerSample / 8);
-                            break;
-                        case "UINT":
-                            heightValue = BitConverter.ToUInt16(byteScanline, x * metadata.BitsPerSample / 8);
-                            break;
-                        default:
-                            throw new Exception("Sample format unsupported.");
-                    }
-                    if (heightValue < 32768)
-                    {
-                        heightMap.Mininum = Math.Min(metadata.MininumAltitude, heightValue);
-                        heightMap.Maximum = Math.Max(metadata.MaximumAltitude, heightValue);
-                    }
-                    else
-                    {
-                        heightValue = NO_DATA_OUT;
-                    }
-                    coords.Add(new GeoPoint(latitude, longitude, heightValue, x, y));
-
-                }
-            }
-
-            heightMap.Coordinates = coords;
-            return heightMap;
+            return map;
         }
 
 
         /// <summary>
-        /// Fill altitudes for each GeoPoint provided, opening as few GeoTiffs as possible
+        /// Fill altitudes for each GeoPoint provided, opening as few rasters as possible
         /// </summary>
         /// <param name="intersections"></param>
         /// <param name="segTiles"></param>
-        public void GetElevationData(ref List<GeoPoint> intersections, GeoTiffDictionary adjacentGeoTiffs, List<FileMetadata> segTiles, IInterpolator interpolator)
+        public void GetElevationData(ref List<GeoPoint> intersections, DEMDataSet dataSet, RasterFileDictionary adjacentRasters, List<FileMetadata> segTiles, IInterpolator interpolator)
         {
-            // Group by tiff file for sequential and faster access
+            // Group by raster file for sequential and faster access
             var pointsByTileQuery = from point in intersections
                                     let pointTile = new
                                     {
@@ -415,7 +363,7 @@ namespace DEM.Net.Lib
                 float lastElevation = 0;
 
                 // To interpolate well points close to tile edges, we need all adjacent tiles
-                //using (GeoTiffDictionary adjacentGeoTiffs = new GeoTiffDictionary())
+                //using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
                 //{
                 // For each group (key = tile, values = points within this tile)
                 // TIP: test use of Parallel (warning : a lot of files may be opened at the same time)
@@ -425,18 +373,18 @@ namespace DEM.Net.Lib
                     FileMetadata mainTile = tilePoints.Key;
 
 
-                    // We open geotiffs first, then we iterate
-                    PopulateGeoTiffDictionary(adjacentGeoTiffs, mainTile, _IGeoTiffService, tilePoints.SelectMany(tp => tp.AdjacentTiles));
+                    // We open rasters first, then we iterate
+                    PopulateRasterFileDictionary(adjacentRasters, mainTile, _IRasterService, tilePoints.SelectMany(tp => tp.AdjacentTiles));
 
 
                     foreach (var pointile in tilePoints)
                     {
                         GeoPoint current = pointile.Point;
-                        lastElevation = this.ParseGeoDataAtPoint(adjacentGeoTiffs, mainTile, current.Latitude, current.Longitude, lastElevation, interpolator);
+                        lastElevation = this.GetElevationAtPoint(adjacentRasters, mainTile, current.Latitude, current.Longitude, lastElevation, interpolator);
                         current.Elevation = lastElevation;
                     }
 
-                    //adjacentGeoTiffs.Clear();
+                    //adjacentRasters.Clear();
 
                 }
             }
@@ -449,19 +397,19 @@ namespace DEM.Net.Lib
 
         }
 
-        private void PopulateGeoTiffDictionary(GeoTiffDictionary dictionary, FileMetadata mainTile, IGeoTiffService geoTiffService, IEnumerable<FileMetadata> fileMetadataList)
+        private void PopulateRasterFileDictionary(RasterFileDictionary dictionary, FileMetadata mainTile, IRasterService rasterService, IEnumerable<FileMetadata> fileMetadataList)
         {
             // Add main tile
             if (!dictionary.ContainsKey(mainTile))
             {
-                dictionary[mainTile] = geoTiffService.OpenFile(mainTile.Filename);
+                dictionary[mainTile] = rasterService.OpenFile(mainTile.Filename, mainTile.fileFormat);
             }
 
             foreach (var fileMetadata in fileMetadataList)
             {
                 if (!dictionary.ContainsKey(fileMetadata))
                 {
-                    dictionary[fileMetadata] = geoTiffService.OpenFile(fileMetadata.Filename);
+                    dictionary[fileMetadata] = rasterService.OpenFile(fileMetadata.Filename, fileMetadata.fileFormat);
                 }
             }
         }
@@ -473,7 +421,7 @@ namespace DEM.Net.Lib
         /// <param name="startLat">Segment start latitude</param>
         /// <param name="endLon">Segment end longitude</param>
         /// <param name="endLat">Segment end latitude</param>
-        /// <param name="segTiles">Metadata files <see cref="GeoTiffService.GetCoveringFiles"/> to see how to get them relative to segment geometry</param>
+        /// <param name="segTiles">Metadata files <see cref="RasterService.GetCoveringFiles"/> to see how to get them relative to segment geometry</param>
         /// <param name="returnStartPoint">If true, the segment starting point will be returned. Useful when processing a line segment by segment.</param>
         /// <param name="returnEndPoind">If true, the segment end point will be returned. Useful when processing a line segment by segment.</param>
         /// <returns></returns>
@@ -642,7 +590,7 @@ namespace DEM.Net.Lib
             // Locate which files are needed
 
             // Load metadata catalog
-            List<FileMetadata> metadataCatalog = subSet ?? _IGeoTiffService.LoadManifestMetadata(dataSet, false);
+            List<FileMetadata> metadataCatalog = subSet ?? _IRasterService.LoadManifestMetadata(dataSet, false);
 
             // Find files matching coords
             List<FileMetadata> bboxMetadata = new List<FileMetadata>(metadataCatalog.Where(m => IsBboxInTile(m.OriginLatitude, m.OriginLongitude, bbox)));
@@ -660,7 +608,7 @@ namespace DEM.Net.Lib
             // Locate which files are needed
 
             // Load metadata catalog
-            List<FileMetadata> metadataCatalog = subSet ?? _IGeoTiffService.LoadManifestMetadata(dataSet, false);
+            List<FileMetadata> metadataCatalog = subSet ?? _IRasterService.LoadManifestMetadata(dataSet, false);
 
             var geoPoint = new GeoPoint(lat, lon);
             // Find files matching coords
@@ -707,13 +655,13 @@ namespace DEM.Net.Lib
             //return isInside;
         }
 
-        public float ParseGeoDataAtPoint(GeoTiffDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float lastElevation, IInterpolator interpolator)
+        public float GetElevationAtPoint(RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float lastElevation, IInterpolator interpolator)
         {
             float heightValue = 0;
             try
             {
 
-                IGeoTiff mainTiff = adjacentTiles[metadata];
+                IRasterFile mainRaster = adjacentTiles[metadata];
 
                 //const double epsilon = (Double.Epsilon * 100);
                 float noData = metadata.NoDataValueFloat;
@@ -736,7 +684,7 @@ namespace DEM.Net.Lib
                     int x = (int)Math.Round(xpos, 0);
                     int y = (int)Math.Round(ypos, 0);
                     var tile = FindTile(metadata, adjacentTiles, x, y, out x, out y);
-                    heightValue = mainTiff.GetElevationAtPoint(tile, x, y);
+                    heightValue = mainRaster.GetElevationAtPoint(tile, x, y);
                 }
                 else
                 {
@@ -775,7 +723,7 @@ namespace DEM.Net.Lib
             return heightValue;
         }
 
-        private float GetElevationAtPoint(FileMetadata mainTile, GeoTiffDictionary tiles, int x, int y, float nullValue)
+        private float GetElevationAtPoint(FileMetadata mainTile, RasterFileDictionary tiles, int x, int y, float nullValue)
         {
             int xRemap, yRemap;
             FileMetadata goodTile = FindTile(mainTile, tiles, x, y, out xRemap, out yRemap);
@@ -796,7 +744,7 @@ namespace DEM.Net.Lib
 
         }
 
-        private FileMetadata FindTile(FileMetadata mainTile, GeoTiffDictionary tiles, int x, int y, out int newX, out int newY)
+        private FileMetadata FindTile(FileMetadata mainTile, RasterFileDictionary tiles, int x, int y, out int newX, out int newY)
         {
             int xTileOffset = x < 0 ? -1 : x >= mainTile.Width ? 1 : 0;
             int yTileOffset = y < 0 ? -1 : y >= mainTile.Height ? 1 : 0;
