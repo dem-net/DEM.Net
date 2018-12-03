@@ -112,16 +112,6 @@ namespace DEM.Net.Lib
         string GetDEMLocalPath(DEMDataSet dataSet);
 
 
-        List<GeoPoint> FindSegmentIntersections(double startLon, double startLat, double endLon, double endLat, List<FileMetadata> segTiles, bool returnStartPoint, bool returnEndPoind);
-        float GetAverageExceptForNoDataValue(float noData, float valueIfAllBad, params float[] values);
-        
-        IEnumerable<GeoSegment> GetDEMNorthSouthLines(List<FileMetadata> segTiles, GeoPoint westernSegPoint, GeoPoint easternSegPoint);
-        IEnumerable<GeoSegment> GetDEMWestEastLines(List<FileMetadata> segTiles, GeoPoint northernSegPoint, GeoPoint southernSegPoint);
-        float GetElevationAtPoint(RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float lastElevation, IInterpolator interpolator);
-        void GetElevationData(ref IEnumerable<GeoPoint> intersections, DEMDataSet dataSet, RasterFileDictionary adjacentRasters, List<FileMetadata> segTiles, IInterpolator interpolator);
-       
-        IInterpolator GetInterpolator(InterpolationMode interpolationMode);
-       
 
         /// <summary>
         /// Generate a tab separated list of points and elevations

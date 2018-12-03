@@ -16,6 +16,7 @@ using DEM.Net.glTF;
 using AssetGenerator.Runtime;
 using AssetGenerator;
 using System.Numerics;
+using Newtonsoft.Json;
 
 namespace SampleApp
 {
@@ -34,6 +35,7 @@ namespace SampleApp
             //LineDEMTest(elevationService, DEMDataSet.SRTM_GL3, WKT_SCL_MENDOZA, 100);
             //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_SCL_MENDOZA, 100);
 
+            TestGoogleElevationVsDEMNet(rasterService, elevationService);
 
             TestGpxElevation(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
 
@@ -52,7 +54,61 @@ namespace SampleApp
 
         }
 
+        private static void TestGoogleElevationVsDEMNet(IRasterService raster, ElevationService elevationService)
+        {
+            double lat1 = -33.466479;
+            double lon1 = -70.660565;
+            double lat2 = -32.901011;
+            double lont2 = -68.814862;
 
+            var elevationLine = GeometryService.ParseGeoPointAsGeometryLine(new List<GeoPoint>
+            {  new GeoPoint(lat1,lon1)
+            , new GeoPoint(lat2,lont2)});
+
+            var elevation = elevationService.GetPointElevation(-33.2469742, -69.9306268, DEMDataSet.AW3D30);
+            elevation = elevationService.GetPointElevation(-33.2469742, -69.9306268, DEMDataSet.SRTM_GL1);
+            elevation = elevationService.GetPointElevation(-33.2469742, -69.9306268, DEMDataSet.SRTM_GL3);
+
+            elevationService.DownloadMissingFiles(DEMDataSet.SRTM_GL1, elevationLine.GetBoundingBox());
+            var demNetFull = elevationService.GetLineGeometryElevation(elevationLine, DEMDataSet.SRTM_GL1, InterpolationMode.Bilinear);
+
+            var googlePoints = ParseGoogleElevationResponse(@"..\..\..\Data\elevationResultGoogle.json");
+            var demNetPoints = googlePoints.Select(p => new GeoPoint(p.Latitude, p.Longitude)).ToList();
+            var demNetPointsResult = elevationService.GetPointsElevation(demNetPoints, DEMDataSet.SRTM_GL1);
+            demNetPointsResult = elevationService.GetPointsElevation(demNetPoints, DEMDataSet.SRTM_GL3);
+            demNetPointsResult = elevationService.GetPointsElevation(demNetPoints, DEMDataSet.AW3D30);
+            File.WriteAllText(@"..\..\..\Data\elevationResultGoogleSCL.tsv", elevationService.ExportElevationTable(googlePoints));
+            File.WriteAllText(@"..\..\..\Data\elevationResultDemnetSCL.tsv", elevationService.ExportElevationTable(demNetPointsResult.ToList()));
+        }
+
+        #region Google response
+        public class Location
+        {
+            public double lat { get; set; }
+            public double lng { get; set; }
+        }
+
+        public class Result
+        {
+            public double elevation { get; set; }
+            public Location location { get; set; }
+            public double resolution { get; set; }
+        }
+
+        public class RootObject
+        {
+            public List<Result> results { get; set; }
+            public string status { get; set; }
+        }
+        #endregion
+
+        private static List<GeoPoint> ParseGoogleElevationResponse(string jsonFilePath)
+        {
+            string jsonContent = File.ReadAllText(jsonFilePath);
+            RootObject response = JsonConvert.DeserializeObject<RootObject>(jsonContent);
+
+            return response.results.Select(r => new GeoPoint(r.location.lat, r.location.lng, (float)r.elevation, 0, 0)).ToList();
+        }
 
         private static void FileMetaDataVersionMigration(IRasterService rasterService, DEMDataSet dataSet)
         {

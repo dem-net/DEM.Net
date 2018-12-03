@@ -417,7 +417,7 @@ namespace DEM.Net.Lib
         /// <param name="returnStartPoint">If true, the segment starting point will be returned. Useful when processing a line segment by segment.</param>
         /// <param name="returnEndPoind">If true, the segment end point will be returned. Useful when processing a line segment by segment.</param>
         /// <returns></returns>
-        public List<GeoPoint> FindSegmentIntersections(double startLon, double startLat, double endLon, double endLat, List<FileMetadata> segTiles, bool returnStartPoint, bool returnEndPoind)
+        private List<GeoPoint> FindSegmentIntersections(double startLon, double startLat, double endLon, double endLat, List<FileMetadata> segTiles, bool returnStartPoint, bool returnEndPoind)
         {
             List<GeoPoint> segmentPointsWithDEMPoints;
             // Find intersections with north/south lines, 
@@ -486,7 +486,7 @@ namespace DEM.Net.Lib
         }
 
 
-        public IEnumerable<GeoSegment> GetDEMNorthSouthLines(List<FileMetadata> segTiles, GeoPoint westernSegPoint, GeoPoint easternSegPoint)
+        private IEnumerable<GeoSegment> GetDEMNorthSouthLines(List<FileMetadata> segTiles, GeoPoint westernSegPoint, GeoPoint easternSegPoint)
         {
             // Get the first north west tile and last south east tile. 
             // The lines are bounded by those tiles
@@ -522,7 +522,7 @@ namespace DEM.Net.Lib
             }
         }
 
-        public IEnumerable<GeoSegment> GetDEMWestEastLines(List<FileMetadata> segTiles, GeoPoint northernSegPoint, GeoPoint southernSegPoint)
+        private IEnumerable<GeoSegment> GetDEMWestEastLines(List<FileMetadata> segTiles, GeoPoint northernSegPoint, GeoPoint southernSegPoint)
         {
             // Get the first north west tile and last south east tile. 
             // The lines are bounded by those tiles
@@ -641,7 +641,7 @@ namespace DEM.Net.Lib
             return isInside;
         }
 
-        public float GetElevationAtPoint(RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float lastElevation, IInterpolator interpolator)
+        private float GetElevationAtPoint(RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float lastElevation, IInterpolator interpolator)
         {
             float heightValue = 0;
             try
@@ -755,7 +755,7 @@ namespace DEM.Net.Lib
 
 
 
-        public float GetAverageExceptForNoDataValue(float noData, float valueIfAllBad, params float[] values)
+        private float GetAverageExceptForNoDataValue(float noData, float valueIfAllBad, params float[] values)
         {
             var withValues = values.Where(v => v != noData);
             if (withValues.Any())
