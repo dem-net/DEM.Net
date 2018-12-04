@@ -90,6 +90,18 @@
     <Compile Include="Services\Interpolation\HyperbolicInterpolator.cs" />
     <Compile Include="Services\Interpolation\BilinearInterpolator.cs" />
     <Compile Include="Helpers\SqlTypesExtensions.cs" />
+    <Compile Include="Services\Lab\BeanArc_internal.cs" />
+    <Compile Include="Services\Lab\BeanFacette_internal.cs" />
+    <Compile Include="Services\Lab\BeanPoint_internal.cs" />
+    <Compile Include="Services\Lab\BeanTopologieFacettes.cs" />
+    <Compile Include="Services\Lab\CalculServices_Low.cs" />
+    <Compile Include="Services\Lab\CalculServices_Medium.cs" />
+    <Compile Include="Services\Lab\enumServices.cs" />
+    <Compile Include="Services\Lab\FServices.cs" />
+    <Compile Include="Services\Lab\ICalculServices_Low.cs" />
+    <Compile Include="Services\Lab\ICalculServices_Medium.cs" />
+    <Compile Include="Services\Lab\IUtilitairesServices.cs" />
+    <Compile Include="Services\Lab\UtilitairesServices.cs" />
     <Compile Include="Services\Smoothing.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
   </ItemGroup>
@@ -111,6 +123,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
