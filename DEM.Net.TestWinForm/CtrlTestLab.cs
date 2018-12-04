@@ -10,6 +10,11 @@ using System.Windows.Forms;
 using DEM.Net.Lib.Services.Lab;
 using System.IO;
 using SqlServerSpatial.Toolkit;
+using DEM.Net.glTF;
+using System.Numerics;
+using AssetGenerator.Runtime;
+using AssetGenerator;
+using DEM.Net.Lib;
 
 namespace DEM.Net.TestWinForm
 {
@@ -95,6 +100,25 @@ namespace DEM.Net.TestWinForm
             //
             MessageBox.Show("Visualisez dans SpatialTrace.");
             SpatialTrace.ShowDialog();
+        }
+
+        private void btnTestPoints_Click(object sender, EventArgs e)
+        {
+            IglTFService glTFService = new glTFService();
+
+
+            MeshPrimitive pointMesh =  glTFService.GeneratePointMesh(FromBeanPoint_internalToGeoPoint(_dataPointsTests), new Vector4(1, 0, 0, 0));
+            Model model = glTFService.GenerateModel(pointMesh, "Test Points");
+            glTFService.Export(model, "testpoints.glb", "Test points", false, true);
+        }
+
+        private IEnumerable<GeoPoint> FromBeanPoint_internalToGeoPoint(List<BeanPoint_internal> dataPointsTests)
+        {
+            return dataPointsTests.Select(ptIn => new GeoPoint(ptIn.p10_coord[1], ptIn.p10_coord[0], (float)ptIn.p10_coord[2], 0, 0));
+            //foreach (BeanPoint_internal ptIn in dataPointsTests)
+            //{
+            //    yield return new GeoPoint(ptIn.p10_coord[1], ptIn.p10_coord[0], (float)ptIn.p10_coord[2], 0, 0);
+            //}
         }
     }
 }

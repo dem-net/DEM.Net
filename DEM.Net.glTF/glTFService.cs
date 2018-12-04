@@ -152,6 +152,8 @@ namespace DEM.Net.glTF
             return model;
         }
 
+        #region Mesh generation (triangles, lines, points)
+
         public MeshPrimitive GenerateTriangleMesh(HeightMap heightMap)
         {
             MeshPrimitive mesh = null;
@@ -377,10 +379,22 @@ namespace DEM.Net.glTF
             return mesh;
         }
 
+        public MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, Vector4 color)
+        {
+            throw new NotImplementedException();
+        }
+
+        public MeshPrimitive GeneratePointMesh(IEnumerable<GeoPoint> points, Vector4 color)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
 
         private Vector3 ToVector3(GeoPoint geoPoint)
         {
             return new Vector3((float)geoPoint.Longitude, (float)geoPoint.Elevation, -(float)geoPoint.Latitude);
         }
+
+       
     }
 }

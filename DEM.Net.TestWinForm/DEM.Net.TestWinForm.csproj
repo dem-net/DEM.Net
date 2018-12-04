@@ -44,6 +44,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\portable-net45+win8+wp8+wpa81\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -111,6 +114,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DEM.Net.glTF\DEM.Net.glTF.csproj">
+      <Project>{31079223-207d-4075-9c4c-ab001e978c94}</Project>
+      <Name>DEM.Net.glTF</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DEM.Net.Lib\DEM.Net.Lib.csproj">
       <Project>{7A31B996-9F8C-4ABF-AC33-E80D2914BC0F}</Project>
       <Name>DEM.Net.Lib</Name>
