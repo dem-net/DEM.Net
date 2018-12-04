@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DEM.Net.Lib.Services.Lab;
 using System.IO;
+using SqlServerSpatial.Toolkit;
 
 namespace DEM.Net.TestWinForm
 {
@@ -93,6 +94,7 @@ namespace DEM.Net.TestWinForm
             FServicesApplicatifs.createVisuSpatialTrace().VisuPoints(v_classifDesPoints, v_tableCouleurs);
             //
             MessageBox.Show("Visualisez dans SpatialTrace.");
+            SpatialTrace.ShowDialog();
         }
     }
 }
