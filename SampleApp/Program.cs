@@ -32,18 +32,20 @@ namespace SampleApp
             IRasterService rasterService = new RasterService(_DataDirectory);
             ElevationService elevationService = new ElevationService(rasterService);
 
+            TestCompletionWithHydro("POLYGON ((-85.429688 43.325178, -49.570312 43.325178, -49.570312 64.774125, -85.429688 64.774125, -85.429688 43.325178))", @"C:\Repos\DEM.Net\Data\ETOPO1\ETOPO1_Bed_g_geotiff.tif", "HydroCuba", DEMDataSet.SRTM_GL3, rasterService, elevationService);
             //LineDEMTest(elevationService, DEMDataSet.SRTM_GL3, WKT_SCL_MENDOZA, 100);
             //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_SCL_MENDOZA, 100);
 
-            TestGoogleElevationVsDEMNet(rasterService, elevationService);
+            //TestGoogleElevationVsDEMNet(rasterService, elevationService);
 
-            TestGpxElevation(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
+            //TestGpxElevation(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
 
             //rasterService.GenerateFileMetadata(@"C:\Repos\DEM.Net\Data\ETOPO1\ETOPO1_Bed_g_geotiff.tif", DEMFileFormat.GEOTIFF, false, false);
 
             //FileMetaDataVersionMigration(rasterService, DEMDataSet.AW3D30);
             //HGTTest(WKT_BBOX_MARSEILLE, elevationService, DEMDataSet.SRTM_GL3, DEMDataSet.SRTM_GL3.Name);
-            HGTTest(WKT_BBOX_LAUZANNIER, elevationService, DEMDataSet.SRTM_GL1, DEMDataSet.SRTM_GL1.Name);
+            HGTTest(WKT_BBOX_MRS_POINTEROUGE, elevationService, DEMDataSet.SRTM_GL1, DEMDataSet.SRTM_GL1.Name);
+            HGTTest(WKT_BBOX_MRS_POINTEROUGE, elevationService, DEMDataSet.AW3D30, DEMDataSet.AW3D30.Name);
             HGTTest(WKT_BBOX_LAUZANNIER, elevationService, DEMDataSet.SRTM_GL3, DEMDataSet.SRTM_GL3.Name);
             //HGTTest(WKT_BBOX_EIGER_MEDIUM, elevationService, DEMDataSet.AW3D30, DEMDataSet.AW3D30.Name);
             //TestFillVoids(WKT_BBOX_EIGER_MEDIUM, elevationService, DEMDataSet.AW3D30, DEMDataSet.SRTM_GL3_srtm, "Eiger");
@@ -54,6 +56,52 @@ namespace SampleApp
 
         }
 
+
+        private static void TestCompletionWithHydro(string wktBbox, string geoTiffPath, string name, DEMDataSet dataSet, IRasterService raster, ElevationService elevationService)
+        {
+            Logger.Info("Parsing WKT...");
+            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wktBbox);
+            var bbox = geom.GetBoundingBox();
+
+
+            Logger.Info("Get HeightMap...");
+            HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
+
+            using (IRasterFile rasterFile = raster.OpenFile(geoTiffPath, DEMFileFormat.GEOTIFF))
+            {
+                var metaData = rasterFile.ParseMetaData();
+                foreach (var pt in hMap.Coordinates.Where(p => p.Elevation.GetValueOrDefault(0) <= 0))
+                {
+                    float currentElevation = (float)pt.Elevation.GetValueOrDefault(0);
+                    float hydroElevation =  elevationService.GetPointElevation(rasterFile, metaData, pt.Latitude, pt.Longitude, null);
+                    pt.Elevation = Math.Min(hydroElevation, currentElevation);
+                }
+            }
+
+
+
+            Logger.Info("Coord transform...");
+            //hMap = hMap.ReprojectTo(4326, 2154);
+            hMap = hMap.CenterOnOrigin(0.00002f);
+
+            Logger.Info("Convert to glTF Model Primitive...");
+
+            glTFService glTF = new glTFService();
+            MeshPrimitive meshPrimitive = glTF.GenerateTriangleMesh(hMap);
+            //Matrix4x4 mat = Matrix4x4.CreateRotationY((float)Math.PI);
+            //meshPrimitive.Positions = meshPrimitive.Positions.Select(p => Vector3.Transform(p, mat));
+            //meshPrimitive.Normals = meshPrimitive.Normals.Select(p => Vector3.Transform(p, mat));
+
+
+            Logger.Info("Generating glTF Model...");
+
+            Model model = glTF.GenerateModel(meshPrimitive, name);
+
+            Logger.Info("Export glTF binary file...");
+
+            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", name, false, true);
+            //HeightMapExport.Export(hMap_L93, "Aix Puyricard");
+        }
         private static void TestGoogleElevationVsDEMNet(IRasterService raster, ElevationService elevationService)
         {
             double lat1 = -33.466479;
@@ -698,6 +746,8 @@ namespace SampleApp
         const string WKT_BBOX_VALGO = "POLYGON ((6.373444 44.913277, 5.971403 44.913277, 5.971403 44.73893, 6.373444 44.73893, 6.373444 44.913277))";
         const string WKT_BBOX_VALGO_LARGE = "POLYGON ((6.418762 44.925573, 5.84168 44.925573, 5.84168 44.662793, 6.418762 44.662793, 6.418762 44.925573))";
         const string WKT_BBOX_LAUZANNIER = "POLYGON ((6.91658 44.347177, 6.91658 44.439908, 6.839028 44.439979, 6.837204 44.347523, 6.91658 44.347177))";
+        const string WKT_BBOX_MRS_POINTEROUGE = "POLYGON ((5.381584 43.239216, 5.312406 43.239216, 5.312406 43.191536, 5.381584 43.191536, 5.381584 43.239216))";
+        const string WKT_BBOX_CUBA_TRENCH = "POLYGON ((-76.113281 20.099549, -76.539876 20.099549, -76.539876 19.686556, -76.113281 19.686556, -76.113281 20.099549))";
 
         const string WKT_POLY_FRANCE = "POLYGON ((-6.328125 41.21172151054787, 10.01953125 41.21172151054787, 10.01953125 51.37178037591737, -6.328125 51.37178037591737, -6.328125 41.21172151054787))";
 
