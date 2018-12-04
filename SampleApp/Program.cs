@@ -32,7 +32,9 @@ namespace SampleApp
             IRasterService rasterService = new RasterService(_DataDirectory);
             ElevationService elevationService = new ElevationService(rasterService);
 
-            TestCompletionWithHydro("POLYGON ((-85.429688 43.325178, -49.570312 43.325178, -49.570312 64.774125, -85.429688 64.774125, -85.429688 43.325178))", @"C:\Repos\DEM.Net\Data\ETOPO1\ETOPO1_Bed_g_geotiff.tif", "HydroCuba", DEMDataSet.SRTM_GL3, rasterService, elevationService);
+            TestCompletionWithHydro("POLYGON ((145.283203 36.020642, 140.425701 36.020642, 140.425701 35.603719, 145.283203 35.603719, 145.283203 36.020642))"
+                , @"C:\Repos\DEM.Net\Data\ETOPO1\ETOPO1_Bed_g_geotiff.tif", "Asia"
+                , DEMDataSet.SRTM_GL3, rasterService, elevationService);
             //LineDEMTest(elevationService, DEMDataSet.SRTM_GL3, WKT_SCL_MENDOZA, 100);
             //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_SCL_MENDOZA, 100);
 
@@ -66,16 +68,13 @@ namespace SampleApp
 
             Logger.Info("Get HeightMap...");
             HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
+            // hMap = hMap.Downsample(10);
 
             using (IRasterFile rasterFile = raster.OpenFile(geoTiffPath, DEMFileFormat.GEOTIFF))
             {
                 var metaData = rasterFile.ParseMetaData();
-                foreach (var pt in hMap.Coordinates.Where(p => p.Elevation.GetValueOrDefault(0) <= 0))
-                {
-                    float currentElevation = (float)pt.Elevation.GetValueOrDefault(0);
-                    float hydroElevation =  elevationService.GetPointElevation(rasterFile, metaData, pt.Latitude, pt.Longitude, null);
-                    pt.Elevation = Math.Min(hydroElevation, currentElevation);
-                }
+                elevationService.GetPointsElevation(rasterFile, metaData, hMap.Coordinates.Where(p => p.Elevation.GetValueOrDefault(0) <= 0), null);
+
             }
 
 

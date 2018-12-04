@@ -305,6 +305,75 @@ namespace DEM.Net.Lib
             }
             return heightValue;
         }
+        public float GetPointsElevation(IRasterFile raster, FileMetadata metadata, IEnumerable<GeoPoint> points, IInterpolator interpolator = null)
+        {
+            float heightValue = 0;
+            try
+            {
+                if (interpolator == null)
+                    interpolator = GetInterpolator(InterpolationMode.Bilinear);
+
+                float noData = metadata.NoDataValueFloat;
+
+                foreach (var pointsByLat in points.GroupBy(p => p.Latitude))
+                {
+                    double lat = pointsByLat.Key;
+                    double ypos = (lat - metadata.StartLat) / metadata.pixelSizeY;
+                    foreach (GeoPoint point in pointsByLat)
+                    {
+                        // precise position on the grid (with commas)
+                        double lon = point.Longitude;
+                        double xpos = (lon - metadata.StartLon) / metadata.pixelSizeX;
+
+                        // If pure integers, then it's on the grid
+                        float xInterpolationAmount = (float)xpos % 1;
+                        float yInterpolationAmount = (float)ypos % 1;
+
+                        bool xOnGrid = xInterpolationAmount == 0;
+                        bool yOnGrid = yInterpolationAmount == 0;
+
+                        // If xOnGrid and yOnGrid, we are on a grid intersection, and that's all
+                        if (xOnGrid && yOnGrid)
+                        {
+                            int x = (int)Math.Round(xpos, 0);
+                            int y = (int)Math.Round(ypos, 0);
+                            heightValue = raster.GetElevationAtPoint(metadata, x, y);
+                        }
+                        else
+                        {
+                            int xCeiling = (int)Math.Ceiling(xpos);
+                            int xFloor = (int)Math.Floor(xpos);
+                            int yCeiling = (int)Math.Ceiling(ypos);
+                            int yFloor = (int)Math.Floor(ypos);
+                            // Get 4 grid nearest points (DEM grid corners)
+
+                            // If not yOnGrid and not xOnGrid we are on grid horizontal line
+                            // We need elevations for top, bottom, left and right grid points (along x axis and y axis)
+                            float northWest = raster.GetElevationAtPoint(metadata, xFloor, yFloor);
+                            float northEast = raster.GetElevationAtPoint(metadata, xCeiling, yFloor);
+                            float southWest = raster.GetElevationAtPoint(metadata, xFloor, yCeiling);
+                            float southEast = raster.GetElevationAtPoint(metadata, xCeiling, yCeiling);
+
+                            float avgHeight = GetAverageExceptForNoDataValue(noData, NO_DATA_OUT, southWest, southEast, northWest, northEast);
+
+                            if (northWest == noData) northWest = avgHeight;
+                            if (northEast == noData) northEast = avgHeight;
+                            if (southWest == noData) southWest = avgHeight;
+                            if (southEast == noData) southEast = avgHeight;
+
+                            heightValue = interpolator.Interpolate(southWest, southEast, northWest, northEast, xInterpolationAmount, yInterpolationAmount);
+                        }
+
+                        point.Elevation = heightValue;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Trace.TraceError($"Error while getting elevation data : {e.Message}{Environment.NewLine}{e.ToString()}");
+            }
+            return heightValue;
+        }
         public GeoPoint GetPointElevation(double lat, double lon, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
             GeoPoint geoPoint = new GeoPoint(lat, lon);
