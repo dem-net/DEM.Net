@@ -1,4 +1,4 @@
-﻿using DEM.Net.Lib.Services;
+﻿using DEM.Net.Lib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +33,6 @@ namespace DEM.Net.Lib
         }
     }
 
-    public class GeoTiffDictionary : DisposableValueDictionary<FileMetadata, IGeoTiff>
+    public class RasterFileDictionary : DisposableValueDictionary<FileMetadata, IRasterFile>
     { }
 }

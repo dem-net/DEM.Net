@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
 
-namespace DEM.Net.Lib.Services
+namespace DEM.Net.Lib
 {
 	public static class GeometryService
 	{
@@ -32,6 +32,11 @@ namespace DEM.Net.Lib.Services
 			return geom.GetBoundingBox();
 		}
 
+        /// <summary>
+        /// Problem here : self intersecting lines are not supported. Not ideal for GPS tracks...
+        /// </summary>
+        /// <param name="points"></param>
+        /// <returns></returns>
 		public static SqlGeometry ParseGeoPointAsGeometryLine(IEnumerable<GeoPoint> points)
 		{
 			SqlGeometryBuilder gb = new SqlGeometryBuilder();
@@ -52,7 +57,11 @@ namespace DEM.Net.Lib.Services
 			}
 			gb.EndFigure();
 			gb.EndGeometry();
-			return gb.ConstructedGeometry;
+
+            SqlGeometry geom = gb.ConstructedGeometry.MakeValidIfInvalid(1);
+
+            return geom;
+
 		}
 
 

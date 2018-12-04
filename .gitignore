@@ -309,3 +309,5 @@ $RECYCLE.BIN/
 *.lnk
 /VRT
 Data/
+UnityExample/Assets/Plugins/MeshDecimator/MeshDecimator.dll
+UnityExample/Assets/Plugins/MeshDecimator/MeshDecimator.xml

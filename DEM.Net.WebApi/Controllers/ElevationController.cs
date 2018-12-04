@@ -10,8 +10,6 @@ using System.Web.Http;
 using DEM.Net.WebApi.Models;
 using DEM.Net.WebApi.Utility;
 using DEM.Net.Lib;
-using DEM.Net.Lib.Services;
-using GeoJSON.Net.Feature;
 
 namespace DEM.Net.WebApi.Controllers
 {
@@ -25,7 +23,7 @@ namespace DEM.Net.WebApi.Controllers
 			{
 				dataDirectory = Path.Combine(HostingEnvironment.MapPath("~"), dataDirectory);
 			}
-			_elevationService = new ElevationService(new GeoTiffService(dataDirectory));
+			_elevationService = new ElevationService(new RasterService(dataDirectory));
 		}
 
 

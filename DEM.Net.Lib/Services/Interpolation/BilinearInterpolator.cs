@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Lib.Services.Interpolation
+namespace DEM.Net.Lib.Interpolation
 {
     /// <summary>
     /// Standard interpolation

@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.SqlServer.Types;
-using DEM.Net.Lib.Services;
+using DEM.Net.Lib;
 using DEM.Net.Lib;
 using System.Windows.Media.Imaging;
 using System.IO;
@@ -18,7 +18,18 @@ namespace DEM.Net.Test
 			SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
 		}
 
-		[TestMethod]
+        [TestMethod]
+        [TestCategory("Dataset")]
+        public void DownloadTile()
+        {
+            const string WKT_BBOX_AIX_PUYRICARD = "POLYGON ((5.429993 43.537854, 5.459132 43.537854, 5.459132 43.58151, 5.429993 43.58151, 5.429993 43.537854))";
+
+            IRasterService rasterService = new RasterService(@"..\..\Data");
+            ElevationService elevationService = new ElevationService(rasterService);
+
+            elevationService.DownloadMissingFiles(DEMDataSet.SRTM_GL3, GeometryService.GetBoundingBox(WKT_BBOX_AIX_PUYRICARD));
+        }
+        [TestMethod]
         [TestCategory("Geometry")]
 		public void LineLineIntersectionTest()
 		{
@@ -43,22 +54,6 @@ namespace DEM.Net.Test
 			Assert.IsTrue(dist < 0.05d, "Problem in intersection calculation.");
 		}
 
-        //[TestMethod]
-        //[TestCategory("Raster")]
-        //public void GeoTiffTags()
-        //{
-        //    string geoTiffFileName = @"C:\Users\ext.dev.xfi\AppData\Roaming\DEM.Net\AW3D30\AW3D30_alos\North\North_0_45\N043E004_AVE_DSM.tif";
-        //    using (Stream tiffStream = new FileStream(geoTiffFileName, FileMode.Open))
-        //    {
-        //        var tiffDecoder = new TiffBitmapDecoder(tiffStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.None);
-        //        if (tiffDecoder.Frames.Count == 1)
-        //        {
-        //            var tiffFrameCopy = tiffDecoder.Frames[0];
-        //            var pixels = new Int16[tiffFrameCopy.PixelWidth * tiffFrameCopy.PixelHeight];
-        //           // tiffFrameCopy.CopyPixels(pixels, tiffFrameCopy.PixelWidth * 2, 0);
-        //           // cache.Add(filename, pixels);
-        //        }
-        //    }
-        //}
+        
 	}
 }

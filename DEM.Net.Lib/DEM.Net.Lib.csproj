@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DEM.Net.Lib</RootNamespace>
     <AssemblyName>DEM.Net.Lib</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,8 +31,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BitMiracle.LibTiff.NET40, Version=2.4.584.0, Culture=neutral, PublicKeyToken=53879b3e20e7a7d6, processorArchitecture=MSIL">
-      <HintPath>..\packages\BitMiracle.LibTiff.NET.2.4.584.1\lib\net40\BitMiracle.LibTiff.NET40.dll</HintPath>
+    <Reference Include="BitMiracle.LibTiff.NET, Version=2.4.626.0, Culture=neutral, PublicKeyToken=53879b3e20e7a7d6, processorArchitecture=MSIL">
+      <HintPath>..\packages\BitMiracle.LibTiff.NET.2.4.626\lib\net40\BitMiracle.LibTiff.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="DotSpatial.Projections, Version=1.9.0.0, Culture=neutral, PublicKeyToken=272632bddd08a38b, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotSpatial.Projections.1.9\lib\net40-Client\DotSpatial.Projections.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SqlServer.Types, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.SqlServer.Types.14.0.314.76\lib\net40\Microsoft.SqlServer.Types.dll</HintPath>
@@ -46,6 +50,10 @@
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\portable-net45+win8+wp8+wpa81\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -58,12 +66,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\ExceptionHelper.cs" />
-    <Compile Include="Helpers\GeoTiffDictionary.cs" />
+    <Compile Include="Helpers\RasterFileDictionary.cs" />
+    <Compile Include="Helpers\HeightMapExtensions.cs" />
     <Compile Include="Helpers\UrlHelper.cs" />
-    <Compile Include="IO\GeoTiff.cs" />
-    <Compile Include="IO\HGTFile.cs" />
-    <Compile Include="IO\IGeoTiff.cs" />
-    <Compile Include="IO\NoLogTiffErrorHandler.cs" />
+    <Compile Include="IO\Raster\GeoTiff.cs" />
+    <Compile Include="IO\gpx\GpsLocation.cs" />
+    <Compile Include="IO\gpx\Gpx.cs" />
+    <Compile Include="IO\gpx\GpxImport.cs" />
+    <Compile Include="IO\gpx\GpxProperties.cs" />
+    <Compile Include="IO\gpx\GpxReader.cs" />
+    <Compile Include="IO\gpx\GpxWriter.cs" />
+    <Compile Include="IO\Raster\HGTFile.cs" />
+    <Compile Include="IO\Raster\IRasterFile.cs" />
+    <Compile Include="IO\Raster\NoLogTiffErrorHandler.cs" />
     <Compile Include="Model\BoundingBox.cs" />
     <Compile Include="Model\DEMDataSet.cs" />
     <Compile Include="Model\DEMFileFormat.cs" />
@@ -81,11 +96,13 @@
     <Compile Include="Helpers\DistanceFromPointComparer.cs" />
     <Compile Include="Services\DouglasPeuckerReduction.cs" />
     <Compile Include="Model\ElevationMetrics.cs" />
-    <Compile Include="Services\ElevationService.cs" />
-    <Compile Include="Services\GDALVRTFileService.cs" />
+    <Compile Include="Services\Elevation\ElevationService.cs" />
+    <Compile Include="Services\Elevation\IElevationService.cs" />
+    <Compile Include="Services\Raster\GDALVRTFileService.cs" />
     <Compile Include="Services\GeometryService.cs" />
-    <Compile Include="Services\GeoTiffService.cs" />
-    <Compile Include="Services\IGeoTiffService.cs" />
+    <Compile Include="Services\Raster\RasterSampleFormat.cs" />
+    <Compile Include="Services\Raster\RasterService.cs" />
+    <Compile Include="Services\Raster\IRasterService.cs" />
     <Compile Include="Services\Interpolation\IInterpolator.cs" />
     <Compile Include="Services\Interpolation\HyperbolicInterpolator.cs" />
     <Compile Include="Services\Interpolation\BilinearInterpolator.cs" />
@@ -102,6 +119,7 @@
     <Compile Include="Services\Lab\ICalculServices_Medium.cs" />
     <Compile Include="Services\Lab\IUtilitairesServices.cs" />
     <Compile Include="Services\Lab\UtilitairesServices.cs" />
+    <Compile Include="Services\Logger.cs" />
     <Compile Include="Services\Smoothing.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
   </ItemGroup>
@@ -109,6 +127,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="IO\gpx\licence.txt" />
     <Content Include="SqlServerTypes\readme.htm" />
     <Content Include="SqlServerTypes\x64\msvcr120.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

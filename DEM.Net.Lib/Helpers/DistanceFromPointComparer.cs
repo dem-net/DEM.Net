@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Lib.Services
+namespace DEM.Net.Lib
 {
      internal class DistanceFromPointComparer : IComparer<GeoPoint>
     {
