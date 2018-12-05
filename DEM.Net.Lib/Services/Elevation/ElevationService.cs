@@ -484,6 +484,17 @@ namespace DEM.Net.Lib
 
             return heightMap;
         }
+        public HeightMap GetHeightMap(BoundingBox bbox, string rasterFilePath, DEMFileFormat format)
+        {
+            HeightMap heightMap = null;
+            using (IRasterFile raster = _IRasterService.OpenFile(rasterFilePath, format))
+            {
+                var metaData = raster.ParseMetaData();
+                heightMap = raster.GetHeightMapInBBox(bbox, metaData, NO_DATA_OUT);
+            }
+
+            return heightMap;
+        }
         public HeightMap GetHeightMap(FileMetadata metadata)
         {
             HeightMap map = null;
