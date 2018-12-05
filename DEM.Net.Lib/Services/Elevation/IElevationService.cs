@@ -89,6 +89,7 @@ namespace DEM.Net.Lib
         /// <param name="interpolationMode">Interpolation mode</param>
         /// <returns></returns>
         IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
+        float GetPointsElevation(IRasterFile raster, FileMetadata metadata, IEnumerable<GeoPoint> points, IInterpolator interpolator = null);
 
         /// <summary>
         /// Returns all elevations in given bbox
@@ -104,6 +105,7 @@ namespace DEM.Net.Lib
         /// <param name="metadata">Raster file metadata. <see cref="GetCoveringFiles(BoundingBox, DEMDataSet, List{FileMetadata})"></see></param>
         /// <returns></returns>
         HeightMap GetHeightMap(FileMetadata metadata);
+        HeightMap GetHeightMap(BoundingBox bbox, string rasterFilePath, DEMFileFormat format);
 
         /// <summary>
         /// Retrieves bounding box of given raster file

@@ -154,7 +154,7 @@ namespace DEM.Net.glTF
 
         #region Mesh generation (triangles, lines, points)
 
-        public MeshPrimitive GenerateTriangleMesh(HeightMap heightMap)
+        public MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, Func<GeoPoint, Vector3> colorFunc = null)
         {
             MeshPrimitive mesh = null;
             const int TRIANGULATION_MODE = 1; // 2
@@ -167,10 +167,14 @@ namespace DEM.Net.glTF
                 else
                 {
                     List<Vector3> positions = new List<Vector3>(heightMap.Coordinates.Select(pt => ToVector3(pt)));
+                    if (colorFunc == null)
+                    {
+                        colorFunc = pt => new Vector3(1, 1, 1);
+                    }
                     // Basic mesh declaration
                     mesh = new MeshPrimitive()
                     {
-                        Colors = heightMap.Coordinates.Select(c => new Vector4(1, 1, 1, 0))
+                        Colors = heightMap.Coordinates.Select(c => new Vector4( colorFunc(c),0))
                         ,
                         ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
                         ,

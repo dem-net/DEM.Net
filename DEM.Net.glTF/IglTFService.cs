@@ -16,8 +16,10 @@ namespace DEM.Net.glTF
         /// Triangulates the height map and build a triangle mesh
         /// </summary>
         /// <param name="heightMap"></param>
+        /// <param name="colorFunc">Function delegate for assigning a color to a point (ie: using elevation or other property for instance).
+        /// Pass null to use white as default.</param>
         /// <returns></returns>
-        MeshPrimitive GenerateTriangleMesh(HeightMap heightMap);
+        MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, Func<GeoPoint, Vector3> colorFunc = null);
 
         /// <summary>
         /// Generate triangle mesh with supplied triangulation
