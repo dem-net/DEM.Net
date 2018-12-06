@@ -33,9 +33,9 @@ namespace SampleApp
             IElevationService elevationService = new ElevationService(rasterService);
 
             //string WKT_BBOX_SCL_OCEAN = "POLYGON ((-79.584961 -32.626942, -79.584961 -38.788345, -68.557777 -38.788345, -68.557777 -32.626942, -79.584961 -32.626942))";
-            TestCompletionForHydro(WKT_BBOX_MEDITERRANNEE
-                , @"C:\Repos\DEM.Net\Data\ETOPO1\ETOPO1_Bed_g_geotiff.tif", nameof(WKT_BBOX_MEDITERRANNEE)
-                , DEMDataSet.SRTM_GL3, rasterService, elevationService);
+            //TestCompletionForHydro(WKT_BBOX_MEDITERRANNEE
+            //    , @"C:\Repos\DEM.Net\Data\ETOPO1\ETOPO1_Bed_g_geotiff.tif", nameof(WKT_BBOX_MEDITERRANNEE)
+            //    , DEMDataSet.SRTM_GL3, rasterService, elevationService);
             //LineDEMTest(elevationService, DEMDataSet.SRTM_GL3, WKT_SCL_MENDOZA, 100);
             //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_SCL_MENDOZA, 100);
 
@@ -46,7 +46,7 @@ namespace SampleApp
             //rasterService.GenerateFileMetadata(@"C:\Repos\DEM.Net\Data\ETOPO1\ETOPO1_Bed_g_geotiff.tif", DEMFileFormat.GEOTIFF, false, false);
 
             //FileMetaDataVersionMigration(rasterService, DEMDataSet.AW3D30);
-            //HGTTest(WKT_BBOX_MARSEILLE, elevationService, DEMDataSet.SRTM_GL3, DEMDataSet.SRTM_GL3.Name);
+            HGTTest(WKT_BBOX_VERDON, elevationService, DEMDataSet.SRTM_GL1, "WKT_BBOX_VERDON" + DEMDataSet.SRTM_GL1.Name);
             //HGTTest(WKT_BBOX_MRS_POINTEROUGE, elevationService, DEMDataSet.SRTM_GL1, DEMDataSet.SRTM_GL1.Name);
             //HGTTest(WKT_BBOX_MRS_POINTEROUGE, elevationService, DEMDataSet.AW3D30, DEMDataSet.AW3D30.Name);
             //HGTTest(WKT_BBOX_LAUZANNIER, elevationService, DEMDataSet.SRTM_GL3, DEMDataSet.SRTM_GL3.Name);
@@ -99,7 +99,7 @@ namespace SampleApp
 
             Logger.Info("Export glTF binary file...");
 
-            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", name, false, true);
+            glTF.Export(model, Path.Combine(_DataDirectory, "glTF"), name, false, true);
             //HeightMapExport.Export(hMap_L93, "Aix Puyricard");
         }
         private static void TestCompletionWithHydro(string wktBbox, string geoTiffPath, string name, DEMDataSet dataSet, IRasterService raster, IElevationService elevationService)
@@ -141,7 +141,7 @@ namespace SampleApp
 
             Logger.Info("Export glTF binary file...");
 
-            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", name, false, true);
+            glTF.Export(model, Path.Combine(_DataDirectory, "glTF"), name, false, true);
             //HeightMapExport.Export(hMap_L93, "Aix Puyricard");
         }
 
@@ -238,7 +238,7 @@ namespace SampleApp
 
             Logger.Info("Export glTF binary file...");
 
-            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", name, false, true);
+            glTF.Export(model, Path.Combine(_DataDirectory, "glTF"), name, false, true);
             //HeightMapExport.Export(hMap_L93, "Aix Puyricard");
         }
         private static void TestFillVoids(string wkt, IElevationService elevationService, DEMDataSet dataSet, DEMDataSet backupDataSet, string name)
@@ -271,7 +271,7 @@ namespace SampleApp
 
             Logger.Info("Export glTF binary file...");
 
-            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", name, false, true);
+            glTF.Export(model, Path.Combine(_DataDirectory, "glTF"), name, false, true);
             //HeightMapExport.Export(hMap_L93, "Aix Puyricard");
         }
 
@@ -283,7 +283,7 @@ namespace SampleApp
             IElevationService elevationService = new ElevationService(rasterService);
 
             rasterService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true);
-            rasterService.GenerateFileMetadata(@"C:\Users\xfischer\AppData\Roaming\DEM.Net\ETOPO1\ETOPO1_Ice_g_geotiff.tif", DEMFileFormat.GEOTIFF, false, false);
+            rasterService.GenerateFileMetadata(Path.Combine(_DataDirectory, "ETOPO1", "ETOPO1_Ice_g_geotiff.tif"), DEMFileFormat.GEOTIFF, false, false);
             string wkt4Tiles = "POLYGON ((5.9735200000000006 43.979698, 6.021922 43.979698, 6.021922 44.002967, 5.9735200000000006 44.002967, 5.9735200000000006 43.979698))";
             SpatialTrace_GeometryWithDEMGrid(elevationService, rasterService, wkt4Tiles, DEMDataSet.AW3D30);
 
@@ -384,7 +384,7 @@ namespace SampleApp
 
             Console.Write("GenerateModel...");
             Model model = glTF.GenerateModel(meshPrimitive, name);
-            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", $"{name} line", false, true);
+            glTF.Export(model, Path.Combine(_DataDirectory, "glTF"), $"{name} line", false, true);
         }
 
         private static void TestCombinedGpxMesh(IElevationService elevationService, DEMDataSet dataSet, string gpxFile, string wkt, string name)
@@ -420,7 +420,7 @@ namespace SampleApp
             // model export
             Console.Write("GenerateModel...");
             Model model = glTF.GenerateModel(meshes, name);
-            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", $"{name} combined", false, true);
+            glTF.Export(model, Path.Combine(_DataDirectory, "glTF"), $"{name} combined", false, true);
         }
 
 
@@ -446,7 +446,7 @@ namespace SampleApp
 
             Console.Write("GenerateModel...");
             Model model = glTF.GenerateModel(meshPrimitive, name);
-            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", $"{name} decimated {quality * 100}", false, true);
+            glTF.Export(model, Path.Combine(_DataDirectory, "glTF"), $"{name} decimated {quality * 100}", false, true);
             ////HeightMapExport.Export(hMap_L93, "Aix Puyricard");
         }
 
@@ -463,7 +463,7 @@ namespace SampleApp
             glTFService glTF = new glTFService();
             MeshPrimitive meshPrimitive = glTF.GenerateTriangleMesh(hMap);
             Model model = glTF.GenerateModel(meshPrimitive, name);
-            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF", name, false, true);
+            glTF.Export(model, Path.Combine(_DataDirectory, "glTF"), name, false, true);
             //HeightMapExport.Export(hMap_L93, "Aix Puyricard");
         }
 
@@ -494,7 +494,7 @@ namespace SampleApp
             glTFService glTF = new glTFService();
             MeshPrimitive meshPrimitive = glTF.GenerateTriangleMesh(hmap);
             Model model = glTF.GenerateModel(meshPrimitive, "FBA");
-            glTF.Export(model, @"C:\Repos\DEM.Net\Data\glTF_FBA", "FBA DEM");
+            glTF.Export(model, Path.Combine(_DataDirectory, "glTF_FBA"), "FBA DEM");
 
         }
 
