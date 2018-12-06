@@ -28,20 +28,23 @@ namespace SampleApp
         static void Main(string[] args)
         {
 
+            Logger.StartPerf("Main cold start");
+
             SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
             _DataDirectory = ConfigurationManager.AppSettings["DataDir"];
             IRasterService rasterService = new RasterService(_DataDirectory);
             IElevationService elevationService = new ElevationService(rasterService);
 
-            Logger.StartPerf("Main");
-            
+
             //TestPoints(WKT_CENGLE, DEMDataSet.SRTM_GL3, rasterService, elevationService);
             //string WKT_BBOX_SCL_OCEAN = "POLYGON ((-79.584961 -32.626942, -79.584961 -38.788345, -68.557777 -38.788345, -68.557777 -32.626942, -79.584961 -32.626942))";
 
             //HGTTest(WKT_BBOX_CORSEBUG, elevationService, DEMDataSet.SRTM_GL1, "WKT_BBOX_CORSEBUG_SRTM_GL1");
-            TestCompletionForHydro(WKT_BBOX_MEDITERRANNEE
-                , @"C:\Repos\DEM.Net\Data\ETOPO1\ETOPO1_Bed_g_geotiff.tif", nameof(WKT_BBOX_MEDITERRANNEE)
-                , DEMDataSet.SRTM_GL1, rasterService, elevationService);
+          
+            TestCompletionForHydro(WKT_BBOX_CHILE
+               , @"C:\Repos\DEM.Net\Data\ETOPO1\ETOPO1_Bed_g_geotiff.tif", nameof(WKT_BBOX_CHILE)
+               , null, rasterService, elevationService);
+            Logger.StopPerf("Main cold start", true);
             //LineDEMTest(elevationService, DEMDataSet.SRTM_GL3, WKT_SCL_MENDOZA, 100);
             //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_SCL_MENDOZA, 100);
 
@@ -62,7 +65,7 @@ namespace SampleApp
             //HGTTest(WKT_BBOX_EIGER_MEDIUM, elevationService, DEMDataSet.AW3D30, DEMDataSet.AW3D30.Name);
             //TestFillVoids(WKT_BBOX_EIGER_MEDIUM, elevationService, DEMDataSet.AW3D30, DEMDataSet.SRTM_GL3_srtm, "Eiger");
 
-            Logger.StopPerf("Main", true);
+
             Console.Write("Press any key to exit...");
             Console.ReadLine();
 
@@ -112,15 +115,18 @@ namespace SampleApp
             HeightMap hMap = elevationService.GetHeightMap(bbox, geoTiffPath, DEMFileFormat.GEOTIFF);
             // hMap = hMap.Downsample(10);
 
-            Logger.Info($"Get HeightMap completion using {dataSet}...");
-            List<GeoPoint> pointsWithElevation = hMap.Coordinates.Where(p => p.Elevation >= 0).ToList();
-            pointsWithElevation.ForEach(p => p.Elevation = -1000);
-            pointsWithElevation = elevationService.GetPointsElevation(pointsWithElevation, dataSet).ToList();
+            if (dataSet != null)
+            {
+                Logger.Info($"Get HeightMap completion using {dataSet}...");
+                List<GeoPoint> pointsWithElevation = hMap.Coordinates.Where(p => p.Elevation >= 0).ToList();
+                pointsWithElevation.ForEach(p => p.Elevation = -1000);
+                pointsWithElevation = elevationService.GetPointsElevation(pointsWithElevation, dataSet).ToList();
+            }
 
 
             Logger.Info("Coord transform...");
             //hMap = hMap.ReprojectTo(4326, 2154);
-            hMap = hMap.CenterOnOrigin(0.00005f);
+            hMap = hMap.CenterOnOrigin(0.00009f);
 
             Logger.Info("Convert to glTF Model Primitive...");
 
@@ -838,7 +844,10 @@ namespace SampleApp
         const string WKT_BBOX_AJACCIO = "POLYGON ((8.887939 42.002239, 8.088255 42.002239, 8.094778 41.498244, 8.881609 41.501394, 8.887939 42.002239))";
         const string WKT_BBOX_CORSEBUG = "POLYGON ((8.780823 42.042512, 8.567512 42.042512, 8.567512 41.887966, 8.780823 41.887966, 8.780823 42.042512))";
         const string WKT_POLY_FRANCE = "POLYGON ((-6.328125 41.21172151054787, 10.01953125 41.21172151054787, 10.01953125 51.37178037591737, -6.328125 51.37178037591737, -6.328125 41.21172151054787))";
-
+        const string WKT_BBOX_CARAIBES = "POLYGON ((-58.557472 24.100693, -88.225708 24.425895, -88.251457 7.781751, -58.278694 8.277067, -58.557472 24.100693))";
+        const string WKT_HAITI_BUG = "POLYGON ((-72.828369 18.802318, -74.558716 18.802318, -74.558716 17.712061, -72.828369 17.712061, -72.828369 18.802318))";
+        const string WKT_BBOX_MARIANNES = "POLYGON ((156.269531 26.812121, 118.882713 26.812121, 118.882713 4.039618, 156.269531 4.039618, 156.269531 26.812121))";
+        const string WKT_BBOX_CHILE = "POLYGON ((-101.381836 -56.700736, -59.227295 -56.026018, -60.175552 -15.114553, -102.864304 -14.347552, -101.381836 -56.700736))";
 
         #endregion
 

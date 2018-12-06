@@ -106,13 +106,7 @@ namespace DEM.Net.Lib
         /// <returns></returns>
         HeightMap GetHeightMap(FileMetadata metadata);
         HeightMap GetHeightMap(BoundingBox bbox, string rasterFilePath, DEMFileFormat format);
-
-        /// <summary>
-        /// Retrieves bounding box of given raster file
-        /// </summary>
-        /// <param name="tile"></param>
-        /// <returns></returns>
-        BoundingBox GetTileBoundingBox(FileMetadata tile);
+        
         /// <summary>
         /// Retrieves bounding box for the uning of all raster file list
         /// </summary>
