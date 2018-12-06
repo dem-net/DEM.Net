@@ -76,5 +76,10 @@ namespace DEM.Net.glTF
 
         glTFLoader.Schema.Gltf Import(string path);
 
+
+        #region Helpers
+        IEnumerable<MeshPrimitive> GetHeightPlanes();
+        #endregion
+
     }
 }
