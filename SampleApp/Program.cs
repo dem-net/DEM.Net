@@ -27,38 +27,79 @@ namespace SampleApp
         [STAThread]
         static void Main(string[] args)
         {
+
             SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
             _DataDirectory = ConfigurationManager.AppSettings["DataDir"];
             IRasterService rasterService = new RasterService(_DataDirectory);
             IElevationService elevationService = new ElevationService(rasterService);
 
+            Logger.StartPerf("Main");
+            
+            //TestPoints(WKT_CENGLE, DEMDataSet.SRTM_GL3, rasterService, elevationService);
             //string WKT_BBOX_SCL_OCEAN = "POLYGON ((-79.584961 -32.626942, -79.584961 -38.788345, -68.557777 -38.788345, -68.557777 -32.626942, -79.584961 -32.626942))";
-            //TestCompletionForHydro(WKT_BBOX_MEDITERRANNEE
-            //    , @"C:\Repos\DEM.Net\Data\ETOPO1\ETOPO1_Bed_g_geotiff.tif", nameof(WKT_BBOX_MEDITERRANNEE)
-            //    , DEMDataSet.SRTM_GL3, rasterService, elevationService);
+
+            //HGTTest(WKT_BBOX_CORSEBUG, elevationService, DEMDataSet.SRTM_GL1, "WKT_BBOX_CORSEBUG_SRTM_GL1");
+            TestCompletionForHydro(WKT_BBOX_MEDITERRANNEE
+                , @"C:\Repos\DEM.Net\Data\ETOPO1\ETOPO1_Bed_g_geotiff.tif", nameof(WKT_BBOX_MEDITERRANNEE)
+                , DEMDataSet.SRTM_GL1, rasterService, elevationService);
             //LineDEMTest(elevationService, DEMDataSet.SRTM_GL3, WKT_SCL_MENDOZA, 100);
             //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_SCL_MENDOZA, 100);
 
+            // TestAxis();
             //TestGoogleElevationVsDEMNet(rasterService, elevationService);
 
             //TestGpxElevation(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
 
-            //rasterService.GenerateFileMetadata(@"C:\Repos\DEM.Net\Data\ETOPO1\ETOPO1_Bed_g_geotiff.tif", DEMFileFormat.GEOTIFF, false, false);
 
             //FileMetaDataVersionMigration(rasterService, DEMDataSet.AW3D30);
-            HGTTest(WKT_BBOX_VERDON, elevationService, DEMDataSet.SRTM_GL1, "WKT_BBOX_VERDON" + DEMDataSet.SRTM_GL1.Name);
+
+            //HGTTest(WKT_CENGLE, elevationService, DEMDataSet.AW3D30, nameof(WKT_CENGLE) + DEMDataSet.AW3D30.Name);
+            //HGTTest(WKT_CENGLE, elevationService, DEMDataSet.SRTM_GL1, nameof(WKT_CENGLE) + DEMDataSet.SRTM_GL1.Name);
+
             //HGTTest(WKT_BBOX_MRS_POINTEROUGE, elevationService, DEMDataSet.SRTM_GL1, DEMDataSet.SRTM_GL1.Name);
             //HGTTest(WKT_BBOX_MRS_POINTEROUGE, elevationService, DEMDataSet.AW3D30, DEMDataSet.AW3D30.Name);
             //HGTTest(WKT_BBOX_LAUZANNIER, elevationService, DEMDataSet.SRTM_GL3, DEMDataSet.SRTM_GL3.Name);
             //HGTTest(WKT_BBOX_EIGER_MEDIUM, elevationService, DEMDataSet.AW3D30, DEMDataSet.AW3D30.Name);
             //TestFillVoids(WKT_BBOX_EIGER_MEDIUM, elevationService, DEMDataSet.AW3D30, DEMDataSet.SRTM_GL3_srtm, "Eiger");
 
-
+            Logger.StopPerf("Main", true);
             Console.Write("Press any key to exit...");
             Console.ReadLine();
 
         }
 
+        private static void TestAxis()
+        {
+            string name = "Planes spaced";
+            IglTFService glTFService = new glTFService();
+            Model model = glTFService.GenerateModel(glTFService.GetHeightPlanes(), name);
+            glTFService.Export(model, @"C:\Repos\DEM.Net\Data\glTF", name, false, true);
+        }
+
+        private static void TestHeightPlanes(string wkt, DEMDataSet dataSet, IRasterService rasterService, IElevationService elevationService)
+        {
+            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
+            var bbox = geom.GetBoundingBox();
+            HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
+            hMap = hMap.CenterOnOrigin(0.00009f);
+
+            IglTFService glTFService = new glTFService();
+            MeshPrimitive pointMesh = glTFService.GeneratePointMesh(hMap.Coordinates, new Vector4(1, 0, 0, 0));
+            Model model = glTFService.GenerateModel(pointMesh, "Test Points");
+            glTFService.Export(model, "testpoints.glb", "Test points", false, true);
+        }
+        private static void TestPoints(string wkt, DEMDataSet dataSet, IRasterService rasterService, IElevationService elevationService)
+        {
+            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
+            var bbox = geom.GetBoundingBox();
+            HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
+            hMap = hMap.CenterOnOrigin(0.00009f);
+
+            IglTFService glTFService = new glTFService();
+            MeshPrimitive pointMesh = glTFService.GeneratePointMesh(hMap.Coordinates, new Vector4(1, 0, 0, 0));
+            Model model = glTFService.GenerateModel(pointMesh, "Test Points");
+            glTFService.Export(model, "testpoints.glb", "Test points", false, true);
+        }
 
         private static void TestCompletionForHydro(string wktBbox, string geoTiffPath, string name, DEMDataSet dataSet, IRasterService raster, IElevationService elevationService)
         {
@@ -73,13 +114,13 @@ namespace SampleApp
 
             Logger.Info($"Get HeightMap completion using {dataSet}...");
             List<GeoPoint> pointsWithElevation = hMap.Coordinates.Where(p => p.Elevation >= 0).ToList();
-            pointsWithElevation.ForEach(p => p.Elevation = 0);
-            pointsWithElevation = elevationService.GetPointsElevation(pointsWithElevation, dataSet).ToList() ;
+            pointsWithElevation.ForEach(p => p.Elevation = -1000);
+            pointsWithElevation = elevationService.GetPointsElevation(pointsWithElevation, dataSet).ToList();
 
 
             Logger.Info("Coord transform...");
             //hMap = hMap.ReprojectTo(4326, 2154);
-            hMap = hMap.CenterOnOrigin(0.00009f);
+            hMap = hMap.CenterOnOrigin(0.00005f);
 
             Logger.Info("Convert to glTF Model Primitive...");
 
@@ -793,7 +834,9 @@ namespace SampleApp
         const string WKT_BBOX_CUBA_TRENCH = "POLYGON ((-73.476563 22.897683, -81.276855 22.897683, -81.276855 16.151369, -73.476563 16.151369, -73.476563 22.897683))";
         const string WKT_BBOX_ANTOFAGASTA = "POLYGON ((-73.696289 -22.769613, -73.696289 -24.96614, -70.012865 -24.96614, -70.012865 -22.769613, -73.696289 -22.769613))";
         const string WKT_BBOX_MEDITERRANNEE = "POLYGON ((10.546875 44.359881, 3.915854 44.359881, 3.915854 38.548165, 10.546875 38.548165, 10.546875 44.359881))";
-
+        const string WKT_BBOX_MEDITERRANNEE_CORSICA = "POLYGON ((9.777832 43.120783, 7.282648 43.120783, 7.282648 41.228249, 9.777832 41.228249, 9.777832 43.120783))";
+        const string WKT_BBOX_AJACCIO = "POLYGON ((8.887939 42.002239, 8.088255 42.002239, 8.094778 41.498244, 8.881609 41.501394, 8.887939 42.002239))";
+        const string WKT_BBOX_CORSEBUG = "POLYGON ((8.780823 42.042512, 8.567512 42.042512, 8.567512 41.887966, 8.780823 41.887966, 8.780823 42.042512))";
         const string WKT_POLY_FRANCE = "POLYGON ((-6.328125 41.21172151054787, 10.01953125 41.21172151054787, 10.01953125 51.37178037591737, -6.328125 51.37178037591737, -6.328125 41.21172151054787))";
 
 

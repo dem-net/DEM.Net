@@ -799,22 +799,25 @@ namespace DEM.Net.Lib
         }
         public bool IsPointInTile(FileMetadata tileMetadata, GeoPoint point)
         {
-            BoundingBox bbox = GetTileBoundingBox(tileMetadata);
+            BoundingBox tileBbox = GetTileBoundingBox(tileMetadata);
 
-            bool isInsideY = bbox.yMin <= point.Latitude && point.Latitude <= bbox.yMax;
-            bool isInsideX = bbox.xMin <= point.Longitude && point.Longitude <= bbox.xMax;
+            bool isInsideX = (tileBbox.xMax >= point.Longitude && tileBbox.xMin <= point.Longitude);
+            bool isInsideY = (tileBbox.yMax >= point.Latitude && tileBbox.yMin <= point.Latitude);
             bool isInside = isInsideX && isInsideY;
             return isInside;
         }
+        // is the tile a tile just next to the tile the point is in ?
         private bool IsPointInAdjacentTile(FileMetadata tile, GeoPoint point)
         {
             BoundingBox tileBbox = GetTileBoundingBox(tile);
-            double sX = tile.PixelScaleX * 2;
-            double sY = tile.PixelScaleY * 2;
-            bool isInsideY = (tileBbox.yMin - sY) <= point.Latitude && point.Latitude <= (tileBbox.yMax + sY);
-            bool isInsideX = (tileBbox.xMin - sX) <= point.Longitude && point.Longitude <= (tileBbox.xMax + sX);
+
+            double sX = tile.PixelScaleX * 4;
+            double sY = tile.PixelScaleY * 4;
+            bool isInsideY = (tileBbox.yMin - tileBbox.Height - sY) <= point.Latitude && point.Latitude <= (tileBbox.yMin + sY);
+            bool isInsideX = (tileBbox.xMin - sX) <= point.Longitude && point.Longitude <= (tileBbox.xMin + tileBbox.Width + sX);
             bool isInside = isInsideX && isInsideY;
             return isInside;
+            
         }
 
         private float GetElevationAtPoint(RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float lastElevation, IInterpolator interpolator)
