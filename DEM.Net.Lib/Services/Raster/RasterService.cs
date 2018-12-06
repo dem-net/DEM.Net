@@ -112,7 +112,7 @@ namespace DEM.Net.Lib
                         FileMetadata metadata = JsonConvert.DeserializeObject<FileMetadata>(jsonContent);
                         if (metadata.Version != FileMetadata.FILEMETADATA_VERSION)
                         {
-                            metadata = FileMetadataMigrations.Migrate(metadata);
+                            metadata = FileMetadataMigrations.Migrate(metadata, _localDirectory);
                             File.WriteAllText(file, JsonConvert.SerializeObject(metadata, Formatting.Indented));
                         }
                         metaList.Add(metadata);
@@ -168,6 +168,8 @@ namespace DEM.Net.Lib
 
         public void GenerateFileMetadata(string rasterFileName, DEMFileFormat fileFormat, bool generateBitmap, bool force)
         {
+            if (!File.Exists(rasterFileName))
+                throw new FileNotFoundException($"File {rasterFileName} does not exists !");
             string outDirPath = GetManifestDirectory(rasterFileName);
             string bmpPath = GetMetadataFileName(rasterFileName, outDirPath, ".bmp");
             string jsonPath = GetMetadataFileName(rasterFileName, outDirPath, ".json");

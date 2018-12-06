@@ -101,24 +101,37 @@ namespace DEM.Net.Lib
 
     public static class FileMetadataMigrations
     {
-        public static FileMetadata Migrate(FileMetadata oldMetadata)
+        public static FileMetadata Migrate(FileMetadata oldMetadata, string dataRootDirectory)
         {
             if (oldMetadata != null)
             {
                 Logger.Info($"Migration metadata file from {oldMetadata.Version} to {FileMetadata.FILEMETADATA_VERSION}");
-                // set version and fileFormat
-                oldMetadata.Version = FileMetadata.FILEMETADATA_VERSION;
-                switch(Path.GetExtension(oldMetadata.Filename).ToUpper())
+
+                switch (oldMetadata.Version)
                 {
-                    case ".TIF":
-                    case ".TIFF":
-                        oldMetadata.fileFormat = DEMFileFormat.GEOTIFF;
+                    case "2.0":
+
                         break;
                     default:
-                        // not possible since pre V2 files could only be GEOTIFF
-                        throw new Exception("Metadata corrupted.");
+
+                        // DEMFileFormat
+                        switch (Path.GetExtension(oldMetadata.Filename).ToUpper())
+                        {
+                            case ".TIF":
+                            case ".TIFF":
+                                oldMetadata.fileFormat = DEMFileFormat.GEOTIFF;
+                                break;
+                            default:
+                                // not possible since pre V2 files could only be GEOTIFF
+                                throw new Exception("Metadata corrupted.");
+                        }
+                        break;
                 }
-               
+
+                // set version and fileFormat
+                oldMetadata.Version = FileMetadata.FILEMETADATA_VERSION;
+
+
             }
             return oldMetadata;
         }
