@@ -49,27 +49,26 @@ namespace DEM.Net.Lib
             {
                 _IRasterService.GenerateFileMetadata(file.LocalName, dataSet.FileFormat, false, false);
             }
-            List<DemFileReport> v_filesToDownload = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
+            List<DemFileReport> filesToDownload = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
 
-            if (v_filesToDownload.Count == 0)
+            if (filesToDownload.Count == 0)
             {
                 Trace.TraceInformation("No missing file(s).");
             }
             else
             {
-                Trace.TraceInformation($"Downloading {v_filesToDownload.Count} missing file(s).");
+                Trace.TraceInformation($"Downloading {filesToDownload.Count} missing file(s).");
 
-                List<Task> tasks = new List<Task>();
-
-
-                foreach (var file in v_filesToDownload)
-                {
-                    tasks.Add(DownloadDEMTile(file.URL, dataSet.FileFormat, file.LocalName));
-                }
                 try
                 {
+                    ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
+                    Parallel.ForEach(filesToDownload, options, file =>
+                   {
 
-                    Task.WaitAll(tasks.ToArray());
+                       DownloadDEMTile_WebClient(file.URL, dataSet.FileFormat, file.LocalName);
+
+                   }
+                    );
 
                     _IRasterService.GenerateDirectoryMetadata(dataSet, false, false);
                     _IRasterService.LoadManifestMetadata(dataSet, true);
@@ -84,7 +83,7 @@ namespace DEM.Net.Lib
             }
         }
 
-        async Task DownloadDEMTile(string url, DEMFileFormat fileFormat, string localFileName)
+        async Task DownloadDEMTile_HttpClient(string url, DEMFileFormat fileFormat, string localFileName)
         {
 
             // Create directories if not existing
@@ -95,6 +94,7 @@ namespace DEM.Net.Lib
             Uri uri = new Uri(url);
             ServicePoint sp = ServicePointManager.FindServicePoint(uri);
             sp.ConnectionLimit = 50;
+
 
             using (var client = new HttpClient())
             {
@@ -115,6 +115,24 @@ namespace DEM.Net.Lib
                     httpStream.CopyTo(fileStream);
                     fileStream.Flush();
                 }
+            }
+
+
+            _IRasterService.GenerateFileMetadata(localFileName, fileFormat, false, false);
+
+
+        }
+        private void DownloadDEMTile_WebClient(string url, DEMFileFormat fileFormat, string localFileName)
+        {
+
+            // Create directories if not existing
+            new FileInfo(localFileName).Directory.Create();
+
+            Trace.TraceInformation($"Downloading file {url}...");
+
+            using (WebClient wc = new WebClient())
+            {
+                wc.DownloadFile(url, localFileName);
             }
 
 
@@ -209,6 +227,153 @@ namespace DEM.Net.Lib
             return GetLineGeometryElevation(geometry, dataSet, interpolationMode);
         }
 
+        public float GetPointElevation(FileMetadata metadata, double lat, double lon, IInterpolator interpolator = null)
+        {
+            float heightValue = 0;
+            try
+            {
+                using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, metadata.fileFormat))
+                {
+                    heightValue = GetPointElevation(raster, metadata, lat, lon, interpolator);
+                }
+            }
+            catch (Exception e)
+            {
+                Trace.TraceError($"Error while getting elevation data : {e.Message}{Environment.NewLine}{e.ToString()}");
+            }
+            return heightValue;
+        }
+        public float GetPointElevation(IRasterFile raster, FileMetadata metadata, double lat, double lon, IInterpolator interpolator = null)
+        {
+            float heightValue = 0;
+            try
+            {
+                if (interpolator == null)
+                    interpolator = GetInterpolator(InterpolationMode.Bilinear);
+
+                float noData = metadata.NoDataValueFloat;
+
+
+                // precise position on the grid (with commas)
+                double ypos = (lat - metadata.StartLat) / metadata.pixelSizeY;
+                double xpos = (lon - metadata.StartLon) / metadata.pixelSizeX;
+
+                // If pure integers, then it's on the grid
+                float xInterpolationAmount = (float)xpos % 1;
+                float yInterpolationAmount = (float)ypos % 1;
+
+                bool xOnGrid = xInterpolationAmount == 0;
+                bool yOnGrid = yInterpolationAmount == 0;
+
+                // If xOnGrid and yOnGrid, we are on a grid intersection, and that's all
+                if (xOnGrid && yOnGrid)
+                {
+                    int x = (int)Math.Round(xpos, 0);
+                    int y = (int)Math.Round(ypos, 0);
+                    heightValue = raster.GetElevationAtPoint(metadata, x, y);
+                }
+                else
+                {
+                    int xCeiling = (int)Math.Ceiling(xpos);
+                    int xFloor = (int)Math.Floor(xpos);
+                    int yCeiling = (int)Math.Ceiling(ypos);
+                    int yFloor = (int)Math.Floor(ypos);
+                    // Get 4 grid nearest points (DEM grid corners)
+
+                    // If not yOnGrid and not xOnGrid we are on grid horizontal line
+                    // We need elevations for top, bottom, left and right grid points (along x axis and y axis)
+                    float northWest = raster.GetElevationAtPoint(metadata, xFloor, yFloor);
+                    float northEast = raster.GetElevationAtPoint(metadata, xCeiling, yFloor);
+                    float southWest = raster.GetElevationAtPoint(metadata, xFloor, yCeiling);
+                    float southEast = raster.GetElevationAtPoint(metadata, xCeiling, yCeiling);
+
+                    float avgHeight = GetAverageExceptForNoDataValue(noData, NO_DATA_OUT, southWest, southEast, northWest, northEast);
+
+                    if (northWest == noData) northWest = avgHeight;
+                    if (northEast == noData) northEast = avgHeight;
+                    if (southWest == noData) southWest = avgHeight;
+                    if (southEast == noData) southEast = avgHeight;
+
+                    heightValue = interpolator.Interpolate(southWest, southEast, northWest, northEast, xInterpolationAmount, yInterpolationAmount);
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                Trace.TraceError($"Error while getting elevation data : {e.Message}{Environment.NewLine}{e.ToString()}");
+            }
+            return heightValue;
+        }
+        public float GetPointsElevation(IRasterFile raster, FileMetadata metadata, IEnumerable<GeoPoint> points, IInterpolator interpolator = null)
+        {
+            float heightValue = 0;
+            try
+            {
+                if (interpolator == null)
+                    interpolator = GetInterpolator(InterpolationMode.Bilinear);
+
+                float noData = metadata.NoDataValueFloat;
+
+                foreach (var pointsByLat in points.GroupBy(p => p.Latitude))
+                {
+                    double lat = pointsByLat.Key;
+                    double ypos = (lat - metadata.StartLat) / metadata.pixelSizeY;
+                    foreach (GeoPoint point in pointsByLat)
+                    {
+                        // precise position on the grid (with commas)
+                        double lon = point.Longitude;
+                        double xpos = (lon - metadata.StartLon) / metadata.pixelSizeX;
+
+                        // If pure integers, then it's on the grid
+                        float xInterpolationAmount = (float)xpos % 1;
+                        float yInterpolationAmount = (float)ypos % 1;
+
+                        bool xOnGrid = xInterpolationAmount == 0;
+                        bool yOnGrid = yInterpolationAmount == 0;
+
+                        // If xOnGrid and yOnGrid, we are on a grid intersection, and that's all
+                        if (xOnGrid && yOnGrid)
+                        {
+                            int x = (int)Math.Round(xpos, 0);
+                            int y = (int)Math.Round(ypos, 0);
+                            heightValue = raster.GetElevationAtPoint(metadata, x, y);
+                        }
+                        else
+                        {
+                            int xCeiling = (int)Math.Ceiling(xpos);
+                            int xFloor = (int)Math.Floor(xpos);
+                            int yCeiling = (int)Math.Ceiling(ypos);
+                            int yFloor = (int)Math.Floor(ypos);
+                            // Get 4 grid nearest points (DEM grid corners)
+
+                            // If not yOnGrid and not xOnGrid we are on grid horizontal line
+                            // We need elevations for top, bottom, left and right grid points (along x axis and y axis)
+                            float northWest = raster.GetElevationAtPoint(metadata, xFloor, yFloor);
+                            float northEast = raster.GetElevationAtPoint(metadata, xCeiling, yFloor);
+                            float southWest = raster.GetElevationAtPoint(metadata, xFloor, yCeiling);
+                            float southEast = raster.GetElevationAtPoint(metadata, xCeiling, yCeiling);
+
+                            float avgHeight = GetAverageExceptForNoDataValue(noData, NO_DATA_OUT, southWest, southEast, northWest, northEast);
+
+                            if (northWest == noData) northWest = avgHeight;
+                            if (northEast == noData) northEast = avgHeight;
+                            if (southWest == noData) southWest = avgHeight;
+                            if (southEast == noData) southEast = avgHeight;
+
+                            heightValue = interpolator.Interpolate(southWest, southEast, northWest, northEast, xInterpolationAmount, yInterpolationAmount);
+                        }
+
+                        point.Elevation = heightValue;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Trace.TraceError($"Error while getting elevation data : {e.Message}{Environment.NewLine}{e.ToString()}");
+            }
+            return heightValue;
+        }
         public GeoPoint GetPointElevation(double lat, double lon, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
             GeoPoint geoPoint = new GeoPoint(lat, lon);
@@ -233,9 +398,9 @@ namespace DEM.Net.Lib
         }
         public IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
-            if (points == null )
+            if (points == null)
                 return null;
-           
+
             BoundingBox bbox = points.GetBoundingBox();
             DownloadMissingFiles(dataSet, bbox);
             List<FileMetadata> tiles = this.GetCoveringFiles(bbox, dataSet);
@@ -245,9 +410,9 @@ namespace DEM.Net.Lib
 
             using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
             {
-               
-                    // Get elevation for each point
-                    this.GetElevationData(ref points, dataSet, adjacentRasters, tiles, interpolator);
+
+                // Get elevation for each point
+                this.GetElevationData(ref points, dataSet, adjacentRasters, tiles, interpolator);
 
                 //Debug.WriteLine(adjacentRasters.Count);
             }  // Ensures all rasters are properly closed
@@ -316,6 +481,17 @@ namespace DEM.Net.Lib
 
             Debug.Assert(heightMap.Count == tilesHeightMap.Sum(h => h.Count));
 
+
+            return heightMap;
+        }
+        public HeightMap GetHeightMap(BoundingBox bbox, string rasterFilePath, DEMFileFormat format)
+        {
+            HeightMap heightMap = null;
+            using (IRasterFile raster = _IRasterService.OpenFile(rasterFilePath, format))
+            {
+                var metaData = raster.ParseMetaData();
+                heightMap = raster.GetHeightMapInBBox(bbox, metaData, NO_DATA_OUT);
+            }
 
             return heightMap;
         }
@@ -568,14 +744,7 @@ namespace DEM.Net.Lib
             double ymax = tiles.Max(t => t.OriginLatitude);
             return new BoundingBox(xmin, xmax, ymin, ymax);
         }
-        public BoundingBox GetTileBoundingBox(FileMetadata tile)
-        {
-            double xmin = tile.OriginLongitude;
-            double xmax = tile.EndLongitude;
-            double ymin = tile.EndLatitude;
-            double ymax = tile.OriginLatitude;
-            return new BoundingBox(xmin, xmax, ymin, ymax);
-        }
+
 
         public List<FileMetadata> GetCoveringFiles(BoundingBox bbox, DEMDataSet dataSet, List<FileMetadata> subSet = null)
         {
@@ -617,28 +786,33 @@ namespace DEM.Net.Lib
 
         public bool IsBboxIntersectingTile(FileMetadata tileMetadata, BoundingBox bbox)
         {
-            BoundingBox tileBBox = GetTileBoundingBox(tileMetadata);
+            BoundingBox tileBBox = tileMetadata.BoundingBox;
 
             return (tileBBox.xMax >= bbox.xMin && tileBBox.xMin <= bbox.xMax) && (tileBBox.yMax >= bbox.yMin && tileBBox.yMin <= bbox.yMax);
         }
         public bool IsPointInTile(FileMetadata tileMetadata, GeoPoint point)
         {
-            BoundingBox bbox = GetTileBoundingBox(tileMetadata);
-
-            bool isInsideY = bbox.yMin <= point.Latitude && point.Latitude <= bbox.yMax;
-            bool isInsideX = bbox.xMin <= point.Longitude && point.Longitude <= bbox.xMax;
-            bool isInside = isInsideX && isInsideY;
-            return isInside;
+            return IsPointInTile(tileMetadata, point.Latitude, point.Longitude);
         }
+        public bool IsPointInTile(FileMetadata tileMetadata, double lat, double lon)
+        {
+            BoundingBox tileBbox = tileMetadata.BoundingBox;
+
+            bool isInsideX = (tileBbox.xMax >= lon && tileBbox.xMin <= lon);
+            bool isInsideY = (tileBbox.yMax >= lat && tileBbox.yMin <= lat);
+            return isInsideX && isInsideY;
+        }
+        // is the tile a tile just next to the tile the point is in ?
         private bool IsPointInAdjacentTile(FileMetadata tile, GeoPoint point)
         {
-            BoundingBox tileBbox = GetTileBoundingBox(tile);
-            double sX = tile.PixelScaleX * 2;
-            double sY = tile.PixelScaleY * 2;
-            bool isInsideY = (tileBbox.yMin - sY) <= point.Latitude && point.Latitude <= (tileBbox.yMax + sY);
-            bool isInsideX = (tileBbox.xMin - sX) <= point.Longitude && point.Longitude <= (tileBbox.xMax + sX);
-            bool isInside = isInsideX && isInsideY;
-            return isInside;
+            double offsetX = tile.PixelScaleX * 2d;
+            double offsetY = tile.PixelScaleY * 2d;
+            bool inside = IsPointInTile(tile, point.Latitude + offsetY, point.Longitude + offsetX * 2d)
+                        || IsPointInTile(tile, point.Latitude + offsetY, point.Longitude - offsetX * 2d)
+                        || IsPointInTile(tile, point.Latitude - offsetY, point.Longitude - offsetX * 2d)
+                        || IsPointInTile(tile, point.Latitude - offsetY, point.Longitude + offsetX * 2d);
+            return inside;
+
         }
 
         private float GetElevationAtPoint(RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float lastElevation, IInterpolator interpolator)

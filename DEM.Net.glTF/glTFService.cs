@@ -152,7 +152,114 @@ namespace DEM.Net.glTF
             return model;
         }
 
-        public MeshPrimitive GenerateTriangleMesh(HeightMap heightMap)
+
+        #region Mesh generation (triangles, lines, points)
+        public IEnumerable<MeshPrimitive> GetHeightPlanes()
+        {
+            float size = 0.5f;
+            MeshPrimitive mesh = CreateEmptyTriangleMesh();
+            float y = -size;
+            List<Vector3> positions = new List<Vector3>
+            {
+               new Vector3(-size,y,-size)
+               ,new Vector3(-size,y,size)
+               ,new Vector3(size,y,size)
+               ,new Vector3(size,y,-size)
+            };
+            mesh.Positions = positions;
+            mesh.Colors = positions.Select(n => new Vector4(1, 0, 0, 0));
+            mesh.Indices = new int[] { 0, 1, 3, 1, 2, 3 };
+            mesh.Normals = ComputeNormals(positions, mesh.Indices.ToList());
+            yield return mesh;
+
+            //=====================
+            mesh = CreateEmptyTriangleMesh();
+            y = 0;
+            positions = new List<Vector3>
+            {
+                new Vector3(-size,y,-size)
+               ,new Vector3(-size,y,size)
+               ,new Vector3(size,y,size)
+               ,new Vector3(size,y,-size)
+            };
+            mesh.Positions = positions;
+            mesh.Colors = positions.Select(n => new Vector4(0, 1, 0, 0));
+            mesh.Indices = new int[] { 0, 1, 3, 1, 2, 3 };
+            mesh.Normals = ComputeNormals(positions, mesh.Indices.ToList());
+            yield return mesh;
+
+            //=====================
+            mesh = CreateEmptyTriangleMesh();
+            y = size;
+            positions = new List<Vector3>
+            {
+               new Vector3(-size,y,-size)
+               ,new Vector3(-size,y,size)
+               ,new Vector3(size,y,size)
+               ,new Vector3(size,y,-size)
+            };
+            mesh.Positions = positions;
+            mesh.Colors = positions.Select(n => new Vector4(0, 0, 1, 0));
+            mesh.Indices = new int[] { 0, 1, 3, 1, 2, 3 };
+            mesh.Normals = ComputeNormals(positions, mesh.Indices.ToList());
+            yield return mesh;
+
+        }
+
+        private Vector3[] ComputeNormals(List<Vector3> positions, List<int> indices)
+        {
+
+            //The number of the vertices
+            int nV = positions.Count;
+            //The number of the triangles
+            int nT = indices.Count / 3;
+
+            Vector3[] norm = new Vector3[nV]; //Array for the normals
+                                              //Scan all the triangles. For each triangle add its
+                                              //normal to norm's vectors of triangle's vertices
+            for (int t = 0; t < nT; t++)
+            {
+                //Get indices of the triangle t
+                int i1 = indices[3 * t];
+                int i2 = indices[3 * t + 1];
+                int i3 = indices[3 * t + 2];
+                //Get vertices of the triangle
+                Vector3 v1 = positions[i1];
+                Vector3 v2 = positions[i2];
+                Vector3 v3 = positions[i3];
+                //Compute the triangle's normal
+                Vector3 dir = Vector3.Normalize(Vector3.Cross(v2 - v1, v3 - v1));
+                //Accumulate it to norm array for i1, i2, i3
+                norm[i1] += dir;
+                norm[i2] += dir;
+                norm[i3] += dir;
+            }
+            //Normalize the normal's length
+            for (int i = 0; i < nV; i++)
+            {
+                norm[i] = Vector3.Normalize(norm[i]);
+            }
+            return norm;
+        }
+
+        private MeshPrimitive CreateEmptyTriangleMesh()
+        {
+            return new MeshPrimitive
+            {
+                Mode = MeshPrimitive.ModeEnum.TRIANGLES
+                ,
+                ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
+                 ,
+                IndexComponentType = MeshPrimitive.IndexComponentTypeEnum.UNSIGNED_INT
+                 ,
+                ColorType = MeshPrimitive.ColorTypeEnum.VEC3
+                 ,
+                Material = new Material()
+                 ,
+            };
+        }
+
+        public MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, Func<GeoPoint, Vector3> colorFunc = null)
         {
             MeshPrimitive mesh = null;
             const int TRIANGULATION_MODE = 1; // 2
@@ -165,10 +272,14 @@ namespace DEM.Net.glTF
                 else
                 {
                     List<Vector3> positions = new List<Vector3>(heightMap.Coordinates.Select(pt => ToVector3(pt)));
+                    if (colorFunc == null)
+                    {
+                        colorFunc = pt => new Vector3(1, 1, 1);
+                    }
                     // Basic mesh declaration
                     mesh = new MeshPrimitive()
                     {
-                        Colors = heightMap.Coordinates.Select(c => new Vector4(1, 1, 1, 0))
+                        Colors = heightMap.Coordinates.Select(c => new Vector4(colorFunc(c), 0))
                         ,
                         ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
                         ,
@@ -377,10 +488,59 @@ namespace DEM.Net.glTF
             return mesh;
         }
 
+        public MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, Vector4 color)
+        {
+            throw new NotImplementedException();
+        }
+
+        public MeshPrimitive GeneratePointMesh(IEnumerable<GeoPoint> points, Vector4 color)
+        {
+            MeshPrimitive mesh = null;
+            try
+            {
+                if (points == null)
+                {
+                    Logger.Warning("Points are empty.");
+                }
+                else
+                {
+
+                    // Basic line strip  declaration
+                    mesh = new MeshPrimitive()
+                    {
+                        Colors = points.Select(c => color)
+                        ,
+                        ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
+                        ,
+                        ColorType = MeshPrimitive.ColorTypeEnum.VEC3
+                        ,
+                        Mode = MeshPrimitive.ModeEnum.POINTS
+                        ,
+                        Positions = points.Select(pt => ToVector3(pt))
+                        ,
+                        Material = new Material()
+                    };
+
+
+
+
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.ToString());
+                throw;
+            }
+            return mesh;
+        }
+        #endregion
 
         private Vector3 ToVector3(GeoPoint geoPoint)
         {
             return new Vector3((float)geoPoint.Longitude, (float)geoPoint.Elevation, -(float)geoPoint.Latitude);
         }
+
     }
 }

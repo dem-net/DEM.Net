@@ -104,8 +104,8 @@ namespace DEM.Net.Lib
             metadata.Height = numPixels;
             metadata.Width = numPixels;
 
-            metadata.PixelScaleX = 1f / numPixels;
-            metadata.PixelScaleY = 1f / numPixels;
+            metadata.PixelScaleX = 1d / numPixels;
+            metadata.PixelScaleY = 1d / numPixels;
             metadata.pixelSizeX = metadata.PixelScaleX;
             metadata.pixelSizeY = -metadata.PixelScaleY;
 

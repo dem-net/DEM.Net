@@ -112,7 +112,7 @@ namespace DEM.Net.Lib
                         FileMetadata metadata = JsonConvert.DeserializeObject<FileMetadata>(jsonContent);
                         if (metadata.Version != FileMetadata.FILEMETADATA_VERSION)
                         {
-                            metadata = FileMetadataMigrations.Migrate(metadata);
+                            metadata = FileMetadataMigrations.Migrate(metadata, _localDirectory);
                             File.WriteAllText(file, JsonConvert.SerializeObject(metadata, Formatting.Indented));
                         }
                         metaList.Add(metadata);
@@ -168,6 +168,8 @@ namespace DEM.Net.Lib
 
         public void GenerateFileMetadata(string rasterFileName, DEMFileFormat fileFormat, bool generateBitmap, bool force)
         {
+            if (!File.Exists(rasterFileName))
+                throw new FileNotFoundException($"File {rasterFileName} does not exists !");
             string outDirPath = GetManifestDirectory(rasterFileName);
             string bmpPath = GetMetadataFileName(rasterFileName, outDirPath, ".bmp");
             string jsonPath = GetMetadataFileName(rasterFileName, outDirPath, ".json");
@@ -241,17 +243,11 @@ namespace DEM.Net.Lib
 
         public bool BoundingBoxIntersects(BoundingBox bbox1, BoundingBox bbox2)
         {
-            bool isInsideY = bbox1.yMax >= bbox2.yMin && bbox1.yMin <= bbox2.yMax;
-            bool isInsideX = bbox1.xMax >= bbox2.xMin && bbox1.xMin <= bbox2.xMax;
-            bool isInside = isInsideX && isInsideY;
-            return isInside;
+            return (bbox1.xMax >= bbox2.xMin && bbox1.xMin <= bbox2.xMax) && (bbox1.yMax >= bbox2.yMin && bbox1.yMin <= bbox2.yMax);
         }
         public bool BoundingBoxIntersects(BoundingBox bbox1, double lat, double lon)
         {
-            bool isInsideY = bbox1.yMax >= lat && bbox1.yMin <= lat;
-            bool isInsideX = bbox1.xMax >= lon && bbox1.xMin <= lon;
-            bool isInside = isInsideX && isInsideY;
-            return isInside;
+            return (bbox1.xMax >= lon && bbox1.xMin <= lon) && (bbox1.yMax >= lat && bbox1.yMin <= lat);
         }
 
         public Dictionary<string, DemFileReport> GenerateReport(DEMDataSet dataSet, BoundingBox bbox = null)

@@ -15,6 +15,7 @@ namespace DEM.Net.Lib
             Width = width;
             Height = height;
             Coordinates = null;
+            Count = width * height;
         }
 
         private BoundingBox _bbox;

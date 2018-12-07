@@ -24,7 +24,7 @@ namespace DEM.Net.Lib
 
             return points.CenterOnOrigin(bbox, zFactor);
         }
-        public static IEnumerable<GeoPoint> CenterOnOrigin(this IEnumerable<GeoPoint> points,BoundingBox bbox, float zFactor = 1f)
+        public static IEnumerable<GeoPoint> CenterOnOrigin(this IEnumerable<GeoPoint> points, BoundingBox bbox, float zFactor = 1f)
         {
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
@@ -37,7 +37,7 @@ namespace DEM.Net.Lib
         {
             BoundingBox bbox = new BoundingBox(double.MaxValue, double.MinValue, double.MaxValue, double.MinValue);
 
-            foreach(var pt in points)
+            foreach (var pt in points)
             {
                 bbox.xMin = Math.Min(bbox.xMin, pt.Longitude);
                 bbox.xMax = Math.Max(bbox.xMax, pt.Longitude);
@@ -61,6 +61,31 @@ namespace DEM.Net.Lib
                            .ThenBy(pt => pt.Longitude);
 
             return coords;
+        }
+
+        public static HeightMap Downsample(this HeightMap heightMap, int step)
+        {
+            if (step == 0 || step % 2 != 0)
+                throw new ArgumentOutOfRangeException("step", "Step must be a factor of 2");
+
+            HeightMap hMap = new HeightMap(heightMap.Width / step, heightMap.Height / step);
+            hMap.Maximum = heightMap.Maximum;
+            hMap.Mininum = heightMap.Mininum;
+            hMap.BoundingBox = heightMap.BoundingBox;
+            hMap.Coordinates = DownsampleCoordinates(heightMap.Coordinates.ToList(), heightMap.Width, heightMap.Height, step).ToList();
+
+            return hMap;
+        }
+
+        private static IEnumerable<GeoPoint> DownsampleCoordinates(List<GeoPoint> input, int w, int h, int step)
+        {
+            for (int lat = 0; lat <= h; lat += step)
+            {
+                for (int lon = 0; lon <= w; lon += step)
+                {
+                    yield return input[lon + lat * h];
+                }
+            }
         }
 
     }

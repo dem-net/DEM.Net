@@ -63,6 +63,25 @@ namespace DEM.Net.Lib
         /// <returns></returns>
         GeoPoint GetPointElevation(double lat, double lon, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
         /// <summary>
+        /// Get elevation for any raster at specified point (in raster coordinate system)
+        /// </summary>
+        /// <param name="metadata">File metadata, <see cref="IRasterFile.ParseMetaData"/> and <see cref="IRasterService.OpenFile(string, DEMFileFormat)"/></param>
+        /// <param name="lat"></param>
+        /// <param name="lon"></param>
+        /// <param name="interpolator">If null, then Bilinear interpolation will be used</param>
+        /// <returns></returns>
+        float GetPointElevation(FileMetadata metadata, double lat, double lon, IInterpolator interpolator = null);
+        /// <summary>
+        /// Get elevation for any raster at specified point (in raster coordinate system)
+        /// </summary>
+        /// <param name="raster">Raster file, <see cref="IRasterService.OpenFile(string, DEMFileFormat)"/></param>
+        /// <param name="metadata">File metadata, <see cref="IRasterFile.ParseMetaData"/></param>
+        /// <param name="lat"></param>
+        /// <param name="lon"></param>
+        /// <param name="interpolator">If null, then Bilinear interpolation will be used</param>
+        /// <returns></returns>
+        float GetPointElevation(IRasterFile raster, FileMetadata metadata, double lat, double lon, IInterpolator interpolator = null);
+        /// <summary>
         /// High level method that retrieves elevation for each given point
         /// </summary>
         /// <param name="points">List of points</param
@@ -70,6 +89,7 @@ namespace DEM.Net.Lib
         /// <param name="interpolationMode">Interpolation mode</param>
         /// <returns></returns>
         IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
+        float GetPointsElevation(IRasterFile raster, FileMetadata metadata, IEnumerable<GeoPoint> points, IInterpolator interpolator = null);
 
         /// <summary>
         /// Returns all elevations in given bbox
@@ -85,13 +105,8 @@ namespace DEM.Net.Lib
         /// <param name="metadata">Raster file metadata. <see cref="GetCoveringFiles(BoundingBox, DEMDataSet, List{FileMetadata})"></see></param>
         /// <returns></returns>
         HeightMap GetHeightMap(FileMetadata metadata);
-
-        /// <summary>
-        /// Retrieves bounding box of given raster file
-        /// </summary>
-        /// <param name="tile"></param>
-        /// <returns></returns>
-        BoundingBox GetTileBoundingBox(FileMetadata tile);
+        HeightMap GetHeightMap(BoundingBox bbox, string rasterFilePath, DEMFileFormat format);
+        
         /// <summary>
         /// Retrieves bounding box for the uning of all raster file list
         /// </summary>
