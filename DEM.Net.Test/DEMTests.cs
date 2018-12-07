@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.SqlServer.Types;
 using DEM.Net.Lib;
-using DEM.Net.Lib;
 using System.Windows.Media.Imaging;
 using System.IO;
 

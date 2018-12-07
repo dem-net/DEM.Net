@@ -799,19 +799,13 @@ namespace AssetGenerator.Runtime
                 }
                 foreach (var runtimeExtension in runtimeMaterial.Extensions)
                 {
-                    object extension;
                     switch (runtimeExtension.Name)
                     {
                         default:
                             throw new NotImplementedException("Extension schema conversion not implemented for " + runtimeExtension.Name);
                     }
 
-                    material.Extensions.Add(runtimeExtension.Name, extension);
-
-                    if (!extensionsUsed.Contains(runtimeExtension.Name))
-                    {
-                        extensionsUsed.Add(runtimeExtension.Name);
-                    }
+                    
                 }
                 gltf.ExtensionsUsed = extensionsUsed;
             }

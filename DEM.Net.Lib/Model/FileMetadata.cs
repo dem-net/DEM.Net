@@ -111,7 +111,7 @@ namespace DEM.Net.Lib
                     double xmax = Math.Max(OriginLongitude, EndLongitude);
                     double ymin = Math.Min(EndLatitude, OriginLatitude);
                     double ymax = Math.Max(EndLatitude, OriginLatitude);
-                    return new BoundingBox(xmin, xmax, ymin, ymax);
+                    _boundingBox = new BoundingBox(xmin, xmax, ymin, ymax);
                 }
                 return _boundingBox;
             }

@@ -686,7 +686,6 @@ namespace SampleApp
         private static double SpatialTraceLine(List<GeoPoint> lineElevationData, string message, double? fixedRatio = null)
         {
 
-            const int DEFAULT_HEIGHT = 300;
             // Say that 1 sample is one pixel and a graph is usually 300px tall
             // So 300px = 300 samples = max height (H)
             // So for numSamples, (H * numSamples / 300) = height of 1px
