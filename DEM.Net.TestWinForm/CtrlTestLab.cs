@@ -34,9 +34,9 @@ namespace DEM.Net.TestWinForm
             {
                 lb_modeGenerationXY.Items.Add(v_modeGenerationXY);
             }
-            lb_modeGenerationXY.SelectedIndex=0;
+            lb_modeGenerationXY.SelectedIndex = 0;
             //
-            foreach(string v_modeGenerationZ in Enum.GetNames(typeof(enumMethodeGenerationValeursEnZ)))
+            foreach (string v_modeGenerationZ in Enum.GetNames(typeof(enumMethodeGenerationValeursEnZ)))
             {
                 lb_modeGenerationZ.Items.Add(v_modeGenerationZ);
             }
@@ -49,18 +49,18 @@ namespace DEM.Net.TestWinForm
         {
             _paramGenerationPoints = new BeanParamGenerationAutoDePointsTests();
             _paramGenerationPoints.p51_hauteurRefEnM = Convert.ToDouble(tb_hauteurMinEnM.Text);
-            _paramGenerationPoints.p31_nbrePoints =  Convert.ToInt32(tb_NbrePoints.Text);
-            _paramGenerationPoints.p11_pointBasGaucheX= Convert.ToDouble(tb_pointBasGaucheX.Text);
-            _paramGenerationPoints.p12_pointBasGaucheY =  Convert.ToDouble(tb_pointBasGaucheY.Text);
-            _paramGenerationPoints.p13_pointHautDroitX =  Convert.ToDouble(tb_pointHautDroitX.Text);
-            _paramGenerationPoints.p14_pointHautDroitY =  Convert.ToDouble(tb_pointHautDroitY.Text);
-            _paramGenerationPoints.p32_seed =  Convert.ToInt32(tb_seed.Text);
+            _paramGenerationPoints.p31_nbrePoints = Convert.ToInt32(tb_NbrePoints.Text);
+            _paramGenerationPoints.p11_pointBasGaucheX = Convert.ToDouble(tb_pointBasGaucheX.Text);
+            _paramGenerationPoints.p12_pointBasGaucheY = Convert.ToDouble(tb_pointBasGaucheY.Text);
+            _paramGenerationPoints.p13_pointHautDroitX = Convert.ToDouble(tb_pointHautDroitX.Text);
+            _paramGenerationPoints.p14_pointHautDroitY = Convert.ToDouble(tb_pointHautDroitY.Text);
+            _paramGenerationPoints.p32_seed = Convert.ToInt32(tb_seed.Text);
             //
             _paramGenerationPoints.p01_modeGenerationXY = (enumMethodeGenerationPtsEnXetY)Enum.Parse(typeof(enumMethodeGenerationPtsEnXetY), lb_modeGenerationXY.SelectedItem.ToString(), true);
             //
-            _paramGenerationPoints.p02_modeGenerationEnZ= (enumMethodeGenerationValeursEnZ) Enum.Parse(typeof(enumMethodeGenerationValeursEnZ), lb_modeGenerationZ.SelectedItem.ToString(),true);
+            _paramGenerationPoints.p02_modeGenerationEnZ = (enumMethodeGenerationValeursEnZ)Enum.Parse(typeof(enumMethodeGenerationValeursEnZ), lb_modeGenerationZ.SelectedItem.ToString(), true);
             //
-            if (lb_srid.SelectedItem.ToString()== enumSrid.Lambert93.ToString())
+            if (lb_srid.SelectedItem.ToString() == enumSrid.Lambert93.ToString())
             {
                 _paramGenerationPoints.p10_srid = 2154;
             }
@@ -81,21 +81,21 @@ namespace DEM.Net.TestWinForm
         private void btn_genererPoints_Click(object sender, EventArgs e)
         {
             RemonteParametres();
-            _dataPointsTests =FServicesApplicatifs.createEchantillonsTestsServices().GetPointsTests(_paramGenerationPoints);
+            _dataPointsTests = FServicesApplicatifs.createEchantillonsTestsServices().GetPointsTests(_paramGenerationPoints);
             MessageBox.Show("Génération points tests terminée.");
         }
 
         private void btn_visualisationSpatialTrace_Click(object sender, EventArgs e)
         {
-            if(_dataPointsTests==null || _dataPointsTests.Count==0)
+            if (_dataPointsTests == null || _dataPointsTests.Count == 0)
             {
                 MessageBox.Show("Générez d'abord les points.");
                 return;
             }
             Dictionary<string, List<BeanPoint_internal>> v_classifDesPoints;
-            v_classifDesPoints=FServicesApplicatifs.createStatsPopServices().GetPointsParClasseOrdonnees(_dataPointsTests, 10, enumModeSeuillage.memeNombreDIndividus);
+            v_classifDesPoints = FServicesApplicatifs.createStatsPopServices().GetPointsParClasseOrdonnees(_dataPointsTests, 10, enumModeSeuillage.memeNombreDIndividus);
             Dictionary<string, Color> v_tableCouleurs;
-            v_tableCouleurs=FServicesApplicatifs.createVisuSpatialTrace().GetTableCouleursDegradees(v_classifDesPoints.Keys.ToList(), enumProgressionCouleurs.greenVersRed, 120, true);
+            v_tableCouleurs = FServicesApplicatifs.createVisuSpatialTrace().GetTableCouleursDegradees(v_classifDesPoints.Keys.ToList(), enumProgressionCouleurs.greenVersRed, 120, true);
             FServicesApplicatifs.createVisuSpatialTrace().VisuPoints(v_classifDesPoints, v_tableCouleurs);
             //
             MessageBox.Show("Visualisez dans SpatialTrace.");
@@ -107,7 +107,7 @@ namespace DEM.Net.TestWinForm
             IglTFService glTFService = new glTFService();
 
 
-            MeshPrimitive pointMesh =  glTFService.GeneratePointMesh(FromBeanPoint_internalToGeoPoint(_dataPointsTests), new Vector4(1, 0, 0, 0));
+            MeshPrimitive pointMesh = glTFService.GeneratePointMesh(FromBeanPoint_internalToGeoPoint(_dataPointsTests), new Vector3(1, 0, 0), 0);
             Model model = glTFService.GenerateModel(pointMesh, "Test Points");
             glTFService.Export(model, "testpoints.glb", "Test points", false, true);
         }

@@ -259,126 +259,54 @@ namespace DEM.Net.glTF
             };
         }
 
-        public MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, Func<GeoPoint, Vector3> colorFunc = null)
+        public MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, IEnumerable<Vector3> colors = null)
         {
-            MeshPrimitive mesh = null;
-            const int TRIANGULATION_MODE = 1; // 2
-            try
+            const int TRIANGULATION_MODE = 1;
+            int capacity = ((heightMap.Width - 1) * 6) * (heightMap.Height - 1);
+            List<int> indices = new List<int>(capacity);
+            // Triangulate mesh -- anti clockwise winding
+            for (int y = 0; y < heightMap.Height; y++)
             {
-                if (heightMap == null || heightMap.Coordinates == null || heightMap.Count == 0)
+                for (int x = 0; x < heightMap.Width; x++)
                 {
-                    Logger.Warning("Height map is empty.");
-                }
-                else
-                {
-                    List<Vector3> positions = new List<Vector3>(heightMap.Coordinates.Select(pt => ToVector3(pt)));
-                    if (colorFunc == null)
-                    {
-                        colorFunc = pt => new Vector3(1, 1, 1);
-                    }
-                    // Basic mesh declaration
-                    mesh = new MeshPrimitive()
-                    {
-                        Colors = heightMap.Coordinates.Select(c => new Vector4(colorFunc(c), 0))
-                        ,
-                        ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
-                        ,
-                        ColorType = MeshPrimitive.ColorTypeEnum.VEC3
-                        ,
-                        Mode = MeshPrimitive.ModeEnum.TRIANGLES
-                        ,
-                        Positions = positions
-                        ,
-                        Material = new Material()
-                    };
+                    //Vector3 pt = ToVector3(heightMap.Coordinates[x + y * heightMap.Width]);
+                    //pt.z -= mindepth;
+                    //cout << x + y * stride << "-> " << pt << endl;
+                    //mesh.addVertex(pt);
 
-                    int capacity = ((heightMap.Width - 1) * 6) * (heightMap.Height - 1);
-                    List<int> indices = new List<int>(capacity);
-                    // Triangulate mesh -- anti clockwise winding
-                    for (int y = 0; y < heightMap.Height; y++)
+                    if (x < (heightMap.Width - 1) && y < (heightMap.Height - 1))
                     {
-                        for (int x = 0; x < heightMap.Width; x++)
+                        if (TRIANGULATION_MODE == 1)
                         {
-                            //Vector3 pt = ToVector3(heightMap.Coordinates[x + y * heightMap.Width]);
-                            //pt.z -= mindepth;
-                            //cout << x + y * stride << "-> " << pt << endl;
-                            //mesh.addVertex(pt);
+                            // Triangulation 1
+                            indices.Add((x + 0) + (y + 0) * heightMap.Width);
+                            indices.Add((x + 0) + (y + 1) * heightMap.Width);
+                            indices.Add((x + 1) + (y + 0) * heightMap.Width);
 
-                            if (x < (heightMap.Width - 1) && y < (heightMap.Height - 1))
-                            {
-                                if (TRIANGULATION_MODE == 1)
-                                {
-                                    // Triangulation 1
-                                    indices.Add((x + 0) + (y + 0) * heightMap.Width);
-                                    indices.Add((x + 0) + (y + 1) * heightMap.Width);
-                                    indices.Add((x + 1) + (y + 0) * heightMap.Width);
+                            indices.Add((x + 1) + (y + 0) * heightMap.Width);
+                            indices.Add((x + 0) + (y + 1) * heightMap.Width);
+                            indices.Add((x + 1) + (y + 1) * heightMap.Width);
+                        }
+                        else
+                        {
 
-                                    indices.Add((x + 1) + (y + 0) * heightMap.Width);
-                                    indices.Add((x + 0) + (y + 1) * heightMap.Width);
-                                    indices.Add((x + 1) + (y + 1) * heightMap.Width);
-                                }
-                                else
-                                {
+                            // Triangulation 2
+                            indices.Add((x + 0) + (y + 0) * heightMap.Width);
+                            indices.Add((x + 1) + (y + 1) * heightMap.Width);
+                            indices.Add((x + 0) + (y + 1) * heightMap.Width);
 
-                                    // Triangulation 2
-                                    indices.Add((x + 0) + (y + 0) * heightMap.Width);
-                                    indices.Add((x + 1) + (y + 1) * heightMap.Width);
-                                    indices.Add((x + 0) + (y + 1) * heightMap.Width);
-
-                                    indices.Add((x + 0) + (y + 0) * heightMap.Width);
-                                    indices.Add((x + 1) + (y + 0) * heightMap.Width);
-                                    indices.Add((x + 1) + (y + 1) * heightMap.Width);
-                                }
-                            }
+                            indices.Add((x + 0) + (y + 0) * heightMap.Width);
+                            indices.Add((x + 1) + (y + 0) * heightMap.Width);
+                            indices.Add((x + 1) + (y + 1) * heightMap.Width);
                         }
                     }
-                    mesh.Indices = indices;
-
-                    //The number of the vertices
-                    int nV = heightMap.Count;
-                    //The number of the triangles
-                    int nT = indices.Count / 3;
-
-                    Vector3[] norm = new Vector3[nV]; //Array for the normals
-                                                      //Scan all the triangles. For each triangle add its
-                                                      //normal to norm's vectors of triangle's vertices
-                    for (int t = 0; t < nT; t++)
-                    {
-                        //Get indices of the triangle t
-                        int i1 = indices[3 * t];
-                        int i2 = indices[3 * t + 1];
-                        int i3 = indices[3 * t + 2];
-                        //Get vertices of the triangle
-                        Vector3 v1 = positions[i1];
-                        Vector3 v2 = positions[i2];
-                        Vector3 v3 = positions[i3];
-                        //Compute the triangle's normal
-                        Vector3 dir = Vector3.Normalize(Vector3.Cross(v2 - v1, v3 - v1));
-                        //Accumulate it to norm array for i1, i2, i3
-                        norm[i1] += dir;
-                        norm[i2] += dir;
-                        norm[i3] += dir;
-                    }
-                    //Normalize the normal's length
-                    for (int i = 0; i < nV; i++)
-                    {
-                        norm[i] = Vector3.Normalize(norm[i]);
-                    }
-                    mesh.Normals = norm;
-
-                    Debug.Assert(indices.Count == capacity);
                 }
+            }
 
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex.ToString());
-                throw;
-            }
-            return mesh;
+            return GenerateTriangleMesh(heightMap.Coordinates, indices, colors);
         }
 
-        public MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector4 color, float width)
+        public MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector3 color, float width)
         {
             MeshPrimitive mesh = null;
             try
@@ -394,7 +322,7 @@ namespace DEM.Net.glTF
                         // Basic line strip  declaration
                         mesh = new MeshPrimitive()
                         {
-                            Colors = points.Select(c => color)
+                            Colors = points.Select(c => color.ToVector4())
                             ,
                             ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
                             ,
@@ -402,7 +330,7 @@ namespace DEM.Net.glTF
                             ,
                             Mode = MeshPrimitive.ModeEnum.LINE_STRIP
                             ,
-                            Positions = points.Select(pt => ToVector3(pt))
+                            Positions = points.Select(pt => pt.ToVector3())
                             ,
                             Material = new Material()
                         };
@@ -411,7 +339,7 @@ namespace DEM.Net.glTF
                     {
                         // https://gist.github.com/gszauer/5718441
                         // Line triangle mesh
-                        var sections = points.Select(pt => ToVector3(pt)).ToList();
+                        var sections = points.Select(pt => pt.ToVector3()).ToList();
 
                         var vertices = new Vector3[sections.Count * 2];
 
@@ -454,7 +382,7 @@ namespace DEM.Net.glTF
                         // Basic line strip  declaration
                         mesh = new MeshPrimitive()
                         {
-                            Colors = vertices.Select(c => color)
+                            Colors = vertices.Select(c => color.ToVector4())
                             ,
                             ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
                             ,
@@ -488,12 +416,90 @@ namespace DEM.Net.glTF
             return mesh;
         }
 
-        public MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, Vector4 color)
+        public MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, IEnumerable<Vector3> colors = null)
         {
-            throw new NotImplementedException();
+            return GenerateTriangleMesh(points.ToVector3(), indices, colors);
+        }
+        public MeshPrimitive GenerateTriangleMesh(IEnumerable<Vector3> points, List<int> indices, IEnumerable<Vector3> colors = null)
+        {
+            MeshPrimitive mesh = null;
+            const int TRIANGULATION_MODE = 1; // 2
+            try
+            {
+                if (points == null || !points.Any())
+                {
+                    Logger.Warning("Vertex list is empty.");
+                }
+                else
+                {
+                    if (colors == null)
+                    {
+                        colors = points.Select(pt => new Vector3(1, 0, 0));
+                    }
+                    List<Vector3> positions = points.ToList();
+
+                    // Basic mesh declaration
+                    mesh = new MeshPrimitive()
+                    {
+                        Colors = colors.Select(c => c.ToVector4())
+                        ,
+                        ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
+                        ,
+                        ColorType = MeshPrimitive.ColorTypeEnum.VEC3
+                        ,
+                        Mode = MeshPrimitive.ModeEnum.TRIANGLES
+                        ,
+                        Positions = positions
+                        ,
+                        Material = new Material() { DoubleSided = true }
+                        ,
+                        Indices = indices
+                    };
+
+                    //The number of the vertices
+                    int nV = positions.Count;
+                    //The number of the triangles
+                    int nT = indices.Count / 3;
+
+                    Vector3[] norm = new Vector3[nV]; //Array for the normals
+                                                      //Scan all the triangles. For each triangle add its
+                                                      //normal to norm's vectors of triangle's vertices
+                    for (int t = 0; t < nT; t++)
+                    {
+                        //Get indices of the triangle t
+                        int i1 = indices[3 * t];
+                        int i2 = indices[3 * t + 1];
+                        int i3 = indices[3 * t + 2];
+                        //Get vertices of the triangle
+                        Vector3 v1 = positions[i1];
+                        Vector3 v2 = positions[i2];
+                        Vector3 v3 = positions[i3];
+                        //Compute the triangle's normal
+                        Vector3 dir = Vector3.Normalize(Vector3.Cross(v2 - v1, v3 - v1));
+                        //Accumulate it to norm array for i1, i2, i3
+                        norm[i1] += dir;
+                        norm[i2] += dir;
+                        norm[i3] += dir;
+                    }
+                    //Normalize the normal's length
+                    for (int i = 0; i < nV; i++)
+                    {
+                        norm[i] = Vector3.Normalize(norm[i]);
+                    }
+                    mesh.Normals = norm;
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.ToString());
+                throw;
+            }
+            return mesh;
         }
 
-        public MeshPrimitive GeneratePointMesh(IEnumerable<GeoPoint> points, Vector4 color)
+        public MeshPrimitive GeneratePointMesh(IEnumerable<GeoPoint> points, Vector3 color, float pointSize)
         {
             MeshPrimitive mesh = null;
             try
@@ -504,23 +510,36 @@ namespace DEM.Net.glTF
                 }
                 else
                 {
-
-                    // Basic line strip  declaration
-                    mesh = new MeshPrimitive()
+                    if (pointSize == 0)
                     {
-                        Colors = points.Select(c => color)
-                        ,
-                        ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
-                        ,
-                        ColorType = MeshPrimitive.ColorTypeEnum.VEC3
-                        ,
-                        Mode = MeshPrimitive.ModeEnum.POINTS
-                        ,
-                        Positions = points.Select(pt => ToVector3(pt))
-                        ,
-                        Material = new Material()
-                    };
-
+                        // Basic point declaration
+                        mesh = new MeshPrimitive()
+                        {
+                            Colors = points.Select(c => color.ToVector4())
+                            ,
+                            ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
+                            ,
+                            ColorType = MeshPrimitive.ColorTypeEnum.VEC3
+                            ,
+                            Mode = MeshPrimitive.ModeEnum.POINTS
+                            ,
+                            Positions = points.Select(pt => pt.ToVector3())
+                            ,
+                            Material = new Material()
+                        };
+                    }
+                    else
+                    {
+                        // points interpreted as quads where point is at the quad center
+                        // Basic point declaration
+                        var vecs = points.ToVector3().ToList();
+                        var deltaZ = vecs.Max(p => p.Z) - vecs.Min(p => p.Z);
+                        var deltaX = vecs.Max(p => p.X) - vecs.Min(p => p.X);
+                        pointSize = (deltaX * 0.5f) / (float)Math.Sqrt(vecs.Count);
+                        IEnumerable<Vector3> vertices = points.ToVector3().SelectMany(v => v.ToQuadPoints(pointSize));
+                        List<int> indices = Enumerable.Range(0, points.Count()).SelectMany(i => VectorsExtensions.TriangulateQuadIndices(i * 4)).ToList();
+                        mesh = GenerateTriangleMesh(vertices, indices, null);
+                    }
 
 
 
@@ -537,10 +556,9 @@ namespace DEM.Net.glTF
         }
         #endregion
 
-        private Vector3 ToVector3(GeoPoint geoPoint)
-        {
-            return new Vector3((float)geoPoint.Longitude, (float)geoPoint.Elevation, -(float)geoPoint.Latitude);
-        }
+
+
+
 
     }
 }

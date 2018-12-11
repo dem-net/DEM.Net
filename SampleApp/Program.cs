@@ -36,14 +36,14 @@ namespace SampleApp
             IElevationService elevationService = new ElevationService(rasterService);
 
 
-            //TestPoints(WKT_CENGLE, DEMDataSet.SRTM_GL3, rasterService, elevationService);
+            TestPoints(WKT_BBOX_CORSEBUG, DEMDataSet.SRTM_GL3, rasterService, elevationService);
             //string WKT_BBOX_SCL_OCEAN = "POLYGON ((-79.584961 -32.626942, -79.584961 -38.788345, -68.557777 -38.788345, -68.557777 -32.626942, -79.584961 -32.626942))";
 
-            //HGTTest(WKT_BBOX_CORSEBUG, elevationService, DEMDataSet.SRTM_GL1, "WKT_BBOX_CORSEBUG_SRTM_GL1");
-          
-            TestCompletionForHydro(WKT_BBOX_CHILE
-               , @"C:\Repos\DEM.Net\Data\ETOPO1\ETOPO1_Bed_g_geotiff.tif", nameof(WKT_BBOX_CHILE)
-               , null, rasterService, elevationService);
+            //HGTTest(WKT_BBOX_VALGO, elevationService, DEMDataSet.SRTM_GL3, "WKT_BBOX_VALGO");
+
+            //TestCompletionForHydro(WKT_BBOX_CHILE
+            //   , @"C:\Repos\DEM.Net\Data\ETOPO1\ETOPO1_Bed_g_geotiff.tif", nameof(WKT_BBOX_CHILE)
+            //   , null, rasterService, elevationService);
             Logger.StopPerf("Main cold start", true);
             //LineDEMTest(elevationService, DEMDataSet.SRTM_GL3, WKT_SCL_MENDOZA, 100);
             //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_SCL_MENDOZA, 100);
@@ -87,9 +87,9 @@ namespace SampleApp
             hMap = hMap.CenterOnOrigin(0.00009f);
 
             IglTFService glTFService = new glTFService();
-            MeshPrimitive pointMesh = glTFService.GeneratePointMesh(hMap.Coordinates, new Vector4(1, 0, 0, 0));
+            MeshPrimitive pointMesh = glTFService.GeneratePointMesh(hMap.Coordinates, new Vector3(1, 0, 0), 0);
             Model model = glTFService.GenerateModel(pointMesh, "Test Points");
-            glTFService.Export(model, "testpoints.glb", "Test points", false, true);
+            glTFService.Export(model, @"C:\Repos\DEM.Net\Data\glTF", "Test points", false, true);
         }
         private static void TestPoints(string wkt, DEMDataSet dataSet, IRasterService rasterService, IElevationService elevationService)
         {
@@ -99,9 +99,10 @@ namespace SampleApp
             hMap = hMap.CenterOnOrigin(0.00009f);
 
             IglTFService glTFService = new glTFService();
-            MeshPrimitive pointMesh = glTFService.GeneratePointMesh(hMap.Coordinates, new Vector4(1, 0, 0, 0));
+            //MeshPrimitive triangleMesh = glTFService.GenerateTriangleMesh(hMap, null);
+            MeshPrimitive pointMesh = glTFService.GeneratePointMesh(hMap.Coordinates, new Vector3(1, 0, 0), 0.1f);
             Model model = glTFService.GenerateModel(pointMesh, "Test Points");
-            glTFService.Export(model, "testpoints.glb", "Test points", false, true);
+            glTFService.Export(model, @"C:\Repos\DEM.Net\Data\glTF", "Test points", false, true);
         }
 
         private static void TestCompletionForHydro(string wktBbox, string geoTiffPath, string name, DEMDataSet dataSet, IRasterService raster, IElevationService elevationService)
@@ -134,7 +135,7 @@ namespace SampleApp
             Vector3 positiveAltitudeColor = Vector3.One;
             Vector3 negativeAltitudeColor = new Vector3(0.101f, 0.627f, 1f);
 
-            MeshPrimitive meshPrimitive = glTF.GenerateTriangleMesh(hMap, pt => pt.Elevation.GetValueOrDefault(0) > 0 ? positiveAltitudeColor : negativeAltitudeColor);
+            MeshPrimitive meshPrimitive = glTF.GenerateTriangleMesh(hMap, hMap.Coordinates.Select(pt => pt.Elevation.GetValueOrDefault(0) > 0 ? positiveAltitudeColor : negativeAltitudeColor));
             //Matrix4x4 mat = Matrix4x4.CreateRotationY((float)Math.PI);
             //meshPrimitive.Positions = meshPrimitive.Positions.Select(p => Vector3.Transform(p, mat));
             //meshPrimitive.Normals = meshPrimitive.Normals.Select(p => Vector3.Transform(p, mat));
@@ -177,6 +178,7 @@ namespace SampleApp
 
             glTFService glTF = new glTFService();
             MeshPrimitive meshPrimitive = glTF.GenerateTriangleMesh(hMap);
+            MeshPrimitive pointMeshPrimitive = glTF.GeneratePointMesh(hMap.Coordinates, new Vector3(1, 0, 0), 0);
             //Matrix4x4 mat = Matrix4x4.CreateRotationY((float)Math.PI);
             //meshPrimitive.Positions = meshPrimitive.Positions.Select(p => Vector3.Transform(p, mat));
             //meshPrimitive.Normals = meshPrimitive.Normals.Select(p => Vector3.Transform(p, mat));
@@ -427,7 +429,7 @@ namespace SampleApp
 
 
             glTFService glTF = new glTFService();
-            MeshPrimitive meshPrimitive = glTF.GenerateLine(points, new System.Numerics.Vector4(1, 0, 0, 0), 1f);
+            MeshPrimitive meshPrimitive = glTF.GenerateLine(points, new System.Numerics.Vector3(1, 0, 0), 1f);
 
             Console.Write("GenerateModel...");
             Model model = glTF.GenerateModel(meshPrimitive, name);
@@ -461,7 +463,7 @@ namespace SampleApp
             var points = segments.SelectMany(pt => pt);
             points = points.CenterOnOrigin(hMap.BoundingBox, 0.00002f);
 
-            MeshPrimitive meshPrimitive = glTF.GenerateLine(points, new System.Numerics.Vector4(1, 0, 0, 0), 0);
+            MeshPrimitive meshPrimitive = glTF.GenerateLine(points, new System.Numerics.Vector3(1, 0, 0), 0);
             meshes.Add(meshPrimitive);
 
             // model export

@@ -10,16 +10,15 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.glTF
 {
-	public interface IglTFService
-	{
+    public interface IglTFService
+    {
         /// <summary>
         /// Triangulates the height map and build a triangle mesh
         /// </summary>
         /// <param name="heightMap"></param>
-        /// <param name="colorFunc">Function delegate for assigning a color to a point (ie: using elevation or other property for instance).
-        /// Pass null to use white as default.</param>
+        /// <param name="colors">Colors. Pass null to use white as default.</param>
         /// <returns></returns>
-        MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, Func<GeoPoint, Vector3> colorFunc = null);
+        MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, IEnumerable<Vector3> colors = null);
 
         /// <summary>
         /// Generate triangle mesh with supplied triangulation
@@ -28,7 +27,7 @@ namespace DEM.Net.glTF
         /// <param name="indices">Triplets of vertex index in points list</param>
         /// <param name="color"></param>
         /// <returns></returns>
-        MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, Vector4 color);
+        MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, IEnumerable<Vector3> colors = null);
 
         /// <summary>
         /// Build a line mesh from given points
@@ -37,15 +36,26 @@ namespace DEM.Net.glTF
         /// <param name="color">Line color</param>
         /// <param name="width">If width > 1 then line will be a mesh of given width</param>
         /// <returns></returns>
-        MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector4 color, float width = 1f);
+        MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector3 color, float width = 1f);
+
+        /// <summary>
+        /// Low level method generating triangle mesh using supplied indices.
+        /// However, normals are stil computed within this method
+        /// </summary>
+        /// <param name="points"></param>
+        /// <param name="indices"></param>
+        /// <param name="colors"></param>
+        /// <returns></returns>
+        MeshPrimitive GenerateTriangleMesh(IEnumerable<Vector3> points, List<int> indices, IEnumerable<Vector3> colors = null);
 
         /// <summary>
         /// Build a line mesh from given points
         /// </summary>
         /// <param name="points"></param>
         /// <param name="color">Line color</param>
+        /// <param name="pointSize">If >0 quads of specified size will be generated (and the ouput mesh will be TRIANGLES)</param>
         /// <returns></returns>
-        MeshPrimitive GeneratePointMesh(IEnumerable<GeoPoint> points, Vector4 color);
+        MeshPrimitive GeneratePointMesh(IEnumerable<GeoPoint> points, Vector3 color, float pointSize);
 
         /// <summary>
         /// Generate a full glTF model from a mesh
