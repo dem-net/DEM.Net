@@ -8,6 +8,12 @@ The goal is to provide on the fly DEM querying from GeoJSON or WKT geometries :
 
  ![3D model](/valgo.jpg?raw=true "3D model")
 
+# Supported formats and datasets
+## Input
+- GeoTIFF (JAXA AW3D, and any GeoTIFF)
+- HGT (Nasa SRTM)
+## Output
+- glTF
 
 # Current dev status
 - All incoming features are listed in the project board here : https://github.com/xfischer/DEM.Net/projects/1.
