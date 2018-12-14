@@ -1,6 +1,8 @@
 # DEM.Net 
-Digital Elevation Model samples in C#. Raster (GeoTiff, HGT) file parsing and DEM querying.
+Digital Elevation Model library in C#. Raster (GeoTiff, HGT) file parsing and DEM querying.
 The goal is to provide on the fly DEM querying from GeoJSON or WKT geometries :
+- No setup
+- Automatic DEM file download
 - No big RAM cache
 - Fast and optimized data retrieval as precise as possible
 
