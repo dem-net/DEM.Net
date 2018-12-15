@@ -434,7 +434,7 @@ namespace DEM.Net.glTF
                 {
                     if (colors == null)
                     {
-                        colors = points.Select(pt => new Vector3(1, 0, 0));
+                        colors = points.Select(pt => new Vector3(1, 1, 1));
                     }
                     List<Vector3> positions = points.ToList();
 
