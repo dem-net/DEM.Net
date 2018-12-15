@@ -36,7 +36,11 @@ namespace DEM.Net.Lib
             _metadataCatalogCache = new Dictionary<string, List<FileMetadata>>();
         }
 
-        public RasterService(string dataDirectory)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="dataDirectory">Path to data directory. If null, ApplicationData folder will be used.</param>
+        public RasterService(string dataDirectory = null)
         {
             if (dataDirectory != null)
             {
@@ -86,7 +90,7 @@ namespace DEM.Net.Lib
             }
 
             Uri fullPath = new Uri(metadata.Filename, UriKind.Absolute);
-            Uri relRoot = new Uri(_localDirectory + "\\", UriKind.Absolute);
+            Uri relRoot = new Uri(Path.GetFullPath( _localDirectory) + "\\", UriKind.Absolute);
 
             metadata.Filename = Uri.UnescapeDataString(relRoot.MakeRelativeUri(fullPath).ToString());
             return metadata;

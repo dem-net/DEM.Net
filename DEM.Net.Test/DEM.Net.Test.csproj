@@ -71,9 +71,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="DEMTests.cs" />
+    <Compile Include="DatasetTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
+    <Compile Include="RasterTests.cs" />
+    <Compile Include="ElevationTests.cs" />
+    <Compile Include="MiscTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
