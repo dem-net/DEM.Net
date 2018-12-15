@@ -49,11 +49,11 @@ namespace DEM.Net.Lib
         {
             if (fileFormat.Name == DEMFileFormat.GEOTIFF.Name)
             {
-                return new GeoTiff(filePath);
+                return new GeoTiff(Path.Combine(_localDirectory, filePath));
             }
             else if (fileFormat.Name == DEMFileFormat.SRTM_HGT.Name)
             {
-                return new HGTFile(filePath);
+                return new HGTFile(Path.Combine(_localDirectory, filePath));
             }
             else
                 throw new NotImplementedException($"{fileFormat} file format not implemented.");
@@ -68,23 +68,27 @@ namespace DEM.Net.Lib
         {
             return Path.Combine(GetLocalDEMPath(dataset), fileTitle);
         }
-        public FileMetadata ParseMetadata(IRasterFile rasterFile)
+        public FileMetadata ParseMetadata(IRasterFile rasterFile, bool makeRelativePath = false)
         {
             return rasterFile.ParseMetaData();
 
 
         }
-        public FileMetadata ParseMetadata(string fileName, DEMFileFormat fileFormat)
+        public FileMetadata ParseMetadata(string fileName, DEMFileFormat fileFormat, bool makeRelativePath = true)
         {
             FileMetadata metadata = null;
 
             fileName = Path.GetFullPath(fileName);
-            string fileTitle = Path.GetFileNameWithoutExtension(fileName);
 
             using (IRasterFile rasterFile = OpenFile(fileName, fileFormat))
             {
-                metadata = this.ParseMetadata(rasterFile);
+                metadata = rasterFile.ParseMetaData();
             }
+
+            Uri fullPath = new Uri(metadata.Filename, UriKind.Absolute);
+            Uri relRoot = new Uri(_localDirectory + "\\", UriKind.Absolute);
+
+            metadata.Filename = Uri.UnescapeDataString(relRoot.MakeRelativeUri(fullPath).ToString());
             return metadata;
         }
 
@@ -112,7 +116,7 @@ namespace DEM.Net.Lib
                         FileMetadata metadata = JsonConvert.DeserializeObject<FileMetadata>(jsonContent);
                         if (metadata.Version != FileMetadata.FILEMETADATA_VERSION)
                         {
-                            metadata = FileMetadataMigrations.Migrate(metadata, _localDirectory);
+                            metadata = FileMetadataMigrations.Migrate(metadata, _localDirectory, dataset);
                             File.WriteAllText(file, JsonConvert.SerializeObject(metadata, Formatting.Indented));
                         }
                         metaList.Add(metadata);
@@ -209,7 +213,7 @@ namespace DEM.Net.Lib
             {
                 Trace.TraceInformation($"Generating bitmap for file {rasterFileName}.");
                 FileMetadata metadata = this.ParseMetadata(rasterFileName, fileFormat);
-                HeightMap heightMap =  GetHeightMap(rasterFileName, metadata);
+                HeightMap heightMap = GetHeightMap(rasterFileName, metadata);
                 DiagnosticUtils.OutputDebugBitmap(heightMap, bmpPath);
 
                 Trace.TraceInformation($"Bitmap generated for file {rasterFileName}.");

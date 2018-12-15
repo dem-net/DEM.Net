@@ -8,9 +8,22 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Lib
 {
+    /// <summary>
+    /// Metadata file generated on the fly.
+    /// Extracts necessary data in order to index files for querying without actually open them (which is costly)
+    /// </summary>
     public class FileMetadata : IEquatable<FileMetadata>
     {
-        public const string FILEMETADATA_VERSION = "2.0";
+        #region Versioning
+
+        /* History
+         * 
+         *  2.1 : file name are relative to data directory
+         */
+
+        public const string FILEMETADATA_VERSION = "2.1";
+        #endregion
+
 
         public FileMetadata(string filename, DEMFileFormat fileFormat, string version = FILEMETADATA_VERSION)
         {
@@ -121,15 +134,32 @@ namespace DEM.Net.Lib
 
     public static class FileMetadataMigrations
     {
-        public static FileMetadata Migrate(FileMetadata oldMetadata, string dataRootDirectory)
+        public static FileMetadata Migrate(FileMetadata oldMetadata, string dataRootDirectory, DEMDataSet dataSet)
         {
             if (oldMetadata != null)
             {
-                Logger.Info($"Migration metadata file from {oldMetadata.Version} to {FileMetadata.FILEMETADATA_VERSION}");
+                Logger.Info($"Migration metadata file {oldMetadata.Filename} from {oldMetadata.Version} to {FileMetadata.FILEMETADATA_VERSION}");
 
                 switch (oldMetadata.Version)
                 {
                     case "2.0":
+
+                        // 2.1 : relative path
+                        // Find dataset root within path
+                        DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(oldMetadata.Filename));
+                        while (dir.Name != dataSet.Name)
+                        {
+                            dir = dir.Parent;
+                        }
+                        dir = dir.Parent;
+                        // replace directory
+                        oldMetadata.Filename = oldMetadata.Filename.Replace(dir.FullName, dataRootDirectory);
+                        Uri fullPath = new Uri(oldMetadata.Filename, UriKind.Absolute);
+                        if (!dataRootDirectory.EndsWith("\\"))
+                            dataRootDirectory += "\\";
+                        Uri relRoot = new Uri(dataRootDirectory, UriKind.Absolute);
+
+                        oldMetadata.Filename = Uri.UnescapeDataString(relRoot.MakeRelativeUri(fullPath).ToString());
 
                         break;
                     default:

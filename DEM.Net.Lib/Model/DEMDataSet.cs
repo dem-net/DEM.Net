@@ -35,7 +35,7 @@ namespace DEM.Net.Lib
         }
 
         // Examples datasets
-
+        // Add any new dataset to 
         public static DEMDataSet SRTM_GL3
         {
             get
@@ -80,6 +80,20 @@ namespace DEM.Net.Lib
                     ResolutionMeters = 30
                 };
             }
+        }
+
+        public static IEnumerable<DEMDataSet> RegisteredDatasets
+        {
+            get
+            {
+                yield return DEMDataSet.SRTM_GL3;
+                yield return DEMDataSet.SRTM_GL1;
+                yield return DEMDataSet.AW3D30;
+                // 
+                // add any new dataset here
+                // yield return DEMDataSet.<newdataset>
+            }
+
         }
 
         public override string ToString()

@@ -31,15 +31,16 @@ namespace SampleApp
             Logger.StartPerf("Main cold start");
 
             SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
-            _DataDirectory = ConfigurationManager.AppSettings["DataDir"];
+            _DataDirectory = GetDataDirectory();
             IRasterService rasterService = new RasterService(_DataDirectory);
             IElevationService elevationService = new ElevationService(rasterService);
 
 
+            //GenerateAllDirectoryMetadata(rasterService);
             TestPoints(WKT_BBOX_CORSEBUG, DEMDataSet.SRTM_GL3, rasterService, elevationService);
             //string WKT_BBOX_SCL_OCEAN = "POLYGON ((-79.584961 -32.626942, -79.584961 -38.788345, -68.557777 -38.788345, -68.557777 -32.626942, -79.584961 -32.626942))";
 
-            //HGTTest(WKT_BBOX_VALGO, elevationService, DEMDataSet.SRTM_GL3, "WKT_BBOX_VALGO");
+            HGTTest(WKT_BBOX_VALGO, elevationService, DEMDataSet.SRTM_GL1, "WKT_BBOX_VALGO");
 
             //TestCompletionForHydro(WKT_BBOX_CHILE
             //   , @"C:\Repos\DEM.Net\Data\ETOPO1\ETOPO1_Bed_g_geotiff.tif", nameof(WKT_BBOX_CHILE)
@@ -54,7 +55,6 @@ namespace SampleApp
             //TestGpxElevation(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
 
 
-            //FileMetaDataVersionMigration(rasterService, DEMDataSet.AW3D30);
 
             //HGTTest(WKT_CENGLE, elevationService, DEMDataSet.AW3D30, nameof(WKT_CENGLE) + DEMDataSet.AW3D30.Name);
             //HGTTest(WKT_CENGLE, elevationService, DEMDataSet.SRTM_GL1, nameof(WKT_CENGLE) + DEMDataSet.SRTM_GL1.Name);
@@ -69,6 +69,17 @@ namespace SampleApp
             Console.Write("Press any key to exit...");
             Console.ReadLine();
 
+        }
+
+        private static string GetDataDirectory()
+        {
+            string dataDir = ConfigurationManager.AppSettings["DataDir"];
+            if (dataDir == null)
+            {
+                dataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "DEM.Net");
+            }
+            Logger.Info($"Data directory : {dataDir}.");
+            return dataDir;
         }
 
         private static void TestAxis()
@@ -250,9 +261,12 @@ namespace SampleApp
             return response.results.Select(r => new GeoPoint(r.location.lat, r.location.lng, (float)r.elevation, 0, 0)).ToList();
         }
 
-        private static void FileMetaDataVersionMigration(IRasterService rasterService, DEMDataSet dataSet)
+        private static void GenerateAllDirectoryMetadata(IRasterService rasterService)
         {
-            rasterService.GenerateDirectoryMetadata(dataSet, false, true);
+            foreach (DEMDataSet dataset in DEMDataSet.RegisteredDatasets)
+            {
+                rasterService.GenerateDirectoryMetadata(dataset, false, true);
+            }
         }
 
         private static void HGTTest(string wkt, IElevationService elevationService, DEMDataSet dataSet, string name)

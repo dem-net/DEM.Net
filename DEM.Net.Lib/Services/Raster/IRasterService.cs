@@ -5,8 +5,8 @@ namespace DEM.Net.Lib
 {
     public interface IRasterService
     {
-        FileMetadata ParseMetadata(IRasterFile rasterFile);
-        FileMetadata ParseMetadata(string fileName, DEMFileFormat fileFormat);
+        FileMetadata ParseMetadata(IRasterFile rasterFile, bool makeRelativePath = false);
+        FileMetadata ParseMetadata(string fileName, DEMFileFormat fileFormat, bool makeRelativePath = true);
         List<FileMetadata> LoadManifestMetadata(DEMDataSet dataSet, bool force);
 
         IRasterFile OpenFile(string filePath, DEMFileFormat fileFormat);
