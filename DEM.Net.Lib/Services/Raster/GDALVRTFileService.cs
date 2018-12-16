@@ -23,13 +23,15 @@ namespace DEM.Net.Lib
         private string _vrtFileName;
         private Uri _remoteVrtUri;
         private Uri _localVrtUri;
-        private readonly DEMDataSet dataSet;
+        private  DEMDataSet _dataSet;
         private const int MAX_AGE_DAYS = 30;
+
+        public DEMDataSet Dataset { get { return _dataSet; } }
 
         public GDALVRTFileService(string localDirectory, DEMDataSet dataSet)
         {
             this.localDirectory = localDirectory;
-            this.dataSet = dataSet;
+            this._dataSet = dataSet;
         }
 
         /// <summary>
@@ -41,19 +43,19 @@ namespace DEM.Net.Lib
             {
                 _useMemCache = useMemoryCache;
 
-                if (dataSet == null)
+                if (_dataSet == null)
                     throw new ArgumentNullException("Dataset is null.");
 
-                Trace.TraceInformation($"Setup for {dataSet.Name} dataset.");
+                Trace.TraceInformation($"Setup for {_dataSet.Name} dataset.");
 
                 if (!Directory.Exists(localDirectory))
                 {
                     Directory.CreateDirectory(localDirectory);
                 }
 
-                _vrtFileName = Path.Combine(localDirectory, UrlHelper.GetFileNameFromUrl(dataSet.VRTFileUrl));
+                _vrtFileName = Path.Combine(localDirectory, UrlHelper.GetFileNameFromUrl(_dataSet.VRTFileUrl));
                 _localVrtUri =  new Uri(Path.GetFullPath(_vrtFileName), UriKind.Absolute);
-                _remoteVrtUri = new Uri(dataSet.VRTFileUrl, UriKind.Absolute);
+                _remoteVrtUri = new Uri(_dataSet.VRTFileUrl, UriKind.Absolute);
 
                 bool download = true;
                 if (File.Exists(_vrtFileName))
@@ -71,10 +73,10 @@ namespace DEM.Net.Lib
 
                 if (download)
                 {
-                    Trace.TraceInformation($"Downloading file from {dataSet.VRTFileUrl}...");
+                    Trace.TraceInformation($"Downloading file from {_dataSet.VRTFileUrl}...");
                     using (WebClient webClient = new WebClient())
                     {
-                        webClient.DownloadFile(dataSet.VRTFileUrl, _vrtFileName);
+                        webClient.DownloadFile(_dataSet.VRTFileUrl, _vrtFileName);
                     }
                 }
 

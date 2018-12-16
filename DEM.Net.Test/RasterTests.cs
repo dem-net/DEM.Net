@@ -21,8 +21,8 @@ namespace DEM.Net.Test
 
         [TestMethod]
         [TestCategory("Raster")]
-        [DeploymentItem()]
-        public void TestMethod1()
+        [DeploymentItem("")]
+        public void Test_()
         {
         }
     }

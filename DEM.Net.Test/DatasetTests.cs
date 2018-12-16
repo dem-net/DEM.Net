@@ -64,15 +64,37 @@ namespace DEM.Net.Test
         {
             double lat = 43.537854;
             double lon = 5.429993;
-           
-            DEMDataSet dataset = DEMDataSet.SRTM_GL3;
 
+            DEMDataSet dataset = DEMDataSet.SRTM_GL3;
             _elevationService.DownloadMissingFiles(dataset, lat, lon);
+
             var report = _rasterService.GenerateReportForLocation(dataset, lat, lon);
 
             Assert.IsNotNull(report);
             Assert.IsTrue(report.Count > 0);
             Assert.IsTrue(report.Values.First().IsExistingLocally);
+        }
+
+        [TestMethod]
+        [TestCategory("Dataset")]
+        public void GDALVrtPerDataset_Test()
+        {
+            double lat = 43.537854;
+            double lon = 5.429993;
+
+            DEMDataSet dataset = DEMDataSet.SRTM_GL3;
+            var report_SRTM_GL3 = _rasterService.GenerateReportForLocation(dataset, lat, lon);
+
+            dataset = DEMDataSet.AW3D30;
+            var report_AW3D30 = _rasterService.GenerateReportForLocation(dataset, lat, lon);
+
+            Assert.IsNotNull(report_SRTM_GL3);
+            Assert.IsNotNull(report_AW3D30);
+            Assert.IsTrue(report_SRTM_GL3.Count == 1);
+            Assert.IsTrue(report_AW3D30.Count == 1);
+            Assert.AreNotEqual(report_SRTM_GL3.Values.First().LocalName
+                                , report_AW3D30.Values.First().LocalName
+                                , "Raster service is using the same instance of GDALVrtService !");
         }
 
         [TestMethod]
@@ -93,7 +115,7 @@ namespace DEM.Net.Test
         }
 
 
-        
+
 
 
     }

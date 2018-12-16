@@ -261,7 +261,7 @@ namespace DEM.Net.Lib
         public Dictionary<string, DemFileReport> GenerateReport(DEMDataSet dataSet, BoundingBox bbox = null)
         {
             Dictionary<string, DemFileReport> statusByFile = new Dictionary<string, DemFileReport>();
-            if (_gdalService == null)
+            if (_gdalService == null || _gdalService.Dataset.Name != dataSet.Name)
             {
                 _gdalService = new GDALVRTFileService(GetLocalDEMPath(dataSet), dataSet);
                 _gdalService.Setup(true);
@@ -293,7 +293,7 @@ namespace DEM.Net.Lib
         public Dictionary<string, DemFileReport> GenerateReportForLocation(DEMDataSet dataSet, double lat, double lon)
         {
             Dictionary<string, DemFileReport> statusByFile = new Dictionary<string, DemFileReport>();
-            if (_gdalService == null)
+            if (_gdalService == null || _gdalService.Dataset.Name != dataSet.Name)
             {
                 _gdalService = new GDALVRTFileService(GetLocalDEMPath(dataSet), dataSet);
                 _gdalService.Setup(true);
