@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestSettings name="Local" id="164f37f6-b408-4a43-9caa-97fe6ccd4dc4" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Description>Default settings with deploymentitem enabled</Description>
+  <Deployment enabled="true"/>
+  <Execution parallelTestCount = "2">
+    <TestTypeSpecific />
+    <AgentRule name="Execution Agents">
+    </AgentRule>
+  </Execution>
+</TestSettings>

@@ -90,7 +90,7 @@ namespace DEM.Net.Lib
             }
 
             Uri fullPath = new Uri(metadata.Filename, UriKind.Absolute);
-            Uri relRoot = new Uri(Path.GetFullPath( _localDirectory) + "\\", UriKind.Absolute);
+            Uri relRoot = new Uri(Path.GetFullPath(_localDirectory) + "\\", UriKind.Absolute);
 
             metadata.Filename = Uri.UnescapeDataString(relRoot.MakeRelativeUri(fullPath).ToString());
             return metadata;
