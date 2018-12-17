@@ -23,7 +23,7 @@ namespace DEM.Net.Lib
         private string _vrtFileName;
         private Uri _remoteVrtUri;
         private Uri _localVrtUri;
-        private  DEMDataSet _dataSet;
+        private DEMDataSet _dataSet;
         private const int MAX_AGE_DAYS = 30;
 
         public DEMDataSet Dataset { get { return _dataSet; } }
@@ -54,7 +54,7 @@ namespace DEM.Net.Lib
                 }
 
                 _vrtFileName = Path.Combine(localDirectory, UrlHelper.GetFileNameFromUrl(_dataSet.VRTFileUrl));
-                _localVrtUri =  new Uri(Path.GetFullPath(_vrtFileName), UriKind.Absolute);
+                _localVrtUri = new Uri(Path.GetFullPath(_vrtFileName), UriKind.Absolute);
                 _remoteVrtUri = new Uri(_dataSet.VRTFileUrl, UriKind.Absolute);
 
                 bool download = true;
@@ -114,7 +114,7 @@ namespace DEM.Net.Lib
         {
             if (_useMemCache && _cacheByDemName.ContainsKey(_vrtFileName))
             {
-                foreach(var item in _cacheByDemName[_vrtFileName])
+                foreach (var item in _cacheByDemName[_vrtFileName])
                 {
                     yield return item;
                 }
@@ -122,7 +122,8 @@ namespace DEM.Net.Lib
             else
             {
                 // Create an XmlReader
-                using (XmlReader reader = XmlReader.Create(_vrtFileName))
+                using (FileStream fileStream = new FileStream(_vrtFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (XmlReader reader = XmlReader.Create(fileStream))
                 {
                     if (reader.ReadToFollowing("GeoTransform"))
                     {
@@ -155,7 +156,7 @@ namespace DEM.Net.Lib
 
                             // SetLocalFileName
                             source.SourceFileNameAbsolute = new Uri(_remoteVrtUri, source.SourceFileName).ToString();
-                            source.LocalFileName = new Uri(_localVrtUri, source.SourceFileName).AbsolutePath;
+                            source.LocalFileName = new Uri(_localVrtUri, source.SourceFileName).LocalPath;
 
                             // Transform origin
                             // Xp = padfTransform[0] + P * padfTransform[1] + L * padfTransform[2];
