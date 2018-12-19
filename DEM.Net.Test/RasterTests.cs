@@ -30,7 +30,10 @@ namespace DEM.Net.Test
 
             Assert.IsTrue(fileOk, "DeploymentItem is not enabled. Please use the .testsettings file provided in the project.");
 
-            ZipFile.ExtractToDirectory(fileName + ".zip", ".");
+            if (!File.Exists(fileName))
+            { 
+                ZipFile.ExtractToDirectory(fileName + ".zip", ".");
+            }
 
             Assert.IsTrue(File.Exists(fileName), "Unzip failed.");
 
@@ -59,7 +62,10 @@ namespace DEM.Net.Test
 
             Assert.IsTrue(fileOk, "DeploymentItem is not enabled. Please use the .testsettings file provided in the project.");
 
-            ZipFile.ExtractToDirectory(fileName + ".zip", ".");
+            if (!File.Exists(fileName))
+            {
+                ZipFile.ExtractToDirectory(fileName + ".zip", ".");
+            }
 
             Assert.IsTrue(File.Exists(fileName), "Unzip failed.");
 
@@ -88,7 +94,10 @@ namespace DEM.Net.Test
 
             Assert.IsTrue(fileOk, "DeploymentItem is not enabled. Please use the .testsettings file provided in the project.");
 
-            ZipFile.ExtractToDirectory(fileName + ".zip", ".");
+            if (!File.Exists(fileName))
+            {
+                ZipFile.ExtractToDirectory(fileName + ".zip", ".");
+            }
 
             Assert.IsTrue(File.Exists(fileName), "Unzip failed.");
 
@@ -99,7 +108,7 @@ namespace DEM.Net.Test
                 Assert.IsNotNull(metaData);
 
                 float elevation = raster.GetElevationAtPoint(metaData, 10000, 10000);
-                
+
                 // Expect exception
             }
         }
