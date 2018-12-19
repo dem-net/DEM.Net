@@ -205,7 +205,7 @@ namespace DEM.Net.Lib
                         , true);
 
                     // Get elevation for each point
-                    this.GetElevationData(ref intersections, dataSet, adjacentRasters, segTiles, interpolator);
+                    this.GetElevationData(intersections, dataSet, adjacentRasters, segTiles, interpolator);
 
                     // Add to output list
                     geoPoints.AddRange(intersections);
@@ -400,7 +400,7 @@ namespace DEM.Net.Lib
         {
             if (points == null)
                 return null;
-
+            IEnumerable<GeoPoint> pointsWithElevation;
             BoundingBox bbox = points.GetBoundingBox();
             DownloadMissingFiles(dataSet, bbox);
             List<FileMetadata> tiles = this.GetCoveringFiles(bbox, dataSet);
@@ -412,12 +412,12 @@ namespace DEM.Net.Lib
             {
 
                 // Get elevation for each point
-                this.GetElevationData(ref points, dataSet, adjacentRasters, tiles, interpolator);
+                pointsWithElevation = this.GetElevationData(points, dataSet, adjacentRasters, tiles, interpolator);
 
                 //Debug.WriteLine(adjacentRasters.Count);
             }  // Ensures all rasters are properly closed
 
-            return points;
+            return pointsWithElevation;
         }
 
         public IInterpolator GetInterpolator(InterpolationMode interpolationMode)
@@ -511,7 +511,7 @@ namespace DEM.Net.Lib
         /// </summary>
         /// <param name="intersections"></param>
         /// <param name="segTiles"></param>
-        public void GetElevationData(ref IEnumerable<GeoPoint> intersections, DEMDataSet dataSet, RasterFileDictionary adjacentRasters, List<FileMetadata> segTiles, IInterpolator interpolator)
+        public IEnumerable<GeoPoint> GetElevationData(IEnumerable<GeoPoint> intersections, DEMDataSet dataSet, RasterFileDictionary adjacentRasters, List<FileMetadata> segTiles, IInterpolator interpolator)
         {
             // Group by raster file for sequential and faster access
             var pointsByTileQuery = from point in intersections
@@ -526,42 +526,39 @@ namespace DEM.Net.Lib
                                     select pointsByTile;
 
 
-            try
+
+            float lastElevation = 0;
+
+            // To interpolate well points close to tile edges, we need all adjacent tiles
+            //using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
+            //{
+            // For each group (key = tile, values = points within this tile)
+            // TIP: test use of Parallel (warning : a lot of files may be opened at the same time)
+            foreach (var tilePoints in pointsByTileQuery)
             {
-                float lastElevation = 0;
+                // Get the tile
+                FileMetadata mainTile = tilePoints.Key;
 
-                // To interpolate well points close to tile edges, we need all adjacent tiles
-                //using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
-                //{
-                // For each group (key = tile, values = points within this tile)
-                // TIP: test use of Parallel (warning : a lot of files may be opened at the same time)
-                foreach (var tilePoints in pointsByTileQuery)
+
+                // We open rasters first, then we iterate
+                PopulateRasterFileDictionary(adjacentRasters, mainTile, _IRasterService, tilePoints.SelectMany(tp => tp.AdjacentTiles));
+
+
+                foreach (var pointile in tilePoints)
                 {
-                    // Get the tile
-                    FileMetadata mainTile = tilePoints.Key;
-
-
-                    // We open rasters first, then we iterate
-                    PopulateRasterFileDictionary(adjacentRasters, mainTile, _IRasterService, tilePoints.SelectMany(tp => tp.AdjacentTiles));
-
-
-                    foreach (var pointile in tilePoints)
-                    {
-                        GeoPoint current = pointile.Point;
-                        lastElevation = this.GetElevationAtPoint(adjacentRasters, mainTile, current.Latitude, current.Longitude, lastElevation, interpolator);
-                        current.Elevation = lastElevation;
-                    }
-
-                    //adjacentRasters.Clear();
-
+                    GeoPoint current = pointile.Point;
+                    lastElevation = this.GetElevationAtPoint(adjacentRasters, mainTile, current.Latitude, current.Longitude, lastElevation, interpolator);
+                    current.Elevation = lastElevation;
+                    yield return current;
                 }
+
+                //adjacentRasters.Clear();
+
+
             }
             //}
 
-            catch (Exception e)
-            {
-                Trace.TraceError($"Error while getting elevation data : {e.Message}{Environment.NewLine}{e.ToString()}");
-            }
+
 
         }
 
