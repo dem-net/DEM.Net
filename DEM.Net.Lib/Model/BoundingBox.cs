@@ -38,14 +38,16 @@ namespace DEM.Net.Lib
 
         public double Width
         {
-            get {
+            get
+            {
                 return _xMax - _xMin;
             }
         }
 
         public double Height
         {
-            get {
+            get
+            {
                 return _yMax - _yMin;
             }
         }
@@ -60,7 +62,7 @@ namespace DEM.Net.Lib
 
         public BoundingBox Scale(double scale)
         {
-            return new BoundingBox(xMin * scale, xMax * scale, yMin * scale, yMax * scale);
+            return new BoundingBox(xMax - Width * scale, xMin + Width * scale, yMax - Height * scale, yMin + Height * scale);
         }
 
         public BoundingBox Transform(System.Drawing.Drawing2D.Matrix matrix)
