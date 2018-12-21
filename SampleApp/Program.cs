@@ -39,7 +39,7 @@ namespace SampleApp
 
             //GenerateAllDirectoryMetadata(rasterService);
 
-            TestCombinedGpxMesh(elevationService, DEMDataSet.SRTM_GL3, Path.Combine(_OutputDataDirectory, @"GPX\Bouleternere-Denivele_de_Noel_2017.gpx"), WKT_TRAIL, "Bouleternere");
+            TestCombinedGpxMesh(elevationService, DEMDataSet.AW3D30, Path.Combine(_OutputDataDirectory, @"GPX\Bouleternere-Denivele_de_Noel_2017.gpx"), WKT_TRAIL, "Bouleternere");
 
 
             TestPoints(WKT_BBOX_CORSEBUG, DEMDataSet.SRTM_GL3, rasterService, elevationService);
@@ -482,9 +482,16 @@ namespace SampleApp
 
             var pointsElevated = elevationService.GetPointsElevation(points, dataSet);
 
+
+            pointsElevated = pointsElevated.Select(pt => { pt.Elevation += 8; return pt; });
+
             pointsElevated = pointsElevated.CenterOnOrigin(hMap.BoundingBox, 0.00002f);
 
-            MeshPrimitive meshPrimitive = glTF.GenerateLine(pointsElevated, new System.Numerics.Vector3(1, 0, 0), 0.01f);
+            // take 1 point evert nth
+            // int nSkip = 1;
+            //pointsElevated = pointsElevated.Where((x, i) => (i + 1) % nSkip == 0);
+
+            MeshPrimitive meshPrimitive = glTF.GenerateLine(pointsElevated, new System.Numerics.Vector3(1, 0, 0), 0.0001f);
             meshes.Add(meshPrimitive);
 
             // model export

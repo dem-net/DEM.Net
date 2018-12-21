@@ -67,7 +67,6 @@ namespace DEM.Net.glTF
                     }
                 }
 
-
                 Console.WriteLine("Model Creation Complete!");
                 Console.WriteLine("Completed in : " + sw.Elapsed.ToString());
             }
@@ -339,62 +338,72 @@ namespace DEM.Net.glTF
                     {
                         // https://gist.github.com/gszauer/5718441
                         // Line triangle mesh
-                        var sections = points.Select(pt => pt.ToVector3()).ToList();
+                        var sections = points.Select(pt => pt.ToVector3())
+                            .Distinct() 
+                            .ToList();
 
-                        var vertices = new Vector3[sections.Count * 2];
+                        List<Vector3> vertices = new List<Vector3>(sections.Count * 2);
 
-                        var previousSection = sections[0];
-                        var currentSection = sections[0];
-
-                        // Use matrix instead of transform.TransformPoint for performance reasons
-                        //  var localSpaceTransform = transform.worldToLocalMatrix;
-
-                        // Generate vertex, uv and colors
-                        for (var i = 0; i < sections.Count; i++)
+                        for (int i = 0; i < sections.Count - 1; i++)
                         {
-                            previousSection = currentSection;
-                            currentSection = sections[i];
+                            Vector3 current = sections[i];
+                            Vector3 next = sections[i + 1];
+                            Vector3 dir = Vector3.Normalize(next - current);
 
-                            // Calculate upwards direction
-                            var upDir = Vector3.UnitX;  // currentSection.upDir;
 
-                            // Generate vertices
-                            //vertices[i * 2 + 0] = localSpaceTransform.MultiplyPoint(currentSection);
-                            //vertices[i * 2 + 1] = localSpaceTransform.MultiplyPoint(currentSection + upDir * width);
-                            vertices[i * 2 + 0] = currentSection;
-                            vertices[i * 2 + 1] = currentSection + upDir * width;
+                            // translate the vector to the left along its way
+                            Vector3 side = Vector3.Cross(dir, Vector3.UnitY) * width;
 
+                            Vector3 v0 = current - side; // 0
+                            Vector3 v1 = current + side; // 1
+
+                            vertices.Add(v0);
+                            vertices.Add(v1);
+
+                            if (i == sections.Count - 2) // add last vertices
+                            {
+                                v0 = next - side; // 0
+                                v1 = next + side; // 1
+                                vertices.Add(v0);
+                                vertices.Add(v1);
+                            }
+                        }
+                        // add last vertices
+
+
+                        List<int> indices = new List<int>((sections.Count - 1) * 6);
+                        int j = 0;
+                        for (int i = 0; i < sections.Count - 1; i++)
+                        {
+                            int i0 = i * 2;
+                            indices.Add(i0);
+                            indices.Add(i0 + 1);
+                            indices.Add(i0 + 3);
+
+                            indices.Add(i0 + 0);
+                            indices.Add(i0 + 3);
+                            indices.Add(i0 + 2);
                         }
 
-                        // Generate triangles indices
-                        int[] triangles = new int[((sections.Count - 1) * 2 * 3)];
-                        for (int i = 0; i < triangles.Length / 6; i++)
-                        {
-                            triangles[i * 6 + 0] = i * 2;
-                            triangles[i * 6 + 1] = i * 2 + 1;
-                            triangles[i * 6 + 2] = i * 2 + 2;
-
-                            triangles[i * 6 + 3] = i * 2 + 2;
-                            triangles[i * 6 + 4] = i * 2 + 1;
-                            triangles[i * 6 + 5] = i * 2 + 3;
-                        }
-
+                        IEnumerable<Vector3> normals = ComputeNormals(vertices, indices);
                         // Basic line strip  declaration
                         mesh = new MeshPrimitive()
                         {
-                            Colors = vertices.Select(c => color.ToVector4())
+                            Colors = vertices.Select(v => color.ToVector4())
                             ,
                             ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
                             ,
-                            ColorType = MeshPrimitive.ColorTypeEnum.VEC3
+                            ColorType = MeshPrimitive.ColorTypeEnum.VEC4
                             ,
                             Mode = MeshPrimitive.ModeEnum.TRIANGLES
                             ,
                             Positions = vertices
                             ,
-                            Material = new Material()
+                            Material = new Material() { DoubleSided = true }
                             ,
-                            Indices = triangles
+                            Indices = indices
+                            ,
+                            Normals = normals
                             ,
                             IndexComponentType = MeshPrimitive.IndexComponentTypeEnum.UNSIGNED_INT
                         };
