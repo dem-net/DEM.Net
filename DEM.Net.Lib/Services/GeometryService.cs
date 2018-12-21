@@ -206,6 +206,22 @@ namespace DEM.Net.Lib
 			return total;
 		}
 
+        public static BoundingBox GetBoundingBox(this IEnumerable<GeoPoint> points)
+        {
+            BoundingBox bbox = new BoundingBox(double.MaxValue, double.MinValue, double.MaxValue, double.MinValue);
 
-	}
+            foreach (var pt in points)
+            {
+                bbox.xMin = Math.Min(bbox.xMin, pt.Longitude);
+                bbox.xMax = Math.Max(bbox.xMax, pt.Longitude);
+
+                bbox.yMin = Math.Min(bbox.yMin, pt.Latitude);
+                bbox.yMax = Math.Max(bbox.yMax, pt.Latitude);
+            }
+            return bbox;
+        }
+
+
+
+    }
 }

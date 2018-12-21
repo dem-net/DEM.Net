@@ -31,16 +31,17 @@ namespace SampleApp
 
             Logger.StartPerf("Main cold start");
 
+            // Sql Server types bootstrap
             SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+
             _RasterDataDirectory = GetDataDirectory();
             _OutputDataDirectory = @"..\..\..\Data";
+
+            // Initialize raster service and Elevation service
             IRasterService rasterService = new RasterService(_RasterDataDirectory);
             IElevationService elevationService = new ElevationService(rasterService);
 
-            //GenerateAllDirectoryMetadata(rasterService);
-
-            TestCombinedGpxMesh(elevationService, DEMDataSet.AW3D30, Path.Combine(_OutputDataDirectory, @"GPX\Bouleternere-Denivele_de_Noel_2017.gpx"), WKT_TRAIL, "Bouleternere");
-
+            TestCombinedGpxMesh(elevationService, DEMDataSet.AW3D30, Path.Combine(_OutputDataDirectory, @"GPX\Vernet-les-bains-Canigou-34km.gpx"), "Vernet-les-bains-Canigou-34km");
 
             TestPoints(WKT_BBOX_CORSEBUG, DEMDataSet.SRTM_GL3, rasterService, elevationService);
             //string WKT_BBOX_SCL_OCEAN = "POLYGON ((-79.584961 -32.626942, -79.584961 -38.788345, -68.557777 -38.788345, -68.557777 -32.626942, -79.584961 -32.626942))";
@@ -266,6 +267,10 @@ namespace SampleApp
             return response.results.Select(r => new GeoPoint(r.location.lat, r.location.lng, (float)r.elevation, 0, 0)).ToList();
         }
 
+        /// <summary>
+        /// Rescans data directory and generate all metadata
+        /// </summary>
+        /// <param name="rasterService"></param>
         private static void GenerateAllDirectoryMetadata(IRasterService rasterService)
         {
             foreach (DEMDataSet dataset in DEMDataSet.RegisteredDatasets)
@@ -370,9 +375,9 @@ namespace SampleApp
 
 
             // TODO correct this
-            //TestGpxElevation(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
+            TestGpxElevation(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
             // TestGpxMesh(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx", "Bouleternere");
-            TestCombinedGpxMesh(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx", WKT_TRAIL, "Bouleternere");
+            TestCombinedGpxMesh(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx", "Bouleternere");
 
 
             ExportGLBTest(elevationService, DEMDataSet.AW3D30, WKT_GAP, "Gap");
@@ -436,7 +441,19 @@ namespace SampleApp
 
             SpatialTrace.ShowDialog();
         }
+        private static void TestGpxElevationVsDEMNet(IElevationService elevationService, DEMDataSet dataSet, string gpxFile)
+        {
+            /// Line strip from GPX
+            var segments = GpxImport.ReadGPX_Segments(gpxFile);
+            var pointsRawGps = segments.SelectMany(seg => seg);
 
+            File.WriteAllText(@"..\..\..\Data\elevationResultGPX2.tsv", elevationService.ExportElevationTable(pointsRawGps.ToList()));
+
+            var pointsElevated = elevationService.GetPointsElevation(pointsRawGps, dataSet).ToList();
+
+            File.WriteAllText(@"..\..\..\Data\elevationResultDemNet.tsv", elevationService.ExportElevationTable(pointsElevated.ToList()));
+
+        }
         private static void TestGpxMesh(IElevationService elevationService, DEMDataSet dataSet, string gpxFile, string name)
         {
             var segments = GpxImport.ReadGPX_Segments(gpxFile);
@@ -454,17 +471,19 @@ namespace SampleApp
             glTF.Export(model, Path.Combine(_OutputDataDirectory, "glTF"), $"{name} line", false, true);
         }
 
-        private static void TestCombinedGpxMesh(IElevationService elevationService, DEMDataSet dataSet, string gpxFile, string wkt, string name)
+        private static void TestCombinedGpxMesh(IElevationService elevationService, DEMDataSet dataSet, string gpxFile, string name)
         {
             glTFService glTF = new glTFService();
             List<MeshPrimitive> meshes = new List<MeshPrimitive>();
 
+            // Get GPX points
+            var segments = GpxImport.ReadGPX_Segments(gpxFile);
+            var points = segments.SelectMany(seg => seg);
+            var bbox = points.GetBoundingBox().Scale(1.1);
 
-
+            //=======================
             // MESH 3D terrain
-            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
-            var bbox = geom.GetBoundingBox();
-
+            
             Console.Write("Height map...");
             HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
 
@@ -475,25 +494,21 @@ namespace SampleApp
             MeshPrimitive triangleMesh = glTF.GenerateTriangleMesh(hMap);
             meshes.Add(triangleMesh);
 
+
+            //=======================
             /// Line strip from GPX
-            var segments = GpxImport.ReadGPX_Segments(gpxFile);
-            var points = segments.SelectMany(seg => seg);
-
-
+           
             var pointsElevated = elevationService.GetPointsElevation(points, dataSet);
-
-
             pointsElevated = pointsElevated.Select(pt => { pt.Elevation += 8; return pt; });
-
             pointsElevated = pointsElevated.CenterOnOrigin(hMap.BoundingBox, 0.00002f);
 
             // take 1 point evert nth
             // int nSkip = 1;
             //pointsElevated = pointsElevated.Where((x, i) => (i + 1) % nSkip == 0);
 
-            MeshPrimitive meshPrimitive = glTF.GenerateLine(pointsElevated, new System.Numerics.Vector3(1, 0, 0), 0.0001f);
-            meshes.Add(meshPrimitive);
-
+            MeshPrimitive gpxLine = glTF.GenerateLine(pointsElevated, new System.Numerics.Vector3(1, 0, 0), 0.0001f);
+            meshes.Add(gpxLine);
+            
             // model export
             Console.Write("GenerateModel...");
             Model model = glTF.GenerateModel(meshes, name);
