@@ -12,7 +12,7 @@ namespace DEM.Net.Lib.Services.Lab
         //
         public int p00_idFacette { get; }
         //
-        public List<BeanPoint_internal> p01_points { get; set; }
+        public List<BeanPoint_internal> p01_pointsDeFacette { get; set; }
         public List<BeanArc_internal> p02_arcs { get; set; }
         //
         public List<BeanPoint_internal> p10_pointsInclus { get; set; }
@@ -20,7 +20,7 @@ namespace DEM.Net.Lib.Services.Lab
         public BeanFacette_internal()
         {
             p00_idFacette= _dernierId++;
-            p01_points = new List<BeanPoint_internal>();
+            p01_pointsDeFacette = new List<BeanPoint_internal>();
             p02_arcs = new List<BeanArc_internal>();
             p10_pointsInclus = new List<BeanPoint_internal>();
         }

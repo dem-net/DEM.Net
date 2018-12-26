@@ -17,13 +17,13 @@ namespace DEM.Net.Lib.Services.Lab
         {
             set
             {
-                p01_hCodeGeogP=FServices.createUtilitaires().GethCodeGeogPoint(p10_coord);
+                p01_hCodeGeogP=FLabServices.createUtilitaires().GethCodeGeogPoint(p10_coord);
             }
             get
             {
                 if(p01_hCodeGeogP=="")
                 {
-                    p01_hCodeGeogP = FServices.createUtilitaires().GethCodeGeogPoint(p10_coord);
+                    p01_hCodeGeogP = FLabServices.createUtilitaires().GethCodeGeogPoint(p10_coord);
                 }
                 return p01_hCodeGeogP;
             }
@@ -35,10 +35,11 @@ namespace DEM.Net.Lib.Services.Lab
         public bool p21_estPointFacette_vf { get; set; }
         public bool p22_estPointInclus_vf { get; set; }
         //
-        public BeanPoint_internal(double[] p_coord)
+        public BeanPoint_internal(double[] p_coord, int p_srid)
         {
             p00_id = _dernierId++;
             p10_coord = p_coord;
+            p11_srid = p_srid;
         }
       
     }

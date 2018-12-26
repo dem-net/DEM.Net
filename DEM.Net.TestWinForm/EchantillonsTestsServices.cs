@@ -73,8 +73,8 @@ namespace DEM.Net.TestWinForm
                     v_coord[1] = v_random.Next(v_minY, v_maxY);
                     v_coord[2] = 0;
                     //
-                    BeanPoint_internal v_point = new BeanPoint_internal(v_coord);
-                    p_code = FServices.createUtilitaires().GethCodeGeogPoint(v_coord);
+                    BeanPoint_internal v_point = new BeanPoint_internal(v_coord, p_paramGenerationPointsTest.p10_srid);
+                    p_code = FLabServices.createUtilitaires().GethCodeGeogPoint(v_coord);
                     //(On évite les doublons)
                     if(!p_codes.Contains(p_code))
                     {
@@ -103,18 +103,19 @@ namespace DEM.Net.TestWinForm
                 double v_coordY = p_paramGenerationPointsTest.p12_pointBasGaucheY;
                 while (v_coordX< p_paramGenerationPointsTest.p13_pointHautDroitX)
                 {
-                    v_coordX += p_paramGenerationPointsTest.p32_pasEntrePointsEnM;
+                    v_coordY = p_paramGenerationPointsTest.p12_pointBasGaucheY;
                     while (v_coordY < p_paramGenerationPointsTest.p14_pointHautDroitY)
                     {
+                        v_coord = new double[3];
+                        v_coord[0] = v_coordX;
+                        v_coord[1] = v_coordY;
+                        v_point = new BeanPoint_internal(v_coord, p_paramGenerationPointsTest.p10_srid);
+                        v_pointsToTest.Add(v_point);
+                        //
                         v_coordY += p_paramGenerationPointsTest.p32_pasEntrePointsEnM;
                     }
+                    v_coordX += p_paramGenerationPointsTest.p32_pasEntrePointsEnM;
                     v_coordY = p_paramGenerationPointsTest.p12_pointBasGaucheY;
-                    //
-                    v_coord = new double[3];
-                    v_coord[0] = v_coordX;
-                    v_coord[1] = v_coordY;
-                    v_point = new BeanPoint_internal(v_coord);
-                    v_pointsToTest.Add(v_point);
                 }
             }
             catch (Exception)
@@ -186,8 +187,11 @@ namespace DEM.Net.TestWinForm
                             v_point.p10_coord[2] = (v_coordRecalees[0]* v_coordRecalees[0] * p_paramGenerationPointsTest.p52_coeff_X) + (v_coordRecalees[1]* v_coordRecalees[1] * p_paramGenerationPointsTest.p53_coeff_Y) + p_paramGenerationPointsTest.p51_hauteurRefEnM;
                             break;
                         case enumMethodeGenerationValeursEnZ.paraboloideHyperbolique:
-                            v_point.p10_coord[2] = ((v_coordRecalees[0] / p_paramGenerationPointsTest.p52_coeff_X) * (v_coordRecalees[0] / p_paramGenerationPointsTest.p52_coeff_X))
+                            v_point.p10_coord[2] =
+                                ((
+                                ((v_coordRecalees[0] / p_paramGenerationPointsTest.p52_coeff_X) * (v_coordRecalees[0] / p_paramGenerationPointsTest.p52_coeff_X))
                                 + ((v_coordRecalees[1] / p_paramGenerationPointsTest.p53_coeff_Y) * (v_coordRecalees[1] / p_paramGenerationPointsTest.p53_coeff_Y))
+                                )*-1)
                                 + p_paramGenerationPointsTest.p51_hauteurRefEnM;
                             break;
                         default:

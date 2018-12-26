@@ -33,16 +33,16 @@
             // 
             // ctrlTestLab1
             // 
-            this.ctrlTestLab1.Location = new System.Drawing.Point(12, 38);
+            this.ctrlTestLab1.Location = new System.Drawing.Point(12, 12);
             this.ctrlTestLab1.Name = "ctrlTestLab1";
-            this.ctrlTestLab1.Size = new System.Drawing.Size(697, 372);
+            this.ctrlTestLab1.Size = new System.Drawing.Size(826, 425);
             this.ctrlTestLab1.TabIndex = 0;
             // 
             // FormTestLab
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(747, 422);
+            this.ClientSize = new System.Drawing.Size(855, 449);
             this.Controls.Add(this.ctrlTestLab1);
             this.Name = "FormTestLab";
             this.Text = "Test Lab";

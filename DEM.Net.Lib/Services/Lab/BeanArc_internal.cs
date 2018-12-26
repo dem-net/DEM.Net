@@ -29,7 +29,7 @@ namespace DEM.Net.Lib.Services.Lab
             p11_pointDbt = p_pointDbt;
             p12_pointFin = p_pointFin;
             //
-            p01_hcodeArc = FServices.createUtilitaires().GethCodeGeogSegment(p11_pointDbt.p10_coord, p12_pointFin.p10_coord);
+            p01_hcodeArc = FLabServices.createUtilitaires().GethCodeGeogSegment(p11_pointDbt.p10_coord, p12_pointFin.p10_coord);
             //
         }
         public BeanArc_internal(BeanPoint_internal p_pointDbt, BeanPoint_internal p_pointFin, List<BeanPoint_internal> p_pointsAssocies):this(p_pointDbt, p_pointFin)

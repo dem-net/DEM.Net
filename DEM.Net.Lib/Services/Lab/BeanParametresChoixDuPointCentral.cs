@@ -6,13 +6,8 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Lib.Services.Lab
 {
-    public enum enumStatutArc
+    public class BeanParametresChoixDuPointCentral
     {
-        arcInterne,
-        arcBase
-    }
-    public enum enumMethodeChoixDuPointCentral
-    {
-        pointLePlusExcentre
+        public enumMethodeChoixDuPointCentral p00_methodeChoixDuPointCentral { get; set; }
     }
 }

@@ -10,15 +10,19 @@ namespace DEM.Net.Lib.Services.Lab
     {
         public List<BeanPoint_internal> p00_pointsSources { get; set; }
         public List<BeanPoint_internal> p11_pointsFacettes { get; set; }
-        public List<BeanArc_internal> p12_arcs { get; set; }
-        public List<BeanFacette_internal> p13_facettes { get; set; }
-        public BeanTopologieFacettes(List<BeanPoint_internal> v_pointsSources)
+        public Dictionary<string, BeanArc_internal> p12_arcsByCode { get; set; }
+        public Dictionary<int, BeanFacette_internal> p13_facettesById { get; set; }
+        
+        public BeanTopologieFacettes()
+        {
+            p11_pointsFacettes = new List<BeanPoint_internal>();
+            p12_arcsByCode = new Dictionary<string, BeanArc_internal>();
+            p13_facettesById = new Dictionary<int, BeanFacette_internal>();
+        }
+        public BeanTopologieFacettes(List<BeanPoint_internal> v_pointsSources):this()
         {
             p00_pointsSources = v_pointsSources;
-            //
-            p11_pointsFacettes = new List<BeanPoint_internal>();
-            p12_arcs = new List<BeanArc_internal>();
-            p13_facettes = new List<BeanFacette_internal>();
         }
+
     }
 }
