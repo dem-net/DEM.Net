@@ -167,15 +167,15 @@ namespace DEM.Net.TestWinForm
         {
             BeanParametresDuTin v_paramTin;
             v_paramTin = FLabServices.createCalculMedium().GetParametresDuTinParDefaut();
-            v_paramTin.p11_initialisation_determinationFrontieres = enumModeDelimitationFrontiere.convexHull;
+            v_paramTin.p11_initialisation_determinationFrontieres = enumModeDelimitationFrontiere.mbo;
             v_paramTin.p14_initialisation_modeChoixDuPointCentral.p01_excentrationMinimum = 0;
-            v_paramTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = 20;
-            v_paramTin.p31_nbreIterationsMaxi = 5;
+            v_paramTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = Convert.ToInt16(tb_precisionEnM.Text);
+            v_paramTin.p31_nbreIterationsMaxi = Convert.ToInt16(tb_nbreIterations.Text);
             _topolFacettes = FLabServices.createCalculMedium().GetInitialisationTin(_dataPointsTests, v_paramTin);
 
            // FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(_topolFacettes,false);
             FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, v_paramTin);
-            bool v_visuSpatialTrace_vf = true;
+            bool v_visuSpatialTrace_vf = false;
             if (v_visuSpatialTrace_vf)
             {
                 FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(_topolFacettes, false, false);
@@ -219,16 +219,22 @@ namespace DEM.Net.TestWinForm
                 v_indiceParIdPoint.Add(v_point.p00_id, v_indice);
                 v_indice++;
             }
-            //
+            //Création des listes d'indices et normalisation du sens des points favettes
             List<int> v_listeIndices;
+            bool v_renvoyerNullSiPointsColineaires_vf = true;
+            bool v_normalisationSensHoraireSinonAntihoraire = true;
             foreach (BeanFacette_internal v_facette in _topolFacettes.p13_facettesById.Values)
             {
-                v_listeIndices = new List<int>();
-                foreach(BeanPoint_internal v_ptFacette in v_facette.p01_pointsDeFacette)
+                List<BeanPoint_internal> v_normalisationDuSens = FLabServices.createCalculMedium().GetOrdonnancementPointsFacette(v_facette.p01_pointsDeFacette, v_renvoyerNullSiPointsColineaires_vf, v_normalisationSensHoraireSinonAntihoraire);
+                if(v_normalisationDuSens != null)
                 {
-                    v_listeIndices.Add(v_indiceParIdPoint[v_ptFacette.p00_id]);
-                }
-                v_beanToVisu3d.p01_listeIndexPointsfacettes.Add(v_listeIndices);
+                    v_listeIndices = new List<int>();
+                    foreach (BeanPoint_internal v_ptFacette in v_normalisationDuSens)
+                    {
+                        v_listeIndices.Add(v_indiceParIdPoint[v_ptFacette.p00_id]);
+                    }
+                    v_beanToVisu3d.p01_listeIndexPointsfacettes.Add(v_listeIndices);
+                }      
             }
             //
             IglTFService glTFService = new glTFService();

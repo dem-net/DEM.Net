@@ -28,4 +28,9 @@ namespace DEM.Net.Lib.Services.Lab
         alti_min,
         alti_saisie
      }
+    public enum enumOrdonnancementPoints
+    {
+        horaire,
+        antihoraire
+    }
 }

@@ -81,6 +81,10 @@
             this.btn_visualisationSpatialTrace = new System.Windows.Forms.Button();
             this.btnTestPoints = new System.Windows.Forms.Button();
             this.btnTestFacettes = new System.Windows.Forms.Button();
+            this.label21 = new System.Windows.Forms.Label();
+            this.tb_precisionEnM = new System.Windows.Forms.TextBox();
+            this.label22 = new System.Windows.Forms.Label();
+            this.tb_nbreIterations = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -495,7 +499,12 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.label22);
+            this.groupBox3.Controls.Add(this.tb_nbreIterations);
+            this.groupBox3.Controls.Add(this.label21);
             this.groupBox3.Controls.Add(this.btn_genererPointsReels);
+            this.groupBox3.Controls.Add(this.tb_precisionEnM);
+            this.groupBox3.Controls.Add(this.btnTestFacettes);
             this.groupBox3.Controls.Add(this.btn_clearSpatialTrace);
             this.groupBox3.Controls.Add(this.btn_testTin);
             this.groupBox3.Controls.Add(this.btn_testCH);
@@ -544,7 +553,7 @@
             // 
             // btn_testCH
             // 
-            this.btn_testCH.Location = new System.Drawing.Point(394, 240);
+            this.btn_testCH.Location = new System.Drawing.Point(657, 197);
             this.btn_testCH.Name = "btn_testCH";
             this.btn_testCH.Size = new System.Drawing.Size(118, 37);
             this.btn_testCH.TabIndex = 31;
@@ -584,7 +593,7 @@
             // 
             // btnTestFacettes
             // 
-            this.btnTestFacettes.Location = new System.Drawing.Point(163, 375);
+            this.btnTestFacettes.Location = new System.Drawing.Point(657, 289);
             this.btnTestFacettes.Name = "btnTestFacettes";
             this.btnTestFacettes.Size = new System.Drawing.Size(118, 37);
             this.btnTestFacettes.TabIndex = 31;
@@ -592,11 +601,44 @@
             this.btnTestFacettes.UseVisualStyleBackColor = true;
             this.btnTestFacettes.Click += new System.EventHandler(this.btnTestFacettes_Click);
             // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(527, 273);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(85, 13);
+            this.label21.TabIndex = 31;
+            this.label21.Text = "Precision (en m):";
+            // 
+            // tb_precisionEnM
+            // 
+            this.tb_precisionEnM.Location = new System.Drawing.Point(614, 273);
+            this.tb_precisionEnM.Name = "tb_precisionEnM";
+            this.tb_precisionEnM.Size = new System.Drawing.Size(33, 20);
+            this.tb_precisionEnM.TabIndex = 30;
+            this.tb_precisionEnM.Text = "20";
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(527, 306);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(78, 13);
+            this.label22.TabIndex = 36;
+            this.label22.Text = "Nbre itérations:";
+            // 
+            // tb_nbreIterations
+            // 
+            this.tb_nbreIterations.Location = new System.Drawing.Point(614, 306);
+            this.tb_nbreIterations.Name = "tb_nbreIterations";
+            this.tb_nbreIterations.Size = new System.Drawing.Size(33, 20);
+            this.tb_nbreIterations.TabIndex = 35;
+            this.tb_nbreIterations.Text = "10";
+            // 
             // CtrlTestLab
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.btnTestFacettes);
             this.Controls.Add(this.btnTestPoints);
             this.Controls.Add(this.groupBox3);
             this.Name = "CtrlTestLab";
@@ -608,6 +650,7 @@
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -666,5 +709,9 @@
         private System.Windows.Forms.Button btn_clearSpatialTrace;
         private System.Windows.Forms.Button btn_genererPointsReels;
         private System.Windows.Forms.Button btnTestFacettes;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.TextBox tb_nbreIterations;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.TextBox tb_precisionEnM;
     }
 }

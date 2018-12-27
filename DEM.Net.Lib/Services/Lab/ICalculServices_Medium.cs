@@ -21,6 +21,7 @@ namespace DEM.Net.Lib.Services.Lab
         List<BeanPoint_internal> GetConvexHull2D(IEnumerable<BeanPoint_internal> p_points);
         //
         Dictionary<string, int> GetEtComptePointsDoublonnes(List<BeanPoint_internal> p_pointsToTest);
+        List<BeanPoint_internal> GetOrdonnancementPointsFacette(List<BeanPoint_internal> p_pointsFacettes, bool p_renvoyerNullSiColineaires_vf, bool p_sensHoraireSinonAntiHoraire_vf);
         //
         void TestMatrice(IEnumerable<BeanPoint_internal> p_points, double[] p_vecteurDeDecalage);
      }

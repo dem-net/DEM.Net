@@ -380,7 +380,17 @@ namespace DEM.Net.Lib.Services.Lab
                 }
 
                 //On met à jour la topologie
-                p_topologieFacette.p12_arcsByCode.Add(v_newArc.p01_hcodeArc, v_newArc);
+                //(Controle 'pustule': ponctuellement (1/10 000)=>1 arc doublonné
+                List<BeanArc_internal> v_doublonsArcs = new List<BeanArc_internal>();
+                if(!p_topologieFacette.p12_arcsByCode.ContainsKey(v_newArc.p01_hcodeArc))
+                {
+                    p_topologieFacette.p12_arcsByCode.Add(v_newArc.p01_hcodeArc, v_newArc);
+                }
+                else
+                {
+                    v_doublonsArcs.Add(v_newArc);
+                }
+               
                 p_topologieFacette.p12_arcsByCode.Remove(p_hcodeArcCandidatASuppression);
 
                 p_topologieFacette.p13_facettesById.Add(v_newFacetteHaute.p00_idFacette, v_newFacetteHaute);
@@ -942,9 +952,57 @@ namespace DEM.Net.Lib.Services.Lab
         {
            return  FLabServices.createCalculLow().GetDistanceEuclidienneCarreeXYZ(p_point1.p10_coord, p_point2.p10_coord);  
         }
+
+
         #endregion UTILITAIRES
 
-       
+       public List<BeanPoint_internal> GetOrdonnancementPointsFacette(List<BeanPoint_internal> p_pointsFacettes, bool p_renvoyerNullSiColineaires_vf, bool p_sensHoraireSinonAntiHoraire_vf)
+       {
+            List<BeanPoint_internal> v_pointsOrdonnances = new List<BeanPoint_internal>();
+            try
+            {
+                List<BeanPoint_internal> v_pointsTries = p_pointsFacettes.OrderByDescending(c => c.p10_coord[2]).ToList();
+                double[] v_coordPointIntermediaire=GetCoordonneesDansNewReferentiel2D(v_pointsTries[1], v_pointsTries[0].p10_coord, v_pointsTries[2].p10_coord);
+                if(p_renvoyerNullSiColineaires_vf && v_coordPointIntermediaire[1] == 0)
+                {
+                        return null;
+                }
+                v_pointsOrdonnances.Add(v_pointsTries[0]);
+
+                if (v_coordPointIntermediaire[1] >= 0)
+                {
+                    if (p_sensHoraireSinonAntiHoraire_vf)
+                    {
+                        v_pointsOrdonnances.Add(v_pointsTries[1]);
+                        v_pointsOrdonnances.Add(v_pointsTries[2]);
+                    }
+                    else
+                    {
+                        v_pointsOrdonnances.Add(v_pointsTries[2]);
+                        v_pointsOrdonnances.Add(v_pointsTries[1]);
+                    }
+                }
+                else
+                {
+                    if (!p_sensHoraireSinonAntiHoraire_vf)
+                    {
+                        v_pointsOrdonnances.Add(v_pointsTries[1]);
+                        v_pointsOrdonnances.Add(v_pointsTries[2]);
+                    }
+                    else
+                    {
+                        v_pointsOrdonnances.Add(v_pointsTries[2]);
+                        v_pointsOrdonnances.Add(v_pointsTries[1]);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return v_pointsOrdonnances;
+       }
         public List<BeanPoint_internal> GetConvexHull2D(IEnumerable<BeanPoint_internal> p_points)
         {
             List<BeanPoint_internal> p_pointsOrdonnesConvexHull = new List<BeanPoint_internal>();

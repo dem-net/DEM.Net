@@ -226,7 +226,11 @@ namespace DEM.Net.Lib.Services.Lab
                 }
                 double[] p_coeffDroite1 = GetCoeffDroite2D(p_Droite1_pt1, p_Droite1_pt2);
                 double[] p_coeffDroite2 = GetCoeffDroite2D(p_Droite2_pt1, p_Droite2_pt2);
-                v_coord = GetIntersectionDroites2D(p_coeffDroite1, p_coeffDroite2);
+                if(p_coeffDroite1==null || p_coeffDroite2 == null)
+                {
+                    return null;
+                }
+                    v_coord = GetIntersectionDroites2D(p_coeffDroite1, p_coeffDroite2);
             }
             catch (Exception)
             {
