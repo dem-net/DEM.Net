@@ -132,6 +132,12 @@ namespace DEM.Net.Lib.Services.Lab
                 throw;
             }
         }
+        public bool AreDroitesParallelesXY(double[] p_Droite1_pt1, double[] p_Droite1_pt2, double[] p_Droite2_pt1, double[] p_Droite2_pt2)
+        {
+            double[] v_vector1=GetVectorBrutFromTwoPoints(p_Droite1_pt1, p_Droite1_pt2);
+            double[] v_vector2 = GetVectorBrutFromTwoPoints(p_Droite2_pt1, p_Droite2_pt2);
+            return AreVecteursColineairesXY(v_vector1, v_vector2);
+        }
         //
         public double[,] GetInverseMatrice2x2(double[,] p_matriceToInverse)
         {
@@ -172,21 +178,13 @@ namespace DEM.Net.Lib.Services.Lab
             double[] v_coeff = new double[2];
             try
             {
-                double[] v_vectorPt1 = GetVectorBrutFromTwoPoints(p_Droite1_pt1, p_Droite1_pt2);
-                v_vectorPt1 = GetNormalisationVecteurXY(v_vectorPt1);
-                double[] v_vectorPt2 = GetVectorBrutFromTwoPoints(p_Droite1_pt2, p_Droite1_pt2);
-                v_vectorPt2 = GetNormalisationVecteurXY(v_vectorPt2);
-                //
-                double v_delta = v_vectorPt1[0] - v_vectorPt2[0];
-                if (v_delta == 0)
+                if ((p_Droite1_pt2[0] - p_Droite1_pt1[0])==0)
                 {
-                    return v_coeff;
+                    return null;
                 }
-                //
-                double v_a = (v_vectorPt1[1] - v_vectorPt2[1]) / v_delta;
-                double v_b = ((v_vectorPt1[0] * v_vectorPt2[1]) - (v_vectorPt2[0] * v_vectorPt1[1])) / v_delta;
-                v_coeff[0] = v_a;
-                v_coeff[1] = v_b;
+               
+                v_coeff[0] = (p_Droite1_pt2[1]- p_Droite1_pt1[1])/ (p_Droite1_pt2[0] - p_Droite1_pt1[0]);
+                v_coeff[1] = p_Droite1_pt2[1] - (v_coeff[0] * p_Droite1_pt2[0]);
             }
             catch (Exception)
             {
@@ -222,8 +220,12 @@ namespace DEM.Net.Lib.Services.Lab
             double[] v_coord = null;
             try
             {
+               if (AreDroitesParallelesXY(p_Droite1_pt1, p_Droite1_pt2, p_Droite2_pt1, p_Droite2_pt2))
+                {
+                    return null;
+                }
                 double[] p_coeffDroite1 = GetCoeffDroite2D(p_Droite1_pt1, p_Droite1_pt2);
-                double[] p_coeffDroite2 = GetIntersectionDroites2D(p_Droite2_pt1, p_Droite2_pt2);
+                double[] p_coeffDroite2 = GetCoeffDroite2D(p_Droite2_pt1, p_Droite2_pt2);
                 v_coord = GetIntersectionDroites2D(p_coeffDroite1, p_coeffDroite2);
             }
             catch (Exception)
@@ -232,6 +234,35 @@ namespace DEM.Net.Lib.Services.Lab
                 throw;
             }
             return v_coord;
+        }
+        public bool AreSegmentsSequants(double[] p_Segment1_pt1, double[] p_Segment1_pt2, double[] p_Segment2_pt1, double[] p_Segment2_pt2)
+        {
+            bool v_out = true;
+            try
+            {
+                double[] v_pointDIntersection;
+                v_pointDIntersection = GetIntersectionDroites2D(p_Segment1_pt1, p_Segment1_pt2, p_Segment2_pt1, p_Segment2_pt2);
+                if (v_pointDIntersection==null)
+                {
+                    return false;
+                }
+                double v_longueurSeg1 = GetDistanceEuclidienneCarreeXY(p_Segment1_pt1, p_Segment1_pt2);
+                if (GetDistanceEuclidienneCarreeXY(p_Segment1_pt1, v_pointDIntersection)> v_longueurSeg1 || GetDistanceEuclidienneCarreeXY(p_Segment1_pt2, v_pointDIntersection) > v_longueurSeg1)
+                {
+                    return false;
+                }
+                double v_longueurSeg2 = GetDistanceEuclidienneCarreeXY(p_Segment2_pt1, p_Segment2_pt2);
+                if (GetDistanceEuclidienneCarreeXY(p_Segment2_pt1, v_pointDIntersection) > v_longueurSeg2 || GetDistanceEuclidienneCarreeXY(p_Segment2_pt2, v_pointDIntersection) > v_longueurSeg2)
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return v_out;
         }
         //
         public bool AreVectorsSameDimension(double[] p_vector1, double[] p_vector2, bool p_exceptionSiFalse)

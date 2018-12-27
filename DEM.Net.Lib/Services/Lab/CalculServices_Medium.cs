@@ -18,7 +18,10 @@ namespace DEM.Net.Lib.Services.Lab
                 v_parametresDuTin.p11_initialisation_determinationFrontieres = enumModeDelimitationFrontiere.mbo;
                 v_parametresDuTin.p14_initialisation_modeChoixDuPointCentral.p00_methodeChoixDuPointCentral = enumMethodeChoixDuPointCentral.pointLePlusExcentre;
                 //
-                v_parametresDuTin.p21_Enrichissement_modeChoixDuPointCentral.p00_methodeChoixDuPointCentral = enumMethodeChoixDuPointCentral.pointLePlusExcentre;
+                v_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral.p00_methodeChoixDuPointCentral = enumMethodeChoixDuPointCentral.pointLePlusExcentre;
+                v_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = 20;
+                //
+                v_parametresDuTin.p31_nbreIterationsMaxi = 20;
             }
             catch (Exception)
             {
@@ -112,7 +115,7 @@ namespace DEM.Net.Lib.Services.Lab
             try
             {
                 int v_nbreIterations=1;
-                int v_nbreIterationsMaxi = 3;
+                int v_nbreIterationsMaxi = p_parametresDuTin.p31_nbreIterationsMaxi;
 
                 //[Nécessaire car on ajoute et supprime des facettes au fur et à mesure et donc=>modif de collection
                 List<int> v_idFacettesDeDepart;
@@ -127,18 +130,18 @@ namespace DEM.Net.Lib.Services.Lab
                     {
                         break;
                     }
-                    //TO DEBUG;
-                    FVisualisationServices.createVisualisationSpatialTraceServices().ClearSpatialTrace();
-                    FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(p_topologieFacette, false);
-                    //FIN TO DEBUG
+                    ////TO DEBUG;
+                    //FVisualisationServices.createVisualisationSpatialTraceServices().ClearSpatialTrace();
+                    //FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(p_topologieFacette, false,false);
+                    ////FIN TO DEBUG
                     foreach (int v_idFacette in v_idFacettesDeDepart)
                     {
                         v_facette = p_topologieFacette.p13_facettesById[v_idFacette];
-                        v_meilleurPoint = GetPointCentralDeLaFacette(v_facette, p_parametresDuTin.p21_Enrichissement_modeChoixDuPointCentral);
+                        v_meilleurPoint = GetPointExcentreDeLaFacette(v_facette, p_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral);
 
-                        //TO DEBUG
-                        FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuPoint2D(v_meilleurPoint, "Meilleur PT", 500);
-                        //FIN TO DEBUG
+                        ////TO DEBUG
+                        //FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuPoint2D(v_meilleurPoint, "Meilleur PT", 500);
+                        ////FIN TO DEBUG
 
                         if (v_meilleurPoint == null)
                         {
@@ -146,12 +149,12 @@ namespace DEM.Net.Lib.Services.Lab
                         }
                         GenereEtInsertSousfacettesByRef(ref p_topologieFacette, v_facette.p00_idFacette, v_meilleurPoint);
                     }
-                    //TO DEBUG;
-                    FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
+                    ////TO DEBUG;
+                    //FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
 
-                    FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(p_topologieFacette, false);
-                    FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
-                    //FIN TO DEBUG
+                    //FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(p_topologieFacette, false,false);
+                    //FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
+                    ////FIN TO DEBUG
 
 
                     //2-On teste les arcs candidats à suppression
@@ -181,38 +184,16 @@ namespace DEM.Net.Lib.Services.Lab
             {
                 BeanArc_internal v_arcToTest = p_topologieFacette.p12_arcsByCode[p_hcodeArcCandidatASuppression];
 
-
-                //TO DEBUG
-                if (v_arcToTest.p21_facetteGauche==null || v_arcToTest.p22_facetteDroite==null)
-                {
-                    throw new Exception("Pb de facette sur l'arc à supprimer.");
-                }
-
-                // //TO DEBUG
                 BeanFacette_internal v_facetteGauche = v_arcToTest.p21_facetteGauche;
                 BeanFacette_internal v_facetteDroite = v_arcToTest.p22_facetteDroite;
-
-
-                ////TODEBUG
-                //Color v_couleur;
-
-                //if (p_hcodeArcCandidatASuppression == "903949,256266147,689_903949,256279171,199")
-                //{
-                //    v_couleur = Color.FromRgb((byte)125, (byte)125, (byte)125);
-                //    FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuFacette(v_facetteGauche, v_couleur,false);
-                //    v_couleur = Color.FromRgb((byte)0, (byte)255, (byte)255);
-                //    FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuFacette(v_facetteDroite, v_couleur, false);
-                //    v_couleur = Color.FromRgb((byte)255, (byte)0, (byte)0);
-                //    FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuArc2D(v_arcToTest, "arc", v_couleur);
-                //    FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
-                //}
-                ////FIN TODEBUG
-                //
-                BeanPoint_internal v_pointGauche = v_facetteGauche.p01_pointsDeFacette.Where(c => c.p01_hCodeGeog != v_arcToTest.p11_pointDbt.p01_hCodeGeog && c.p01_hCodeGeog != v_arcToTest.p12_pointFin.p01_hCodeGeog).First();
-                BeanPoint_internal v_pointDroit = v_facetteDroite.p01_pointsDeFacette.Where(c => c.p01_hCodeGeog != v_arcToTest.p11_pointDbt.p01_hCodeGeog && c.p01_hCodeGeog != v_arcToTest.p12_pointFin.p01_hCodeGeog).First();
-                //
+                
+                BeanPoint_internal v_pointGaucheNewArc = v_facetteGauche.p01_pointsDeFacette.Where(c => c.p01_hCodeGeog != v_arcToTest.p11_pointDbt.p01_hCodeGeog && c.p01_hCodeGeog != v_arcToTest.p12_pointFin.p01_hCodeGeog).First();
+                BeanPoint_internal v_pointDroitNewArc = v_facetteDroite.p01_pointsDeFacette.Where(c => c.p01_hCodeGeog != v_arcToTest.p11_pointDbt.p01_hCodeGeog && c.p01_hCodeGeog != v_arcToTest.p12_pointFin.p01_hCodeGeog).First();
+                
+                
+                //A-TESTS:
                 double v_longueurArcCandidatASuppression = FLabServices.createCalculLow().GetDistanceEuclidienneCarreeXY(v_arcToTest.p11_pointDbt.p10_coord, v_arcToTest.p12_pointFin.p10_coord);
-                double v_longueurArcCandidatRemplacant = FLabServices.createCalculLow().GetDistanceEuclidienneCarreeXY(v_pointGauche.p10_coord, v_pointDroit.p10_coord);
+                double v_longueurArcCandidatRemplacant = FLabServices.createCalculLow().GetDistanceEuclidienneCarreeXY(v_pointGaucheNewArc.p10_coord, v_pointDroitNewArc.p10_coord);
                 //On effectue le remplacement que si:
                 //1-L'arc de remplacement est plus petit que l'arc à remplacer
                 if(v_longueurArcCandidatRemplacant>= v_longueurArcCandidatASuppression)
@@ -222,23 +203,30 @@ namespace DEM.Net.Lib.Services.Lab
 
                 //2-L'arc de remplacement intersecte strictement l'arc à remplacer dans le plan XY
                 List<BeanPoint_internal> v_ptsDeLArcTeste = new List<BeanPoint_internal>() { v_arcToTest.p11_pointDbt, v_arcToTest.p12_pointFin };
-                Dictionary<int, double[]> v_positionDesPointsDeLArcTesteParRapportALArcTransversal;
-                v_positionDesPointsDeLArcTesteParRapportALArcTransversal=GetCoordonneesDansNewReferentiel2D(v_ptsDeLArcTeste, v_pointGauche.p10_coord, v_pointDroit.p10_coord);
-                if(v_positionDesPointsDeLArcTesteParRapportALArcTransversal.Where(c=>c.Value[1]>0).Count()!=1)
+                Dictionary<int, double[]> v_positionDesPointsDeLArcTest_ParRapportAuNouvelArc;
+                v_positionDesPointsDeLArcTest_ParRapportAuNouvelArc=GetCoordonneesDansNewReferentiel2D(v_ptsDeLArcTeste, v_pointGaucheNewArc.p10_coord, v_pointDroitNewArc.p10_coord);
+                //if(v_positionDesPointsDeLArcTest_ParRapportAuNouvelArc.Where(c=>c.Value[1]>0).Count()!=1)
+                //{
+                //    return;
+                //}
+
+                //Le test précédent ne me semble pas suffisant=>on le fait de manière explicite
+                if(!FLabServices.createCalculLow().AreSegmentsSequants(v_arcToTest.p11_pointDbt.p10_coord, v_arcToTest.p12_pointFin.p10_coord, v_pointGaucheNewArc.p10_coord, v_pointDroitNewArc.p10_coord))
                 {
                     return;
                 }
                 
-                //On crée le nouvel arc et les 2 nouvelles facettes
-                BeanArc_internal v_newArc = new BeanArc_internal(v_pointGauche, v_pointDroit);
+                //B=>Les tests sont OK=>On éclate l'ensemble en 2 nouveaux triangles:
+
+                BeanArc_internal v_newArc = new BeanArc_internal(v_pointGaucheNewArc, v_pointDroitNewArc);
                 BeanFacette_internal v_newFacetteHaute = new BeanFacette_internal();
                 BeanFacette_internal v_newFacetteBasse = new BeanFacette_internal();
 
-                //La facette 'haute' va être construite à partir du point de début de l'arc à tester et inversement pour la facette 'basse'
-                //On regarde donc si le point de début de l'arc test se situe 'au dessus' du nouvel arc, 
-                //ce qui correspond  à la 'gauche' de ce nouvel arc 
+
+                //On regarde  si le point de début de l'arc test se situe 'au dessus' du nouvel arc dans le référentiel 'pt gauche->pt droit' déjà calculé:
+                //On eput considérer, du coup, que ce 1er point de l'arc test se situe à gauche du 'vecteur directeur''pt gauche->pt droit'
                 bool v_facetteHauteAuDessus_vf;
-                if (v_positionDesPointsDeLArcTesteParRapportALArcTransversal.Where(c=>c.Key== v_arcToTest.p11_pointDbt.p00_id).Where(c=>c.Value[1]>0).Count()==1)
+                if (v_positionDesPointsDeLArcTest_ParRapportAuNouvelArc.Where(c=>c.Key== v_arcToTest.p11_pointDbt.p00_id).Where(c=>c.Value[1]>0).Count()==1)
                 {
                     v_newArc.p21_facetteGauche = v_newFacetteHaute;
                     v_newArc.p22_facetteDroite = v_newFacetteBasse;
@@ -259,16 +247,27 @@ namespace DEM.Net.Lib.Services.Lab
                 BeanArc_internal v_arcMontant;
                 BeanArc_internal v_arcDescendant;
 
-                //Traitement de la facette 'haute'
+                //Traitement de la facette 'haute' (les notions de 'haut' et 'bas' constituent une simple convention)
                 v_newFacetteHaute.p01_pointsDeFacette.Add(v_arcToTest.p11_pointDbt);
-                v_newFacetteHaute.p01_pointsDeFacette.Add(v_pointGauche);
-                v_newFacetteHaute.p01_pointsDeFacette.Add(v_pointDroit);
+                v_newFacetteHaute.p01_pointsDeFacette.Add(v_pointGaucheNewArc);
+                v_newFacetteHaute.p01_pointsDeFacette.Add(v_pointDroitNewArc);
                 //
                 v_newFacetteHaute.p02_arcs.Add(v_newArc);
-                //
-                v_arcMontant = v_facetteGauche.p02_arcs.Where(c => ((c.p11_pointDbt.p01_hCodeGeog == v_pointGauche.p01_hCodeGeog && c.p12_pointFin.p01_hCodeGeog == v_arcToTest.p11_pointDbt.p01_hCodeGeog) || (c.p12_pointFin.p01_hCodeGeog == v_pointGauche.p01_hCodeGeog && c.p11_pointDbt.p01_hCodeGeog == v_arcToTest.p11_pointDbt.p01_hCodeGeog))).First();
-                //(L'arc 'montant' est issu de la facette gauche. Cette facette va disparaître: on doit donc indiquer sur l'arc quel est la nouvelle facette à utiliser sur le côté correspondant.
-                if (v_arcMontant.p21_facetteGauche.p00_idFacette== v_facetteGauche.p00_idFacette)
+                
+                //L'arc 'montant' est censé partir du point gauche du nouvel arc vers le point opposé à cet arc, ici le pt de début de l'arc à tester
+                //Toutefois:
+                //-cet arc existe déjà (il appartient à la facette gauche)
+                //-son sens peut être inverse
+                v_arcMontant = v_facetteGauche.p02_arcs.Where(c => 
+                (
+                (c.p11_pointDbt.p01_hCodeGeog == v_pointGaucheNewArc.p01_hCodeGeog && c.p12_pointFin.p01_hCodeGeog == v_arcToTest.p11_pointDbt.p01_hCodeGeog)
+                || 
+                (c.p12_pointFin.p01_hCodeGeog == v_pointGaucheNewArc.p01_hCodeGeog && c.p11_pointDbt.p01_hCodeGeog == v_arcToTest.p11_pointDbt.p01_hCodeGeog)
+                )
+                ).First();
+                //On doit donc indiquer sur l'arc la nouvelle facette à utiliser sur le côté correspondant 
+                //(remplace celle de la facette source, amenée à disparaître)
+                if (v_arcMontant.p21_facetteGauche!=null && v_arcMontant.p21_facetteGauche.p00_idFacette== v_facetteGauche.p00_idFacette)
                 {
                     v_arcMontant.p21_facetteGauche = v_newFacetteHaute;
                 }
@@ -278,9 +277,20 @@ namespace DEM.Net.Lib.Services.Lab
                 }
                 v_newFacetteHaute.p02_arcs.Add(v_arcMontant);
 
-                v_arcDescendant = v_facetteGauche.p02_arcs.Where(c => ((c.p11_pointDbt.p01_hCodeGeog == v_arcToTest.p11_pointDbt.p01_hCodeGeog && c.p12_pointFin.p01_hCodeGeog == v_pointDroit.p01_hCodeGeog) || (c.p11_pointDbt.p01_hCodeGeog == v_pointDroit.p01_hCodeGeog && c.p12_pointFin.p01_hCodeGeog == v_arcToTest.p11_pointDbt.p01_hCodeGeog))).First();
-                //(L'arc 'descendant' est issu de la facette droite [...].
-                if (v_arcDescendant.p21_facetteGauche.p00_idFacette == v_facetteDroite.p00_idFacette)
+
+                //L'arc 'decendant' est censé partir du  pt de début de l''arc à tester' et redescende sur le point droit du nouvel arc
+                //Toutefois:
+                //-cet arc existe déjà (il appartient à la facette droite)
+                //-son sens peut être inverse
+                v_arcDescendant = v_facetteDroite.p02_arcs.Where(c => 
+                (
+                (c.p11_pointDbt.p01_hCodeGeog == v_arcToTest.p11_pointDbt.p01_hCodeGeog && c.p12_pointFin.p01_hCodeGeog == v_pointDroitNewArc.p01_hCodeGeog)
+                ||
+                (c.p11_pointDbt.p01_hCodeGeog == v_pointDroitNewArc.p01_hCodeGeog && c.p12_pointFin.p01_hCodeGeog == v_arcToTest.p11_pointDbt.p01_hCodeGeog)
+                )
+                ).First();
+                
+                if (v_arcDescendant.p21_facetteGauche!=null && v_arcDescendant.p21_facetteGauche.p00_idFacette == v_facetteDroite.p00_idFacette)
                 {
                     v_arcDescendant.p21_facetteGauche = v_newFacetteHaute;
                 }
@@ -293,15 +303,21 @@ namespace DEM.Net.Lib.Services.Lab
                 //Traitement de la facette 'basse'
 
                 v_newFacetteBasse.p01_pointsDeFacette.Add(v_arcToTest.p12_pointFin);
-                v_newFacetteBasse.p01_pointsDeFacette.Add(v_pointGauche);
-                v_newFacetteBasse.p01_pointsDeFacette.Add(v_pointDroit);
+                v_newFacetteBasse.p01_pointsDeFacette.Add(v_pointGaucheNewArc);
+                v_newFacetteBasse.p01_pointsDeFacette.Add(v_pointDroitNewArc);
 
                 //
                 v_newFacetteBasse.p02_arcs.Add(v_newArc);
                 //
-                v_arcDescendant = v_facetteGauche.p02_arcs.Where(c => ((c.p11_pointDbt.p01_hCodeGeog == v_pointGauche.p01_hCodeGeog && c.p12_pointFin.p01_hCodeGeog == v_arcToTest.p12_pointFin.p01_hCodeGeog) || (c.p12_pointFin.p01_hCodeGeog == v_pointGauche.p01_hCodeGeog && c.p11_pointDbt.p01_hCodeGeog == v_arcToTest.p12_pointFin.p01_hCodeGeog))).First();
+                v_arcDescendant = v_facetteGauche.p02_arcs.Where(c => 
+                (
+                (c.p11_pointDbt.p01_hCodeGeog == v_pointGaucheNewArc.p01_hCodeGeog && c.p12_pointFin.p01_hCodeGeog == v_arcToTest.p12_pointFin.p01_hCodeGeog)
+                ||
+                (c.p12_pointFin.p01_hCodeGeog == v_pointGaucheNewArc.p01_hCodeGeog && c.p11_pointDbt.p01_hCodeGeog == v_arcToTest.p12_pointFin.p01_hCodeGeog)
+                )
+                ).First();
                 //(L'arc 'descendant' est issu de la facette gauche [...].
-                if (v_arcDescendant.p21_facetteGauche.p00_idFacette == v_facetteGauche.p00_idFacette)
+                if (v_arcDescendant.p21_facetteGauche!=null && v_arcDescendant.p21_facetteGauche.p00_idFacette == v_facetteGauche.p00_idFacette)
                 {
                     v_arcDescendant.p21_facetteGauche = v_newFacetteBasse;
                 }
@@ -311,9 +327,15 @@ namespace DEM.Net.Lib.Services.Lab
                 }
                 v_newFacetteBasse.p02_arcs.Add(v_arcDescendant);
 
-                v_arcMontant = v_facetteGauche.p02_arcs.Where(c => ((c.p11_pointDbt.p01_hCodeGeog == v_arcToTest.p12_pointFin.p01_hCodeGeog && c.p12_pointFin.p01_hCodeGeog == v_pointDroit.p01_hCodeGeog) || (c.p11_pointDbt.p01_hCodeGeog == v_pointDroit.p01_hCodeGeog && c.p12_pointFin.p01_hCodeGeog == v_arcToTest.p12_pointFin.p01_hCodeGeog))).First();
+                v_arcMontant = v_facetteDroite.p02_arcs.Where(c => 
+                (
+                (c.p11_pointDbt.p01_hCodeGeog == v_arcToTest.p12_pointFin.p01_hCodeGeog && c.p12_pointFin.p01_hCodeGeog == v_pointDroitNewArc.p01_hCodeGeog)
+                || 
+                (c.p11_pointDbt.p01_hCodeGeog == v_pointDroitNewArc.p01_hCodeGeog && c.p12_pointFin.p01_hCodeGeog == v_arcToTest.p12_pointFin.p01_hCodeGeog)
+                )
+                ).First();
                 //(L'arc 'montant' est issu de la facette droite [...].
-                if (v_arcMontant.p21_facetteGauche.p00_idFacette == v_facetteDroite.p00_idFacette)
+                if (v_arcMontant.p21_facetteGauche!=null && v_arcMontant.p21_facetteGauche.p00_idFacette == v_facetteDroite.p00_idFacette)
                 {
                     v_arcMontant.p21_facetteGauche = v_newFacetteBasse;
                 }
@@ -329,7 +351,7 @@ namespace DEM.Net.Lib.Services.Lab
                 v_tousPoints.AddRange(v_facetteDroite.p10_pointsInclus);
 
                 Dictionary<int, double[]> v_coordPointsInclusParRapportAuNouvelArc;
-                v_coordPointsInclusParRapportAuNouvelArc=GetCoordonneesDansNewReferentiel2D(v_tousPoints, v_pointGauche.p10_coord, v_pointDroit.p10_coord);
+                v_coordPointsInclusParRapportAuNouvelArc=GetCoordonneesDansNewReferentiel2D(v_tousPoints, v_pointGaucheNewArc.p10_coord, v_pointDroitNewArc.p10_coord);
 
                 HashSet<int> v_idPointsAuDessus = new HashSet<int>(v_coordPointsInclusParRapportAuNouvelArc.Where(c => c.Value[1] >= 0).Select(c => c.Key).ToList());
                 List<BeanPoint_internal> v_pointsAuDessus = new List<BeanPoint_internal>();
@@ -360,6 +382,9 @@ namespace DEM.Net.Lib.Services.Lab
                 //On met à jour la topologie
                 p_topologieFacette.p12_arcsByCode.Add(v_newArc.p01_hcodeArc, v_newArc);
                 p_topologieFacette.p12_arcsByCode.Remove(p_hcodeArcCandidatASuppression);
+
+                p_topologieFacette.p13_facettesById.Add(v_newFacetteHaute.p00_idFacette, v_newFacetteHaute);
+                p_topologieFacette.p13_facettesById.Add(v_newFacetteBasse.p00_idFacette, v_newFacetteBasse);
                 p_topologieFacette.p13_facettesById.Remove(v_facetteGauche.p00_idFacette);
                 p_topologieFacette.p13_facettesById.Remove(v_facetteDroite.p00_idFacette);
             }
@@ -491,7 +516,7 @@ namespace DEM.Net.Lib.Services.Lab
             }
         }
 
-        private BeanPoint_internal GetPointCentralDeLaFacette(BeanFacette_internal p_facette, BeanParametresChoixDuPointCentral p_paramDeChoixDuPointCentral)
+        private BeanPoint_internal GetPointExcentreDeLaFacette(BeanFacette_internal p_facette, BeanParametresChoixDuPointCentral p_paramDeChoixDuPointCentral)
         {
             BeanPoint_internal v_point = null;
             try
@@ -510,7 +535,11 @@ namespace DEM.Net.Lib.Services.Lab
                 {
                     case enumMethodeChoixDuPointCentral.pointLePlusExcentre:
                         double   v_valeurMaxiAbs=Math.Max(v_coordPointsDansReferentielDeLaFacette.Max(c => c.Value[2]), Math.Abs(v_coordPointsDansReferentielDeLaFacette.Min(c => c.Value[2])));
-                        p_idPointCible=v_coordPointsDansReferentielDeLaFacette.Where(c => Math.Abs(c.Value[2]) == v_valeurMaxiAbs).Select(c=>c.Key).First();
+                        if(v_valeurMaxiAbs< p_paramDeChoixDuPointCentral.p01_excentrationMinimum)
+                        {
+                            return null;
+                        }
+                        p_idPointCible =v_coordPointsDansReferentielDeLaFacette.Where(c => Math.Abs(c.Value[2]) == v_valeurMaxiAbs).Select(c=>c.Key).First();
                         break;
                     default:
                         throw new Exception("Méthode " + p_paramDeChoixDuPointCentral.p00_methodeChoixDuPointCentral + " non implémentée.");

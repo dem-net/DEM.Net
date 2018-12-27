@@ -167,13 +167,21 @@ namespace DEM.Net.TestWinForm
         {
             BeanParametresDuTin v_paramTin;
             v_paramTin = FLabServices.createCalculMedium().GetParametresDuTinParDefaut();
+            v_paramTin.p11_initialisation_determinationFrontieres = enumModeDelimitationFrontiere.convexHull;
+            v_paramTin.p14_initialisation_modeChoixDuPointCentral.p01_excentrationMinimum = 0;
+            v_paramTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = 20;
+            v_paramTin.p31_nbreIterationsMaxi = 5;
             _topolFacettes = FLabServices.createCalculMedium().GetInitialisationTin(_dataPointsTests, v_paramTin);
 
            // FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(_topolFacettes,false);
             FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, v_paramTin);
-
-            //FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(_topolFacettes);
-            //FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
+            bool v_visuSpatialTrace_vf = true;
+            if (v_visuSpatialTrace_vf)
+            {
+                FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(_topolFacettes, false, false);
+                FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
+            }
+          
 
             MessageBox.Show("Traitement terminé.");
         }
@@ -190,7 +198,7 @@ namespace DEM.Net.TestWinForm
             string v_bbox= "POLYGON((5.523314005345696 43.576096090257955, 5.722441202611321 43.576096090257955, 5.722441202611321 43.46456490270913, 5.523314005345696 43.46456490270913, 5.523314005345696 43.576096090257955))";
            _dataPointsTests=FServicesApplicatifs.createEchantillonsTestsServices().GetPointsTestsByBBox(v_bbox);
 
-            Dictionary<string, int> v_doublons;
+            //Dictionary<string, int> v_doublons;
             //v_doublons=FLabServices.createCalculMedium().GetEtComptePointsDoublonnes(_dataPointsTests);
             MessageBox.Show("Remontée des points terminée ("+ _dataPointsTests.Count+ " points).");
         }
@@ -203,6 +211,7 @@ namespace DEM.Net.TestWinForm
             Dictionary<int, int> v_indiceParIdPoint = new Dictionary<int, int>();
             int v_indice = 0;
             GeoPoint v_geoPoint;
+
             foreach(BeanPoint_internal v_point in _topolFacettes.p11_pointsFacettesByIdPoint.Values)
             {
                 v_geoPoint = new GeoPoint(v_point.p10_coord[0], v_point.p10_coord[1], (float) v_point.p10_coord[2],0,0);

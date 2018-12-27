@@ -25,8 +25,8 @@ namespace DEM.Net.Lib.Services.VisualisationServices
         void GetVisuVecteur2D(double[] p_vecteur, double[] p_origine, int p_srid, string p_label, Color p_couleurCourante, double p_coeff = 1);
         void GetVisuVecteur2D(double[] p_vecteur, double[] p_origine, int p_srid, string p_label, double p_coeff = 1);
         //
-        void GetVisuTopologieFacettes(BeanTopologieFacettes p_topologieFacettes, bool p_visualiserPointsInclus_vf);
-        void GetVisuFacette(BeanFacette_internal p_facette, Color p_couleurCourante, bool p_visualiserPointsInclus_vf);
+        void GetVisuTopologieFacettes(BeanTopologieFacettes p_topologieFacettes, bool p_visualiserPointsInclus_vf, bool p_afficherMemeSiInvalide_vf);
+        void GetVisuFacette(BeanFacette_internal p_facette, Color p_couleurCourante, bool p_visualiserPointsInclus_vf, bool p_afficherMemeSiInvalide_vf);
       
         //
         void AfficheVisu();

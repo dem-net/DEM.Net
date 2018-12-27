@@ -325,17 +325,17 @@ namespace DEM.Net.Lib.Services.VisualisationServices
             GetVisuVecteur2D(p_vecteur, p_origine, p_srid, p_label, v_couleur, p_coeff);
         }
         //
-        public void GetVisuTopologieFacettes(BeanTopologieFacettes p_topologieFacettes, bool p_visupointsInclus_vf)
+        public void GetVisuTopologieFacettes(BeanTopologieFacettes p_topologieFacettes, bool p_visupointsInclus_vf, bool p_afficherMemeSiInvalide_vf)
         {
             Color v_couleur;
             Random v_randomisateur = new Random(2);
             foreach(BeanFacette_internal v_facette in p_topologieFacettes.p13_facettesById.Values)
             {
                 v_couleur = Color.FromRgb((byte) v_randomisateur.Next(1, 254), (byte)v_randomisateur.Next(1, 254), (byte)v_randomisateur.Next(1, 254));
-                GetVisuFacette(v_facette,v_couleur, p_visupointsInclus_vf);
+                GetVisuFacette(v_facette,v_couleur, p_visupointsInclus_vf, p_afficherMemeSiInvalide_vf);
             }
         }
-        public void GetVisuFacette(BeanFacette_internal p_facette, Color p_couleurCourante, bool p_visualiserPointsInclus_vf)
+        public void GetVisuFacette(BeanFacette_internal p_facette, Color p_couleurCourante, bool p_visualiserPointsInclus_vf, bool p_afficherMemeSiInvalide_vf)
         {
             Color param_couleurContour = Color.FromRgb((byte)125, (byte)125, (byte)125);
             Color param_couleurPoint = Color.FromRgb((byte)200, (byte)200, (byte)200);
@@ -348,6 +348,11 @@ namespace DEM.Net.Lib.Services.VisualisationServices
             List<double[]> v_coord = p_facette.p01_pointsDeFacette.Select(c => c.p10_coord).ToList();
             SqlGeometry v_polygone;
             v_polygone = FLabServices.createUtilitaires().GetGeometryPolygon(v_coord, p_facette.p01_pointsDeFacette.First().p11_srid);
+            if(!p_afficherMemeSiInvalide_vf && !v_polygone.STIsValid())
+            {
+                return;
+            }
+
             SpatialTrace.TraceGeometry(v_polygone, "fac: " + p_facette.p00_idFacette);
             //
             

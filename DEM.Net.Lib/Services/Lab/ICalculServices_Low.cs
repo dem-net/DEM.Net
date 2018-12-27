@@ -30,8 +30,9 @@
         double GetNormeVecteurXY(double[] p_vector);
         double GetNormeVecteurXYZ(double[] p_vector);
         double[] GetProduitMatriceParVector(double[,] p_matrice, double[] p_vector);
-        //double GetProduitScalaireXY(double[] p_vector1, double[] p_vector2);
-        //double GetProduitScalaireXYZ(double[] p_vector1, double[] p_vector2);
+        double GetProduitScalaireXY(double[] p_vector1, double[] p_vector2);
+        double GetProduitScalaireXYZ(double[] p_vector1, double[] p_vector2);
+        bool AreSegmentsSequants(double[] p_Segment1_pt1, double[] p_Segment1_pt2, double[] p_Segment2_pt1, double[] p_Segment2_pt2);
         double[] GetVectorBrutFromTwoPoints(double[] p_pointOrigine, double[] p_point2);
         bool IsInversionMatriceOk(double[,] p_matriceAInverser, double[,] p_matriceInverse, int p_toleranceDArrondi = 5);
         bool IsMatriceIdentite(double[,] p_matriceIdentiteAttendue, int p_toleranceDArrondi = 5);
