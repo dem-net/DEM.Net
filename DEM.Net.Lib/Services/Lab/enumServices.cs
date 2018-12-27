@@ -8,11 +8,24 @@ namespace DEM.Net.Lib.Services.Lab
 {
     public enum enumStatutArc
     {
-        arcInterne,
-        arcBase
+        arcNONCandidatASuppression,
+        arcCandidatASuppression,
+        arcExterne
     }
     public enum enumMethodeChoixDuPointCentral
     {
-        pointLePlusExcentre
+        pointLePlusExcentre,
+        centroide
     }
+    public enum enumModeDelimitationFrontiere
+    {
+        convexHull,
+        mbo
+    }
+    public enum enumModeCalculZ
+    {
+        alti_0,
+        alti_min,
+        alti_saisie
+     }
 }

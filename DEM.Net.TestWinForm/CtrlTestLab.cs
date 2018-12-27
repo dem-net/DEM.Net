@@ -24,6 +24,7 @@ namespace DEM.Net.TestWinForm
     {
         private static BeanParamGenerationAutoDePointsTests _paramGenerationPoints;
         private static List<BeanPoint_internal> _dataPointsTests;
+        private static BeanTopologieFacettes _topolFacettes;
 
         public CtrlTestLab()
         {
@@ -102,12 +103,12 @@ namespace DEM.Net.TestWinForm
         {
             IglTFService glTFService = new glTFService();
 
-
             MeshPrimitive pointMesh = glTFService.GeneratePointMesh(FromBeanPoint_internalToGeoPoint(_dataPointsTests), new Vector3(1, 0, 0), 1f);
             Model model = glTFService.GenerateModel(pointMesh, "Test Points");
             glTFService.Export(model, "testpoints.glb", "Test points", false, true);
         }
 
+        
         private IEnumerable<GeoPoint> FromBeanPoint_internalToGeoPoint(List<BeanPoint_internal> dataPointsTests)
         {
             return dataPointsTests.Select(ptIn => new GeoPoint(ptIn.p10_coord[1], ptIn.p10_coord[0], (float)ptIn.p10_coord[2], 0, 0));
@@ -166,12 +167,14 @@ namespace DEM.Net.TestWinForm
         {
             BeanParametresDuTin v_paramTin;
             v_paramTin = FLabServices.createCalculMedium().GetParametresDuTinParDefaut();
-            BeanTopologieFacettes v_topolFacettes = FLabServices.createCalculMedium().GetInitialisationTin(_dataPointsTests, v_paramTin);
-            FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref v_topolFacettes, v_paramTin);
-            //
-            FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(v_topolFacettes);
-            FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
-            //
+            _topolFacettes = FLabServices.createCalculMedium().GetInitialisationTin(_dataPointsTests, v_paramTin);
+
+           // FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(_topolFacettes,false);
+            FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, v_paramTin);
+
+            //FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(_topolFacettes);
+            //FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
+
             MessageBox.Show("Traitement terminé.");
         }
 
@@ -180,6 +183,51 @@ namespace DEM.Net.TestWinForm
             SpatialTrace.Enable();
             SpatialTrace.Clear();
             SpatialTrace.Disable();
+        }
+
+        private void btn_genererPointsReels_Click(object sender, EventArgs e)
+        {
+            string v_bbox= "POLYGON((5.523314005345696 43.576096090257955, 5.722441202611321 43.576096090257955, 5.722441202611321 43.46456490270913, 5.523314005345696 43.46456490270913, 5.523314005345696 43.576096090257955))";
+           _dataPointsTests=FServicesApplicatifs.createEchantillonsTestsServices().GetPointsTestsByBBox(v_bbox);
+
+            Dictionary<string, int> v_doublons;
+            //v_doublons=FLabServices.createCalculMedium().GetEtComptePointsDoublonnes(_dataPointsTests);
+            MessageBox.Show("Remontée des points terminée ("+ _dataPointsTests.Count+ " points).");
+        }
+
+        private void btnTestFacettes_Click(object sender, EventArgs e)
+        {
+            BeanFacettesToVisu3D v_beanToVisu3d;
+            v_beanToVisu3d = new BeanFacettesToVisu3D();
+            
+            Dictionary<int, int> v_indiceParIdPoint = new Dictionary<int, int>();
+            int v_indice = 0;
+            GeoPoint v_geoPoint;
+            foreach(BeanPoint_internal v_point in _topolFacettes.p11_pointsFacettesByIdPoint.Values)
+            {
+                v_geoPoint = new GeoPoint(v_point.p10_coord[0], v_point.p10_coord[1], (float) v_point.p10_coord[2],0,0);
+                v_beanToVisu3d.p00_geoPoint.Add(v_geoPoint);
+                v_indiceParIdPoint.Add(v_point.p00_id, v_indice);
+                v_indice++;
+            }
+            //
+            List<int> v_listeIndices;
+            foreach (BeanFacette_internal v_facette in _topolFacettes.p13_facettesById.Values)
+            {
+                v_listeIndices = new List<int>();
+                foreach(BeanPoint_internal v_ptFacette in v_facette.p01_pointsDeFacette)
+                {
+                    v_listeIndices.Add(v_indiceParIdPoint[v_ptFacette.p00_id]);
+                }
+                v_beanToVisu3d.p01_listeIndexPointsfacettes.Add(v_listeIndices);
+            }
+            //
+            IglTFService glTFService = new glTFService();
+            MeshPrimitive v_trianglesMesh = glTFService.GenerateTriangleMesh(v_beanToVisu3d.p00_geoPoint, v_beanToVisu3d.p01_listeIndexPointsfacettes.SelectMany(c => c).ToList());
+              
+            Model model = glTFService.GenerateModel(v_trianglesMesh, "Test Triangles");
+            glTFService.Export(model, "Test3D", "testTriangles.glb",  false, true);
+            MessageBox.Show("Traitement terminé.");
         }
     }
 }

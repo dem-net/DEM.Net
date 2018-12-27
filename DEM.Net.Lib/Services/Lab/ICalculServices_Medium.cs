@@ -20,6 +20,8 @@ namespace DEM.Net.Lib.Services.Lab
         /// <returns></returns>
         List<BeanPoint_internal> GetConvexHull2D(IEnumerable<BeanPoint_internal> p_points);
         //
+        Dictionary<string, int> GetEtComptePointsDoublonnes(List<BeanPoint_internal> p_pointsToTest);
+        //
         void TestMatrice(IEnumerable<BeanPoint_internal> p_points, double[] p_vecteurDeDecalage);
      }
 }

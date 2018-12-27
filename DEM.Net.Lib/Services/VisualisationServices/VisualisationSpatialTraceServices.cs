@@ -58,16 +58,16 @@ namespace DEM.Net.Lib.Services.VisualisationServices
                     switch (p_progressionCouleur)
                     {
                         case enumProgressionCouleurs.red:
-                            v_couleur = Color.FromScRgb(p_alpha, v_niveauCouleurRef, 0, 0);
+                            v_couleur = Color.FromRgb((byte) v_niveauCouleurRef, (byte)0, (byte)0);
                             break;
                         case enumProgressionCouleurs.green:
-                            v_couleur = Color.FromScRgb(p_alpha, 0, v_niveauCouleurRef, 0);
+                            v_couleur = Color.FromRgb((byte)0, (byte)v_niveauCouleurRef, (byte)0);
                             break;
                         case enumProgressionCouleurs.blue:
-                            v_couleur = Color.FromScRgb(p_alpha, 0, 0, v_niveauCouleurRef);
+                            v_couleur = Color.FromRgb((byte)0, (byte)0, (byte)v_niveauCouleurRef);
                             break;
                         case enumProgressionCouleurs.greenVersRed:
-                            v_couleur = Color.FromScRgb(p_alpha, v_niveauCouleurRef, v_niveauCouleurInverseRef, 0);
+                            v_couleur = Color.FromRgb((byte)v_niveauCouleurRef, (byte)v_niveauCouleurInverseRef, (byte)0);
                             break;
                         default:
                             throw new Exception("Méthode " + p_progressionCouleur + " non implémentée.");
@@ -138,7 +138,7 @@ namespace DEM.Net.Lib.Services.VisualisationServices
                 foreach (KeyValuePair<string, List<BeanPoint_internal>> v_classe in p_pointsParClasse)
                 {
                     v_couleurCourante = p_tableCouleurs[v_classe.Key];
-                    //SpatialTrace.SetFillColor(v_couleurCourante);
+                    SpatialTrace.SetFillColor(v_couleurCourante);
                     SpatialTrace.SetLineColor(v_couleurCourante);
                     foreach (BeanPoint_internal v_point in v_classe.Value)
                     {
@@ -184,7 +184,7 @@ namespace DEM.Net.Lib.Services.VisualisationServices
         {
             try
             {
-                Color param_couleurCourante = Color.FromArgb(255, 255, 0, 0);
+             
                 int param_ratioTaillePoint = 100;
                 int v_taillePoints = p_taillePointAutoSi0OuMoins;
                 if (p_taillePointAutoSi0OuMoins <= 0)
@@ -197,7 +197,7 @@ namespace DEM.Net.Lib.Services.VisualisationServices
                 SqlGeometry v_pointGeom;
 
                 //SpatialTrace.SetFillColor(param_couleurCourante);
-                SpatialTrace.SetLineColor(param_couleurCourante);
+                SpatialTrace.SetLineColor(p_couleurCourante);
                 foreach (BeanPoint_internal v_point in p_points)
                 {
                     v_message = "Pt " + v_point.p00_id + " (" + v_point.p10_coord[2] + " m)";
@@ -218,11 +218,12 @@ namespace DEM.Net.Lib.Services.VisualisationServices
                 throw;
             }
         }
+      
         public void GetVisuPoints2D(List<BeanPoint_internal> p_points, string p_label, int p_taillePointAutoSi0OuMoins)
         {
             try
             {
-                Color v_couleur = Color.FromScRgb(255, 255, 0, 0);
+                Color v_couleur = Color.FromRgb((byte)255, (byte)0, (byte)0);
                 GetVisuPoints2D(p_points, p_label, v_couleur, p_taillePointAutoSi0OuMoins);
             }
             catch (Exception)
@@ -234,12 +235,18 @@ namespace DEM.Net.Lib.Services.VisualisationServices
         public void GetVisuPoint2D(BeanPoint_internal p_point, string p_label, Color p_couleurCourante, int p_taillePoint)
         {
 
+            Color param_couleurContour = Color.FromRgb((byte)125, (byte)125, (byte)125);
+            if (p_taillePoint<=0)
+            {
+                p_taillePoint = 1;
+            }
+            //
             SpatialTrace.Enable();
             string v_message="";
             SqlGeometry v_pointGeom;
 
-            //SpatialTrace.SetFillColor(p_couleurCourante);
-            SpatialTrace.SetLineColor(p_couleurCourante);
+            SpatialTrace.SetFillColor(p_couleurCourante);
+            SpatialTrace.SetLineColor(param_couleurContour);
 
             v_message = "Pt " + p_point.p00_id + " (" + p_point.p10_coord[2] + " m)";
             if (p_label != "")
@@ -251,13 +258,18 @@ namespace DEM.Net.Lib.Services.VisualisationServices
 
             SpatialTrace.Disable();
         }
+        public void GetVisuPoint2D(BeanPoint_internal p_point, string p_label,  int p_taillePoint)
+        {
+            Color p_couleur = Color.FromRgb((byte)125, (byte)125, (byte)125);
+            GetVisuPoint2D(p_point, p_label, p_couleur, p_taillePoint);
+        }
         //
         public void GetVisuArc2D(BeanArc_internal p_arc, string p_label, Color p_couleurCourante)
         {
             SpatialTrace.Enable();
             string v_message;
 
-            //SpatialTrace.SetFillColor(p_couleurCourante);
+            SpatialTrace.SetFillColor(p_couleurCourante);
             SpatialTrace.SetLineColor(p_couleurCourante);
 
             v_message = "arc " + p_arc.p00_idArc+" ("+p_arc.p01_hcodeArc+")";
@@ -309,37 +321,44 @@ namespace DEM.Net.Lib.Services.VisualisationServices
         }
         public void GetVisuVecteur2D(double[] p_vecteur, double[] p_origine, int p_srid, string p_label, double p_coeff = 1)
         {
-            Color v_couleur = Color.FromScRgb(255, 255, 0, 0);
+            Color v_couleur = Color.FromRgb((byte)255, (byte)0, (byte)0);
             GetVisuVecteur2D(p_vecteur, p_origine, p_srid, p_label, v_couleur, p_coeff);
         }
         //
-        public void GetVisuTopologieFacettes(BeanTopologieFacettes p_topologieFacettes)
+        public void GetVisuTopologieFacettes(BeanTopologieFacettes p_topologieFacettes, bool p_visupointsInclus_vf)
         {
             Color v_couleur;
             Random v_randomisateur = new Random(2);
             foreach(BeanFacette_internal v_facette in p_topologieFacettes.p13_facettesById.Values)
             {
-                v_couleur = Color.FromScRgb(255, v_randomisateur.Next(1, 254), v_randomisateur.Next(1, 254), v_randomisateur.Next(1, 254));
-                GetVisuFacette(v_facette,v_couleur);
+                v_couleur = Color.FromRgb((byte) v_randomisateur.Next(1, 254), (byte)v_randomisateur.Next(1, 254), (byte)v_randomisateur.Next(1, 254));
+                GetVisuFacette(v_facette,v_couleur, p_visupointsInclus_vf);
             }
         }
-        public void GetVisuFacette(BeanFacette_internal p_facette, Color p_couleurCourante)
+        public void GetVisuFacette(BeanFacette_internal p_facette, Color p_couleurCourante, bool p_visualiserPointsInclus_vf)
         {
+            Color param_couleurContour = Color.FromRgb((byte)125, (byte)125, (byte)125);
+            Color param_couleurPoint = Color.FromRgb((byte)200, (byte)200, (byte)200);
+
             SpatialTrace.Enable();
-            
-            //SpatialTrace.SetFillColor(p_couleurCourante);
-            SpatialTrace.SetLineColor(p_couleurCourante);
+
+            SpatialTrace.SetFillColor(p_couleurCourante);
+            SpatialTrace.SetLineColor(param_couleurContour);
             //
             List<double[]> v_coord = p_facette.p01_pointsDeFacette.Select(c => c.p10_coord).ToList();
             SqlGeometry v_polygone;
             v_polygone = FLabServices.createUtilitaires().GetGeometryPolygon(v_coord, p_facette.p01_pointsDeFacette.First().p11_srid);
             SpatialTrace.TraceGeometry(v_polygone, "fac: " + p_facette.p00_idFacette);
             //
-            foreach (BeanPoint_internal v_point in p_facette.p10_pointsInclus)
+            
+            if (p_visualiserPointsInclus_vf)
             {
-                GetVisuPoint2D(v_point, "=>Fac " + p_facette.p00_idFacette, p_couleurCourante, 5);
+                foreach (BeanPoint_internal v_point in p_facette.p10_pointsInclus)
+                {
+                    GetVisuPoint2D(v_point, "=>Fac " + p_facette.p00_idFacette, param_couleurPoint, 5);
+                }
             }
-            //
+
             SpatialTrace.Disable();
         }
 
@@ -348,6 +367,12 @@ namespace DEM.Net.Lib.Services.VisualisationServices
         {
             SpatialTrace.Enable();
             SpatialTrace.ShowDialog();
+            SpatialTrace.Disable();
+        }
+        public void ClearSpatialTrace()
+        {
+            SpatialTrace.Enable();
+            SpatialTrace.Clear();
             SpatialTrace.Disable();
         }
     }

@@ -610,14 +610,24 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_coord;
         }
+      
         //
-        public double GetDistanceEuclidienneCarree2D(double[] v_point1, double[] v_point2)
+        public double GetDistanceEuclidienneCarreeXY(double[] v_point1, double[] v_point2)
         {
          return (v_point2[0] - v_point1[0]) * (v_point2[0] - v_point1[0]) + (v_point2[1] - v_point1[1]) * (v_point2[1] - v_point1[1]);  
         }
-        public double GetDistanceEuclidienne2D(double[] v_point1, double[] v_point2)
+        public double GetDistanceEuclidienneXY(double[] v_point1, double[] v_point2)
         {
-            return Math.Sqrt(GetDistanceEuclidienneCarree2D(v_point1, v_point2));
+            return Math.Sqrt(GetDistanceEuclidienneCarreeXY(v_point1, v_point2));
+        }
+        //
+        public double GetDistanceEuclidienneCarreeXYZ(double[] v_point1, double[] v_point2)
+        {
+            return (v_point2[0] - v_point1[0]) * (v_point2[0] - v_point1[0]) + (v_point2[1] - v_point1[1]) * (v_point2[1] - v_point1[1]) + (v_point2[2] - v_point1[2]) * (v_point2[2] - v_point1[2]);
+        }
+        public double GetDistanceEuclidienneXYZ(double[] v_point1, double[] v_point2)
+        {
+           return Math.Sqrt(GetDistanceEuclidienneCarreeXYZ(v_point1, v_point2));
         }
         //
     }

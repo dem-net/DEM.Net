@@ -39,8 +39,16 @@ namespace DEM.Net.Lib.Services.Lab
         {
             p00_id = _dernierId++;
             p10_coord = p_coord;
+           p01_hCodeGeog= FLabServices.createUtilitaires().GethCodeGeogPoint(p10_coord);
             p11_srid = p_srid;
         }
-      
+        public BeanPoint_internal(double p_x, double p_y, double p_z, int p_srid)
+        {
+            p00_id = _dernierId++;
+            p10_coord=new double[3] { p_x, p_y, p_z };
+            p01_hCodeGeog = FLabServices.createUtilitaires().GethCodeGeogPoint(p10_coord);
+            p11_srid = p_srid;
+        }
+
     }
 }

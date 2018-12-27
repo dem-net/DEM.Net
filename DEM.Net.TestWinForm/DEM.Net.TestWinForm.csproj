@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BeanFacettesToVisu3D.cs" />
     <Compile Include="BeanParamGenerationAutoDePointsTests.cs" />
     <Compile Include="CtrlTestLab.cs">
       <SubType>UserControl</SubType>
