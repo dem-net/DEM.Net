@@ -9,5 +9,7 @@ namespace DEM.Net.Lib.Services.Lab
     public class BeanParametresChoixDuPointCentral
     {
         public enumMethodeChoixDuPointCentral p00_methodeChoixDuPointCentral { get; set; }
+
+        public double p01_excentrationMinimum { get; set; }
     }
 }

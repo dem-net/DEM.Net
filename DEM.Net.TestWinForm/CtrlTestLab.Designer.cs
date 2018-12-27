@@ -73,12 +73,14 @@
             this.label14 = new System.Windows.Forms.Label();
             this.tb_pasSeparationEntrePoints = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btn_genererPointsReels = new System.Windows.Forms.Button();
+            this.btn_clearSpatialTrace = new System.Windows.Forms.Button();
             this.btn_testTin = new System.Windows.Forms.Button();
             this.btn_testCH = new System.Windows.Forms.Button();
             this.btn_testsDivers = new System.Windows.Forms.Button();
             this.btn_visualisationSpatialTrace = new System.Windows.Forms.Button();
             this.btnTestPoints = new System.Windows.Forms.Button();
-            this.btn_clearSpatialTrace = new System.Windows.Forms.Button();
+            this.btnTestFacettes = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -91,7 +93,7 @@
             this.btn_genererPoints.Name = "btn_genererPoints";
             this.btn_genererPoints.Size = new System.Drawing.Size(118, 37);
             this.btn_genererPoints.TabIndex = 0;
-            this.btn_genererPoints.Text = "Génerer points";
+            this.btn_genererPoints.Text = "Génerer points calculés";
             this.btn_genererPoints.UseVisualStyleBackColor = true;
             this.btn_genererPoints.Click += new System.EventHandler(this.btn_genererPoints_Click);
             // 
@@ -493,6 +495,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.btn_genererPointsReels);
             this.groupBox3.Controls.Add(this.btn_clearSpatialTrace);
             this.groupBox3.Controls.Add(this.btn_testTin);
             this.groupBox3.Controls.Add(this.btn_testCH);
@@ -508,6 +511,26 @@
             this.groupBox3.TabIndex = 28;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Génération points tests:";
+            // 
+            // btn_genererPointsReels
+            // 
+            this.btn_genererPointsReels.Location = new System.Drawing.Point(36, 289);
+            this.btn_genererPointsReels.Name = "btn_genererPointsReels";
+            this.btn_genererPointsReels.Size = new System.Drawing.Size(118, 37);
+            this.btn_genererPointsReels.TabIndex = 34;
+            this.btn_genererPointsReels.Text = "Génerer points réels";
+            this.btn_genererPointsReels.UseVisualStyleBackColor = true;
+            this.btn_genererPointsReels.Click += new System.EventHandler(this.btn_genererPointsReels_Click);
+            // 
+            // btn_clearSpatialTrace
+            // 
+            this.btn_clearSpatialTrace.Location = new System.Drawing.Point(231, 240);
+            this.btn_clearSpatialTrace.Name = "btn_clearSpatialTrace";
+            this.btn_clearSpatialTrace.Size = new System.Drawing.Size(118, 37);
+            this.btn_clearSpatialTrace.TabIndex = 33;
+            this.btn_clearSpatialTrace.Text = "Clear spatialtrace";
+            this.btn_clearSpatialTrace.UseVisualStyleBackColor = true;
+            this.btn_clearSpatialTrace.Click += new System.EventHandler(this.btn_clearSpatialTrace_Click);
             // 
             // btn_testTin
             // 
@@ -559,20 +582,21 @@
             this.btnTestPoints.UseVisualStyleBackColor = true;
             this.btnTestPoints.Click += new System.EventHandler(this.btnTestPoints_Click);
             // 
-            // btn_clearSpatialTrace
+            // btnTestFacettes
             // 
-            this.btn_clearSpatialTrace.Location = new System.Drawing.Point(231, 240);
-            this.btn_clearSpatialTrace.Name = "btn_clearSpatialTrace";
-            this.btn_clearSpatialTrace.Size = new System.Drawing.Size(118, 37);
-            this.btn_clearSpatialTrace.TabIndex = 33;
-            this.btn_clearSpatialTrace.Text = "Clear spatialtrace";
-            this.btn_clearSpatialTrace.UseVisualStyleBackColor = true;
-            this.btn_clearSpatialTrace.Click += new System.EventHandler(this.btn_clearSpatialTrace_Click);
+            this.btnTestFacettes.Location = new System.Drawing.Point(163, 375);
+            this.btnTestFacettes.Name = "btnTestFacettes";
+            this.btnTestFacettes.Size = new System.Drawing.Size(118, 37);
+            this.btnTestFacettes.TabIndex = 31;
+            this.btnTestFacettes.Text = "Visu facettes";
+            this.btnTestFacettes.UseVisualStyleBackColor = true;
+            this.btnTestFacettes.Click += new System.EventHandler(this.btnTestFacettes_Click);
             // 
             // CtrlTestLab
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btnTestFacettes);
             this.Controls.Add(this.btnTestPoints);
             this.Controls.Add(this.groupBox3);
             this.Name = "CtrlTestLab";
@@ -640,5 +664,7 @@
         private System.Windows.Forms.Button btn_testCH;
         private System.Windows.Forms.Button btn_testTin;
         private System.Windows.Forms.Button btn_clearSpatialTrace;
+        private System.Windows.Forms.Button btn_genererPointsReels;
+        private System.Windows.Forms.Button btnTestFacettes;
     }
 }
