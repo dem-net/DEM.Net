@@ -241,7 +241,7 @@ namespace DEM.Net.TestWinForm
             MeshPrimitive v_trianglesMesh = glTFService.GenerateTriangleMesh(v_beanToVisu3d.p00_geoPoint, v_beanToVisu3d.p01_listeIndexPointsfacettes.SelectMany(c => c).ToList());
               
             Model model = glTFService.GenerateModel(v_trianglesMesh, "Test Triangles");
-            glTFService.Export(model, "Test3D", "testTriangles.glb",  false, true);
+            glTFService.Export(model, "Test3D", $"testTriangles_i{tb_nbreIterations.Text}_p{tb_precisionEnM.Text}.glb",  false, true);
             MessageBox.Show("Traitement terminé.");
         }
     }
