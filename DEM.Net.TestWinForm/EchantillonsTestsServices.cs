@@ -14,15 +14,16 @@ namespace DEM.Net.TestWinForm
         public List<BeanPoint_internal> GetPointsTestsByBBox(string p_bbox)
         {
             List<BeanPoint_internal> v_pointsToTest = new List<BeanPoint_internal>();
+            DEMDataSet dataset = DEMDataSet.SRTM_GL3;
             try
             {
                 IRasterService v_rasterService = new RasterService();
                 IElevationService v_elevationService = new ElevationService(v_rasterService);
                 Lib.BoundingBox v_bbox = GeometryService.GetBoundingBox(p_bbox);
-                v_elevationService.DownloadMissingFiles(DEMDataSet.SRTM_GL3, v_bbox);
+                v_elevationService.DownloadMissingFiles(dataset, v_bbox);
                 //
                 HeightMap v_hMap;
-                v_hMap = v_elevationService.GetHeightMap(v_bbox, DEMDataSet.SRTM_GL3);
+                v_hMap = v_elevationService.GetHeightMap(v_bbox, dataset);
 
                 int v_sridCible = 2154;
                 v_hMap = v_hMap.ReprojectTo(4326, v_sridCible);
@@ -37,7 +38,7 @@ namespace DEM.Net.TestWinForm
         }
         public List<BeanPoint_internal> GetGeoPointsByHMap(HeightMap p_hMap, int p_srid)
         {
-           return p_hMap.Coordinates.Select(c => GetPointInternalFromGeoPoint(c, p_srid)).ToList();
+            return p_hMap.Coordinates.Select(c => GetPointInternalFromGeoPoint(c, p_srid)).ToList();
         }
         public BeanPoint_internal GetPointInternalFromGeoPoint(GeoPoint p_geoPoint, int p_srid)
         {
