@@ -536,7 +536,75 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_matriceInverse;
         }
-       public bool IsInversionMatriceOk(double[,] p_matriceAInverser, double[,] p_matriceInverse, int p_toleranceDArrondi)
+
+        public bool IsPointDDansCercleCirconscritAuTriangle(Dictionary<int,double[]> p_pointsTriangle, double[] p_coordPtD)
+        {
+            bool v_out = false;
+            try
+            {
+                //On ordonne les points du triangle A,B,C dans le sens anti-horaire
+                List<int> v_pointsOrdonnances;
+                bool v_sensHoraire_vf = false;
+                v_pointsOrdonnances=GetOrdonnancement(p_pointsTriangle, v_sensHoraire_vf);
+
+                //Coeff de la matrice
+                //(4x4 mais d,h,l et p sont égaux à 1)
+                double[] v_coordPtA_ord= p_pointsTriangle[v_pointsOrdonnances[0]];
+                double[] v_coordPtB_ord = p_pointsTriangle[v_pointsOrdonnances[1]];
+                double[] v_coordPtC_ord = p_pointsTriangle[v_pointsOrdonnances[2]];
+               
+                double a, b, c, e, f, g, i, j, k, m, n, o;
+               
+                a = v_coordPtA_ord[0];
+                e = v_coordPtB_ord[0];
+                i = v_coordPtC_ord[0];
+                m = p_coordPtD[0];
+                //
+                b = v_coordPtA_ord[1];
+                f = v_coordPtB_ord[1];
+                j = v_coordPtC_ord[1];
+                n = p_coordPtD[1];
+                //
+                c = (v_coordPtA_ord[0] * v_coordPtA_ord[0]) + (v_coordPtA_ord[1] * v_coordPtA_ord[1]);
+                g = (v_coordPtB_ord[0] * v_coordPtB_ord[0]) + (v_coordPtB_ord[1] * v_coordPtB_ord[1]);
+                k = (v_coordPtC_ord[0] * v_coordPtC_ord[0]) + (v_coordPtC_ord[1] * v_coordPtC_ord[1]);
+                o = (p_coordPtD[0] * p_coordPtD[0]) + (p_coordPtD[1] * p_coordPtD[1]);
+                //
+                double v_delta;
+
+                ////(Déterminant complet de la matrice 4x4
+                //double d, h, l, p;
+                //d = 1; h = 1; l = 1; p = 1;
+                //v_delta = a*((f*k*p)-(f*l*o)-(g*j*p) + (g*l*n) + (h*j*o)-(h*k*n));
+                //v_delta += -b * ((e * k * p) - (e * l * o) - (g * i * p) + (g * l * m) + (h * i * o) - (h * k * m));
+                //v_delta += +c * ((e * j * p) - (e * l * n) - (f * i * p) + (f * l * m) + (h * i * n) - (h * j * m));
+                //v_delta += -d*((e*j*o)-(e*k*n)-(f*i*o) + (f*k*m) + (g*i*n)-(g*j*m));
+
+                //Déterminant réduit
+                v_delta = a * ((f * k) - (f * o) - (g * j) + (g * n) + (j * o) - (k * n));
+                v_delta += -b * ((e * k) - (e * o) - (g * i) + (g * m) + (i * o) - (k * m));
+                v_delta += +c * ((e * j) - (e * n) - (f * i) + (f * m) + (i * n) - (j * m));
+                v_delta += (e * j * o) - (e * k * n) - (f * i * o) + (f * k * m) + (g * i * n) - (g * j * m);
+
+                if(v_delta>0)
+                {
+                    v_out = true;
+                }
+                else
+                {
+                    v_out = false;
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return v_out;
+        }
+
+        public bool IsInversionMatriceOk(double[,] p_matriceAInverser, double[,] p_matriceInverse, int p_toleranceDArrondi)
         {
             bool v_isInversionOk = false;
             try
@@ -551,18 +619,32 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_isInversionOk;
         }
-   
         public bool IsMatriceIdentite(double[,] p_matriceIdentiteAttendue, int p_toleranceDArrondi)
         {
             bool isMatriceIdentite = true;
             try
             {
                 int p_dimension = p_matriceIdentiteAttendue.GetLength(0);
-                for (int v_indiceDiagonal=0; v_indiceDiagonal< p_dimension; v_indiceDiagonal++)
+                double v_valeur;
+                for (int v_indiceLigne=0; v_indiceLigne< p_dimension; v_indiceLigne++)
                 {
-                    if(Math.Round(p_matriceIdentiteAttendue[v_indiceDiagonal, v_indiceDiagonal], p_toleranceDArrondi)!=1)
+                    for (int v_indiceColonne = 0; v_indiceColonne < p_dimension; v_indiceColonne++)
                     {
-                        return false;
+                        v_valeur = Math.Round(p_matriceIdentiteAttendue[v_indiceLigne, v_indiceColonne], p_toleranceDArrondi);
+                        if(v_indiceLigne== v_indiceColonne)
+                        {
+                            if(v_valeur!=1)
+                            {
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            if (v_valeur != 0)
+                            {
+                                return false;
+                            }
+                        }
                     }
                 }
             }
@@ -627,7 +709,7 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_coord;
         }
-        public double[] GetCoordDansNewRepereXY(double[] p_pointsAReferencer, double[] p_coordPoint0, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord_orthoSiNull = null)
+        public double[] GetCoordDansNewRepereXY(double[] p_pointAReferencer, double[] p_coordPoint0, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord_orthoSiNull = null)
         {
             double[] v_coord = null;
             try
@@ -636,7 +718,7 @@ namespace DEM.Net.Lib.Services.Lab
                 double[,] v_matriceDeConversion;
                 v_matriceDeConversion = GetMatriceChangementDeRepereXY(p_coordPoint0, p_coordPoint2Abs, p_coordPoint3Ord_orthoSiNull, v_normaliser_vf);
                 //
-                v_coord = GetCoordDansNewRepereXY(v_matriceDeConversion, p_coordPoint0, p_pointsAReferencer);
+                v_coord = GetCoordDansNewRepereXY(v_matriceDeConversion, p_coordPoint0, p_pointAReferencer);
             }
             catch (Exception)
             {
@@ -645,7 +727,29 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_coord;
         }
-      
+        public Dictionary<int, double[]> GetCoordDansNewRepereXY(Dictionary<int,double[]> p_pointsAReferencer, double[] p_coordPoint0, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord_orthoSiNull = null)
+        {
+            Dictionary<int, double[]> v_coordsDesPoints = null;
+            try
+            {
+                bool v_normaliser_vf = true;
+                double[,] v_matriceDeConversion;
+                v_matriceDeConversion = GetMatriceChangementDeRepereXY(p_coordPoint0, p_coordPoint2Abs, p_coordPoint3Ord_orthoSiNull, v_normaliser_vf);
+                //
+                double[] v_coord;
+                foreach (KeyValuePair < int,double[]> v_pointToTest in p_pointsAReferencer)
+                {
+                    v_coord = GetCoordDansNewRepereXY(v_matriceDeConversion, p_coordPoint0, v_pointToTest.Value);
+                    v_coordsDesPoints.Add(v_pointToTest.Key, v_coord);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return v_coordsDesPoints;
+        }
+
         //
         public double GetDistanceEuclidienneCarreeXY(double[] v_point1, double[] v_point2)
         {
@@ -665,5 +769,48 @@ namespace DEM.Net.Lib.Services.Lab
            return Math.Sqrt(GetDistanceEuclidienneCarreeXYZ(v_point1, v_point2));
         }
         //
+        public List<int> GetOrdonnancement(Dictionary<int, double[]> p_pointsATester, bool p_horaireSinonAntohoraire_vf)
+        {
+            List<int> v_pointsOrdonnances = new List<int>();
+            try
+            {
+                int v_pt1 = GetPointLePlusExcentreXY(p_pointsATester);
+                int v_pt2 = GetPointLePlusEloigneDePoint0(p_pointsATester, p_pointsATester[v_pt1]);
+                //
+                Dictionary<int, double[]> v_coord = GetCoordDansNewRepereXY(p_pointsATester, p_pointsATester[v_pt1], p_pointsATester[v_pt2]);
+                //
+                v_pointsOrdonnances.AddRange(v_coord.Where(c => c.Value[1] >= 0).OrderBy(c => c.Value[0]).Select(c => c.Key));
+                v_pointsOrdonnances.AddRange(v_coord.Where(c => c.Value[1] < 0).OrderByDescending(c => c.Value[0]).Select(c => c.Key));
+                if(!p_horaireSinonAntohoraire_vf)
+                {
+                    v_pointsOrdonnances.Reverse();
+                }
+                return v_pointsOrdonnances;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return v_pointsOrdonnances;
+        }
+        public double[] GetCentroide(List<double[]> p_coordPoints)
+        {
+            double[] v_coordCentroide = new double[3];
+            v_coordCentroide[0] = p_coordPoints.Average(c => c[0]);
+            v_coordCentroide[1] = p_coordPoints.Average(c => c[1]);
+            v_coordCentroide[2] = p_coordPoints.Average(c => c[2]);
+            //
+            return v_coordCentroide;
+        }
+        public int GetPointLePlusExcentreXY(Dictionary<int,double[]> p_pointsATester)
+        {
+            double[] v_centroide = GetCentroide(p_pointsATester.Select(c => c.Value).ToList());
+            return GetPointLePlusEloigneDePoint0(p_pointsATester, v_centroide);
+        }
+        public int GetPointLePlusEloigneDePoint0(Dictionary<int, double[]> p_pointsATester, double[] p_coordPoint0)
+        {
+            return p_pointsATester.OrderByDescending(c => GetDistanceEuclidienneCarreeXY(c.Value, p_coordPoint0)).Select(c => c.Key).First();
+        }
     }
 }

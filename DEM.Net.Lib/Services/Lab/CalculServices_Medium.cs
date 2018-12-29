@@ -751,21 +751,18 @@ namespace DEM.Net.Lib.Services.Lab
         {
             try
             {
-
-                //PUSTULE POUR TEST: il semble y exister des points qui seraient en position de 'points facettes' non déclarés?? 
-                HashSet<string> v_hcodesPointsFacettes = new HashSet<string>(p_facette.p01_pointsDeFacette.Select(c => c.p01_hCodeGeog));
-                List<BeanPoint_internal> v_pointsLimites;
-                v_pointsLimites = p_pointsInclus
-                    .Where(c => !c.p21_estPointFacette_vf)
-                    .Where(c => v_hcodesPointsFacettes.Contains(c.p01_hCodeGeog)).ToList();
+                ////PUSTULE POUR TEST: il semble y exister des points qui seraient en position de 'points facettes' non déclarés?? 
+                //HashSet<string> v_hcodesPointsFacettes = new HashSet<string>(p_facette.p01_pointsDeFacette.Select(c => c.p01_hCodeGeog));
+                //List<BeanPoint_internal> v_pointsLimites;
+                //v_pointsLimites = p_pointsInclus
+                //    .Where(c => !c.p21_estPointFacette_vf)
+                //    .Where(c => v_hcodesPointsFacettes.Contains(c.p01_hCodeGeog)).ToList();
               
-                for (int i=0; i< v_pointsLimites.Count;i++)
-                {
-                    v_pointsLimites[i].p21_estPointFacette_vf = true;
-                }
-                //FIN PUSTULE POUR TEST
-
-
+                //for (int i=0; i< v_pointsLimites.Count;i++)
+                //{
+                //    v_pointsLimites[i].p21_estPointFacette_vf = true;
+                //}
+                ////FIN PUSTULE POUR TEST
 
                 List<BeanPoint_internal> v_pointsToTest = p_pointsInclus
                     .Where(c=>!c.p21_estPointFacette_vf)

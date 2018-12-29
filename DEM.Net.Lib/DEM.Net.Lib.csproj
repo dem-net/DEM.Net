@@ -105,6 +105,7 @@
     <Compile Include="Services\Lab\BeanParametresChoixDuPointCentral.cs" />
     <Compile Include="Services\Lab\BeanParametresDuTin.cs" />
     <Compile Include="Services\Lab\FLabServices.cs" />
+    <Compile Include="Services\Lab\ICalculServices_Low.cs" />
     <Compile Include="Services\Raster\GDALVRTFileService.cs" />
     <Compile Include="Services\GeometryService.cs" />
     <Compile Include="Services\Raster\RasterSampleFormat.cs" />
@@ -122,7 +123,6 @@
     <Compile Include="Services\Lab\CalculServices_Medium.cs" />
     <Compile Include="Services\Lab\enumServices.cs" />
     <Compile Include="Services\Lab\FServices.cs" />
-    <Compile Include="Services\Lab\ICalculServices_Low.cs" />
     <Compile Include="Services\Lab\ICalculServices_Medium.cs" />
     <Compile Include="Services\Lab\IUtilitairesServices.cs" />
     <Compile Include="Services\Lab\UtilitairesServices.cs" />
