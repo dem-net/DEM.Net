@@ -67,7 +67,7 @@ namespace DEM.Net.Lib.Services.Lab
             try
             {
                 double v_norme = GetNormeVecteur(p_vector, p_dimension);
-                if (v_norme <= 0) //On ne retourne pas directement un vecteur null.=>la dim demandée peut être inf à la dim réelle+on veut une copie 
+                if (v_norme == 0) //On ne retourne pas directement un vecteur null.=>la dim demandée peut être inf à la dim réelle+on veut une copie 
                 {
                     v_norme = 1;
                 }
@@ -157,7 +157,6 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_matriceInverse;
         }
-        
         public double[] GetInverseVector2(double[,] p_matrice, double[] p_vectorToInverse)
         {
             double[] v_vectorInverse = new double[2];
@@ -224,13 +223,24 @@ namespace DEM.Net.Lib.Services.Lab
                 {
                     return null;
                 }
+                v_coord = new double[2];
                 double[] p_coeffDroite1 = GetCoeffDroite2D(p_Droite1_pt1, p_Droite1_pt2);
                 double[] p_coeffDroite2 = GetCoeffDroite2D(p_Droite2_pt1, p_Droite2_pt2);
-                if(p_coeffDroite1==null || p_coeffDroite2 == null)
+                //Si une des droites est verticale
+                if(p_coeffDroite1==null)
                 {
-                    return null;
+                    v_coord[0] = p_Droite1_pt1[0];
+                    v_coord[1] = (p_coeffDroite2[0] * p_Droite1_pt1[0]) + p_coeffDroite2[1];
+                    return v_coord;
                 }
-                    v_coord = GetIntersectionDroites2D(p_coeffDroite1, p_coeffDroite2);
+                if (p_coeffDroite2 == null)
+                {
+                    v_coord[0] = p_Droite2_pt1[0];
+                    v_coord[1] = (p_coeffDroite1[0] * p_Droite1_pt2[0]) + p_coeffDroite1[1];
+                    return v_coord;
+                }
+                //Sinon:
+                v_coord = GetIntersectionDroites2D(p_coeffDroite1, p_coeffDroite2);
             }
             catch (Exception)
             {
@@ -537,7 +547,8 @@ namespace DEM.Net.Lib.Services.Lab
             return v_matriceInverse;
         }
 
-        public bool IsPointDDansCercleCirconscritAuTriangle(Dictionary<int,double[]> p_pointsTriangle, double[] p_coordPtD)
+        //A TESTER
+        public bool IsPointDDansCercleCirconscritAuTriangleByMatrice(Dictionary<int,double[]> p_pointsTriangle, double[] p_coordPtD)
         {
             bool v_out = false;
             try
@@ -545,7 +556,7 @@ namespace DEM.Net.Lib.Services.Lab
                 //On ordonne les points du triangle A,B,C dans le sens anti-horaire
                 List<int> v_pointsOrdonnances;
                 bool v_sensHoraire_vf = false;
-                v_pointsOrdonnances=GetOrdonnancement(p_pointsTriangle, v_sensHoraire_vf);
+                v_pointsOrdonnances=GetOrdonnancement(p_pointsTriangle,false, v_sensHoraire_vf);
 
                 //Coeff de la matrice
                 //(4x4 mais d,h,l et p sont égaux à 1)
@@ -603,6 +614,25 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_out;
         }
+        //EN COURS
+        public double[] GetCoordonneesCercleCirconscritAuTriangle(Dictionary<int, double[]> p_pointsTriangle)
+        {
+            double[] v_coordOut = new double[2];
+
+            try
+            {
+                double[] v_vector1 = GetVectorBrutFromTwoPoints(p_pointsTriangle[0], p_pointsTriangle[1]);
+                double[] v_vectorNormal_v1 = new double[2] { -1 * v_vector1[1], v_vector1[0] };
+                v_vectorNormal_v1 = GetNormalisationVecteurXY(v_vectorNormal_v1);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return v_coordOut;
+        }
+
 
         public bool IsInversionMatriceOk(double[,] p_matriceAInverser, double[,] p_matriceInverse, int p_toleranceDArrondi)
         {
@@ -729,7 +759,7 @@ namespace DEM.Net.Lib.Services.Lab
         }
         public Dictionary<int, double[]> GetCoordDansNewRepereXY(Dictionary<int,double[]> p_pointsAReferencer, double[] p_coordPoint0, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord_orthoSiNull = null)
         {
-            Dictionary<int, double[]> v_coordsDesPoints = null;
+            Dictionary<int, double[]> v_coordsDesPoints = new Dictionary<int, double[]>();
             try
             {
                 bool v_normaliser_vf = true;
@@ -769,7 +799,7 @@ namespace DEM.Net.Lib.Services.Lab
            return Math.Sqrt(GetDistanceEuclidienneCarreeXYZ(v_point1, v_point2));
         }
         //
-        public List<int> GetOrdonnancement(Dictionary<int, double[]> p_pointsATester, bool p_horaireSinonAntohoraire_vf)
+        public List<int> GetOrdonnancement(Dictionary<int, double[]> p_pointsATester, bool p_renvoyerNullSiColineaires_vf, bool p_horaireSinonAntohoraire_vf)
         {
             List<int> v_pointsOrdonnances = new List<int>();
             try
@@ -778,6 +808,15 @@ namespace DEM.Net.Lib.Services.Lab
                 int v_pt2 = GetPointLePlusEloigneDePoint0(p_pointsATester, p_pointsATester[v_pt1]);
                 //
                 Dictionary<int, double[]> v_coord = GetCoordDansNewRepereXY(p_pointsATester, p_pointsATester[v_pt1], p_pointsATester[v_pt2]);
+               
+                if (p_renvoyerNullSiColineaires_vf)
+                {
+                    int v_nbrePoints = v_coord.Count;
+                    if (v_coord.Where(c => c.Value[1] == 0).Count()== v_nbrePoints)
+                    {
+                        return null;
+                    }
+                 }
                 //
                 v_pointsOrdonnances.AddRange(v_coord.Where(c => c.Value[1] >= 0).OrderBy(c => c.Value[0]).Select(c => c.Key));
                 v_pointsOrdonnances.AddRange(v_coord.Where(c => c.Value[1] < 0).OrderByDescending(c => c.Value[0]).Select(c => c.Key));
@@ -785,7 +824,6 @@ namespace DEM.Net.Lib.Services.Lab
                 {
                     v_pointsOrdonnances.Reverse();
                 }
-                return v_pointsOrdonnances;
             }
             catch (Exception)
             {

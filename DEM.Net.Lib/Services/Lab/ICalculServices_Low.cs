@@ -35,7 +35,7 @@ namespace DEM.Net.Lib.Services.Lab
         double[] GetNormalisationVecteurXYZ(double[] p_vector);
         double GetNormeVecteurXY(double[] p_vector);
         double GetNormeVecteurXYZ(double[] p_vector);
-        List<int> GetOrdonnancement(Dictionary<int, double[]> p_pointsATester, bool p_horaireSinonAntohoraire_vf);
+        List<int> GetOrdonnancement(Dictionary<int, double[]> p_pointsATester, bool p_renvoyerNullSiColineaires_vf, bool p_horaireSinonAntohoraire_vf);
         int GetPointLePlusEloigneDePoint0(Dictionary<int, double[]> p_pointsATester, double[] p_coordPoint0);
         int GetPointLePlusExcentreXY(Dictionary<int, double[]> p_pointsATester);
         double[] GetProduitMatriceParVector(double[,] p_matrice, double[] p_vector);
@@ -45,6 +45,6 @@ namespace DEM.Net.Lib.Services.Lab
         double[] GetVectorBrutFromTwoPoints(double[] p_pointOrigine, double[] p_point2);
         bool IsInversionMatriceOk(double[,] p_matriceAInverser, double[,] p_matriceInverse, int p_toleranceDArrondi);
         bool IsMatriceIdentite(double[,] p_matriceIdentiteAttendue, int p_toleranceDArrondi);
-        bool IsPointDDansCercleCirconscritAuTriangle(Dictionary<int, double[]> p_pointsTriangle, double[] p_coordPtD);
+        bool IsPointDDansCercleCirconscritAuTriangleByMatrice(Dictionary<int, double[]> p_pointsTriangle, double[] p_coordPtD);
     }
 }
