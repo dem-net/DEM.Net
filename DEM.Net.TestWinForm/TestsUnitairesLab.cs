@@ -15,7 +15,7 @@ namespace DEM.Net.TestWinForm
             Dictionary<string, bool> v_resultats = new Dictionary<string, bool>();
             try
             {
-                bool v_resultTestIntersection = TestIntersectionsDroitesXY(p_envoyerMessageSiKo_vf);
+                bool v_resultTestIntersection = TestIntersectionsDroitesXY_coherenceServicesParamVsServicesExplicites(p_envoyerMessageSiKo_vf);
                 v_resultats.Add("Intersection droites XY", v_resultTestIntersection);
          
                 //
@@ -39,16 +39,8 @@ namespace DEM.Net.TestWinForm
             }
             return v_resultats;
         }
-
-        internal bool GetResultatGlobal(bool p_avant, bool p_newTest)
-        {
-            if (!p_avant || !p_newTest)
-            {
-                return false;
-            }
-            return true;
-        }
-        internal bool TestIntersectionsDroitesXY(bool p_envoyerMessageSiKo_vf)
+        //
+        internal bool TestIntersectionsDroitesXY_coherenceServicesParamVsServicesExplicites(bool p_envoyerMessageSiKo_vf)
         {
             bool v_resultats = true;
            
@@ -114,37 +106,6 @@ namespace DEM.Net.TestWinForm
             //
             return v_resultats;
         }
-        private bool TestIntersectionDroitesXy(double[] v_coordPtA,double[] v_coordPtB,double[] v_coordPtC,double[] v_coordPtD, bool p_envoyerMessageSiKo_vf)
-        {
-            bool v_retour = true;
-            double[] v_coordIntersectionParametrique;
-            double[] v_coordIntersectionExplicite;
-
-            v_coordIntersectionParametrique = FLabServices.createCalculLow().GetIntersectionDroites2DMethodeParametrique(v_coordPtA, v_coordPtB, v_coordPtC, v_coordPtD);
-            v_coordIntersectionExplicite = FLabServices.createCalculLow().GetIntersectionDroites2D(v_coordPtA, v_coordPtB, v_coordPtC, v_coordPtD);
-            
-            if(v_coordIntersectionParametrique==null && v_coordIntersectionExplicite==null)
-            {
-                return true;
-            }
-
-            if (v_coordIntersectionParametrique[0] != v_coordIntersectionExplicite[0] || v_coordIntersectionParametrique[1] != v_coordIntersectionExplicite[1])
-            {
-                if(p_envoyerMessageSiKo_vf)
-                {
-                    string v_message = "Tests intersection ";
-                    v_message += " KO\n";
-                    v_message += "Parametriques " + v_coordIntersectionParametrique[0] + " / " + v_coordIntersectionParametrique[1] + "\n";
-                    v_message += "Explicites " + v_coordIntersectionExplicite[0] + " / " + v_coordIntersectionExplicite[1] + "\n";
-                    MessageBox.Show(v_message);
-                }
-               
-
-                return false;
-            }
-            return v_retour;
-        }
-        //
         internal bool TestInversionMatrice2D(bool p_envoyerMessageSiKo_vf)
         {
             bool v_resultat = true;
@@ -197,6 +158,8 @@ namespace DEM.Net.TestWinForm
             }
             return v_resultat;
         }
+
+        //
         private bool TestInversionMatrice(double[,] v_matriceSource, double[,] v_matriceInverse, bool p_envoyerMessageSiKo_vf)
         {
             bool v_resultat = true;
@@ -218,7 +181,37 @@ namespace DEM.Net.TestWinForm
             }
             return v_resultat;
         }
+        private bool TestIntersectionDroitesXy(double[] v_coordPtA, double[] v_coordPtB, double[] v_coordPtC, double[] v_coordPtD, bool p_envoyerMessageSiKo_vf)
+        {
+            bool v_retour = true;
+            double[] v_coordIntersectionParametrique;
+            double[] v_coordIntersectionExplicite;
 
+            v_coordIntersectionParametrique = FLabServices.createCalculLow().GetIntersectionDroites2DMethodeParametrique(v_coordPtA, v_coordPtB, v_coordPtC, v_coordPtD);
+            v_coordIntersectionExplicite = FLabServices.createCalculLow().GetIntersectionDroites2D(v_coordPtA, v_coordPtB, v_coordPtC, v_coordPtD);
+
+            if (v_coordIntersectionParametrique == null && v_coordIntersectionExplicite == null)
+            {
+                return true;
+            }
+
+            if (v_coordIntersectionParametrique[0] != v_coordIntersectionExplicite[0] || v_coordIntersectionParametrique[1] != v_coordIntersectionExplicite[1])
+            {
+                if (p_envoyerMessageSiKo_vf)
+                {
+                    string v_message = "Tests intersection ";
+                    v_message += " KO\n";
+                    v_message += "Parametriques " + v_coordIntersectionParametrique[0] + " / " + v_coordIntersectionParametrique[1] + "\n";
+                    v_message += "Explicites " + v_coordIntersectionExplicite[0] + " / " + v_coordIntersectionExplicite[1] + "\n";
+                    MessageBox.Show(v_message);
+                }
+
+
+                return false;
+            }
+            return v_retour;
+        }
+        //
         internal double[,] GetMatriceCarreeAleatoire(int p_dimensions, double p_valeurMin, double p_valeurMax, int p_seedMoins1sinon)
         {
             double[,] v_matriceColLigne = new double[p_dimensions, p_dimensions];
