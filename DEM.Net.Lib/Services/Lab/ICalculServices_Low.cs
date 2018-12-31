@@ -20,9 +20,9 @@ namespace DEM.Net.Lib.Services.Lab
         double GetDistanceEuclidienneXYZ(double[] v_point1, double[] v_point2);
         double[] GetEquationDuPlan(double[] p_normaleAuPlan, double[] p_point3DDuPlan);
         double[] GetEquationDuPlan(double[] p_point3D_1, double[] p_point3D_2, double[] p_point3D_3);
-        double[] GetIntersectionDroites2D(double[] p_coeffDroite1, double[] p_coeffDroite2);
+        double[] GetIntersectionDroites2DCoeffExplicites(double[] p_coeffDroite1, double[] p_coeffDroite2);
         double[] GetIntersectionDroites2D(double[] p_Droite1_pt1, double[] p_Droite1_pt2, double[] p_Droite2_pt1, double[] p_Droite2_pt2);
-        double[,] GetInverseMatrice2x2(double[,] p_matriceToInverse);
+        double[,] GetMatriceInverse2x2(double[,] p_matriceToInverse);
         double[] GetInverseVector2(double[,] p_matrice, double[] p_vectorToInverse);
         double[,] GetMatrice3x3FromCoord(double[] p_coordPointOrigine, double[] p_coordPoint1, double[] p_coordPoint2, double[] p_coordPoint3, bool p_normaliser_vf);
         double[,] GetMatrice3x3FromVectors(double[] p_vector1, double[] p_vector2, double[] p_vector3);
@@ -30,6 +30,8 @@ namespace DEM.Net.Lib.Services.Lab
         double[,] GetMatriceInverse3x3(double p_v1_a, double p_v1_b, double p_v1_c, double p_v2_d, double p_v2_e, double p_v2_f, double p_v3_g, double p_v3_h, double p_v3_i);
         double[,] GetMatriceInverse3x3(double[,] p_matriceAInverser);
         double[,] GetMatriceInverse3x3(double[] p_vector1, double[] p_vector2, double[] p_vector3);
+        double GetDeterminantMatrice3x3(double[] p_vector1, double[] p_vector2, double[] p_vector3);
+        double GetDeterminantMatrice3x3(double p_v1_a, double p_v1_b, double p_v1_c, double p_v2_d, double p_v2_e, double p_v2_f, double p_v3_g, double p_v3_h, double p_v3_i);
         double[] GetNormaleDuPlan(double[] p_point3D_1, double[] p_point3D_2, double[] p_point3D_3);
         double[] GetNormalisationVecteurXY(double[] p_vector);
         double[] GetNormalisationVecteurXYZ(double[] p_vector);
@@ -46,5 +48,8 @@ namespace DEM.Net.Lib.Services.Lab
         bool IsInversionMatriceOk(double[,] p_matriceAInverser, double[,] p_matriceInverse, int p_toleranceDArrondi);
         bool IsMatriceIdentite(double[,] p_matriceIdentiteAttendue, int p_toleranceDArrondi);
         bool IsPointDDansCercleCirconscritAuTriangleByMatrice(Dictionary<int, double[]> p_pointsTriangle, double[] p_coordPtD);
+        double[,] GetEquationParametriqueDroite2D(double[] p_Droite1_pt1, double[] p_Droite1_pt2, bool p_normaliser_vf);
+        double[] GetIntersectionDroites2DCoeffParametriques(double[,] p_parametresDroite1, double[,] p_parametresDroite2);
+        double[] GetIntersectionDroites2DMethodeParametrique(double[] p_Droite1_pt1, double[] p_Droite1_pt2, double[] p_Droite2_pt1, double[] p_Droite2_pt2);
     }
 }

@@ -120,12 +120,17 @@ namespace DEM.Net.TestWinForm
 
         private void btn_testsDivers_Click(object sender, EventArgs e)
         {
-            double[] v_decalage = new double[2];
-            v_decalage[0] += 10000;
-            v_decalage[1] += -10000;
-            FLabServices.createCalculMedium().TestMatrice(_dataPointsTests, v_decalage);
+            ////TEST MATRICES 2D
+            //double[] v_decalage = new double[2];
+            //v_decalage[0] += 10000;
+            //v_decalage[1] += -10000;
+            //FLabServices.createCalculMedium().TestMatrice(_dataPointsTests, v_decalage);
 
-            MessageBox.Show("Traitement terminé.");
+            //
+            bool v_afficherMessageSiko_vf = true;
+            //
+            FServicesApplicatifs.createTestsUnitairesLab().TestUnitairesLab(v_afficherMessageSiko_vf);
+
         }
 
         private void btn_testCH_Click(object sender, EventArgs e)
@@ -172,8 +177,11 @@ namespace DEM.Net.TestWinForm
             v_paramTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = Convert.ToInt16(tb_precisionEnM.Text);
             v_paramTin.p31_nbreIterationsMaxi = Convert.ToInt16(tb_nbreIterations.Text);
             _topolFacettes = FLabServices.createCalculMedium().GetInitialisationTin(_dataPointsTests, v_paramTin);
+           
 
-           // FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(_topolFacettes,false);
+            //FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(_topolFacettes,false,false);
+            //FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
+
             FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, v_paramTin);
             bool v_visuSpatialTrace_vf = false;
             if (v_visuSpatialTrace_vf)

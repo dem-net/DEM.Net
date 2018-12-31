@@ -21,5 +21,9 @@ namespace DEM.Net.TestWinForm
         {
             return new VisualisationSpatialTraceServices();
         }
+        public static ITestsUnitairesLab createTestsUnitairesLab()
+        {
+            return new TestsUnitairesLab();
+        }
     }
 }

@@ -139,7 +139,7 @@ namespace DEM.Net.Lib.Services.Lab
             return AreVecteursColineairesXY(v_vector1, v_vector2);
         }
         //
-        public double[,] GetInverseMatrice2x2(double[,] p_matriceToInverse)
+        public double[,] GetMatriceInverse2x2(double[,] p_matriceToInverse)
         {
             double[,] v_matriceInverse = new double[2,2];
             try
@@ -162,7 +162,7 @@ namespace DEM.Net.Lib.Services.Lab
             double[] v_vectorInverse = new double[2];
             try
             {
-                double[,] v_matriceInverse = GetInverseMatrice2x2(p_matrice);
+                double[,] v_matriceInverse = GetMatriceInverse2x2(p_matrice);
                 v_vectorInverse = GetProduitMatriceParVector(v_matriceInverse, p_vectorToInverse);
             }
             catch (Exception)
@@ -191,7 +191,7 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_coeff;
         }
-        public double[] GetIntersectionDroites2D(double[] p_coeffDroite1, double[] p_coeffDroite2)
+        public double[] GetIntersectionDroites2DCoeffExplicites(double[] p_coeffDroite1, double[] p_coeffDroite2)
         {
             double[] v_coord = null;
             try
@@ -236,11 +236,11 @@ namespace DEM.Net.Lib.Services.Lab
                 if (p_coeffDroite2 == null)
                 {
                     v_coord[0] = p_Droite2_pt1[0];
-                    v_coord[1] = (p_coeffDroite1[0] * p_Droite1_pt2[0]) + p_coeffDroite1[1];
+                    v_coord[1] = (p_coeffDroite1[0] * p_Droite2_pt1[0]) + p_coeffDroite1[1];
                     return v_coord;
                 }
                 //Sinon:
-                v_coord = GetIntersectionDroites2D(p_coeffDroite1, p_coeffDroite2);
+                v_coord = GetIntersectionDroites2DCoeffExplicites(p_coeffDroite1, p_coeffDroite2);
             }
             catch (Exception)
             {
@@ -256,10 +256,13 @@ namespace DEM.Net.Lib.Services.Lab
             {
                 double[] v_pointDIntersection;
                 v_pointDIntersection = GetIntersectionDroites2D(p_Segment1_pt1, p_Segment1_pt2, p_Segment2_pt1, p_Segment2_pt2);
+                //Existe-t-il un point d'intersection entre les 2 droites?
                 if (v_pointDIntersection==null)
                 {
                     return false;
                 }
+               //Si oui, le point peut être sur le segment OU en amont OU en aval. 
+               //Dans ces deux derniers cas, la distance entre le point et l'un ou/et l'autre point doit être plus grande que la longueur du segment.
                 double v_longueurSeg1 = GetDistanceEuclidienneCarreeXY(p_Segment1_pt1, p_Segment1_pt2);
                 if (GetDistanceEuclidienneCarreeXY(p_Segment1_pt1, v_pointDIntersection)> v_longueurSeg1 || GetDistanceEuclidienneCarreeXY(p_Segment1_pt2, v_pointDIntersection) > v_longueurSeg1)
                 {
@@ -277,6 +280,99 @@ namespace DEM.Net.Lib.Services.Lab
                 throw;
             }
             return v_out;
+        }
+
+        /// <summary>
+        /// On renvoie une matrice [ligne,colonne] telle que:
+        /// colonne 1 contient les paramètres des x
+        /// colonne 2 contient les paramètres des y
+        /// ligne 1: coefficient en x et en y
+        /// </summary>
+        /// <param name="p_Droite1_pt1"></param>
+        /// <param name="p_Droite1_pt2"></param>
+        /// <returns></returns>
+        public double[,] GetEquationParametriqueDroite2D(double[] p_Droite1_pt1, double[] p_Droite1_pt2, bool p_normaliser_vf)
+        {
+            double[,] v_matriceDesCoeff = new double[2, 2];
+            try
+            {
+                double[] v_vector1 = GetVectorBrutFromTwoPoints(p_Droite1_pt1, p_Droite1_pt2);
+                if(p_normaliser_vf)
+                {
+                    v_vector1 = GetNormalisationVecteurXY(v_vector1);
+                }
+                v_matriceDesCoeff[0, 0] = v_vector1[0];
+                v_matriceDesCoeff[0, 1] = v_vector1[1];
+                v_matriceDesCoeff[1, 0] = p_Droite1_pt1[0];
+                v_matriceDesCoeff[1, 1] = p_Droite1_pt1[1];
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return v_matriceDesCoeff;
+        }
+        public double[] GetIntersectionDroites2DCoeffParametriques(double[,] p_parametresDroite1, double[,] p_parametresDroite2)
+        {
+            double[] v_pointIntersection = null;
+            try
+            {
+                double a, b, c, d, e, f, g, h;
+                a = p_parametresDroite1[0, 0];
+                b = p_parametresDroite1[0, 1];
+                c = p_parametresDroite1[1, 0];
+                d = p_parametresDroite1[1, 1];
+                //
+                e = p_parametresDroite2[0, 0];
+                f = p_parametresDroite2[0, 1];
+                g = p_parametresDroite2[1, 0];
+                h = p_parametresDroite2[1, 1];
+
+                //On calcule les coefficients à appliquer pour que les 2 droites s'intersectent
+                double v_delta = (b * e) - (f * a);
+                if(v_delta==0)
+                {
+                    return null;
+                }
+                
+                //Coeff à appliquer pour la droite 2
+                double v_n = ((h * a) - (d * a) - (g * b) + (c * b)) / v_delta;
+
+                //On peut calculer celui pour la droite mais...ce n'est pas nécessaire!
+                //double v_m = ((e * v_n) + g - c) / a;
+
+                //On applique le coeff calculé pour les paramètres de la droite 2 et on déduit x et y
+                double v_x = (p_parametresDroite2[0, 0] * v_n) + p_parametresDroite2[1, 0];
+                double v_y = (p_parametresDroite2[0, 1] * v_n) + p_parametresDroite2[1, 1];
+
+                v_pointIntersection = new double[2] { v_x, v_y };
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return v_pointIntersection;
+        }
+        public double[] GetIntersectionDroites2DMethodeParametrique(double[] p_Droite1_pt1, double[] p_Droite1_pt2, double[] p_Droite2_pt1, double[] p_Droite2_pt2)
+        {
+            double[] v_coord = null;
+            try
+            {
+                bool v_normaliser_vf = false;
+                double[,] v_paramDroite1 = GetEquationParametriqueDroite2D(p_Droite1_pt1, p_Droite1_pt2, v_normaliser_vf);
+                double[,] v_paramDroite2 = GetEquationParametriqueDroite2D(p_Droite2_pt1, p_Droite2_pt2, v_normaliser_vf);
+                //
+                v_coord = GetIntersectionDroites2DCoeffParametriques(v_paramDroite1, v_paramDroite2);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return v_coord;
         }
         //
         public bool AreVectorsSameDimension(double[] p_vector1, double[] p_vector2, bool p_exceptionSiFalse)
@@ -547,6 +643,40 @@ namespace DEM.Net.Lib.Services.Lab
             return v_matriceInverse;
         }
 
+        public double GetDeterminantMatrice3x3(double[] p_vector1, double[] p_vector2, double[] p_vector3)
+        {
+            double v_determinant = new double();
+            try
+            {
+                double a = p_vector1[0];
+                double b = p_vector1[1];
+                double c = p_vector1[2];
+                //
+                double d = p_vector2[0];
+                double e = p_vector2[1];
+                double f = p_vector2[2];
+                //
+                double g = p_vector3[0];
+                double h = p_vector3[1];
+                double i = p_vector3[2];
+                //
+                v_determinant = GetDeterminantMatrice3x3(a, b, c, d, e, f, g, h, i);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return v_determinant;
+        }
+        public double GetDeterminantMatrice3x3(double p_v1_a, double p_v1_b, double p_v1_c, double p_v2_d, double p_v2_e, double p_v2_f, double p_v3_g, double p_v3_h, double p_v3_i)
+        {
+            double v_determinant;
+            v_determinant = (p_v1_a * p_v2_e * p_v3_i) - (p_v1_a * p_v3_h * p_v2_f) + (p_v1_b * p_v2_f * p_v3_g) - (p_v1_b * p_v2_d * p_v3_i) + (p_v1_c * p_v2_d * p_v3_h) - (p_v1_c * p_v2_e * p_v3_g);
+            return v_determinant;
+        }
+       
+        
         //A TESTER
         public bool IsPointDDansCercleCirconscritAuTriangleByMatrice(Dictionary<int,double[]> p_pointsTriangle, double[] p_coordPtD)
         {

@@ -114,6 +114,8 @@ namespace DEM.Net.Lib.Services.Lab
         {
             try
             {
+                bool param_TODBUG_vf = false;
+
                 int v_nbreIterations=1;
                 int v_nbreIterationsMaxi = p_parametresDuTin.p31_nbreIterationsMaxi;
 
@@ -130,32 +132,46 @@ namespace DEM.Net.Lib.Services.Lab
                     {
                         break;
                     }
-                    ////TO DEBUG;
-                    //FVisualisationServices.createVisualisationSpatialTraceServices().ClearSpatialTrace();
-                    //FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(p_topologieFacette, false, false);
-                    ////FIN TO DEBUG
+
+
+                    //TO DEBUG;
+                    if (param_TODBUG_vf)
+                    {
+                        FVisualisationServices.createVisualisationSpatialTraceServices().ClearSpatialTrace();
+                        FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(p_topologieFacette, false, false);
+                    }
+                    //FIN TO DEBUG
+
+
                     foreach (int v_idFacette in v_idFacettesDeDepart)
                     {
                         v_facette = p_topologieFacette.p13_facettesById[v_idFacette];
                         v_meilleurPoint = GetPointExcentreDeLaFacette(v_facette, p_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral);
 
-                        ////TO DEBUG
-                        //FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuPoint2D(v_meilleurPoint, "Meilleur PT", 500);
-                        ////FIN TO DEBUG
-
                         if (v_meilleurPoint == null)
                         {
                             continue;
                         }
+
+
+                        //TO DEBUG
+                        if (param_TODBUG_vf)
+                        {
+                            FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuPoint2D(v_meilleurPoint, "Meilleur PT", 500);
+                        }
+                        //FIN TO DEBUG
+
                         GenereEtInsertSousfacettesByRef(ref p_topologieFacette, v_facette.p00_idFacette, v_meilleurPoint);
                     }
-                    ////TO DEBUG;
-                    //FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
+                    //TO DEBUG;
+                    if (param_TODBUG_vf)
+                    {
+                        FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
 
-                    //FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(p_topologieFacette, false, false);
-                    //FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
-                    ////FIN TO DEBUG
-
+                        FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(p_topologieFacette, false, false);
+                        FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
+                    }
+                    //FIN TO DEBUG
 
                     //2-On teste les arcs candidats à suppression
                     List<string> v_hcodeArcsCandidatsASuppression;
