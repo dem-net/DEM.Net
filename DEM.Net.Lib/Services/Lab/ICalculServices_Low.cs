@@ -47,7 +47,8 @@ namespace DEM.Net.Lib.Services.Lab
         double[] GetVectorBrutFromTwoPoints(double[] p_pointOrigine, double[] p_point2);
         bool IsInversionMatriceOk(double[,] p_matriceAInverser, double[,] p_matriceInverse, int p_toleranceDArrondi);
         bool IsMatriceIdentite(double[,] p_matriceIdentiteAttendue, int p_toleranceDArrondi);
-        bool IsPointDDansCercleCirconscritAuTriangleByMatrice(Dictionary<int, double[]> p_pointsTriangle, double[] p_coordPtD);
+        bool IsPointDDansCercleCirconscritAuTriangleByMatrice(List<double[]> p_pointsTriangle, double[] p_coordPtD);
+        bool IsPointDDansCercleCirconscritAuTriangleExplicite(List<double[]> p_pointsTriangle, double[] p_pointToTest);
         double[,] GetEquationParametriqueDroite2D(double[] p_Droite1_pt1, double[] p_Droite1_pt2, bool p_normaliser_vf);
         double[] GetIntersectionDroites2DCoeffParametriques(double[,] p_parametresDroite1, double[,] p_parametresDroite2);
         double[] GetIntersectionDroites2DMethodeParametrique(double[] p_Droite1_pt1, double[] p_Droite1_pt2, double[] p_Droite2_pt1, double[] p_Droite2_pt2);

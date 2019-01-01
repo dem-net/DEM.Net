@@ -20,5 +20,6 @@ namespace DEM.Net.Lib.Services.Lab
         {
             return new CalculServices_Medium();
         }
+       
     }
 }

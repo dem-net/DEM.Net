@@ -120,17 +120,16 @@ namespace DEM.Net.TestWinForm
 
         private void btn_testsDivers_Click(object sender, EventArgs e)
         {
-            ////TEST MATRICES 2D
+            ////TEST MATRICES 2D et changement référentiel
             //double[] v_decalage = new double[2];
             //v_decalage[0] += 10000;
             //v_decalage[1] += -10000;
-            //FLabServices.createCalculMedium().TestMatrice(_dataPointsTests, v_decalage);
+            //FServicesApplicatifs.createTestsDivers().TestChangementReferentiel2D(_dataPointsTests, v_decalage);
 
             //
-            bool v_afficherMessageSiko_vf = true;
-            //
-            FServicesApplicatifs.createTestsUnitairesLab().TestUnitairesLab(v_afficherMessageSiko_vf);
-
+            //FServicesApplicatifs.createTestsDivers().TestCercleCirconscritAuTriangle();
+            //FServicesApplicatifs.createTestsDivers().TestIsInCercleCirconscrit();
+            FServicesApplicatifs.createTestsDivers().TestOrdonnancement();
         }
 
         private void btn_testCH_Click(object sender, EventArgs e)
@@ -173,7 +172,8 @@ namespace DEM.Net.TestWinForm
             BeanParametresDuTin v_paramTin;
             v_paramTin = FLabServices.createCalculMedium().GetParametresDuTinParDefaut();
             v_paramTin.p11_initialisation_determinationFrontieres = enumModeDelimitationFrontiere.mbo;
-            v_paramTin.p14_initialisation_modeChoixDuPointCentral.p01_excentrationMinimum = 0;
+            v_paramTin.p12_extensionSupplementaireMboEnM = 10000;
+            v_paramTin.p15_initialisation_modeChoixDuPointCentral.p01_excentrationMinimum = 0;
             v_paramTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = Convert.ToInt16(tb_precisionEnM.Text);
             v_paramTin.p31_nbreIterationsMaxi = Convert.ToInt16(tb_nbreIterations.Text);
             _topolFacettes = FLabServices.createCalculMedium().GetInitialisationTin(_dataPointsTests, v_paramTin);
@@ -251,6 +251,13 @@ namespace DEM.Net.TestWinForm
             Model model = glTFService.GenerateModel(v_trianglesMesh, "Test Triangles");
             glTFService.Export(model, "Test3D", $"testTriangles_i{tb_nbreIterations.Text}_p{tb_precisionEnM.Text}.glb",  false, true);
             MessageBox.Show("Traitement terminé.");
+        }
+
+        private void btn_testUnitaire_Click(object sender, EventArgs e)
+        {
+            bool v_afficherMessageSiko_vf = true;
+            //
+            FServicesApplicatifs.createTestsUnitairesLab().TestUnitairesLab(v_afficherMessageSiko_vf);
         }
     }
 }

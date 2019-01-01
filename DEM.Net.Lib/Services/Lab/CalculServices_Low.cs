@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Lib.Services.Lab
 {
-    public class CalculServices_Low : ICalculServices_Low
+    public class CalculServices_Low : ICalculServices_Low, ICalculServicesLow_testsDivers
     {
         public double[] GetVectorBrutFromTwoPoints(double[] p_pointOrigine, double[] p_point2)
         {
@@ -677,22 +677,31 @@ namespace DEM.Net.Lib.Services.Lab
         }
        
         
-        //A TESTER
-        public bool IsPointDDansCercleCirconscritAuTriangleByMatrice(Dictionary<int,double[]> p_pointsTriangle, double[] p_coordPtD)
+        /// <summary>
+        /// (Attention:
+        /// - le principe de l'algo n'est pas clair 
+        /// - + une 'pustule' inversant le résulat a été nécessaire
+        /// </summary>
+        /// <param name="p_pointsTriangle"></param>
+        /// <param name="p_coordPtD"></param>
+        /// <returns></returns>
+        public bool IsPointDDansCercleCirconscritAuTriangleByMatrice(List<double[]> p_pointsTriangle, double[] p_coordPtD)
         {
             bool v_out = false;
             try
             {
                 //On ordonne les points du triangle A,B,C dans le sens anti-horaire
+                int v_indice = 0;
+                Dictionary<int, double[]> p_dicoPointsTriangle = p_pointsTriangle.ToDictionary(t => v_indice++,  t=>t);
                 List<int> v_pointsOrdonnances;
                 bool v_sensHoraire_vf = false;
-                v_pointsOrdonnances=GetOrdonnancement(p_pointsTriangle,false, v_sensHoraire_vf);
+                v_pointsOrdonnances=GetOrdonnancement(p_dicoPointsTriangle, false, v_sensHoraire_vf);
 
                 //Coeff de la matrice
                 //(4x4 mais d,h,l et p sont égaux à 1)
-                double[] v_coordPtA_ord= p_pointsTriangle[v_pointsOrdonnances[0]];
-                double[] v_coordPtB_ord = p_pointsTriangle[v_pointsOrdonnances[1]];
-                double[] v_coordPtC_ord = p_pointsTriangle[v_pointsOrdonnances[2]];
+                double[] v_coordPtA_ord= p_dicoPointsTriangle[v_pointsOrdonnances[0]];
+                double[] v_coordPtB_ord = p_dicoPointsTriangle[v_pointsOrdonnances[1]];
+                double[] v_coordPtC_ord = p_dicoPointsTriangle[v_pointsOrdonnances[2]];
                
                 double a, b, c, e, f, g, i, j, k, m, n, o;
                
@@ -726,8 +735,11 @@ namespace DEM.Net.Lib.Services.Lab
                 v_delta += -b * ((e * k) - (e * o) - (g * i) + (g * m) + (i * o) - (k * m));
                 v_delta += +c * ((e * j) - (e * n) - (f * i) + (f * m) + (i * n) - (j * m));
                 v_delta += (e * j * o) - (e * k * n) - (f * i * o) + (f * k * m) + (g * i * n) - (g * j * m);
-
-                if(v_delta>0)
+                
+                //Si le déterminant est positif, alors le point est dans le cercle circonscrit
+                //NON Bizarre!!! Semble marcher à l'inverse de l'attendu?? (cf article wikipedia 'triangulation delaunay
+                //if(v_delta>0)
+                if (v_delta <= 0) //PUSTULE!
                 {
                     v_out = true;
                 }
@@ -745,15 +757,41 @@ namespace DEM.Net.Lib.Services.Lab
             return v_out;
         }
         //EN COURS
-        public double[] GetCoordonneesCercleCirconscritAuTriangle(Dictionary<int, double[]> p_pointsTriangle)
+        public bool IsPointDDansCercleCirconscritAuTriangleExplicite(List<double[]> p_pointsTriangle, double[] p_pointToTest)
         {
-            double[] v_coordOut = new double[2];
-
+            bool v_retour = true;
             try
             {
-                double[] v_vector1 = GetVectorBrutFromTwoPoints(p_pointsTriangle[0], p_pointsTriangle[1]);
-                double[] v_vectorNormal_v1 = new double[2] { -1 * v_vector1[1], v_vector1[0] };
-                v_vectorNormal_v1 = GetNormalisationVecteurXY(v_vectorNormal_v1);
+                double[] v_centreDuCercle;
+                v_centreDuCercle = GetCoordonneesCercleCirconscritAuTriangle(p_pointsTriangle);
+                //Si null=>traduit le fait qu'il y a alignement
+                if(v_centreDuCercle==null)
+                {
+                    return true;
+                }
+                double v_rayon = GetDistanceEuclidienneCarreeXY(v_centreDuCercle, p_pointsTriangle.First());
+                //
+                double v_ecartAuCentre = GetDistanceEuclidienneCarreeXY(v_centreDuCercle, p_pointToTest);
+                if (v_ecartAuCentre> v_rayon)
+                {
+                    v_retour = false;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return v_retour;
+        }
+        public double[] GetCoordonneesCercleCirconscritAuTriangle(List<double[]> p_pointsTriangle)
+        {
+            double[] v_coordOut = new double[2];
+            try
+            {
+                double[,] p_parametrePremiereMediatrice = GetMediatriceByParametres(p_pointsTriangle[0], p_pointsTriangle[1]);
+                double[,] p_parametreSecondeMediatrice = GetMediatriceByParametres(p_pointsTriangle[1], p_pointsTriangle[2]);
+                v_coordOut=GetIntersectionDroites2DCoeffParametriques(p_parametrePremiereMediatrice, p_parametreSecondeMediatrice);
             }
             catch (Exception)
             {
@@ -761,6 +799,27 @@ namespace DEM.Net.Lib.Services.Lab
                 throw;
             }
             return v_coordOut;
+        }
+        public double[,] GetMediatriceByParametres(double[] p_point0, double[] p_point1)
+        {
+            double[,] v_parametres = new double[2, 2];
+            try
+            {
+                //(on définit paramétriquement une droite passant le milieu du segment et orthogonal à ce segment
+                double[] v_vecteurSource = GetVectorBrutFromTwoPoints(p_point0, p_point1);
+                double[] v_vecteurCoeff = new double[2] { -1 * v_vecteurSource[1], v_vecteurSource[0] };
+                double[] v_vecteurPointAppui = new double[2] { p_point0[0] + (v_vecteurSource[0] / 2), p_point0[1] + (v_vecteurSource[1] / 2) };
+                v_parametres[0, 0] = v_vecteurCoeff[0];
+                v_parametres[0, 1] = v_vecteurCoeff[1];
+                v_parametres[1, 0] = v_vecteurPointAppui[0];
+                v_parametres[1, 1] = v_vecteurPointAppui[1];
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return v_parametres;
         }
 
 
@@ -929,6 +988,13 @@ namespace DEM.Net.Lib.Services.Lab
            return Math.Sqrt(GetDistanceEuclidienneCarreeXYZ(v_point1, v_point2));
         }
         //
+        /// <summary>
+        /// Surtout adapté aux triangles)
+        /// </summary>
+        /// <param name="p_pointsATester"></param>
+        /// <param name="p_renvoyerNullSiColineaires_vf"></param>
+        /// <param name="p_horaireSinonAntohoraire_vf"></param>
+        /// <returns></returns>
         public List<int> GetOrdonnancement(Dictionary<int, double[]> p_pointsATester, bool p_renvoyerNullSiColineaires_vf, bool p_horaireSinonAntohoraire_vf)
         {
             List<int> v_pointsOrdonnances = new List<int>();
@@ -964,10 +1030,12 @@ namespace DEM.Net.Lib.Services.Lab
         }
         public double[] GetCentroide(List<double[]> p_coordPoints)
         {
-            double[] v_coordCentroide = new double[3];
-            v_coordCentroide[0] = p_coordPoints.Average(c => c[0]);
-            v_coordCentroide[1] = p_coordPoints.Average(c => c[1]);
-            v_coordCentroide[2] = p_coordPoints.Average(c => c[2]);
+            int v_dimension = p_coordPoints.First().Length;
+            double[] v_coordCentroide = new double[v_dimension];
+            for(int i=0;i< v_dimension;i++)
+            {
+                v_coordCentroide[i] = p_coordPoints.Average(c => c[i]);
+            }
             //
             return v_coordCentroide;
         }

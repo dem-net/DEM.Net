@@ -76,11 +76,13 @@
     </Compile>
     <Compile Include="FServicesApplicatifs.cs" />
     <Compile Include="IServicesApplicatifs.cs" />
+    <Compile Include="ITestsDiversServices.cs" />
     <Compile Include="ITestsUnitairesLab.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EchantillonsTestsServices.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
+    <Compile Include="TestsDiversServices.cs" />
     <Compile Include="TestsUnitairesLab.cs" />
     <EmbeddedResource Include="CtrlTestLab.resx">
       <DependentUpon>CtrlTestLab.cs</DependentUpon>

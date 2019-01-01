@@ -8,7 +8,7 @@ using System.Windows.Media;
 
 namespace DEM.Net.Lib.Services.Lab
 {
-    public class CalculServices_Medium : ICalculServices_Medium
+    public class CalculServices_Medium : ICalculServices_Medium, ICalculServicesMedium_testDivers
     {
         public BeanParametresDuTin GetParametresDuTinParDefaut()
         {
@@ -16,7 +16,11 @@ namespace DEM.Net.Lib.Services.Lab
             try
             {
                 v_parametresDuTin.p11_initialisation_determinationFrontieres = enumModeDelimitationFrontiere.mbo;
-                v_parametresDuTin.p14_initialisation_modeChoixDuPointCentral.p00_methodeChoixDuPointCentral = enumMethodeChoixDuPointCentral.pointLePlusExcentre;
+                v_parametresDuTin.p12_extensionSupplementaireMboEnM = 2000;
+                v_parametresDuTin.p13_modeCalculZParDefaut = enumModeCalculZ.alti_0;
+                v_parametresDuTin.p14_altitudeParDefaut = 0;
+                //
+                v_parametresDuTin.p15_initialisation_modeChoixDuPointCentral.p00_methodeChoixDuPointCentral = enumMethodeChoixDuPointCentral.pointLePlusExcentre;
                 //
                 v_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral.p00_methodeChoixDuPointCentral = enumMethodeChoixDuPointCentral.pointLePlusExcentre;
                 v_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = 20;
@@ -63,13 +67,13 @@ namespace DEM.Net.Lib.Services.Lab
                         v_pointsFrontieres = GetConvexHull2D(p_points);
                         break;
                     case enumModeDelimitationFrontiere.mbo:
-                        if(p_parametresDuTin.p12_modeCalculZParDefaut==enumModeCalculZ.alti_saisie)
+                        if(p_parametresDuTin.p13_modeCalculZParDefaut==enumModeCalculZ.alti_saisie)
                         {
-                            v_pointsFrontieres = GetMbo2D(p_points, p_parametresDuTin.p13_altitudeParDefaut);
+                            v_pointsFrontieres = GetMbo2D(p_points, p_parametresDuTin.p14_altitudeParDefaut, p_parametresDuTin.p12_extensionSupplementaireMboEnM);
                         }
                         else
                         {
-                            v_pointsFrontieres = GetMbo2D(p_points, p_parametresDuTin.p12_modeCalculZParDefaut);
+                            v_pointsFrontieres = GetMbo2D(p_points, p_parametresDuTin.p13_modeCalculZParDefaut, p_parametresDuTin.p12_extensionSupplementaireMboEnM);
                         }
                         break;
                     default:
@@ -78,14 +82,14 @@ namespace DEM.Net.Lib.Services.Lab
                 //
                 //2-Extraction du 'meilleur point'
                 BeanPoint_internal v_meilleurPoint;
-                switch (p_parametresDuTin.p14_initialisation_modeChoixDuPointCentral.p00_methodeChoixDuPointCentral)
+                switch (p_parametresDuTin.p15_initialisation_modeChoixDuPointCentral.p00_methodeChoixDuPointCentral)
                 {
                     case enumMethodeChoixDuPointCentral.pointLePlusExcentre:
                         double v_MaxAbs=Math.Max(p_points.Select(c => c.p10_coord[2]).Max(),Math.Abs(p_points.Select(c => c.p10_coord[2]).Min()));
                         v_meilleurPoint = p_points.Where(c => Math.Abs(c.p10_coord[2]) == v_MaxAbs).First();
                         break;
                     default:
-                        throw new Exception("Méthode " + p_parametresDuTin.p14_initialisation_modeChoixDuPointCentral.p00_methodeChoixDuPointCentral + "non implémentée.");
+                        throw new Exception("Méthode " + p_parametresDuTin.p15_initialisation_modeChoixDuPointCentral.p00_methodeChoixDuPointCentral + "non implémentée.");
                 }
                
                 //3-Calcul les facettes du convexHull étendu au point d'altitude maxi.
@@ -157,7 +161,7 @@ namespace DEM.Net.Lib.Services.Lab
                         //TO DEBUG
                         if (param_TODBUG_vf)
                         {
-                            FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuPoint2D(v_meilleurPoint, "Meilleur PT", 500);
+                            FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuPoint2D(v_meilleurPoint, "Meilleur PT", 100);
                         }
                         //FIN TO DEBUG
 
@@ -178,11 +182,9 @@ namespace DEM.Net.Lib.Services.Lab
                     v_hcodeArcsCandidatsASuppression = p_topologieFacette.p12_arcsByCode.Values.Where(c => c.p20_statutArc == enumStatutArc.arcCandidatASuppression).Select(c => c.p01_hcodeArc).ToList();
                     foreach (string v_hcode in v_hcodeArcsCandidatsASuppression)
                     {
-                        TestEtBascule_V1(ref p_topologieFacette, v_hcode);
-                        //TestEtBascule_V2Delaunay(ref p_topologieFacette, v_hcode);
+                        //TestEtBascule_V1(ref p_topologieFacette, v_hcode);
+                        TestEtBascule_V2Delaunay(ref p_topologieFacette, v_hcode);
                     }
-
-
                     //
                     v_nbreIterations++;
                 }
@@ -433,46 +435,26 @@ namespace DEM.Net.Lib.Services.Lab
                 BeanPoint_internal v_pointGaucheNewArc = v_facetteGauche.p01_pointsDeFacette.Where(c => c.p01_hCodeGeog != v_arcToTest.p11_pointDbt.p01_hCodeGeog && c.p01_hCodeGeog != v_arcToTest.p12_pointFin.p01_hCodeGeog).First();
                 BeanPoint_internal v_pointDroitNewArc = v_facetteDroite.p01_pointsDeFacette.Where(c => c.p01_hCodeGeog != v_arcToTest.p11_pointDbt.p01_hCodeGeog && c.p01_hCodeGeog != v_arcToTest.p12_pointFin.p01_hCodeGeog).First();
 
-
-                //A-TESTS:
-                //double v_longueurArcCandidatASuppression = FLabServices.createCalculLow().GetDistanceEuclidienneCarreeXY(v_arcToTest.p11_pointDbt.p10_coord, v_arcToTest.p12_pointFin.p10_coord);
-                //double v_longueurArcCandidatRemplacant = FLabServices.createCalculLow().GetDistanceEuclidienneCarreeXY(v_pointGaucheNewArc.p10_coord, v_pointDroitNewArc.p10_coord);
-                ////On effectue le remplacement que si:
-                ////1-L'arc de remplacement est plus petit que l'arc à remplacer
-                //if (v_longueurArcCandidatRemplacant >= v_longueurArcCandidatASuppression)
-                //{
-                //    return;
-                //}
-
-                //On remplace par le critère de Delaunay  
-
-                int v_increment;
-                Dictionary<int, double[]> v_triangleAvantBascule;
-                bool v_critereDeDelaunayNONSatisfait_vf;
-                v_increment = 0;
-               v_triangleAvantBascule = v_facetteGauche.p01_pointsDeFacette.ToDictionary(c => v_increment++, c => c.p10_coord);
-                v_critereDeDelaunayNONSatisfait_vf=FLabServices.createCalculLow().IsPointDDansCercleCirconscritAuTriangleByMatrice(v_triangleAvantBascule, v_pointDroitNewArc.p10_coord);
-                if(v_critereDeDelaunayNONSatisfait_vf)
+                List< double[]> v_triangleAvantBascule;
+                bool v_isPointDansLeCercle_vf;
+               
+               v_triangleAvantBascule = v_facetteGauche.p01_pointsDeFacette.Select(t=>t.p10_coord).ToList();
+                v_isPointDansLeCercle_vf=FLabServices.createCalculLow().IsPointDDansCercleCirconscritAuTriangleExplicite(v_triangleAvantBascule, v_pointDroitNewArc.p10_coord);
+                if(!v_isPointDansLeCercle_vf)
                 {
                     return;
                 }
-                v_increment = 0;
-                v_triangleAvantBascule = v_facetteDroite.p01_pointsDeFacette.ToDictionary(c => v_increment++, c => c.p10_coord);
-                v_critereDeDelaunayNONSatisfait_vf = FLabServices.createCalculLow().IsPointDDansCercleCirconscritAuTriangleByMatrice(v_triangleAvantBascule, v_pointGaucheNewArc.p10_coord);
-                if (v_critereDeDelaunayNONSatisfait_vf)
+   
+                v_triangleAvantBascule = v_facetteDroite.p01_pointsDeFacette.Select(t => t.p10_coord).ToList();
+                v_isPointDansLeCercle_vf = FLabServices.createCalculLow().IsPointDDansCercleCirconscritAuTriangleExplicite(v_triangleAvantBascule, v_pointGaucheNewArc.p10_coord);
+                if (!v_isPointDansLeCercle_vf)
                 {
                     return;
                 }
-                //2-L'arc de remplacement intersecte strictement l'arc à remplacer dans le plan XY (Par sécurité!)
+                //2-L'arc de remplacement intersecte strictement l'arc à remplacer dans le plan XY?
                 List<BeanPoint_internal> v_ptsDeLArcTeste = new List<BeanPoint_internal>() { v_arcToTest.p11_pointDbt, v_arcToTest.p12_pointFin };
                 Dictionary<int, double[]> v_positionDesPointsDeLArcTest_ParRapportAuNouvelArc;
                 v_positionDesPointsDeLArcTest_ParRapportAuNouvelArc = GetCoordonneesDansNewReferentiel2D(v_ptsDeLArcTeste, v_pointGaucheNewArc.p10_coord, v_pointDroitNewArc.p10_coord);
-
-
-                //if(v_positionDesPointsDeLArcTest_ParRapportAuNouvelArc.Where(c=>c.Value[1]>0).Count()!=1)
-                //{
-                //    return;
-                //}
 
                 //Le test précédent ne me semble pas suffisant=>on le fait de manière explicite
                 if (!FLabServices.createCalculLow().AreSegmentsSequants(v_arcToTest.p11_pointDbt.p10_coord, v_arcToTest.p12_pointFin.p10_coord, v_pointGaucheNewArc.p10_coord, v_pointDroitNewArc.p10_coord))
@@ -1078,7 +1060,7 @@ namespace DEM.Net.Lib.Services.Lab
         /// <param name="p_coordPoint2Abs"></param>
         /// <param name="p_coordPoint3Ord_orthoSiNull"></param>
         /// <returns></returns>
-        private Dictionary<int, double[]> GetCoordonneesDansNewReferentiel2D(IEnumerable<BeanPoint_internal> p_pointsAReferencer, double[] p_coordPoint0, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord_orthoSiNull = null)
+        public Dictionary<int, double[]> GetCoordonneesDansNewReferentiel2D(IEnumerable<BeanPoint_internal> p_pointsAReferencer, double[] p_coordPoint0, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord_orthoSiNull = null)
         {
             Dictionary<int, double[]> v_coords = new Dictionary<int, double[]>();
             try
@@ -1102,7 +1084,7 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_coords;
         }
-        private double[] GetCoordonneesDansNewReferentiel2D(BeanPoint_internal p_pointAReferencer, double[] p_coordPoint0, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord_orthoSiNull = null)
+        public double[] GetCoordonneesDansNewReferentiel2D(BeanPoint_internal p_pointAReferencer, double[] p_coordPoint0, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord_orthoSiNull = null)
         {
             double[] v_coord = null;
             Dictionary<int, double[]> v_coords = new Dictionary<int, double[]>();
@@ -1177,7 +1159,7 @@ namespace DEM.Net.Lib.Services.Lab
             return v_pointConvex;
         }
         //
-        private BeanPoint_internal GetIdPointLePlusEloigneDuPointRef(IEnumerable<BeanPoint_internal> p_points, double[] p_pointRef)
+        public BeanPoint_internal GetIdPointLePlusEloigneDuPointRef(IEnumerable<BeanPoint_internal> p_points, double[] p_pointRef)
         {
             BeanPoint_internal v_point;
             try
@@ -1193,7 +1175,7 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_point;
         }
-        private double[] GetCentroide(IEnumerable<BeanPoint_internal> p_points)
+        public double[] GetCentroide(IEnumerable<BeanPoint_internal> p_points)
         {
             double[] v_centroide = new double[3];
             try
@@ -1209,7 +1191,7 @@ namespace DEM.Net.Lib.Services.Lab
             return v_centroide;
         }
 
-        private double GetLongueurArcAuCarre(BeanPoint_internal p_point1, BeanPoint_internal p_point2)
+        public double GetLongueurArcAuCarre(BeanPoint_internal p_point1, BeanPoint_internal p_point2)
         {
            return  FLabServices.createCalculLow().GetDistanceEuclidienneCarreeXYZ(p_point1.p10_coord, p_point2.p10_coord);  
         }
@@ -1264,7 +1246,7 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_pointsOrdonnances;
        }
-        public List<BeanPoint_internal> GetOrdonnancementPointsFacette(List<BeanPoint_internal> p_pointsFacettes, bool p_renvoyerNullSiColineaires_vf, bool p_sensHoraireSinonAntiHoraire_vf)
+       public List<BeanPoint_internal> GetOrdonnancementPointsFacette(List<BeanPoint_internal> p_pointsFacettes, bool p_renvoyerNullSiColineaires_vf, bool p_sensHoraireSinonAntiHoraire_vf)
         {
             List<BeanPoint_internal> v_pointsOrdonnances = new List<BeanPoint_internal>();
             try
@@ -1358,7 +1340,7 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return p_pointsOrdonnesConvexHull;
         }
-        public List<BeanPoint_internal> GetMbo2D(IEnumerable<BeanPoint_internal> p_points, enumModeCalculZ p_modeDeCalculZ)
+        public List<BeanPoint_internal> GetMbo2D(IEnumerable<BeanPoint_internal> p_points, enumModeCalculZ p_modeDeCalculZ, double p_extensionMboEnM)
         {
             List<BeanPoint_internal> p_pointsOrdonnesMbo = new List<BeanPoint_internal>();
             try
@@ -1376,7 +1358,7 @@ namespace DEM.Net.Lib.Services.Lab
                         throw new Exception("Méthode " + p_modeDeCalculZ + " non implémentée.");
                 }
                 //
-                p_pointsOrdonnesMbo = GetMbo2D(p_points, v_alti);
+                p_pointsOrdonnesMbo = GetMbo2D(p_points, v_alti, p_extensionMboEnM);
             }
             catch (Exception)
             {
@@ -1385,17 +1367,17 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return p_pointsOrdonnesMbo;
         }
-        public List<BeanPoint_internal> GetMbo2D(IEnumerable<BeanPoint_internal> p_points, double p_altiZ)
+        public List<BeanPoint_internal> GetMbo2D(IEnumerable<BeanPoint_internal> p_points, double p_altiZ,double p_extensionMboEnM)
         {
             List<BeanPoint_internal> p_pointsOrdonnesMbo = new List<BeanPoint_internal>();
             try
             {
                 int v_srid = p_points.First().p11_srid;
                 //
-                double v_minX = p_points.Min(c => c.p10_coord[0]);
-                double v_minY = p_points.Min(c => c.p10_coord[1]);
-                double v_maxX = p_points.Max(c => c.p10_coord[0]);
-                double v_maxY = p_points.Max(c => c.p10_coord[1]);
+                double v_minX = p_points.Min(c => c.p10_coord[0])- p_extensionMboEnM;
+                double v_minY = p_points.Min(c => c.p10_coord[1])- p_extensionMboEnM;
+                double v_maxX = p_points.Max(c => c.p10_coord[0])+ p_extensionMboEnM;
+                double v_maxY = p_points.Max(c => c.p10_coord[1])+ p_extensionMboEnM;
                 //
                 BeanPoint_internal v_point;
                 //Bas gauche
@@ -1432,49 +1414,6 @@ namespace DEM.Net.Lib.Services.Lab
             return v_dicoDoublons;
         }
 
-        #region Tests divers pour debug=>A purger à terme
-        public void TestMatrice(IEnumerable<BeanPoint_internal> p_points, double[] p_vecteurDeDecalage)
-        {
-            Color v_couleurObjet;
-            string v_label;
-
-            //POINTS REF
-            double[] v_coordCentroide = GetCentroide(p_points);
-            BeanPoint_internal v_centroide = new BeanPoint_internal(v_coordCentroide, 2154);
-            //
-            double[] p_coordPointX = new double[3];
-            p_coordPointX[0] = v_coordCentroide[0] + p_vecteurDeDecalage[0];
-            p_coordPointX[1] = v_coordCentroide[1] + p_vecteurDeDecalage[1];
-            p_coordPointX[2] = 0;
-            BeanPoint_internal p_pointX = new BeanPoint_internal(p_coordPointX, 2154);
-
-            //VISU POINTS REF
-            v_couleurObjet = Color.FromScRgb(255, 0, 0, 255);
-            FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuPoint2D(v_centroide, "Pt0", v_couleurObjet, 20);
-            v_couleurObjet = Color.FromScRgb(255, 0, 255, 0);
-            FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuPoint2D(p_pointX, "Pt1", v_couleurObjet, 20);
-            //FIN VISU POINTS REF
-
-            Dictionary<int, double[]> v_coordDansRef;
-            //
-            v_coordDansRef = GetCoordonneesDansNewReferentiel2D(p_points, v_coordCentroide, p_coordPointX, null);
-            Dictionary<int, BeanPoint_internal> v_dicoPoints = p_points.ToDictionary(c => c.p00_id, c => c);
-
-            //VISU COORD
-            int param_arrondi = 2;
-            v_couleurObjet = Color.FromScRgb(255, 0, 0, 255);
-            List<int> v_idPointsOrdonnes = v_coordDansRef.OrderBy(c => c.Value[1]).Select(c => c.Key).ToList();
-            foreach (int v_id in v_idPointsOrdonnes)
-            {
-                v_label = "Pt: " + v_id + " => " + Math.Round(v_coordDansRef[v_id][0], param_arrondi) + " / " + Math.Round(v_coordDansRef[v_id][1], param_arrondi);
-                FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuPoint2D(v_dicoPoints[v_id], v_label, v_couleurObjet, 10);
-            }
-            FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
-            //FIN VISU COORD
-
-        }
-        #endregion Tests divers pour debug
-
-
+      
     }
 }
