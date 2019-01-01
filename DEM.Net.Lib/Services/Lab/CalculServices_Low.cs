@@ -1001,7 +1001,7 @@ namespace DEM.Net.Lib.Services.Lab
             try
             {
                 int v_pt1 = GetPointLePlusExcentreXY(p_pointsATester);
-                int v_pt2 = GetPointLePlusEloigneDePoint0(p_pointsATester, p_pointsATester[v_pt1]);
+                int v_pt2 = GetPointLePlusEloigneDePoint0XY(p_pointsATester, p_pointsATester[v_pt1]);
                 //
                 Dictionary<int, double[]> v_coord = GetCoordDansNewRepereXY(p_pointsATester, p_pointsATester[v_pt1], p_pointsATester[v_pt2]);
                
@@ -1042,11 +1042,15 @@ namespace DEM.Net.Lib.Services.Lab
         public int GetPointLePlusExcentreXY(Dictionary<int,double[]> p_pointsATester)
         {
             double[] v_centroide = GetCentroide(p_pointsATester.Select(c => c.Value).ToList());
-            return GetPointLePlusEloigneDePoint0(p_pointsATester, v_centroide);
+            return GetPointLePlusEloigneDePoint0XY(p_pointsATester, v_centroide);
         }
-        public int GetPointLePlusEloigneDePoint0(Dictionary<int, double[]> p_pointsATester, double[] p_coordPoint0)
+        public int GetPointLePlusEloigneDePoint0XY(Dictionary<int, double[]> p_pointsATester, double[] p_coordPoint0)
         {
             return p_pointsATester.OrderByDescending(c => GetDistanceEuclidienneCarreeXY(c.Value, p_coordPoint0)).Select(c => c.Key).First();
+        }
+        public int GetPointLePlusProcheDePoint0XY(Dictionary<int, double[]> p_pointsATester, double[] p_coordPoint0)
+        {
+            return p_pointsATester.OrderBy(c => GetDistanceEuclidienneCarreeXY(c.Value, p_coordPoint0)).Select(c => c.Key).First();
         }
     }
 }

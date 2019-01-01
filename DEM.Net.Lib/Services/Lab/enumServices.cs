@@ -20,7 +20,8 @@ namespace DEM.Net.Lib.Services.Lab
     public enum enumModeDelimitationFrontiere
     {
         convexHull,
-        mbo
+        mboSimple,
+        pointsProchesDuMbo
     }
     public enum enumModeCalculZ
     {

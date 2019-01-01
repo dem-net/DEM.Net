@@ -15,12 +15,12 @@ namespace DEM.Net.Lib.Services.Lab
             BeanParametresDuTin v_parametresDuTin = new BeanParametresDuTin();
             try
             {
-                v_parametresDuTin.p11_initialisation_determinationFrontieres = enumModeDelimitationFrontiere.mbo;
+                v_parametresDuTin.p11_initialisation_determinationFrontieres = enumModeDelimitationFrontiere.mboSimple;
                 v_parametresDuTin.p12_extensionSupplementaireMboEnM = 2000;
                 v_parametresDuTin.p13_modeCalculZParDefaut = enumModeCalculZ.alti_0;
                 v_parametresDuTin.p14_altitudeParDefaut = 0;
                 //
-                v_parametresDuTin.p15_initialisation_modeChoixDuPointCentral.p00_methodeChoixDuPointCentral = enumMethodeChoixDuPointCentral.pointLePlusExcentre;
+                v_parametresDuTin.p16_initialisation_modeChoixDuPointCentral.p00_methodeChoixDuPointCentral = enumMethodeChoixDuPointCentral.pointLePlusExcentre;
                 //
                 v_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral.p00_methodeChoixDuPointCentral = enumMethodeChoixDuPointCentral.pointLePlusExcentre;
                 v_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = 20;
@@ -66,7 +66,7 @@ namespace DEM.Net.Lib.Services.Lab
                     case enumModeDelimitationFrontiere.convexHull:
                         v_pointsFrontieres = GetConvexHull2D(p_points);
                         break;
-                    case enumModeDelimitationFrontiere.mbo:
+                    case enumModeDelimitationFrontiere.mboSimple:
                         if(p_parametresDuTin.p13_modeCalculZParDefaut==enumModeCalculZ.alti_saisie)
                         {
                             v_pointsFrontieres = GetMbo2D(p_points, p_parametresDuTin.p14_altitudeParDefaut, p_parametresDuTin.p12_extensionSupplementaireMboEnM);
@@ -76,20 +76,23 @@ namespace DEM.Net.Lib.Services.Lab
                             v_pointsFrontieres = GetMbo2D(p_points, p_parametresDuTin.p13_modeCalculZParDefaut, p_parametresDuTin.p12_extensionSupplementaireMboEnM);
                         }
                         break;
+                    case enumModeDelimitationFrontiere.pointsProchesDuMbo:
+                        v_pointsFrontieres = GetMboPointsProches(p_points, p_parametresDuTin.p15_nbrePointsSupplMultiples4);
+                        break;
                     default:
                         throw new Exception("Méthode " + p_parametresDuTin.p11_initialisation_determinationFrontieres + "non implémentée.");
                 }
                 //
                 //2-Extraction du 'meilleur point'
                 BeanPoint_internal v_meilleurPoint;
-                switch (p_parametresDuTin.p15_initialisation_modeChoixDuPointCentral.p00_methodeChoixDuPointCentral)
+                switch (p_parametresDuTin.p16_initialisation_modeChoixDuPointCentral.p00_methodeChoixDuPointCentral)
                 {
                     case enumMethodeChoixDuPointCentral.pointLePlusExcentre:
                         double v_MaxAbs=Math.Max(p_points.Select(c => c.p10_coord[2]).Max(),Math.Abs(p_points.Select(c => c.p10_coord[2]).Min()));
                         v_meilleurPoint = p_points.Where(c => Math.Abs(c.p10_coord[2]) == v_MaxAbs).First();
                         break;
                     default:
-                        throw new Exception("Méthode " + p_parametresDuTin.p15_initialisation_modeChoixDuPointCentral.p00_methodeChoixDuPointCentral + "non implémentée.");
+                        throw new Exception("Méthode " + p_parametresDuTin.p16_initialisation_modeChoixDuPointCentral.p00_methodeChoixDuPointCentral + "non implémentée.");
                 }
                
                 //3-Calcul les facettes du convexHull étendu au point d'altitude maxi.
@@ -1403,7 +1406,81 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return p_pointsOrdonnesMbo;
         }
+        public List<BeanPoint_internal> GetMboPointsProches(IEnumerable<BeanPoint_internal> p_points, int p_nbrePointsCalageSupplSouhaitesMultiplesDe4)
+        {
+            List<BeanPoint_internal> v_pointsOut = new List<BeanPoint_internal>();
+            try
+            {
+                int v_idPointOut;
+                List<BeanPoint_internal> p_pointsOrdonnesMbo = new List<BeanPoint_internal>();
+                int v_srid = p_points.First().p11_srid;
+                //
+                double v_minX = p_points.Min(c => c.p10_coord[0]);
+                double v_minY = p_points.Min(c => c.p10_coord[1]);
+                double v_maxX = p_points.Max(c => c.p10_coord[0]);
+                double v_maxY = p_points.Max(c => c.p10_coord[1]);
+                //
+                HashSet<int> v_pointsDejaTraites = new HashSet<int>();
+                Dictionary<int, BeanPoint_internal> v_dicoPointsSource= p_points.ToDictionary(c => c.p00_id, c => c);
+                Dictionary<int, double[]> v_pointsATester = p_points.ToDictionary(c => c.p00_id, c => c.p10_coord);
+                //
+                double[] v_coordPointAppui;
+                List<double[]> v_listePointsDAppui = new List<double[]>();
+                
+                v_coordPointAppui = new double[2] { v_minX, v_minY };
+                v_listePointsDAppui.Add(v_coordPointAppui);
 
+                 v_coordPointAppui = new double[2] { v_minX, v_maxY };
+                v_listePointsDAppui.Add(v_coordPointAppui);
+
+                v_coordPointAppui = new double[2] { v_maxX, v_maxY };
+                v_listePointsDAppui.Add(v_coordPointAppui);
+
+                v_coordPointAppui = new double[2] { v_maxX, v_minY };
+                v_listePointsDAppui.Add(v_coordPointAppui);
+
+                //
+                if(p_nbrePointsCalageSupplSouhaitesMultiplesDe4>0)
+                {
+                    int v_nbrePointsSupplParArete = (int)Math.Ceiling(p_nbrePointsCalageSupplSouhaitesMultiplesDe4 / 4d);
+                    double v_ecartX = v_maxX - v_minX;
+                    double v_ecartY = v_maxY - v_minY;
+                    double v_decalageEnX = v_ecartX / (v_nbrePointsSupplParArete + 1);
+                    double v_decalageEnY = v_ecartY / (v_nbrePointsSupplParArete + 1);
+                    for (int v_nbrePointsSupp= 1; v_nbrePointsSupp <= v_nbrePointsSupplParArete; v_nbrePointsSupp++)
+                    {
+                        v_coordPointAppui = new double[2] { v_minX+(v_nbrePointsSupp* v_decalageEnX), v_minY };
+                        v_listePointsDAppui.Add(v_coordPointAppui);
+                        v_coordPointAppui = new double[2] { v_minX + (v_nbrePointsSupp * v_decalageEnX), v_maxY};
+                        v_listePointsDAppui.Add(v_coordPointAppui);
+                        v_coordPointAppui = new double[2] { v_minX , v_minY + (v_nbrePointsSupp * v_decalageEnY) };
+                        v_listePointsDAppui.Add(v_coordPointAppui);
+                        v_coordPointAppui = new double[2] { v_maxX , v_minY + (v_nbrePointsSupp * v_decalageEnY) };
+                        v_listePointsDAppui.Add(v_coordPointAppui);
+                    }
+                }
+             //
+
+                foreach (double[] v_pointDAppui in v_listePointsDAppui)
+                {
+                    v_idPointOut = FLabServices.createCalculLow().GetPointLePlusProcheDePoint0XY(v_pointsATester, v_pointDAppui);
+                    if (!v_pointsDejaTraites.Contains(v_idPointOut))
+                    {
+                        v_pointsDejaTraites.Add(v_idPointOut);
+                        v_pointsOut.Add(v_dicoPointsSource[v_idPointOut]);
+                    }
+                }
+                //A REVOIR
+                v_pointsOut=GetOrdonnancementPointsFacette(v_pointsOut, false, true);
+                v_pointsOut.Add(v_pointsOut.First());
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return v_pointsOut;
+        }
         public Dictionary<string, int> GetEtComptePointsDoublonnes(List<BeanPoint_internal> p_pointsToTest)
         {
             Dictionary<string, int> v_dicoDoublons = new Dictionary<string, int>();
@@ -1413,7 +1490,7 @@ namespace DEM.Net.Lib.Services.Lab
 
             return v_dicoDoublons;
         }
+       
 
-      
     }
 }

@@ -171,15 +171,18 @@ namespace DEM.Net.TestWinForm
         {
             BeanParametresDuTin v_paramTin;
             v_paramTin = FLabServices.createCalculMedium().GetParametresDuTinParDefaut();
-            v_paramTin.p11_initialisation_determinationFrontieres = enumModeDelimitationFrontiere.mbo;
-            v_paramTin.p12_extensionSupplementaireMboEnM = 10000;
-            v_paramTin.p15_initialisation_modeChoixDuPointCentral.p01_excentrationMinimum = 0;
+            v_paramTin.p11_initialisation_determinationFrontieres = enumModeDelimitationFrontiere.mboSimple;
+            v_paramTin.p12_extensionSupplementaireMboEnM = 2000;
+            v_paramTin.p13_modeCalculZParDefaut = enumModeCalculZ.alti_saisie;
+            v_paramTin.p14_altitudeParDefaut = -200;
+            v_paramTin.p15_nbrePointsSupplMultiples4 = 4;
+            v_paramTin.p16_initialisation_modeChoixDuPointCentral.p01_excentrationMinimum = 0;
             v_paramTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = Convert.ToInt16(tb_precisionEnM.Text);
             v_paramTin.p31_nbreIterationsMaxi = Convert.ToInt16(tb_nbreIterations.Text);
             _topolFacettes = FLabServices.createCalculMedium().GetInitialisationTin(_dataPointsTests, v_paramTin);
-           
 
-            //FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(_topolFacettes,false,false);
+
+            //FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(_topolFacettes, false, false);
             //FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
 
             FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, v_paramTin);

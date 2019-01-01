@@ -38,8 +38,9 @@ namespace DEM.Net.Lib.Services.Lab
         double GetNormeVecteurXY(double[] p_vector);
         double GetNormeVecteurXYZ(double[] p_vector);
         List<int> GetOrdonnancement(Dictionary<int, double[]> p_pointsATester, bool p_renvoyerNullSiColineaires_vf, bool p_horaireSinonAntohoraire_vf);
-        int GetPointLePlusEloigneDePoint0(Dictionary<int, double[]> p_pointsATester, double[] p_coordPoint0);
+        int GetPointLePlusEloigneDePoint0XY(Dictionary<int, double[]> p_pointsATester, double[] p_coordPoint0);
         int GetPointLePlusExcentreXY(Dictionary<int, double[]> p_pointsATester);
+        int GetPointLePlusProcheDePoint0XY(Dictionary<int, double[]> p_pointsATester, double[] p_coordPoint0);
         double[] GetProduitMatriceParVector(double[,] p_matrice, double[] p_vector);
         double[,] GetProduitMatricesAxB(double[,] v_matriceA, double[,] v_matriceB);
         double GetProduitScalaireXY(double[] p_vector1, double[] p_vector2);
