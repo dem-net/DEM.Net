@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.SqlServer.Types;
 using DEM.Net.Lib;
 using System.Windows.Media.Imaging;
 using System.IO;
