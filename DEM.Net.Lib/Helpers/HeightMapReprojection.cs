@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DotSpatial.Projections;
-using Microsoft.SqlServer.Types;
 
 namespace DEM.Net.Lib
 {

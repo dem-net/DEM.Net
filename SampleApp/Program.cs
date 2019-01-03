@@ -98,7 +98,7 @@ namespace SampleApp
 
         private static void TestHeightPlanes(string wkt, DEMDataSet dataSet, IRasterService rasterService, IElevationService elevationService)
         {
-            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
+            IGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
             var bbox = geom.GetBoundingBox();
             HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
             hMap = hMap.CenterOnOrigin(0.00009f);
@@ -410,37 +410,6 @@ namespace SampleApp
 
         #region All tests
 
-        private static void TestGpxElevation(IElevationService elevationService, DEMDataSet dataSet, string gpxFile)
-        {
-            var segments = GpxImport.ReadGPX_Segments(gpxFile);
-
-            SpatialTrace.Enable();
-            SpatialTrace.Clear();
-
-            foreach (var line in segments)
-            {
-                List<GeoPoint> inputLineBak = line.Select(pt => pt.Clone()).ToList();
-
-                List<GeoPoint> inputLineZero = line.Select(pt => new GeoPoint(pt.Latitude, pt.Longitude)).ToList();
-
-
-                var lineOut = elevationService.GetPointsElevation(inputLineZero, dataSet).ToList();
-
-                GeometryService.ComputeMetrics(inputLineBak);
-                GeometryService.ComputeMetrics(lineOut);
-
-                // Compare
-                double ratio = SpatialTraceLine(inputLineBak, "Input");
-
-                SpatialTrace.SetLineWidth(3);
-                SpatialTrace.SetLineColor(Colors.Red);
-                // Compare
-                SpatialTraceLine(lineOut, "Output", ratio);
-
-            }
-
-            SpatialTrace.ShowDialog();
-        }
         private static void TestGpxElevationVsDEMNet(IElevationService elevationService, DEMDataSet dataSet, string gpxFile)
         {
             /// Line strip from GPX
@@ -726,40 +695,6 @@ namespace SampleApp
             SpatialTrace.ShowDialog();
 
 
-        }
-
-        private static double SpatialTraceLine(List<GeoPoint> lineElevationData, string message, double? fixedRatio = null)
-        {
-
-            // Say that 1 sample is one pixel and a graph is usually 300px tall
-            // So 300px = 300 samples = max height (H)
-            // So for numSamples, (H * numSamples / 300) = height of 1px
-
-
-            double minH = lineElevationData.Min(p => p.Elevation.GetValueOrDefault(0));
-            double maxH = lineElevationData.Max(p => p.Elevation.GetValueOrDefault(0));
-            double H = maxH - minH;
-            double ratio_11 = lineElevationData.Last().DistanceFromOriginMeters / H;
-            double ratio = fixedRatio ?? ratio_11 / 4;
-
-            // Make 4:1 geom
-            SqlGeometryBuilder gb = new SqlGeometryBuilder();
-            gb.SetSrid(0); // custom SRID
-            gb.BeginGeometry(OpenGisGeometryType.LineString);
-
-            gb.BeginFigure(lineElevationData[0].DistanceFromOriginMeters / ratio, lineElevationData[0].Elevation.GetValueOrDefault(0));
-            for (int i = 1; i < lineElevationData.Count; i++)
-            {
-                gb.AddLine(lineElevationData[i].DistanceFromOriginMeters / ratio, lineElevationData[i].Elevation.GetValueOrDefault(0));
-            }
-            gb.EndFigure();
-            gb.EndGeometry();
-            SqlGeometry geom = gb.ConstructedGeometry;
-            geom = DEM.Net.Lib.SqlTypesExtensions.MakeValidIfInvalid(geom, 1);
-
-            SpatialTrace.TraceGeometry(geom, message);
-
-            return ratio;
         }
 
         private static IEnumerable<T> GetNth<T>(List<T> list, int n)
