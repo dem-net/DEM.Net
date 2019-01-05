@@ -52,6 +52,7 @@ namespace DEM.Net.Lib.Services.VisualisationServices
                     v_niveauCouleurRef = 255;
                     v_niveauCouleurInverseRef = v_pasDIncremetation;
                 }
+                v_niveauCouleurRef = MathHelper.Clamp(v_niveauCouleurRef, 0, 255);
                 //
                 for (int v_indexClasse = 1; v_indexClasse <= p_nbreClasses; v_indexClasse++)
                 {
@@ -83,6 +84,7 @@ namespace DEM.Net.Lib.Services.VisualisationServices
                         v_niveauCouleurRef -= v_pasDIncremetation;
                         v_niveauCouleurInverseRef += v_pasDIncremetation;
                     }
+                    v_niveauCouleurRef = MathHelper.Clamp(v_niveauCouleurRef, 0, 255);
                 }
             }
             catch (Exception)
