@@ -241,8 +241,8 @@ namespace DEM.Net.Lib.Services.Lab
 
 
                 //On traite la "première facette" (c'est à dire celle avec l'écart maxi)
-                List<int> v_facettesTetraedre;
-                v_facettesTetraedre=GetTetraedreByFacette(ref p_topologieFacette, v_premiereFacette.p00_idFacette, v_premiereFacette.p22_pointPlusGrandEcart);
+                BeanResultatConversions_internal v_rapportRsultTetraedre;
+                v_rapportRsultTetraedre=GetTetraedreByFacette(ref p_topologieFacette, v_premiereFacette.p00_idFacette, v_premiereFacette.p22_pointPlusGrandEcart);
                 //A l'intérieur du tétraèdre les modifications ne sont pas possibles (tous les couples de facettes sont concaves)
                 //Maintenant...on doit tester le contact de chaque facette du tétraèdre avec les facettes extérieures, si elles existent.
                 //Cela doit se faire autour des arètes extérieures
@@ -786,7 +786,7 @@ namespace DEM.Net.Lib.Services.Lab
             {
                 throw;
             }
-            return v_nouveauxArcsATester;
+            return v_beanRapportOut;
         }
 
         #region UTILITAIRES
