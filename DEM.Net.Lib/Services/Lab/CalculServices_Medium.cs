@@ -130,7 +130,7 @@ namespace DEM.Net.Lib.Services.Lab
                 List<int> v_idFacettesDeDepart;
                 BeanPoint_internal v_meilleurPoint;
                 BeanFacette_internal v_facette;
-
+                bool v_renvoyerNullSiInfALExtensionMinimale_vf = true;
                 while (v_nbreIterations <= v_nbreIterationsMaxi)
                 {
                     //1-On génère les 'sous-facettes' pour chacune des facettes, tant qu'elle a des points candidats
@@ -153,7 +153,7 @@ namespace DEM.Net.Lib.Services.Lab
                     foreach (int v_idFacette in v_idFacettesDeDepart)
                     {
                         v_facette = p_topologieFacette.p13_facettesById[v_idFacette];
-                        v_meilleurPoint = GetPointExcentreDeLaFacette(v_facette, p_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral);
+                        v_meilleurPoint = GetAndSetByRefPointExcentreDeLaFacette(ref v_facette, p_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral, v_renvoyerNullSiInfALExtensionMinimale_vf);
 
                         if (v_meilleurPoint == null)
                         {
@@ -168,7 +168,7 @@ namespace DEM.Net.Lib.Services.Lab
                         }
                         //FIN TO DEBUG
 
-                        GenereEtInsertSousfacettesByRef(ref p_topologieFacette, v_facette.p00_idFacette, v_meilleurPoint);
+                        GetTetraedreByFacette(ref p_topologieFacette, v_facette.p00_idFacette, v_meilleurPoint);
                     }
                     //TO DEBUG;
                     if (param_TODBUG_vf)
@@ -186,7 +186,7 @@ namespace DEM.Net.Lib.Services.Lab
                     foreach (string v_hcode in v_hcodeArcsCandidatsASuppression)
                     {
                         //TestEtBascule_V1(ref p_topologieFacette, v_hcode);
-                        TestEtBascule_V2Delaunay(ref p_topologieFacette, v_hcode);
+                        TestEtBascule_DelaunayByRef(ref p_topologieFacette, v_hcode);
                     }
                     //
                     v_nbreIterations++;
@@ -199,6 +199,113 @@ namespace DEM.Net.Lib.Services.Lab
             }
            
         }
+
+        public void AugmenteDetailsTinByRef_v2(ref BeanTopologieFacettes p_topologieFacette, BeanParametresDuTin p_parametresDuTin)
+        {
+            try
+            {
+                //On initialise le plus grand écart sur les facettes existantes
+                //(ATTENTION: il vaudrait mieux le faire lors de l'étape précédente.
+                //? L'étape d'augmentation de la précision pourrait être rejouée plusieurs fois en augmentant l'écart minimum.
+                //
+                BeanFacette_internal v_facette;
+                bool v_renvoyerNullSiInfALExtensionMinimale_vf = false;
+                foreach (int v_idFacette in p_topologieFacette.p11_pointsFacettesByIdPoint.Keys)
+                {
+                    v_facette = p_topologieFacette.p13_facettesById[v_idFacette];
+                    GetAndSetByRefPointExcentreDeLaFacette(ref v_facette, p_parametresDuTin.p16_initialisation_modeChoixDuPointCentral, v_renvoyerNullSiInfALExtensionMinimale_vf);
+                }
+
+                //On crée une liste chaînée des facettes sur le critère de plus grand écart, triée par ordre décroissant.
+                //?1-On va toujours traiter la facette avec l'écart maxi (donc celle en tête de liste)
+                //2-On va être amené à supprimer et à rajouter des facettes=>il semble souhaitable d'éviter les recréations des listes
+                //Note encore: On ne garde dans le tri que les facettes avec un écart sup à l'écart minimum souhaité (inutile de trier les autres)
+
+                List<BeanFacette_internal> v_facettesTriees;
+                v_facettesTriees=p_topologieFacette.p13_facettesById.OrderByDescending(c => c.Value.p21_plusGrandEcartAbsolu).Select(c=>c.Value).ToList();
+                BeanFacette_internal v_premiereFacette = v_facettesTriees.First();
+
+                int v_indice = 0;
+                for (; v_indice< v_facettesTriees.Count-1; v_indice++)
+                {
+                    if(v_facettesTriees[v_indice + 1].p21_plusGrandEcartAbsolu < p_parametresDuTin.p16_initialisation_modeChoixDuPointCentral.p01_excentrationMinimum)
+                    {
+                        break;
+                    }
+                    if(v_indice>0)
+                    {
+                        v_facettesTriees[v_indice].p24_facetteEcartInf = v_facettesTriees[v_indice+1];
+                    }
+                    v_facettesTriees[v_indice + 1].p23_facetteEcartSup = v_facettesTriees[v_indice];
+                }
+
+
+                //On traite la "première facette" (c'est à dire celle avec l'écart maxi)
+                List<int> v_facettesTetraedre;
+                v_facettesTetraedre=GetTetraedreByFacette(ref p_topologieFacette, v_premiereFacette.p00_idFacette, v_premiereFacette.p22_pointPlusGrandEcart);
+                //A l'intérieur du tétraèdre les modifications ne sont pas possibles (tous les couples de facettes sont concaves)
+                //Maintenant...on doit tester le contact de chaque facette du tétraèdre avec les facettes extérieures, si elles existent.
+                //Cela doit se faire autour des arètes extérieures
+                //Certains couples seront modifiés, d'autres pas (mais ils auront été qd même contrôlés et validés).
+                //Lorsqu'il y a modif du couple (bascule des triangles du quadrilatère), les couples périphériques deviennent, eux-mêmes, candidats à la bascule.
+                
+                //Quel algo ?
+                //Récupérer les arcs candidats du tétraèdre
+                //Faire tests et bascules
+                //En retour, les arcs périphé
+
+
+
+
+             
+                //Calcul du meilleur point de chaque facette
+                //Lien ordonnancé entre facettes
+                //Traitement de la première facette:
+                //=>Découpage tétraédre
+                //=>Calcul des bascules sur les arcs bases
+                //=>Si inversion=>marquage des arcs des facettes modifiées
+                //=>Processus récursif jusqu'à arrêt
+                //=>Recherche des meilleurs points sur les nouvelles facettes
+                //Recherche du meilleur point et recursion
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+        private void InsertDansListeChainee(BeanFacette_internal p_premiereFacette, BeanFacette_internal p_facetteAInserer, double p_ecartMini)
+        {
+            if(p_facetteAInserer.p21_plusGrandEcartAbsolu< p_ecartMini)
+            {
+                return;
+            }
+            //
+            BeanFacette_internal v_facetteCourante = p_premiereFacette;
+            bool v_insertionFaite_vf = false;
+            while(!v_insertionFaite_vf)
+            {
+                if (p_facetteAInserer.p21_plusGrandEcartAbsolu > v_facetteCourante.p21_plusGrandEcartAbsolu)
+                {
+                    p_facetteAInserer.p23_facetteEcartSup = v_facetteCourante.p23_facetteEcartSup;
+                    p_facetteAInserer.p24_facetteEcartInf = v_facetteCourante;
+                    v_facetteCourante.p23_facetteEcartSup = p_facetteAInserer;
+                    //
+                    v_insertionFaite_vf = true;
+                }
+                if(v_facetteCourante.p24_facetteEcartInf==null)
+                {
+                    v_facetteCourante.p24_facetteEcartInf = p_facetteAInserer;
+                    p_facetteAInserer.p23_facetteEcartSup = v_facetteCourante;
+                    //
+                    v_insertionFaite_vf = true;
+                }
+                v_facetteCourante = v_facetteCourante.p24_facetteEcartInf;
+            }
+        
+        }
+
 
         private void TestEtBascule_V1(ref BeanTopologieFacettes p_topologieFacette, string p_hcodeArcCandidatASuppression)
         {
@@ -426,55 +533,84 @@ namespace DEM.Net.Lib.Services.Lab
             }
         }
 
-        private void TestEtBascule_V2Delaunay(ref BeanTopologieFacettes p_topologieFacette, string p_hcodeArcCandidatASuppression)
+        private BeanResultatConversions_internal TestEtBascule_DelaunayByRef(ref BeanTopologieFacettes p_topologieFacette, string p_hcodeArcCandidatASuppression)
         {
+            BeanResultatConversions_internal v_beanRapportOut = new BeanResultatConversions_internal();
             try
             {
+                //A-RECUP des DONNEES UTILES
+
+                //L'arc sépare 2 triangles juxtaposés formant un quadrilatère.
+                //On récupère cet arc...
                 BeanArc_internal v_arcToTest = p_topologieFacette.p12_arcsByCode[p_hcodeArcCandidatASuppression];
 
+                //...et les 2 autres points du 'quadrilatère'
                 BeanFacette_internal v_facetteGauche = v_arcToTest.p21_facetteGauche;
                 BeanFacette_internal v_facetteDroite = v_arcToTest.p22_facetteDroite;
-
                 BeanPoint_internal v_pointGaucheNewArc = v_facetteGauche.p01_pointsDeFacette.Where(c => c.p01_hCodeGeog != v_arcToTest.p11_pointDbt.p01_hCodeGeog && c.p01_hCodeGeog != v_arcToTest.p12_pointFin.p01_hCodeGeog).First();
                 BeanPoint_internal v_pointDroitNewArc = v_facetteDroite.p01_pointsDeFacette.Where(c => c.p01_hCodeGeog != v_arcToTest.p11_pointDbt.p01_hCodeGeog && c.p01_hCodeGeog != v_arcToTest.p12_pointFin.p01_hCodeGeog).First();
 
-                List< double[]> v_triangleAvantBascule;
-                bool v_isPointDansLeCercle_vf;
-               
-               v_triangleAvantBascule = v_facetteGauche.p01_pointsDeFacette.Select(t=>t.p10_coord).ToList();
-                v_isPointDansLeCercle_vf=FLabServices.createCalculLow().IsPointDDansCercleCirconscritAuTriangleExplicite(v_triangleAvantBascule, v_pointDroitNewArc.p10_coord);
-                if(!v_isPointDansLeCercle_vf)
+
+                //PHASE A: TESTS - Faut-il 'basculer' (=privilégier les 2 autres triangles séparés par la 2de 'diagonale')?
+
+                //=>On teste si les cercles circonscrits à l'un et l'autre triangle incluent "le 4ème point" (=celui appartenant à l'autre triangle et pas à l'arc) 
+                //(On utilise ici une méthode 'explicite' qui calcule le centre, le rayon afférent et l'écart à ce rayon:
+                //=>Ne nous semble pas plus coûteux que par le test du déterminant qui implique de connaître l'ordonnancement horaire/anti-horaire des points des triangles)
+               List< double[]> v_pointsDuTriangleAvantBascule;
+               v_pointsDuTriangleAvantBascule = v_facetteGauche.p01_pointsDeFacette.Select(t=>t.p10_coord).ToList();
+                bool v_isPointDansLeCercle1_vf= FLabServices.createCalculLow().IsPointDDansCercleCirconscritAuTriangleExplicite(v_pointsDuTriangleAvantBascule, v_pointDroitNewArc.p10_coord);
+                v_pointsDuTriangleAvantBascule = v_facetteDroite.p01_pointsDeFacette.Select(t => t.p10_coord).ToList();
+                bool v_isPointDansLeCercle2_vf = FLabServices.createCalculLow().IsPointDDansCercleCirconscritAuTriangleExplicite(v_pointsDuTriangleAvantBascule, v_pointGaucheNewArc.p10_coord);
+
+                //Si les 2 cerccles circonscrits sont "vides"=>alors, la conformation est OK=> inutile de modifier.
+                if (!v_isPointDansLeCercle1_vf && !v_isPointDansLeCercle2_vf)
                 {
-                    return;
+                    v_arcToTest.p20_statutArc = enumStatutArc.arcNONCandidatASuppression;
+                    v_beanRapportOut.p00_modif_vf = false;
+                    return v_beanRapportOut;
                 }
-   
-                v_triangleAvantBascule = v_facetteDroite.p01_pointsDeFacette.Select(t => t.p10_coord).ToList();
-                v_isPointDansLeCercle_vf = FLabServices.createCalculLow().IsPointDDansCercleCirconscritAuTriangleExplicite(v_triangleAvantBascule, v_pointGaucheNewArc.p10_coord);
-                if (!v_isPointDansLeCercle_vf)
-                {
-                    return;
-                }
-                //2-L'arc de remplacement intersecte strictement l'arc à remplacer dans le plan XY?
+
+                //On ne peut, toutefois, modifier que si le quadrilatère est strictement convexe 
+                //(Si ce n'est pas le cas, la "2ème diagonale" est  partiellement extérieure ou sur confondues avec 2 arètes du quadrilatère; la modif n'est pas possible
+                //On teste si l'"arc de remplacement" (correspondant à cette "2de diagonale") intersecte strictement l'arc à remplacer dans le plan XY?
                 List<BeanPoint_internal> v_ptsDeLArcTeste = new List<BeanPoint_internal>() { v_arcToTest.p11_pointDbt, v_arcToTest.p12_pointFin };
+                if (!FLabServices.createCalculLow().AreSegmentsSequants(v_arcToTest.p11_pointDbt.p10_coord, v_arcToTest.p12_pointFin.p10_coord, v_pointGaucheNewArc.p10_coord, v_pointDroitNewArc.p10_coord))
+                {
+                    v_beanRapportOut.p00_modif_vf = false;
+                    return v_beanRapportOut;
+                }
+
+
+
+                //B-PHASE B 'BASCULE':
+                //=>On va effectuer la découpe du 'quadrilatère' selon la 2de diagonale, en 2 nouveax triangles
+                //=>On va également référencer les 4 arètes externes.
+                //? Elles vont être, elles-mêmes, candidates, en sortie à de nouveaux tests de partition.
+                //On pourrait renvoyer un simple bool (modifié/non modifié) et récupérer en sortie ces arcs ou/et les flaguer comme 'candidats' 
+                //mais permet d'éviter des filtres inutiles
+                //Noter encore: on ne met pas à jour ici le statut 'candidat à modif': risquerait de perturber la version 1 du projet: VOIR A LA REFACTO
+                v_beanRapportOut.p02_arcsCandidatsOut = new List<BeanArc_internal>();
+
+                //Action...:
+                //On avait des triangles respectivement à droite et à gauche de l'arc test.
+                //=>On créé 2 nouveaux triangles.
+                //Utilisant la "2de diagonale", l'un sera, bien sur, 'à droite' de ce nouvel arc, l'autre à 'gauche'...
+                //...mais, dans le référentiel déterminé par les 2 diagonales, On va donc considérer que ces 2 triangles sont l'un  'haut', l'autre 'bas'.
+
+                BeanArc_internal v_newArc = new BeanArc_internal(v_pointGaucheNewArc, v_pointDroitNewArc);
+                v_beanRapportOut.p03_arcsAExclureOut.Add(v_newArc);
+
+                BeanFacette_internal v_newFacetteHaute = new BeanFacette_internal();
+                BeanFacette_internal v_newFacetteBasse = new BeanFacette_internal();
+                v_beanRapportOut.p01_newFacettes.Add(v_newFacetteHaute);
+                v_beanRapportOut.p01_newFacettes.Add(v_newFacetteBasse);
+
+                //La facette 'haute' va être déclarée comme celle pour laquelle le '1er point' de l'arc test est 'au-dessus' du 'nouvel arc' 
+                //Le choix est donc arbitraire mais on a besoin de le faire pour effectuer, plus tard, la répartition des 'points inclus' entre l'une et l'autre facette
+                bool v_facetteHauteAuDessus_vf;
                 Dictionary<int, double[]> v_positionDesPointsDeLArcTest_ParRapportAuNouvelArc;
                 v_positionDesPointsDeLArcTest_ParRapportAuNouvelArc = GetCoordonneesDansNewReferentiel2D(v_ptsDeLArcTeste, v_pointGaucheNewArc.p10_coord, v_pointDroitNewArc.p10_coord);
 
-                //Le test précédent ne me semble pas suffisant=>on le fait de manière explicite
-                if (!FLabServices.createCalculLow().AreSegmentsSequants(v_arcToTest.p11_pointDbt.p10_coord, v_arcToTest.p12_pointFin.p10_coord, v_pointGaucheNewArc.p10_coord, v_pointDroitNewArc.p10_coord))
-                {
-                    return;
-                }
-
-                //B=>Les tests sont OK=>On éclate l'ensemble en 2 nouveaux triangles:
-
-                BeanArc_internal v_newArc = new BeanArc_internal(v_pointGaucheNewArc, v_pointDroitNewArc);
-                BeanFacette_internal v_newFacetteHaute = new BeanFacette_internal();
-                BeanFacette_internal v_newFacetteBasse = new BeanFacette_internal();
-
-
-                //On regarde  si le point de début de l'arc test se situe 'au dessus' du nouvel arc dans le référentiel 'pt gauche->pt droit' déjà calculé:
-                //On eput considérer, du coup, que ce 1er point de l'arc test se situe à gauche du 'vecteur directeur''pt gauche->pt droit'
-                bool v_facetteHauteAuDessus_vf;
                 if (v_positionDesPointsDeLArcTest_ParRapportAuNouvelArc.Where(c => c.Key == v_arcToTest.p11_pointDbt.p00_id).Where(c => c.Value[1] > 0).Count() == 1)
                 {
                     v_newArc.p21_facetteGauche = v_newFacetteHaute;
@@ -488,15 +624,10 @@ namespace DEM.Net.Lib.Services.Lab
                     v_facetteHauteAuDessus_vf = false;
                 }
 
-                //Scission des 2 facettes.
-                //Il s'agit ici faire comme si:
-                //1- on assemblait les 2 facettes originales en un quadrilatère; la frontière constituant une diagonale
-                //2- de découper ce quadrilatère en 2 nouveaux traingles selon l'autre diagonale (et en supprimant la 1ère diagonale)
-
+                //=>On effectue la scission...:
                 BeanArc_internal v_arcMontant;
                 BeanArc_internal v_arcDescendant;
 
-                //Traitement de la facette 'haute' (les notions de 'haut' et 'bas' constituent une simple convention)
                 v_newFacetteHaute.p01_pointsDeFacette.Add(v_arcToTest.p11_pointDbt);
                 v_newFacetteHaute.p01_pointsDeFacette.Add(v_pointGaucheNewArc);
                 v_newFacetteHaute.p01_pointsDeFacette.Add(v_pointDroitNewArc);
@@ -525,7 +656,7 @@ namespace DEM.Net.Lib.Services.Lab
                     v_arcMontant.p22_facetteDroite = v_newFacetteHaute;
                 }
                 v_newFacetteHaute.p02_arcs.Add(v_arcMontant);
-
+                v_beanRapportOut.p02_arcsCandidatsOut.Add(v_arcMontant);
 
                 //L'arc 'decendant' est censé partir du  pt de début de l''arc à tester' et redescende sur le point droit du nouvel arc
                 //Toutefois:
@@ -548,6 +679,7 @@ namespace DEM.Net.Lib.Services.Lab
                     v_arcDescendant.p22_facetteDroite = v_newFacetteHaute;
                 }
                 v_newFacetteHaute.p02_arcs.Add(v_arcDescendant);
+                v_beanRapportOut.p02_arcsCandidatsOut.Add(v_arcDescendant);
 
                 //Traitement de la facette 'basse'
 
@@ -575,6 +707,7 @@ namespace DEM.Net.Lib.Services.Lab
                     v_arcDescendant.p22_facetteDroite = v_newFacetteBasse;
                 }
                 v_newFacetteBasse.p02_arcs.Add(v_arcDescendant);
+                v_beanRapportOut.p02_arcsCandidatsOut.Add(v_arcDescendant);
 
                 v_arcMontant = v_facetteDroite.p02_arcs.Where(c =>
                 (
@@ -593,6 +726,7 @@ namespace DEM.Net.Lib.Services.Lab
                     v_arcMontant.p22_facetteDroite = v_newFacetteBasse;
                 }
                 v_newFacetteBasse.p02_arcs.Add(v_arcMontant);
+                v_beanRapportOut.p02_arcsCandidatsOut.Add(v_arcMontant);
 
                 //On effectue l'affectation des points inclus
                 List<BeanPoint_internal> v_tousPoints = new List<BeanPoint_internal>();
@@ -630,6 +764,7 @@ namespace DEM.Net.Lib.Services.Lab
 
                 //On met à jour la topologie
                 //(Controle 'pustule': ponctuellement (1/10 000)=>1 arc doublonné
+                //=>A APPROFONDIR: Est-ce que cela ne pourrait pas être dû à l'existance de couples de triangles 'plats' ?
                 List<BeanArc_internal> v_doublonsArcs = new List<BeanArc_internal>();
                 if (!p_topologieFacette.p12_arcsByCode.ContainsKey(v_newArc.p01_hcodeArc))
                 {
@@ -651,13 +786,16 @@ namespace DEM.Net.Lib.Services.Lab
             {
                 throw;
             }
+            return v_nouveauxArcsATester;
         }
 
         #region UTILITAIRES
-        private void GenereEtInsertSousfacettesByRef(ref BeanTopologieFacettes p_topologieCible, int p_idFacetteSource, BeanPoint_internal p_pointCentral)
+        private BeanResultatConversions_internal GetTetraedreByFacette(ref BeanTopologieFacettes p_topologieCible, int p_idFacetteSource, BeanPoint_internal p_pointCentral)
         {
+            BeanResultatConversions_internal v_beanRapportOut = new BeanResultatConversions_internal();
             try
             {
+                v_beanRapportOut.p00_modif_vf = true;
                 //On remonte les données de la facette
                 BeanFacette_internal v_facetteSource = p_topologieCible.p13_facettesById[p_idFacetteSource];
                 List<BeanPoint_internal> v_pointsFacetteSource = v_facetteSource.p01_pointsDeFacette;
@@ -691,6 +829,7 @@ namespace DEM.Net.Lib.Services.Lab
                   
                     v_arcsRayonnants.Add(v_arc);
                     p_topologieCible.p12_arcsByCode.Add(v_arc.p01_hcodeArc, v_arc);
+                    v_beanRapportOut.p03_arcsAExclureOut.Add(v_arc);
                 }
 
                 //On génère les facettes
@@ -754,6 +893,7 @@ namespace DEM.Net.Lib.Services.Lab
                     if(v_arcBase.p20_statutArc!=enumStatutArc.arcExterne)
                     {
                         v_arcBase.p20_statutArc = enumStatutArc.arcCandidatASuppression;
+                        v_beanRapportOut.p02_arcsCandidatsOut.Add(v_arcBase);
                     }
                     //
                     v_facette.p02_arcs.Add(v_arcDescendant);
@@ -763,9 +903,14 @@ namespace DEM.Net.Lib.Services.Lab
                     RattachePointsToFacette(ref v_pointsInclus, ref v_facette);
                     //
                     p_topologieCible.p13_facettesById.Add(v_facette.p00_idFacette, v_facette);
+                    v_beanRapportOut.p01_newFacettes.Add(v_facette);
                 }
 
                 //On supprime la facette d'origine
+                if(v_facetteSource.p24_facetteEcartInf!=null)
+                {
+                    v_facetteSource.p24_facetteEcartInf.p23_facetteEcartSup = v_facetteSource.p23_facetteEcartSup;
+                }
                 p_topologieCible.p13_facettesById.Remove(p_idFacetteSource);
             }
             catch (Exception)
@@ -773,9 +918,10 @@ namespace DEM.Net.Lib.Services.Lab
 
                 throw;
             }
+            return v_beanRapportOut ;
         }
 
-        private BeanPoint_internal GetPointExcentreDeLaFacette(BeanFacette_internal p_facette, BeanParametresChoixDuPointCentral p_paramDeChoixDuPointCentral)
+        private BeanPoint_internal GetAndSetByRefPointExcentreDeLaFacette(ref BeanFacette_internal p_facette, BeanParametresChoixDuPointCentral p_paramDeChoixDuPointCentral,bool p_nullSiInfALExcentrationMinimale_vf)
         {
             BeanPoint_internal v_point = null;
             try
@@ -790,11 +936,12 @@ namespace DEM.Net.Lib.Services.Lab
              
                 //
                 int p_idPointCible;
-                switch(p_paramDeChoixDuPointCentral.p00_methodeChoixDuPointCentral)
+                double v_valeurMaxiAbs = 0;
+                switch (p_paramDeChoixDuPointCentral.p00_methodeChoixDuPointCentral)
                 {
                     case enumMethodeChoixDuPointCentral.pointLePlusExcentre:
-                        double   v_valeurMaxiAbs=Math.Max(v_coordPointsDansReferentielDeLaFacette.Max(c => c.Value[2]), Math.Abs(v_coordPointsDansReferentielDeLaFacette.Min(c => c.Value[2])));
-                        if(v_valeurMaxiAbs< p_paramDeChoixDuPointCentral.p01_excentrationMinimum)
+                        v_valeurMaxiAbs=Math.Max(v_coordPointsDansReferentielDeLaFacette.Max(c => c.Value[2]), Math.Abs(v_coordPointsDansReferentielDeLaFacette.Min(c => c.Value[2])));
+                        if(v_valeurMaxiAbs< p_paramDeChoixDuPointCentral.p01_excentrationMinimum && p_nullSiInfALExcentrationMinimale_vf)
                         {
                             return null;
                         }
@@ -804,6 +951,9 @@ namespace DEM.Net.Lib.Services.Lab
                         throw new Exception("Méthode " + p_paramDeChoixDuPointCentral.p00_methodeChoixDuPointCentral + " non implémentée.");
                 }
                 v_point = p_facette.p10_pointsInclus.Where(c => c.p00_id == p_idPointCible).First();
+                v_point.p31_ecartAbsAuPlanCourant = v_valeurMaxiAbs;
+                p_facette.p21_plusGrandEcartAbsolu = v_valeurMaxiAbs;
+                p_facette.p22_pointPlusGrandEcart = v_point;
             }
             catch (Exception)
             {
