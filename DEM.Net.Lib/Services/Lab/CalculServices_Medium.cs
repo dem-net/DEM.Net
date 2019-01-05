@@ -158,10 +158,14 @@ namespace DEM.Net.Lib.Services.Lab
                     v_facettesTriees[v_indice + 1].p23_facetteEcartSup = v_facettesTriees[v_indice];
                 }
 
-
+                //On parcourt la liste chaînée:
+                do
+                {
+                    TraitementDeLaFacetteMaxiByRef(ref p_topologieFacette, p_topologieFacette.p21_facetteAvecEcartAbsoluMax, p_parametresDuTin);
+                    p_topologieFacette.p21_facetteAvecEcartAbsoluMax = p_topologieFacette.p21_facetteAvecEcartAbsoluMax.p24_facetteEcartInf;
+                }
+                while (p_topologieFacette.p21_facetteAvecEcartAbsoluMax.p24_facetteEcartInf != null);
              
-              
-
             }
             catch (Exception)
             {
@@ -224,8 +228,7 @@ namespace DEM.Net.Lib.Services.Lab
                     }
                     v_facettePourMaj = p_topologieFacette.p13_facettesById[v_idNewFacette];
                     GetAndSetByRefPointExcentreDeLaFacette(ref v_facettePourMaj, p_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral, v_nullSiInfEcentrationMinimale_vf);
-
-                    InsertDansListeChaineeDesFacettes(p_topologieFacette.p21_facetteAvecEcartAbsoluMax, p_facetteATraiter, v_ecartMini);
+                    InsertDansListeChaineeDesFacettes(ref p_topologieFacette, p_facetteATraiter, v_ecartMini);
                 }
             }
             catch (Exception)

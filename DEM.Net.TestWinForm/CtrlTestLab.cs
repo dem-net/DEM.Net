@@ -186,7 +186,9 @@ namespace DEM.Net.TestWinForm
             //FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(_topolFacettes, false, false);
             //FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
 
-            FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, _paramTin);
+           // FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, _paramTin);
+
+            FLabServices.createCalculMedium().AugmenteDetailsTinByRef_v2(ref _topolFacettes, _paramTin);
             bool v_visuSpatialTrace_vf = false;
             if (v_visuSpatialTrace_vf)
             {

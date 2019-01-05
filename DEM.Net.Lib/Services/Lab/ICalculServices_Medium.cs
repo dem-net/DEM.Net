@@ -12,6 +12,7 @@ namespace DEM.Net.Lib.Services.Lab
         /// <returns></returns>
         BeanTopologieFacettes GetInitialisationTin(List<BeanPoint_internal> p_points, BeanParametresDuTin p_parametresDuTin);
         void AugmenteDetailsTinByRef(ref BeanTopologieFacettes p_topologieFacette, BeanParametresDuTin p_parametresDuTin);
+        void AugmenteDetailsTinByRef_v2(ref BeanTopologieFacettes p_topologieFacette, BeanParametresDuTin p_parametresDuTin);
 
         /// <summary>
         /// 
