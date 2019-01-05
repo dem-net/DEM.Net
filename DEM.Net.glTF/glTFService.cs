@@ -372,7 +372,6 @@ namespace DEM.Net.glTF
 
 
                         List<int> indices = new List<int>((sections.Count - 1) * 6);
-                        int j = 0;
                         for (int i = 0; i < sections.Count - 1; i++)
                         {
                             int i0 = i * 2;

@@ -9,12 +9,6 @@ namespace DEM.Net.Test
     [TestClass]
     public class MiscTests
     {
-        [TestInitialize()]
-        public void Initialize()
-        {
-          
-            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
-        }
 
         [TestMethod]
         [TestCategory("Misc / Geometry")]

@@ -1,13 +1,13 @@
 ﻿using DEM.Net.Lib.Services.Lab;
-using SqlServerSpatial.Toolkit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.SqlServer.Types;
-using System.Windows.Media;
 using System.Data.SqlTypes;
+using GeoAPI.Geometries;
+using NetTopologySuite.Diagnostics.Tracing;
+using System.Drawing;
 
 namespace DEM.Net.Lib.Services.VisualisationServices
 {
@@ -58,16 +58,16 @@ namespace DEM.Net.Lib.Services.VisualisationServices
                     switch (p_progressionCouleur)
                     {
                         case enumProgressionCouleurs.red:
-                            v_couleur = Color.FromRgb((byte) v_niveauCouleurRef, (byte)0, (byte)0);
+                            v_couleur = Color.FromArgb(v_niveauCouleurRef, 0, 0);
                             break;
                         case enumProgressionCouleurs.green:
-                            v_couleur = Color.FromRgb((byte)0, (byte)v_niveauCouleurRef, (byte)0);
+                            v_couleur = Color.FromArgb(0, v_niveauCouleurRef, 0);
                             break;
                         case enumProgressionCouleurs.blue:
-                            v_couleur = Color.FromRgb((byte)0, (byte)0, (byte)v_niveauCouleurRef);
+                            v_couleur = Color.FromArgb(0, 0, v_niveauCouleurRef);
                             break;
                         case enumProgressionCouleurs.greenVersRed:
-                            v_couleur = Color.FromRgb((byte)v_niveauCouleurRef, (byte)v_niveauCouleurInverseRef, (byte)0);
+                            v_couleur = Color.FromArgb(v_niveauCouleurRef, v_niveauCouleurInverseRef, 0);
                             break;
                         default:
                             throw new Exception("Méthode " + p_progressionCouleur + " non implémentée.");
@@ -134,7 +134,7 @@ namespace DEM.Net.Lib.Services.VisualisationServices
                 SpatialTrace.Enable();
                 Color v_couleurCourante;
                 string v_message;
-                SqlGeometry v_pointGeom;
+                IGeometry v_pointGeom;
                 foreach (KeyValuePair<string, List<BeanPoint_internal>> v_classe in p_pointsParClasse)
                 {
                     v_couleurCourante = p_tableCouleurs[v_classe.Key];
@@ -143,7 +143,7 @@ namespace DEM.Net.Lib.Services.VisualisationServices
                     foreach (BeanPoint_internal v_point in v_classe.Value)
                     {
                         v_message = "Pt " + v_point.p00_id + " (" + v_point.p10_coord[2] + " m)";
-                        v_pointGeom = SqlGeometry.Point(v_point.p10_coord[0], v_point.p10_coord[1], v_point.p11_srid).STBuffer(p_taillePoint);
+                        v_pointGeom =FLabServices.createUtilitaires().ConstructPoint(v_point.p10_coord[0], v_point.p10_coord[1], v_point.p11_srid).Buffer(p_taillePoint);
                         SpatialTrace.TraceGeometry(v_pointGeom, v_message, v_message);
                     }
                 }
@@ -155,7 +155,7 @@ namespace DEM.Net.Lib.Services.VisualisationServices
                 throw;
             }
         }
-        public void GetVisuPointsAlti(List<BeanPoint_internal> p_points,  int p_nbreClasses, bool p_croissantSinonDecroissant, enumModeSeuillage p_methodeDeSeuillage, enumProgressionCouleurs p_progressionCouleurs, int p_alpha, int p_taillePointAutoSi0OuMoins)
+        public void GetVisuPointsAlti(List<BeanPoint_internal> p_points, int p_nbreClasses, bool p_croissantSinonDecroissant, enumModeSeuillage p_methodeDeSeuillage, enumProgressionCouleurs p_progressionCouleurs, int p_alpha, int p_taillePointAutoSi0OuMoins)
         {
             try
             {
@@ -180,11 +180,11 @@ namespace DEM.Net.Lib.Services.VisualisationServices
             }
         }
         //
-        public void GetVisuPoints2D(List<BeanPoint_internal> p_points,string p_label, Color p_couleurCourante, int p_taillePointAutoSi0OuMoins)
+        public void GetVisuPoints2D(List<BeanPoint_internal> p_points, string p_label, Color p_couleurCourante, int p_taillePointAutoSi0OuMoins)
         {
             try
             {
-             
+
                 int param_ratioTaillePoint = 100;
                 int v_taillePoints = p_taillePointAutoSi0OuMoins;
                 if (p_taillePointAutoSi0OuMoins <= 0)
@@ -194,19 +194,19 @@ namespace DEM.Net.Lib.Services.VisualisationServices
 
                 SpatialTrace.Enable();
                 string v_message;
-                SqlGeometry v_pointGeom;
+                IGeometry v_pointGeom;
 
                 //SpatialTrace.SetFillColor(param_couleurCourante);
                 SpatialTrace.SetLineColor(p_couleurCourante);
                 foreach (BeanPoint_internal v_point in p_points)
                 {
                     v_message = "Pt " + v_point.p00_id + " (" + v_point.p10_coord[2] + " m)";
-                    if (p_label!="")
+                    if (p_label != "")
                     {
                         v_message = p_label + "/" + v_message;
                     }
-                  
-                    v_pointGeom = SqlGeometry.Point(v_point.p10_coord[0], v_point.p10_coord[1], v_point.p11_srid).STBuffer(v_taillePoints);
+
+                    v_pointGeom = FLabServices.createUtilitaires().ConstructPoint(v_point.p10_coord[0], v_point.p10_coord[1], v_point.p11_srid).Buffer(v_taillePoints);
                     SpatialTrace.TraceGeometry(v_pointGeom, v_message, v_message);
                 }
 
@@ -218,12 +218,12 @@ namespace DEM.Net.Lib.Services.VisualisationServices
                 throw;
             }
         }
-      
+
         public void GetVisuPoints2D(List<BeanPoint_internal> p_points, string p_label, int p_taillePointAutoSi0OuMoins)
         {
             try
             {
-                Color v_couleur = Color.FromRgb((byte)255, (byte)0, (byte)0);
+                Color v_couleur = Color.Red;
                 GetVisuPoints2D(p_points, p_label, v_couleur, p_taillePointAutoSi0OuMoins);
             }
             catch (Exception)
@@ -235,15 +235,15 @@ namespace DEM.Net.Lib.Services.VisualisationServices
         public void GetVisuPoint2D(BeanPoint_internal p_point, string p_label, Color p_couleurCourante, int p_taillePoint)
         {
 
-            Color param_couleurContour = Color.FromRgb((byte)125, (byte)125, (byte)125);
-            if (p_taillePoint<=0)
+            Color param_couleurContour = Color.FromArgb(125, 125, 125);
+            if (p_taillePoint <= 0)
             {
                 p_taillePoint = 1;
             }
             //
             SpatialTrace.Enable();
-            string v_message="";
-            SqlGeometry v_pointGeom;
+            string v_message = "";
+            IGeometry v_pointGeom;
 
             SpatialTrace.SetFillColor(p_couleurCourante);
             SpatialTrace.SetLineColor(param_couleurContour);
@@ -253,14 +253,14 @@ namespace DEM.Net.Lib.Services.VisualisationServices
             {
                 v_message += " " + p_label;
             }
-            v_pointGeom = SqlGeometry.Point(p_point.p10_coord[0], p_point.p10_coord[1], p_point.p11_srid).STBuffer(p_taillePoint);
+            v_pointGeom = FLabServices.createUtilitaires().ConstructPoint(p_point.p10_coord[0], p_point.p10_coord[1], p_point.p11_srid).Buffer(p_taillePoint);
             SpatialTrace.TraceGeometry(v_pointGeom, v_message, v_message);
 
             SpatialTrace.Disable();
         }
-        public void GetVisuPoint2D(BeanPoint_internal p_point, string p_label,  int p_taillePoint)
+        public void GetVisuPoint2D(BeanPoint_internal p_point, string p_label, int p_taillePoint)
         {
-            Color p_couleur = Color.FromRgb((byte)125, (byte)125, (byte)125);
+            Color p_couleur = Color.FromArgb(125, 125, 125);
             GetVisuPoint2D(p_point, p_label, p_couleur, p_taillePoint);
         }
         //
@@ -272,17 +272,17 @@ namespace DEM.Net.Lib.Services.VisualisationServices
             SpatialTrace.SetFillColor(p_couleurCourante);
             SpatialTrace.SetLineColor(p_couleurCourante);
 
-            v_message = "arc " + p_arc.p00_idArc+" ("+p_arc.p01_hcodeArc+")";
+            v_message = "arc " + p_arc.p00_idArc + " (" + p_arc.p01_hcodeArc + ")";
             if (p_label != "")
             {
                 v_message += " " + p_label;
             }
             bool v_generePointSiConfondus_vf = true;
-            SqlGeometry v_lineGeom;
+            IGeometry v_lineGeom;
             v_lineGeom = FLabServices.createUtilitaires().GetGeometryArc(p_arc, v_generePointSiConfondus_vf);
-            if(v_lineGeom.STGeometryType().ToString()!=OpenGisGeometryType.LineString.ToString())
+            if (v_lineGeom.OgcGeometryType != OgcGeometryType.LineString)
             {
-                v_message += " PB GEOM (Arc est: " + v_lineGeom.STGeometryType().ToString() + ")";
+                v_message += " PB GEOM (Arc est: " + v_lineGeom.OgcGeometryType + ")";
             }
             SpatialTrace.TraceGeometry(v_lineGeom, v_message, v_message);
             //
@@ -291,7 +291,7 @@ namespace DEM.Net.Lib.Services.VisualisationServices
             SpatialTrace.Disable();
         }
         //
-        public void GetVisuVecteur2D(double[] p_vecteur, double[] p_origine,int p_srid, string p_label, Color p_couleurCourante, double p_coeff = 1)
+        public void GetVisuVecteur2D(double[] p_vecteur, double[] p_origine, int p_srid, string p_label, Color p_couleurCourante, double p_coeff = 1)
         {
             try
             {
@@ -300,10 +300,10 @@ namespace DEM.Net.Lib.Services.VisualisationServices
                 v_coordPoint2[0] += (p_vecteur[0] * p_coeff);
                 v_coordPoint2[1] += (p_vecteur[1] * p_coeff);
                 bool ifPt1AndPt2IqualReturnPointElseNull = true;
-                SqlGeometry v_lineGeom = FLabServices.createUtilitaires().GetGeometryLine(p_origine, v_coordPoint2, p_srid, ifPt1AndPt2IqualReturnPointElseNull);
-                if (v_lineGeom.STGeometryType().ToString() != OpenGisGeometryType.LineString.ToString())
+                IGeometry v_lineGeom = FLabServices.createUtilitaires().GetGeometryLine(p_origine, v_coordPoint2, p_srid, ifPt1AndPt2IqualReturnPointElseNull);
+                if (v_lineGeom.OgcGeometryType != OgcGeometryType.LineString)
                 {
-                    v_message += " PB GEOM (Arc est: " + v_lineGeom.STGeometryType().ToString() + ")";
+                    v_message += " PB GEOM (Arc est: " + v_lineGeom.OgcGeometryType + ")";
                 }
                 //
                 SpatialTrace.Enable();
@@ -321,7 +321,7 @@ namespace DEM.Net.Lib.Services.VisualisationServices
         }
         public void GetVisuVecteur2D(double[] p_vecteur, double[] p_origine, int p_srid, string p_label, double p_coeff = 1)
         {
-            Color v_couleur = Color.FromRgb((byte)255, (byte)0, (byte)0);
+            Color v_couleur = Color.FromArgb(255, 0, 0);
             GetVisuVecteur2D(p_vecteur, p_origine, p_srid, p_label, v_couleur, p_coeff);
         }
         //
@@ -329,16 +329,16 @@ namespace DEM.Net.Lib.Services.VisualisationServices
         {
             Color v_couleur;
             Random v_randomisateur = new Random(2);
-            foreach(BeanFacette_internal v_facette in p_topologieFacettes.p13_facettesById.Values)
+            foreach (BeanFacette_internal v_facette in p_topologieFacettes.p13_facettesById.Values)
             {
-                v_couleur = Color.FromRgb((byte) v_randomisateur.Next(1, 254), (byte)v_randomisateur.Next(1, 254), (byte)v_randomisateur.Next(1, 254));
-                GetVisuFacette(v_facette,v_couleur, p_visupointsInclus_vf, p_afficherMemeSiInvalide_vf);
+                v_couleur = Color.FromArgb(v_randomisateur.Next(1, 254), v_randomisateur.Next(1, 254), v_randomisateur.Next(1, 254));
+                GetVisuFacette(v_facette, v_couleur, p_visupointsInclus_vf, p_afficherMemeSiInvalide_vf);
             }
         }
         public void GetVisuFacette(BeanFacette_internal p_facette, Color p_couleurCourante, bool p_visualiserPointsInclus_vf, bool p_afficherMemeSiInvalide_vf)
         {
-            Color param_couleurContour = Color.FromRgb((byte)125, (byte)125, (byte)125);
-            Color param_couleurPoint = Color.FromRgb((byte)200, (byte)200, (byte)200);
+            Color param_couleurContour = Color.FromArgb(125, 125, 125);
+            Color param_couleurPoint = Color.FromArgb(200, 200, 200);
 
             SpatialTrace.Enable();
 
@@ -346,16 +346,16 @@ namespace DEM.Net.Lib.Services.VisualisationServices
             SpatialTrace.SetLineColor(param_couleurContour);
             //
             List<double[]> v_coord = p_facette.p01_pointsDeFacette.Select(c => c.p10_coord).ToList();
-            SqlGeometry v_polygone;
+            IGeometry v_polygone;
             v_polygone = FLabServices.createUtilitaires().GetGeometryPolygon(v_coord, p_facette.p01_pointsDeFacette.First().p11_srid);
-            if(!p_afficherMemeSiInvalide_vf && !v_polygone.STIsValid())
+            if (!p_afficherMemeSiInvalide_vf && !v_polygone.IsValid)
             {
                 return;
             }
 
             SpatialTrace.TraceGeometry(v_polygone, "fac: " + p_facette.p00_idFacette);
             //
-            
+
             if (p_visualiserPointsInclus_vf)
             {
                 foreach (BeanPoint_internal v_point in p_facette.p10_pointsInclus)
@@ -371,7 +371,7 @@ namespace DEM.Net.Lib.Services.VisualisationServices
         public void AfficheVisu()
         {
             SpatialTrace.Enable();
-            SpatialTrace.ShowDialog();
+            //SpatialTrace.ShowDialog();
             SpatialTrace.Disable();
         }
         public void ClearSpatialTrace()

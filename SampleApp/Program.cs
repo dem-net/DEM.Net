@@ -30,9 +30,7 @@ namespace SampleApp
 
             Logger.StartPerf("Main cold start");
 
-            // Sql Server types bootstrap
-            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
-
+           
             _RasterDataDirectory = GetDataDirectory();
             _OutputDataDirectory = @"..\..\..\Data";
 
@@ -349,7 +347,6 @@ namespace SampleApp
 
         static void Main_Archived(string[] args)
         {
-            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
             IRasterService rasterService = new RasterService(_RasterDataDirectory);
             IElevationService elevationService = new ElevationService(rasterService);
 
