@@ -128,7 +128,7 @@ namespace DEM.Net.Lib.Services.Lab
                 //
                 BeanFacette_internal v_facette;
                 bool v_renvoyerNullSiInfALExtensionMinimale_vf = false;
-                foreach (int v_idFacette in p_topologieFacette.p11_pointsFacettesByIdPoint.Keys)
+                foreach (int v_idFacette in p_topologieFacette.p13_facettesById.Keys)
                 {
                     v_facette = p_topologieFacette.p13_facettesById[v_idFacette];
                     GetAndSetByRefPointExcentreDeLaFacette(ref v_facette, p_parametresDuTin.p16_initialisation_modeChoixDuPointCentral, v_renvoyerNullSiInfALExtensionMinimale_vf);
@@ -141,23 +141,24 @@ namespace DEM.Net.Lib.Services.Lab
 
                 List<BeanFacette_internal> v_facettesTriees;
                 v_facettesTriees=p_topologieFacette.p13_facettesById.OrderByDescending(c => c.Value.p21_plusGrandEcartAbsolu).Select(c=>c.Value).ToList();
-               
-                p_topologieFacette.p21_facetteAvecEcartAbsoluMax = v_facettesTriees.First();
-
                 int v_indice = 0;
                 for (; v_indice< v_facettesTriees.Count-1; v_indice++)
                 {
-                    if(v_facettesTriees[v_indice + 1].p21_plusGrandEcartAbsolu < p_parametresDuTin.p16_initialisation_modeChoixDuPointCentral.p01_excentrationMinimum)
+                    if(v_facettesTriees[v_indice + 1].p21_plusGrandEcartAbsolu < p_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum)
                     {
                         break;
                     }
                     if(v_indice>0)
                     {
-                        v_facettesTriees[v_indice].p24_facetteEcartInf = v_facettesTriees[v_indice+1];
+                        v_facettesTriees[v_indice].p23_facetteEcartSup = v_facettesTriees[v_indice-1];
                     }
-                    v_facettesTriees[v_indice + 1].p23_facetteEcartSup = v_facettesTriees[v_indice];
+                    v_facettesTriees[v_indice].p24_facetteEcartInf= v_facettesTriees[v_indice +1];
                 }
+                v_facettesTriees[v_indice].p23_facetteEcartSup = v_facettesTriees[v_indice-1];
+                //=>+ Référencement de la première cellule
+                p_topologieFacette.p21_facetteAvecEcartAbsoluMax = v_facettesTriees.First();
 
+             
                 //On parcourt la liste chaînée:
                 do
                 {
@@ -220,6 +221,8 @@ namespace DEM.Net.Lib.Services.Lab
                 v_idNouvellesFacettesBrutes = v_idNouvellesFacettesBrutes.Distinct().ToList();
                 BeanFacette_internal v_facettePourMaj;
                 bool v_nullSiInfEcentrationMinimale_vf = false;
+
+               
                 foreach (int v_idNewFacette in v_idNouvellesFacettesBrutes)
                 {
                     if (!p_topologieFacette.p13_facettesById.ContainsKey(v_idNewFacette))
@@ -228,7 +231,7 @@ namespace DEM.Net.Lib.Services.Lab
                     }
                     v_facettePourMaj = p_topologieFacette.p13_facettesById[v_idNewFacette];
                     GetAndSetByRefPointExcentreDeLaFacette(ref v_facettePourMaj, p_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral, v_nullSiInfEcentrationMinimale_vf);
-                    InsertDansListeChaineeDesFacettes(ref p_topologieFacette, p_facetteATraiter, v_ecartMini);
+                    InsertDansListeChaineeDesFacettes(ref p_topologieFacette, v_facettePourMaj, v_ecartMini);
                 }
             }
             catch (Exception)
@@ -684,9 +687,15 @@ namespace DEM.Net.Lib.Services.Lab
             {
                 return;
             }
+            if(p_topologieFacette.p21_facetteAvecEcartAbsoluMax==null) //(Vrai si la liste est vide
+            {
+                p_topologieFacette.p21_facetteAvecEcartAbsoluMax = p_facetteAInserer;
+                return;
+            }
+
             //
-            BeanFacette_internal v_facetteCourante = p_topologieFacette.p21_facetteAvecEcartAbsoluMax;
             bool v_insertionFaite_vf = false;
+            BeanFacette_internal v_facetteCourante = p_topologieFacette.p21_facetteAvecEcartAbsoluMax;
             while (!v_insertionFaite_vf)
             {
                 if (p_facetteAInserer.p21_plusGrandEcartAbsolu > v_facetteCourante.p21_plusGrandEcartAbsolu)
@@ -696,6 +705,7 @@ namespace DEM.Net.Lib.Services.Lab
                     v_facetteCourante.p23_facetteEcartSup = p_facetteAInserer;
                     //
                     v_insertionFaite_vf = true;
+                    break;
                 }
                 if (v_facetteCourante.p24_facetteEcartInf == null)
                 {
@@ -703,11 +713,12 @@ namespace DEM.Net.Lib.Services.Lab
                     p_facetteAInserer.p23_facetteEcartSup = v_facetteCourante;
                     //
                     v_insertionFaite_vf = true;
+                    break;
                 }
                 v_facetteCourante = v_facetteCourante.p24_facetteEcartInf;
             }
             //
-            if (p_facetteAInserer.p23_facetteEcartSup==null)
+            if (p_facetteAInserer.p23_facetteEcartSup==null && p_facetteAInserer.p24_facetteEcartInf!=null)
             {
                 p_topologieFacette.p21_facetteAvecEcartAbsoluMax = p_facetteAInserer;
             }
@@ -720,17 +731,18 @@ namespace DEM.Net.Lib.Services.Lab
                 BeanFacette_internal v_facetteASupprimer = p_topologie.p13_facettesById[p_idFacette];
                 if (v_facetteASupprimer.p24_facetteEcartInf != null)
                 {
-                    v_facetteASupprimer.p24_facetteEcartInf.p23_facetteEcartSup = v_facetteASupprimer.p23_facetteEcartSup;
+                    v_facetteASupprimer.p24_facetteEcartInf.p23_facetteEcartSup = v_facetteASupprimer.p23_facetteEcartSup; //(Qui peut être nulle)
+                    if (v_facetteASupprimer.p23_facetteEcartSup == null) //(La facette à supprimer était la 'première'
+                    {
+                        p_topologie.p21_facetteAvecEcartAbsoluMax = v_facetteASupprimer.p24_facetteEcartInf;
+                    }
                 }
+                //
                 if (v_facetteASupprimer.p23_facetteEcartSup != null)
                 {
                     v_facetteASupprimer.p23_facetteEcartSup.p24_facetteEcartInf = v_facetteASupprimer.p24_facetteEcartInf;
                 }
-                else //La facette était la '1ère facette' (c'est à dire celle avec l'écart maxi)
-                {
-                    p_topologie.p21_facetteAvecEcartAbsoluMax= v_facetteASupprimer.p24_facetteEcartInf;
-                }
-               
+              //
                 p_topologie.p13_facettesById.Remove(p_idFacette);
             }
             catch (Exception)
