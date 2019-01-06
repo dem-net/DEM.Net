@@ -172,7 +172,7 @@ namespace DEM.Net.TestWinForm
         {
            
             _paramTin = FLabServices.createCalculMedium().GetParametresDuTinParDefaut();
-            _paramTin.p11_initialisation_determinationFrontieres = enumModeDelimitationFrontiere.mboSimple;
+            _paramTin.p11_initialisation_determinationFrontieres = enumModeDelimitationFrontiere.pointsProchesDuMbo;
             _paramTin.p12_extensionSupplementaireMboEnM = 1000;
             _paramTin.p13_modeCalculZParDefaut = enumModeCalculZ.alti_0;
             _paramTin.p14_altitudeParDefaut = -200;
