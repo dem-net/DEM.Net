@@ -59,6 +59,7 @@ namespace DEM.Net.Lib
             _yMin = ymin;
             _yMax = ymax;
         }
+        
 
         public BoundingBox Scale(double scale)
         {

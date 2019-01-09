@@ -43,7 +43,7 @@ namespace SampleApp
             IElevationService elevationService = new ElevationService(rasterService);
 
 
-            TextureSamples textureSamples = new TextureSamples(elevationService, Path.Combine(_OutputDataDirectory, @"GPX\Vernet-les-bains-Canigou-34km.gpx"), _OutputDataDirectory);
+            TextureSamples textureSamples = new TextureSamples(elevationService, _OutputDataDirectory);
             textureSamples.Run();
 
             

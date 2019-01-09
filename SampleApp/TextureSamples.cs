@@ -2,6 +2,7 @@
 using AssetGenerator.Runtime;
 using DEM.Net.glTF;
 using DEM.Net.Lib;
+using DEM.Net.Lib.Imagery;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,14 +15,14 @@ namespace SampleApp
     class TextureSamples
     {
         private readonly IElevationService _elevationService;
-        private readonly string _gpxFile;
+        private readonly string _bboxWkt;
         private DEMDataSet _dataSet;
         private readonly string _outputDirectory;
 
-        public TextureSamples(IElevationService elevationService, string gpxFile, string outputDirectory)
+        public TextureSamples(IElevationService elevationService, string outputDirectory)
         {
             _elevationService = elevationService;
-            _gpxFile = gpxFile;
+            _bboxWkt = "POLYGON((5.424004809009261 43.68472756348281, 5.884057299243636 43.68472756348281, 5.884057299243636 43.40402056297321, 5.424004809009261 43.40402056297321, 5.424004809009261 43.68472756348281))";
             _dataSet = DEMDataSet.AW3D30;
             _outputDirectory = outputDirectory;
         }
@@ -32,9 +33,16 @@ namespace SampleApp
             List<MeshPrimitive> meshes = new List<MeshPrimitive>();
 
             // Get GPX points
-            var segments = GpxImport.ReadGPX_Segments(_gpxFile);
-            var points = segments.SelectMany(seg => seg);
-            var bbox = points.GetBoundingBox().Scale(1.1);
+            var bbox = GeometryService.GetBoundingBox(_bboxWkt);
+
+            //=======================
+            // Textures
+            //
+            ImageryService imageryService = new ImageryService();
+            imageryService.DownloadTiles(bbox, ImageryProvider.Osm);
+            //
+            //=======================
+
 
             //=======================
             // MESH 3D terrain
@@ -49,25 +57,10 @@ namespace SampleApp
             MeshPrimitive triangleMesh = glTF.GenerateTriangleMesh(hMap);
             meshes.Add(triangleMesh);
 
-
-            //=======================
-            /// Line strip from GPX
-
-            var pointsElevated = _elevationService.GetPointsElevation(points, _dataSet);
-            pointsElevated = pointsElevated.Select(pt => { pt.Elevation += 8; return pt; });
-            pointsElevated = pointsElevated.CenterOnOrigin(hMap.BoundingBox, 0.00002f);
-
-            // take 1 point evert nth
-            // int nSkip = 1;
-            //pointsElevated = pointsElevated.Where((x, i) => (i + 1) % nSkip == 0);
-
-            MeshPrimitive gpxLine = glTF.GenerateLine(pointsElevated, new System.Numerics.Vector3(1, 0, 0), 0.0001f);
-            meshes.Add(gpxLine);
-
             // model export
             Console.Write("GenerateModel...");
             Model model = glTF.GenerateModel(meshes, this.GetType().Name);
-            glTF.Export(model, Path.Combine(_outputDirectory, "glTF"), $"{GetType().Name} combined", false, true);
+            glTF.Export(model, Path.Combine(_outputDirectory, "glTF"), $"{GetType().Name} textured", false, true);
         }
 
     }
