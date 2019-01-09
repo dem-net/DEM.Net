@@ -37,12 +37,16 @@ namespace SampleApp
             _RasterDataDirectory = GetDataDirectory();
             _OutputDataDirectory = @"..\..\..\Data";
 
+
             // Initialize raster service and Elevation service
             IRasterService rasterService = new RasterService(_RasterDataDirectory);
             IElevationService elevationService = new ElevationService(rasterService);
 
-            TestCombinedGpxMesh(elevationService, DEMDataSet.AW3D30, Path.Combine(_OutputDataDirectory, @"GPX\Vernet-les-bains-Canigou-34km.gpx"), "Vernet-les-bains-Canigou-34km");
 
+            TextureSamples textureSamples = new TextureSamples(elevationService, Path.Combine(_OutputDataDirectory, @"GPX\Vernet-les-bains-Canigou-34km.gpx"), _OutputDataDirectory);
+            textureSamples.Run();
+
+            
             TestPoints(WKT_BBOX_CORSEBUG, DEMDataSet.SRTM_GL3, rasterService, elevationService);
             //string WKT_BBOX_SCL_OCEAN = "POLYGON ((-79.584961 -32.626942, -79.584961 -38.788345, -68.557777 -38.788345, -68.557777 -32.626942, -79.584961 -32.626942))";
 
