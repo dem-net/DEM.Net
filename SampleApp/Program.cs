@@ -1,6 +1,4 @@
 ﻿using DEM.Net.Lib;
-using Microsoft.SqlServer.Types;
-using SqlServerSpatial.Toolkit;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,6 +15,7 @@ using AssetGenerator.Runtime;
 using AssetGenerator;
 using System.Numerics;
 using Newtonsoft.Json;
+using GeoAPI.Geometries;
 
 namespace SampleApp
 {
@@ -31,9 +30,7 @@ namespace SampleApp
 
             Logger.StartPerf("Main cold start");
 
-            // Sql Server types bootstrap
-            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
-
+           
             _RasterDataDirectory = GetDataDirectory();
             _OutputDataDirectory = @"..\..\..\Data";
 
@@ -102,7 +99,7 @@ namespace SampleApp
 
         private static void TestHeightPlanes(string wkt, DEMDataSet dataSet, IRasterService rasterService, IElevationService elevationService)
         {
-            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
+            IGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
             var bbox = geom.GetBoundingBox();
             HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
             hMap = hMap.CenterOnOrigin(0.00009f);
@@ -114,7 +111,7 @@ namespace SampleApp
         }
         private static void TestPoints(string wkt, DEMDataSet dataSet, IRasterService rasterService, IElevationService elevationService)
         {
-            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
+            IGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
             var bbox = geom.GetBoundingBox();
             HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
             hMap = hMap.CenterOnOrigin(0.00009f);
@@ -129,7 +126,7 @@ namespace SampleApp
         private static void TestCompletionForHydro(string wktBbox, string geoTiffPath, string name, DEMDataSet dataSet, IRasterService raster, IElevationService elevationService)
         {
             Logger.Info("Parsing WKT...");
-            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wktBbox);
+            IGeometry geom = GeometryService.ParseWKTAsGeometry(wktBbox);
             var bbox = geom.GetBoundingBox();
 
 
@@ -174,7 +171,7 @@ namespace SampleApp
         private static void TestCompletionWithHydro(string wktBbox, string geoTiffPath, string name, DEMDataSet dataSet, IRasterService raster, IElevationService elevationService)
         {
             Logger.Info("Parsing WKT...");
-            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wktBbox);
+            IGeometry geom = GeometryService.ParseWKTAsGeometry(wktBbox);
             var bbox = geom.GetBoundingBox();
 
 
@@ -286,7 +283,7 @@ namespace SampleApp
         private static void HGTTest(string wkt, IElevationService elevationService, DEMDataSet dataSet, string name)
         {
             Logger.Info("Parsing WKT...");
-            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
+            IGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
             var bbox = geom.GetBoundingBox();
 
             //FileMetadata file = elevationService.GetCoveringFiles(bbox, dataSet).FirstOrDefault();
@@ -321,7 +318,7 @@ namespace SampleApp
         private static void TestFillVoids(string wkt, IElevationService elevationService, DEMDataSet dataSet, DEMDataSet backupDataSet, string name)
         {
             Logger.Info("Parsing WKT...");
-            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
+            IGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
             var bbox = geom.GetBoundingBox();
 
             Logger.Info("Get HeightMap...");
@@ -354,14 +351,12 @@ namespace SampleApp
 
         static void Main_Archived(string[] args)
         {
-            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
             IRasterService rasterService = new RasterService(_RasterDataDirectory);
             IElevationService elevationService = new ElevationService(rasterService);
 
             rasterService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true);
             rasterService.GenerateFileMetadata(Path.Combine(_OutputDataDirectory, "ETOPO1", "ETOPO1_Ice_g_geotiff.tif"), DEMFileFormat.GEOTIFF, false, false);
             string wkt4Tiles = "POLYGON ((5.9735200000000006 43.979698, 6.021922 43.979698, 6.021922 44.002967, 5.9735200000000006 44.002967, 5.9735200000000006 43.979698))";
-            SpatialTrace_GeometryWithDEMGrid(elevationService, rasterService, wkt4Tiles, DEMDataSet.AW3D30);
 
             GeoTiffTests(rasterService, @"C:\Repos\DEM.Net\Data\18953150_dhm.tif", DEMFileFormat.GEOTIFF);
 
@@ -369,8 +364,7 @@ namespace SampleApp
             LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
 
             PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
-            LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_PLATEAU_PUYRICARD, 100);
-
+            
             HeightMapTest(elevationService, DEMDataSet.AW3D30, wkt4Tiles);
 
 
@@ -379,7 +373,6 @@ namespace SampleApp
 
 
             // TODO correct this
-            TestGpxElevation(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
             // TestGpxMesh(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx", "Bouleternere");
             TestCombinedGpxMesh(elevationService, DEMDataSet.AW3D30, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx", "Bouleternere");
 
@@ -397,15 +390,13 @@ namespace SampleApp
 
             Test_GetMetadataFromVRT(elevationService, DEMDataSet.AW3D30);
 
-            elevationService.DownloadMissingFiles(DEMDataSet.AW3D30, GetBoundingBox(WKT_AIX_BAYONNE_EST_OUEST));
+            elevationService.DownloadMissingFiles(DEMDataSet.AW3D30, GeometryService.GetBoundingBox(WKT_AIX_BAYONNE_EST_OUEST));
             //elevationService.DownloadMissingFiles(DEMDataSet.SRTM_GL3_srtm, GetBoundingBox(WKT_GRAND_TRAJET_MARSEILLE_ALPES_MULTIPLE_TILES));
 
 
             rasterService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, false);
 
-            //Spatial trace of line +segments + interpolated point + dem grid
-            SpatialTrace_GeometryWithDEMGrid(elevationService, rasterService, WKT_TEST, DEMDataSet.AW3D30);
-
+           
             Console.Write("Press any key to exit...");
             Console.ReadLine();
 
@@ -414,37 +405,6 @@ namespace SampleApp
 
         #region All tests
 
-        private static void TestGpxElevation(IElevationService elevationService, DEMDataSet dataSet, string gpxFile)
-        {
-            var segments = GpxImport.ReadGPX_Segments(gpxFile);
-
-            SpatialTrace.Enable();
-            SpatialTrace.Clear();
-
-            foreach (var line in segments)
-            {
-                List<GeoPoint> inputLineBak = line.Select(pt => pt.Clone()).ToList();
-
-                List<GeoPoint> inputLineZero = line.Select(pt => new GeoPoint(pt.Latitude, pt.Longitude)).ToList();
-
-
-                var lineOut = elevationService.GetPointsElevation(inputLineZero, dataSet).ToList();
-
-                GeometryService.ComputeMetrics(inputLineBak);
-                GeometryService.ComputeMetrics(lineOut);
-
-                // Compare
-                double ratio = SpatialTraceLine(inputLineBak, "Input");
-
-                SpatialTrace.SetLineWidth(3);
-                SpatialTrace.SetLineColor(Colors.Red);
-                // Compare
-                SpatialTraceLine(lineOut, "Output", ratio);
-
-            }
-
-            SpatialTrace.ShowDialog();
-        }
         private static void TestGpxElevationVsDEMNet(IElevationService elevationService, DEMDataSet dataSet, string gpxFile)
         {
             /// Line strip from GPX
@@ -522,7 +482,7 @@ namespace SampleApp
 
         private static void MeshDecimationTest(IElevationService elevationService, DEMDataSet dataSet, string wkt, string name, float quality = 0.5f)
         {
-            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
+            IGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
             var bbox = geom.GetBoundingBox();
 
             Console.Write("Height map...");
@@ -548,7 +508,7 @@ namespace SampleApp
 
         private static void ExportGLBTest(IElevationService elevationService, DEMDataSet dataSet, string wkt, string name)
         {
-            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
+            IGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
             var bbox = geom.GetBoundingBox();
 
             HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
@@ -565,7 +525,7 @@ namespace SampleApp
 
         private static void HeightMapTest(IElevationService elevationService, DEMDataSet dataSet, string wkt)
         {
-            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
+            IGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
             var bbox = geom.GetBoundingBox();
 
             HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
@@ -600,7 +560,7 @@ namespace SampleApp
             IElevationService elevationServiceLibTiff = new ElevationService(new RasterService(_OutputDataDirectory));
 
             string wkt = WKT_BREST_NICE;
-            elevationServiceLibTiff.DownloadMissingFiles(dataSet, GetBoundingBox(wkt));
+            elevationServiceLibTiff.DownloadMissingFiles(dataSet, GeometryService.GetBoundingBox(wkt));
 
             const int NUM_ITERATIONS = 10;
 
@@ -675,7 +635,7 @@ namespace SampleApp
             {
                 foreach (var wkt in dicWktByName)
                 {
-                    elevationService.DownloadMissingFiles(dataSet, GetBoundingBox(wkt.Value));
+                    elevationService.DownloadMissingFiles(dataSet, GeometryService.GetBoundingBox(wkt.Value));
 
                     foreach (InterpolationMode mode in modes)
                     {
@@ -706,65 +666,7 @@ namespace SampleApp
 
 
         }
-        static void LineDEMTest(IElevationService elevationService, DEMDataSet dataSet, string wkt, int numSamples)
-        {
-
-            Stopwatch sw = Stopwatch.StartNew();
-
-            elevationService.DownloadMissingFiles(dataSet, GetBoundingBox(wkt));
-
-            var lineElevationData = elevationService.GetLineGeometryElevation(wkt, dataSet, InterpolationMode.Bilinear);
-            ElevationMetrics metrics = GeometryService.ComputeMetrics(lineElevationData);
-            var lineElevationData_Reduced = DouglasPeucker.DouglasPeuckerReduction(lineElevationData, (metrics.MaxElevation - metrics.MinElevation) / numSamples);
-
-            sw.Stop();
-            Console.WriteLine($"LineDEMTest performed in {sw.Elapsed:g}.");
-
-            SpatialTrace.Enable();
-            SpatialTrace.Clear();
-            SpatialTraceLine(lineElevationData, $"Full resolution line ({lineElevationData.Count} points)");
-
-
-            SpatialTraceLine(lineElevationData_Reduced, $"Reduced line ({lineElevationData_Reduced.Count} points)");
-
-            SpatialTrace.ShowDialog();
-
-
-        }
-
-        private static double SpatialTraceLine(List<GeoPoint> lineElevationData, string message, double? fixedRatio = null)
-        {
-
-            // Say that 1 sample is one pixel and a graph is usually 300px tall
-            // So 300px = 300 samples = max height (H)
-            // So for numSamples, (H * numSamples / 300) = height of 1px
-
-
-            double minH = lineElevationData.Min(p => p.Elevation.GetValueOrDefault(0));
-            double maxH = lineElevationData.Max(p => p.Elevation.GetValueOrDefault(0));
-            double H = maxH - minH;
-            double ratio_11 = lineElevationData.Last().DistanceFromOriginMeters / H;
-            double ratio = fixedRatio ?? ratio_11 / 4;
-
-            // Make 4:1 geom
-            SqlGeometryBuilder gb = new SqlGeometryBuilder();
-            gb.SetSrid(0); // custom SRID
-            gb.BeginGeometry(OpenGisGeometryType.LineString);
-
-            gb.BeginFigure(lineElevationData[0].DistanceFromOriginMeters / ratio, lineElevationData[0].Elevation.GetValueOrDefault(0));
-            for (int i = 1; i < lineElevationData.Count; i++)
-            {
-                gb.AddLine(lineElevationData[i].DistanceFromOriginMeters / ratio, lineElevationData[i].Elevation.GetValueOrDefault(0));
-            }
-            gb.EndFigure();
-            gb.EndGeometry();
-            SqlGeometry geom = gb.ConstructedGeometry;
-            geom = DEM.Net.Lib.SqlTypesExtensions.MakeValidIfInvalid(geom, 1);
-
-            SpatialTrace.TraceGeometry(geom, message);
-
-            return ratio;
-        }
+       
 
         private static IEnumerable<T> GetNth<T>(List<T> list, int n)
         {
@@ -777,43 +679,39 @@ namespace SampleApp
             }
         }
 
-        static DEM.Net.Lib.BoundingBox GetBoundingBox(string wkt, double buffer = 60)
-        {
-            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
-            return geom.ToGeography().STBuffer(60).GetBoundingBox();
-        }
+       
 
-        static void SpatialTrace_GeometryWithDEMGrid(IElevationService elevationService, IRasterService rasterService, string wktBbox, DEMDataSet dataSet, double rangeKm = 100)
-        {
-            SpatialTrace.Enable();
-            SpatialTrace.Clear();
-            DEM.Net.Lib.BoundingBox bbox = null;
-            if (wktBbox != null)
-            {
-                SqlGeometry geom = GeometryService.ParseWKTAsGeometry(wktBbox);
-                SpatialTrace.TraceGeometry(geom, "Bbox");
-                bbox = geom.ToGeography().STBuffer(rangeKm * 1000).GetBoundingBox();
-            }
+        //static void SpatialTrace_GeometryWithDEMGrid(IElevationService elevationService, IRasterService rasterService, string wktBbox, DEMDataSet dataSet, double rangeKm = 100)
+        //{
+        //    SpatialTrace.Enable();
+        //    SpatialTrace.Clear();
+        //    DEM.Net.Lib.BoundingBox bbox = null;
+        //    if (wktBbox != null)
+        //    {
+        //        IGeometry geom = GeometryService.ParseWKTAsGeometry(wktBbox);
+        //        SpatialTrace.TraceGeometry(geom, "Bbox");
+        //        bbox = geom.ToGeography().STBuffer(rangeKm * 1000).GetBoundingBox();
+        //    }
 
 
-            Dictionary<string, DemFileReport> tiles = rasterService.GenerateReport(dataSet, bbox);
+        //    Dictionary<string, DemFileReport> tiles = rasterService.GenerateReport(dataSet, bbox);
 
-            SpatialTrace.Indent("DEM tiles");
-            SpatialTrace.SetLineColor(Colors.Black);
-            foreach (var tile in tiles)
-            {
-                SpatialTrace.SetFillColor(tile.Value.IsExistingLocally ? Color.FromArgb(128, 0, 255, 0) : Color.FromArgb(128, 255, 0, 0));
+        //    SpatialTrace.Indent("DEM tiles");
+        //    SpatialTrace.SetLineColor(Colors.Black);
+        //    foreach (var tile in tiles)
+        //    {
+        //        SpatialTrace.SetFillColor(tile.Value.IsExistingLocally ? Color.FromArgb(128, 0, 255, 0) : Color.FromArgb(128, 255, 0, 0));
 
-                SqlGeometry tileBbox = tile.Value.Source.BBox.AsGeomety();
-                SpatialTrace.TraceGeometry(tileBbox, $"{tile.ToString()}");
-            }
-            SpatialTrace.Unindent();
+        //        SqlGeometry tileBbox = tile.Value.Source.BBox.AsGeomety();
+        //        SpatialTrace.TraceGeometry(tileBbox, $"{tile.ToString()}");
+        //    }
+        //    SpatialTrace.Unindent();
 
-            // View spatial trace in bin\debug with spatial trace viewer
-            SpatialTrace.ShowDialog();
-            SpatialTrace.Disable();
+        //    // View spatial trace in bin\debug with spatial trace viewer
+        //    SpatialTrace.ShowDialog();
+        //    SpatialTrace.Disable();
 
-        }
+        //}
 
         #region Sample WKT
 

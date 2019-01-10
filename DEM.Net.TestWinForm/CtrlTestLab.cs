@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Windows.Media;
+using System.Drawing;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DEM.Net.Lib.Services.Lab;
 using System.IO;
-using SqlServerSpatial.Toolkit;
 using DEM.Net.glTF;
 using System.Numerics;
 using AssetGenerator.Runtime;
 using AssetGenerator;
 using DEM.Net.Lib;
 using DEM.Net.Lib.Services.VisualisationServices;
-using Microsoft.SqlServer.Types;
+using NetTopologySuite.Diagnostics.Tracing;
+using GeoAPI.Geometries;
 
 namespace DEM.Net.TestWinForm
 {
@@ -148,13 +148,13 @@ namespace DEM.Net.TestWinForm
             }
 
             string v_label = "";
-            Color v_couleurBase = Color.FromScRgb(255, 0, 255, 255);
+            Color v_couleurBase = Color.FromArgb(255, 0, 255, 255);
             FServicesApplicatifs.createVisuSpatialTrace().GetVisuPoints2D(_dataPointsTests, v_label, v_couleurBase, -1);
             v_label = "CH";
             FServicesApplicatifs.createVisuSpatialTrace().GetVisuPoints2D(v_pointConvexHull, v_label, 10);
 
             SpatialTrace.Enable();
-            SqlGeometry v_ligneCh;
+            IGeometry v_ligneCh;
             for (int v_indexPt = 0; v_indexPt < v_pointConvexHull.Count - 1; v_indexPt++)
             {
                 v_ligneCh = FLabServices.createUtilitaires().GetGeometryLine(v_pointConvexHull[v_indexPt].p10_coord, v_pointConvexHull[v_indexPt + 1].p10_coord, 2154, true);

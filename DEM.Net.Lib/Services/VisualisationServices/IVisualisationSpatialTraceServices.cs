@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Windows.Media;
+using System.Drawing;
 using DEM.Net.Lib.Services.Lab;
 
 namespace DEM.Net.Lib.Services.VisualisationServices

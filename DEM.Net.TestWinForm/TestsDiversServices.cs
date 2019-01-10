@@ -1,13 +1,13 @@
 ﻿using DEM.Net.Lib.Services.Lab;
 using DEM.Net.Lib.Services.VisualisationServices;
-using Microsoft.SqlServer.Types;
-using SqlServerSpatial.Toolkit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media;
+using System.Drawing;
+using NetTopologySuite.Diagnostics.Tracing;
+using GeoAPI.Geometries;
 
 namespace DEM.Net.TestWinForm
 {
@@ -29,9 +29,9 @@ namespace DEM.Net.TestWinForm
             BeanPoint_internal p_pointX = new BeanPoint_internal(p_coordPointX, 2154);
 
             //VISU POINTS REF
-            v_couleurObjet = Color.FromScRgb(255, 0, 0, 255);
+            v_couleurObjet = Color.FromArgb(255, 0, 0, 255);
             FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuPoint2D(v_centroide, "Pt0", v_couleurObjet, 20);
-            v_couleurObjet = Color.FromScRgb(255, 0, 255, 0);
+            v_couleurObjet = Color.FromArgb(255, 0, 255, 0);
             FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuPoint2D(p_pointX, "Pt1", v_couleurObjet, 20);
             //FIN VISU POINTS REF
 
@@ -46,7 +46,7 @@ namespace DEM.Net.TestWinForm
 
             //VISU COORD
             int param_arrondi = 2;
-            v_couleurObjet = Color.FromScRgb(255, 0, 0, 255);
+            v_couleurObjet = Color.FromArgb(255, 0, 0, 255);
             List<int> v_idPointsOrdonnes = v_coordDansRef.OrderBy(c => c.Value[1]).Select(c => c.Key).ToList();
             foreach (int v_id in v_idPointsOrdonnes)
             {
@@ -89,7 +89,7 @@ namespace DEM.Net.TestWinForm
             p_message = "Test 3 (point est sur le cercle)=> TRUE";
             TestIsInCercleCirconscrit(v_pointsTriangle, v_pointToTest, p_message);
 
-            SpatialTrace.ShowDialog();
+            //SpatialTrace.ShowDialog();
         }
         public void TestCercleCirconscritAuTriangle()
         {
@@ -119,7 +119,7 @@ namespace DEM.Net.TestWinForm
             v_pointC = new double[2] { v_xMin + 300, v_yMin-100 };
             VisuCercleCirconscritAuTriangle(v_pointA, v_pointB, v_pointC, "Triangle 3");
 
-            SpatialTrace.ShowDialog();
+            //SpatialTrace.ShowDialog();
 
         }
         public void TestOrdonnancement()
@@ -188,7 +188,7 @@ namespace DEM.Net.TestWinForm
                 VisuPointSuppl(v_points[v_id], "no: " + v_no+" (pt "+ v_id+" "+ v_sens + ")", 2);
                 v_no++;
             }
-            SpatialTrace.ShowDialog();
+            //SpatialTrace.ShowDialog();
         }
 
         //
@@ -217,37 +217,37 @@ namespace DEM.Net.TestWinForm
             //
             SpatialTrace.Enable();
             SpatialTrace.TraceText(p_message);
-            Color param_couleurContour = Color.FromRgb((byte)125, (byte)125, (byte)125);
+            Color param_couleurContour = Color.FromArgb(125, 125, 125);
             SpatialTrace.SetLineColor(param_couleurContour);
 
             Color p_couleurCourante;
             int p_taillePoint;
-            SqlGeometry v_pointGeom;
+            IGeometry v_pointGeom;
             double[] v_pointCentre;
             double v_rayon;
             v_pointCentre = FServicesApplicatifs.createCalculServicesLow_testDivers().GetCoordonneesCercleCirconscritAuTriangle(v_pointsTriangle);
             v_rayon = Math.Sqrt(Math.Pow((v_pointA[0] - v_pointCentre[0]), 2) + Math.Pow((v_pointA[1] - v_pointCentre[1]), 2));
             //Cercle
-            p_couleurCourante = Color.FromRgb((byte)50, (byte)50, (byte)50);
-            v_pointGeom = SqlGeometry.Point(v_pointCentre[0], v_pointCentre[1], 2154).STBuffer(v_rayon);
+            p_couleurCourante = Color.FromArgb(50, 50, 50);
+            v_pointGeom = FLabServices.createUtilitaires().ConstructPoint(v_pointCentre[0], v_pointCentre[1], 2154).Buffer(v_rayon);
             SpatialTrace.TraceGeometry(v_pointGeom, "Cercle", "Cercle");
 
             //Points du triangle
             p_taillePoint = 5;
-            p_couleurCourante = Color.FromRgb((byte)255, (byte)0, (byte)0);
+            p_couleurCourante = Color.FromArgb(255, 0, 0);
             SpatialTrace.SetFillColor(p_couleurCourante);
-            v_pointGeom = SqlGeometry.Point(v_pointA[0], v_pointA[1], 2154).STBuffer(p_taillePoint);
+            v_pointGeom = FLabServices.createUtilitaires().ConstructPoint(v_pointA[0], v_pointA[1], 2154).Buffer(p_taillePoint);
             SpatialTrace.TraceGeometry(v_pointGeom, "Pt A", "Pt A");
-            v_pointGeom = SqlGeometry.Point(v_pointB[0], v_pointB[1], 2154).STBuffer(p_taillePoint);
+            v_pointGeom = FLabServices.createUtilitaires().ConstructPoint(v_pointB[0], v_pointB[1], 2154).Buffer(p_taillePoint);
             SpatialTrace.TraceGeometry(v_pointGeom, "Pt B", "Pt B");
-            v_pointGeom = SqlGeometry.Point(v_pointC[0], v_pointC[1], 2154).STBuffer(p_taillePoint);
+            v_pointGeom = FLabServices.createUtilitaires().ConstructPoint(v_pointC[0], v_pointC[1], 2154).Buffer(p_taillePoint);
             SpatialTrace.TraceGeometry(v_pointGeom, "Pt C", "Pt C");
           
             //Cercle
             p_taillePoint = 8;
-            p_couleurCourante = Color.FromRgb((byte)0, (byte)255, (byte)0);
+            p_couleurCourante = Color.FromArgb(0, 255, 0);
             SpatialTrace.SetFillColor(p_couleurCourante);
-            v_pointGeom = SqlGeometry.Point(v_pointCentre[0], v_pointCentre[1], 2154).STBuffer(p_taillePoint);
+            v_pointGeom = FLabServices.createUtilitaires().ConstructPoint(v_pointCentre[0], v_pointCentre[1], 2154).Buffer(p_taillePoint);
             SpatialTrace.TraceGeometry(v_pointGeom, "Centre", "Centre");
 
             SpatialTrace.Disable();
@@ -257,13 +257,13 @@ namespace DEM.Net.TestWinForm
         {
             SpatialTrace.Enable();
           
-            Color param_couleurContour = Color.FromRgb((byte)125, (byte)125, (byte)125);
+            Color param_couleurContour = Color.FromArgb(125, 125, 125);
             SpatialTrace.SetLineColor(param_couleurContour);
             Color p_couleurCourante;
-            SqlGeometry v_pointGeom;
-            p_couleurCourante = Color.FromRgb((byte)50, (byte)50, (byte)50);
+            IGeometry v_pointGeom;
+            p_couleurCourante = Color.FromArgb(50, 50, 50);
             SpatialTrace.SetFillColor(p_couleurCourante);
-           v_pointGeom = SqlGeometry.Point(p_point[0], p_point[1], 2154).STBuffer(p_tailleDuPoint);
+           v_pointGeom = FLabServices.createUtilitaires().ConstructPoint(p_point[0], p_point[1], 2154).Buffer(p_tailleDuPoint);
             SpatialTrace.TraceGeometry(v_pointGeom, p_message, p_message);
             SpatialTrace.Disable();
         }

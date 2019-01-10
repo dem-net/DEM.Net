@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Microsoft.SqlServer.Types;
+using GeoAPI.Geometries;
 
 namespace DEM.Net.Lib
 {
@@ -43,7 +43,7 @@ namespace DEM.Net.Lib
         /// <param name="interpolationMode">Interpolation mode</param>
         /// <remarks>Output can be BIG, as all elevations will be returned.</remarks>
         /// <returns></returns>
-        List<GeoPoint> GetLineGeometryElevation(SqlGeometry lineStringGeometry, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
+        List<GeoPoint> GetLineGeometryElevation(IGeometry lineStringGeometry, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
         /// <summary>
         /// High level method that retrieves all dataset elevations along given line
         /// </summary>

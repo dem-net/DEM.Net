@@ -1,5 +1,5 @@
 ﻿using DEM.Net.Lib.Interpolation;
-using Microsoft.SqlServer.Types;
+using GeoAPI.Geometries;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -148,25 +148,25 @@ namespace DEM.Net.Lib
         /// <returns></returns>
         public List<GeoPoint> GetLineGeometryElevation(string lineWKT, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
-            SqlGeometry geom = GeometryService.ParseWKTAsGeometry(lineWKT);
+            IGeometry geom = GeometryService.ParseWKTAsGeometry(lineWKT);
 
-            if (geom.STGeometryType().Value == "MultiLineString")
+            if (geom.OgcGeometryType == OgcGeometryType.MultiLineString)
             {
                 Trace.TraceWarning("Geometry is a multi line string. Only the longest segment will be processed.");
-                geom = geom.Geometries().OrderByDescending(g => g.STNumPoints().Value).First();
+                geom = geom.Geometries().OrderByDescending(g => g.NumPoints).First();
             }
             return GetLineGeometryElevation(geom, dataSet, interpolationMode);
         }
 
-        public List<GeoPoint> GetLineGeometryElevation(SqlGeometry lineStringGeometry, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
+        public List<GeoPoint> GetLineGeometryElevation(IGeometry lineStringGeometry, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
-            if (lineStringGeometry == null || lineStringGeometry.IsNull)
+            if (lineStringGeometry == null || lineStringGeometry.IsEmpty)
                 return null;
-            if (lineStringGeometry.STGeometryType().Value != "LineString")
+            if (lineStringGeometry.OgcGeometryType != OgcGeometryType.LineString)
             {
                 throw new Exception("Geometry must be a linestring");
             }
-            if (lineStringGeometry.STSrid.Value != 4326)
+            if (lineStringGeometry.SRID != 4326)
             {
                 throw new Exception("Geometry SRID must be set to 4326 (WGS 84)");
             }
@@ -177,11 +177,11 @@ namespace DEM.Net.Lib
             // Init interpolator
             IInterpolator interpolator = GetInterpolator(interpolationMode);
 
-            int numPointsSql = lineStringGeometry.STNumPoints().Value;
-            var sqlStart = lineStringGeometry.STPointN(1);
-            var sqlEnd = lineStringGeometry.STPointN(numPointsSql);
-            GeoPoint start = new GeoPoint(sqlStart.STY.Value, sqlStart.STX.Value);
-            GeoPoint end = new GeoPoint(sqlEnd.STY.Value, sqlEnd.STX.Value);
+            int numPoints = lineStringGeometry.NumPoints;
+            var ptStart = lineStringGeometry.Coordinates[0];
+            var ptEnd = lineStringGeometry.Coordinates.Last();
+            GeoPoint start = new GeoPoint(ptStart.Y, ptStart.X);
+            GeoPoint end = new GeoPoint(ptEnd.Y, ptEnd.X);
             double lengthMeters = start.DistanceTo(end);
             int demResolution = dataSet.ResolutionMeters;
             int totalCapacity = 2 * (int)(lengthMeters / demResolution);
@@ -191,15 +191,15 @@ namespace DEM.Net.Lib
             using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
             {
                 bool isFirstSegment = true; // used to return first point only for first segments, for all other segments last point will be returned
-                foreach (SqlGeometry segment in lineStringGeometry.Segments())
+                foreach (GeoSegment segment in lineStringGeometry.Segments())
                 {
                     List<FileMetadata> segTiles = this.GetCoveringFiles(segment.GetBoundingBox(), dataSet, tiles);
 
                     // Find all intersection with segment and DEM grid
-                    IEnumerable<GeoPoint> intersections = this.FindSegmentIntersections(segment.STStartPoint().STX.Value
-                        , segment.STStartPoint().STY.Value
-                        , segment.STEndPoint().STX.Value
-                        , segment.STEndPoint().STY.Value
+                    IEnumerable<GeoPoint> intersections = this.FindSegmentIntersections(segment.Start.Longitude
+                        , segment.Start.Latitude
+                        , segment.End.Longitude
+                        , segment.End.Latitude
                         , segTiles
                         , isFirstSegment
                         , true);
@@ -222,7 +222,7 @@ namespace DEM.Net.Lib
             if (lineGeoPoints == null)
                 throw new ArgumentNullException("lineGeoPoints", "Point list is null");
 
-            SqlGeometry geometry = GeometryService.ParseGeoPointAsGeometryLine(lineGeoPoints);
+            IGeometry geometry = GeometryService.ParseGeoPointAsGeometryLine(lineGeoPoints);
 
             return GetLineGeometryElevation(geometry, dataSet, interpolationMode);
         }
