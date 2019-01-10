@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,13 +30,13 @@ namespace DEM.Net.Lib.Imagery
             PointInt tileStart = TileUtils.PixelXYToTileXY(topLeft.X, topLeft.Y);
             PointInt tileEnd = TileUtils.PixelXYToTileXY(bottomRight.X, bottomRight.Y);
 
-            using (HttpClient _httpClient = new HttpClient())
+            using (WebClient webClient = new WebClient())
             {
                 for (int x = tileStart.X; x <= tileEnd.X; x++)
                     for (int y = tileStart.Y; y <= tileEnd.Y; y++)
                     {
                         Uri tileUri = BuildUri(provider, x, y, zoom);
-                        var imgBytes = _httpClient.GetByteArrayAsync(tileUri).ConfigureAwait(false).GetAwaiter().GetResult();
+                        var imgBytes = webClient.DownloadData(tileUri);
 
                         MapTile tile = new MapTile() { Image = imgBytes, PixelSize = provider.TileSize, Uri = tileUri, TileInfo = new MapTileInfo(x, y, zoom) };
                         tiles.Add(tile);
