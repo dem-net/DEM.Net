@@ -23,6 +23,7 @@ namespace DEM.Net.TestWinForm
     public partial class CtrlTestLab : UserControl
     {
         private static BeanParamGenerationAutoDePointsTests _paramGenerationPoints;
+        BeanParametresDuTin _paramTin;
         private static List<BeanPoint_internal> _dataPointsTests;
         private static BeanTopologieFacettes _topolFacettes;
 
@@ -169,23 +170,25 @@ namespace DEM.Net.TestWinForm
 
         private void btn_testTin_Click(object sender, EventArgs e)
         {
-            BeanParametresDuTin v_paramTin;
-            v_paramTin = FLabServices.createCalculMedium().GetParametresDuTinParDefaut();
-            v_paramTin.p11_initialisation_determinationFrontieres = enumModeDelimitationFrontiere.mboSimple;
-            v_paramTin.p12_extensionSupplementaireMboEnM = 2000;
-            v_paramTin.p13_modeCalculZParDefaut = enumModeCalculZ.alti_saisie;
-            v_paramTin.p14_altitudeParDefaut = -200;
-            v_paramTin.p15_nbrePointsSupplMultiples4 = 4;
-            v_paramTin.p16_initialisation_modeChoixDuPointCentral.p01_excentrationMinimum = 0;
-            v_paramTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = Convert.ToInt16(tb_precisionEnM.Text);
-            v_paramTin.p31_nbreIterationsMaxi = Convert.ToInt16(tb_nbreIterations.Text);
-            _topolFacettes = FLabServices.createCalculMedium().GetInitialisationTin(_dataPointsTests, v_paramTin);
+           
+            _paramTin = FLabServices.createCalculMedium().GetParametresDuTinParDefaut();
+            _paramTin.p11_initialisation_determinationFrontieres = enumModeDelimitationFrontiere.mboSimple;
+            _paramTin.p12_extensionSupplementaireMboEnM = 1000;
+            _paramTin.p13_modeCalculZParDefaut = enumModeCalculZ.alti_0;
+            _paramTin.p14_altitudeParDefaut = -200;
+            _paramTin.p15_nbrePointsSupplMultiples4 = 4;
+            _paramTin.p16_initialisation_modeChoixDuPointCentral.p01_excentrationMinimum = 0;
+            _paramTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = Convert.ToInt16(tb_precisionEnM.Text);
+            _paramTin.p31_nbreIterationsMaxi = Convert.ToInt16(tb_nbreIterations.Text);
+            _topolFacettes = FLabServices.createCalculMedium().GetInitialisationTin(_dataPointsTests, _paramTin);
 
 
             //FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(_topolFacettes, false, false);
             //FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
 
-            FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, v_paramTin);
+           // FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, _paramTin);
+
+            FLabServices.createCalculMedium().AugmenteDetailsTinByRef_v2(ref _topolFacettes, _paramTin);
             bool v_visuSpatialTrace_vf = false;
             if (v_visuSpatialTrace_vf)
             {
@@ -234,6 +237,8 @@ namespace DEM.Net.TestWinForm
             List<int> v_listeIndices;
             bool v_renvoyerNullSiPointsColineaires_vf = true;
             bool v_normalisationSensHoraireSinonAntihoraire = true;
+           
+
             foreach (BeanFacette_internal v_facette in _topolFacettes.p13_facettesById.Values)
             {
                 List<BeanPoint_internal> v_normalisationDuSens = FLabServices.createCalculMedium().GetOrdonnancementPointsFacette(v_facette.p01_pointsDeFacette, v_renvoyerNullSiPointsColineaires_vf, v_normalisationSensHoraireSinonAntihoraire);

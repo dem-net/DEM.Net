@@ -73,6 +73,7 @@
             this.label14 = new System.Windows.Forms.Label();
             this.tb_pasSeparationEntrePoints = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btn_testUnitaire = new System.Windows.Forms.Button();
             this.label22 = new System.Windows.Forms.Label();
             this.tb_nbreIterations = new System.Windows.Forms.TextBox();
             this.label21 = new System.Windows.Forms.Label();
@@ -85,7 +86,6 @@
             this.btn_testsDivers = new System.Windows.Forms.Button();
             this.btn_visualisationSpatialTrace = new System.Windows.Forms.Button();
             this.btnTestPoints = new System.Windows.Forms.Button();
-            this.btn_testUnitaire = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -523,6 +523,16 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Génération points tests:";
             // 
+            // btn_testUnitaire
+            // 
+            this.btn_testUnitaire.Location = new System.Drawing.Point(385, 197);
+            this.btn_testUnitaire.Name = "btn_testUnitaire";
+            this.btn_testUnitaire.Size = new System.Drawing.Size(118, 37);
+            this.btn_testUnitaire.TabIndex = 37;
+            this.btn_testUnitaire.Text = "Tests unitaires";
+            this.btn_testUnitaire.UseVisualStyleBackColor = true;
+            this.btn_testUnitaire.Click += new System.EventHandler(this.btn_testUnitaire_Click);
+            // 
             // label22
             // 
             this.label22.AutoSize = true;
@@ -636,16 +646,6 @@
             this.btnTestPoints.Text = "Visu points";
             this.btnTestPoints.UseVisualStyleBackColor = true;
             this.btnTestPoints.Click += new System.EventHandler(this.btnTestPoints_Click);
-            // 
-            // btn_testUnitaire
-            // 
-            this.btn_testUnitaire.Location = new System.Drawing.Point(385, 197);
-            this.btn_testUnitaire.Name = "btn_testUnitaire";
-            this.btn_testUnitaire.Size = new System.Drawing.Size(118, 37);
-            this.btn_testUnitaire.TabIndex = 37;
-            this.btn_testUnitaire.Text = "Tests unitaires";
-            this.btn_testUnitaire.UseVisualStyleBackColor = true;
-            this.btn_testUnitaire.Click += new System.EventHandler(this.btn_testUnitaire_Click);
             // 
             // CtrlTestLab
             // 

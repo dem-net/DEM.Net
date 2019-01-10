@@ -17,6 +17,13 @@ namespace DEM.Net.Lib.Services.Lab
         //
         public List<BeanPoint_internal> p10_pointsInclus { get; set; }
         //
+        public double p21_plusGrandEcartAbsolu { get; set; }
+        public BeanPoint_internal p22_pointPlusGrandEcart { get; set; }
+        //
+        public BeanFacette_internal p23_facetteEcartSup { get; set; }
+        public BeanFacette_internal p24_facetteEcartInf { get; set; }
+
+        //
         public BeanFacette_internal()
         {
             p00_idFacette= _dernierId++;

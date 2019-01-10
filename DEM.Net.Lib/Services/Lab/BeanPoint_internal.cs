@@ -35,6 +35,8 @@ namespace DEM.Net.Lib.Services.Lab
         public bool p21_estPointFacette_vf { get; set; }
         public bool p22_estPointInclus_vf { get; set; }
         //
+        public double p31_ecartAbsAuPlanCourant { get; set; }
+        //
         public BeanPoint_internal(double[] p_coord, int p_srid)
         {
             p00_id = _dernierId++;
