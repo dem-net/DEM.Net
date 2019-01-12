@@ -8,6 +8,14 @@ namespace DEM.Net.Lib.Imagery
 {
     public class MapTile
     {
+        public MapTile(byte[] imgBytes, int tileSize, Uri tileUri, MapTileInfo mapTileInfo)
+        {
+            Image = imgBytes;
+            PixelSize = tileSize;
+            Uri = tileUri;
+            TileInfo = mapTileInfo;
+        }
+
         public MapTileInfo TileInfo { get; set; }
         public string FileExtension { get; set; }
         public int PixelSize { get; set; }

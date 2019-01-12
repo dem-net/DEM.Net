@@ -39,7 +39,8 @@ namespace SampleApp
             // Textures
             //
             ImageryService imageryService = new ImageryService();
-            imageryService.DownloadTiles(bbox, ImageryProvider.Osm);
+            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm);
+            imageryService.ConstructTexture(tiles, bbox);
             //
             //=======================
 
