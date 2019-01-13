@@ -99,7 +99,7 @@ namespace DEM.Net.TestWinForm
             FServicesApplicatifs.createVisuSpatialTrace().AfficheVisu();
 
         }
-
+        
         private void btnTestPoints_Click(object sender, EventArgs e)
         {
             IglTFService glTFService = new glTFService();
@@ -178,8 +178,9 @@ namespace DEM.Net.TestWinForm
             _paramTin.p14_altitudeParDefaut = -200;
             _paramTin.p15_nbrePointsSupplMultiples4 = 4;
             _paramTin.p16_initialisation_modeChoixDuPointCentral.p01_excentrationMinimum = 0;
-            _paramTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = Convert.ToInt16(tb_precisionEnM.Text);
-            _paramTin.p31_nbreIterationsMaxi = Convert.ToInt16(tb_nbreIterations.Text);
+            _paramTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = Convert.ToDouble(tb_precisionEnM.Text);
+            //_paramTin.p31_nbreIterationsMaxi = Convert.ToInt16(tb_nbreIterations.Text);
+            _paramTin.p31_nbreIterationsMaxi = 10;
             _topolFacettes = FLabServices.createCalculMedium().GetInitialisationTin(_dataPointsTests, _paramTin);
 
 
@@ -209,8 +210,13 @@ namespace DEM.Net.TestWinForm
 
         private void btn_genererPointsReels_Click(object sender, EventArgs e)
         {
-            string v_bbox= "POLYGON((5.523314005345696 43.576096090257955, 5.722441202611321 43.576096090257955, 5.722441202611321 43.46456490270913, 5.523314005345696 43.46456490270913, 5.523314005345696 43.576096090257955))";
-           _dataPointsTests=FServicesApplicatifs.createEchantillonsTestsServices().GetPointsTestsByBBox(v_bbox);
+            string v_bbox;
+            //string v_sainteVictoire= "POLYGON((5.523314005345696 43.576096090257955, 5.722441202611321 43.576096090257955, 5.722441202611321 43.46456490270913, 5.523314005345696 43.46456490270913, 5.523314005345696 43.576096090257955))";
+            //string v_eyger= "Polygon((8.12951188622090193 46.634254667789655, 7.8854960299327308 46.63327193616965616, 7.89909222133881617 46.4319282954101098, 8.13595218741325965 46.43143509785498679, 8.12951188622090193 46.634254667789655))";
+            v_bbox = tb_wkt.Text;
+
+
+            _dataPointsTests =FServicesApplicatifs.createEchantillonsTestsServices().GetPointsTestsByBBox(v_bbox);
 
             //Dictionary<string, int> v_doublons;
             //v_doublons=FLabServices.createCalculMedium().GetEtComptePointsDoublonnes(_dataPointsTests);
@@ -257,7 +263,7 @@ namespace DEM.Net.TestWinForm
             MeshPrimitive v_trianglesMesh = glTFService.GenerateTriangleMesh(v_beanToVisu3d.p00_geoPoint, v_beanToVisu3d.p01_listeIndexPointsfacettes.SelectMany(c => c).ToList());
               
             Model model = glTFService.GenerateModel(v_trianglesMesh, "Test Triangles");
-            glTFService.Export(model, "Test3D", $"testTriangles_i{tb_nbreIterations.Text}_p{tb_precisionEnM.Text}.glb",  false, true);
+            glTFService.Export(model, "Test3D", $"testTriangles_p{tb_precisionEnM.Text}",  false, true);
             MessageBox.Show("Traitement terminé.");
         }
 

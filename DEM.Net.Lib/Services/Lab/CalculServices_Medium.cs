@@ -163,7 +163,6 @@ namespace DEM.Net.Lib.Services.Lab
                 do
                 {
                     TraitementDeLaFacetteMaxiByRef(ref p_topologieFacette, p_topologieFacette.p21_facetteAvecEcartAbsoluMax, p_parametresDuTin);
-                    //p_topologieFacette.p21_facetteAvecEcartAbsoluMax = p_topologieFacette.p21_facetteAvecEcartAbsoluMax.p24_facetteEcartInf;
                 }
                 while (p_topologieFacette.p21_facetteAvecEcartAbsoluMax.p24_facetteEcartInf != null);
              
@@ -222,7 +221,7 @@ namespace DEM.Net.Lib.Services.Lab
                 BeanFacette_internal v_facettePourMaj;
                 bool v_nullSiInfEcentrationMinimale_vf = false;
 
-               
+                //List<BeanFacette_internal> v_facetteToInsert = new List<BeanFacette_internal>();
                 foreach (int v_idNewFacette in v_idNouvellesFacettesBrutes)
                 {
                     if (!p_topologieFacette.p13_facettesById.ContainsKey(v_idNewFacette))
@@ -231,8 +230,10 @@ namespace DEM.Net.Lib.Services.Lab
                     }
                     v_facettePourMaj = p_topologieFacette.p13_facettesById[v_idNewFacette];
                     GetAndSetByRefPointExcentreDeLaFacette(ref v_facettePourMaj, p_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral, v_nullSiInfEcentrationMinimale_vf);
+                    //v_facetteToInsert.Add(v_facettePourMaj);
                     InsertDansListeChaineeDesFacettes(ref p_topologieFacette, v_facettePourMaj, v_ecartMini);
                 }
+                //InsertDansListeChaineeDesFacettes(ref p_topologieFacette, v_facetteToInsert, v_ecartMini);
             }
             catch (Exception)
             {
@@ -733,6 +734,85 @@ namespace DEM.Net.Lib.Services.Lab
             {
                 p_topologieFacette.p21_facetteAvecEcartAbsoluMax = p_facetteAInserer;
             }
+
+        }
+        private void InsertDansListeChaineeDesFacettes(ref BeanTopologieFacettes p_topologieFacette, List<BeanFacette_internal> p_facettesAInserer, double p_ecartMini)
+        {
+            List<BeanFacette_internal> v_facettesFiltreesOrdonnees=p_facettesAInserer.Where(c => c.p21_plusGrandEcartAbsolu >= p_ecartMini).OrderByDescending(c => c.p21_plusGrandEcartAbsolu).ToList();
+           
+            if(v_facettesFiltreesOrdonnees.Count==0)
+            {
+                return;
+            }
+
+            if (p_topologieFacette.p21_facetteAvecEcartAbsoluMax == null) //(Vrai si la liste est vide
+            {
+                p_topologieFacette.p21_facetteAvecEcartAbsoluMax = v_facettesFiltreesOrdonnees.First();
+                if(v_facettesFiltreesOrdonnees.Count>1)
+                {
+                    v_facettesFiltreesOrdonnees = v_facettesFiltreesOrdonnees.GetRange(1, v_facettesFiltreesOrdonnees.Count - 1).ToList();
+                }
+                else
+                {
+                    return;
+                }
+            }
+            //
+            BeanFacette_internal v_facetteCourante = p_topologieFacette.p21_facetteAvecEcartAbsoluMax;
+            
+            int v_indexFacetteAInsereCourante = 0;
+            BeanFacette_internal p_facetteAInserer = v_facettesFiltreesOrdonnees[v_indexFacetteAInsereCourante];
+            int v_nbreFacettesAInserer = v_facettesFiltreesOrdonnees.Count;
+            //
+            bool v_test = true;
+            while (v_test)
+            {
+                if (p_facetteAInserer.p21_plusGrandEcartAbsolu > v_facetteCourante.p21_plusGrandEcartAbsolu)
+                {
+                    p_facetteAInserer.p23_facetteEcartSup = v_facetteCourante.p23_facetteEcartSup;
+                    p_facetteAInserer.p24_facetteEcartInf = v_facetteCourante;
+                    //
+                    if (p_facetteAInserer.p23_facetteEcartSup != null)
+                    {
+                        p_facetteAInserer.p23_facetteEcartSup.p24_facetteEcartInf = p_facetteAInserer;
+                    }
+                    if (p_facetteAInserer.p24_facetteEcartInf != null)
+                    {
+                        p_facetteAInserer.p24_facetteEcartInf.p23_facetteEcartSup = p_facetteAInserer;
+                    }
+                    if (p_facetteAInserer.p23_facetteEcartSup == null && p_facetteAInserer.p24_facetteEcartInf != null)
+                    {
+                        p_topologieFacette.p21_facetteAvecEcartAbsoluMax = p_facetteAInserer;
+                    }
+                    //
+                    v_indexFacetteAInsereCourante++;
+                    if(v_indexFacetteAInsereCourante>= v_nbreFacettesAInserer)
+                    {
+                        break;
+                    }
+                    p_facetteAInserer = v_facettesFiltreesOrdonnees[v_indexFacetteAInsereCourante];
+                    continue;
+                }
+                if (v_facetteCourante.p24_facetteEcartInf == null)
+                {
+                    p_facetteAInserer.p23_facetteEcartSup = v_facetteCourante;
+                    if (p_facetteAInserer.p23_facetteEcartSup != null)
+                    {
+                        p_facetteAInserer.p23_facetteEcartSup.p24_facetteEcartInf = p_facetteAInserer;
+                    }
+                    //
+                    v_indexFacetteAInsereCourante++;
+                    if (v_indexFacetteAInsereCourante >= v_nbreFacettesAInserer)
+                    {
+                        break;
+                    }
+                    p_facetteAInserer = v_facettesFiltreesOrdonnees[v_indexFacetteAInsereCourante];
+                    continue;
+                }
+                v_facetteCourante = v_facetteCourante.p24_facetteEcartInf;
+            }
+            //
+        
 
         }
         private void RemoveFacetteFromTopologieByRef(ref BeanTopologieFacettes p_topologie, int p_idFacette)

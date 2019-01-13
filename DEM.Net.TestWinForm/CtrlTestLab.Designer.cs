@@ -74,8 +74,6 @@
             this.tb_pasSeparationEntrePoints = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.btn_testUnitaire = new System.Windows.Forms.Button();
-            this.label22 = new System.Windows.Forms.Label();
-            this.tb_nbreIterations = new System.Windows.Forms.TextBox();
             this.label21 = new System.Windows.Forms.Label();
             this.btn_genererPointsReels = new System.Windows.Forms.Button();
             this.tb_precisionEnM = new System.Windows.Forms.TextBox();
@@ -86,6 +84,8 @@
             this.btn_testsDivers = new System.Windows.Forms.Button();
             this.btn_visualisationSpatialTrace = new System.Windows.Forms.Button();
             this.btnTestPoints = new System.Windows.Forms.Button();
+            this.tb_wkt = new System.Windows.Forms.TextBox();
+            this.label23 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -500,9 +500,9 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.label23);
+            this.groupBox3.Controls.Add(this.tb_wkt);
             this.groupBox3.Controls.Add(this.btn_testUnitaire);
-            this.groupBox3.Controls.Add(this.label22);
-            this.groupBox3.Controls.Add(this.tb_nbreIterations);
             this.groupBox3.Controls.Add(this.label21);
             this.groupBox3.Controls.Add(this.btn_genererPointsReels);
             this.groupBox3.Controls.Add(this.tb_precisionEnM);
@@ -518,7 +518,7 @@
             this.groupBox3.Controls.Add(this.btn_genererPoints);
             this.groupBox3.Location = new System.Drawing.Point(3, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(786, 344);
+            this.groupBox3.Size = new System.Drawing.Size(786, 366);
             this.groupBox3.TabIndex = 28;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Génération points tests:";
@@ -533,27 +533,10 @@
             this.btn_testUnitaire.UseVisualStyleBackColor = true;
             this.btn_testUnitaire.Click += new System.EventHandler(this.btn_testUnitaire_Click);
             // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(527, 306);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(78, 13);
-            this.label22.TabIndex = 36;
-            this.label22.Text = "Nbre itérations:";
-            // 
-            // tb_nbreIterations
-            // 
-            this.tb_nbreIterations.Location = new System.Drawing.Point(614, 306);
-            this.tb_nbreIterations.Name = "tb_nbreIterations";
-            this.tb_nbreIterations.Size = new System.Drawing.Size(33, 20);
-            this.tb_nbreIterations.TabIndex = 35;
-            this.tb_nbreIterations.Text = "10";
-            // 
             // label21
             // 
             this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(527, 273);
+            this.label21.Location = new System.Drawing.Point(528, 323);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(85, 13);
             this.label21.TabIndex = 31;
@@ -561,7 +544,7 @@
             // 
             // btn_genererPointsReels
             // 
-            this.btn_genererPointsReels.Location = new System.Drawing.Point(36, 289);
+            this.btn_genererPointsReels.Location = new System.Drawing.Point(36, 323);
             this.btn_genererPointsReels.Name = "btn_genererPointsReels";
             this.btn_genererPointsReels.Size = new System.Drawing.Size(118, 37);
             this.btn_genererPointsReels.TabIndex = 34;
@@ -571,7 +554,7 @@
             // 
             // tb_precisionEnM
             // 
-            this.tb_precisionEnM.Location = new System.Drawing.Point(614, 273);
+            this.tb_precisionEnM.Location = new System.Drawing.Point(615, 323);
             this.tb_precisionEnM.Name = "tb_precisionEnM";
             this.tb_precisionEnM.Size = new System.Drawing.Size(33, 20);
             this.tb_precisionEnM.TabIndex = 30;
@@ -579,7 +562,7 @@
             // 
             // btnTestFacettes
             // 
-            this.btnTestFacettes.Location = new System.Drawing.Point(657, 289);
+            this.btnTestFacettes.Location = new System.Drawing.Point(657, 323);
             this.btnTestFacettes.Name = "btnTestFacettes";
             this.btnTestFacettes.Size = new System.Drawing.Size(118, 37);
             this.btnTestFacettes.TabIndex = 31;
@@ -591,7 +574,7 @@
             // 
             this.btn_clearSpatialTrace.Location = new System.Drawing.Point(231, 240);
             this.btn_clearSpatialTrace.Name = "btn_clearSpatialTrace";
-            this.btn_clearSpatialTrace.Size = new System.Drawing.Size(118, 37);
+            this.btn_clearSpatialTrace.Size = new System.Drawing.Size(118, 30);
             this.btn_clearSpatialTrace.TabIndex = 33;
             this.btn_clearSpatialTrace.Text = "Clear spatialtrace";
             this.btn_clearSpatialTrace.UseVisualStyleBackColor = true;
@@ -599,7 +582,7 @@
             // 
             // btn_testTin
             // 
-            this.btn_testTin.Location = new System.Drawing.Point(394, 289);
+            this.btn_testTin.Location = new System.Drawing.Point(394, 323);
             this.btn_testTin.Name = "btn_testTin";
             this.btn_testTin.Size = new System.Drawing.Size(118, 37);
             this.btn_testTin.TabIndex = 32;
@@ -646,6 +629,26 @@
             this.btnTestPoints.Text = "Visu points";
             this.btnTestPoints.UseVisualStyleBackColor = true;
             this.btnTestPoints.Click += new System.EventHandler(this.btnTestPoints_Click);
+            // 
+            // tb_wkt
+            // 
+            this.tb_wkt.Location = new System.Drawing.Point(192, 323);
+            this.tb_wkt.Multiline = true;
+            this.tb_wkt.Name = "tb_wkt";
+            this.tb_wkt.Size = new System.Drawing.Size(177, 37);
+            this.tb_wkt.TabIndex = 30;
+            this.tb_wkt.Text = "POLYGON((5.523314005345696 43.576096090257955, 5.722441202611321 43.5760960902579" +
+    "55, 5.722441202611321 43.46456490270913, 5.523314005345696 43.46456490270913, 5." +
+    "523314005345696 43.576096090257955))";
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(189, 307);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(75, 13);
+            this.label23.TabIndex = 30;
+            this.label23.Text = "Contour WKT:";
             // 
             // CtrlTestLab
             // 
@@ -721,10 +724,10 @@
         private System.Windows.Forms.Button btn_clearSpatialTrace;
         private System.Windows.Forms.Button btn_genererPointsReels;
         private System.Windows.Forms.Button btnTestFacettes;
-        private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.TextBox tb_nbreIterations;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.TextBox tb_precisionEnM;
         private System.Windows.Forms.Button btn_testUnitaire;
+        private System.Windows.Forms.TextBox tb_wkt;
+        private System.Windows.Forms.Label label23;
     }
 }
