@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.SqlServer.Types;
+using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
+using NetTopologySuite.IO;
 
 namespace DEM.Net.Lib
 {
@@ -13,55 +15,39 @@ namespace DEM.Net.Lib
 		private const double EARTH_RADIUS = 6371008.0; // [m]
 		private const double RADIAN = Math.PI / 180;
 
-		public static SqlGeometry ParseWKTAsGeometry(string geomWKT)
-		{
-			SqlGeometry geom = SqlGeometry.STGeomFromText(new System.Data.SqlTypes.SqlChars(new System.Data.SqlTypes.SqlString(geomWKT)), WGS84_SRID);
-			geom = geom.MakeValidIfInvalid();
-			return geom;
-		}
+        private static WKTReader _wktReader;
 
-		public static SqlGeography ParseWKTAsGeography(string geomWKT)
-		{
-			SqlGeography geom = SqlGeography.STGeomFromText(new System.Data.SqlTypes.SqlChars(new System.Data.SqlTypes.SqlString(geomWKT)), WGS84_SRID);
-			return geom;
-		}
+        static GeometryService()
+        {
+            _wktReader = new WKTReader(GeometryFactory.Default);
+        }
 
-		public static BoundingBox GetBoundingBox(string geomWKT)
-		{
-			SqlGeometry geom = ParseWKTAsGeometry(geomWKT);
-			return geom.GetBoundingBox();
-		}
+        public static IGeometry ParseWKTAsGeometry(string geomWKT)
+        {
+            IGeometry geometry = _wktReader.Read(geomWKT);
+            return geometry;
+        }
+        public static BoundingBox GetBoundingBox(string geomWKT)
+        {
+            IGeometry geom = ParseWKTAsGeometry(geomWKT);
+            return geom.GetBoundingBox();
+        }
+        public static BoundingBox GetBoundingBox(this IGeometry geom)
+        {
+            Envelope envelope = geom.EnvelopeInternal;
+
+            return new BoundingBox(envelope.MinX, envelope.MaxX, envelope.MinY, envelope.MaxY);
+        }
+
 
         /// <summary>
         /// Problem here : self intersecting lines are not supported. Not ideal for GPS tracks...
         /// </summary>
         /// <param name="points"></param>
         /// <returns></returns>
-		public static SqlGeometry ParseGeoPointAsGeometryLine(IEnumerable<GeoPoint> points)
+        public static IGeometry ParseGeoPointAsGeometryLine(IEnumerable<GeoPoint> points)
 		{
-			SqlGeometryBuilder gb = new SqlGeometryBuilder();
-			gb.SetSrid(4326);
-			gb.BeginGeometry(OpenGisGeometryType.LineString);
-			bool first = true;
-			foreach (var pt in points)
-			{
-				if (first)
-				{
-					gb.BeginFigure(pt.Longitude, pt.Latitude);
-					first = false;
-				}
-				else
-				{
-					gb.AddLine(pt.Longitude, pt.Latitude);
-				}
-			}
-			gb.EndFigure();
-			gb.EndGeometry();
-
-            SqlGeometry geom = gb.ConstructedGeometry.MakeValidIfInvalid(1);
-
-            return geom;
-
+            return new LineString(points.Select(pt => new Coordinate(pt.Longitude, pt.Latitude)).ToArray());
 		}
 
 
@@ -149,7 +135,7 @@ namespace DEM.Net.Lib
 
 		public static double GetLength(string lineWKT)
 		{
-			return GeometryService.ParseWKTAsGeography(lineWKT).STLength().Value;
+            return ParseWKTAsGeometry(lineWKT).Segments().Sum(seg => seg.Start.DistanceTo(seg.End));
 		}
 
 		public static double DistanceTo(this GeoPoint pt1, GeoPoint pt2)
@@ -206,6 +192,55 @@ namespace DEM.Net.Lib
 			return total;
 		}
 
+
+        #region Enumerators
+
+        public static IEnumerable<IGeometry> Geometries(this IGeometry geom)
+        {
+            for (int i = 0; i < geom.NumGeometries; i++)
+            {
+                yield return geom.GetGeometryN(i);
+            }
+        }
+
+        public static IEnumerable<GeoSegment> Segments(this IGeometry lineGeom)
+        {
+
+            if (lineGeom == null || lineGeom.IsEmpty)
+            {
+                yield return null;
+            }
+            if (lineGeom.OgcGeometryType != OgcGeometryType.LineString)
+            {
+                yield return null;
+            }
+            if (lineGeom.NumPoints < 2)
+            {
+                yield return null;
+            }
+
+            for (int i = 0; i < lineGeom.NumPoints; i++)
+            {
+                Coordinate[] segCoords = new Coordinate[2];
+                segCoords[0] = lineGeom.Coordinates[i];
+                segCoords[1] = lineGeom.Coordinates[i + 1];
+
+                yield return new GeoSegment(lineGeom.Coordinates[i].ToGeoPoint(), lineGeom.Coordinates[i + 1].ToGeoPoint());
+            }
+        }
+
+        #endregion
+
+        public static GeoPoint ToGeoPoint(this Coordinate coord)
+        {
+
+            if (coord == null)
+            {
+                return null;
+            }
+
+            return new GeoPoint(coord.Y, coord.X);
+        }
         public static BoundingBox GetBoundingBox(this IEnumerable<GeoPoint> points)
         {
             BoundingBox bbox = new BoundingBox(double.MaxValue, double.MinValue, double.MaxValue, double.MinValue);
@@ -220,7 +255,18 @@ namespace DEM.Net.Lib
             }
             return bbox;
         }
+        public static BoundingBox GetBoundingBox(this GeoSegment segment)
+        {
+            BoundingBox bbox = new BoundingBox(double.MaxValue, double.MinValue, double.MaxValue, double.MinValue);
 
+            bbox.xMin = Math.Min(segment.Start.Longitude, segment.End.Longitude);
+            bbox.xMax = Math.Max(segment.Start.Longitude, segment.End.Longitude);
+
+            bbox.yMin = Math.Min(segment.Start.Latitude, segment.End.Latitude);
+            bbox.yMax = Math.Max(segment.Start.Latitude, segment.End.Latitude);
+
+            return bbox;
+        }
 
 
     }

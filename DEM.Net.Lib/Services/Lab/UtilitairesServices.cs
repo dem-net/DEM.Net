@@ -1,4 +1,5 @@
-﻿using Microsoft.SqlServer.Types;
+﻿using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,10 @@ namespace DEM.Net.Lib.Services.Lab
 {
     public class UtilitairesServices : IUtilitairesServices
     {
+        public Point ConstructPoint(double x, double y, int srid)
+        {
+            return new Point(x, y) { SRID = srid };
+        }
         public string GethCodeGeogPoint(double[] p_coord, int p_nbreDecimalesMoins1SiToutes, char p_separateur)
         {
             string v_code = "";
@@ -76,20 +81,20 @@ namespace DEM.Net.Lib.Services.Lab
             return v_code;
         }
         //
-        public SqlGeometry GetGeometryArc(BeanArc_internal p_arc, bool ifPt1AndPt2IqualReturnPointElseNull)
+        public IGeometry GetGeometryArc(BeanArc_internal p_arc, bool ifPt1AndPt2IqualReturnPointElseNull)
         {
             return GetGeometryLine(p_arc.p11_pointDbt.p10_coord, p_arc.p12_pointFin.p10_coord, p_arc.p11_pointDbt.p11_srid, ifPt1AndPt2IqualReturnPointElseNull);
         }
-        public SqlGeometry GetGeometryLine(double[] p_coordPoint1, double[] p_coordPoint2, int p_srid,bool ifPt1AndPt2IqualReturnPointElseNull)
+        public IGeometry GetGeometryLine(double[] p_coordPoint1, double[] p_coordPoint2, int p_srid,bool ifPt1AndPt2IqualReturnPointElseNull)
         {
-            SqlGeometry v_geomArc = null;
+            Geometry v_geomArc = null;
             try
             {
                 if(p_coordPoint1[0]== p_coordPoint2[0] && p_coordPoint1[1] == p_coordPoint2[1])
                 {
                     if(ifPt1AndPt2IqualReturnPointElseNull)
                     {
-                        v_geomArc = SqlGeometry.Point(p_coordPoint1[0], p_coordPoint1[1], p_srid);
+                        v_geomArc = ConstructPoint(p_coordPoint1[0], p_coordPoint1[1], p_srid);
                         return v_geomArc;
                     }
                     else
@@ -97,21 +102,10 @@ namespace DEM.Net.Lib.Services.Lab
                       return null;
                     }
                 }
-                SqlGeometryBuilder v_builder = new SqlGeometryBuilder();
 
-                v_builder.SetSrid(p_srid);
-       
-                v_builder.BeginGeometry(OpenGisGeometryType.LineString);
-
-                v_builder.BeginFigure(p_coordPoint1[0], p_coordPoint1[1]);
-
-                v_builder.AddLine(p_coordPoint2[0], p_coordPoint2[1]);
-
-                v_builder.EndFigure();
-
-                v_builder.EndGeometry();
-
-                v_geomArc = v_builder.ConstructedGeometry;
+                Coordinate v_coordPoint1 = new Coordinate(p_coordPoint1[0], p_coordPoint1[1]);
+                Coordinate v_coordPoint2 = new Coordinate(p_coordPoint2[0], p_coordPoint2[1]);
+                v_geomArc = new LineString(new Coordinate[] { v_coordPoint1, v_coordPoint2 }) { SRID = p_srid };
             }
             catch (Exception)
             {
@@ -120,23 +114,21 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_geomArc;
         }
-        public SqlGeometry GetGeometryPolygon(List<double[]> p_coordPointsDuContour, int p_srid)
+        public IGeometry GetGeometryPolygon(List<double[]> p_coordPointsDuContour, int p_srid)
         {
-            SqlGeometry v_geomArc = null;
+            Polygon v_geomArc = null;
             try
             {
-                SqlGeometryBuilder v_builder = new SqlGeometryBuilder();
-                v_builder.SetSrid(p_srid);
-                v_builder.BeginGeometry(OpenGisGeometryType.Polygon);
-                v_builder.BeginFigure(p_coordPointsDuContour[0][0], p_coordPointsDuContour[0][1]);
+                List<Coordinate> v_coords = new List<Coordinate>(p_coordPointsDuContour.Count + 1);
+                v_coords.Add(new Coordinate(p_coordPointsDuContour[0][0], p_coordPointsDuContour[0][1]));
+              
                 for(int v_index=1; v_index< p_coordPointsDuContour.Count; v_index++)
                 {
-                    v_builder.AddLine(p_coordPointsDuContour[v_index][0], p_coordPointsDuContour[v_index][1]);
+                    v_coords.Add(new Coordinate(p_coordPointsDuContour[v_index][0], p_coordPointsDuContour[v_index][1]));
                 }
-                v_builder.AddLine(p_coordPointsDuContour[0][0], p_coordPointsDuContour[0][1]);
-                v_builder.EndFigure();
-                v_builder.EndGeometry();
-                v_geomArc = v_builder.ConstructedGeometry;
+                v_coords.Add(new Coordinate(p_coordPointsDuContour[0][0], p_coordPointsDuContour[0][1]));
+
+                v_geomArc = new Polygon(new LinearRing(v_coords.ToArray())) { SRID = p_srid };
             }
             catch (Exception)
             {

@@ -15,8 +15,6 @@ namespace DEM.Net.TestWinForm
         public FormTestLab()
         {
             InitializeComponent();
-
-            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
         }
 
        
