@@ -14,6 +14,8 @@ namespace DEM.Net.Lib.Services.Lab
         void AugmenteDetailsTinByRef(ref BeanTopologieFacettes p_topologieFacette, BeanParametresDuTin p_parametresDuTin);
         void AugmenteDetailsTinByRef_v2(ref BeanTopologieFacettes p_topologieFacette, BeanParametresDuTin p_parametresDuTin);
 
+        void SetLignesCretesEtTalwegByRef(ref BeanTopologieFacettes p_topologieFacette);
+
         /// <summary>
         /// 
         /// </summary>

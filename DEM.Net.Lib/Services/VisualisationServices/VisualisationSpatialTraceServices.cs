@@ -369,6 +369,33 @@ namespace DEM.Net.Lib.Services.VisualisationServices
             SpatialTrace.Disable();
         }
 
+        public void GetVisuCreteEtTalweg(BeanTopologieFacettes p_topologieFacettes)
+        {
+            Color v_couleur;
+            List<BeanArc_internal> v_arcsCretes;
+            v_arcsCretes = p_topologieFacettes.p12_arcsByCode.Values.Where(c => c.p41_natureArcDansLeReseau == enumTypeArcReseau.crete).ToList();
+            v_couleur = Color.Red;
+            foreach (BeanArc_internal v_arc in v_arcsCretes)
+            {
+                GetVisuArc2D(v_arc, "Crete", v_couleur);
+            }
+
+            List<BeanArc_internal> v_arcsTalweg;
+            v_arcsTalweg = p_topologieFacettes.p12_arcsByCode.Values.Where(c => c.p41_natureArcDansLeReseau == enumTypeArcReseau.talweg).ToList();
+            v_couleur = Color.Blue;
+            foreach (BeanArc_internal v_arc in v_arcsTalweg)
+            {
+                GetVisuArc2D(v_arc, "Talweg", v_couleur);
+            }
+
+            List<BeanArc_internal> v_arcsAutres;
+            v_arcsAutres = p_topologieFacettes.p12_arcsByCode.Values.Where(c => c.p41_natureArcDansLeReseau == enumTypeArcReseau.autre).ToList();
+            v_couleur = Color.LightGreen;
+            foreach (BeanArc_internal v_arc in v_arcsAutres)
+            {
+                GetVisuArc2D(v_arc, "Autre", v_couleur);
+            }
+        }
         //
         public void AfficheVisu()
         {

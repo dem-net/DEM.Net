@@ -34,4 +34,11 @@ namespace DEM.Net.Lib.Services.Lab
         horaire,
         antihoraire
     }
+    public enum enumTypeArcReseau
+    {
+        talweg,
+        crete,
+        autre,
+        indetermine
+    }
 }

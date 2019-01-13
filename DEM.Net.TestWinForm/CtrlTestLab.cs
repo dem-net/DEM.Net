@@ -100,14 +100,7 @@ namespace DEM.Net.TestWinForm
 
         }
         
-        private void btnTestPoints_Click(object sender, EventArgs e)
-        {
-            IglTFService glTFService = new glTFService();
-
-            MeshPrimitive pointMesh = glTFService.GeneratePointMesh(FromBeanPoint_internalToGeoPoint(_dataPointsTests), new Vector3(1, 0, 0), 1f);
-            Model model = glTFService.GenerateModel(pointMesh, "Test Points");
-            glTFService.Export(model, "testpoints.glb", "Test points", false, true);
-        }
+      
 
         
         private IEnumerable<GeoPoint> FromBeanPoint_internalToGeoPoint(List<BeanPoint_internal> dataPointsTests)
@@ -272,6 +265,25 @@ namespace DEM.Net.TestWinForm
             bool v_afficherMessageSiko_vf = true;
             //
             FServicesApplicatifs.createTestsUnitairesLab().TestUnitairesLab(v_afficherMessageSiko_vf);
+        }
+
+        private void btn_testCretesEtTalwegSurTin_Click(object sender, EventArgs e)
+        {
+            if(_topolFacettes==null)
+            {
+                MessageBox.Show("Pas de topologie facettes disponibles.");
+                return;
+            }
+            FLabServices.createCalculMedium().SetLignesCretesEtTalwegByRef(ref _topolFacettes);
+          
+            MessageBox.Show("Traitement terminé.");
+        }
+
+        private void btn_creteEtTalwegTin_visu_Click(object sender, EventArgs e)
+        {
+            FServicesApplicatifs.createVisuSpatialTrace().GetVisuCreteEtTalweg(_topolFacettes);
+            FServicesApplicatifs.createVisuSpatialTrace().AfficheVisu();
+            MessageBox.Show("Traitement terminé.");
         }
     }
 }
