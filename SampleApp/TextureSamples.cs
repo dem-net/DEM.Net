@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,7 +41,10 @@ namespace SampleApp
             //
             ImageryService imageryService = new ImageryService();
             TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm);
-            imageryService.ConstructTexture(tiles, bbox);
+            string fileName = "Texture.png";
+            TextureInfo texInfo = imageryService.ConstructTexture(tiles, bbox, fileName);
+
+
             //
             //=======================
 
@@ -55,13 +59,45 @@ namespace SampleApp
             hMap = hMap.CenterOnOrigin(0.00002f);
 
             Console.Write("GenerateTriangleMesh...");
-            MeshPrimitive triangleMesh = glTF.GenerateTriangleMesh(hMap);
+            MeshPrimitive triangleMesh = glTF.GenerateTriangleMesh(hMap, null, true);
+
+            triangleMesh.Material.MetallicRoughnessMaterial = new PbrMetallicRoughness();
+
+            // Apply the common properties to the gltf.
+            triangleMesh.Material.MetallicRoughnessMaterial.BaseColorTexture = new Texture
+            {
+                Source = new Image()
+                {
+                    MimeType = glTFLoader.Schema.Image.MimeTypeEnum.image_png
+                            ,
+                    Name = "textureTest"
+                            ,
+                    Uri = fileName
+                }
+                //        ,
+                //Name = "textureTest"
+                //        ,
+                //Sampler = new Sampler()
+                //{
+                //    MagFilter = glTFLoader.Schema.Sampler.MagFilterEnum.LINEAR
+                //        ,
+                //    MinFilter = glTFLoader.Schema.Sampler.MinFilterEnum.LINEAR
+                //        ,
+                //    WrapS = glTFLoader.Schema.Sampler.WrapSEnum.CLAMP_TO_EDGE
+                //        ,
+                //    WrapT = glTFLoader.Schema.Sampler.WrapTEnum.CLAMP_TO_EDGE
+                //}
+                //        ,
+                //TexCoordIndex = 0
+            };
+
+
             meshes.Add(triangleMesh);
 
             // model export
             Console.Write("GenerateModel...");
             Model model = glTF.GenerateModel(meshes, this.GetType().Name);
-            glTF.Export(model, Path.Combine(_outputDirectory, "glTF"), $"{GetType().Name} textured", false, true);
+            glTF.Export(model, Path.Combine(_outputDirectory, "glTF"), $"{GetType().Name} textured", true, true);
         }
 
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -72,35 +73,51 @@ namespace DEM.Net.Lib.Imagery
             return new BoundingBox(bboxTopLeft.X, bboxBottomRight.X, bboxTopLeft.Y, bboxBottomRight.Y);
         }
 
-        public Bitmap ConstructTexture(TileRange tiles, BoundingBox bbox)
+        public TextureInfo ConstructTexture(TileRange tiles, BoundingBox bbox, string fileName)
         {
             // where is the bbox in the final image ?
 
             // get pixel in full map
             var localBbox = ConvertWorldToMap(bbox, tiles.First().TileInfo.Zoom);
             var tilesBbox = GetTilesBoundingBox(tiles);
-            
+
             int tileSize = tiles.Provider.TileSize;
-            Bitmap bmp = new Bitmap((int)localBbox.Width, (int)localBbox.Height);
-            int xOffset = (int)(tilesBbox.xMin - localBbox.xMin);
-            int yOffset = (int)(tilesBbox.yMin - localBbox.yMin);
-            using (Graphics g = Graphics.FromImage(bmp))
+            using (Bitmap bmp = new Bitmap((int)localBbox.Width, (int)localBbox.Height, PixelFormat.Format32bppArgb))
             {
-                foreach (var tile in tiles)
+                int xOffset = (int)(tilesBbox.xMin - localBbox.xMin);
+                int yOffset = (int)(tilesBbox.yMin - localBbox.yMin);
+                using (Graphics g = Graphics.FromImage(bmp))
                 {
-                    using (MemoryStream stream = new MemoryStream(tile.Image))
+                    foreach (var tile in tiles)
                     {
-                        using (Image tileImg = Image.FromStream(stream))
+                        using (MemoryStream stream = new MemoryStream(tile.Image))
                         {
-                            int x = (tile.TileInfo.X - tiles.Start.X) * tileSize + xOffset;
-                            int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize + yOffset;
-                            g.DrawImage(tileImg, x, y);
+                            using (Image tileImg = Image.FromStream(stream))
+                            {
+                                int x = (tile.TileInfo.X - tiles.Start.X) * tileSize + xOffset;
+                                int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize + yOffset;
+                                g.DrawImage(tileImg, x, y);
+                            }
                         }
                     }
                 }
+                //bmp.Save(fileName, ImageFormat.Png);
+
+                // power of two texture
+                using (Bitmap bmpOut = new Bitmap((int)tilesBbox.Width, (int)tilesBbox.Height))
+                {
+                    using (Graphics g = Graphics.FromImage(bmpOut))
+                    {
+                        g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                        g.DrawImage(bmp, 0, 0, bmpOut.Width, bmpOut.Height);
+                    }
+                    bmpOut.Save(fileName, ImageFormat.Png);
+                }
             }
-            bmp.Save("Test2.bmp");
-            return bmp;
+            //return new TextureInfo(fileName, ImageFormat.Png, (int)localBbox.Width, (int)localBbox.Height);
+            return new TextureInfo(fileName, ImageFormat.Png, (int)tilesBbox.Width, (int)tilesBbox.Height);
+
+
         }
 
 

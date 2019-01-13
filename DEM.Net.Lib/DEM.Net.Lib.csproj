@@ -106,6 +106,7 @@
     <Compile Include="Imagery\Structs\LatLong.cs" />
     <Compile Include="Imagery\Structs\MapTileInfo.cs" />
     <Compile Include="Imagery\Structs\PointInt.cs" />
+    <Compile Include="Imagery\Structs\TextureInfo.cs" />
     <Compile Include="Imagery\Structs\TileRange.cs" />
     <Compile Include="Imagery\TileUtils.cs" />
     <Compile Include="Imagery\UrlModel.cs" />
