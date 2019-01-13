@@ -244,6 +244,7 @@ namespace DEM.Net.Lib.Services.Lab
         private BeanResultatConversions_internal GetTetraedreByFacette(ref BeanTopologieFacettes p_topologieCible, int p_idFacetteSource, BeanPoint_internal p_pointCentral)
         {
             BeanResultatConversions_internal v_beanRapportOut = new BeanResultatConversions_internal();
+            int i = 0;
             try
             {
                 v_beanRapportOut.p00_modif_vf = true;
