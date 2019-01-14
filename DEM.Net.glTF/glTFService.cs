@@ -474,8 +474,8 @@ namespace DEM.Net.glTF
                     Vector3[] norm = new Vector3[nV]; //Array for the normals
                                                       //Scan all the triangles. For each triangle add its
                                                       //normal to norm's vectors of triangle's vertices
-                    Vector2 min = new Vector2(float.MaxValue, float.MaxValue);
-                    Vector2 max = new Vector2(float.MinValue, float.MinValue);
+                    Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+                    Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
                     for (int t = 0; t < nT; t++)
                     {
                         //Get indices of the triangle t
@@ -487,23 +487,6 @@ namespace DEM.Net.glTF
                         Vector3 v2 = positions[i2];
                         Vector3 v3 = positions[i3];
 
-                        // for UV coords
-                        min.X = Math.Min(v1.X, min.X);
-                        min.X = Math.Min(v2.X, min.X);
-                        min.X = Math.Min(v3.X, min.X);
-
-                        max.X = Math.Max(v1.X, max.X);
-                        max.X = Math.Max(v2.X, max.X);
-                        max.X = Math.Max(v3.X, max.X);
-
-                        min.Y = Math.Min(v1.Z, min.Y);
-                        min.Y = Math.Min(v2.Z, min.Y);
-                        min.Y = Math.Min(v3.Z, min.Y);
-
-                        max.Y = Math.Max(v1.Z, max.Y);
-                        max.Y = Math.Max(v2.Z, max.Y);
-                        max.Y = Math.Max(v3.Z, max.Y);
-
                         //Compute the triangle's normal
                         Vector3 dir = Vector3.Normalize(Vector3.Cross(v2 - v1, v3 - v1));
                         //Accumulate it to norm array for i1, i2, i3
@@ -511,10 +494,23 @@ namespace DEM.Net.glTF
                         norm[i2] += dir;
                         norm[i3] += dir;
                     }
-                    //Normalize the normal's length
+
                     for (int i = 0; i < nV; i++)
                     {
+                        //Normalize the normal's length
                         norm[i] = Vector3.Normalize(norm[i]);
+
+                        // Calculate bounds of UV mapping
+                        var pos = positions[i];
+
+                        // for UV coords
+                        min.X = Math.Min(pos.X, min.X);
+                        min.Y = Math.Min(pos.Y, min.Y);
+                        min.Z = Math.Min(pos.Z, min.Z);
+
+                        max.X = Math.Max(pos.X, max.X);
+                        max.Y = Math.Max(pos.Y, max.Y);
+                        max.Z = Math.Max(pos.Z, max.Z);
                     }
                     mesh.Normals = norm;
 
@@ -522,8 +518,8 @@ namespace DEM.Net.glTF
                     {
                         mesh.TextureCoordsComponentType = MeshPrimitive.TextureCoordsComponentTypeEnum.FLOAT;
                         var coordSets = new List<Vector2>(positions.Select(pos => new Vector2(
-                           MathHelper.Lerp(min.X, max.X, pos.X)
-                           , MathHelper.Lerp(min.Y, max.Y, pos.Z)
+                           MathHelper.Map(min.X, max.X, 0, 1, pos.X, true)
+                           , MathHelper.Map(min.Z, max.Z, 0, 1, pos.Z, true)
                            )));
                         var allCoordSets = new List<List<Vector2>>();
                         allCoordSets.Add(coordSets);

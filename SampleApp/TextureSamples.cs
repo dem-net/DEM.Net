@@ -40,8 +40,12 @@ namespace SampleApp
             // Textures
             //
             ImageryService imageryService = new ImageryService();
+
+            Console.WriteLine("Download image tiles...");
             TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm);
             string fileName = "Texture.png";
+
+            Console.WriteLine("Construct texture...");
             TextureInfo texInfo = imageryService.ConstructTexture(tiles, bbox, fileName);
 
 
@@ -52,13 +56,13 @@ namespace SampleApp
             //=======================
             // MESH 3D terrain
 
-            Console.Write("Height map...");
+            Console.WriteLine("Height map...");
             HeightMap hMap = _elevationService.GetHeightMap(bbox, _dataSet);
 
             //hMap = hMap.ReprojectTo(4326, 2154);
             hMap = hMap.CenterOnOrigin(0.00002f);
 
-            Console.Write("GenerateTriangleMesh...");
+            Console.WriteLine("GenerateTriangleMesh...");
             MeshPrimitive triangleMesh = glTF.GenerateTriangleMesh(hMap, null, true);
 
             triangleMesh.Material.MetallicRoughnessMaterial = new PbrMetallicRoughness();
@@ -74,28 +78,15 @@ namespace SampleApp
                             ,
                     Uri = fileName
                 }
-                //        ,
-                //Name = "textureTest"
-                //        ,
-                //Sampler = new Sampler()
-                //{
-                //    MagFilter = glTFLoader.Schema.Sampler.MagFilterEnum.LINEAR
-                //        ,
-                //    MinFilter = glTFLoader.Schema.Sampler.MinFilterEnum.LINEAR
-                //        ,
-                //    WrapS = glTFLoader.Schema.Sampler.WrapSEnum.CLAMP_TO_EDGE
-                //        ,
-                //    WrapT = glTFLoader.Schema.Sampler.WrapTEnum.CLAMP_TO_EDGE
-                //}
-                //        ,
-                //TexCoordIndex = 0
             };
+            triangleMesh.Material.MetallicRoughnessMaterial.BaseColorFactor = new Vector4(1, 1, 1, 1);
+            triangleMesh.Material.MetallicRoughnessMaterial.MetallicFactor = 0;
 
 
             meshes.Add(triangleMesh);
 
             // model export
-            Console.Write("GenerateModel...");
+            Console.WriteLine("GenerateModel...");
             Model model = glTF.GenerateModel(meshes, this.GetType().Name);
             glTF.Export(model, Path.Combine(_outputDirectory, "glTF"), $"{GetType().Name} textured", true, true);
         }

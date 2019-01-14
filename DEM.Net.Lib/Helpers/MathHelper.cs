@@ -11,7 +11,7 @@ namespace DEM.Net.Lib
         public static float Lerp(float value1, float value2, float amount)
         { return value1 + (value2 - value1) * amount; }
 
-        public static float Map(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp)
+        public static float Map(float inputMin, float inputMax, float outputMin, float outputMax, float value, bool clamp)
         {
 
             if (Math.Abs(inputMin - inputMax) < float.Epsilon)

@@ -20,6 +20,7 @@ namespace DEM.Net.Lib.Imagery
             BoundingBox mapBbox = null;
             PointInt topLeft = new PointInt();
             PointInt bottomRight = new PointInt();
+            int TILESPERIMAGE = 16;
 
             // optimal zoom calculation (maybe there's a direct way)
             // calculate the size of the full bbox at increasing zoom levels
@@ -35,7 +36,7 @@ namespace DEM.Net.Lib.Imagery
                 mapBbox = new BoundingBox(topLeft.X, bottomRight.X, topLeft.Y, bottomRight.Y);
             }
             while (zoom < provider.MaxZoom
-                    && (mapBbox.Width < provider.TileSize || mapBbox.Height < provider.TileSize));
+                    && (mapBbox.Width < provider.TileSize * TILESPERIMAGE || mapBbox.Height < provider.TileSize * TILESPERIMAGE));
 
             // now we have the minimum zoom without image
             // we can know which tiles are needed
@@ -101,10 +102,11 @@ namespace DEM.Net.Lib.Imagery
                         }
                     }
                 }
-                //bmp.Save(fileName, ImageFormat.Png);
+                bmp.Save("debug_" + fileName, ImageFormat.Png);
 
                 // power of two texture
-                using (Bitmap bmpOut = new Bitmap((int)tilesBbox.Width, (int)tilesBbox.Height))
+                int maxSize = Math.Max((int)tilesBbox.Width, (int)tilesBbox.Height);
+                using (Bitmap bmpOut = new Bitmap(maxSize, maxSize,  PixelFormat.Format24bppRgb))
                 {
                     using (Graphics g = Graphics.FromImage(bmpOut))
                     {
