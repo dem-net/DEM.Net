@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CtrlTestLab));
             this.btn_genererPoints = new System.Windows.Forms.Button();
             this.lb_srid = new System.Windows.Forms.ListBox();
             this.lab1 = new System.Windows.Forms.Label();
@@ -73,6 +74,8 @@
             this.label14 = new System.Windows.Forms.Label();
             this.tb_pasSeparationEntrePoints = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btn_creteEtTalwegTin_visu = new System.Windows.Forms.Button();
+            this.btn_testCretesEtTalwegSurTin = new System.Windows.Forms.Button();
             this.label23 = new System.Windows.Forms.Label();
             this.tb_wkt = new System.Windows.Forms.TextBox();
             this.btn_testUnitaire = new System.Windows.Forms.Button();
@@ -85,8 +88,6 @@
             this.btn_testCH = new System.Windows.Forms.Button();
             this.btn_testsDivers = new System.Windows.Forms.Button();
             this.btn_visualisationSpatialTrace = new System.Windows.Forms.Button();
-            this.btn_testCretesEtTalwegSurTin = new System.Windows.Forms.Button();
-            this.btn_creteEtTalwegTin_visu = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -526,6 +527,26 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Génération points tests:";
             // 
+            // btn_creteEtTalwegTin_visu
+            // 
+            this.btn_creteEtTalwegTin_visu.Location = new System.Drawing.Point(518, 366);
+            this.btn_creteEtTalwegTin_visu.Name = "btn_creteEtTalwegTin_visu";
+            this.btn_creteEtTalwegTin_visu.Size = new System.Drawing.Size(118, 37);
+            this.btn_creteEtTalwegTin_visu.TabIndex = 39;
+            this.btn_creteEtTalwegTin_visu.Text = "Crètes et talwegs visu";
+            this.btn_creteEtTalwegTin_visu.UseVisualStyleBackColor = true;
+            this.btn_creteEtTalwegTin_visu.Click += new System.EventHandler(this.btn_creteEtTalwegTin_visu_Click);
+            // 
+            // btn_testCretesEtTalwegSurTin
+            // 
+            this.btn_testCretesEtTalwegSurTin.Location = new System.Drawing.Point(394, 366);
+            this.btn_testCretesEtTalwegSurTin.Name = "btn_testCretesEtTalwegSurTin";
+            this.btn_testCretesEtTalwegSurTin.Size = new System.Drawing.Size(118, 37);
+            this.btn_testCretesEtTalwegSurTin.TabIndex = 38;
+            this.btn_testCretesEtTalwegSurTin.Text = "Tests crètes et talwegs sur TIN";
+            this.btn_testCretesEtTalwegSurTin.UseVisualStyleBackColor = true;
+            this.btn_testCretesEtTalwegSurTin.Click += new System.EventHandler(this.btn_testCretesEtTalwegSurTin_Click);
+            // 
             // label23
             // 
             this.label23.AutoSize = true;
@@ -542,9 +563,7 @@
             this.tb_wkt.Name = "tb_wkt";
             this.tb_wkt.Size = new System.Drawing.Size(177, 37);
             this.tb_wkt.TabIndex = 30;
-            this.tb_wkt.Text = "POLYGON((5.523314005345696 43.576096090257955, 5.722441202611321 43.5760960902579" +
-    "55, 5.722441202611321 43.46456490270913, 5.523314005345696 43.46456490270913, 5." +
-    "523314005345696 43.576096090257955))";
+            this.tb_wkt.Text = resources.GetString("tb_wkt.Text");
             // 
             // btn_testUnitaire
             // 
@@ -642,26 +661,6 @@
             this.btn_visualisationSpatialTrace.Text = "Visualisation spatialtrace";
             this.btn_visualisationSpatialTrace.UseVisualStyleBackColor = true;
             this.btn_visualisationSpatialTrace.Click += new System.EventHandler(this.btn_visualisationSpatialTrace_Click);
-            // 
-            // btn_testCretesEtTalwegSurTin
-            // 
-            this.btn_testCretesEtTalwegSurTin.Location = new System.Drawing.Point(394, 366);
-            this.btn_testCretesEtTalwegSurTin.Name = "btn_testCretesEtTalwegSurTin";
-            this.btn_testCretesEtTalwegSurTin.Size = new System.Drawing.Size(118, 37);
-            this.btn_testCretesEtTalwegSurTin.TabIndex = 38;
-            this.btn_testCretesEtTalwegSurTin.Text = "Tests crètes et talwegs sur TIN";
-            this.btn_testCretesEtTalwegSurTin.UseVisualStyleBackColor = true;
-            this.btn_testCretesEtTalwegSurTin.Click += new System.EventHandler(this.btn_testCretesEtTalwegSurTin_Click);
-            // 
-            // btn_creteEtTalwegTin_visu
-            // 
-            this.btn_creteEtTalwegTin_visu.Location = new System.Drawing.Point(518, 366);
-            this.btn_creteEtTalwegTin_visu.Name = "btn_creteEtTalwegTin_visu";
-            this.btn_creteEtTalwegTin_visu.Size = new System.Drawing.Size(118, 37);
-            this.btn_creteEtTalwegTin_visu.TabIndex = 39;
-            this.btn_creteEtTalwegTin_visu.Text = "Crètes et talwegs visu";
-            this.btn_creteEtTalwegTin_visu.UseVisualStyleBackColor = true;
-            this.btn_creteEtTalwegTin_visu.Click += new System.EventHandler(this.btn_creteEtTalwegTin_visu_Click);
             // 
             // CtrlTestLab
             // 
