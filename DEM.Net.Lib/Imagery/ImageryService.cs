@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -20,7 +21,7 @@ namespace DEM.Net.Lib.Imagery
             BoundingBox mapBbox = null;
             PointInt topLeft = new PointInt();
             PointInt bottomRight = new PointInt();
-            int TILESPERIMAGE = 16;
+            int TILESPERIMAGE = 4;
 
             // optimal zoom calculation (maybe there's a direct way)
             // calculate the size of the full bbox at increasing zoom levels
@@ -40,22 +41,28 @@ namespace DEM.Net.Lib.Imagery
 
             // now we have the minimum zoom without image
             // we can know which tiles are needed
-            tiles.Start = TileUtils.PixelXYToTileXY(topLeft.X, topLeft.Y);
-            tiles.End = TileUtils.PixelXYToTileXY(bottomRight.X, bottomRight.Y);
+            tiles.Start = new MapTileInfo(TileUtils.PixelXYToTileXY(topLeft.X, topLeft.Y), zoom);
+            tiles.End = new MapTileInfo(TileUtils.PixelXYToTileXY(bottomRight.X, bottomRight.Y), zoom);
             tiles.AreaOfInterest = mapBbox;
 
             // downdload tiles
-            using (WebClient webClient = new WebClient())
-            {
-                for (int x = tiles.Start.X; x <= tiles.End.X; x++)
-                    for (int y = tiles.Start.Y; y <= tiles.End.Y; y++)
+            Logger.StartPerf("downloadImages");
+            Parallel.ForEach(tiles.EnumerateRange(), tileInfo =>
+                {
+                    using (WebClient webClient = new WebClient())
                     {
-                        Uri tileUri = BuildUri(provider, x, y, zoom);
+                        Uri tileUri = BuildUri(provider, tileInfo.X, tileInfo.Y, tileInfo.Zoom);
                         var imgBytes = webClient.DownloadData(tileUri);
 
-                        tiles.Add(new MapTile(imgBytes, provider.TileSize, tileUri, new MapTileInfo(x, y, zoom)));
+                        System.Diagnostics.Debug.WriteLine($"Downloading {tileUri}");
+                        tiles.Add(new MapTile(imgBytes, provider.TileSize, tileUri, tileInfo));
+                        System.Diagnostics.Debug.WriteLine($"Downloading {tileUri} Finished");
                     }
-            }
+                }
+                );
+            Logger.StopPerf("downloadImages");
+
+
 
             return tiles;
         }
@@ -83,7 +90,7 @@ namespace DEM.Net.Lib.Imagery
             var tilesBbox = GetTilesBoundingBox(tiles);
 
             int tileSize = tiles.Provider.TileSize;
-            using (Bitmap bmp = new Bitmap((int)localBbox.Width, (int)localBbox.Height, PixelFormat.Format32bppArgb))
+            using (Bitmap bmp = new Bitmap((int)localBbox.Width, (int)localBbox.Height))
             {
                 int xOffset = (int)(tilesBbox.xMin - localBbox.xMin);
                 int yOffset = (int)(tilesBbox.yMin - localBbox.yMin);
@@ -102,11 +109,11 @@ namespace DEM.Net.Lib.Imagery
                         }
                     }
                 }
-                bmp.Save("debug_" + fileName, ImageFormat.Png);
+                //bmp.Save("debug_" + fileName, ImageFormat.Png);
 
                 // power of two texture
                 int maxSize = Math.Max((int)tilesBbox.Width, (int)tilesBbox.Height);
-                using (Bitmap bmpOut = new Bitmap(maxSize, maxSize,  PixelFormat.Format24bppRgb))
+                using (Bitmap bmpOut = new Bitmap(maxSize, maxSize))
                 {
                     using (Graphics g = Graphics.FromImage(bmpOut))
                     {
