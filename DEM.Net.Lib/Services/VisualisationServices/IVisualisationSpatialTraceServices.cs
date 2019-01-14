@@ -27,7 +27,8 @@ namespace DEM.Net.Lib.Services.VisualisationServices
         //
         void GetVisuTopologieFacettes(BeanTopologieFacettes p_topologieFacettes, bool p_visualiserPointsInclus_vf, bool p_afficherMemeSiInvalide_vf);
         void GetVisuFacette(BeanFacette_internal p_facette, Color p_couleurCourante, bool p_visualiserPointsInclus_vf, bool p_afficherMemeSiInvalide_vf);
-      
+        //
+        void GetVisuCreteEtTalweg(BeanTopologieFacettes p_topologieFacettes);
         //
         void AfficheVisu();
         void ClearSpatialTrace();

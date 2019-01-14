@@ -100,14 +100,7 @@ namespace DEM.Net.TestWinForm
 
         }
         
-        private void btnTestPoints_Click(object sender, EventArgs e)
-        {
-            IglTFService glTFService = new glTFService();
-
-            MeshPrimitive pointMesh = glTFService.GeneratePointMesh(FromBeanPoint_internalToGeoPoint(_dataPointsTests), new Vector3(1, 0, 0), 1f);
-            Model model = glTFService.GenerateModel(pointMesh, "Test Points");
-            glTFService.Export(model, "testpoints.glb", "Test points", false, true);
-        }
+      
 
         
         private IEnumerable<GeoPoint> FromBeanPoint_internalToGeoPoint(List<BeanPoint_internal> dataPointsTests)
@@ -213,6 +206,7 @@ namespace DEM.Net.TestWinForm
             string v_bbox;
             //string v_sainteVictoire= "POLYGON((5.523314005345696 43.576096090257955, 5.722441202611321 43.576096090257955, 5.722441202611321 43.46456490270913, 5.523314005345696 43.46456490270913, 5.523314005345696 43.576096090257955))";
             //string v_eyger= "Polygon((8.12951188622090193 46.634254667789655, 7.8854960299327308 46.63327193616965616, 7.89909222133881617 46.4319282954101098, 8.13595218741325965 46.43143509785498679, 8.12951188622090193 46.634254667789655))";
+            //string v_gorges="Polygon ((6.14901771150602894 43.8582708438193265, 6.30590241369230409 43.8575166880815317, 6.32080646040000005 43.74636314919661828, 6.14561854295865828 43.74579647280887684, 6.14901771150602894 43.8582708438193265))";
             v_bbox = tb_wkt.Text;
 
 
@@ -234,7 +228,7 @@ namespace DEM.Net.TestWinForm
 
             foreach(BeanPoint_internal v_point in _topolFacettes.p11_pointsFacettesByIdPoint.Values)
             {
-                v_geoPoint = new GeoPoint(v_point.p10_coord[0], v_point.p10_coord[1], (float) v_point.p10_coord[2],0,0);
+                v_geoPoint = new GeoPoint(v_point.p10_coord[1], v_point.p10_coord[0], (float) v_point.p10_coord[2],0,0);
                 v_beanToVisu3d.p00_geoPoint.Add(v_geoPoint);
                 v_indiceParIdPoint.Add(v_point.p00_id, v_indice);
                 v_indice++;
@@ -242,7 +236,7 @@ namespace DEM.Net.TestWinForm
             //Création des listes d'indices et normalisation du sens des points favettes
             List<int> v_listeIndices;
             bool v_renvoyerNullSiPointsColineaires_vf = true;
-            bool v_normalisationSensHoraireSinonAntihoraire = true;
+            bool v_normalisationSensHoraireSinonAntihoraire = false;
            
 
             foreach (BeanFacette_internal v_facette in _topolFacettes.p13_facettesById.Values)
@@ -272,6 +266,25 @@ namespace DEM.Net.TestWinForm
             bool v_afficherMessageSiko_vf = true;
             //
             FServicesApplicatifs.createTestsUnitairesLab().TestUnitairesLab(v_afficherMessageSiko_vf);
+        }
+
+        private void btn_testCretesEtTalwegSurTin_Click(object sender, EventArgs e)
+        {
+            if(_topolFacettes==null)
+            {
+                MessageBox.Show("Pas de topologie facettes disponibles.");
+                return;
+            }
+            FLabServices.createCalculMedium().SetLignesCretesEtTalwegByRef(ref _topolFacettes);
+          
+            MessageBox.Show("Traitement terminé.");
+        }
+
+        private void btn_creteEtTalwegTin_visu_Click(object sender, EventArgs e)
+        {
+            FServicesApplicatifs.createVisuSpatialTrace().GetVisuCreteEtTalweg(_topolFacettes);
+            FServicesApplicatifs.createVisuSpatialTrace().AfficheVisu();
+            MessageBox.Show("Traitement terminé.");
         }
     }
 }

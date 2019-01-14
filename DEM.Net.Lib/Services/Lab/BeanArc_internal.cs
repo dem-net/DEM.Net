@@ -21,7 +21,8 @@ namespace DEM.Net.Lib.Services.Lab
         public BeanFacette_internal p22_facetteDroite { get; set; }
         //
         public List<BeanPoint_internal> p31_pointsAssocies { get; set; }
-
+        //
+        public enumTypeArcReseau p41_natureArcDansLeReseau { get; set; }
         //
         public BeanArc_internal(BeanPoint_internal p_pointDbt, BeanPoint_internal p_pointFin)
         {
@@ -31,6 +32,7 @@ namespace DEM.Net.Lib.Services.Lab
             //
             p01_hcodeArc = FLabServices.createUtilitaires().GethCodeGeogSegment(p11_pointDbt.p10_coord, p12_pointFin.p10_coord);
             //
+            p41_natureArcDansLeReseau = enumTypeArcReseau.indetermine;
         }
         public BeanArc_internal(BeanPoint_internal p_pointDbt, BeanPoint_internal p_pointFin, List<BeanPoint_internal> p_pointsAssocies):this(p_pointDbt, p_pointFin)
         {
