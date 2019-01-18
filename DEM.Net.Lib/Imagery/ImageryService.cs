@@ -21,7 +21,7 @@ namespace DEM.Net.Lib.Imagery
             BoundingBox mapBbox = null;
             PointInt topLeft = new PointInt();
             PointInt bottomRight = new PointInt();
-            int TILESPERIMAGE = 4;
+            int TILESPERIMAGE = 1;
 
             // optimal zoom calculation (maybe there's a direct way)
             // calculate the size of the full bbox at increasing zoom levels
@@ -47,7 +47,8 @@ namespace DEM.Net.Lib.Imagery
 
             // downdload tiles
             Logger.StartPerf("downloadImages");
-            Parallel.ForEach(tiles.EnumerateRange(), tileInfo =>
+            var options = new ParallelOptions();// { MaxDegreeOfParallelism = 1 };
+            Parallel.ForEach(tiles.EnumerateRange(), options, tileInfo =>
                 {
                     using (WebClient webClient = new WebClient())
                     {
@@ -118,7 +119,7 @@ namespace DEM.Net.Lib.Imagery
                     using (Graphics g = Graphics.FromImage(bmpOut))
                     {
                         g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                        g.DrawImage(bmp, 0, 0, bmpOut.Width, bmpOut.Height);
+                        g.DrawImage(bmp, 0, 0, maxSize, maxSize);
                     }
                     bmpOut.Save(fileName, ImageFormat.Png);
                 }

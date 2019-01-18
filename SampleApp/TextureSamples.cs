@@ -32,6 +32,7 @@ namespace SampleApp
         {
             glTFService glTF = new glTFService();
             List<MeshPrimitive> meshes = new List<MeshPrimitive>();
+            string outputDir = Path.GetFullPath(Path.Combine(_outputDirectory, "glTF"));
 
             // Get GPX points
             var bbox = GeometryService.GetBoundingBox(_bboxWkt);
@@ -43,7 +44,7 @@ namespace SampleApp
 
             Console.WriteLine("Download image tiles...");
             TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm);
-            string fileName = "Texture.png";
+            string fileName = Path.Combine(outputDir, "Texture.png");
 
             Console.WriteLine("Construct texture...");
             TextureInfo texInfo = imageryService.ConstructTexture(tiles, bbox, fileName);
@@ -76,7 +77,7 @@ namespace SampleApp
                             ,
                     Name = "textureTest"
                             ,
-                    Uri = fileName
+                    Uri = texInfo.FileName // relative path
                 }
             };
             triangleMesh.Material.MetallicRoughnessMaterial.BaseColorFactor = new Vector4(1, 1, 1, 1);
@@ -88,7 +89,7 @@ namespace SampleApp
             // model export
             Console.WriteLine("GenerateModel...");
             Model model = glTF.GenerateModel(meshes, this.GetType().Name);
-            glTF.Export(model, Path.Combine(_outputDirectory, "glTF"), $"{GetType().Name} textured", true, true);
+            glTF.Export(model, outputDir, $"{GetType().Name} Packed", false, true);
         }
 
     }

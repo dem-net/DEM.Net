@@ -51,7 +51,6 @@
     <Reference Include="GeoAPI.CoordinateSystems, Version=1.7.5.0, Culture=neutral, PublicKeyToken=a1a0da7def465678, processorArchitecture=MSIL">
       <HintPath>..\packages\GeoAPI.CoordinateSystems.1.7.5\lib\net45\GeoAPI.CoordinateSystems.dll</HintPath>
     </Reference>
-    <Reference Include="glTFLoader, Version=1.1.1.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="NetTopologySuite, Version=1.15.1.0, Culture=neutral, PublicKeyToken=f580a05016ebada1, processorArchitecture=MSIL">
       <HintPath>..\packages\NetTopologySuite.Core.1.15.1\lib\net45\NetTopologySuite.dll</HintPath>
     </Reference>
@@ -87,6 +86,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\glTF-CSharp-Loader\glTFLoader\glTFLoader.csproj">
+      <Project>{d36f4f16-14cb-4fae-9455-e71b8f6902bc}</Project>
+      <Name>glTFLoader</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DEM.Net.glTF\DEM.Net.glTF.csproj">
       <Project>{31079223-207d-4075-9c4c-ab001e978c94}</Project>
       <Name>DEM.Net.glTF</Name>

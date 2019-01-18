@@ -29,10 +29,11 @@ namespace DEM.Net.glTF
                 };
 
 
-                var filename = $"{modelName}.gltf";
-                var glbFilename = $"{modelName}.glb";
+                var filename = string.Concat(modelName, ".gltf");
+                var glbFilename = string.Concat(modelName, ".glb");
+                var dataFileName = string.Concat(modelName, ".bin");
 
-                using (var data = new Data($"{modelName}.bin"))
+                using (var data = new Data(dataFileName))
                 {
                     // Passes the desired properties to the runtime layer, which then coverts that data into
                     // a gltf loader object, ready to create the model
@@ -43,27 +44,24 @@ namespace DEM.Net.glTF
                     // in order to add features that don't really exist otherwise
                     model.PostRuntimeChanges(gltf);
 
+                    var assetFile = Path.Combine(outputFolder, filename);
+                    var glbBinChunck = data.ToArray();
+
                     if (exportglTF)
                     {
                         // Creates the .gltf file and writes the model's data to it
-                        var assetFile = Path.Combine(outputFolder, filename);
                         glTFLoader.Interface.SaveModel(gltf, assetFile);
-
 
                         // Creates the .bin file and writes the model's data to it
                         var dataFile = Path.Combine(outputFolder, data.Name);
-                        File.WriteAllBytes(dataFile, data.ToArray());
+                        File.WriteAllBytes(dataFile, glbBinChunck);
                     }
-
+                    
                     if (exportGLB)
                     {
                         var glbFile = Path.Combine(outputFolder, glbFilename);
-                        foreach (var buf in gltf.Buffers)
-                        {
-                            buf.Uri = null;
-                        }
-                        // gltf.Buffers = null;
-                        glTFLoader.Interface.SaveBinaryModel(gltf, data.ToArray(), glbFile);
+
+                        glTFLoader.Interface.SaveBinaryModelPacked(gltf, glbFile, assetFile, glbBinChunck);
                     }
                 }
 
