@@ -24,7 +24,7 @@ namespace SampleApp
         {
             _elevationService = elevationService;
             _bboxWkt = "POLYGON((5.424004809009261 43.68472756348281, 5.884057299243636 43.68472756348281, 5.884057299243636 43.40402056297321, 5.424004809009261 43.40402056297321, 5.424004809009261 43.68472756348281))";
-            _dataSet = DEMDataSet.AW3D30;
+            _dataSet = DEMDataSet.SRTM_GL3;
             _outputDirectory = outputDirectory;
         }
 
@@ -43,7 +43,7 @@ namespace SampleApp
             ImageryService imageryService = new ImageryService();
 
             Console.WriteLine("Download image tiles...");
-            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 16);
+            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 2);
             string fileName = Path.Combine(outputDir, "Texture.png");
 
             Console.WriteLine("Construct texture...");
@@ -64,26 +64,8 @@ namespace SampleApp
             hMap = hMap.CenterOnOrigin(0.00002f);
 
             Console.WriteLine("GenerateTriangleMesh...");
-            MeshPrimitive triangleMesh = glTF.GenerateTriangleMesh(hMap, null, true);
-
-            triangleMesh.Material.MetallicRoughnessMaterial = new PbrMetallicRoughness();
-
-            // Apply the common properties to the gltf.
-            triangleMesh.Material.MetallicRoughnessMaterial.BaseColorTexture = new Texture
-            {
-                Source = new Image()
-                {
-                    MimeType = glTFLoader.Schema.Image.MimeTypeEnum.image_png
-                            ,
-                    Name = "textureTest"
-                            ,
-                    Uri = texInfo.FileName // relative path
-                }
-            };
-            triangleMesh.Material.MetallicRoughnessMaterial.BaseColorFactor = new Vector4(1, 1, 1, 1);
-            triangleMesh.Material.MetallicRoughnessMaterial.MetallicFactor = 0;
-
-
+            // generate mesh with texture
+            MeshPrimitive triangleMesh = glTF.GenerateTriangleMesh(hMap, null, texInfo.FileName);
             meshes.Add(triangleMesh);
 
             // model export

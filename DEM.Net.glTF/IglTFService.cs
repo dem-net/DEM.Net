@@ -17,9 +17,9 @@ namespace DEM.Net.glTF
         /// </summary>
         /// <param name="heightMap"></param>
         /// <param name="colors">Colors. Pass null to use white as default.</param>
-        /// <param name="uvcoordinates">If true, interpolated UV coordinates in (0,0)=>(1,1) will be generated</param>
+        /// <param name="baseColorTextureFileName">Texture path relative from the model</param>
         /// <returns></returns>
-        MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, IEnumerable<Vector3> colors = null, bool uvcoordinates = false);
+        MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, IEnumerable<Vector3> colors = null, string baseColorTextureFileName = null);
 
         /// <summary>
         /// Generate triangle mesh with supplied triangulation
@@ -27,9 +27,9 @@ namespace DEM.Net.glTF
         /// <param name="points">Vertices</param>
         /// <param name="indices">Triplets of vertex index in points list</param>
         /// <param name="color"></param>
-        /// <param name="uvcoordinates">If true, interpolated UV coordinates in (0,0)=>(1,1) will be generated</param>
+        /// <param name="baseColorTextureFileName">Texture path relative from the model</param>
         /// <returns></returns>
-        MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, IEnumerable<Vector3> colors = null, bool uvcoordinates = false);
+        MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, IEnumerable<Vector3> colors = null, string baseColorTextureFileName = null);
 
         /// <summary>
         /// Build a line mesh from given points
@@ -47,9 +47,9 @@ namespace DEM.Net.glTF
         /// <param name="points"></param>
         /// <param name="indices"></param>
         /// <param name="colors"></param>
-        /// <param name="uvcoordinates">If true, interpolated UV coordinates in (0,0)=>(1,1) will be generated</param>
+        /// <param name="baseColorTextureFileName">Texture path relative from the model</param>
         /// <returns></returns>
-        MeshPrimitive GenerateTriangleMesh(IEnumerable<Vector3> points, List<int> indices, IEnumerable<Vector3> colors = null, bool uvcoordinates = false);
+        MeshPrimitive GenerateTriangleMesh(IEnumerable<Vector3> points, List<int> indices, IEnumerable<Vector3> colors = null, string baseColorTextureFileName = null);
 
         /// <summary>
         /// Build a line mesh from given points
