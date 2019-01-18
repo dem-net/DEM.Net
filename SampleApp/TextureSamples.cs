@@ -24,7 +24,7 @@ namespace SampleApp
         {
             _elevationService = elevationService;
             _bboxWkt = "POLYGON((5.424004809009261 43.68472756348281, 5.884057299243636 43.68472756348281, 5.884057299243636 43.40402056297321, 5.424004809009261 43.40402056297321, 5.424004809009261 43.68472756348281))";
-            _dataSet = DEMDataSet.SRTM_GL3;
+            _dataSet = DEMDataSet.AW3D30;
             _outputDirectory = outputDirectory;
         }
 
@@ -43,7 +43,7 @@ namespace SampleApp
             ImageryService imageryService = new ImageryService();
 
             Console.WriteLine("Download image tiles...");
-            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm);
+            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 16);
             string fileName = Path.Combine(outputDir, "Texture.png");
 
             Console.WriteLine("Construct texture...");

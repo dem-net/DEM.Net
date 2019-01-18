@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="glTFLoader, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\glTF2Loader.1.1.3-alpha\lib\net35\glTFLoader.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -87,10 +90,6 @@
     <Compile Include="VectorsExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\glTF-CSharp-Loader\glTFLoader\glTFLoader.csproj">
-      <Project>{d36f4f16-14cb-4fae-9455-e71b8f6902bc}</Project>
-      <Name>glTFLoader</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DEM.Net.Lib\DEM.Net.Lib.csproj">
       <Project>{7a31b996-9f8c-4abf-ac33-e80d2914bc0f}</Project>
       <Name>DEM.Net.Lib</Name>

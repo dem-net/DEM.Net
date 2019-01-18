@@ -15,13 +15,12 @@ namespace DEM.Net.Lib.Imagery
     {
         private int _serverCycle = 0;
 
-        public TileRange DownloadTiles(BoundingBox bbox, ImageryProvider provider)
+        public TileRange DownloadTiles(BoundingBox bbox, ImageryProvider provider, int minTilesPerImage = 4)
         {
             TileRange tiles = new TileRange(provider);
             BoundingBox mapBbox = null;
             PointInt topLeft = new PointInt();
             PointInt bottomRight = new PointInt();
-            int TILESPERIMAGE = 1;
 
             // optimal zoom calculation (maybe there's a direct way)
             // calculate the size of the full bbox at increasing zoom levels
@@ -37,7 +36,7 @@ namespace DEM.Net.Lib.Imagery
                 mapBbox = new BoundingBox(topLeft.X, bottomRight.X, topLeft.Y, bottomRight.Y);
             }
             while (zoom < provider.MaxZoom
-                    && (mapBbox.Width < provider.TileSize * TILESPERIMAGE || mapBbox.Height < provider.TileSize * TILESPERIMAGE));
+                    && (mapBbox.Width < provider.TileSize * minTilesPerImage || mapBbox.Height < provider.TileSize * minTilesPerImage));
 
             // now we have the minimum zoom without image
             // we can know which tiles are needed
