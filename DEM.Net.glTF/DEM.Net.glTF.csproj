@@ -51,12 +51,7 @@
   <ItemGroup>
     <Compile Include="glTFService.cs" />
     <Compile Include="glTFSource\Data.cs" />
-    <Compile Include="glTFSource\FileHelper.cs" />
-    <Compile Include="glTFSource\FloatMath.cs" />
-    <Compile Include="glTFSource\ModelGroup.cs" />
-    <Compile Include="glTFSource\ModelGroups\Mesh_DEMHeightMap.cs" />
-    <Compile Include="glTFSource\Property.cs" />
-    <Compile Include="glTFSource\ReadmeStringHelper.cs" />
+    <Compile Include="glTFSource\Model.cs" />
     <Compile Include="glTFSource\Runtime\Animation.cs" />
     <Compile Include="glTFSource\Runtime\AnimationChannel.cs" />
     <Compile Include="glTFSource\Runtime\AnimationChannelTarget.cs" />

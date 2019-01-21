@@ -560,7 +560,7 @@ namespace DEM.Net.glTF
                 {
                     MimeType = mimeType,
                     Name = Path.GetFileNameWithoutExtension(baseColorTextureFileName),
-                    Uri = baseColorTextureFileName // relative path
+                    Uri = Path.GetFileName(baseColorTextureFileName) // relative path
                 }
             };
         }

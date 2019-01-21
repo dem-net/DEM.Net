@@ -41,7 +41,7 @@ namespace SampleApp
 
 
             TextureSamples textureSamples = new TextureSamples(elevationService, _OutputDataDirectory);
-            textureSamples.Run();
+            textureSamples.Run(true);
 
             
             TestPoints(WKT_BBOX_CORSEBUG, DEMDataSet.SRTM_GL3, rasterService, elevationService);

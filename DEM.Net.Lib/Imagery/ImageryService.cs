@@ -46,7 +46,9 @@ namespace DEM.Net.Lib.Imagery
 
             // downdload tiles
             Logger.StartPerf("downloadImages");
-            var options = new ParallelOptions();// { MaxDegreeOfParallelism = 1 };
+            
+            // 2 max download threads
+            var options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
             Parallel.ForEach(tiles.EnumerateRange(), options, tileInfo =>
                 {
                     using (WebClient webClient = new WebClient())

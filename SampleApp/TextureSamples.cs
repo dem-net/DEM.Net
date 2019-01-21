@@ -23,12 +23,15 @@ namespace SampleApp
         public TextureSamples(IElevationService elevationService, string outputDirectory)
         {
             _elevationService = elevationService;
-            _bboxWkt = "POLYGON((5.424004809009261 43.68472756348281, 5.884057299243636 43.68472756348281, 5.884057299243636 43.40402056297321, 5.424004809009261 43.40402056297321, 5.424004809009261 43.68472756348281))";
+            // sugiton
+            _bboxWkt = "POLYGON ((5.42201042175293 43.20023317388979, 5.459775924682617 43.20023317388979, 5.459775924682617 43.22594305473314, 5.42201042175293 43.22594305473314, 5.42201042175293 43.20023317388979))";
+            // ste victoire
+            //_bboxWkt = "POLYGON((5.424004809009261 43.68472756348281, 5.884057299243636 43.68472756348281, 5.884057299243636 43.40402056297321, 5.424004809009261 43.40402056297321, 5.424004809009261 43.68472756348281))";
             _dataSet = DEMDataSet.SRTM_GL3;
             _outputDirectory = outputDirectory;
         }
 
-        internal void Run()
+        internal void Run(bool withTexture)
         {
             glTFService glTF = new glTFService();
             List<MeshPrimitive> meshes = new List<MeshPrimitive>();
@@ -40,19 +43,21 @@ namespace SampleApp
             //=======================
             // Textures
             //
-            ImageryService imageryService = new ImageryService();
+            TextureInfo texInfo = null;
+            if (withTexture)
+            {
 
-            Console.WriteLine("Download image tiles...");
-            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 2);
-            string fileName = Path.Combine(outputDir, "Texture.png");
+                ImageryService imageryService = new ImageryService();
 
-            Console.WriteLine("Construct texture...");
-            TextureInfo texInfo = imageryService.ConstructTexture(tiles, bbox, fileName);
+                Console.WriteLine("Download image tiles...");
+                TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 2);
+                string fileName = Path.Combine(outputDir, "Texture.png");
 
-
+                Console.WriteLine("Construct texture...");
+                texInfo = imageryService.ConstructTexture(tiles, bbox, fileName);
+            }
             //
             //=======================
-
 
             //=======================
             // MESH 3D terrain
@@ -65,7 +70,7 @@ namespace SampleApp
 
             Console.WriteLine("GenerateTriangleMesh...");
             // generate mesh with texture
-            MeshPrimitive triangleMesh = glTF.GenerateTriangleMesh(hMap, null, texInfo.FileName);
+            MeshPrimitive triangleMesh = glTF.GenerateTriangleMesh(hMap, null, texInfo?.FilePath);
             meshes.Add(triangleMesh);
 
             // model export
