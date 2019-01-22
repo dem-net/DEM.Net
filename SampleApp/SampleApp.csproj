@@ -80,12 +80,13 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="GpxSamples.cs" />
     <Compile Include="TextureSamples.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="App.SECRETS.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>

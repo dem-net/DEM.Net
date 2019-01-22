@@ -95,7 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\ExceptionHelper.cs" />
-    <Compile Include="Helpers\HeightMapReprojection.cs" />
+    <Compile Include="Helpers\Reprojection.cs" />
     <Compile Include="Helpers\RasterFileDictionary.cs" />
     <Compile Include="Helpers\HeightMapExtensions.cs" />
     <Compile Include="Helpers\UrlHelper.cs" />

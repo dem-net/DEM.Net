@@ -37,7 +37,7 @@ namespace DEM.Net.Lib.Imagery
                 mapBbox = new BoundingBox(topLeft.X, bottomRight.X, topLeft.Y, bottomRight.Y);
             }
             while (zoom < provider.MaxZoom
-                    && (mapBbox.Width < provider.TileSize * minTilesPerImage || mapBbox.Height < provider.TileSize * minTilesPerImage));
+                    && (mapBbox.Width < provider.TileSize * minTilesPerImage && mapBbox.Height < provider.TileSize * minTilesPerImage));
 
             // now we have the minimum zoom without image
             // we can know which tiles are needed
@@ -49,7 +49,7 @@ namespace DEM.Net.Lib.Imagery
             Logger.StartPerf("downloadImages");
 
             // 2 max download threads
-            var options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
+            var options = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism };
             Parallel.ForEach(tiles.EnumerateRange(), options, tileInfo =>
                 {
                     using (WebClient webClient = new WebClient())

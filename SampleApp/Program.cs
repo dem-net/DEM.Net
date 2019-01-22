@@ -39,6 +39,8 @@ namespace SampleApp
             IRasterService rasterService = new RasterService(_RasterDataDirectory);
             IElevationService elevationService = new ElevationService(rasterService);
 
+            GpxSamples gpxSamples = new GpxSamples(elevationService, _OutputDataDirectory, @"C:\Users\ext.dev.xfi\Downloads\Quillan\Quillan 28km track.gpx");
+            gpxSamples.Run();
 
             TextureSamples textureSamples = new TextureSamples(elevationService, _OutputDataDirectory);
             textureSamples.Run(true);

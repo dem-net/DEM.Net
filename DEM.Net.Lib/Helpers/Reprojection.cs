@@ -8,23 +8,33 @@ using DotSpatial.Projections;
 
 namespace DEM.Net.Lib
 {
-    public static class HeightMapReprojection
+    public static class Reprojection
     {
 
         public static HeightMap ReprojectTo(this HeightMap heightMap, int sourceEpsgCode, int destinationEpsgCode)
         {
-            if (sourceEpsgCode != destinationEpsgCode)
-            {
-                // Defines the starting coordiante system
-                ProjectionInfo pSource = ProjectionInfo.FromEpsgCode(sourceEpsgCode);
-                // Defines the starting coordiante system
-                ProjectionInfo pTarget = ProjectionInfo.FromEpsgCode(destinationEpsgCode);
+            if (sourceEpsgCode == destinationEpsgCode)
+                return heightMap;
 
-                heightMap.Coordinates = heightMap.Coordinates.Select(pt => ReprojectPoint(pt, pSource, pTarget));
 
-            }
+            heightMap.Coordinates = heightMap.Coordinates.ReprojectTo(sourceEpsgCode, destinationEpsgCode);
 
             return heightMap;
+        }
+
+        public static IEnumerable<GeoPoint> ReprojectTo(this IEnumerable<GeoPoint> points, int sourceEpsgCode, int destinationEpsgCode)
+        {
+            if (sourceEpsgCode == destinationEpsgCode)
+                return points;
+
+
+            // Defines the starting coordiante system
+            ProjectionInfo pSource = ProjectionInfo.FromEpsgCode(sourceEpsgCode);
+            // Defines the starting coordiante system
+            ProjectionInfo pTarget = ProjectionInfo.FromEpsgCode(destinationEpsgCode);
+
+            return points.Select(pt => ReprojectPoint(pt, pSource, pTarget));
+
         }
 
 
