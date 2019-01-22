@@ -263,7 +263,7 @@ namespace DEM.Net.glTF
         /// <param name="colors"></param>
         /// <param name="baseColorTextureFileName">Texture path relative from the model</param>
         /// <returns></returns>
-        public MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, IEnumerable<Vector3> colors = null, string baseColorTextureFileName = null)
+        public MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, IEnumerable<Vector4> colors = null, string baseColorTextureFileName = null)
         {
             const int TRIANGULATION_MODE = 1;
             int capacity = ((heightMap.Width - 1) * 6) * (heightMap.Height - 1);
@@ -310,7 +310,7 @@ namespace DEM.Net.glTF
             return GenerateTriangleMesh(heightMap.Coordinates, indices, colors, baseColorTextureFileName);
         }
 
-        public MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector3 color, float width)
+        public MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector4 color, float width)
         {
             MeshPrimitive mesh = null;
             try
@@ -326,7 +326,7 @@ namespace DEM.Net.glTF
                         // Basic line strip  declaration
                         mesh = new MeshPrimitive()
                         {
-                            Colors = points.Select(c => color.ToVector4())
+                            Colors = points.Select(c => color)
                             ,
                             ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
                             ,
@@ -393,7 +393,7 @@ namespace DEM.Net.glTF
                         // Basic line strip  declaration
                         mesh = new MeshPrimitive()
                         {
-                            Colors = vertices.Select(v => color.ToVector4())
+                            Colors = vertices.Select(v => color)
                             ,
                             ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
                             ,
@@ -429,11 +429,11 @@ namespace DEM.Net.glTF
             return mesh;
         }
 
-        public MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, IEnumerable<Vector3> colors = null, string baseColorTextureFileName = null)
+        public MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, IEnumerable<Vector4> colors = null, string baseColorTextureFileName = null)
         {
             return GenerateTriangleMesh(points.ToVector3(), indices, colors, baseColorTextureFileName);
         }
-        public MeshPrimitive GenerateTriangleMesh(IEnumerable<Vector3> points, List<int> indices, IEnumerable<Vector3> colors = null, string baseColorTextureFileName = null)
+        public MeshPrimitive GenerateTriangleMesh(IEnumerable<Vector3> points, List<int> indices, IEnumerable<Vector4> colors = null, string baseColorTextureFileName = null)
         {
             MeshPrimitive mesh = null;
             const int TRIANGULATION_MODE = 1; // 2
@@ -449,13 +449,13 @@ namespace DEM.Net.glTF
                     List<Vector3> positions = points.ToList();
                     if (colors == null)
                     {
-                        colors = positions.Select(pt => new Vector3(1, 1, 1));
+                        colors = positions.Select(pt => Vector4.One);
                     }
 
                     // Basic mesh declaration
                     mesh = new MeshPrimitive()
                     {
-                        Colors = colors.Select(c => c.ToVector4())
+                        Colors = colors
                         ,
                         ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
                         ,
@@ -565,7 +565,7 @@ namespace DEM.Net.glTF
             };
         }
 
-        public MeshPrimitive GeneratePointMesh(IEnumerable<GeoPoint> points, Vector3 color, float pointSize)
+        public MeshPrimitive GeneratePointMesh(IEnumerable<GeoPoint> points, Vector4 color, float pointSize)
         {
             MeshPrimitive mesh = null;
             try
@@ -581,7 +581,7 @@ namespace DEM.Net.glTF
                         // Basic point declaration
                         mesh = new MeshPrimitive()
                         {
-                            Colors = points.Select(c => color.ToVector4())
+                            Colors = points.Select(c => color)
                             ,
                             ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
                             ,

@@ -61,11 +61,11 @@ namespace SampleApp
                 ImageryService imageryService = new ImageryService();
 
                 Console.WriteLine("Download image tiles...");
-                TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 4);
-                string fileName = Path.Combine(outputDir, "Texture.png");
+                TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.MapBoxSatellite, 8);
+                string fileName = Path.Combine(outputDir, "Texture.jpg");
 
                 Console.WriteLine("Construct texture...");
-                texInfo = imageryService.ConstructTexture(tiles, bbox, fileName);
+                texInfo = imageryService.ConstructTexture(tiles, bbox, fileName, TextureImageFormat.image_jpeg);
             }
             //
             //=======================
@@ -91,11 +91,11 @@ namespace SampleApp
             meshes.Add(triangleMesh);
 
             // take 1 point evert nth
-             int nSkip = 5;
+            int nSkip = 2;
             gpxPointsElevated = gpxPointsElevated.Where((x, i) => (i + 1) % nSkip == 0);
             gpxPointsElevated = gpxPointsElevated.Select(pt => { pt.Elevation += 5; return pt; });
             gpxPointsElevated = gpxPointsElevated.CenterOnOrigin(hMap.BoundingBox, 0.00002f);
-            MeshPrimitive gpxLine = glTF.GenerateLine(gpxPointsElevated, new Vector3(1, 0, 0), 0.0002f);
+            MeshPrimitive gpxLine = glTF.GenerateLine(gpxPointsElevated, new Vector4(1, 0, 0, 0.5f), 0.00015f);
             meshes.Add(gpxLine);
 
             // model export

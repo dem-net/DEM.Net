@@ -84,8 +84,10 @@ namespace DEM.Net.Lib.Imagery
             return new BoundingBox(bboxTopLeft.X, bboxBottomRight.X, bboxTopLeft.Y, bboxBottomRight.Y);
         }
 
-        public TextureInfo ConstructTexture(TileRange tiles, BoundingBox bbox, string fileName)
+        public TextureInfo ConstructTexture(TileRange tiles, BoundingBox bbox, string fileName, TextureImageFormat mimeType)
         {
+            ImageFormat format = ConvertFormat(mimeType);
+
             // where is the bbox in the final image ?
 
             // get pixel in full map
@@ -112,7 +114,7 @@ namespace DEM.Net.Lib.Imagery
                         }
                     }
                 }
-                //bmp.Save("debug_" + fileName, ImageFormat.Png);
+                //bmp.Save("debug_" + fileName, format);
 
                 // power of two texture
                 int maxSize = Math.Max((int)tilesBbox.Width, (int)tilesBbox.Height);
@@ -123,13 +125,21 @@ namespace DEM.Net.Lib.Imagery
                         g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
                         g.DrawImage(bmp, 0, 0, maxSize, maxSize);
                     }
-                    bmpOut.Save(fileName, ImageFormat.Png);
+                    bmpOut.Save(fileName, format);
                 }
             }
-            //return new TextureInfo(fileName, ImageFormat.Png, (int)localBbox.Width, (int)localBbox.Height);
-            return new TextureInfo(fileName, ImageFormat.Png, (int)tilesBbox.Width, (int)tilesBbox.Height);
+            //return new TextureInfo(fileName, format, (int)localBbox.Width, (int)localBbox.Height);
+            return new TextureInfo(fileName, format, (int)tilesBbox.Width, (int)tilesBbox.Height);
 
 
+        }
+
+        private ImageFormat ConvertFormat(TextureImageFormat format)
+        {
+            if (format == TextureImageFormat.image_jpeg)
+                return ImageFormat.Jpeg;
+            else
+                return ImageFormat.Png;
         }
 
 

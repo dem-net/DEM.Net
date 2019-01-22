@@ -19,7 +19,7 @@ namespace DEM.Net.glTF
         /// <param name="colors">Colors. Pass null to use white as default.</param>
         /// <param name="baseColorTextureFileName">Texture path relative from the model</param>
         /// <returns></returns>
-        MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, IEnumerable<Vector3> colors = null, string baseColorTextureFileName = null);
+        MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, IEnumerable<Vector4> colors = null, string baseColorTextureFileName = null);
 
         /// <summary>
         /// Generate triangle mesh with supplied triangulation
@@ -29,7 +29,7 @@ namespace DEM.Net.glTF
         /// <param name="color"></param>
         /// <param name="baseColorTextureFileName">Texture path relative from the model</param>
         /// <returns></returns>
-        MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, IEnumerable<Vector3> colors = null, string baseColorTextureFileName = null);
+        MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, IEnumerable<Vector4> colors = null, string baseColorTextureFileName = null);
 
         /// <summary>
         /// Build a line mesh from given points
@@ -38,7 +38,7 @@ namespace DEM.Net.glTF
         /// <param name="color">Line color</param>
         /// <param name="width">If width > 1 then line will be a mesh of given width</param>
         /// <returns></returns>
-        MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector3 color, float width = 1f);
+        MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector4 color, float width = 1f);
 
         /// <summary>
         /// Low level method generating triangle mesh using supplied indices.
@@ -49,7 +49,7 @@ namespace DEM.Net.glTF
         /// <param name="colors"></param>
         /// <param name="baseColorTextureFileName">Texture path relative from the model</param>
         /// <returns></returns>
-        MeshPrimitive GenerateTriangleMesh(IEnumerable<Vector3> points, List<int> indices, IEnumerable<Vector3> colors = null, string baseColorTextureFileName = null);
+        MeshPrimitive GenerateTriangleMesh(IEnumerable<Vector3> points, List<int> indices, IEnumerable<Vector4> colors = null, string baseColorTextureFileName = null);
 
         /// <summary>
         /// Build a line mesh from given points
@@ -58,7 +58,7 @@ namespace DEM.Net.glTF
         /// <param name="color">Line color</param>
         /// <param name="pointSize">If >0 quads of specified size will be generated (and the ouput mesh will be TRIANGLES)</param>
         /// <returns></returns>
-        MeshPrimitive GeneratePointMesh(IEnumerable<GeoPoint> points, Vector3 color, float pointSize);
+        MeshPrimitive GeneratePointMesh(IEnumerable<GeoPoint> points, Vector4 color, float pointSize);
 
         /// <summary>
         /// Generate a full glTF model from a mesh

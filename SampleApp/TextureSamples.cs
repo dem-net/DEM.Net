@@ -58,7 +58,7 @@ namespace SampleApp
                 string fileName = Path.Combine(outputDir, "Texture.png");
 
                 Console.WriteLine("Construct texture...");
-                texInfo = imageryService.ConstructTexture(tiles, bbox, fileName);
+                texInfo = imageryService.ConstructTexture(tiles, bbox, fileName, TextureImageFormat.image_jpeg);
             }
             //
             //=======================
@@ -81,6 +81,24 @@ namespace SampleApp
             Console.WriteLine("GenerateModel...");
             Model model = glTF.GenerateModel(meshes, this.GetType().Name);
             glTF.Export(model, outputDir, $"{GetType().Name} Packed", false, true);
+        }
+        internal void RunNormalMapGeneration()
+        {
+            glTFService glTF = new glTFService();
+            List<MeshPrimitive> meshes = new List<MeshPrimitive>();
+            string outputDir = Path.GetFullPath(Path.Combine(_outputDirectory, "glTF"));
+
+            // Get GPX points
+            var bbox = GeometryService.GetBoundingBox(_bboxWkt);
+
+            
+            //=======================
+            // MESH 3D terrain
+
+            Console.WriteLine("Height map...");
+            HeightMap hMap = _elevationService.GetHeightMap(bbox, _dataSet);
+
+            
         }
 
     }
