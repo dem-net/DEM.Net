@@ -43,16 +43,15 @@ namespace SampleApp
             TextureSamples textureSamples = new TextureSamples(elevationService, _OutputDataDirectory);
             textureSamples.Run(true);
 
-            
-            TestPoints(WKT_BBOX_CORSEBUG, DEMDataSet.SRTM_GL3, rasterService, elevationService);
-            //string WKT_BBOX_SCL_OCEAN = "POLYGON ((-79.584961 -32.626942, -79.584961 -38.788345, -68.557777 -38.788345, -68.557777 -32.626942, -79.584961 -32.626942))";
 
-            HGTTest(WKT_BBOX_VALGO, elevationService, DEMDataSet.SRTM_GL1, "WKT_BBOX_VALGO");
+            //TestPoints(WKT_BBOX_CORSEBUG, DEMDataSet.SRTM_GL3, rasterService, elevationService);
+            ////string WKT_BBOX_SCL_OCEAN = "POLYGON ((-79.584961 -32.626942, -79.584961 -38.788345, -68.557777 -38.788345, -68.557777 -32.626942, -79.584961 -32.626942))";
+
+            //HGTTest(WKT_BBOX_VALGO, elevationService, DEMDataSet.SRTM_GL1, "WKT_BBOX_VALGO");
 
             //TestCompletionForHydro(WKT_BBOX_CHILE
             //   , @"C:\Repos\DEM.Net\Data\ETOPO1\ETOPO1_Bed_g_geotiff.tif", nameof(WKT_BBOX_CHILE)
             //   , null, rasterService, elevationService);
-            Logger.StopPerf("Main cold start", true);
             //LineDEMTest(elevationService, DEMDataSet.SRTM_GL3, WKT_SCL_MENDOZA, 100);
             //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_SCL_MENDOZA, 100);
 
@@ -72,7 +71,7 @@ namespace SampleApp
             //HGTTest(WKT_BBOX_EIGER_MEDIUM, elevationService, DEMDataSet.AW3D30, DEMDataSet.AW3D30.Name);
             //TestFillVoids(WKT_BBOX_EIGER_MEDIUM, elevationService, DEMDataSet.AW3D30, DEMDataSet.SRTM_GL3_srtm, "Eiger");
 
-
+            Logger.StopPerf("Main cold start", true);
             Console.Write("Press any key to exit...");
             Console.ReadLine();
 

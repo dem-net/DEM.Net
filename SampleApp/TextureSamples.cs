@@ -24,10 +24,12 @@ namespace SampleApp
         {
             _elevationService = elevationService;
             // sugiton
-            _bboxWkt = "POLYGON ((5.42201042175293 43.20023317388979, 5.459775924682617 43.20023317388979, 5.459775924682617 43.22594305473314, 5.42201042175293 43.22594305473314, 5.42201042175293 43.20023317388979))";
+            //_bboxWkt = "POLYGON ((5.42201042175293 43.20023317388979, 5.459775924682617 43.20023317388979, 5.459775924682617 43.22594305473314, 5.42201042175293 43.22594305473314, 5.42201042175293 43.20023317388979))";
             // ste victoire
             //_bboxWkt = "POLYGON((5.424004809009261 43.68472756348281, 5.884057299243636 43.68472756348281, 5.884057299243636 43.40402056297321, 5.424004809009261 43.40402056297321, 5.424004809009261 43.68472756348281))";
-            _dataSet = DEMDataSet.SRTM_GL3;
+            // ventoux
+            _bboxWkt = "POLYGON ((5.192413330078125 44.12209907358672, 5.3015899658203125 44.12209907358672, 5.3015899658203125 44.201897151875094, 5.192413330078125 44.201897151875094, 5.192413330078125 44.12209907358672))";
+            _dataSet = DEMDataSet.AW3D30;
             _outputDirectory = outputDirectory;
         }
 
@@ -50,7 +52,7 @@ namespace SampleApp
                 ImageryService imageryService = new ImageryService();
 
                 Console.WriteLine("Download image tiles...");
-                TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 2);
+                TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 8);
                 string fileName = Path.Combine(outputDir, "Texture.png");
 
                 Console.WriteLine("Construct texture...");

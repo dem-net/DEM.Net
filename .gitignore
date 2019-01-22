@@ -312,3 +312,4 @@ Data/
 UnityExample/Assets/Plugins/MeshDecimator/MeshDecimator.dll
 UnityExample/Assets/Plugins/MeshDecimator/MeshDecimator.xml
 .axoCover/
+*.SECRETS.config

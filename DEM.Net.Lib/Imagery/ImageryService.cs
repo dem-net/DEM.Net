@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -46,7 +47,7 @@ namespace DEM.Net.Lib.Imagery
 
             // downdload tiles
             Logger.StartPerf("downloadImages");
-            
+
             // 2 max download threads
             var options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
             Parallel.ForEach(tiles.EnumerateRange(), options, tileInfo =>
@@ -147,6 +148,7 @@ namespace DEM.Net.Lib.Imagery
             url = url.Replace("{x}", x.ToString());
             url = url.Replace("{y}", y.ToString());
             url = url.Replace("{z}", zoom.ToString());
+            url = url.Replace("{t}", ConfigurationManager.AppSettings[provider.TokenAppSettingsKey]);
 
             return new Uri(url, UriKind.Absolute);
         }
