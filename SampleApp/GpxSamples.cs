@@ -79,14 +79,14 @@ namespace SampleApp
             MeshPrimitive triangleMesh = null;
             if (generateTIN)
             {
-                triangleMesh = GenerateTIN(hMap, glTF, texInfo?.FilePath);
+                triangleMesh = GenerateTIN(hMap, glTF, PBRTexture.Create(texInfo));
             }
             else
             {
                 hMap = hMap.CenterOnOrigin(0.00002f);
 
                 // generate mesh with texture
-                triangleMesh = glTF.GenerateTriangleMesh(hMap, null, texInfo?.FilePath);
+                triangleMesh = glTF.GenerateTriangleMesh(hMap, null, PBRTexture.Create(texInfo));
             }
             meshes.Add(triangleMesh);
 
@@ -104,7 +104,7 @@ namespace SampleApp
             glTF.Export(model, outputDir, $"{GetType().Name} Packed", false, true);
         }
 
-        private MeshPrimitive GenerateTIN(HeightMap hMap, IglTFService gltf, string baseTextureFileName)
+        private MeshPrimitive GenerateTIN(HeightMap hMap, IglTFService gltf, PBRTexture textures)
         {
             int v_sridCible = 2154;
             hMap = hMap.ReprojectTo(4326, v_sridCible);
@@ -160,7 +160,7 @@ namespace SampleApp
                     p01_listeIndexPointsfacettes.Add(v_listeIndices);
                 }
             }
-            MeshPrimitive v_trianglesMesh = gltf.GenerateTriangleMesh(p00_geoPoint, p01_listeIndexPointsfacettes.SelectMany(c => c).ToList(), null, baseTextureFileName);
+            MeshPrimitive v_trianglesMesh = gltf.GenerateTriangleMesh(p00_geoPoint, p01_listeIndexPointsfacettes.SelectMany(c => c).ToList(), null, textures);
 
             return v_trianglesMesh;
 

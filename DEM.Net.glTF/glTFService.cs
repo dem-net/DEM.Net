@@ -1,6 +1,7 @@
 ﻿using AssetGenerator;
 using AssetGenerator.Runtime;
 using DEM.Net.Lib;
+using DEM.Net.Lib.Imagery;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -203,42 +204,6 @@ namespace DEM.Net.glTF
 
         }
 
-        private Vector3[] ComputeNormals(List<Vector3> positions, List<int> indices)
-        {
-
-            //The number of the vertices
-            int nV = positions.Count;
-            //The number of the triangles
-            int nT = indices.Count / 3;
-
-            Vector3[] norm = new Vector3[nV]; //Array for the normals
-                                              //Scan all the triangles. For each triangle add its
-                                              //normal to norm's vectors of triangle's vertices
-            for (int t = 0; t < nT; t++)
-            {
-                //Get indices of the triangle t
-                int i1 = indices[3 * t];
-                int i2 = indices[3 * t + 1];
-                int i3 = indices[3 * t + 2];
-                //Get vertices of the triangle
-                Vector3 v1 = positions[i1];
-                Vector3 v2 = positions[i2];
-                Vector3 v3 = positions[i3];
-                //Compute the triangle's normal
-                Vector3 dir = Vector3.Normalize(Vector3.Cross(v2 - v1, v3 - v1));
-                //Accumulate it to norm array for i1, i2, i3
-                norm[i1] += dir;
-                norm[i2] += dir;
-                norm[i3] += dir;
-            }
-            //Normalize the normal's length
-            for (int i = 0; i < nV; i++)
-            {
-                norm[i] = Vector3.Normalize(norm[i]);
-            }
-            return norm;
-        }
-
         private MeshPrimitive CreateEmptyTriangleMesh()
         {
             return new MeshPrimitive
@@ -261,53 +226,12 @@ namespace DEM.Net.glTF
         /// </summary>
         /// <param name="heightMap"></param>
         /// <param name="colors"></param>
-        /// <param name="baseColorTextureFileName">Texture path relative from the model</param>
+        /// <param name="texture">Texture path relative from the model</param>
         /// <returns></returns>
-        public MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, IEnumerable<Vector4> colors = null, string baseColorTextureFileName = null)
+        public MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, IEnumerable<Vector4> colors = null, PBRTexture texture = null)
         {
-            const int TRIANGULATION_MODE = 1;
-            int capacity = ((heightMap.Width - 1) * 6) * (heightMap.Height - 1);
-            List<int> indices = new List<int>(capacity);
-            // Triangulate mesh -- anti clockwise winding
-            for (int y = 0; y < heightMap.Height; y++)
-            {
-                for (int x = 0; x < heightMap.Width; x++)
-                {
-                    //Vector3 pt = ToVector3(heightMap.Coordinates[x + y * heightMap.Width]);
-                    //pt.z -= mindepth;
-                    //cout << x + y * stride << "-> " << pt << endl;
-                    //mesh.addVertex(pt);
-
-                    if (x < (heightMap.Width - 1) && y < (heightMap.Height - 1))
-                    {
-                        if (TRIANGULATION_MODE == 1)
-                        {
-                            // Triangulation 1
-                            indices.Add((x + 0) + (y + 0) * heightMap.Width);
-                            indices.Add((x + 0) + (y + 1) * heightMap.Width);
-                            indices.Add((x + 1) + (y + 0) * heightMap.Width);
-
-                            indices.Add((x + 1) + (y + 0) * heightMap.Width);
-                            indices.Add((x + 0) + (y + 1) * heightMap.Width);
-                            indices.Add((x + 1) + (y + 1) * heightMap.Width);
-                        }
-                        else
-                        {
-
-                            // Triangulation 2
-                            indices.Add((x + 0) + (y + 0) * heightMap.Width);
-                            indices.Add((x + 1) + (y + 1) * heightMap.Width);
-                            indices.Add((x + 0) + (y + 1) * heightMap.Width);
-
-                            indices.Add((x + 0) + (y + 0) * heightMap.Width);
-                            indices.Add((x + 1) + (y + 0) * heightMap.Width);
-                            indices.Add((x + 1) + (y + 1) * heightMap.Width);
-                        }
-                    }
-                }
-            }
-
-            return GenerateTriangleMesh(heightMap.Coordinates, indices, colors, baseColorTextureFileName);
+            List<int> indices = TriangulateHeightMap(heightMap);
+            return GenerateTriangleMesh(heightMap.Coordinates, indices, colors, texture);
         }
 
         public MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector4 color, float width)
@@ -429,11 +353,11 @@ namespace DEM.Net.glTF
             return mesh;
         }
 
-        public MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, IEnumerable<Vector4> colors = null, string baseColorTextureFileName = null)
+        public MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, IEnumerable<Vector4> colors = null, PBRTexture texture = null)
         {
-            return GenerateTriangleMesh(points.ToVector3(), indices, colors, baseColorTextureFileName);
+            return GenerateTriangleMesh(points.ToVector3(), indices, colors, texture);
         }
-        public MeshPrimitive GenerateTriangleMesh(IEnumerable<Vector3> points, List<int> indices, IEnumerable<Vector4> colors = null, string baseColorTextureFileName = null)
+        public MeshPrimitive GenerateTriangleMesh(IEnumerable<Vector3> points, List<int> indices, IEnumerable<Vector4> colors = null, PBRTexture texture = null)
         {
             MeshPrimitive mesh = null;
             const int TRIANGULATION_MODE = 1; // 2
@@ -475,7 +399,6 @@ namespace DEM.Net.glTF
                     int nV = positions.Count;
                     //The number of the triangles
                     int nT = indices.Count / 3;
-
                     Vector3[] norm = new Vector3[nV]; //Array for the normals
                                                       //Scan all the triangles. For each triangle add its
                                                       //normal to norm's vectors of triangle's vertices
@@ -519,19 +442,23 @@ namespace DEM.Net.glTF
                     }
                     mesh.Normals = norm;
 
-                    if (baseColorTextureFileName != null)
+                    if (texture != null)
                     {
                         mesh.TextureCoordsComponentType = MeshPrimitive.TextureCoordsComponentTypeEnum.FLOAT;
                         mesh.TextureCoordSets = Enumerable.Range(0, 1).Select(i => positions.Select(pos => new Vector2(
                             MathHelper.Map(min.X, max.X, 0, 1, pos.X, true)
                             , MathHelper.Map(min.Z, max.Z, 0, 1, pos.Z, true)
-                            ))); 
+                            )));
                         mesh.Material.MetallicRoughnessMaterial = new PbrMetallicRoughness()
                         {
                             BaseColorFactor = Vector4.One,
-                            BaseColorTexture = GetTextureFromImage(baseColorTextureFileName),
+                            BaseColorTexture = GetTextureFromImage(texture.BaseColorTexture.FilePath),
                             MetallicFactor = 0,
-                        }; 
+                        };
+                        if (texture.NormalTexture != null)
+                        {
+                            mesh.Material.NormalTexture = GetTextureFromImage(texture.NormalTexture.FilePath);
+                        }
                     }
 
                 }
@@ -545,12 +472,12 @@ namespace DEM.Net.glTF
             return mesh;
         }
 
-        private Texture GetTextureFromImage(string baseColorTextureFileName)
+        private Texture GetTextureFromImage(string texture)
         {
-            if (!File.Exists(baseColorTextureFileName))
+            if (!File.Exists(texture))
                 throw new ArgumentException("Texture file does not exists");
 
-            var mimeType = Path.GetExtension(baseColorTextureFileName.ToLower()).EndsWith("png")
+            var mimeType = Path.GetExtension(texture.ToLower()).EndsWith("png")
                                 ? glTFLoader.Schema.Image.MimeTypeEnum.image_png
                                 : glTFLoader.Schema.Image.MimeTypeEnum.image_jpeg;
 
@@ -559,8 +486,8 @@ namespace DEM.Net.glTF
                 Source = new Image()
                 {
                     MimeType = mimeType,
-                    Name = Path.GetFileNameWithoutExtension(baseColorTextureFileName),
-                    Uri = Path.GetFileName(baseColorTextureFileName) // relative path
+                    Name = Path.GetFileNameWithoutExtension(texture),
+                    Uri = Path.GetFileName(texture) // relative path
                 }
             };
         }
@@ -622,9 +549,103 @@ namespace DEM.Net.glTF
         }
         #endregion
 
+        /// <summary>
+        /// Calculate normals for a given height map
+        /// </summary>
+        /// <param name="heightMap">Height map (gridded data)</param>
+        /// <returns>Normals for each point of the height map</returns>
+        public List<Vector3> ComputeNormals(HeightMap heightMap)
+        {
+            List<int> indices = TriangulateHeightMap(heightMap);
+            var normals = ComputeNormals(heightMap.Coordinates.Select(c => new Vector3((float)c.Longitude, (float)c.Latitude, (float)c.Elevation)).ToList(), indices);
+            return normals;
+        }
 
+        private List<int> TriangulateHeightMap(HeightMap heightMap)
+        {
+            const int TRIANGULATION_MODE = 1;
+            int capacity = ((heightMap.Width - 1) * 6) * (heightMap.Height - 1);
+            List<int> indices = new List<int>(capacity);
+            // Triangulate mesh -- anti clockwise winding
+            for (int y = 0; y < heightMap.Height; y++)
+            {
+                for (int x = 0; x < heightMap.Width; x++)
+                {
+                    //Vector3 pt = ToVector3(heightMap.Coordinates[x + y * heightMap.Width]);
+                    //pt.z -= mindepth;
+                    //cout << x + y * stride << "-> " << pt << endl;
+                    //mesh.addVertex(pt);
 
+                    if (x < (heightMap.Width - 1) && y < (heightMap.Height - 1))
+                    {
+                        if (TRIANGULATION_MODE == 1)
+                        {
+                            // Triangulation 1
+                            indices.Add((x + 0) + (y + 0) * heightMap.Width);
+                            indices.Add((x + 0) + (y + 1) * heightMap.Width);
+                            indices.Add((x + 1) + (y + 0) * heightMap.Width);
 
+                            indices.Add((x + 1) + (y + 0) * heightMap.Width);
+                            indices.Add((x + 0) + (y + 1) * heightMap.Width);
+                            indices.Add((x + 1) + (y + 1) * heightMap.Width);
+                        }
+                        else
+                        {
 
+                            // Triangulation 2
+                            indices.Add((x + 0) + (y + 0) * heightMap.Width);
+                            indices.Add((x + 1) + (y + 1) * heightMap.Width);
+                            indices.Add((x + 0) + (y + 1) * heightMap.Width);
+
+                            indices.Add((x + 0) + (y + 0) * heightMap.Width);
+                            indices.Add((x + 1) + (y + 0) * heightMap.Width);
+                            indices.Add((x + 1) + (y + 1) * heightMap.Width);
+                        }
+                    }
+                }
+            }
+
+            return indices;
+        }
+        private List<Vector3> ComputeNormals(List<Vector3> positions, List<int> indices)
+        {
+            //The number of the vertices
+            int nV = positions.Count;
+            //The number of the triangles
+            int nT = indices.Count / 3;
+
+            Vector3[] norm = new Vector3[nV]; //Array for the normals
+                                              //Scan all the triangles. For each triangle add its
+                                              //normal to norm's vectors of triangle's vertices
+            for (int t = 0; t < nT; t++)
+            {
+                //Get indices of the triangle t
+                int i1 = indices[3 * t];
+                int i2 = indices[3 * t + 1];
+                int i3 = indices[3 * t + 2];
+                //Get vertices of the triangle
+                Vector3 v1 = positions[i1];
+                Vector3 v2 = positions[i2];
+                Vector3 v3 = positions[i3];
+
+                //Compute the triangle's normal
+                Vector3 dir = Vector3.Normalize(Vector3.Cross(v2 - v1, v3 - v1));
+                //Accumulate it to norm array for i1, i2, i3
+                norm[i1] += dir;
+                norm[i2] += dir;
+                norm[i3] += dir;
+            }
+
+            for (int i = 0; i < nV; i++)
+            {
+                //Normalize the normal's length
+                norm[i] = Vector3.Normalize(norm[i]);
+
+                // Calculate bounds of UV mapping
+                var pos = positions[i];
+            }
+
+            return norm.ToList();
+        }
     }
 }

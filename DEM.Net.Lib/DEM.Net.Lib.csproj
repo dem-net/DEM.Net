@@ -105,6 +105,7 @@
     <Compile Include="Imagery\Structs\MapTile.cs" />
     <Compile Include="Imagery\Structs\LatLong.cs" />
     <Compile Include="Imagery\Structs\MapTileInfo.cs" />
+    <Compile Include="Imagery\Structs\PBRTexture.cs" />
     <Compile Include="Imagery\Structs\PointInt.cs" />
     <Compile Include="Imagery\Structs\TextureImageFormat.cs" />
     <Compile Include="Imagery\Structs\TextureInfo.cs" />

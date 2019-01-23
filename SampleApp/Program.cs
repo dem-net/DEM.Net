@@ -45,7 +45,7 @@ namespace SampleApp
             textureSamples.RunNormalMapGeneration();
             textureSamples.Run(true);
 
-            GpxSamples gpxSamples = new GpxSamples(elevationService, _OutputDataDirectory, @"..\..\..\Data\GPX\trail fontfroide.gpx");
+            GpxSamples gpxSamples = new GpxSamples(elevationService, _OutputDataDirectory, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
             gpxSamples.Run();
 
 
