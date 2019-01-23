@@ -94,6 +94,7 @@ namespace DEM.Net.Lib.Imagery
             var localBbox = ConvertWorldToMap(bbox, tiles.First().TileInfo.Zoom);
             var tilesBbox = GetTilesBoundingBox(tiles);
 
+            //DrawDebugBmpBbox(tiles, localBbox, tilesBbox, fileName, mimeType);
             int tileSize = tiles.Provider.TileSize;
             using (Bitmap bmp = new Bitmap((int)localBbox.Width, (int)localBbox.Height))
             {
@@ -114,24 +115,55 @@ namespace DEM.Net.Lib.Imagery
                         }
                     }
                 }
-                //bmp.Save("debug_" + fileName, format);
-
-                // power of two texture
-                int maxSize = Math.Max((int)tilesBbox.Width, (int)tilesBbox.Height);
-                using (Bitmap bmpOut = new Bitmap(maxSize, maxSize))
-                {
-                    using (Graphics g = Graphics.FromImage(bmpOut))
-                    {
-                        g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                        g.DrawImage(bmp, 0, 0, maxSize, maxSize);
-                    }
-                    bmpOut.Save(fileName, format);
-                }
+                //bmp.Save(Path.ChangeExtension( fileName,".debug.jpg"), format);
+                bmp.Save(fileName, format);
+                //// power of two texture
+                //int maxSize = Math.Max((int)tilesBbox.Width, (int)tilesBbox.Height);
+                //using (Bitmap bmpOut = new Bitmap(maxSize, maxSize))
+                //{
+                //    using (Graphics g = Graphics.FromImage(bmpOut))
+                //    {
+                //        g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                //        g.DrawImage(bmp, 0, 0, maxSize, maxSize);
+                //    }
+                //    bmpOut.Save(fileName, format);
+                //}
             }
-            //return new TextureInfo(fileName, format, (int)localBbox.Width, (int)localBbox.Height);
-            return new TextureInfo(fileName, format, (int)tilesBbox.Width, (int)tilesBbox.Height);
+            return new TextureInfo(fileName, mimeType, (int)localBbox.Width, (int)localBbox.Height);
+            //return new TextureInfo(fileName, format, (int)tilesBbox.Width, (int)tilesBbox.Height);
 
 
+        }
+
+        private void DrawDebugBmpBbox(TileRange tiles, BoundingBox localBbox, BoundingBox tilesBbox, string fileName, TextureImageFormat mimeType)
+        {
+            int tileSize = tiles.Provider.TileSize;
+            using (Bitmap bmp = new Bitmap((int)tilesBbox.Width, (int)tilesBbox.Height))
+            {
+                int xOffset =  (int)(localBbox.xMin - tilesBbox.xMin);
+                int yOffset =  (int)(localBbox.yMin - tilesBbox.yMin);
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    foreach (var tile in tiles)
+                    {
+                        using (MemoryStream stream = new MemoryStream(tile.Image))
+                        {
+                            using (Image tileImg = Image.FromStream(stream))
+                            {
+                                int x = (tile.TileInfo.X - tiles.Start.X) * tileSize;
+                                int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize;
+                                g.DrawImage(tileImg, x, y);
+                            }
+                        }
+                    }
+
+                    g.DrawRectangle(Pens.Red, xOffset, yOffset, (int)localBbox.Width, (int)localBbox.Height);
+                }
+                //bmp.Save(Path.ChangeExtension( fileName,".debug.jpg"), format);
+                var ext = Path.GetExtension(fileName);
+                bmp.Save(Path.ChangeExtension(fileName,".debug"+ ext), ConvertFormat(mimeType));
+            }
+           
         }
 
         private ImageFormat ConvertFormat(TextureImageFormat format)

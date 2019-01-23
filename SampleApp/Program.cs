@@ -42,8 +42,9 @@ namespace SampleApp
            
 
             TextureSamples textureSamples = new TextureSamples(elevationService, _OutputDataDirectory);
+            textureSamples.Run();
             textureSamples.RunNormalMapGeneration();
-            textureSamples.Run(true);
+            textureSamples.RunImagery(true);
 
             GpxSamples gpxSamples = new GpxSamples(elevationService, _OutputDataDirectory, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
             gpxSamples.Run();

@@ -13,11 +13,11 @@ namespace DEM.Net.Lib.Imagery
 
         public string FilePath { get; }
         public string FileName { get; }
-        public ImageFormat ImageFormat { get; }
+        public TextureImageFormat ImageFormat { get; }
         public int Width { get; }
         public int Height { get; }
 
-        public TextureInfo(string filePath, ImageFormat imageFormat, int width, int height)
+        public TextureInfo(string filePath, TextureImageFormat imageFormat, int width, int height)
         {
             this.FilePath = filePath;
             this.FileName = Path.GetFileName(filePath);
