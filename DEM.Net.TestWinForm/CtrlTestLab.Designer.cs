@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CtrlTestLab));
             this.btn_genererPoints = new System.Windows.Forms.Button();
             this.lb_srid = new System.Windows.Forms.ListBox();
             this.lab1 = new System.Windows.Forms.Label();
@@ -563,7 +562,9 @@
             this.tb_wkt.Name = "tb_wkt";
             this.tb_wkt.Size = new System.Drawing.Size(177, 37);
             this.tb_wkt.TabIndex = 30;
-            this.tb_wkt.Text = resources.GetString("tb_wkt.Text");
+            this.tb_wkt.Text = "POLYGON((5.523314005345696 43.576096090257955, 5.722441202611321 43.5760960902579" +
+    "55, 5.722441202611321 43.46456490270913, 5.523314005345696 43.46456490270913, 5." +
+    "523314005345696 43.576096090257955))";
             // 
             // btn_testUnitaire
             // 

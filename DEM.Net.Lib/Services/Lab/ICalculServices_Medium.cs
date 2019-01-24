@@ -12,7 +12,6 @@ namespace DEM.Net.Lib.Services.Lab
         /// <returns></returns>
         BeanTopologieFacettes GetInitialisationTin(List<BeanPoint_internal> p_points, BeanParametresDuTin p_parametresDuTin);
         void AugmenteDetailsTinByRef(ref BeanTopologieFacettes p_topologieFacette, BeanParametresDuTin p_parametresDuTin);
-        void AugmenteDetailsTinByRef_v2(ref BeanTopologieFacettes p_topologieFacette, BeanParametresDuTin p_parametresDuTin);
 
         void SetLignesCretesEtTalwegByRef(ref BeanTopologieFacettes p_topologieFacette);
 
@@ -25,6 +24,6 @@ namespace DEM.Net.Lib.Services.Lab
         //
         Dictionary<string, int> GetEtComptePointsDoublonnes(List<BeanPoint_internal> p_pointsToTest);
         List<BeanPoint_internal> GetOrdonnancementPointsFacette(List<BeanPoint_internal> p_pointsFacettes, bool p_renvoyerNullSiColineaires_vf, bool p_sensHoraireSinonAntiHoraire_vf);
-       
+        List<string> GetOrdonnancementArcsAutourPointFacette(BeanPoint_internal p_pointFacette, int p_idPremierArc, bool p_sensHoraireSinonAntihoraire_vf);
      }
 }

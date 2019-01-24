@@ -17,6 +17,7 @@ namespace DEM.Net.Lib.Services.Lab
         //
         public List<BeanPoint_internal> p10_pointsInclus { get; set; }
         //
+        public double[] p20_normaleDuPlan { get; set; }
         public double p21_plusGrandEcartAbsolu { get; set; }
         public BeanPoint_internal p22_pointPlusGrandEcart { get; set; }
         //

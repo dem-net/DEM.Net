@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Lib.Services.Lab
 {
-    public class CalculServices_Low : ICalculServices_Low, ICalculServicesLow_testsDivers
+    public class CalculServices_Low :  ICalculServices_Low, ICalculServicesLow_testsDivers
     {
         public double[] GetVectorBrutFromTwoPoints(double[] p_pointOrigine, double[] p_point2)
         {
@@ -439,6 +439,45 @@ namespace DEM.Net.Lib.Services.Lab
             return v_produitAxB;
         }
         //
+        public double[] GetNormaleDuPlan(double[] p_vector_u, double[] p_vector_w, bool p_normaliserVecteursEnEntree_vf=true)
+        {
+            double[] v_normale = new double[3];
+            try
+            {
+                if(p_normaliserVecteursEnEntree_vf)
+                {
+                    p_vector_u = GetNormalisationVecteurXYZ(p_vector_u);
+                    p_vector_w = GetNormalisationVecteurXYZ(p_vector_w);
+                }
+                //Contrôle de colinéarité dans le repère xy
+                if ((p_vector_u[0] * p_vector_w[1]) - (p_vector_u[1] * p_vector_w[0]) == 0)
+                {
+                    throw new Exception("Les points ne doivent pas être alignés.");
+                }
+                double B = ((p_vector_u[0] * p_vector_w[2]) - (p_vector_w[0] * p_vector_u[2])) / ((p_vector_w[0] * p_vector_u[1]) - (p_vector_u[0] * p_vector_w[1]));
+                double c = 1;
+                double b = c * B;
+                double a;
+                if (p_vector_u[0] != 0)
+                {
+                    a = (-1) * c * ((B * p_vector_u[1]) + p_vector_u[2]) / p_vector_u[0];
+                }
+                else
+                {
+                    a = (-1) * c * ((B * p_vector_w[1]) + p_vector_w[2]) / p_vector_w[0];
+                }
+                v_normale[0] = a;
+                v_normale[1] = b;
+                v_normale[2] = c;
+                //
+                v_normale = GetNormalisationVecteurXYZ(v_normale);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return v_normale;
+        }
         public double[] GetNormaleDuPlan(double[] p_point3D_1, double[] p_point3D_2, double[] p_point3D_3)
         {
             double[] v_normale = new double[3];
@@ -449,31 +488,12 @@ namespace DEM.Net.Lib.Services.Lab
                     throw new Exception("La dimension des vecteurs n'est pas conforme.");
                 }
                 double[] u = GetVectorBrutFromTwoPoints(p_point3D_1, p_point3D_2);
-                u = GetNormalisationVecteurXYZ(u);
                 double[] w = GetVectorBrutFromTwoPoints(p_point3D_1, p_point3D_3);
-                w = GetNormalisationVecteurXYZ(w);
-                //Contrôle de colinéarité dans le repère xy
-                if ((u[0] * w[1]) - (u[1] * w[0]) == 0)
-                {
-                    throw new Exception("Les points ne doivent pas être alignés.");
-                }
-                double B = ((u[0] * w[2]) - (w[0] * u[2])) / ((w[0] * u[1]) - (u[0] * w[1]));
-                double c = 1;
-                double b = c * B;
-                double a;
-                if(u[0]!=0)
-                {
-                    a = (-1) * c * ((B * u[1]) + u[2]) / u[0];
-                }
-                else
-                {
-                    a = (-1) * c * ((B * w[1]) + w[2]) / w[0];
-                }
-                v_normale[0] = a;
-                v_normale[1] = b;
-                v_normale[2] = c;
                 //
-                v_normale=GetNormalisationVecteurXYZ(v_normale);
+                bool v_normaliserVecteursEnEntree_vf = true;
+                v_normale = GetNormaleDuPlan(u, w, v_normaliserVecteursEnEntree_vf);
+
+
             }
             catch (Exception)
             {
@@ -481,7 +501,7 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_normale;
         }
-        public double[] GetEquationDuPlan(double[] p_normaleAuPlan, double[] p_point3DDuPlan)
+        public double[] GetEquationNormaleDuPlan(double[] p_normaleAuPlan, double[] p_point3DDuPlan)
         {
             double[] v_coeff = new double[3];
             try
@@ -497,19 +517,56 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_coeff;
         }
-        public double[] GetEquationDuPlan(double[] p_point3D_1, double[] p_point3D_2, double[] p_point3D_3)
+        public double[] GetEquationNormaleDuPlan(double[] p_point3D_1, double[] p_point3D_2, double[] p_point3D_3)
         {
             double[] v_coeff = null;
             try
             {
                 double[] v_normale = GetNormaleDuPlan(p_point3D_1, p_point3D_2, p_point3D_3);
-                v_coeff = GetEquationDuPlan(v_normale, p_point3D_1);
+                v_coeff = GetEquationNormaleDuPlan(v_normale, p_point3D_1);
             }
             catch (Exception)
             {
                 throw;
             }
             return v_coeff;
+        }
+        //
+        public double GetPente(double[] p_vecteur3D)
+        {
+            double v_angle = 0;
+            try
+            {
+                double p_normeVecteur = GetNormeVecteurXYZ(p_vecteur3D);
+                double v_cosPente = p_vecteur3D[2] / p_normeVecteur;
+                v_angle=Math.Acos(v_cosPente);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return v_angle;
+        }
+        public double[] GetVecteurPenteMaxi(double[] p_normaleDuPlan, bool p_normaliserVecteurEnSortie_vf=true)
+        {
+            double[] v_vecteurOut = null;
+            try
+            {
+                //On créé un vecteur orthogonal à la normale du plan et d'altitude 0
+                double[] v_vecteurNiveau = new double[3] { -1 * p_normaleDuPlan[1], p_normaleDuPlan[0], 0 };
+                //On récupère le vecteur orthogonal aux 2 vecteurs (en fait, il y en aurait 2 possibles, opposé?)
+                bool v_normaliser_vecteursEnEntree_vf = true; //(Normalement le vecteur normal est déjà normalisé mais...)
+                v_vecteurOut = GetNormaleDuPlan(p_normaleDuPlan, v_vecteurNiveau, v_normaliser_vecteursEnEntree_vf);
+                if(p_normaliserVecteurEnSortie_vf)
+                {
+                    v_vecteurOut = GetNormalisationVecteurXYZ(v_vecteurOut);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return v_vecteurOut;
         }
         //
         public double[,] GetMatrice3x3FromCoord(double[] p_coordPointOrigine, double[] p_coordPoint1, double[] p_coordPoint2, double[] p_coordPoint3, bool p_normaliser_vf)
@@ -875,7 +932,7 @@ namespace DEM.Net.Lib.Services.Lab
             return isMatriceIdentite;
         }
         
-        public double[,] GetMatriceChangementDeRepereXY(double[] p_coordPoint0, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord_orthoSiNull=null, bool p_normaliser_vf=true)
+        public double[,] GetMatriceChangementDeRepereXY(double[] p_coordPoint0, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord_orthoSiNull, bool p_normaliser_vf)
         {
             double[,] v_matriceLigne = new double[2, 2];
             try
@@ -910,7 +967,7 @@ namespace DEM.Net.Lib.Services.Lab
             return v_matriceLigne;
         }
 
-        public double[] GetCoordDansNewRepereXY(double[,] p_matriceNewRepere,double[] p_origineDuRepere, double[] p_pointToTranslate)
+        public double[] GetCoordDansNewRepereXY(double[,] p_matriceNewRepere,double[] p_origineDuRepere, double[] p_pointToTranslate, bool p_normaliser_vf)
         {
             double[] v_coord = new double[2];
             try
@@ -920,6 +977,10 @@ namespace DEM.Net.Lib.Services.Lab
                 
                 v_coord[0] = (v_vecteurToTranslate[0] * p_matriceNewRepere[0, 0]) + (v_vecteurToTranslate[1] * p_matriceNewRepere[0,1]);
                 v_coord[1] = (v_vecteurToTranslate[0] * p_matriceNewRepere[1,0]) + (v_vecteurToTranslate[1] * p_matriceNewRepere[1, 1]);
+                if(p_normaliser_vf)
+                {
+                    v_coord=GetNormalisationVecteur(v_coord, 2);
+                }
             }
             catch (Exception)
             {
@@ -928,7 +989,7 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_coord;
         }
-        public double[] GetCoordDansNewRepereXY(double[] p_pointAReferencer, double[] p_coordPoint0, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord_orthoSiNull = null)
+        public double[] GetCoordDansNewRepereXY(double[] p_pointAReferencer, double[] p_coordPoint0, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord_orthoSiNull, bool p_normaliser_vf)
         {
             double[] v_coord = null;
             try
@@ -937,7 +998,7 @@ namespace DEM.Net.Lib.Services.Lab
                 double[,] v_matriceDeConversion;
                 v_matriceDeConversion = GetMatriceChangementDeRepereXY(p_coordPoint0, p_coordPoint2Abs, p_coordPoint3Ord_orthoSiNull, v_normaliser_vf);
                 //
-                v_coord = GetCoordDansNewRepereXY(v_matriceDeConversion, p_coordPoint0, p_pointAReferencer);
+                v_coord = GetCoordDansNewRepereXY(v_matriceDeConversion, p_coordPoint0, p_pointAReferencer, p_normaliser_vf);
             }
             catch (Exception)
             {
@@ -946,7 +1007,7 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_coord;
         }
-        public Dictionary<int, double[]> GetCoordDansNewRepereXY(Dictionary<int,double[]> p_pointsAReferencer, double[] p_coordPoint0, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord_orthoSiNull = null)
+        public Dictionary<int, double[]> GetCoordDansNewRepereXY(Dictionary<int,double[]> p_pointsAReferencer, double[] p_coordPoint0, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord_orthoSiNull, bool p_normaliser_vf)
         {
             Dictionary<int, double[]> v_coordsDesPoints = new Dictionary<int, double[]>();
             try
@@ -958,7 +1019,7 @@ namespace DEM.Net.Lib.Services.Lab
                 double[] v_coord;
                 foreach (KeyValuePair < int,double[]> v_pointToTest in p_pointsAReferencer)
                 {
-                    v_coord = GetCoordDansNewRepereXY(v_matriceDeConversion, p_coordPoint0, v_pointToTest.Value);
+                    v_coord = GetCoordDansNewRepereXY(v_matriceDeConversion, p_coordPoint0, v_pointToTest.Value, p_normaliser_vf);
                     v_coordsDesPoints.Add(v_pointToTest.Key, v_coord);
                 }
             }
@@ -988,14 +1049,36 @@ namespace DEM.Net.Lib.Services.Lab
            return Math.Sqrt(GetDistanceEuclidienneCarreeXYZ(v_point1, v_point2));
         }
         //
+
+       public List<int> GetOrdonnancement(Dictionary<int, double[]> p_pointsATester,double[] p_pointCentral,int p_idPremierPoint, bool p_horaireSinonAntihoraire_vf)
+        {
+            List<int> v_pointsOrdonnances = new List<int>();
+            try
+            {
+                bool v_normaliser_vf = true;
+                Dictionary<int, double[]> v_coordonneesNew;
+                v_coordonneesNew = GetCoordDansNewRepereXY(p_pointsATester, p_pointCentral, p_pointsATester[p_idPremierPoint],null, v_normaliser_vf);
+                v_pointsOrdonnances=v_coordonneesNew.Where(c => c.Value[1] >= 0).OrderBy(c => c.Value[0]).Select(c=>c.Key).ToList();
+                v_pointsOrdonnances.AddRange(v_coordonneesNew.Where(c => c.Value[1] < 0).OrderByDescending(c => c.Value[0]).Select(c => c.Key).ToList());
+                if (!p_horaireSinonAntihoraire_vf)
+                {
+                    v_pointsOrdonnances.Reverse();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return v_pointsOrdonnances;
+        } 
         /// <summary>
         /// Surtout adapté aux triangles)
         /// </summary>
         /// <param name="p_pointsATester"></param>
         /// <param name="p_renvoyerNullSiColineaires_vf"></param>
-        /// <param name="p_horaireSinonAntohoraire_vf"></param>
+        /// <param name="p_horaireSinonAntihoraire_vf"></param>
         /// <returns></returns>
-        public List<int> GetOrdonnancement(Dictionary<int, double[]> p_pointsATester, bool p_renvoyerNullSiColineaires_vf, bool p_horaireSinonAntohoraire_vf)
+        public List<int> GetOrdonnancement(Dictionary<int, double[]> p_pointsATester, bool p_renvoyerNullSiColineaires_vf, bool p_horaireSinonAntihoraire_vf)
         {
             List<int> v_pointsOrdonnances = new List<int>();
             try
@@ -1003,7 +1086,8 @@ namespace DEM.Net.Lib.Services.Lab
                 int v_pt1 = GetPointLePlusExcentreXY(p_pointsATester);
                 int v_pt2 = GetPointLePlusEloigneDePoint0XY(p_pointsATester, p_pointsATester[v_pt1]);
                 //
-                Dictionary<int, double[]> v_coord = GetCoordDansNewRepereXY(p_pointsATester, p_pointsATester[v_pt1], p_pointsATester[v_pt2]);
+                bool v_normaliser_vf = false;
+                Dictionary<int, double[]> v_coord = GetCoordDansNewRepereXY(p_pointsATester, p_pointsATester[v_pt1], p_pointsATester[v_pt2],null, v_normaliser_vf);
                
                 if (p_renvoyerNullSiColineaires_vf)
                 {
@@ -1016,7 +1100,7 @@ namespace DEM.Net.Lib.Services.Lab
                 //
                 v_pointsOrdonnances.AddRange(v_coord.Where(c => c.Value[1] >= 0).OrderBy(c => c.Value[0]).Select(c => c.Key));
                 v_pointsOrdonnances.AddRange(v_coord.Where(c => c.Value[1] < 0).OrderByDescending(c => c.Value[0]).Select(c => c.Key));
-                if(!p_horaireSinonAntohoraire_vf)
+                if(!p_horaireSinonAntihoraire_vf)
                 {
                     v_pointsOrdonnances.Reverse();
                 }
