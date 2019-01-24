@@ -61,7 +61,7 @@ namespace SampleApp
                 ImageryService imageryService = new ImageryService();
 
                 Console.WriteLine("Download image tiles...");
-                TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.MapBoxSatellite, 8);
+                TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 8);
                 string fileName = Path.Combine(outputDir, "Texture.jpg");
 
                 Console.WriteLine("Construct texture...");

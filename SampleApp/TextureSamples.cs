@@ -64,7 +64,7 @@ namespace SampleApp
             ImageryService imageryService = new ImageryService();
 
             Console.WriteLine("Download image tiles...");
-            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.MapBoxSatellite, 10);
+            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 10);
 
             Console.WriteLine("Construct texture...");
             string fileName = Path.Combine(outputDir, "Texture.jpg");
@@ -258,7 +258,7 @@ namespace SampleApp
                 ImageryService imageryService = new ImageryService();
 
                 Console.WriteLine("Download image tiles...");
-                TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.MapBoxSatellite, 16);
+                TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 16);
                 string fileName = Path.Combine(outputDir, "Texture.png");
 
                 Console.WriteLine("Construct texture...");
