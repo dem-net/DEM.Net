@@ -31,15 +31,18 @@ namespace SampleApp
             // ste victoire
             //_bboxWkt = "POLYGON((5.424004809009261 43.68472756348281, 5.884057299243636 43.68472756348281, 5.884057299243636 43.40402056297321, 5.424004809009261 43.40402056297321, 5.424004809009261 43.68472756348281))";
             // ventoux
-            //_bboxWkt = "POLYGON ((5.192413330078125 44.12209907358672, 5.3015899658203125 44.12209907358672, 5.3015899658203125 44.201897151875094, 5.192413330078125 44.201897151875094, 5.192413330078125 44.12209907358672))";
+            // _bboxWkt = "POLYGON ((5.192413330078125 44.12209907358672, 5.3015899658203125 44.12209907358672, 5.3015899658203125 44.201897151875094, 5.192413330078125 44.201897151875094, 5.192413330078125 44.12209907358672))";
             // duranne
             //_bboxWkt = "POLYGON ((5.303306579589844 43.45478810195138, 5.379180908203125 43.45478810195138, 5.379180908203125 43.51394981739109, 5.303306579589844 43.51394981739109, 5.303306579589844 43.45478810195138))";
             // ventoux debug
             //_bboxWkt = "POLYGON ((5.1340484619140625 44.17580225275465, 5.2700042724609375 44.17580225275465, 5.2700042724609375 44.21986144948162, 5.1340484619140625 44.21986144948162, 5.1340484619140625 44.17580225275465))";
             // zoom ste victoire
-            _bboxWkt = "POLYGON ((5.533332824707031 43.51668853502906, 5.582771301269531 43.51668853502906, 5.582771301269531 43.550289946081115, 5.533332824707031 43.550289946081115, 5.533332824707031 43.51668853502906))";
+            //_bboxWkt = "POLYGON ((5.533332824707031 43.51668853502906, 5.582771301269531 43.51668853502906, 5.582771301269531 43.550289946081115, 5.533332824707031 43.550289946081115, 5.533332824707031 43.51668853502906))";
             // santiago
             //_bboxWkt = "POLYGON ((-70.8673095703125 -33.612331963363914, -70.04745483398438 -33.612331963363914, -70.04745483398438 -33.05586750447235, -70.8673095703125 -33.05586750447235, -70.8673095703125 -33.612331963363914))";
+
+            // valgo
+            _bboxWkt = "POLYGON ((6.373444 44.913277, 5.971403 44.913277, 5.971403 44.73893, 6.373444 44.73893, 6.373444 44.913277))";
             _dataSet = DEMDataSet.AW3D30;
             _outputDirectory = outputDirectory;
         }
@@ -61,7 +64,7 @@ namespace SampleApp
             ImageryService imageryService = new ImageryService();
 
             Console.WriteLine("Download image tiles...");
-            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.MapBoxSatellite, 8);
+            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.MapBoxSatellite, 10);
 
             Console.WriteLine("Construct texture...");
             string fileName = Path.Combine(outputDir, "Texture.jpg");
@@ -73,13 +76,13 @@ namespace SampleApp
             //=======================
             // Normal map
             Console.WriteLine("Height map...");
-            float Z_FACTOR = 2f;
+            float Z_FACTOR = 1f;
             HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, _dataSet);
 
             hMapNormal = hMapNormal.ReprojectTo(4326, 2154);
             hMapNormal = hMapNormal.CenterOnOrigin(1f);
 
-            HeightMap hMap = _elevationService.GetHeightMap(bbox, DEMDataSet.SRTM_GL3);
+            HeightMap hMap = _elevationService.GetHeightMap(bbox, DEMDataSet.AW3D30);
 
             hMap = hMap.ReprojectTo(4326, 2154);
             hMap = hMap.CenterOnOrigin(Z_FACTOR);
@@ -145,7 +148,7 @@ namespace SampleApp
 
             List<MeshPrimitive> meshes = new List<MeshPrimitive>();
             // generate mesh with texture
-            bool useTIN = false;
+            bool useTIN = true;
             MeshPrimitive triangleMesh;
             if (useTIN)
             {
@@ -164,7 +167,7 @@ namespace SampleApp
             // model export
             Console.WriteLine("GenerateModel...");
             Model model = glTF.GenerateModel(meshes, this.GetType().Name);
-            glTF.Export(model, outputDir, $"{GetType().Name} Packed", false, true);
+            glTF.Export(model, outputDir, $"{GetType().Name} NONormal", false, true);
         }
 
         private MeshPrimitive GenerateTIN(HeightMap hMap, IglTFService gltf, PBRTexture textures)
