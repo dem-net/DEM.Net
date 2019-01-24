@@ -32,8 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="glTFLoader, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\glTF2Loader.1.1.1-alpha\lib\net35\glTFLoader.dll</HintPath>
+    <Reference Include="glTFLoader, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\glTF2Loader.1.1.3-alpha\lib\net35\glTFLoader.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -51,12 +51,7 @@
   <ItemGroup>
     <Compile Include="glTFService.cs" />
     <Compile Include="glTFSource\Data.cs" />
-    <Compile Include="glTFSource\FileHelper.cs" />
-    <Compile Include="glTFSource\FloatMath.cs" />
-    <Compile Include="glTFSource\ModelGroup.cs" />
-    <Compile Include="glTFSource\ModelGroups\Mesh_DEMHeightMap.cs" />
-    <Compile Include="glTFSource\Property.cs" />
-    <Compile Include="glTFSource\ReadmeStringHelper.cs" />
+    <Compile Include="glTFSource\Model.cs" />
     <Compile Include="glTFSource\Runtime\Animation.cs" />
     <Compile Include="glTFSource\Runtime\AnimationChannel.cs" />
     <Compile Include="glTFSource\Runtime\AnimationChannelTarget.cs" />

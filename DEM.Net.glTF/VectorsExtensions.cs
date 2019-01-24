@@ -47,5 +47,22 @@ namespace DEM.Net.glTF
             yield return startindex + 3;
             yield return startindex + 2;
         }
+
+        // Not optimized but useful
+        public static void GetStats(this IEnumerable<Vector3> vectors, out Vector3 average, out Vector3 min, out Vector3 max)
+        {
+            average = new Vector3(
+                    vectors.Average(v => v.X),
+                    vectors.Average(v => v.Y),
+                    vectors.Average(v => v.Z));
+            min = new Vector3(
+                    vectors.Min(v => v.X),
+                    vectors.Min(v => v.Y),
+                    vectors.Min(v => v.Z));
+            max = new Vector3(
+                    vectors.Max(v => v.X),
+                    vectors.Max(v => v.Y),
+                    vectors.Max(v => v.Z));
+        }
     }
 }

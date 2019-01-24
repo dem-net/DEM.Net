@@ -15,6 +15,12 @@ namespace DEM.Net.Lib.Imagery
             Y = y;
             Zoom = zoom;
         }
+        public MapTileInfo(PointInt xy, int zoom)
+        {
+            X = xy.X;
+            Y = xy.Y;
+            Zoom = zoom;
+        }
 
         public int X { get; set; }
         public int Y { get; set; }

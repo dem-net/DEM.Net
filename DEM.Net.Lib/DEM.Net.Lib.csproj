@@ -95,7 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\ExceptionHelper.cs" />
-    <Compile Include="Helpers\HeightMapReprojection.cs" />
+    <Compile Include="Helpers\Reprojection.cs" />
     <Compile Include="Helpers\RasterFileDictionary.cs" />
     <Compile Include="Helpers\HeightMapExtensions.cs" />
     <Compile Include="Helpers\UrlHelper.cs" />
@@ -105,7 +105,9 @@
     <Compile Include="Imagery\Structs\MapTile.cs" />
     <Compile Include="Imagery\Structs\LatLong.cs" />
     <Compile Include="Imagery\Structs\MapTileInfo.cs" />
+    <Compile Include="Imagery\Structs\PBRTexture.cs" />
     <Compile Include="Imagery\Structs\PointInt.cs" />
+    <Compile Include="Imagery\Structs\TextureImageFormat.cs" />
     <Compile Include="Imagery\Structs\TextureInfo.cs" />
     <Compile Include="Imagery\Structs\TileRange.cs" />
     <Compile Include="Imagery\TileUtils.cs" />

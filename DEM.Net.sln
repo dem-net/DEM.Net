@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Net.WebApi", "DEM.Net.WebApi\DEM.Net.WebApi.csproj", "{3E1E1C96-9F88-4CD1-BB75-2FFF437E23B5}"
 EndProject
@@ -12,6 +12,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp", "SampleApp\SampleApp.csproj", "{6375EA11-8111-4C8F-9840-2E4A04D742BD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Net.TestWinForm", "DEM.Net.TestWinForm\DEM.Net.TestWinForm.csproj", "{9417FC33-D64A-4B15-AD47-286382F1FF21}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Net.glTF", "DEM.Net.glTF\DEM.Net.glTF.csproj", "{31079223-207D-4075-9C4C-AB001E978C94}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6063C77F-B052-4C17-A94D-A4F365137BC9}"

@@ -30,7 +30,7 @@ namespace SampleApp
 
             Logger.StartPerf("Main cold start");
 
-           
+
             _RasterDataDirectory = GetDataDirectory();
             _OutputDataDirectory = @"..\..\..\Data";
 
@@ -39,20 +39,25 @@ namespace SampleApp
             IRasterService rasterService = new RasterService(_RasterDataDirectory);
             IElevationService elevationService = new ElevationService(rasterService);
 
+           
 
             TextureSamples textureSamples = new TextureSamples(elevationService, _OutputDataDirectory);
             textureSamples.Run();
+            textureSamples.RunNormalMapGeneration();
+            textureSamples.RunImagery(true);
 
-            
-            TestPoints(WKT_BBOX_CORSEBUG, DEMDataSet.SRTM_GL3, rasterService, elevationService);
-            //string WKT_BBOX_SCL_OCEAN = "POLYGON ((-79.584961 -32.626942, -79.584961 -38.788345, -68.557777 -38.788345, -68.557777 -32.626942, -79.584961 -32.626942))";
+            GpxSamples gpxSamples = new GpxSamples(elevationService, _OutputDataDirectory, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
+            gpxSamples.Run();
 
-            HGTTest(WKT_BBOX_VALGO, elevationService, DEMDataSet.SRTM_GL1, "WKT_BBOX_VALGO");
+
+            //TestPoints(WKT_BBOX_CORSEBUG, DEMDataSet.SRTM_GL3, rasterService, elevationService);
+            ////string WKT_BBOX_SCL_OCEAN = "POLYGON ((-79.584961 -32.626942, -79.584961 -38.788345, -68.557777 -38.788345, -68.557777 -32.626942, -79.584961 -32.626942))";
+
+            //HGTTest(WKT_BBOX_VALGO, elevationService, DEMDataSet.SRTM_GL1, "WKT_BBOX_VALGO");
 
             //TestCompletionForHydro(WKT_BBOX_CHILE
             //   , @"C:\Repos\DEM.Net\Data\ETOPO1\ETOPO1_Bed_g_geotiff.tif", nameof(WKT_BBOX_CHILE)
             //   , null, rasterService, elevationService);
-            Logger.StopPerf("Main cold start", true);
             //LineDEMTest(elevationService, DEMDataSet.SRTM_GL3, WKT_SCL_MENDOZA, 100);
             //LineDEMTest(elevationService, DEMDataSet.AW3D30, WKT_SCL_MENDOZA, 100);
 
@@ -72,7 +77,7 @@ namespace SampleApp
             //HGTTest(WKT_BBOX_EIGER_MEDIUM, elevationService, DEMDataSet.AW3D30, DEMDataSet.AW3D30.Name);
             //TestFillVoids(WKT_BBOX_EIGER_MEDIUM, elevationService, DEMDataSet.AW3D30, DEMDataSet.SRTM_GL3_srtm, "Eiger");
 
-
+            Logger.StopPerf("Main cold start", true);
             Console.Write("Press any key to exit...");
             Console.ReadLine();
 
@@ -105,7 +110,7 @@ namespace SampleApp
             hMap = hMap.CenterOnOrigin(0.00009f);
 
             IglTFService glTFService = new glTFService();
-            MeshPrimitive pointMesh = glTFService.GeneratePointMesh(hMap.Coordinates, new Vector3(1, 0, 0), 0);
+            MeshPrimitive pointMesh = glTFService.GeneratePointMesh(hMap.Coordinates, new Vector4(1, 0, 0, 0.5f), 0);
             Model model = glTFService.GenerateModel(pointMesh, "Test Points");
             glTFService.Export(model, @"C:\Repos\DEM.Net\Data\glTF", "Test points", false, true);
         }
@@ -118,7 +123,7 @@ namespace SampleApp
 
             IglTFService glTFService = new glTFService();
             //MeshPrimitive triangleMesh = glTFService.GenerateTriangleMesh(hMap, null);
-            MeshPrimitive pointMesh = glTFService.GeneratePointMesh(hMap.Coordinates, new Vector3(1, 0, 0), 0.1f);
+            MeshPrimitive pointMesh = glTFService.GeneratePointMesh(hMap.Coordinates, new Vector4(1, 0, 0, 0.5f), 0.1f);
             Model model = glTFService.GenerateModel(pointMesh, "Test Points");
             glTFService.Export(model, @"C:\Repos\DEM.Net\Data\glTF", "Test points", false, true);
         }
@@ -150,8 +155,8 @@ namespace SampleApp
             Logger.Info("Convert to glTF Model Primitive...");
 
             glTFService glTF = new glTFService();
-            Vector3 positiveAltitudeColor = Vector3.One;
-            Vector3 negativeAltitudeColor = new Vector3(0.101f, 0.627f, 1f);
+            Vector4 positiveAltitudeColor = Vector4.One;
+            Vector4 negativeAltitudeColor = new Vector4(0.101f, 0.627f, 1, 1);
 
             MeshPrimitive meshPrimitive = glTF.GenerateTriangleMesh(hMap, hMap.Coordinates.Select(pt => pt.Elevation.GetValueOrDefault(0) > 0 ? positiveAltitudeColor : negativeAltitudeColor));
             //Matrix4x4 mat = Matrix4x4.CreateRotationY((float)Math.PI);
@@ -196,7 +201,7 @@ namespace SampleApp
 
             glTFService glTF = new glTFService();
             MeshPrimitive meshPrimitive = glTF.GenerateTriangleMesh(hMap);
-            MeshPrimitive pointMeshPrimitive = glTF.GeneratePointMesh(hMap.Coordinates, new Vector3(1, 0, 0), 0);
+            MeshPrimitive pointMeshPrimitive = glTF.GeneratePointMesh(hMap.Coordinates, new Vector4(1, 0, 0, 0.5f), 0);
             //Matrix4x4 mat = Matrix4x4.CreateRotationY((float)Math.PI);
             //meshPrimitive.Positions = meshPrimitive.Positions.Select(p => Vector3.Transform(p, mat));
             //meshPrimitive.Normals = meshPrimitive.Normals.Select(p => Vector3.Transform(p, mat));
@@ -364,7 +369,7 @@ namespace SampleApp
             LineDEMBenchmark(elevationService, DEMDataSet.AW3D30, 512);
 
             PointDEMTest(elevationService, DEMDataSet.AW3D30, 39.713092, -77.725708);
-            
+
             HeightMapTest(elevationService, DEMDataSet.AW3D30, wkt4Tiles);
 
 
@@ -396,7 +401,7 @@ namespace SampleApp
 
             rasterService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, false);
 
-           
+
             Console.Write("Press any key to exit...");
             Console.ReadLine();
 
@@ -428,7 +433,7 @@ namespace SampleApp
 
 
             glTFService glTF = new glTFService();
-            MeshPrimitive meshPrimitive = glTF.GenerateLine(points, new System.Numerics.Vector3(1, 0, 0), 1f);
+            MeshPrimitive meshPrimitive = glTF.GenerateLine(points, new Vector4(1, 0, 0, 0.5f), 1f);
 
             Console.Write("GenerateModel...");
             Model model = glTF.GenerateModel(meshPrimitive, name);
@@ -447,7 +452,7 @@ namespace SampleApp
 
             //=======================
             // MESH 3D terrain
-            
+
             Console.Write("Height map...");
             HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
 
@@ -461,7 +466,7 @@ namespace SampleApp
 
             //=======================
             /// Line strip from GPX
-           
+
             var pointsElevated = elevationService.GetPointsElevation(points, dataSet);
             pointsElevated = pointsElevated.Select(pt => { pt.Elevation += 8; return pt; });
             pointsElevated = pointsElevated.CenterOnOrigin(hMap.BoundingBox, 0.00002f);
@@ -470,9 +475,9 @@ namespace SampleApp
             // int nSkip = 1;
             //pointsElevated = pointsElevated.Where((x, i) => (i + 1) % nSkip == 0);
 
-            MeshPrimitive gpxLine = glTF.GenerateLine(pointsElevated, new System.Numerics.Vector3(1, 0, 0), 0.0001f);
+            MeshPrimitive gpxLine = glTF.GenerateLine(pointsElevated, new Vector4(1, 0, 0, 0.5f), 0.0001f);
             meshes.Add(gpxLine);
-            
+
             // model export
             Console.Write("GenerateModel...");
             Model model = glTF.GenerateModel(meshes, name);
@@ -666,7 +671,7 @@ namespace SampleApp
 
 
         }
-       
+
 
         private static IEnumerable<T> GetNth<T>(List<T> list, int n)
         {
@@ -679,7 +684,7 @@ namespace SampleApp
             }
         }
 
-       
+
 
         //static void SpatialTrace_GeometryWithDEMGrid(IElevationService elevationService, IRasterService rasterService, string wktBbox, DEMDataSet dataSet, double rangeKm = 100)
         //{

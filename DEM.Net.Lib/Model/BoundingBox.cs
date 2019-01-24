@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -85,6 +86,15 @@ namespace DEM.Net.Lib
         public override string ToString()
         {
             return $"Xmin: {xMin}, Xmax: {xMax}, Ymin: {yMin}, Ymax: {yMax}";
+        }
+
+        public string WKT
+        {
+            get
+            {
+                FormattableString fs = $"POLYGON(({xMin} {yMin}, {xMax} {yMin}, {xMax} {yMax}, {xMin} {yMax}, {xMin} {yMin}))";
+                return fs.ToString(CultureInfo.InvariantCulture);
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AssetGenerator;
 using AssetGenerator.Runtime;
 using DEM.Net.Lib;
+using DEM.Net.Lib.Imagery;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +18,9 @@ namespace DEM.Net.glTF
         /// </summary>
         /// <param name="heightMap"></param>
         /// <param name="colors">Colors. Pass null to use white as default.</param>
-        /// <param name="uvcoordinates">If true, interpolated UV coordinates in (0,0)=>(1,1) will be generated</param>
+        /// <param name="texture">Texture path relative from the model</param>
         /// <returns></returns>
-        MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, IEnumerable<Vector3> colors = null, bool uvcoordinates = false);
+        MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, IEnumerable<Vector4> colors = null, PBRTexture texture = null);
 
         /// <summary>
         /// Generate triangle mesh with supplied triangulation
@@ -27,9 +28,9 @@ namespace DEM.Net.glTF
         /// <param name="points">Vertices</param>
         /// <param name="indices">Triplets of vertex index in points list</param>
         /// <param name="color"></param>
-        /// <param name="uvcoordinates">If true, interpolated UV coordinates in (0,0)=>(1,1) will be generated</param>
+        /// <param name="texture">Texture path relative from the model</param>
         /// <returns></returns>
-        MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, IEnumerable<Vector3> colors = null, bool uvcoordinates = false);
+        MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, IEnumerable<Vector4> colors = null, PBRTexture texture = null);
 
         /// <summary>
         /// Build a line mesh from given points
@@ -38,7 +39,7 @@ namespace DEM.Net.glTF
         /// <param name="color">Line color</param>
         /// <param name="width">If width > 1 then line will be a mesh of given width</param>
         /// <returns></returns>
-        MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector3 color, float width = 1f);
+        MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector4 color, float width = 1f);
 
         /// <summary>
         /// Low level method generating triangle mesh using supplied indices.
@@ -47,9 +48,9 @@ namespace DEM.Net.glTF
         /// <param name="points"></param>
         /// <param name="indices"></param>
         /// <param name="colors"></param>
-        /// <param name="uvcoordinates">If true, interpolated UV coordinates in (0,0)=>(1,1) will be generated</param>
+        /// <param name="texture">Texture path relative from the model</param>
         /// <returns></returns>
-        MeshPrimitive GenerateTriangleMesh(IEnumerable<Vector3> points, List<int> indices, IEnumerable<Vector3> colors = null, bool uvcoordinates = false);
+        MeshPrimitive GenerateTriangleMesh(IEnumerable<Vector3> points, List<int> indices, IEnumerable<Vector4> colors = null, PBRTexture texture = null);
 
         /// <summary>
         /// Build a line mesh from given points
@@ -58,7 +59,7 @@ namespace DEM.Net.glTF
         /// <param name="color">Line color</param>
         /// <param name="pointSize">If >0 quads of specified size will be generated (and the ouput mesh will be TRIANGLES)</param>
         /// <returns></returns>
-        MeshPrimitive GeneratePointMesh(IEnumerable<GeoPoint> points, Vector3 color, float pointSize);
+        MeshPrimitive GeneratePointMesh(IEnumerable<GeoPoint> points, Vector4 color, float pointSize);
 
         /// <summary>
         /// Generate a full glTF model from a mesh
@@ -88,6 +89,13 @@ namespace DEM.Net.glTF
 		void Export(Model model, string outputFolder, string modelName, bool exportglTF = true, bool exportGLB = true);
 
         glTFLoader.Schema.Gltf Import(string path);
+
+        /// <summary>
+        /// Calculate normals for a given height map
+        /// </summary>
+        /// <param name="heightMap">Height map (gridded data)</param>
+        /// <returns>Normals for each point of the height map</returns>
+        List<Vector3> ComputeNormals(HeightMap heightMap);
 
 
         #region Helpers
