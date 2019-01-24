@@ -1366,24 +1366,29 @@ namespace DEM.Net.Lib.Services.Lab
 
         public double[] GetVecteurPenteInFacetteFromPoint(BeanFacette_internal p_facette, BeanPoint_internal p_pointFacette,bool p_vecteurSortantSinonEntrant_vf,bool p_nullSiVecteurNonInclus_vf)
         {
-            try
-            {
-                double[] v_vecteurPente;
-                bool v_normaliserVecteurPente_vf = true;
-                v_vecteurPente=FLabServices.createCalculLow().GetVecteurPenteMaxi(p_facette.p20_normaleDuPlan, v_normaliserVecteurPente_vf);
-                double v_pente=FLabServices.createCalculLow().GetPente(v_vecteurPente);
+            double[] v_pente;
+            v_pente = null;
 
-                //
+            return v_pente;
+
+            //try
+            //{
+            //    double[] v_vecteurPente;
+            //    bool v_normaliserVecteurPente_vf = true;
+            //    v_vecteurPente=FLabServices.createCalculLow().GetVecteurPenteMaxi(p_facette.p20_normaleDuPlan, v_normaliserVecteurPente_vf);
+            //    double v_pente=FLabServices.createCalculLow().GetPente(v_vecteurPente);
+
+            //    //
 
 
 
 
-            }
-            catch (Exception)
-            {
+            //}
+            //catch (Exception)
+            //{
 
-                throw;
-            }
+            //    throw;
+            //}
         }
         #endregion UTILITAIRES
         public List<BeanPoint_internal> GetOrdonnancementPointsFacette(List<BeanPoint_internal> p_pointsFacettes, bool p_renvoyerNullSiColineaires_vf, bool p_sensHoraireSinonAntiHoraire_vf)

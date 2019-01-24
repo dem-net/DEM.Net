@@ -186,7 +186,7 @@ namespace SampleApp
             _paramTin.p31_nbreIterationsMaxi = 10;
             var _topolFacettes = FLabServices.createCalculMedium().GetInitialisationTin(v_pointsToTest, _paramTin);
 
-            FLabServices.createCalculMedium().AugmenteDetailsTinByRef_v2(ref _topolFacettes, _paramTin);
+            FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, _paramTin);
 
 
             Dictionary<int, int> v_indiceParIdPoint = new Dictionary<int, int>();
