@@ -182,15 +182,21 @@ namespace DEM.Net.TestWinForm
 
            // FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, _paramTin);
 
-            FLabServices.createCalculMedium().AugmenteDetailsTinByRef_v2(ref _topolFacettes, _paramTin);
+            FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, _paramTin);
+
+            //List<BeanArc_internal> v_arcs= _topolFacettes.p11_pointsFacettesByIdPoint.Select(c => c.Value).SelectMany(c => c.p41_arcsAssocies).Select(c => c.Value).ToList();
+            //List<int> v_idArcDistinct = v_arcs.Select(c=>c.p00_idArc).Distinct().ToList();
+            //List<string> v_codeArcDistinct = v_arcs.Select(c => c.p01_hcodeArc).Distinct().ToList();
+            ////
+            //List<int> v_idPointDistinct=_topolFacettes.p13_facettesById.Values.SelectMany(c => c.p01_pointsDeFacette).Select(c => c.p00_id).Distinct().ToList();
+            //List<BeanPoint_internal> v_pts0=_topolFacettes.p13_facettesById.Values.SelectMany(c => c.p01_pointsDeFacette).Where(c => c.p41_arcsAssocies.Count == 0).ToList();
+
             bool v_visuSpatialTrace_vf = false;
             if (v_visuSpatialTrace_vf)
             {
                 FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(_topolFacettes, false, false);
                 FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
             }
-          
-
             MessageBox.Show("Traitement terminé.");
         }
 
@@ -238,7 +244,6 @@ namespace DEM.Net.TestWinForm
             bool v_renvoyerNullSiPointsColineaires_vf = true;
             bool v_normalisationSensHoraireSinonAntihoraire = false;
            
-
             foreach (BeanFacette_internal v_facette in _topolFacettes.p13_facettesById.Values)
             {
                 List<BeanPoint_internal> v_normalisationDuSens = FLabServices.createCalculMedium().GetOrdonnancementPointsFacette(v_facette.p01_pointsDeFacette, v_renvoyerNullSiPointsColineaires_vf, v_normalisationSensHoraireSinonAntihoraire);
@@ -282,6 +287,12 @@ namespace DEM.Net.TestWinForm
 
         private void btn_creteEtTalwegTin_visu_Click(object sender, EventArgs e)
         {
+
+
+
+
+
+
             FServicesApplicatifs.createVisuSpatialTrace().GetVisuCreteEtTalweg(_topolFacettes);
             FServicesApplicatifs.createVisuSpatialTrace().AfficheVisu();
             MessageBox.Show("Traitement terminé.");

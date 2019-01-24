@@ -288,8 +288,8 @@ namespace DEM.Net.Lib.Services.VisualisationServices
             }
             SpatialTrace.TraceGeometry(v_lineGeom, v_message, v_message);
             //
-            GetVisuPoint2D(p_arc.p11_pointDbt, " =>Dbt>", p_couleurCourante, 10);
-            GetVisuPoint2D(p_arc.p12_pointFin, " =>Fin>", p_couleurCourante, 10);
+            //GetVisuPoint2D(p_arc.p11_pointDbt, " =>Dbt>", p_couleurCourante, 10);
+            //GetVisuPoint2D(p_arc.p12_pointFin, " =>Fin>", p_couleurCourante, 10);
             SpatialTrace.Disable();
         }
         //
@@ -372,6 +372,8 @@ namespace DEM.Net.Lib.Services.VisualisationServices
         public void GetVisuCreteEtTalweg(BeanTopologieFacettes p_topologieFacettes)
         {
             Color v_couleur;
+            SpatialTrace.Enable();
+            SpatialTrace.Indent("Cretes");
             List<BeanArc_internal> v_arcsCretes;
             v_arcsCretes = p_topologieFacettes.p12_arcsByCode.Values.Where(c => c.p41_natureArcDansLeReseau == enumTypeArcReseau.crete).ToList();
             v_couleur = Color.Red;
@@ -379,7 +381,8 @@ namespace DEM.Net.Lib.Services.VisualisationServices
             {
                 GetVisuArc2D(v_arc, "Crete", v_couleur);
             }
-
+            SpatialTrace.Unindent();
+            SpatialTrace.Indent("Talwegs");
             List<BeanArc_internal> v_arcsTalweg;
             v_arcsTalweg = p_topologieFacettes.p12_arcsByCode.Values.Where(c => c.p41_natureArcDansLeReseau == enumTypeArcReseau.talweg).ToList();
             v_couleur = Color.Blue;
@@ -387,14 +390,17 @@ namespace DEM.Net.Lib.Services.VisualisationServices
             {
                 GetVisuArc2D(v_arc, "Talweg", v_couleur);
             }
-
-            List<BeanArc_internal> v_arcsAutres;
-            v_arcsAutres = p_topologieFacettes.p12_arcsByCode.Values.Where(c => c.p41_natureArcDansLeReseau == enumTypeArcReseau.autre).ToList();
-            v_couleur = Color.LightGreen;
-            foreach (BeanArc_internal v_arc in v_arcsAutres)
-            {
-                GetVisuArc2D(v_arc, "Autre", v_couleur);
-            }
+            SpatialTrace.Unindent();
+            //SpatialTrace.Indent("Autres");
+            //List<BeanArc_internal> v_arcsAutres;
+            //v_arcsAutres = p_topologieFacettes.p12_arcsByCode.Values.Where(c => c.p41_natureArcDansLeReseau == enumTypeArcReseau.autre).ToList();
+            //v_couleur = Color.LightGray;
+            //foreach (BeanArc_internal v_arc in v_arcsAutres)
+            //{
+            //    GetVisuArc2D(v_arc, "Autre", v_couleur);
+            //}
+            //SpatialTrace.Unindent();
+            SpatialTrace.Disable();
         }
         //
         public void AfficheVisu()

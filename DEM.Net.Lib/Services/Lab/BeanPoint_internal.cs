@@ -37,12 +37,13 @@ namespace DEM.Net.Lib.Services.Lab
         //
         public double p31_ecartAbsAuPlanCourant { get; set; }
         //
-        public BeanPoint_internal(double[] p_coord, int p_srid)
+        public Dictionary<string, BeanArc_internal> p41_arcsAssocies { get; set; }
+        public List<string> p42_ordonnancementHorairesArcs { get; set; }
+        public bool p43_ordonnancementOK_vf { get; set; }
+        //
+        public BeanPoint_internal(double[] p_coord, int p_srid):this(p_coord[0], p_coord[1], p_coord[2], p_srid)
         {
-            p00_id = _dernierId++;
-            p10_coord = p_coord;
-           p01_hCodeGeog= FLabServices.createUtilitaires().GethCodeGeogPoint(p10_coord);
-            p11_srid = p_srid;
+          
         }
         public BeanPoint_internal(double p_x, double p_y, double p_z, int p_srid)
         {
@@ -50,6 +51,9 @@ namespace DEM.Net.Lib.Services.Lab
             p10_coord=new double[3] { p_x, p_y, p_z };
             p01_hCodeGeog = FLabServices.createUtilitaires().GethCodeGeogPoint(p10_coord);
             p11_srid = p_srid;
+            p41_arcsAssocies = new Dictionary<string, BeanArc_internal>();
+            p42_ordonnancementHorairesArcs = new List<string>();
+            p43_ordonnancementOK_vf = false;
         }
 
     }
