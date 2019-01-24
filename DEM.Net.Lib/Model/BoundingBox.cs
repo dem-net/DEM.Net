@@ -60,22 +60,20 @@ namespace DEM.Net.Lib
             _yMin = ymin;
             _yMax = ymax;
         }
-        
+
 
         public BoundingBox Scale(double scale)
         {
             return new BoundingBox(xMax - Width * scale, xMin + Width * scale, yMax - Height * scale, yMin + Height * scale);
         }
-
-        public BoundingBox Transform(System.Drawing.Drawing2D.Matrix matrix)
+        
+        public double[] Center
         {
-            System.Drawing.PointF[] points = new System.Drawing.PointF[2];
-            points[0] = new System.Drawing.PointF((float)xMin, (float)yMin);
-            points[1] = new System.Drawing.PointF((float)xMax, (float)yMax);
-            matrix.TransformPoints(points);
-            return new BoundingBox(points[0].X, points[1].X, points[0].Y, points[1].Y);
+            get
+            {
+                return new double[] { (xMax - xMin) / 2d + xMin, (yMax - yMin) / 2 + yMin };
+            }
         }
-
 
         public static bool Contains(BoundingBox bbox, double x, double y)
         {

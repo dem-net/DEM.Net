@@ -20,10 +20,12 @@ namespace SampleApp
     {
         private readonly IElevationService _elevationService;
         private readonly string _bboxWkt;
-        private DEMDataSet _dataSet;
+        private DEMDataSet _normalsDataSet;
+        private DEMDataSet _meshDataSet;
         private readonly string _outputDirectory;
+        private readonly string _localdatadir;
 
-        public TextureSamples(IElevationService elevationService, string outputDirectory)
+        public TextureSamples(IElevationService elevationService, string localDataDir, string outputDirectory)
         {
             _elevationService = elevationService;
             // sugiton
@@ -32,6 +34,8 @@ namespace SampleApp
             //_bboxWkt = "POLYGON((5.424004809009261 43.68472756348281, 5.884057299243636 43.68472756348281, 5.884057299243636 43.40402056297321, 5.424004809009261 43.40402056297321, 5.424004809009261 43.68472756348281))";
             // ventoux
             // _bboxWkt = "POLYGON ((5.192413330078125 44.12209907358672, 5.3015899658203125 44.12209907358672, 5.3015899658203125 44.201897151875094, 5.192413330078125 44.201897151875094, 5.192413330078125 44.12209907358672))";
+            //ventoux avigon
+            //_bboxWkt = "POLYGON ((4.73236083984375 43.902839992663196, 5.401153564453124 43.902839992663196, 5.401153564453124 44.268804788566165, 4.73236083984375 44.268804788566165, 4.73236083984375 43.902839992663196))";
             // duranne
             //_bboxWkt = "POLYGON ((5.303306579589844 43.45478810195138, 5.379180908203125 43.45478810195138, 5.379180908203125 43.51394981739109, 5.303306579589844 43.51394981739109, 5.303306579589844 43.45478810195138))";
             // ventoux debug
@@ -40,16 +44,19 @@ namespace SampleApp
             //_bboxWkt = "POLYGON ((5.533332824707031 43.51668853502906, 5.582771301269531 43.51668853502906, 5.582771301269531 43.550289946081115, 5.533332824707031 43.550289946081115, 5.533332824707031 43.51668853502906))";
             // santiago
             //_bboxWkt = "POLYGON ((-70.8673095703125 -33.612331963363914, -70.04745483398438 -33.612331963363914, -70.04745483398438 -33.05586750447235, -70.8673095703125 -33.05586750447235, -70.8673095703125 -33.612331963363914))";
-
+            //chile - richards deep
+            _bboxWkt = "POLYGON ((-75.47607421875 -25.74052909277321, -67.08251953125 -25.74052909277321, -67.08251953125 -21.53484700204879, -75.47607421875 -21.53484700204879, -75.47607421875 -25.74052909277321))";
             // valgo
-            _bboxWkt = "POLYGON ((6.373444 44.913277, 5.971403 44.913277, 5.971403 44.73893, 6.373444 44.73893, 6.373444 44.913277))";
-            _dataSet = DEMDataSet.AW3D30;
+            //_bboxWkt = "POLYGON ((6.373444 44.913277, 5.971403 44.913277, 5.971403 44.73893, 6.373444 44.73893, 6.373444 44.913277))";
+            _normalsDataSet = DEMDataSet.AW3D30;
+            _meshDataSet = DEMDataSet.SRTM_GL3;
             _outputDirectory = outputDirectory;
+            _localdatadir = localDataDir;
         }
 
         internal void Run()
         {
-            int v_outSrid = 2154;
+            bool useTIN = true;
             glTFService glTF = new glTFService();
             string outputDir = Path.GetFullPath(Path.Combine(_outputDirectory, "glTF"));
 
@@ -65,7 +72,7 @@ namespace SampleApp
             ImageryService imageryService = new ImageryService();
 
             Console.WriteLine("Download image tiles...");
-            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 2);
+            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 4);
 
             Console.WriteLine("Construct texture...");
             string fileName = Path.Combine(outputDir, "Texture.jpg");
@@ -77,16 +84,17 @@ namespace SampleApp
             //=======================
             // Normal map
             Console.WriteLine("Height map...");
-            float Z_FACTOR = 1f;
-            HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, _dataSet);
+            float Z_FACTOR = 6f;
+            //HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, _normalsDataSet);
+            HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1", "ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
 
             // hMapNormal = hMapNormal.ReprojectTo(4326, v_outSrid);
-            hMapNormal = hMapNormal.ReprojectToCartesian(4326);
-            hMapNormal = hMapNormal.CenterOnOrigin(1f);
-            
-            HeightMap hMap = _elevationService.GetHeightMap(bbox, DEMDataSet.AW3D30);
+            hMapNormal = hMapNormal.ReprojectToCartesian();
 
-            hMap = hMap.ReprojectToCartesian(4326);
+           // HeightMap hMap = _elevationService.GetHeightMap(bbox, _meshDataSet);
+            HeightMap hMap = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1","ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
+
+            hMap = hMap.ReprojectToCartesian();
             hMap = hMap.CenterOnOrigin(Z_FACTOR);
             //
             //=======================
@@ -147,10 +155,8 @@ namespace SampleApp
             //=======================
             // MESH 3D terrain
 
-
-            List<MeshPrimitive> meshes = new List<MeshPrimitive>();
+            List <MeshPrimitive> meshes = new List<MeshPrimitive>();
             // generate mesh with texture
-            bool useTIN = true;
             MeshPrimitive triangleMesh;
             if (useTIN)
             {
@@ -184,7 +190,7 @@ namespace SampleApp
             _paramTin.p14_altitudeParDefaut = -200;
             _paramTin.p15_nbrePointsSupplMultiples4 = 4;
             _paramTin.p16_initialisation_modeChoixDuPointCentral.p01_excentrationMinimum = 0;
-            _paramTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = 10;
+            _paramTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = 250;
             _paramTin.p31_nbreIterationsMaxi = 10;
             var _topolFacettes = FLabServices.createCalculMedium().GetInitialisationTin(v_pointsToTest, _paramTin);
 
@@ -273,7 +279,7 @@ namespace SampleApp
             // MESH 3D terrain
 
             Console.WriteLine("Height map...");
-            HeightMap hMap = _elevationService.GetHeightMap(bbox, _dataSet);
+            HeightMap hMap = _elevationService.GetHeightMap(bbox, _meshDataSet);
 
             //hMap = hMap.ReprojectTo(4326, 2154);
             hMap = hMap.CenterOnOrigin(0.00002f);
@@ -303,7 +309,7 @@ namespace SampleApp
             // MESH 3D terrain
 
             Console.WriteLine("Height map...");
-            HeightMap hMap = _elevationService.GetHeightMap(bbox, _dataSet);
+            HeightMap hMap = _elevationService.GetHeightMap(bbox, _meshDataSet);
             hMap = hMap.ReprojectTo(4326, 2154);
 
 

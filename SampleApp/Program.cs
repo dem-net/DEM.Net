@@ -41,7 +41,7 @@ namespace SampleApp
 
            
 
-            TextureSamples textureSamples = new TextureSamples(elevationService, _OutputDataDirectory);
+            TextureSamples textureSamples = new TextureSamples(elevationService, _RasterDataDirectory, _OutputDataDirectory);
             textureSamples.Run();
             textureSamples.RunNormalMapGeneration();
             textureSamples.RunImagery(true);

@@ -10,13 +10,28 @@ namespace DEM.Net.Lib
 {
     public static class Reprojection
     {
-        public static HeightMap ReprojectToCartesian(this HeightMap heightMap, int sourceEpsgCode)
+
+        public static HeightMap ReprojectToCartesian(this HeightMap heightMap)
         {
             // Defines the starting coordiante system
-            ProjectionInfo pSource = ProjectionInfo.FromEpsgCode(sourceEpsgCode);
-            GeocentricGeodetic gc2g = new GeocentricGeodetic(pSource.GeographicInfo.Datum.Spheroid);
-            heightMap.Coordinates = heightMap.Coordinates.GeodeticToGeocentric(gc2g);
+            double[] bboxCenter = heightMap.BoundingBox.Center;
+            GeoPoint center = new GeoPoint(bboxCenter[1], bboxCenter[0]);
+
+            heightMap.Coordinates = heightMap.Coordinates.ReprojectToCartesian(center);
+
             return heightMap;
+        }
+        private static IEnumerable<GeoPoint> ReprojectToCartesian(this IEnumerable<GeoPoint> points, GeoPoint center)
+        {
+            foreach (var p in points)
+            {
+                var pSameLat = new GeoPoint(center.Latitude, p.Longitude);
+                var pSameLon = new GeoPoint(p.Latitude, center.Longitude);
+                double xSign = p.Longitude < center.Longitude ? -1 : 1;
+                double ySign = p.Latitude < center.Latitude ? -1 : 1;
+
+                yield return new GeoPoint(pSameLon.DistanceTo(center) * ySign, pSameLat.DistanceTo(center) * xSign, (float)p.Elevation.GetValueOrDefault(0), p.XIndex, p.YIndex);
+            }
         }
         private static GeoPoint GeodeticToGeocentric(this GeoPoint sourcePoint, GeocentricGeodetic geocentricGeodetic)
         {
@@ -25,7 +40,7 @@ namespace DEM.Net.Lib
                                              MathHelper.ToRadians(sourcePoint.Latitude)};
 
             geocentricGeodetic.GeodeticToGeocentric(coords, new double[] { sourcePoint.Elevation.GetValueOrDefault(0) }, 0, 1);
-           
+
             return new GeoPoint(coords[1], coords[0], (float)sourcePoint.Elevation, sourcePoint.XIndex.GetValueOrDefault(), sourcePoint.YIndex.GetValueOrDefault());
         }
         private static IEnumerable<GeoPoint> GeodeticToGeocentric(this IEnumerable<GeoPoint> sourcePoint, GeocentricGeodetic geocentricGeodetic)
