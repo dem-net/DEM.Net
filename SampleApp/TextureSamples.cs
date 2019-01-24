@@ -49,6 +49,7 @@ namespace SampleApp
 
         internal void Run()
         {
+            int v_outSrid = 2154;
             glTFService glTF = new glTFService();
             string outputDir = Path.GetFullPath(Path.Combine(_outputDirectory, "glTF"));
 
@@ -64,7 +65,7 @@ namespace SampleApp
             ImageryService imageryService = new ImageryService();
 
             Console.WriteLine("Download image tiles...");
-            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 10);
+            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 2);
 
             Console.WriteLine("Construct texture...");
             string fileName = Path.Combine(outputDir, "Texture.jpg");
@@ -79,12 +80,13 @@ namespace SampleApp
             float Z_FACTOR = 1f;
             HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, _dataSet);
 
-            hMapNormal = hMapNormal.ReprojectTo(4326, 2154);
+            // hMapNormal = hMapNormal.ReprojectTo(4326, v_outSrid);
+            hMapNormal = hMapNormal.ReprojectToCartesian(4326);
             hMapNormal = hMapNormal.CenterOnOrigin(1f);
-
+            
             HeightMap hMap = _elevationService.GetHeightMap(bbox, DEMDataSet.AW3D30);
 
-            hMap = hMap.ReprojectTo(4326, 2154);
+            hMap = hMap.ReprojectToCartesian(4326);
             hMap = hMap.CenterOnOrigin(Z_FACTOR);
             //
             //=======================

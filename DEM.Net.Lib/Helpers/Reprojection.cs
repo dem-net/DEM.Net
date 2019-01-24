@@ -10,7 +10,29 @@ namespace DEM.Net.Lib
 {
     public static class Reprojection
     {
+        public static HeightMap ReprojectToCartesian(this HeightMap heightMap, int sourceEpsgCode)
+        {
+            // Defines the starting coordiante system
+            ProjectionInfo pSource = ProjectionInfo.FromEpsgCode(sourceEpsgCode);
+            GeocentricGeodetic gc2g = new GeocentricGeodetic(pSource.GeographicInfo.Datum.Spheroid);
+            heightMap.Coordinates = heightMap.Coordinates.GeodeticToGeocentric(gc2g);
+            return heightMap;
+        }
+        private static GeoPoint GeodeticToGeocentric(this GeoPoint sourcePoint, GeocentricGeodetic geocentricGeodetic)
+        {
 
+            double[] coords = new double[] { MathHelper.ToRadians(sourcePoint.Longitude),
+                                             MathHelper.ToRadians(sourcePoint.Latitude)};
+
+            geocentricGeodetic.GeodeticToGeocentric(coords, new double[] { sourcePoint.Elevation.GetValueOrDefault(0) }, 0, 1);
+           
+            return new GeoPoint(coords[1], coords[0], (float)sourcePoint.Elevation, sourcePoint.XIndex.GetValueOrDefault(), sourcePoint.YIndex.GetValueOrDefault());
+        }
+        private static IEnumerable<GeoPoint> GeodeticToGeocentric(this IEnumerable<GeoPoint> sourcePoint, GeocentricGeodetic geocentricGeodetic)
+        {
+
+            return sourcePoint.Select(p => p.GeodeticToGeocentric(geocentricGeodetic));
+        }
         public static HeightMap ReprojectTo(this HeightMap heightMap, int sourceEpsgCode, int destinationEpsgCode)
         {
             if (sourceEpsgCode == destinationEpsgCode)
