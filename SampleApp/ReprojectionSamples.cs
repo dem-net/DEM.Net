@@ -24,7 +24,7 @@ namespace SampleApp
         public ReprojectionSamples(IElevationService elevationService, string outputDirectory, string gpxFile)
         {
             _elevationService = elevationService;
-            _dataSet = DEMDataSet.SRTM_GL3;
+            _dataSet = DEMDataSet.AW3D30;
             _outputDirectory = outputDirectory;
             _gpxFile = gpxFile;
         }
@@ -61,7 +61,7 @@ namespace SampleApp
 
 
                 Console.WriteLine("Download image tiles...");
-                TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.MapBoxSatelliteStreet, 2);
+                TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.MapBoxSatelliteStreet, 8);
                 string fileName = Path.Combine(outputDir, "Texture.jpg");
 
                 Console.WriteLine("Construct texture...");
@@ -94,7 +94,7 @@ namespace SampleApp
             }
             else
             {
-                hMap = hMap.CenterOnOrigin(Z_FACTOR);
+                hMap = hMap.CenterOnOrigin().ZScale(Z_FACTOR);
                 // generate mesh with texture
                 triangleMesh = glTF.GenerateTriangleMesh(hMap, null, PBRTexture.Create(texInfo, normalMap));
             }
@@ -103,9 +103,9 @@ namespace SampleApp
             // take 1 point evert nth
             int nSkip = 2;
             gpxPointsElevated = gpxPointsElevated.Where((x, i) => (i + 1) % nSkip == 0);
-            gpxPointsElevated = gpxPointsElevated.Select(pt => { pt.Elevation += 5; return pt; });
-            gpxPointsElevated = gpxPointsElevated.CenterOnOrigin(hMap.BoundingBox, 0.00002f);
-            MeshPrimitive gpxLine = glTF.GenerateLine(gpxPointsElevated, new Vector4(1, 0, 0, 0.5f), 0.00015f);
+            gpxPointsElevated = gpxPointsElevated.ReprojectToCartesian(hMap.BoundingBox);
+            gpxPointsElevated = gpxPointsElevated.ZScale(Z_FACTOR).ZTranslate(5);
+            MeshPrimitive gpxLine = glTF.GenerateLine(gpxPointsElevated, new Vector4(1, 0, 0, 0.5f), 200f);
             meshes.Add(gpxLine);
 
             // model export

@@ -100,7 +100,7 @@ namespace SampleApp
             //HeightMap hMap = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1","ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
 
             hMap = hMap.ReprojectToCartesian();
-            hMap = hMap.CenterOnOrigin(Z_FACTOR);
+            hMap = hMap.CenterOnOrigin().ZScale(Z_FACTOR);
 
             Console.WriteLine("Generate normal map...");
             TextureInfo normal = imageryService.GenerateNormalMap(hMapNormal, outputDir); //
@@ -133,7 +133,7 @@ namespace SampleApp
             glTF.Export(model, outputDir, $"{GetType().Name} NONormal", false, true);
         }
 
-       
+
 
         internal void RunImagery(bool withTexture)
         {
@@ -170,7 +170,7 @@ namespace SampleApp
             HeightMap hMap = _elevationService.GetHeightMap(bbox, _meshDataSet);
 
             //hMap = hMap.ReprojectTo(4326, 2154);
-            hMap = hMap.CenterOnOrigin(0.00002f);
+            hMap = hMap.CenterOnOrigin().ZScale(0.00002f);
 
             Console.WriteLine("GenerateTriangleMesh...");
             // generate mesh with texture
@@ -183,7 +183,7 @@ namespace SampleApp
             glTF.Export(model, outputDir, $"{GetType().Name} Packed", false, true);
         }
 
-      
+
 
     }
 }

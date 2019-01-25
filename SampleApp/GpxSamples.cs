@@ -94,7 +94,7 @@ namespace SampleApp
             }
             else
             {
-                hMap = hMap.CenterOnOrigin(Z_FACTOR);
+                hMap = hMap.CenterOnOrigin().ZScale(Z_FACTOR);
                 // generate mesh with texture
                 triangleMesh = glTF.GenerateTriangleMesh(hMap, null, PBRTexture.Create(texInfo, normalMap));
             }
@@ -104,7 +104,7 @@ namespace SampleApp
             int nSkip = 2;
             gpxPointsElevated = gpxPointsElevated.Where((x, i) => (i + 1) % nSkip == 0);
             gpxPointsElevated = gpxPointsElevated.Select(pt => { pt.Elevation += 5; return pt; });
-            gpxPointsElevated = gpxPointsElevated.CenterOnOrigin(hMap.BoundingBox, 0.00002f);
+            gpxPointsElevated = gpxPointsElevated.CenterOnOrigin(hMap.BoundingBox).ZScale(0.00002f);
             MeshPrimitive gpxLine = glTF.GenerateLine(gpxPointsElevated, new Vector4(1, 0, 0, 0.5f), 0.00015f);
             meshes.Add(gpxLine);
 

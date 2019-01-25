@@ -45,7 +45,7 @@ namespace SampleApp
                 v_indiceParIdPoint.Add(v_point.p00_id, v_indice);
                 v_indice++;
             }
-            p00_geoPoint = p00_geoPoint.CenterOnOrigin(1f).ToList();
+            p00_geoPoint = p00_geoPoint.CenterOnOrigin().ToList();
 
 
             //Création des listes d'indices et normalisation du sens des points favettes

@@ -8,32 +8,63 @@ namespace DEM.Net.Lib
 {
     public static class HeightMapExtensions
     {
-        public static HeightMap CenterOnOrigin(this HeightMap heightMap, float zFactor = 1f)
+        public static HeightMap CenterOnOrigin(this HeightMap heightMap)
         {
             var bbox = heightMap.BoundingBox;
 
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
-            heightMap.Coordinates = heightMap.Coordinates.Select(pt => new GeoPoint(pt.Latitude - yOriginOffset, pt.Longitude - xOriginOffset, (float)pt.Elevation.GetValueOrDefault(0) * zFactor, pt.XIndex, pt.YIndex));
+            heightMap.Coordinates = heightMap.Coordinates.Select(pt => new GeoPoint(pt.Latitude - yOriginOffset, pt.Longitude - xOriginOffset,
+                (float)pt.Elevation.GetValueOrDefault(0), pt.XIndex, pt.YIndex));
 
             return heightMap;
         }
-        public static IEnumerable<GeoPoint> CenterOnOrigin(this IEnumerable<GeoPoint> points, float zFactor = 1f)
+
+        public static IEnumerable<GeoPoint> CenterOnOrigin(this IEnumerable<GeoPoint> points)
         {
             var bbox = points.GetBoundingBox();
 
-            return points.CenterOnOrigin(bbox, zFactor);
+            return points.CenterOnOrigin(bbox);
         }
-        public static IEnumerable<GeoPoint> CenterOnOrigin(this IEnumerable<GeoPoint> points, BoundingBox bbox, float zFactor = 1f)
+        public static IEnumerable<GeoPoint> CenterOnOrigin(this IEnumerable<GeoPoint> points, BoundingBox bbox)
         {
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
-            points = points.Select(pt => new GeoPoint(pt.Latitude - yOriginOffset, pt.Longitude - xOriginOffset, (float)pt.Elevation * zFactor, (int)pt.XIndex, (int)pt.YIndex));
+            points = points.Select(pt => new GeoPoint(pt.Latitude - yOriginOffset, pt.Longitude - xOriginOffset, (float)pt.Elevation, (int)pt.XIndex, (int)pt.YIndex));
 
             return points;
         }
 
-       
+        public static HeightMap ZScale(this HeightMap heightMap, float zFactor = 1f)
+        {
+            heightMap.Coordinates = heightMap.Coordinates.ZScale(zFactor);
+
+            return heightMap;
+        }
+        public static IEnumerable<GeoPoint> ZScale(this IEnumerable<GeoPoint> points, float zFactor = 1f)
+        {
+            return points.Select(p =>
+            {
+                var pout = p.Clone();
+                pout.Elevation *= zFactor;
+                return pout;
+            });
+        }
+        public static HeightMap ZTranslate(this HeightMap heightMap, float distance)
+        {
+            heightMap.Coordinates = heightMap.Coordinates.ZTranslate(distance);
+
+            return heightMap;
+        }
+        public static IEnumerable<GeoPoint> ZTranslate(this IEnumerable<GeoPoint> points, float distance)
+        {
+            return points.Select(p =>
+            {
+                var pout = p.Clone();
+                pout.Elevation += distance;
+                return pout;
+            });
+        }
 
         public static HeightMap Sort(this HeightMap heightMap)
         {
