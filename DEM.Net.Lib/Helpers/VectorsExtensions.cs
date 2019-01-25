@@ -6,7 +6,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.glTF
+namespace DEM.Net.Lib
 {
     public static class VectorsExtensions
     {

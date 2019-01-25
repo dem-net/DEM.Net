@@ -202,8 +202,9 @@ namespace DEM.Net.Lib.Imagery
 
         #region Normal map generation
 
-        public TextureInfo GenerateNormalMap(HeightMap heightMap, string outputDirectory)
+        public TextureInfo GenerateNormalMap(HeightMap inputHeightMap, string outputDirectory)
         {
+            HeightMap heightMap = inputHeightMap.ReprojectToCartesian();
             List<Vector3> normals = MeshService.ComputeNormals(heightMap).ToList();
 
             bool debugBMP = false;
