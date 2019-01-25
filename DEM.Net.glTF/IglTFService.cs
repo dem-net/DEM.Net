@@ -90,13 +90,7 @@ namespace DEM.Net.glTF
 
         glTFLoader.Schema.Gltf Import(string path);
 
-        /// <summary>
-        /// Calculate normals for a given height map
-        /// </summary>
-        /// <param name="heightMap">Height map (gridded data)</param>
-        /// <returns>Normals for each point of the height map</returns>
-        List<Vector3> ComputeNormals(HeightMap heightMap);
-
+       
 
         #region Helpers
         IEnumerable<MeshPrimitive> GetHeightPlanes();

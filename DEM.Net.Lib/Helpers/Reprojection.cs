@@ -13,15 +13,11 @@ namespace DEM.Net.Lib
 
         public static HeightMap ReprojectToCartesian(this HeightMap heightMap)
         {
-            // Defines the starting coordiante system
-            double[] bboxCenter = heightMap.BoundingBox.Center;
-            GeoPoint center = new GeoPoint(bboxCenter[1], bboxCenter[0]);
-
-            heightMap.Coordinates = heightMap.Coordinates.ReprojectToCartesian(center);
+            heightMap.Coordinates = heightMap.Coordinates.ReprojectToCartesian(heightMap.BoundingBox);
 
             return heightMap;
         }
-        private static IEnumerable<GeoPoint> ReprojectToCartesian(this IEnumerable<GeoPoint> points, GeoPoint center)
+        public static IEnumerable<GeoPoint> ReprojectToCartesian(this IEnumerable<GeoPoint> points, GeoPoint center)
         {
             foreach (var p in points)
             {
@@ -32,6 +28,13 @@ namespace DEM.Net.Lib
 
                 yield return new GeoPoint(pSameLon.DistanceTo(center) * ySign, pSameLat.DistanceTo(center) * xSign, (float)p.Elevation.GetValueOrDefault(0), p.XIndex, p.YIndex);
             }
+        }
+        public static IEnumerable<GeoPoint> ReprojectToCartesian(this IEnumerable<GeoPoint> points, BoundingBox bbox)
+        {
+            // Defines the starting coordiante system
+            double[] bboxCenter = bbox.Center;
+            GeoPoint center = new GeoPoint(bboxCenter[1], bboxCenter[0]);
+            return points.ReprojectToCartesian(center);
         }
         private static GeoPoint GeodeticToGeocentric(this GeoPoint sourcePoint, GeocentricGeodetic geocentricGeodetic)
         {

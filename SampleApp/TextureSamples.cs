@@ -4,6 +4,7 @@ using DEM.Net.glTF;
 using DEM.Net.Lib;
 using DEM.Net.Lib.Imagery;
 using DEM.Net.Lib.Services.Lab;
+using DEM.Net.Lib.Services.Mesh;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -45,18 +46,22 @@ namespace SampleApp
             // santiago
             //_bboxWkt = "POLYGON ((-70.8673095703125 -33.612331963363914, -70.04745483398438 -33.612331963363914, -70.04745483398438 -33.05586750447235, -70.8673095703125 -33.05586750447235, -70.8673095703125 -33.612331963363914))";
             //chile - richards deep
-            _bboxWkt = "POLYGON ((-75.47607421875 -25.74052909277321, -67.08251953125 -25.74052909277321, -67.08251953125 -21.53484700204879, -75.47607421875 -21.53484700204879, -75.47607421875 -25.74052909277321))";
+            //_bboxWkt = "POLYGON ((-75.47607421875 -25.74052909277321, -67.08251953125 -25.74052909277321, -67.08251953125 -21.53484700204879, -75.47607421875 -21.53484700204879, -75.47607421875 -25.74052909277321))";
+            // chile full
+            //_bboxWkt = "POLYGON ((-77.080078125 -56.6562264935022, -66.533203125 -56.6562264935022, -66.533203125 -15.792253570362446, -77.080078125 -15.792253570362446, -77.080078125 -56.6562264935022))";
+            // fogo
+            _bboxWkt = "POLYGON ((-24.5654296875 14.78019397569999, -24.23858642578125 14.78019397569999, -24.23858642578125 15.077427674847987, -24.5654296875 15.077427674847987, -24.5654296875 14.78019397569999))";
             // valgo
             //_bboxWkt = "POLYGON ((6.373444 44.913277, 5.971403 44.913277, 5.971403 44.73893, 6.373444 44.73893, 6.373444 44.913277))";
             _normalsDataSet = DEMDataSet.AW3D30;
-            _meshDataSet = DEMDataSet.SRTM_GL3;
+            _meshDataSet = DEMDataSet.AW3D30;
             _outputDirectory = outputDirectory;
             _localdatadir = localDataDir;
         }
 
         internal void Run()
         {
-            bool useTIN = true;
+            bool useTIN = false;
             glTFService glTF = new glTFService();
             string outputDir = Path.GetFullPath(Path.Combine(_outputDirectory, "glTF"));
 
@@ -84,85 +89,35 @@ namespace SampleApp
             //=======================
             // Normal map
             Console.WriteLine("Height map...");
-            float Z_FACTOR = 6f;
-            //HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, _normalsDataSet);
-            HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1", "ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
+            float Z_FACTOR = 1f;
+            HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, _normalsDataSet);
+            //HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1", "ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
 
             // hMapNormal = hMapNormal.ReprojectTo(4326, v_outSrid);
             hMapNormal = hMapNormal.ReprojectToCartesian();
 
-           // HeightMap hMap = _elevationService.GetHeightMap(bbox, _meshDataSet);
-            HeightMap hMap = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1","ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
+            HeightMap hMap = _elevationService.GetHeightMap(bbox, _meshDataSet);
+            //HeightMap hMap = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1","ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
 
             hMap = hMap.ReprojectToCartesian();
             hMap = hMap.CenterOnOrigin(Z_FACTOR);
-            //
-            //=======================
 
-            //=======================
-            // Normal map
             Console.WriteLine("Generate normal map...");
-            HeightMap hMap4NormalMap = hMapNormal;
-            List<Vector3> normals = glTF.ComputeNormals(hMap4NormalMap);
-
-            bool debugBMP = false;
-            if (debugBMP)
-            {
-                using (var dbm = new DirectBitmap(hMap.Width, hMap.Height))
-                using (var dbmHeight = new DirectBitmap(hMap.Width, hMap.Height))
-                {
-                    // for debug only
-                    List<Vector3> coordinates = hMap.Coordinates.Select(c => new Vector3((float)c.Longitude, (float)c.Latitude, (float)c.Elevation)).ToList();
-                    float maxHeight = (float)hMap.Coordinates.Max(c => c.Elevation.GetValueOrDefault(0));
-
-                    for (int j = 0; j < hMap.Height; j++)
-                        for (int i = 0; i < hMap.Width; i++)
-                        {
-                            int index = i + (j * hMap.Width);
-                            Vector3 norm = normals[index];
-                            Color color = FromVec3NormalToColor(norm);
-                            dbm.SetPixel(i, j, color);
-                            dbmHeight.SetPixel(i, j, FromVec3ToHeightColor(coordinates[index], maxHeight));
-                        }
-
-                    dbm.Bitmap.Save(Path.Combine(outputDir, "normalmap.jpg"), ImageFormat.Jpeg);
-                    dbmHeight.Bitmap.Save(Path.Combine(outputDir, "heightmap.jpg"), ImageFormat.Jpeg);
-                }
-            }
-            else
-            {
-                using (var dbm = new DirectBitmap(hMap4NormalMap.Width, hMap4NormalMap.Height))
-                {
-
-                    for (int j = 0; j < hMap4NormalMap.Height; j++)
-                        for (int i = 0; i < hMap4NormalMap.Width; i++)
-                        {
-                            int index = i + (j * hMap4NormalMap.Width);
-                            Vector3 norm = normals[index];
-                            Color color = FromVec3NormalToColor(norm);
-                            dbm.SetPixel(i, j, color);
-                        }
-
-                    dbm.Bitmap.Save(Path.Combine(outputDir, "normalmap.jpg"), ImageFormat.Jpeg);
-                }
-            }
-
-            TextureInfo normal = new TextureInfo(Path.Combine(outputDir, "normalmap.jpg"), TextureImageFormat.image_jpeg, hMap4NormalMap.Width, hMap4NormalMap.Height);
-            //
+            TextureInfo normal = imageryService.GenerateNormalMap(hMapNormal, outputDir); //
             //=======================
 
 
             //=======================
             // MESH 3D terrain
 
-            List <MeshPrimitive> meshes = new List<MeshPrimitive>();
+            List<MeshPrimitive> meshes = new List<MeshPrimitive>();
             // generate mesh with texture
             MeshPrimitive triangleMesh;
             if (useTIN)
             {
                 Console.WriteLine("Create TIN...");
                 //triangleMesh = GenerateTIN(hMapTIN, glTF, PBRTexture.Create(texInfo, normal));
-                triangleMesh = GenerateTIN(hMap, glTF, PBRTexture.Create(texInfo, normal));
+                triangleMesh = TINGeneration.GenerateTIN(hMap, glTF, PBRTexture.Create(texInfo, normal));
             }
             else
             {
@@ -178,74 +133,7 @@ namespace SampleApp
             glTF.Export(model, outputDir, $"{GetType().Name} NONormal", false, true);
         }
 
-        private MeshPrimitive GenerateTIN(HeightMap hMap, IglTFService gltf, PBRTexture textures)
-        {
-            var v_pointsToTest = GetGeoPointsByHMap(hMap, 2154);
-
-
-            var _paramTin = FLabServices.createCalculMedium().GetParametresDuTinParDefaut();
-            _paramTin.p11_initialisation_determinationFrontieres = enumModeDelimitationFrontiere.pointsProchesDuMbo;
-            _paramTin.p12_extensionSupplementaireMboEnM = 1000;
-            _paramTin.p13_modeCalculZParDefaut = enumModeCalculZ.alti_0;
-            _paramTin.p14_altitudeParDefaut = -200;
-            _paramTin.p15_nbrePointsSupplMultiples4 = 4;
-            _paramTin.p16_initialisation_modeChoixDuPointCentral.p01_excentrationMinimum = 0;
-            _paramTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = 250;
-            _paramTin.p31_nbreIterationsMaxi = 10;
-            var _topolFacettes = FLabServices.createCalculMedium().GetInitialisationTin(v_pointsToTest, _paramTin);
-
-            FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, _paramTin);
-
-
-            Dictionary<int, int> v_indiceParIdPoint = new Dictionary<int, int>();
-            int v_indice = 0;
-            GeoPoint v_geoPoint;
-            List<GeoPoint> p00_geoPoint = new List<GeoPoint>(_topolFacettes.p11_pointsFacettesByIdPoint.Count);
-            List<List<int>> p01_listeIndexPointsfacettes = new List<List<int>>(_topolFacettes.p13_facettesById.Count);
-
-            foreach (BeanPoint_internal v_point in _topolFacettes.p11_pointsFacettesByIdPoint.Values)
-            {
-                v_geoPoint = new GeoPoint(v_point.p10_coord[1], v_point.p10_coord[0], (float)v_point.p10_coord[2], 0, 0);
-                p00_geoPoint.Add(v_geoPoint);
-                v_indiceParIdPoint.Add(v_point.p00_id, v_indice);
-                v_indice++;
-            }
-            p00_geoPoint = p00_geoPoint.CenterOnOrigin(1f).ToList();
-
-
-            //Création des listes d'indices et normalisation du sens des points favettes
-            List<int> v_listeIndices;
-            bool v_renvoyerNullSiPointsColineaires_vf = true;
-            bool v_normalisationSensHoraireSinonAntihoraire = false;
-
-
-            foreach (BeanFacette_internal v_facette in _topolFacettes.p13_facettesById.Values)
-            {
-                List<BeanPoint_internal> v_normalisationDuSens = FLabServices.createCalculMedium().GetOrdonnancementPointsFacette(v_facette.p01_pointsDeFacette, v_renvoyerNullSiPointsColineaires_vf, v_normalisationSensHoraireSinonAntihoraire);
-                if (v_normalisationDuSens != null)
-                {
-                    v_listeIndices = new List<int>();
-                    foreach (BeanPoint_internal v_ptFacette in v_normalisationDuSens)
-                    {
-                        v_listeIndices.Add(v_indiceParIdPoint[v_ptFacette.p00_id]);
-                    }
-                    p01_listeIndexPointsfacettes.Add(v_listeIndices);
-                }
-            }
-            MeshPrimitive v_trianglesMesh = gltf.GenerateTriangleMesh(p00_geoPoint, p01_listeIndexPointsfacettes.SelectMany(c => c).ToList(), null, textures);
-
-            return v_trianglesMesh;
-
-        }
-        private List<BeanPoint_internal> GetGeoPointsByHMap(HeightMap p_hMap, int p_srid)
-        {
-            return p_hMap.Coordinates.Select(c => GetPointInternalFromGeoPoint(c, p_srid)).ToList();
-        }
-        private BeanPoint_internal GetPointInternalFromGeoPoint(GeoPoint p_geoPoint, int p_srid)
-        {
-            BeanPoint_internal v_ptInternal = new BeanPoint_internal(p_geoPoint.Longitude, p_geoPoint.Latitude, p_geoPoint.Elevation.GetValueOrDefault(0), p_srid);
-            return v_ptInternal;
-        }
+       
 
         internal void RunImagery(bool withTexture)
         {
@@ -266,7 +154,7 @@ namespace SampleApp
                 ImageryService imageryService = new ImageryService();
 
                 Console.WriteLine("Download image tiles...");
-                TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 16);
+                TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 4);
                 string fileName = Path.Combine(outputDir, "Texture.png");
 
                 Console.WriteLine("Construct texture...");
@@ -295,70 +183,7 @@ namespace SampleApp
             glTF.Export(model, outputDir, $"{GetType().Name} Packed", false, true);
         }
 
-        internal void RunNormalMapGeneration()
-        {
-            glTFService glTF = new glTFService();
-            List<MeshPrimitive> meshes = new List<MeshPrimitive>();
-            string outputDir = Path.GetFullPath(Path.Combine(_outputDirectory, "glTF"));
+      
 
-            // Get GPX points
-            var bbox = GeometryService.GetBoundingBox(_bboxWkt);
-
-
-            //=======================
-            // MESH 3D terrain
-
-            Console.WriteLine("Height map...");
-            HeightMap hMap = _elevationService.GetHeightMap(bbox, _meshDataSet);
-            hMap = hMap.ReprojectTo(4326, 2154);
-
-
-            List<Vector3> coordinates = hMap.Coordinates.Select(c => new Vector3((float)c.Longitude, (float)c.Latitude, (float)c.Elevation)).ToList();
-            List<Vector3> normals = glTF.ComputeNormals(hMap);
-            float maxHeight = (float)hMap.Coordinates.Max(c => c.Elevation.GetValueOrDefault(0));
-            //Vector3 avg, min, max;
-            //normals.GetStats(out avg, out min, out max);
-            //coordinates.GetStats(out avg, out min, out max);
-
-            using (var dbm = new DirectBitmap(hMap.Width, hMap.Height))
-            using (var dbmHeight = new DirectBitmap(hMap.Width, hMap.Height))
-            {
-                for (int j = 0; j < hMap.Height; j++)
-                    for (int i = 0; i < hMap.Width; i++)
-                    {
-                        int index = i + (j * hMap.Width);
-                        Vector3 norm = normals[index];
-                        Color color = FromVec3NormalToColor(norm);
-                        dbm.SetPixel(i, j, color);
-                        dbmHeight.SetPixel(i, j, FromVec3ToHeightColor(coordinates[index], maxHeight));
-                    }
-
-                dbm.Bitmap.Save(Path.Combine(outputDir, "normalmap.jpg"), ImageFormat.Jpeg);
-                dbmHeight.Bitmap.Save(Path.Combine(outputDir, "heightmap.jpg"), ImageFormat.Jpeg);
-            }
-
-            TextureInfo baseColor = new TextureInfo(Path.Combine(outputDir, "heightmap.jpg"), TextureImageFormat.image_jpeg, hMap.Width, hMap.Height);
-            TextureInfo normal = new TextureInfo(Path.Combine(outputDir, "normalmap.jpg"), TextureImageFormat.image_jpeg, hMap.Width, hMap.Height);
-
-            MeshPrimitive triangleMesh = glTF.GenerateTriangleMesh(hMap, null, PBRTexture.Create(baseColor, normal));
-            meshes.Add(triangleMesh);
-            Model model = glTF.GenerateModel(meshes, this.GetType().Name);
-            glTF.Export(model, outputDir, $"{GetType().Name} NormalMap", false, true);
-
-
-        }
-
-        private Color FromVec3ToHeightColor(Vector3 vector3, float maxHeight)
-        {
-            int height = (int)Math.Round(MathHelper.Map(0, maxHeight, 0, 255, vector3.Z, true), 0);
-            return Color.FromArgb(height, height, height);
-        }
-
-        public Color FromVec3NormalToColor(Vector3 normal)
-        {
-            return Color.FromArgb((int)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.X, true), 0),
-                (int)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.Y, true), 0),
-                (int)Math.Round(MathHelper.Map(0, -1, 128, 255, -normal.Z, true), 0));
-        }
     }
 }
