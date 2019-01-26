@@ -255,7 +255,7 @@ namespace DEM.Net.glTF
                             ,
                             ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
                             ,
-                            ColorType = MeshPrimitive.ColorTypeEnum.VEC3
+                            ColorType = MeshPrimitive.ColorTypeEnum.VEC4
                             ,
                             Mode = MeshPrimitive.ModeEnum.LINE_STRIP
                             ,

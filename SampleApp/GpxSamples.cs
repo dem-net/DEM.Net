@@ -75,6 +75,7 @@ namespace SampleApp
             Console.WriteLine("Height map...");
             float Z_FACTOR = 0.00002f;
             HeightMap hMap = _elevationService.GetHeightMap(bbox, _dataSet);
+            hMap = hMap.CenterOnOrigin().ZScale(Z_FACTOR);
             var normalMap = imageryService.GenerateNormalMap(hMap, outputDir);
 
             //hMap = hMap.CenterOnOrigin(Z_FACTOR);

@@ -40,7 +40,7 @@ namespace SampleApp
             IElevationService elevationService = new ElevationService(rasterService);
 
 
-            ReprojectionSamples reprojSamples = new ReprojectionSamples(elevationService, _OutputDataDirectory, @"..\..\..\Data\GPX\avignon ventoux.gpx");
+            ReprojectionSamples reprojSamples = new ReprojectionSamples(elevationService, _OutputDataDirectory, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
             reprojSamples.Run();
 
             GpxSamples gpxSamples = new GpxSamples(elevationService, _OutputDataDirectory, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
