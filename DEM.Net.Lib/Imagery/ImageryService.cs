@@ -54,16 +54,18 @@ namespace DEM.Net.Lib.Imagery
 
             // 2 max download threads
             var options = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism };
-            Parallel.ForEach(tiles.EnumerateRange(), options, tileInfo =>
+            var range = tiles.EnumerateRange().ToList();
+            Console.WriteLine($"Downloading {range.Count} tiles...");
+            Parallel.ForEach(range, options, tileInfo =>
                 {
                     using (WebClient webClient = new WebClient())
                     {
                         Uri tileUri = BuildUri(provider, tileInfo.X, tileInfo.Y, tileInfo.Zoom);
                         var imgBytes = webClient.DownloadData(tileUri);
 
-                        System.Diagnostics.Debug.WriteLine($"Downloading {tileUri}");
+                        Console.WriteLine($"Downloading {tileUri}");
                         tiles.Add(new MapTile(imgBytes, provider.TileSize, tileUri, tileInfo));
-                        System.Diagnostics.Debug.WriteLine($"Downloading {tileUri} Finished");
+                        //System.Diagnostics.Debug.WriteLine($"Downloading {tileUri} Finished");
                     }
                 }
                 );
