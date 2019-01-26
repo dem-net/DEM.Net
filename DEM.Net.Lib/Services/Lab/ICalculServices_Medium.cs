@@ -13,8 +13,6 @@ namespace DEM.Net.Lib.Services.Lab
         BeanTopologieFacettes GetInitialisationTin(List<BeanPoint_internal> p_points, BeanParametresDuTin p_parametresDuTin);
         void AugmenteDetailsTinByRef(ref BeanTopologieFacettes p_topologieFacette, BeanParametresDuTin p_parametresDuTin);
 
-        void SetLignesCretesEtTalwegByRef(ref BeanTopologieFacettes p_topologieFacette);
-
         /// <summary>
         /// 
         /// </summary>

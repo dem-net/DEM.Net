@@ -273,27 +273,15 @@ namespace DEM.Net.TestWinForm
             FServicesApplicatifs.createTestsUnitairesLab().TestUnitairesLab(v_afficherMessageSiko_vf);
         }
 
-        private void btn_testCretesEtTalwegSurTin_Click(object sender, EventArgs e)
-        {
-            if(_topolFacettes==null)
-            {
-                MessageBox.Show("Pas de topologie facettes disponibles.");
-                return;
-            }
-            FLabServices.createCalculMedium().SetLignesCretesEtTalwegByRef(ref _topolFacettes);
-          
-            MessageBox.Show("Traitement terminé.");
-        }
-
+      
         private void btn_creteEtTalwegTin_visu_Click(object sender, EventArgs e)
         {
+            HashSet<enum_qualificationMorpho_arc> v_exclureDeLaVisu = new HashSet<enum_qualificationMorpho_arc>();
+            v_exclureDeLaVisu.Add(enum_qualificationMorpho_arc.autre);
+            //v_exclureDeLaVisu.Add(enum_qualificationMorpho_arc.talweg);
+            //v_exclureDeLaVisu.Add(enum_qualificationMorpho_arc.crete);
 
-
-
-
-
-
-            FServicesApplicatifs.createVisuSpatialTrace().GetVisuCreteEtTalweg(_topolFacettes);
+            FServicesApplicatifs.createVisuSpatialTrace().GetVisuCreteEtTalweg(_topolFacettes, v_exclureDeLaVisu);
             FServicesApplicatifs.createVisuSpatialTrace().AfficheVisu();
             MessageBox.Show("Traitement terminé.");
         }

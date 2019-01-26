@@ -532,12 +532,21 @@ namespace DEM.Net.Lib.Services.Lab
             return v_coeff;
         }
         //
+        public double GetPenteFromPoints3D(double[] p_pointDOrigine, double[] p_point2)
+        {
+            double[] v_vector=GetVectorBrutFromTwoPoints(p_pointDOrigine, p_point2);
+            return GetPente(v_vector);
+        }
         public double GetPente(double[] p_vecteur3D)
         {
             double v_angle = 0;
             try
             {
                 double p_normeVecteur = GetNormeVecteurXYZ(p_vecteur3D);
+                if(p_normeVecteur==0)
+                {
+                    return 0;
+                }
                 double v_cosPente = p_vecteur3D[2] / p_normeVecteur;
                 v_angle=Math.Acos(v_cosPente);
             }
@@ -950,14 +959,23 @@ namespace DEM.Net.Lib.Services.Lab
                     v_vecteur_e2 = GetVectorBrutFromTwoPoints(p_coordPoint0, p_coordPoint3Ord_orthoSiNull);
                     v_vecteur_e2 = GetNormalisationVecteurXY(v_vecteur_e2);
                 }
-              
-                double v_delta = (v_vecteur_e1[0] * v_vecteur_e2[1]) - (v_vecteur_e1[1] * v_vecteur_e2[0]);
-                //[Colonne puis ligne
-                v_matriceLigne[0, 0] = v_vecteur_e2[1] / v_delta;
-                v_matriceLigne[1, 1] = v_vecteur_e1[0] / v_delta;
-                //
-                v_matriceLigne[1, 0] = v_vecteur_e1[1] * -1 / v_delta;
+
+                double v_delta;
+                v_delta = (v_vecteur_e1[0] * v_vecteur_e2[1]) - (v_vecteur_e1[1] * v_vecteur_e2[0]);
+                if (v_delta==0)
+                {
+                    return null;
+                }
+               
+                //(Les 2 vecteurs sont considérés en colonne dans la matrice de départ)
+                //v1x  v2x
+                //v1y  v2y
+                //=>Matrice inverse
+                v_matriceLigne[0, 0] = v_vecteur_e2[1] / v_delta;//d
                 v_matriceLigne[0, 1] = v_vecteur_e2[0] * -1 / v_delta;
+                v_matriceLigne[1, 0] = v_vecteur_e1[1] * -1 / v_delta;
+                v_matriceLigne[1, 1] = v_vecteur_e1[0] / v_delta;//a
+                //
             }
             catch (Exception)
             {
@@ -973,8 +991,7 @@ namespace DEM.Net.Lib.Services.Lab
             try
             {
                 double[] v_vecteurToTranslate = GetVectorBrutFromTwoPoints(p_origineDuRepere, p_pointToTranslate);
-                //v_vecteurToTranslate = GetNormalisationVecteurXY(v_vecteurToTranslate); //=>Ne pas normaliser!!
-                
+               
                 v_coord[0] = (v_vecteurToTranslate[0] * p_matriceNewRepere[0, 0]) + (v_vecteurToTranslate[1] * p_matriceNewRepere[0,1]);
                 v_coord[1] = (v_vecteurToTranslate[0] * p_matriceNewRepere[1,0]) + (v_vecteurToTranslate[1] * p_matriceNewRepere[1, 1]);
                 if(p_normaliser_vf)

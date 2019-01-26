@@ -61,6 +61,7 @@ namespace DEM.Net.Lib.Services.Lab
         public void ArcSupprimer(string p_codeArcASupprimer)
         {
             BeanArc_internal v_arcASupprimer = p12_arcsByCode[p_codeArcASupprimer];
+            ArcSupprimer(v_arcASupprimer);
         }
         //
         public void PointFacAjouter(BeanPoint_internal p_pointAAjouter)
