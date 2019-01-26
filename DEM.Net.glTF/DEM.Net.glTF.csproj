@@ -82,7 +82,6 @@
     <Compile Include="glTFSource\Runtime\Texture.cs" />
     <Compile Include="IglTFService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VectorsExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DEM.Net.Lib\DEM.Net.Lib.csproj">

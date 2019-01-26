@@ -39,15 +39,17 @@ namespace SampleApp
             IRasterService rasterService = new RasterService(_RasterDataDirectory);
             IElevationService elevationService = new ElevationService(rasterService);
 
-           
 
-            TextureSamples textureSamples = new TextureSamples(elevationService, _OutputDataDirectory);
-            textureSamples.Run();
-            textureSamples.RunNormalMapGeneration();
-            textureSamples.RunImagery(true);
+            ReprojectionSamples reprojSamples = new ReprojectionSamples(elevationService, _OutputDataDirectory, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
+            reprojSamples.Run();
 
             GpxSamples gpxSamples = new GpxSamples(elevationService, _OutputDataDirectory, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
             gpxSamples.Run();
+
+            TextureSamples textureSamples = new TextureSamples(elevationService, _RasterDataDirectory, _OutputDataDirectory);
+            textureSamples.Run();
+            textureSamples.RunImagery(true);
+
 
 
             //TestPoints(WKT_BBOX_CORSEBUG, DEMDataSet.SRTM_GL3, rasterService, elevationService);
@@ -107,7 +109,7 @@ namespace SampleApp
             IGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
             var bbox = geom.GetBoundingBox();
             HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
-            hMap = hMap.CenterOnOrigin(0.00009f);
+            hMap = hMap.CenterOnOrigin().ZScale(0.00009f);
 
             IglTFService glTFService = new glTFService();
             MeshPrimitive pointMesh = glTFService.GeneratePointMesh(hMap.Coordinates, new Vector4(1, 0, 0, 0.5f), 0);
@@ -119,7 +121,7 @@ namespace SampleApp
             IGeometry geom = GeometryService.ParseWKTAsGeometry(wkt);
             var bbox = geom.GetBoundingBox();
             HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
-            hMap = hMap.CenterOnOrigin(0.00009f);
+            hMap = hMap.CenterOnOrigin().ZScale(0.00009f);
 
             IglTFService glTFService = new glTFService();
             //MeshPrimitive triangleMesh = glTFService.GenerateTriangleMesh(hMap, null);
@@ -150,7 +152,7 @@ namespace SampleApp
 
             Logger.Info("Coord transform...");
             //hMap = hMap.ReprojectTo(4326, 2154);
-            hMap = hMap.CenterOnOrigin(0.00009f);
+            hMap = hMap.CenterOnOrigin().ZScale(0.00009f);
 
             Logger.Info("Convert to glTF Model Primitive...");
 
@@ -195,7 +197,7 @@ namespace SampleApp
 
             Logger.Info("Coord transform...");
             //hMap = hMap.ReprojectTo(4326, 2154);
-            hMap = hMap.CenterOnOrigin(0.00002f);
+            hMap = hMap.CenterOnOrigin().ZScale(0.00002f);
 
             Logger.Info("Convert to glTF Model Primitive...");
 
@@ -300,7 +302,7 @@ namespace SampleApp
 
             Logger.Info("Coord transform...");
             //hMap = hMap.ReprojectTo(4326, 2154);
-            hMap = hMap.CenterOnOrigin(0.00002f);
+            hMap = hMap.CenterOnOrigin().ZScale(0.00002f);
 
             Logger.Info("Convert to glTF Model Primitive...");
 
@@ -333,7 +335,7 @@ namespace SampleApp
 
             Logger.Info("Coord transform...");
             //hMap = hMap.ReprojectTo(4326, 2154);
-            hMap = hMap.CenterOnOrigin(0.00002f);
+            hMap = hMap.CenterOnOrigin().ZScale(0.00002f);
 
             Logger.Info("Convert to glTF Model Primitive...");
 
@@ -429,7 +431,7 @@ namespace SampleApp
 
 
             var points = segments.SelectMany(pt => pt);
-            points = points.CenterOnOrigin(0.00002f);
+            points = points.CenterOnOrigin().ZScale(0.00002f);
 
 
             glTFService glTF = new glTFService();
@@ -457,7 +459,7 @@ namespace SampleApp
             HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
 
             //hMap = hMap.ReprojectTo(4326, 2154);
-            hMap = hMap.CenterOnOrigin(0.00002f);
+            hMap = hMap.CenterOnOrigin().ZScale(0.00002f);
 
             Console.Write("GenerateTriangleMesh...");
             MeshPrimitive triangleMesh = glTF.GenerateTriangleMesh(hMap);
@@ -469,7 +471,7 @@ namespace SampleApp
 
             var pointsElevated = elevationService.GetPointsElevation(points, dataSet);
             pointsElevated = pointsElevated.Select(pt => { pt.Elevation += 8; return pt; });
-            pointsElevated = pointsElevated.CenterOnOrigin(hMap.BoundingBox, 0.00002f);
+            pointsElevated = pointsElevated.CenterOnOrigin(hMap.BoundingBox).ZScale(0.00002f);
 
             // take 1 point evert nth
             // int nSkip = 1;
@@ -494,7 +496,7 @@ namespace SampleApp
             HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
 
             //hMap = hMap.ReprojectTo(4326, 2154);
-            hMap = hMap.CenterOnOrigin(0.00002f);
+            hMap = hMap.CenterOnOrigin().ZScale(0.00002f);
 
             Console.Write("GenerateTriangleMesh...");
             glTFService glTF = new glTFService();
@@ -519,7 +521,7 @@ namespace SampleApp
             HeightMap hMap = elevationService.GetHeightMap(bbox, dataSet);
 
             //hMap = hMap.ReprojectTo(4326, 2154);
-            hMap = hMap.CenterOnOrigin(0.00002f);
+            hMap = hMap.CenterOnOrigin().ZScale(0.00002f);
 
             glTFService glTF = new glTFService();
             MeshPrimitive meshPrimitive = glTF.GenerateTriangleMesh(hMap);

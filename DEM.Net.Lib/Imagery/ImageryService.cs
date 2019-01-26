@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DEM.Net.Lib.Services.Mesh;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
@@ -7,6 +8,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,6 +16,8 @@ namespace DEM.Net.Lib.Imagery
 {
     public class ImageryService
     {
+        #region Tiled imagery
+
         private int _serverCycle = 0;
 
         public TileRange DownloadTiles(BoundingBox bbox, ImageryProvider provider, int minTilesPerImage = 4)
@@ -173,8 +177,7 @@ namespace DEM.Net.Lib.Imagery
             else
                 return ImageFormat.Png;
         }
-
-
+        
         private Uri BuildUri(ImageryProvider provider, int x, int y, int zoom)
         {
             string[] serverNodes = provider.UrlModel.Servers;
@@ -194,5 +197,84 @@ namespace DEM.Net.Lib.Imagery
 
             return new Uri(url, UriKind.Absolute);
         }
+
+        #endregion
+
+        #region Normal map generation
+
+        /// <summary>
+        /// Generate normal texture from height map.
+        /// Note : heightMap should be in projected coordinates (see ReprojectToCartesian())
+        /// </summary>
+        /// <param name="heightMap">heightMap in projected coordinates</param>
+        /// <param name="outputDirectory"></param>
+        /// <returns></returns>
+        public TextureInfo GenerateNormalMap(HeightMap heightMap, string outputDirectory)
+        {
+            List<Vector3> normals = MeshService.ComputeNormals(heightMap).ToList();
+
+            bool debugBMP = false;
+            if (debugBMP)
+            {
+                using (var dbm = new DirectBitmap(heightMap.Width, heightMap.Height))
+                using (var dbmHeight = new DirectBitmap(heightMap.Width, heightMap.Height))
+                {
+                    // for debug only
+                    List<Vector3> coordinates = heightMap.Coordinates.Select(c => new Vector3((float)c.Longitude, (float)c.Latitude, (float)c.Elevation)).ToList();
+                    float maxHeight = (float)heightMap.Coordinates.Max(c => c.Elevation.GetValueOrDefault(0));
+
+                    for (int j = 0; j < heightMap.Height; j++)
+                        for (int i = 0; i < heightMap.Width; i++)
+                        {
+                            int index = i + (j * heightMap.Width);
+                            Vector3 norm = normals[index];
+                            Color color = FromVec3NormalToColor(norm);
+                            dbm.SetPixel(i, j, color);
+                            dbmHeight.SetPixel(i, j, FromVec3ToHeightColor(coordinates[index], maxHeight));
+                        }
+
+                    dbm.Bitmap.Save(Path.Combine(outputDirectory, "normalmap.jpg"), ImageFormat.Jpeg);
+                    dbmHeight.Bitmap.Save(Path.Combine(outputDirectory, "heightmap.jpg"), ImageFormat.Jpeg);
+                }
+            }
+            else
+            {
+                using (var dbm = new DirectBitmap(heightMap.Width, heightMap.Height))
+                {
+
+                    for (int j = 0; j < heightMap.Height; j++)
+                        for (int i = 0; i < heightMap.Width; i++)
+                        {
+                            int index = i + (j * heightMap.Width);
+                            Vector3 norm = normals[index];
+                            Color color = FromVec3NormalToColor(norm);
+                            dbm.SetPixel(i, j, color);
+                        }
+
+                    dbm.Bitmap.Save(Path.Combine(outputDirectory, "normalmap.jpg"), ImageFormat.Jpeg);
+                }
+            }
+
+            TextureInfo normal = new TextureInfo(Path.Combine(outputDirectory, "normalmap.jpg"), TextureImageFormat.image_jpeg, heightMap.Width, heightMap.Height);
+            return normal;
+        }
+
+
+        private Color FromVec3ToHeightColor(Vector3 vector3, float maxHeight)
+        {
+            int height = (int)Math.Round(MathHelper.Map(0, maxHeight, 0, 255, vector3.Z, true), 0);
+            return Color.FromArgb(height, height, height);
+        }
+
+        public Color FromVec3NormalToColor(Vector3 normal)
+        {
+            return Color.FromArgb((int)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.X, true), 0),
+                (int)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.Y, true), 0),
+                (int)Math.Round(MathHelper.Map(0, -1, 128, 255, -normal.Z, true), 0));
+        }
+
+        #endregion
+
+
     }
 }

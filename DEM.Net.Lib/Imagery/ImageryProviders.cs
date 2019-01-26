@@ -32,6 +32,15 @@ namespace DEM.Net.Lib.Imagery
             TokenAppSettingsKey = "mapboxtoken",
             MaxZoom = 23
         };
+        public static ImageryProvider MapBoxSatelliteStreet = new ImageryProvider()
+        {
+            Name = "MapBox-SatelliteStreet",
+            Attribution = new Attribution("© MapxBox - OpenStreetMap contributors", "https://www.mapbox.com"),
+            UrlModel = new UrlModel("https://api.mapbox.com/v4/mapbox.streets-satellite/{z}/{x}/{y}.png?access_token={t}", null),
+            TokenAppSettingsKey = "mapboxtoken",
+            MaxZoom = 23
+        };
+        
         public static ImageryProvider MapBoxStreets = new ImageryProvider()
         {
             Name = "MapBox-Streets",

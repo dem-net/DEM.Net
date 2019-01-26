@@ -40,6 +40,16 @@ namespace DEM.Net.Lib
 
         }
 
+        internal static double ToRadians(double angle)
+        {
+            return angle * Math.PI / 180d;
+        }
+        internal static double ToDegrees(double angle)
+        {
+            return angle * 180d / Math.PI;
+        }
+
+
         public static T Clamp<T>(T value, T min, T max) where T : IComparable<T>
         {
             return value.CompareTo(min) == -1 ? min
