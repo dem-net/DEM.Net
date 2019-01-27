@@ -54,16 +54,18 @@ namespace DEM.Net.Lib.Imagery
 
             // 2 max download threads
             var options = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism };
-            Parallel.ForEach(tiles.EnumerateRange(), options, tileInfo =>
+            var range = tiles.EnumerateRange().ToList();
+            Console.WriteLine($"Downloading {range.Count} tiles...");
+            Parallel.ForEach(range, options, tileInfo =>
                 {
                     using (WebClient webClient = new WebClient())
                     {
                         Uri tileUri = BuildUri(provider, tileInfo.X, tileInfo.Y, tileInfo.Zoom);
                         var imgBytes = webClient.DownloadData(tileUri);
 
-                        System.Diagnostics.Debug.WriteLine($"Downloading {tileUri}");
+                        Console.WriteLine($"Downloading {tileUri}");
                         tiles.Add(new MapTile(imgBytes, provider.TileSize, tileUri, tileInfo));
-                        System.Diagnostics.Debug.WriteLine($"Downloading {tileUri} Finished");
+                        //System.Diagnostics.Debug.WriteLine($"Downloading {tileUri} Finished");
                     }
                 }
                 );
@@ -259,7 +261,6 @@ namespace DEM.Net.Lib.Imagery
             return normal;
         }
 
-
         private Color FromVec3ToHeightColor(Vector3 vector3, float maxHeight)
         {
             int height = (int)Math.Round(MathHelper.Map(0, maxHeight, 0, 255, vector3.Z, true), 0);
@@ -272,6 +273,10 @@ namespace DEM.Net.Lib.Imagery
                 (int)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.Y, true), 0),
                 (int)Math.Round(MathHelper.Map(0, -1, 128, 255, -normal.Z, true), 0));
         }
+
+        #endregion
+
+        #region UV mapping
 
         #endregion
 

@@ -69,7 +69,7 @@ namespace SampleApp
             Console.WriteLine("Height map...");
             float Z_FACTOR = 2f;
             HeightMap hMap = _elevationService.GetHeightMap(bbox, _dataSet);
-            hMap = hMap.ReprojectToCartesian().ZScale(Z_FACTOR);
+            hMap = hMap.ReprojectGeodeticToCartesian().ZScale(Z_FACTOR);
             var normalMap = imageryService.GenerateNormalMap(hMap, outputDir);
 
             //hMap = hMap.CenterOnOrigin(Z_FACTOR);
@@ -90,17 +90,17 @@ namespace SampleApp
             MeshPrimitive triangleMesh = glTF.GenerateTriangleMesh(hMap, null, PBRTexture.Create(texInfo, normalMap));
             // raw Mesh no textures
 
-            Console.WriteLine("Generate TIN TriangleMesh no textures...");
+            Console.WriteLine("Generate raw TriangleMesh no textures...");
             MeshPrimitive triangleMeshNoTexture = glTF.GenerateTriangleMesh(hMap, null, null);
 
 
 
             // take 1 point evert nth
             Console.WriteLine("Generate GPX track line mesh...");
-            int nSkip = 5;
+            int nSkip = 1;
             gpxPointsElevated = gpxPointsElevated.Where((x, i) => (i + 1) % nSkip == 0);
-            gpxPointsElevated = gpxPointsElevated.ReprojectToCartesian(hMap.BoundingBox);
-            gpxPointsElevated = gpxPointsElevated.ZScale(Z_FACTOR).ZTranslate(5);
+            gpxPointsElevated = gpxPointsElevated.ReprojectGeodeticToCartesian();
+            gpxPointsElevated = gpxPointsElevated.ZScale(Z_FACTOR).ZTranslate(20);
             MeshPrimitive gpxLine = glTF.GenerateLine(gpxPointsElevated, new Vector4(1, 0, 0, 0.1f), 10f);
 
             //======================
