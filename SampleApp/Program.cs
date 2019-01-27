@@ -41,12 +41,17 @@ namespace SampleApp
 
             //rasterService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true, true);
             //rasterService.GenerateDirectoryMetadata(DEMDataSet.SRTM_GL3, false, true, true);
+
+           
+
+           
             TextureSamples textureSamples = new TextureSamples(elevationService, _RasterDataDirectory, _OutputDataDirectory);
             textureSamples.Run();
             textureSamples.RunImagery(true);
 
-            ReprojectionSamples reprojSamples = new ReprojectionSamples(elevationService, _OutputDataDirectory, @"..\..\..\Data\GPX\lauzannier.gpx");
+            ReprojectionSamples reprojSamples = new ReprojectionSamples(elevationService, _OutputDataDirectory, @"..\..\..\Data\GPX\Vernet-les-bains-Canigou-34km.gpx");
             reprojSamples.Run();
+
 
             GpxSamples gpxSamples = new GpxSamples(elevationService, _OutputDataDirectory, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
             gpxSamples.Run();

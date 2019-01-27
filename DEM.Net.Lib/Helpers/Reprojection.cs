@@ -11,57 +11,29 @@ namespace DEM.Net.Lib
     public static class Reprojection
     {
 
-        public static HeightMap ReprojectToCartesian(this HeightMap heightMap)
+        const int SRID_GEODETIC = 4236;
+        const int SRID_PROJECTED_MERCATOR = 3857;
+
+        public static HeightMap ReprojectGeodeticToCartesian(this HeightMap heightMap)
         {
-            heightMap.Coordinates = heightMap.Coordinates.ReprojectToCartesian(heightMap.BoundingBox);
+            heightMap.Coordinates = heightMap.Coordinates.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR);
 
             return heightMap;
         }
-        public static IEnumerable<GeoPoint> ReprojectToCartesian(this IEnumerable<GeoPoint> points, GeoPoint center)
-        {
-            foreach (var p in points)
-            {
-                var pSameLat = new GeoPoint(center.Latitude, p.Longitude);
-                var pSameLon = new GeoPoint(p.Latitude, center.Longitude);
-                double xSign = p.Longitude < center.Longitude ? -1 : 1;
-                double ySign = p.Latitude < center.Latitude ? -1 : 1;
-
-                yield return new GeoPoint(pSameLon.DistanceTo(center) * ySign, pSameLat.DistanceTo(center) * xSign, (float)p.Elevation.GetValueOrDefault(0), p.XIndex, p.YIndex);
-            }
-        }
-        public static IEnumerable<GeoPoint> ReprojectToCartesian(this IEnumerable<GeoPoint> points, BoundingBox bbox)
-        {
-            // Defines the starting coordiante system
-            double[] bboxCenter = bbox.Center;
-            GeoPoint center = new GeoPoint(bboxCenter[1], bboxCenter[0]);
-            return points.ReprojectToCartesian(center);
-        }
-        private static GeoPoint GeodeticToGeocentric(this GeoPoint sourcePoint, GeocentricGeodetic geocentricGeodetic)
-        {
-
-            double[] coords = new double[] { MathHelper.ToRadians(sourcePoint.Longitude),
-                                             MathHelper.ToRadians(sourcePoint.Latitude)};
-
-            geocentricGeodetic.GeodeticToGeocentric(coords, new double[] { sourcePoint.Elevation.GetValueOrDefault(0) }, 0, 1);
-
-            return new GeoPoint(coords[1], coords[0], (float)sourcePoint.Elevation, sourcePoint.XIndex.GetValueOrDefault(), sourcePoint.YIndex.GetValueOrDefault());
-        }
-        private static IEnumerable<GeoPoint> GeodeticToGeocentric(this IEnumerable<GeoPoint> sourcePoint, GeocentricGeodetic geocentricGeodetic)
-        {
-
-            return sourcePoint.Select(p => p.GeodeticToGeocentric(geocentricGeodetic));
-        }
+       
         public static HeightMap ReprojectTo(this HeightMap heightMap, int sourceEpsgCode, int destinationEpsgCode)
         {
             if (sourceEpsgCode == destinationEpsgCode)
                 return heightMap;
 
-
             heightMap.Coordinates = heightMap.Coordinates.ReprojectTo(sourceEpsgCode, destinationEpsgCode);
 
             return heightMap;
         }
-
+        public static IEnumerable<GeoPoint> ReprojectGeodeticToCartesian(this IEnumerable<GeoPoint> points)
+        {
+            return points.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR);
+        }
         public static IEnumerable<GeoPoint> ReprojectTo(this IEnumerable<GeoPoint> points, int sourceEpsgCode, int destinationEpsgCode)
         {
             if (sourceEpsgCode == destinationEpsgCode)

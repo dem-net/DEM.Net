@@ -261,7 +261,6 @@ namespace DEM.Net.Lib.Imagery
             return normal;
         }
 
-
         private Color FromVec3ToHeightColor(Vector3 vector3, float maxHeight)
         {
             int height = (int)Math.Round(MathHelper.Map(0, maxHeight, 0, 255, vector3.Z, true), 0);
@@ -274,6 +273,10 @@ namespace DEM.Net.Lib.Imagery
                 (int)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.Y, true), 0),
                 (int)Math.Round(MathHelper.Map(0, -1, 128, 255, -normal.Z, true), 0));
         }
+
+        #endregion
+
+        #region UV mapping
 
         #endregion
 

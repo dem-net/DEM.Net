@@ -32,11 +32,11 @@ namespace SampleApp
             // sugiton
             //_bboxWkt = "POLYGON ((5.42201042175293 43.20023317388979, 5.459775924682617 43.20023317388979, 5.459775924682617 43.22594305473314, 5.42201042175293 43.22594305473314, 5.42201042175293 43.20023317388979))";
             // ste victoire
-            //_bboxWkt = "POLYGON((5.424004809009261 43.68472756348281, 5.884057299243636 43.68472756348281, 5.884057299243636 43.40402056297321, 5.424004809009261 43.40402056297321, 5.424004809009261 43.68472756348281))";
+            _bboxWkt = "POLYGON((5.424004809009261 43.68472756348281, 5.884057299243636 43.68472756348281, 5.884057299243636 43.40402056297321, 5.424004809009261 43.40402056297321, 5.424004809009261 43.68472756348281))";
             // ventoux
             // _bboxWkt = "POLYGON ((5.192413330078125 44.12209907358672, 5.3015899658203125 44.12209907358672, 5.3015899658203125 44.201897151875094, 5.192413330078125 44.201897151875094, 5.192413330078125 44.12209907358672))";
             //ventoux avigon
-            _bboxWkt = "POLYGON ((4.73236083984375 43.902839992663196, 5.401153564453124 43.902839992663196, 5.401153564453124 44.268804788566165, 4.73236083984375 44.268804788566165, 4.73236083984375 43.902839992663196))";
+            //_bboxWkt = "POLYGON ((4.73236083984375 43.902839992663196, 5.401153564453124 43.902839992663196, 5.401153564453124 44.268804788566165, 4.73236083984375 44.268804788566165, 4.73236083984375 43.902839992663196))";
             // duranne
             //_bboxWkt = "POLYGON ((5.303306579589844 43.45478810195138, 5.379180908203125 43.45478810195138, 5.379180908203125 43.51394981739109, 5.303306579589844 43.51394981739109, 5.303306579589844 43.45478810195138))";
             // ventoux debug
@@ -58,7 +58,7 @@ namespace SampleApp
             // france
             //_bboxWkt = "POLYGON ((-6.1962890625 41.1290213474951, 10.04150390625 41.1290213474951, 10.04150390625 51.11041991029264, -6.1962890625 51.11041991029264, -6.1962890625 41.1290213474951))";
             _normalsDataSet = DEMDataSet.AW3D30;
-            _meshDataSet = DEMDataSet.SRTM_GL3;
+            _meshDataSet = DEMDataSet.AW3D30;
             _outputDirectory = outputDirectory;
             _localdatadir = localDataDir;
         }
@@ -81,7 +81,7 @@ namespace SampleApp
             ImageryService imageryService = new ImageryService();
 
             Console.WriteLine("Download image tiles...");
-            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 8);
+            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 4);
 
             Console.WriteLine("Construct texture...");
             string fileName = Path.Combine(outputDir, "Texture.jpg");
@@ -98,12 +98,12 @@ namespace SampleApp
             //HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1", "ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
 
             // hMapNormal = hMapNormal.ReprojectTo(4326, v_outSrid);
-            hMapNormal = hMapNormal.ReprojectToCartesian();
+            hMapNormal = hMapNormal.ReprojectGeodeticToCartesian();
 
             HeightMap hMap = _elevationService.GetHeightMap(bbox, _meshDataSet);
             //HeightMap hMap = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1","ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
 
-            hMap = hMap.ReprojectToCartesian();
+            hMap = hMap.ReprojectGeodeticToCartesian();
             hMap = hMap.CenterOnOrigin().ZScale(Z_FACTOR);
 
             Console.WriteLine("Generate normal map...");
