@@ -73,7 +73,7 @@
             this.label14 = new System.Windows.Forms.Label();
             this.tb_pasSeparationEntrePoints = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.btn_creteEtTalwegTin_visu = new System.Windows.Forms.Button();
+            this.btn_creteEtTalwegTin_visuST = new System.Windows.Forms.Button();
             this.label23 = new System.Windows.Forms.Label();
             this.tb_wkt = new System.Windows.Forms.TextBox();
             this.btn_testUnitaire = new System.Windows.Forms.Button();
@@ -86,6 +86,8 @@
             this.btn_testCH = new System.Windows.Forms.Button();
             this.btn_testsDivers = new System.Windows.Forms.Button();
             this.btn_visualisationSpatialTrace = new System.Windows.Forms.Button();
+            this.label22 = new System.Windows.Forms.Label();
+            this.btn_pentesTin_visuST = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -94,7 +96,7 @@
             // 
             // btn_genererPoints
             // 
-            this.btn_genererPoints.Location = new System.Drawing.Point(36, 197);
+            this.btn_genererPoints.Location = new System.Drawing.Point(27, 188);
             this.btn_genererPoints.Name = "btn_genererPoints";
             this.btn_genererPoints.Size = new System.Drawing.Size(118, 37);
             this.btn_genererPoints.TabIndex = 0;
@@ -242,7 +244,7 @@
             this.groupBox1.Controls.Add(this.tb_pointHautDroitY);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(15, 28);
+            this.groupBox1.Location = new System.Drawing.Point(6, 19);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(194, 163);
             this.groupBox1.TabIndex = 16;
@@ -318,7 +320,7 @@
             this.groupBox2.Controls.Add(this.label13);
             this.groupBox2.Controls.Add(this.label8);
             this.groupBox2.Controls.Add(this.tb_hauteurMinEnM);
-            this.groupBox2.Location = new System.Drawing.Point(445, 28);
+            this.groupBox2.Location = new System.Drawing.Point(436, 19);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(342, 163);
             this.groupBox2.TabIndex = 26;
@@ -456,7 +458,7 @@
             this.groupBox4.Controls.Add(this.tb_seed);
             this.groupBox4.Controls.Add(this.label1);
             this.groupBox4.Controls.Add(this.label12);
-            this.groupBox4.Location = new System.Drawing.Point(230, 28);
+            this.groupBox4.Location = new System.Drawing.Point(221, 19);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(195, 163);
             this.groupBox4.TabIndex = 27;
@@ -500,7 +502,9 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.btn_creteEtTalwegTin_visu);
+            this.groupBox3.Controls.Add(this.btn_pentesTin_visuST);
+            this.groupBox3.Controls.Add(this.label22);
+            this.groupBox3.Controls.Add(this.btn_creteEtTalwegTin_visuST);
             this.groupBox3.Controls.Add(this.label23);
             this.groupBox3.Controls.Add(this.tb_wkt);
             this.groupBox3.Controls.Add(this.btn_testUnitaire);
@@ -524,20 +528,20 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Génération points tests:";
             // 
-            // btn_creteEtTalwegTin_visu
+            // btn_creteEtTalwegTin_visuST
             // 
-            this.btn_creteEtTalwegTin_visu.Location = new System.Drawing.Point(657, 366);
-            this.btn_creteEtTalwegTin_visu.Name = "btn_creteEtTalwegTin_visu";
-            this.btn_creteEtTalwegTin_visu.Size = new System.Drawing.Size(118, 37);
-            this.btn_creteEtTalwegTin_visu.TabIndex = 39;
-            this.btn_creteEtTalwegTin_visu.Text = "Crètes et talwegs visu";
-            this.btn_creteEtTalwegTin_visu.UseVisualStyleBackColor = true;
-            this.btn_creteEtTalwegTin_visu.Click += new System.EventHandler(this.btn_creteEtTalwegTin_visu_Click);
+            this.btn_creteEtTalwegTin_visuST.Location = new System.Drawing.Point(554, 321);
+            this.btn_creteEtTalwegTin_visuST.Name = "btn_creteEtTalwegTin_visuST";
+            this.btn_creteEtTalwegTin_visuST.Size = new System.Drawing.Size(129, 26);
+            this.btn_creteEtTalwegTin_visuST.TabIndex = 39;
+            this.btn_creteEtTalwegTin_visuST.Text = "Crètes et talwegs";
+            this.btn_creteEtTalwegTin_visuST.UseVisualStyleBackColor = true;
+            this.btn_creteEtTalwegTin_visuST.Click += new System.EventHandler(this.btn_creteEtTalwegTin_visu_Click);
             // 
             // label23
             // 
             this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(189, 307);
+            this.label23.Location = new System.Drawing.Point(24, 363);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(75, 13);
             this.label23.TabIndex = 30;
@@ -545,7 +549,7 @@
             // 
             // tb_wkt
             // 
-            this.tb_wkt.Location = new System.Drawing.Point(192, 323);
+            this.tb_wkt.Location = new System.Drawing.Point(23, 379);
             this.tb_wkt.Multiline = true;
             this.tb_wkt.Name = "tb_wkt";
             this.tb_wkt.Size = new System.Drawing.Size(177, 37);
@@ -556,9 +560,9 @@
             // 
             // btn_testUnitaire
             // 
-            this.btn_testUnitaire.Location = new System.Drawing.Point(385, 197);
+            this.btn_testUnitaire.Location = new System.Drawing.Point(418, 188);
             this.btn_testUnitaire.Name = "btn_testUnitaire";
-            this.btn_testUnitaire.Size = new System.Drawing.Size(118, 37);
+            this.btn_testUnitaire.Size = new System.Drawing.Size(118, 21);
             this.btn_testUnitaire.TabIndex = 37;
             this.btn_testUnitaire.Text = "Tests unitaires";
             this.btn_testUnitaire.UseVisualStyleBackColor = true;
@@ -567,7 +571,7 @@
             // label21
             // 
             this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(528, 323);
+            this.label21.Location = new System.Drawing.Point(228, 363);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(85, 13);
             this.label21.TabIndex = 31;
@@ -575,7 +579,7 @@
             // 
             // btn_genererPointsReels
             // 
-            this.btn_genererPointsReels.Location = new System.Drawing.Point(36, 323);
+            this.btn_genererPointsReels.Location = new System.Drawing.Point(26, 323);
             this.btn_genererPointsReels.Name = "btn_genererPointsReels";
             this.btn_genererPointsReels.Size = new System.Drawing.Size(118, 37);
             this.btn_genererPointsReels.TabIndex = 34;
@@ -585,27 +589,27 @@
             // 
             // tb_precisionEnM
             // 
-            this.tb_precisionEnM.Location = new System.Drawing.Point(615, 323);
+            this.tb_precisionEnM.Location = new System.Drawing.Point(316, 360);
             this.tb_precisionEnM.Name = "tb_precisionEnM";
-            this.tb_precisionEnM.Size = new System.Drawing.Size(33, 20);
+            this.tb_precisionEnM.Size = new System.Drawing.Size(24, 20);
             this.tb_precisionEnM.TabIndex = 30;
             this.tb_precisionEnM.Text = "50";
             // 
             // btnTestFacettes
             // 
-            this.btnTestFacettes.Location = new System.Drawing.Point(657, 323);
+            this.btnTestFacettes.Location = new System.Drawing.Point(407, 323);
             this.btnTestFacettes.Name = "btnTestFacettes";
-            this.btnTestFacettes.Size = new System.Drawing.Size(118, 37);
+            this.btnTestFacettes.Size = new System.Drawing.Size(129, 23);
             this.btnTestFacettes.TabIndex = 31;
-            this.btnTestFacettes.Text = "Visu facettes";
+            this.btnTestFacettes.Text = "visu Facettes 3D";
             this.btnTestFacettes.UseVisualStyleBackColor = true;
             this.btnTestFacettes.Click += new System.EventHandler(this.btnTestFacettes_Click);
             // 
             // btn_clearSpatialTrace
             // 
-            this.btn_clearSpatialTrace.Location = new System.Drawing.Point(231, 240);
+            this.btn_clearSpatialTrace.Location = new System.Drawing.Point(242, 231);
             this.btn_clearSpatialTrace.Name = "btn_clearSpatialTrace";
-            this.btn_clearSpatialTrace.Size = new System.Drawing.Size(118, 30);
+            this.btn_clearSpatialTrace.Size = new System.Drawing.Size(118, 21);
             this.btn_clearSpatialTrace.TabIndex = 33;
             this.btn_clearSpatialTrace.Text = "Clear spatialtrace";
             this.btn_clearSpatialTrace.UseVisualStyleBackColor = true;
@@ -613,19 +617,19 @@
             // 
             // btn_testTin
             // 
-            this.btn_testTin.Location = new System.Drawing.Point(394, 323);
+            this.btn_testTin.Location = new System.Drawing.Point(231, 323);
             this.btn_testTin.Name = "btn_testTin";
             this.btn_testTin.Size = new System.Drawing.Size(118, 37);
             this.btn_testTin.TabIndex = 32;
-            this.btn_testTin.Text = "Tests TIN";
+            this.btn_testTin.Text = "Calcul TIN";
             this.btn_testTin.UseVisualStyleBackColor = true;
             this.btn_testTin.Click += new System.EventHandler(this.btn_testTin_Click);
             // 
             // btn_testCH
             // 
-            this.btn_testCH.Location = new System.Drawing.Point(657, 197);
+            this.btn_testCH.Location = new System.Drawing.Point(418, 240);
             this.btn_testCH.Name = "btn_testCH";
-            this.btn_testCH.Size = new System.Drawing.Size(118, 37);
+            this.btn_testCH.Size = new System.Drawing.Size(118, 21);
             this.btn_testCH.TabIndex = 31;
             this.btn_testCH.Text = "Tests CH";
             this.btn_testCH.UseVisualStyleBackColor = true;
@@ -633,9 +637,9 @@
             // 
             // btn_testsDivers
             // 
-            this.btn_testsDivers.Location = new System.Drawing.Point(518, 197);
+            this.btn_testsDivers.Location = new System.Drawing.Point(418, 215);
             this.btn_testsDivers.Name = "btn_testsDivers";
-            this.btn_testsDivers.Size = new System.Drawing.Size(118, 37);
+            this.btn_testsDivers.Size = new System.Drawing.Size(118, 21);
             this.btn_testsDivers.TabIndex = 30;
             this.btn_testsDivers.Text = "Tests divers";
             this.btn_testsDivers.UseVisualStyleBackColor = true;
@@ -643,13 +647,32 @@
             // 
             // btn_visualisationSpatialTrace
             // 
-            this.btn_visualisationSpatialTrace.Location = new System.Drawing.Point(231, 197);
+            this.btn_visualisationSpatialTrace.Location = new System.Drawing.Point(242, 188);
             this.btn_visualisationSpatialTrace.Name = "btn_visualisationSpatialTrace";
             this.btn_visualisationSpatialTrace.Size = new System.Drawing.Size(118, 37);
             this.btn_visualisationSpatialTrace.TabIndex = 29;
             this.btn_visualisationSpatialTrace.Text = "Visualisation spatialtrace";
             this.btn_visualisationSpatialTrace.UseVisualStyleBackColor = true;
             this.btn_visualisationSpatialTrace.Click += new System.EventHandler(this.btn_visualisationSpatialTrace_Click);
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(563, 305);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(87, 13);
+            this.label22.TabIndex = 40;
+            this.label22.Text = "Visu spatial trace";
+            // 
+            // btn_pentesTin_visuST
+            // 
+            this.btn_pentesTin_visuST.Location = new System.Drawing.Point(554, 356);
+            this.btn_pentesTin_visuST.Name = "btn_pentesTin_visuST";
+            this.btn_pentesTin_visuST.Size = new System.Drawing.Size(129, 26);
+            this.btn_pentesTin_visuST.TabIndex = 41;
+            this.btn_pentesTin_visuST.Text = "Pentes facettes";
+            this.btn_pentesTin_visuST.UseVisualStyleBackColor = true;
+            this.btn_pentesTin_visuST.Click += new System.EventHandler(this.btn_pentesTin_visuST_Click);
             // 
             // CtrlTestLab
             // 
@@ -728,6 +751,8 @@
         private System.Windows.Forms.Button btn_testUnitaire;
         private System.Windows.Forms.TextBox tb_wkt;
         private System.Windows.Forms.Label label23;
-        private System.Windows.Forms.Button btn_creteEtTalwegTin_visu;
+        private System.Windows.Forms.Button btn_creteEtTalwegTin_visuST;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Button btn_pentesTin_visuST;
     }
 }

@@ -25,7 +25,8 @@ namespace DEM.Net.Lib.Services.Lab
 
         #region PROPRIETES PRIVEES
         private double[] p31_normaleDuPlan;
-        private double[] p32_vecteurPenteMaxi;
+        private double[] p32_penteVecteur;
+        private double? p33_penteValeur;
         #endregion PROPRIETES PRIVEES
 
         #region METHODES
@@ -39,12 +40,20 @@ namespace DEM.Net.Lib.Services.Lab
         }
         public double[] getVecteurPenteMaxi()
         {
-            if(p32_vecteurPenteMaxi==null)
+            if(p32_penteVecteur==null)
             {
                 bool v_normaliser_vf = true;
-                p32_vecteurPenteMaxi=FLabServices.createCalculLow().GetVecteurPenteMaxi(getNormaleDuPlan(), v_normaliser_vf);
+                p32_penteVecteur=FLabServices.createCalculLow().GetVecteurPenteMaxi(getNormaleDuPlan(), v_normaliser_vf);
             }
-            return p32_vecteurPenteMaxi;
+            return p32_penteVecteur;
+        }
+        public double getPente()
+        {
+            if(p33_penteValeur==null)
+            {
+                p33_penteValeur=FLabServices.createCalculLow().GetPente(getVecteurPenteMaxi());
+            }
+            return (double) p33_penteValeur;
         }
         #endregion METHODES
 
@@ -57,7 +66,7 @@ namespace DEM.Net.Lib.Services.Lab
             p10_pointsInclus = new List<BeanPoint_internal>();
             //
             p31_normaleDuPlan = null;
-            p32_vecteurPenteMaxi = null;
+            p32_penteVecteur = null;
         }
         #endregion CONSTRUCTEURS
     }

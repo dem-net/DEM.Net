@@ -59,16 +59,16 @@ namespace DEM.Net.Lib.Services.VisualisationServices
                     switch (p_progressionCouleur)
                     {
                         case enumProgressionCouleurs.red:
-                            v_couleur = Color.FromArgb(v_niveauCouleurRef, 0, 0);
+                            v_couleur = Color.FromArgb(p_alpha,v_niveauCouleurRef, 0, 0);
                             break;
                         case enumProgressionCouleurs.green:
-                            v_couleur = Color.FromArgb(0, v_niveauCouleurRef, 0);
+                            v_couleur = Color.FromArgb(p_alpha,0, v_niveauCouleurRef, 0);
                             break;
                         case enumProgressionCouleurs.blue:
-                            v_couleur = Color.FromArgb(0, 0, v_niveauCouleurRef);
+                            v_couleur = Color.FromArgb(p_alpha, 0, 0, v_niveauCouleurRef);
                             break;
                         case enumProgressionCouleurs.greenVersRed:
-                            v_couleur = Color.FromArgb(v_niveauCouleurRef, v_niveauCouleurInverseRef, 0);
+                            v_couleur = Color.FromArgb(p_alpha,v_niveauCouleurRef, v_niveauCouleurInverseRef, 0);
                             break;
                         default:
                             throw new Exception("Méthode " + p_progressionCouleur + " non implémentée.");
@@ -132,7 +132,6 @@ namespace DEM.Net.Lib.Services.VisualisationServices
         {
             try
             {
-
                 SpatialTrace.Enable();
                 Color v_couleurCourante;
                 string v_message;
@@ -334,10 +333,72 @@ namespace DEM.Net.Lib.Services.VisualisationServices
             foreach (BeanFacette_internal v_facette in p_topologieFacettes.p13_facettesById.Values)
             {
                 v_couleur = Color.FromArgb(v_randomisateur.Next(1, 254), v_randomisateur.Next(1, 254), v_randomisateur.Next(1, 254));
-                GetVisuFacette(v_facette, v_couleur, p_visupointsInclus_vf, p_afficherMemeSiInvalide_vf);
+                GetVisuFacette(v_facette,"", v_couleur, p_visupointsInclus_vf, p_afficherMemeSiInvalide_vf);
             }
         }
-        public void GetVisuFacette(BeanFacette_internal p_facette, Color p_couleurCourante, bool p_visualiserPointsInclus_vf, bool p_afficherMemeSiInvalide_vf)
+
+        public void GetVisuPentesFacettes(BeanTopologieFacettes p_topologieFacettes, int p_nbreClasses)
+        {
+            bool param_sensCouleursCroissant = true;
+            bool param_visupointsInclus_vf = false;
+            bool param_afficherMemeSiInvalide_vf=false;
+            Dictionary<int, double> v_penteDesfacettes = p_topologieFacettes.p13_facettesById.ToDictionary(c => c.Key, c => c.Value.getPente());
+            Dictionary<string, List<int>> v_facettesParClasse;
+
+            //v_facettesParClasse = FVisualisationServices.createSeuillageServices().GetIdParClassesOrdonnees_parIsoQuantite(v_penteDesfacettes, p_nbreClasses);
+
+            //Pentes suspectes?
+            double param_seuilMaxi = (Math.PI/2)-0.01;
+
+            double v_min = v_penteDesfacettes.Values.Min();
+            double v_max = v_penteDesfacettes.Values.Max();
+            double v_minRecale = Math.Max(v_min, 0);
+            double v_maxRecale = Math.Min(v_max, param_seuilMaxi);
+            int param_alpha = 120;
+            Dictionary<int, double> v_seuilsBas;
+            //On effectue une classification d'abord de la zone 'vraisemblable' (0 à approx 90)
+            //v_seuilsBas=FVisualisationServices.createSeuillageServices().GetSeuilBasClasses_memeEspaceInterclasse(p_nbreClasses, v_minRecale, v_maxRecale);
+            v_seuilsBas = FVisualisationServices.createSeuillageServices().GetSeuilBasClasses_parIsoQuantite(v_penteDesfacettes, p_nbreClasses);
+            //On identifie les éventuels cas à PB
+            if (v_min<0)
+            {
+                v_seuilsBas.Add(0, v_min);
+            }
+            if(v_max> param_seuilMaxi)
+            {
+                v_seuilsBas.Add(p_nbreClasses+1, v_maxRecale);
+            }
+            v_seuilsBas = v_seuilsBas.OrderBy(c => c.Key).ToDictionary(c => c.Key, c => c.Value);
+            //
+          
+            v_facettesParClasse = FVisualisationServices.createSeuillageServices().GetClassesOrdonnees_parSeuilsDeValeur(v_penteDesfacettes, v_seuilsBas);            Dictionary<string, Color> v_tableCouleurs;
+            v_tableCouleurs = GetTableCouleursDegradees(v_facettesParClasse.Keys.ToList(), enumProgressionCouleurs.greenVersRed, param_alpha, param_sensCouleursCroissant);
+
+            if (v_min < 0)
+            {
+                v_tableCouleurs[v_tableCouleurs.First().Key]= Color.Yellow;
+            }
+            if (v_max > param_seuilMaxi)
+            {
+                v_tableCouleurs[v_tableCouleurs.Last().Key] = Color.Purple;
+            }
+
+            Color v_couleur;
+            string v_label;
+            double v_convertToDegree = 180/Math.PI;
+            foreach (KeyValuePair<string, List<int>> v_classe in v_facettesParClasse)
+            {
+                v_couleur = v_tableCouleurs[v_classe.Key];
+                foreach (int v_idFacette in v_classe.Value)
+                {
+                  v_label = v_classe.Key + " (" + Math.Round(v_penteDesfacettes[v_idFacette]* v_convertToDegree, 3)+" deg)";
+                  GetVisuFacette(p_topologieFacettes.p13_facettesById[v_idFacette], v_label, v_couleur, param_visupointsInclus_vf, param_afficherMemeSiInvalide_vf);
+                } 
+            }
+        }
+
+
+        public void GetVisuFacette(BeanFacette_internal p_facette,string p_label, Color p_couleurCourante, bool p_visualiserPointsInclus_vf, bool p_afficherMemeSiInvalide_vf)
         {
             Color param_couleurContour = Color.FromArgb(125, 125, 125);
             Color param_couleurPoint = Color.FromArgb(200, 200, 200);
@@ -354,8 +415,8 @@ namespace DEM.Net.Lib.Services.VisualisationServices
             {
                 return;
             }
-
-            SpatialTrace.TraceGeometry(v_polygone, "fac: " + p_facette.p00_idFacette);
+            string v_label = p_label + " fac: " + p_facette.p00_idFacette;
+            SpatialTrace.TraceGeometry(v_polygone, v_label, v_label);
             //
 
             if (p_visualiserPointsInclus_vf)
@@ -369,6 +430,8 @@ namespace DEM.Net.Lib.Services.VisualisationServices
             SpatialTrace.Disable();
         }
 
+
+       
         public void GetVisuCreteEtTalweg(BeanTopologieFacettes p_topologieFacettes, HashSet<enum_qualificationMorpho_arc> p_nePasAfficher = null)
         {
             Color v_couleur;

@@ -452,7 +452,8 @@ namespace DEM.Net.Lib.Services.Lab
                 //Contrôle de colinéarité dans le repère xy
                 if ((p_vector_u[0] * p_vector_w[1]) - (p_vector_u[1] * p_vector_w[0]) == 0)
                 {
-                    throw new Exception("Les points ne doivent pas être alignés.");
+                    //throw new Exception("Les points ne doivent pas être alignés.");
+                    return null;
                 }
                 double B = ((p_vector_u[0] * p_vector_w[2]) - (p_vector_w[0] * p_vector_u[2])) / ((p_vector_w[0] * p_vector_u[1]) - (p_vector_u[0] * p_vector_w[1]));
                 double c = 1;
@@ -548,7 +549,7 @@ namespace DEM.Net.Lib.Services.Lab
                     return 0;
                 }
                 double v_cosPente = p_vecteur3D[2] / p_normeVecteur;
-                v_angle=Math.Acos(v_cosPente);
+                v_angle=Math.Asin(v_cosPente);
             }
             catch (Exception)
             {
@@ -566,7 +567,7 @@ namespace DEM.Net.Lib.Services.Lab
                 //On récupère le vecteur orthogonal aux 2 vecteurs (en fait, il y en aurait 2 possibles, opposé?)
                 bool v_normaliser_vecteursEnEntree_vf = true; //(Normalement le vecteur normal est déjà normalisé mais...)
                 v_vecteurOut = GetNormaleDuPlan(p_normaleDuPlan, v_vecteurNiveau, v_normaliser_vecteursEnEntree_vf);
-                if(p_normaliserVecteurEnSortie_vf)
+                if(p_normaliserVecteurEnSortie_vf && v_vecteurOut!=null)
                 {
                     v_vecteurOut = GetNormalisationVecteurXYZ(v_vecteurOut);
                 }

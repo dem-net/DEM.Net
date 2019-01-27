@@ -285,5 +285,13 @@ namespace DEM.Net.TestWinForm
             FServicesApplicatifs.createVisuSpatialTrace().AfficheVisu();
             MessageBox.Show("Traitement terminé.");
         }
+
+        private void btn_pentesTin_visuST_Click(object sender, EventArgs e)
+        {
+            int p_nbreClasses = 7;
+            FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuPentesFacettes(_topolFacettes, p_nbreClasses);
+            FServicesApplicatifs.createVisuSpatialTrace().AfficheVisu();
+            MessageBox.Show("Traitement terminé.");
+        }
     }
 }
