@@ -36,7 +36,7 @@ namespace SampleApp
             // ventoux
             // _bboxWkt = "POLYGON ((5.192413330078125 44.12209907358672, 5.3015899658203125 44.12209907358672, 5.3015899658203125 44.201897151875094, 5.192413330078125 44.201897151875094, 5.192413330078125 44.12209907358672))";
             //ventoux avigon
-            //_bboxWkt = "POLYGON ((4.73236083984375 43.902839992663196, 5.401153564453124 43.902839992663196, 5.401153564453124 44.268804788566165, 4.73236083984375 44.268804788566165, 4.73236083984375 43.902839992663196))";
+            _bboxWkt = "POLYGON ((4.73236083984375 43.902839992663196, 5.401153564453124 43.902839992663196, 5.401153564453124 44.268804788566165, 4.73236083984375 44.268804788566165, 4.73236083984375 43.902839992663196))";
             // duranne
             //_bboxWkt = "POLYGON ((5.303306579589844 43.45478810195138, 5.379180908203125 43.45478810195138, 5.379180908203125 43.51394981739109, 5.303306579589844 43.51394981739109, 5.303306579589844 43.45478810195138))";
             // ventoux debug
@@ -50,11 +50,15 @@ namespace SampleApp
             // chile full
             //_bboxWkt = "POLYGON ((-77.080078125 -56.6562264935022, -66.533203125 -56.6562264935022, -66.533203125 -15.792253570362446, -77.080078125 -15.792253570362446, -77.080078125 -56.6562264935022))";
             // fogo
-            _bboxWkt = "POLYGON ((-24.5654296875 14.78019397569999, -24.23858642578125 14.78019397569999, -24.23858642578125 15.077427674847987, -24.5654296875 15.077427674847987, -24.5654296875 14.78019397569999))";
+            //_bboxWkt = "POLYGON ((-24.5654296875 14.78019397569999, -24.23858642578125 14.78019397569999, -24.23858642578125 15.077427674847987, -24.5654296875 15.077427674847987, -24.5654296875 14.78019397569999))";
             // valgo
             //_bboxWkt = "POLYGON ((6.373444 44.913277, 5.971403 44.913277, 5.971403 44.73893, 6.373444 44.73893, 6.373444 44.913277))";
+            // robion
+            //_bboxWkt = "POLYGON ((5.01800537109375 43.69369383336777, 5.350341796875 43.69369383336777, 5.350341796875 43.89294437871145, 5.01800537109375 43.89294437871145, 5.01800537109375 43.69369383336777))";
+            // france
+            //_bboxWkt = "POLYGON ((-6.1962890625 41.1290213474951, 10.04150390625 41.1290213474951, 10.04150390625 51.11041991029264, -6.1962890625 51.11041991029264, -6.1962890625 41.1290213474951))";
             _normalsDataSet = DEMDataSet.AW3D30;
-            _meshDataSet = DEMDataSet.AW3D30;
+            _meshDataSet = DEMDataSet.SRTM_GL3;
             _outputDirectory = outputDirectory;
             _localdatadir = localDataDir;
         }
@@ -77,7 +81,7 @@ namespace SampleApp
             ImageryService imageryService = new ImageryService();
 
             Console.WriteLine("Download image tiles...");
-            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 4);
+            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 8);
 
             Console.WriteLine("Construct texture...");
             string fileName = Path.Combine(outputDir, "Texture.jpg");
@@ -89,7 +93,7 @@ namespace SampleApp
             //=======================
             // Normal map
             Console.WriteLine("Height map...");
-            float Z_FACTOR = 1f;
+            float Z_FACTOR = 2f;
             HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, _normalsDataSet);
             //HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1", "ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
 

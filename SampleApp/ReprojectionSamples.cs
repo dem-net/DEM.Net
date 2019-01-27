@@ -24,7 +24,7 @@ namespace SampleApp
         public ReprojectionSamples(IElevationService elevationService, string outputDirectory, string gpxFile)
         {
             _elevationService = elevationService;
-            _dataSet = DEMDataSet.AW3D30;
+            _dataSet = DEMDataSet.SRTM_GL1;
             _outputDirectory = outputDirectory;
             _gpxFile = gpxFile;
         }
@@ -55,7 +55,7 @@ namespace SampleApp
             //
 
             Console.WriteLine("Download image tiles...");
-            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 8);
+            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.MapBoxSatelliteStreet, 8);
             string fileName = Path.Combine(outputDir, "Texture.jpg");
 
             Console.WriteLine("Construct texture...");
@@ -97,10 +97,10 @@ namespace SampleApp
 
             // take 1 point evert nth
             Console.WriteLine("Generate GPX track line mesh...");
-            int nSkip = 5;
+            int nSkip = 1;
             gpxPointsElevated = gpxPointsElevated.Where((x, i) => (i + 1) % nSkip == 0);
             gpxPointsElevated = gpxPointsElevated.ReprojectToCartesian(hMap.BoundingBox);
-            gpxPointsElevated = gpxPointsElevated.ZScale(Z_FACTOR).ZTranslate(5);
+            gpxPointsElevated = gpxPointsElevated.ZScale(Z_FACTOR).ZTranslate(20);
             MeshPrimitive gpxLine = glTF.GenerateLine(gpxPointsElevated, new Vector4(1, 0, 0, 0.1f), 10f);
 
             //======================
