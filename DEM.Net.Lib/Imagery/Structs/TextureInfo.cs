@@ -16,14 +16,18 @@ namespace DEM.Net.Lib.Imagery
         public TextureImageFormat ImageFormat { get; }
         public int Width { get; }
         public int Height { get; }
+        public int ProjectedZoom { get; }
+        public BoundingBox ProjectedBounds { get; }
 
-        public TextureInfo(string filePath, TextureImageFormat imageFormat, int width, int height)
+        public TextureInfo(string filePath, TextureImageFormat imageFormat, int width, int height, int zoom = 0, BoundingBox projectedBounds = null)
         {
             this.FilePath = filePath;
             this.FileName = Path.GetFileName(filePath);
             this.ImageFormat = imageFormat;
             this.Width = width;
             this.Height = height;
+            this.ProjectedZoom = zoom;
+            this.ProjectedBounds = projectedBounds;
         }
 
        

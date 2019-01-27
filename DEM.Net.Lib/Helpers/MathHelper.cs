@@ -24,16 +24,7 @@ namespace DEM.Net.Lib
 
                 if (clamp)
                 {
-                    if (outputMax < outputMin)
-                    {
-                        if (outVal < outputMax) outVal = outputMax;
-                        else if (outVal > outputMin) outVal = outputMin;
-                    }
-                    else
-                    {
-                        if (outVal > outputMax) outVal = outputMax;
-                        else if (outVal < outputMin) outVal = outputMin;
-                    }
+                    MathHelper.Clamp(outVal, outputMin, outputMax);
                 }
                 return outVal;
             }
