@@ -146,7 +146,7 @@ namespace DEM.Net.Lib
         /// <param name="directoryPath">Raster files directory</param>
         /// <param name="generateBitmaps">If true, bitmaps with height map will be generated (heavy memory usage and waaaay slower)</param>
         /// <param name="force">If true, force regeneration of all files. If false, only missing files will be generated.</param>
-        public void GenerateDirectoryMetadata(DEMDataSet dataset, bool generateBitmaps, bool force)
+        public void GenerateDirectoryMetadata(DEMDataSet dataset, bool generateBitmaps, bool force, bool deleteOnError = false)
         {
             string directoryPath = GetLocalDEMPath(dataset);
             var files = Directory.EnumerateFiles(directoryPath, "*" + dataset.FileFormat.FileExtension, SearchOption.AllDirectories);
@@ -155,7 +155,32 @@ namespace DEM.Net.Lib
             {
                 options.MaxDegreeOfParallelism = 2; // heavy memory usage, so let's do in parallel, but not too much
             }
-            Parallel.ForEach(files, options, file => GenerateFileMetadata(file, dataset.FileFormat, generateBitmaps, force));
+            Parallel.ForEach(files, options, file =>
+            {
+                try
+                {
+                    GenerateFileMetadata(file, dataset.FileFormat, generateBitmaps, force);
+                }
+                catch (Exception exFile)
+                {
+                    Logger.Error($"Error while generating metadata for file {file} : {exFile.Message}");
+                    try
+                    {
+                        if (deleteOnError)
+                        {
+                            var jsonFile = GetMetadataFileName(file, GetManifestDirectory(file), ".json");
+                            File.Delete(jsonFile);
+                            File.Delete(file);
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                        throw;
+                    }
+                }
+
+            });
         }
 
         private string GetMetadataFileName(string rasterFileName, string outDirPath, string extension = ".json")

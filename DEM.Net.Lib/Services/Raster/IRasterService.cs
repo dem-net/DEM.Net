@@ -14,15 +14,16 @@ namespace DEM.Net.Lib
         string LocalDirectory { get; }
         string GetLocalDEMPath(DEMDataSet dataset);
         string GetLocalDEMFilePath(DEMDataSet dataset, string fileTitle);
-        
+
 
         /// <summary>
         /// Generate metadata files for fast in-memory indexing
         /// </summary>
-        /// <param name="directoryPath">Raster files directory</param>
+        /// <param name="dataSet"></param>
         /// <param name="generateBitmaps">If true, bitmaps with height map will be generated (heavy memory usage and waaaay slower)</param>
         /// <param name="force">If true, force regeneration of all files. If false, only missing files will be generated.</param>
-        void GenerateDirectoryMetadata(DEMDataSet dataSet, bool generateBitmaps, bool force);
+        /// <param name="deleteOnError">If true, files where error are encountered will be deleted</param>
+        void GenerateDirectoryMetadata(DEMDataSet dataSet, bool generateBitmaps, bool force, bool deleteOnError = false);
 
 
         /// <summary>
