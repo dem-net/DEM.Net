@@ -45,6 +45,7 @@ namespace DEM.Net.Lib.Services.Lab
         double GetNormeVecteurXYZ(double[] p_vector);
         List<int> GetOrdonnancement(Dictionary<int, double[]> p_pointsATester, double[] p_pointCentral, int p_idPremierPoint, bool p_horaireSinonAntihoraire_vf);
         List<int> GetOrdonnancement(Dictionary<int, double[]> p_pointsATester, bool p_renvoyerNullSiColineaires_vf, bool p_horaireSinonAntohoraire_vf);
+        double GetPenteFromPoints3D(double[] p_pointDOrigine, double[] p_point2);
         double GetPente(double[] p_vecteur3D);
         int GetPointLePlusEloigneDePoint0XY(Dictionary<int, double[]> p_pointsATester, double[] p_coordPoint0);
         int GetPointLePlusExcentreXY(Dictionary<int, double[]> p_pointsATester);

@@ -369,37 +369,61 @@ namespace DEM.Net.Lib.Services.VisualisationServices
             SpatialTrace.Disable();
         }
 
-        public void GetVisuCreteEtTalweg(BeanTopologieFacettes p_topologieFacettes)
+        public void GetVisuCreteEtTalweg(BeanTopologieFacettes p_topologieFacettes, HashSet<enum_qualificationMorpho_arc> p_nePasAfficher = null)
         {
             Color v_couleur;
             SpatialTrace.Enable();
-            SpatialTrace.Indent("Cretes");
-            List<BeanArc_internal> v_arcsCretes;
-            v_arcsCretes = p_topologieFacettes.p12_arcsByCode.Values.Where(c => c.p41_natureArcDansLeReseau == enumTypeArcReseau.crete).ToList();
-            v_couleur = Color.Red;
-            foreach (BeanArc_internal v_arc in v_arcsCretes)
+
+            // GetVisuTopologieFacettes(p_topologieFacettes,  false, false);
+
+            //On actualise les arcs, pour contrôle
+            foreach (string v_cleArc in  p_topologieFacettes.p12_arcsByCode.Keys)
             {
-                GetVisuArc2D(v_arc, "Crete", v_couleur);
+                p_topologieFacettes.p12_arcsByCode[v_cleArc].getQualifMorphoDeLArc();
+                //FLabServices.createGeomorphoServices().SetLignesCretesEtTalwegByRefByArc(p_topologieFacettes, v_cleArc);
+            }
+
+            //
+            if (!p_nePasAfficher.Contains(enum_qualificationMorpho_arc.crete))
+            {
+                SpatialTrace.Indent("Cretes");
+                List<BeanArc_internal> v_arcsCretes;
+                v_arcsCretes = p_topologieFacettes.p12_arcsByCode.Values.Where(c => c.getQualifMorphoDeLArc() == enum_qualificationMorpho_arc.crete).ToList();
+                v_couleur = Color.Red;
+                foreach (BeanArc_internal v_arc in v_arcsCretes)
+                {
+                    GetVisuArc2D(v_arc, "Crete", v_couleur);
+                }
+            }
+
+
+            if (!p_nePasAfficher.Contains(enum_qualificationMorpho_arc.talweg))
+            {
+                SpatialTrace.Unindent();
+                SpatialTrace.Indent("Talwegs");
+                List<BeanArc_internal> v_arcsTalweg;
+                v_arcsTalweg = p_topologieFacettes.p12_arcsByCode.Values.Where(c => c.getQualifMorphoDeLArc() == enum_qualificationMorpho_arc.talweg).ToList();
+                v_couleur = Color.Blue;
+                foreach (BeanArc_internal v_arc in v_arcsTalweg)
+                {
+                    GetVisuArc2D(v_arc, "Talweg", v_couleur);
+                }
+            }
+
+
+            if (!p_nePasAfficher.Contains(enum_qualificationMorpho_arc.autre))
+            {
+                SpatialTrace.Unindent();
+                SpatialTrace.Indent("Autres");
+                List<BeanArc_internal> v_arcsAutres;
+                v_arcsAutres = p_topologieFacettes.p12_arcsByCode.Values.Where(c => c.getQualifMorphoDeLArc() == enum_qualificationMorpho_arc.autre).ToList();
+                v_couleur = Color.LightGray;
+                foreach (BeanArc_internal v_arc in v_arcsAutres)
+                {
+                    GetVisuArc2D(v_arc, "Autre", v_couleur);
+                }
             }
             SpatialTrace.Unindent();
-            SpatialTrace.Indent("Talwegs");
-            List<BeanArc_internal> v_arcsTalweg;
-            v_arcsTalweg = p_topologieFacettes.p12_arcsByCode.Values.Where(c => c.p41_natureArcDansLeReseau == enumTypeArcReseau.talweg).ToList();
-            v_couleur = Color.Blue;
-            foreach (BeanArc_internal v_arc in v_arcsTalweg)
-            {
-                GetVisuArc2D(v_arc, "Talweg", v_couleur);
-            }
-            SpatialTrace.Unindent();
-            //SpatialTrace.Indent("Autres");
-            //List<BeanArc_internal> v_arcsAutres;
-            //v_arcsAutres = p_topologieFacettes.p12_arcsByCode.Values.Where(c => c.p41_natureArcDansLeReseau == enumTypeArcReseau.autre).ToList();
-            //v_couleur = Color.LightGray;
-            //foreach (BeanArc_internal v_arc in v_arcsAutres)
-            //{
-            //    GetVisuArc2D(v_arc, "Autre", v_couleur);
-            //}
-            //SpatialTrace.Unindent();
             SpatialTrace.Disable();
         }
         //

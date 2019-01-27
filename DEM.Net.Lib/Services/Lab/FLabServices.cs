@@ -20,6 +20,10 @@ namespace DEM.Net.Lib.Services.Lab
         {
             return new CalculServices_Medium();
         }
+        public static IGeomorphoServices createGeomorphoServices()
+        {
+            return new GeomorphoServices();
+        }
        
     }
 }

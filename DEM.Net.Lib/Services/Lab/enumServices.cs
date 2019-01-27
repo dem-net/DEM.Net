@@ -34,7 +34,24 @@ namespace DEM.Net.Lib.Services.Lab
         horaire,
         antihoraire
     }
-    public enum enumTypeArcReseau
+   
+
+    public enum enum_qualificationHydro_pointDeFacette
+    {
+        sortie,
+        entree,
+        mixte,
+        indetermine
+    }
+    public enum enumSensPenteArc
+    {
+        montant,
+        descendant,
+        flat,
+        indetermine
+    }
+
+    public enum enum_qualificationMorpho_arc
     {
         talweg,
         crete,

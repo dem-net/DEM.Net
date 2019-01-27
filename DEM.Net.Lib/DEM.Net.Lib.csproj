@@ -147,12 +147,14 @@
     <Compile Include="Services\Elevation\IElevationService.cs" />
     <Compile Include="Services\Lab\BeanParametresChoixDuPointCentral.cs" />
     <Compile Include="Services\Lab\BeanParametresDuTin.cs" />
+    <Compile Include="Services\Lab\BeanRelationPointToFacette.cs" />
     <Compile Include="Services\Lab\BeanResultatConversions_internal.cs" />
     <Compile Include="Services\Lab\FLabServices.cs" />
     <Compile Include="Services\Lab\GeomorphoServices.cs" />
     <Compile Include="Services\Lab\ICalculServicesLow_testsDivers.cs" />
     <Compile Include="Services\Lab\ICalculServicesMedium_testsDivers.cs" />
     <Compile Include="Services\Lab\ICalculServices_Low.cs" />
+    <Compile Include="Services\Lab\IGeomorphoServices.cs" />
     <Compile Include="Services\Raster\GDALVRTFileService.cs" />
     <Compile Include="Services\GeometryService.cs" />
     <Compile Include="Services\Raster\RasterSampleFormat.cs" />

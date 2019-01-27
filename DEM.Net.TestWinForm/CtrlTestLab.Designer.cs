@@ -74,7 +74,6 @@
             this.tb_pasSeparationEntrePoints = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.btn_creteEtTalwegTin_visu = new System.Windows.Forms.Button();
-            this.btn_testCretesEtTalwegSurTin = new System.Windows.Forms.Button();
             this.label23 = new System.Windows.Forms.Label();
             this.tb_wkt = new System.Windows.Forms.TextBox();
             this.btn_testUnitaire = new System.Windows.Forms.Button();
@@ -502,7 +501,6 @@
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.btn_creteEtTalwegTin_visu);
-            this.groupBox3.Controls.Add(this.btn_testCretesEtTalwegSurTin);
             this.groupBox3.Controls.Add(this.label23);
             this.groupBox3.Controls.Add(this.tb_wkt);
             this.groupBox3.Controls.Add(this.btn_testUnitaire);
@@ -528,23 +526,13 @@
             // 
             // btn_creteEtTalwegTin_visu
             // 
-            this.btn_creteEtTalwegTin_visu.Location = new System.Drawing.Point(518, 366);
+            this.btn_creteEtTalwegTin_visu.Location = new System.Drawing.Point(657, 366);
             this.btn_creteEtTalwegTin_visu.Name = "btn_creteEtTalwegTin_visu";
             this.btn_creteEtTalwegTin_visu.Size = new System.Drawing.Size(118, 37);
             this.btn_creteEtTalwegTin_visu.TabIndex = 39;
             this.btn_creteEtTalwegTin_visu.Text = "Crètes et talwegs visu";
             this.btn_creteEtTalwegTin_visu.UseVisualStyleBackColor = true;
             this.btn_creteEtTalwegTin_visu.Click += new System.EventHandler(this.btn_creteEtTalwegTin_visu_Click);
-            // 
-            // btn_testCretesEtTalwegSurTin
-            // 
-            this.btn_testCretesEtTalwegSurTin.Location = new System.Drawing.Point(394, 366);
-            this.btn_testCretesEtTalwegSurTin.Name = "btn_testCretesEtTalwegSurTin";
-            this.btn_testCretesEtTalwegSurTin.Size = new System.Drawing.Size(118, 37);
-            this.btn_testCretesEtTalwegSurTin.TabIndex = 38;
-            this.btn_testCretesEtTalwegSurTin.Text = "Tests crètes et talwegs sur TIN";
-            this.btn_testCretesEtTalwegSurTin.UseVisualStyleBackColor = true;
-            this.btn_testCretesEtTalwegSurTin.Click += new System.EventHandler(this.btn_testCretesEtTalwegSurTin_Click);
             // 
             // label23
             // 
@@ -601,7 +589,7 @@
             this.tb_precisionEnM.Name = "tb_precisionEnM";
             this.tb_precisionEnM.Size = new System.Drawing.Size(33, 20);
             this.tb_precisionEnM.TabIndex = 30;
-            this.tb_precisionEnM.Text = "20";
+            this.tb_precisionEnM.Text = "50";
             // 
             // btnTestFacettes
             // 
@@ -740,7 +728,6 @@
         private System.Windows.Forms.Button btn_testUnitaire;
         private System.Windows.Forms.TextBox tb_wkt;
         private System.Windows.Forms.Label label23;
-        private System.Windows.Forms.Button btn_testCretesEtTalwegSurTin;
         private System.Windows.Forms.Button btn_creteEtTalwegTin_visu;
     }
 }

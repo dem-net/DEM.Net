@@ -10,6 +10,7 @@ namespace DEM.Net.Lib.Services.Lab
 {
     public class CalculServices_Medium : ICalculServices_Medium, ICalculServicesMedium_testDivers
     {
+        #region TIN
         public BeanParametresDuTin GetParametresDuTinParDefaut()
         {
             BeanParametresDuTin v_parametresDuTin = new BeanParametresDuTin();
@@ -121,7 +122,6 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_topologieFacette;
         }
-
         public void AugmenteDetailsTinByRef(ref BeanTopologieFacettes p_topologieFacette, BeanParametresDuTin p_parametresDuTin)
         {
             try
@@ -177,81 +177,22 @@ namespace DEM.Net.Lib.Services.Lab
             }
 
         }
+        #endregion TIN
 
-        public void SetLignesCretesEtTalwegByRef(ref BeanTopologieFacettes p_topologieFacette)
+        public List<BeanPoint_internal> GetOrdonnancementPointsFacette(List<BeanPoint_internal> p_pointsFacettes, bool p_renvoyerNullSiColineaires_vf, bool p_sensHoraireSinonAntiHoraire_vf)
         {
+            List<BeanPoint_internal> v_pointsOrdonnances = new List<BeanPoint_internal>();
             try
             {
-                foreach (string v_codeArc in p_topologieFacette.p12_arcsByCode.Keys)
+                Dictionary<int, double[]> v_pointsAOrdonnancer = p_pointsFacettes.ToDictionary(c => c.p00_id, c => c.p10_coord);
+                List<int> v_idOrdonnances = FLabServices.createCalculLow().GetOrdonnancement(v_pointsAOrdonnancer, p_renvoyerNullSiColineaires_vf, p_sensHoraireSinonAntiHoraire_vf);
+                if (p_renvoyerNullSiColineaires_vf && v_idOrdonnances == null)
                 {
-                    SetLignesCretesEtTalwegByRefByArc(p_topologieFacette, v_codeArc);
+                    return null;
                 }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-        private void SetLignesCretesEtTalwegByRefByArc(BeanTopologieFacettes p_topologieFacette, string p_codeArcATraiter)
-        {
-            try
-            {
-                BeanArc_internal v_arc = p_topologieFacette.p12_arcsByCode[p_codeArcATraiter];
-
-                //L'arc sépare 2 facettes (sauf en frontière)
-                //On va exprimer les 2 points n'appartenant pas à l'arc dans le plan de plus forte pente 
-                //Si les 2 points sont 'au-dessus' alors on considère que l'arc est 'talweg'
-                //Si les 2 points sont 'au-dessous' alors on considère que l'arc est 'ligne de crète'
-                //Les autres cas correspondent, au plus, à des ruptures de pente
-
-                //-On détermine le plan.
-                //Ce plan doit être tel que:
-                //-sa pente est celle de l'arc
-                //-si on translate le vecteur correspondant selon un vecteur de même élévation constante, alors ce vecteur doit être inclus dans ce plan.
-                //Du coup, pour déterminer ce plan, on détermine on utilise le vecteur de l'arc et un vecteur normal en xy à ce vecteur
-                double[] v_vecteurArc = FLabServices.createCalculLow().GetVectorBrutFromTwoPoints(v_arc.p11_pointDbt.p10_coord, v_arc.p12_pointFin.p10_coord);
-                double[] v_vecteurNormalXy = new double[3] { -1 * v_vecteurArc[1], v_vecteurArc[0], 0 };
-                double[] v_pointNormal = new double[3] { v_vecteurNormalXy[0] + v_arc.p11_pointDbt.p10_coord[0], v_vecteurNormalXy[1] + v_arc.p11_pointDbt.p10_coord[1], v_arc.p11_pointDbt.p10_coord[2] };
-
-                double[] v_vecteurNormalAuPlanDePenteMaxi;
-                v_vecteurNormalAuPlanDePenteMaxi = FLabServices.createCalculLow().GetNormaleDuPlan(v_arc.p11_pointDbt.p10_coord, v_arc.p12_pointFin.p10_coord, v_pointNormal);
-
-                //=>On calcule la matrice inverse...
-                v_vecteurArc = FLabServices.createCalculLow().GetNormalisationVecteurXYZ(v_vecteurArc);
-                v_vecteurNormalXy = FLabServices.createCalculLow().GetNormalisationVecteurXYZ(v_vecteurNormalXy);
-                double[,] v_matriceDeRotation = FLabServices.createCalculLow().GetMatriceInverse3x3(v_vecteurArc, v_vecteurNormalXy, v_vecteurNormalAuPlanDePenteMaxi);
-
-                //...on l'applique sur les 2 points
-                List<double[]> v_coordonnees = new List<double[]>();
-                double[] v_coordDansLeRepereDuPlan;
-                BeanPoint_internal v_pointATester;
-                double[] v_vectorATester;
-                if (v_arc.p21_facetteGauche != null)
+                foreach (int v_id in v_idOrdonnances)
                 {
-                    v_pointATester = v_arc.p21_facetteGauche.p01_pointsDeFacette.Where(c => c.p00_id != v_arc.p11_pointDbt.p00_id && c.p00_id != v_arc.p12_pointFin.p00_id).First();
-                    v_vectorATester = FLabServices.createCalculLow().GetVectorBrutFromTwoPoints(v_arc.p11_pointDbt.p10_coord, v_pointATester.p10_coord);
-                    v_coordDansLeRepereDuPlan = FLabServices.createCalculLow().GetProduitMatriceParVector(v_matriceDeRotation, v_vectorATester);
-                    v_coordonnees.Add(v_coordDansLeRepereDuPlan);
-                }
-                if (v_arc.p22_facetteDroite != null)
-                {
-                    v_pointATester = v_arc.p22_facetteDroite.p01_pointsDeFacette.Where(c => c.p00_id != v_arc.p11_pointDbt.p00_id && c.p00_id != v_arc.p12_pointFin.p00_id).First();
-                    v_vectorATester = FLabServices.createCalculLow().GetVectorBrutFromTwoPoints(v_arc.p11_pointDbt.p10_coord, v_pointATester.p10_coord);
-                    v_coordDansLeRepereDuPlan = FLabServices.createCalculLow().GetProduitMatriceParVector(v_matriceDeRotation, v_vectorATester);
-                    v_coordonnees.Add(v_coordDansLeRepereDuPlan);
-                }
-                //On exploite l'info:
-                //(pour l'instant, on ne traite pas les arcs frontières)
-                v_arc.p41_natureArcDansLeReseau = enumTypeArcReseau.autre;
-                if (v_coordonnees.Where(c => c[2] > 0).Count() > 1)
-                {
-                    v_arc.p41_natureArcDansLeReseau = enumTypeArcReseau.talweg;
-                    return;
-                }
-                if (v_coordonnees.Where(c => c[2] < 0).Count() > 1)
-                {
-                    v_arc.p41_natureArcDansLeReseau = enumTypeArcReseau.crete;
-                    return;
+                    v_pointsOrdonnances.Add(p_pointsFacettes.Where(c => c.p00_id == v_id).First());
                 }
             }
             catch (Exception)
@@ -259,15 +200,251 @@ namespace DEM.Net.Lib.Services.Lab
 
                 throw;
             }
+            return v_pointsOrdonnances;
         }
 
-
-
-        //
-        private void UpdateNormaleDuPlan(BeanFacette_internal p_facette)
+        #region SERVICES GEOMETRIQUES DIVERS (Convex hull, mbo, centroïdes,...)
+        public List<BeanPoint_internal> GetConvexHull2D(IEnumerable<BeanPoint_internal> p_points)
         {
+            List<BeanPoint_internal> p_pointsOrdonnesConvexHull = new List<BeanPoint_internal>();
+            try
+            {
+                //1-On créé un segment S0 unissant les points extrêmes du nuage:
+                double[] v_centroide = GetCentroide(p_points);
+                //
+                BeanPoint_internal p_point0;
+                p_point0 = GetIdPointLePlusEloigneDuPointRef(p_points, v_centroide);
+                BeanPoint_internal p_point0_Oppose;
+                p_point0_Oppose = GetIdPointLePlusEloigneDuPointRef(p_points, p_point0.p10_coord);
+                //
+                ICalculServices_Low v_calcul = new CalculServices_Low();
+                Dictionary<int, double[]> v_coordDansRef;
 
+                //2-On effectue une partition du plan délimité par la droite passant par les 2 pts de S0:
+                v_coordDansRef = GetCoordonneesDansNewReferentiel2D(p_points, p_point0.p10_coord, p_point0_Oppose.p10_coord, null);
+                HashSet<int> v_idPositifs = new HashSet<int>(v_coordDansRef.Where(c => c.Value[1] > 0).Select(c => c.Key).ToList());
+                //(Les points '0' ne nous intéressent pas: ils ne peuvent pas appartenir au CH (sauf les 2 extrêmes déjà identifiés)
+                List<BeanPoint_internal> v_pointsPositifs = p_points.Where(c => v_idPositifs.Contains(c.p00_id)).ToList();
+                List<BeanPoint_internal> v_pointsNegatifs = p_points.Where(c => !v_idPositifs.Contains(c.p00_id)).ToList();
+
+
+                p_pointsOrdonnesConvexHull.Add(p_point0);
+
+                //3-On créé 2 arcs orientés à partie de S0 et on les injecte dans une 'pile':
+                Stack<BeanArc_internal> v_pileLifo = new Stack<BeanArc_internal>();
+                //ATTENTION à l'ordre d'injection (voir plus bas)
+
+                BeanArc_internal v_arcDescendant = new BeanArc_internal(p_point0_Oppose, p_point0, v_pointsNegatifs);
+                v_pileLifo.Push(v_arcDescendant);
+                BeanArc_internal v_arcMontant = new BeanArc_internal(p_point0, p_point0_Oppose, v_pointsPositifs);
+                v_pileLifo.Push(v_arcMontant);
+
+                //4-On effectue une recherche en profondeur depuis la 'gauche' de l'arbre vers la 'droite'
+                //=>Sur le premier arc A1, on cherche le point le + excentré à gauche, on en déduit 2 arcs A2 et A3 
+                //et on récupère les pts à gauche de ces arcs
+                //récursivement sur l'arc A2 jusqu'à ce qu'il n'y ait plus de pts extérieurs, puis arc A3,...
+                //ATTENTION: l'ordre d'insertion dans la pile est important.
+                BeanArc_internal v_arcToExplore;
+                List<BeanArc_internal> v_arcsResultants;
+                int p_compteurPasses = 0;
+                while (v_pileLifo.Count > 0)
+                {
+                    p_compteurPasses++;
+                    v_arcToExplore = v_pileLifo.Pop();
+                    v_arcsResultants = GetArcsConvexesGauches(v_arcToExplore);
+
+                    //S'il n'y a pas d'arcs 'plus à gauche', alors le point terminal appartient au convexhull
+                    //Sinon, on met les arcs dans la pile.
+                    if (v_arcsResultants == null)
+                    {
+                        p_pointsOrdonnesConvexHull.Add(v_arcToExplore.p12_pointFin);
+                    }
+                    else
+                    {
+                        v_pileLifo.Push(v_arcsResultants[1]);
+                        v_pileLifo.Push(v_arcsResultants[0]);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return p_pointsOrdonnesConvexHull;
         }
+        public List<BeanPoint_internal> GetMbo2D(IEnumerable<BeanPoint_internal> p_points, enumModeCalculZ p_modeDeCalculZ, double p_extensionMboEnM)
+        {
+            List<BeanPoint_internal> p_pointsOrdonnesMbo = new List<BeanPoint_internal>();
+            try
+            {
+                double v_alti;
+                switch (p_modeDeCalculZ)
+                {
+                    case enumModeCalculZ.alti_min:
+                        v_alti = p_points.Min(c => c.p10_coord[2]);
+                        break;
+                    case enumModeCalculZ.alti_0:
+                        v_alti = 0;
+                        break;
+                    default:
+                        throw new Exception("Méthode " + p_modeDeCalculZ + " non implémentée.");
+                }
+                //
+                p_pointsOrdonnesMbo = GetMbo2D(p_points, v_alti, p_extensionMboEnM);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return p_pointsOrdonnesMbo;
+        }
+        public List<BeanPoint_internal> GetMbo2D(IEnumerable<BeanPoint_internal> p_points, double p_altiZ, double p_extensionMboEnM)
+        {
+            List<BeanPoint_internal> p_pointsOrdonnesMbo = new List<BeanPoint_internal>();
+            try
+            {
+                int v_srid = p_points.First().p11_srid;
+                //
+                double v_minX = p_points.Min(c => c.p10_coord[0]) - p_extensionMboEnM;
+                double v_minY = p_points.Min(c => c.p10_coord[1]) - p_extensionMboEnM;
+                double v_maxX = p_points.Max(c => c.p10_coord[0]) + p_extensionMboEnM;
+                double v_maxY = p_points.Max(c => c.p10_coord[1]) + p_extensionMboEnM;
+                //
+                BeanPoint_internal v_point;
+                //Bas gauche
+                v_point = new BeanPoint_internal(v_minX, v_minY, p_altiZ, v_srid);
+                p_pointsOrdonnesMbo.Add(v_point);
+                //Haut gauche
+                v_point = new BeanPoint_internal(v_minX, v_maxY, p_altiZ, v_srid);
+                p_pointsOrdonnesMbo.Add(v_point);
+                //Haut droit
+                v_point = new BeanPoint_internal(v_maxX, v_maxY, p_altiZ, v_srid);
+                p_pointsOrdonnesMbo.Add(v_point);
+                //Bas droit
+                v_point = new BeanPoint_internal(v_maxX, v_minY, p_altiZ, v_srid);
+                p_pointsOrdonnesMbo.Add(v_point);
+                //Bas gauche
+                v_point = new BeanPoint_internal(v_minX, v_minY, p_altiZ, v_srid);
+                p_pointsOrdonnesMbo.Add(v_point);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return p_pointsOrdonnesMbo;
+        }
+        public List<BeanPoint_internal> GetMboPointsProches(IEnumerable<BeanPoint_internal> p_points, int p_nbrePointsCalageSupplSouhaitesMultiplesDe4)
+        {
+            List<BeanPoint_internal> v_pointsOut = new List<BeanPoint_internal>();
+            try
+            {
+                int v_idPointOut;
+                List<BeanPoint_internal> p_pointsOrdonnesMbo = new List<BeanPoint_internal>();
+                int v_srid = p_points.First().p11_srid;
+                //
+                double v_minX = p_points.Min(c => c.p10_coord[0]);
+                double v_minY = p_points.Min(c => c.p10_coord[1]);
+                double v_maxX = p_points.Max(c => c.p10_coord[0]);
+                double v_maxY = p_points.Max(c => c.p10_coord[1]);
+                //
+                HashSet<int> v_pointsDejaTraites = new HashSet<int>();
+                Dictionary<int, BeanPoint_internal> v_dicoPointsSource = p_points.ToDictionary(c => c.p00_id, c => c);
+                Dictionary<int, double[]> v_pointsATester = p_points.ToDictionary(c => c.p00_id, c => c.p10_coord);
+                //
+                double[] v_coordPointAppui;
+                List<double[]> v_listePointsDAppui = new List<double[]>();
+
+                v_coordPointAppui = new double[2] { v_minX, v_minY };
+                v_listePointsDAppui.Add(v_coordPointAppui);
+
+                v_coordPointAppui = new double[2] { v_minX, v_maxY };
+                v_listePointsDAppui.Add(v_coordPointAppui);
+
+                v_coordPointAppui = new double[2] { v_maxX, v_maxY };
+                v_listePointsDAppui.Add(v_coordPointAppui);
+
+                v_coordPointAppui = new double[2] { v_maxX, v_minY };
+                v_listePointsDAppui.Add(v_coordPointAppui);
+
+                //
+                if (p_nbrePointsCalageSupplSouhaitesMultiplesDe4 > 0)
+                {
+                    int v_nbrePointsSupplParArete = (int)Math.Ceiling(p_nbrePointsCalageSupplSouhaitesMultiplesDe4 / 4d);
+                    double v_ecartX = v_maxX - v_minX;
+                    double v_ecartY = v_maxY - v_minY;
+                    double v_decalageEnX = v_ecartX / (v_nbrePointsSupplParArete + 1);
+                    double v_decalageEnY = v_ecartY / (v_nbrePointsSupplParArete + 1);
+                    for (int v_nbrePointsSupp = 1; v_nbrePointsSupp <= v_nbrePointsSupplParArete; v_nbrePointsSupp++)
+                    {
+                        v_coordPointAppui = new double[2] { v_minX + (v_nbrePointsSupp * v_decalageEnX), v_minY };
+                        v_listePointsDAppui.Add(v_coordPointAppui);
+                        v_coordPointAppui = new double[2] { v_minX + (v_nbrePointsSupp * v_decalageEnX), v_maxY };
+                        v_listePointsDAppui.Add(v_coordPointAppui);
+                        v_coordPointAppui = new double[2] { v_minX, v_minY + (v_nbrePointsSupp * v_decalageEnY) };
+                        v_listePointsDAppui.Add(v_coordPointAppui);
+                        v_coordPointAppui = new double[2] { v_maxX, v_minY + (v_nbrePointsSupp * v_decalageEnY) };
+                        v_listePointsDAppui.Add(v_coordPointAppui);
+                    }
+                }
+                //
+
+                foreach (double[] v_pointDAppui in v_listePointsDAppui)
+                {
+                    v_idPointOut = FLabServices.createCalculLow().GetPointLePlusProcheDePoint0XY(v_pointsATester, v_pointDAppui);
+                    if (!v_pointsDejaTraites.Contains(v_idPointOut))
+                    {
+                        v_pointsDejaTraites.Add(v_idPointOut);
+                        v_pointsOut.Add(v_dicoPointsSource[v_idPointOut]);
+                    }
+                }
+                //A REVOIR
+                v_pointsOut = GetOrdonnancementPointsFacette(v_pointsOut, false, true);
+                v_pointsOut.Add(v_pointsOut.First());
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return v_pointsOut;
+        }
+         public BeanPoint_internal GetIdPointLePlusEloigneDuPointRef(IEnumerable<BeanPoint_internal> p_points, double[] p_pointRef)
+        {
+            BeanPoint_internal v_point;
+            try
+            {
+                ICalculServices_Low v_calcul = new CalculServices_Low();
+                double v_distanceMax = p_points.Select(c => v_calcul.GetDistanceEuclidienneCarreeXY(c.p10_coord, p_pointRef)).Max();
+                v_point = p_points.Where(c => v_calcul.GetDistanceEuclidienneCarreeXY(c.p10_coord, p_pointRef) == v_distanceMax).First();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return v_point;
+        }
+        public double[] GetCentroide(IEnumerable<BeanPoint_internal> p_points)
+        {
+            double[] v_centroide = new double[3];
+            try
+            {
+                v_centroide[0] = p_points.Average(c => c.p10_coord[0]);
+                v_centroide[1] = p_points.Average(c => c.p10_coord[1]);
+                v_centroide[2] = p_points.Average(c => c.p10_coord[2]);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return v_centroide;
+        }
+        #endregion SERVICES GEOMETRIQUES DIVERS (Convex hull, mbo, centroïdes,...)
+
+        #region PRIVATE CALCUL TIN
         private void TraitementDeLaFacetteMaxiByRef(ref BeanTopologieFacettes p_topologieFacette, BeanFacette_internal p_facetteATraiter, BeanParametresDuTin p_parametresDuTin)
         {
             try
@@ -732,41 +909,6 @@ namespace DEM.Net.Lib.Services.Lab
             return v_beanRapportOut;
         }
 
-        #region UTILITAIRES
-        public List<string> GetOrdonnancementArcsAutourPointFacette(BeanPoint_internal p_pointFacette,int p_idPremierArc, bool p_sensHoraireSinonAntihoraire_vf)
-        {
-            List<string> v_codeArcsOrdonnes = null;
-            try
-            {
-                if (p_pointFacette.p41_arcsAssocies == null)
-                {
-                    return null;
-                }
-                if (p_pointFacette.p41_arcsAssocies.Count == 0)
-                {
-                    return new List<string>();
-                }
-                //
-                Dictionary<int, double[]> v_arcsToTest = new Dictionary<int, double[]>();
-                Dictionary<int, double[]> v_d1 = p_pointFacette.p41_arcsAssocies.Where(c => c.Value.p11_pointDbt.p00_id == p_pointFacette.p00_id).ToDictionary(c => c.Value.p00_idArc, c => c.Value.p12_pointFin.p10_coord);
-                Dictionary<int, double[]> v_d2 = p_pointFacette.p41_arcsAssocies.Where(c => c.Value.p12_pointFin.p00_id == p_pointFacette.p00_id).ToDictionary(c => c.Value.p00_idArc, c => c.Value.p11_pointDbt.p10_coord);
-                v_arcsToTest = v_d1.Union(v_d2).ToDictionary(c => c.Key, c => c.Value);
-                //
-                List<int> v_idArcsOrdonnes = FLabServices.createCalculLow().GetOrdonnancement(v_arcsToTest, p_pointFacette.p10_coord, p_idPremierArc, p_sensHoraireSinonAntihoraire_vf);
-                Dictionary<int, string> v_correspondanceIdCode = p_pointFacette.p41_arcsAssocies.ToDictionary(c => c.Value.p00_idArc, c => c.Value.p01_hcodeArc);
-                v_codeArcsOrdonnes = new List<string>();
-                foreach (int v_id in v_idArcsOrdonnes)
-                {
-                    v_codeArcsOrdonnes.Add(v_correspondanceIdCode[v_id]);
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            return v_codeArcsOrdonnes;
-        }
-
         private BeanPoint_internal GetAndSetByRefPointExcentreDeLaFacette(ref BeanFacette_internal p_facette, BeanParametresChoixDuPointCentral p_paramDeChoixDuPointCentral, bool p_nullSiInfALExcentrationMinimale_vf)
         {
             BeanPoint_internal v_point = null;
@@ -941,41 +1083,7 @@ namespace DEM.Net.Lib.Services.Lab
 
 
         }
-        //private void RemoveFacetteFromTopologieByRef(ref BeanTopologieFacettes p_topologie, int p_idFacette)
-        //{
-        //    try
-        //    {
-        //        BeanFacette_internal v_facetteASupprimer = p_topologie.p13_facettesById[p_idFacette];
-        //        //
-        //        if (v_facetteASupprimer.p23_facetteEcartSup != null)
-        //        {
-        //            v_facetteASupprimer.p23_facetteEcartSup.p24_facetteEcartInf = v_facetteASupprimer.p24_facetteEcartInf;
-        //        }
-
-        //        if (v_facetteASupprimer.p24_facetteEcartInf != null)
-        //        {
-        //            v_facetteASupprimer.p24_facetteEcartInf.p23_facetteEcartSup = v_facetteASupprimer.p23_facetteEcartSup; //(Qui peut être nulle)
-        //        }
-        //        if (p_topologie.p21_facetteAvecEcartAbsoluMax == v_facetteASupprimer) //(La facette à supprimer était la 'première'
-        //        {
-        //            p_topologie.p21_facetteAvecEcartAbsoluMax = v_facetteASupprimer.p24_facetteEcartInf;
-        //        }
-
-        //        //
-        //        p_topologie.p13_facettesById.Remove(p_idFacette);
-        //    }
-        //    catch (Exception)
-        //    {
-
-        //        throw;
-        //    }
-        //}
-
-
-        private string GetHCodeCoupleFacettes(BeanFacette_internal p_facette1, BeanFacette_internal p_facette2)
-        {
-            return Math.Min(p_facette1.p00_idFacette, p_facette2.p00_idFacette) + "_" + Math.Max(p_facette1.p00_idFacette, p_facette2.p00_idFacette);
-        }
+   
         private Dictionary<int, double[]> GetCoordonneesPointsDansLeRefDuPlanXYDeLaFacette(ref BeanFacette_internal p_facette)
         {
             Dictionary<int, double[]> v_coords = new Dictionary<int, double[]>();
@@ -986,9 +1094,9 @@ namespace DEM.Net.Lib.Services.Lab
                 //(On utilise le point d'altitude maxi comme point d'origine
                 v_coordDesPointsFacettes = p_facette.p01_pointsDeFacette.OrderByDescending(c => c.p10_coord[2]).Select(c => c.p10_coord).ToList();
                 //(On utilise la normale du plan comme axe z
-                double[] v_normaleDuPlan;
-                v_normaleDuPlan = FLabServices.createCalculLow().GetNormaleDuPlan(v_coordDesPointsFacettes[0], v_coordDesPointsFacettes[2], v_coordDesPointsFacettes[1]);
-                p_facette.p20_normaleDuPlan = v_normaleDuPlan;
+                double[] v_normaleDuPlan = p_facette.getNormaleDuPlan();
+                //v_normaleDuPlan = FLabServices.createCalculLow().GetNormaleDuPlan(v_coordDesPointsFacettes[0], v_coordDesPointsFacettes[2], v_coordDesPointsFacettes[1]);
+                //p_facette.p31_normaleDuPlan = v_normaleDuPlan;
                 //
                 double[] v_vector1 = FLabServices.createCalculLow().GetVectorBrutFromTwoPoints(v_coordDesPointsFacettes[0], v_coordDesPointsFacettes[1]);
                 v_vector1 = FLabServices.createCalculLow().GetNormalisationVecteurXYZ(v_vector1);
@@ -1019,7 +1127,6 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_coords;
         }
-
         private List<BeanFacette_internal> GetFacettesInitialesByPolygoneConvexe(List<BeanPoint_internal> p_pointsBase, BeanPoint_internal p_pointCentral, List<BeanPoint_internal> p_tousPointsInclus)
         {
             List<BeanFacette_internal> v_facettesOut = new List<BeanFacette_internal>();
@@ -1215,7 +1322,66 @@ namespace DEM.Net.Lib.Services.Lab
                 throw;
             }
         }
-        //
+        #endregion PRIVATE CALCUL TIN
+
+        #region PRIVATE CALCUL CONVEXHULL
+        /// <summary>
+        /// Soit, en entrée, un segment de droite orienté S1 et un nuage de points N, décrits dans un BeanArc
+        /// On veut génèrer 2 nouveaux arcs S2 et S3 tels que:
+        /// S2 débute au premier point de S1, joigne le point Nx de N le plus éloigné orthogonalement, à gauche, de S1 avec une distance strictement >0
+        /// S3 débute en Nx et aboutisse au dernier de S1
+        /// S'il n'existe aucun point 'à gauche' de S1=>on retourne null.
+        /// Attention: il n'y a pas de contrôle que le projeté de Nx sur S1 est inclus dans le segment S1.
+        /// Usage originel de la méthode: génération du convexhull
+        /// </summary>
+        /// <param name="p_arcEnrichiSource"></param>
+        /// <returns></returns>
+        private List<BeanArc_internal> GetArcsConvexesGauches(BeanArc_internal p_arcEnrichiSource)
+        {
+            List<BeanArc_internal> v_pointConvex = new List<BeanArc_internal>();
+            try
+            {
+                Dictionary<int, double[]> v_coordDansRef;
+                v_coordDansRef = GetCoordonneesDansNewReferentiel2D(p_arcEnrichiSource.p31_pointsAssocies, p_arcEnrichiSource.p11_pointDbt.p10_coord, p_arcEnrichiSource.p12_pointFin.p10_coord, null);
+                //
+                HashSet<int> v_idPositifs = new HashSet<int>(v_coordDansRef.Where(c => c.Value[1] > 0).Select(c => c.Key).ToList());
+                if (v_idPositifs.Count == 0)
+                {
+                    return null;
+                }
+                //(Les points '0' ne nous intéressent pas: ils ne peuvent pas appartenir au CH (sauf les 2 extrêmes mais qui sont déjà identifiés)
+                List<BeanPoint_internal> v_pointsPositifs = p_arcEnrichiSource.p31_pointsAssocies.Where(c => v_idPositifs.Contains(c.p00_id)).ToList();
+
+                int v_idPt1 = -1;
+                double v_ecartMax = v_coordDansRef.Select(c => c.Value[1]).Max();
+                if (v_ecartMax == 0)
+                {
+                    return null;
+                }
+                v_idPt1 = v_coordDansRef.Where(c => c.Value[1] == v_ecartMax).First().Key;
+                //(Les arrondis font que, malgré tout, la distance de projection pt être indûment considérée comme non nulle
+                //et qu'un point de l'arc original soit retenu
+                if (v_idPt1 == p_arcEnrichiSource.p11_pointDbt.p00_id || v_idPt1 == p_arcEnrichiSource.p12_pointFin.p00_id)
+                {
+                    return null;
+                }
+                BeanPoint_internal v_points1 = v_pointsPositifs.Where(c => c.p00_id == v_idPt1).ToList().First();
+
+                BeanArc_internal v_arc1 = new BeanArc_internal(p_arcEnrichiSource.p11_pointDbt, v_points1, v_pointsPositifs);
+                BeanArc_internal v_arc2 = new BeanArc_internal(v_points1, p_arcEnrichiSource.p12_pointFin, v_pointsPositifs);
+                //
+                v_pointConvex.Add(v_arc1);
+                v_pointConvex.Add(v_arc2);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return v_pointConvex;
+        }
+        #endregion PRIVATE CALCUL CONVEXHULL
+
+        #region UTILITAIRES CALCUL
         /// <summary>
         /// Transpose les 'points à référencer' dans un repère 2D:
         /// d'origine p_coordPoint0
@@ -1271,357 +1437,12 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_coord;
         }
+        #endregion UTILITAIRES CALCUL
 
-        /// <summary>
-        /// Soit, en entrée, un segment de droite orienté S1 et un nuage de points N, décrits dans un BeanArc
-        /// On veut génèrer 2 nouveaux arcs S2 et S3 tels que:
-        /// S2 débute au premier point de S1, joigne le point Nx de N le plus éloigné orthogonalement, à gauche, de S1 avec une distance strictement >0
-        /// S3 débute en Nx et aboutisse au dernier de S1
-        /// S'il n'existe aucun point 'à gauche' de S1=>on retourne null.
-        /// Attention: il n'y a pas de contrôle que le projeté de Nx sur S1 est inclus dans le segment S1.
-        /// Usage originel de la méthode: génération du convexhull
-        /// </summary>
-        /// <param name="p_arcEnrichiSource"></param>
-        /// <returns></returns>
-        private List<BeanArc_internal> GetArcsConvexesGauches(BeanArc_internal p_arcEnrichiSource)
+        #region UTILITAIRES DIVERS
+        private string GetHCodeCoupleFacettes(BeanFacette_internal p_facette1, BeanFacette_internal p_facette2)
         {
-            List<BeanArc_internal> v_pointConvex = new List<BeanArc_internal>();
-            try
-            {
-                Dictionary<int, double[]> v_coordDansRef;
-                v_coordDansRef = GetCoordonneesDansNewReferentiel2D(p_arcEnrichiSource.p31_pointsAssocies, p_arcEnrichiSource.p11_pointDbt.p10_coord, p_arcEnrichiSource.p12_pointFin.p10_coord, null);
-                //
-                HashSet<int> v_idPositifs = new HashSet<int>(v_coordDansRef.Where(c => c.Value[1] > 0).Select(c => c.Key).ToList());
-                if (v_idPositifs.Count == 0)
-                {
-                    return null;
-                }
-                //(Les points '0' ne nous intéressent pas: ils ne peuvent pas appartenir au CH (sauf les 2 extrêmes mais qui sont déjà identifiés)
-                List<BeanPoint_internal> v_pointsPositifs = p_arcEnrichiSource.p31_pointsAssocies.Where(c => v_idPositifs.Contains(c.p00_id)).ToList();
-
-                int v_idPt1 = -1;
-                double v_ecartMax = v_coordDansRef.Select(c => c.Value[1]).Max();
-                if (v_ecartMax == 0)
-                {
-                    return null;
-                }
-                v_idPt1 = v_coordDansRef.Where(c => c.Value[1] == v_ecartMax).First().Key;
-                //(Les arrondis font que, malgré tout, la distance de projection pt être indûment considérée comme non nulle
-                //et qu'un point de l'arc original soit retenu
-                if (v_idPt1 == p_arcEnrichiSource.p11_pointDbt.p00_id || v_idPt1 == p_arcEnrichiSource.p12_pointFin.p00_id)
-                {
-                    return null;
-                }
-                BeanPoint_internal v_points1 = v_pointsPositifs.Where(c => c.p00_id == v_idPt1).ToList().First();
-
-                BeanArc_internal v_arc1 = new BeanArc_internal(p_arcEnrichiSource.p11_pointDbt, v_points1, v_pointsPositifs);
-                BeanArc_internal v_arc2 = new BeanArc_internal(v_points1, p_arcEnrichiSource.p12_pointFin, v_pointsPositifs);
-                //
-                v_pointConvex.Add(v_arc1);
-                v_pointConvex.Add(v_arc2);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            return v_pointConvex;
-        }
-        //
-        public BeanPoint_internal GetIdPointLePlusEloigneDuPointRef(IEnumerable<BeanPoint_internal> p_points, double[] p_pointRef)
-        {
-            BeanPoint_internal v_point;
-            try
-            {
-                ICalculServices_Low v_calcul = new CalculServices_Low();
-                double v_distanceMax = p_points.Select(c => v_calcul.GetDistanceEuclidienneCarreeXY(c.p10_coord, p_pointRef)).Max();
-                v_point = p_points.Where(c => v_calcul.GetDistanceEuclidienneCarreeXY(c.p10_coord, p_pointRef) == v_distanceMax).First();
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-            return v_point;
-        }
-        public double[] GetCentroide(IEnumerable<BeanPoint_internal> p_points)
-        {
-            double[] v_centroide = new double[3];
-            try
-            {
-                v_centroide[0] = p_points.Average(c => c.p10_coord[0]);
-                v_centroide[1] = p_points.Average(c => c.p10_coord[1]);
-                v_centroide[2] = p_points.Average(c => c.p10_coord[2]);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            return v_centroide;
-        }
-
-        public double GetLongueurArcAuCarre(BeanPoint_internal p_point1, BeanPoint_internal p_point2)
-        {
-            return FLabServices.createCalculLow().GetDistanceEuclidienneCarreeXYZ(p_point1.p10_coord, p_point2.p10_coord);
-        }
-
-        public double[] GetVecteurPenteInFacetteFromPoint(BeanFacette_internal p_facette, BeanPoint_internal p_pointFacette,bool p_vecteurSortantSinonEntrant_vf,bool p_nullSiVecteurNonInclus_vf)
-        {
-            double[] v_pente;
-            v_pente = null;
-
-            return v_pente;
-
-            //try
-            //{
-            //    double[] v_vecteurPente;
-            //    bool v_normaliserVecteurPente_vf = true;
-            //    v_vecteurPente=FLabServices.createCalculLow().GetVecteurPenteMaxi(p_facette.p20_normaleDuPlan, v_normaliserVecteurPente_vf);
-            //    double v_pente=FLabServices.createCalculLow().GetPente(v_vecteurPente);
-
-            //    //
-
-
-
-
-            //}
-            //catch (Exception)
-            //{
-
-            //    throw;
-            //}
-        }
-        #endregion UTILITAIRES
-        public List<BeanPoint_internal> GetOrdonnancementPointsFacette(List<BeanPoint_internal> p_pointsFacettes, bool p_renvoyerNullSiColineaires_vf, bool p_sensHoraireSinonAntiHoraire_vf)
-        {
-            List<BeanPoint_internal> v_pointsOrdonnances = new List<BeanPoint_internal>();
-            try
-            {
-                Dictionary<int, double[]> v_pointsAOrdonnancer = p_pointsFacettes.ToDictionary(c => c.p00_id, c => c.p10_coord);
-                List<int> v_idOrdonnances = FLabServices.createCalculLow().GetOrdonnancement(v_pointsAOrdonnancer, p_renvoyerNullSiColineaires_vf, p_sensHoraireSinonAntiHoraire_vf);
-                if (p_renvoyerNullSiColineaires_vf && v_idOrdonnances == null)
-                {
-                    return null;
-                }
-                foreach (int v_id in v_idOrdonnances)
-                {
-                    v_pointsOrdonnances.Add(p_pointsFacettes.Where(c => c.p00_id == v_id).First());
-                }
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-            return v_pointsOrdonnances;
-        }
-
-
-        public List<BeanPoint_internal> GetConvexHull2D(IEnumerable<BeanPoint_internal> p_points)
-        {
-            List<BeanPoint_internal> p_pointsOrdonnesConvexHull = new List<BeanPoint_internal>();
-            try
-            {
-                //1-On créé un segment S0 unissant les points extrêmes du nuage:
-                double[] v_centroide = GetCentroide(p_points);
-                //
-                BeanPoint_internal p_point0;
-                p_point0 = GetIdPointLePlusEloigneDuPointRef(p_points, v_centroide);
-                BeanPoint_internal p_point0_Oppose;
-                p_point0_Oppose = GetIdPointLePlusEloigneDuPointRef(p_points, p_point0.p10_coord);
-                //
-                ICalculServices_Low v_calcul = new CalculServices_Low();
-                Dictionary<int, double[]> v_coordDansRef;
-
-                //2-On effectue une partition du plan délimité par la droite passant par les 2 pts de S0:
-                v_coordDansRef = GetCoordonneesDansNewReferentiel2D(p_points, p_point0.p10_coord, p_point0_Oppose.p10_coord, null);
-                HashSet<int> v_idPositifs = new HashSet<int>(v_coordDansRef.Where(c => c.Value[1] > 0).Select(c => c.Key).ToList());
-                //(Les points '0' ne nous intéressent pas: ils ne peuvent pas appartenir au CH (sauf les 2 extrêmes déjà identifiés)
-                List<BeanPoint_internal> v_pointsPositifs = p_points.Where(c => v_idPositifs.Contains(c.p00_id)).ToList();
-                List<BeanPoint_internal> v_pointsNegatifs = p_points.Where(c => !v_idPositifs.Contains(c.p00_id)).ToList();
-
-
-                p_pointsOrdonnesConvexHull.Add(p_point0);
-
-                //3-On créé 2 arcs orientés à partie de S0 et on les injecte dans une 'pile':
-                Stack<BeanArc_internal> v_pileLifo = new Stack<BeanArc_internal>();
-                //ATTENTION à l'ordre d'injection (voir plus bas)
-
-                BeanArc_internal v_arcDescendant = new BeanArc_internal(p_point0_Oppose, p_point0, v_pointsNegatifs);
-                v_pileLifo.Push(v_arcDescendant);
-                BeanArc_internal v_arcMontant = new BeanArc_internal(p_point0, p_point0_Oppose, v_pointsPositifs);
-                v_pileLifo.Push(v_arcMontant);
-
-                //4-On effectue une recherche en profondeur depuis la 'gauche' de l'arbre vers la 'droite'
-                //=>Sur le premier arc A1, on cherche le point le + excentré à gauche, on en déduit 2 arcs A2 et A3 
-                //et on récupère les pts à gauche de ces arcs
-                //récursivement sur l'arc A2 jusqu'à ce qu'il n'y ait plus de pts extérieurs, puis arc A3,...
-                //ATTENTION: l'ordre d'insertion dans la pile est important.
-                BeanArc_internal v_arcToExplore;
-                List<BeanArc_internal> v_arcsResultants;
-                int p_compteurPasses = 0;
-                while (v_pileLifo.Count > 0)
-                {
-                    p_compteurPasses++;
-                    v_arcToExplore = v_pileLifo.Pop();
-                    v_arcsResultants = GetArcsConvexesGauches(v_arcToExplore);
-
-                    //S'il n'y a pas d'arcs 'plus à gauche', alors le point terminal appartient au convexhull
-                    //Sinon, on met les arcs dans la pile.
-                    if (v_arcsResultants == null)
-                    {
-                        p_pointsOrdonnesConvexHull.Add(v_arcToExplore.p12_pointFin);
-                    }
-                    else
-                    {
-                        v_pileLifo.Push(v_arcsResultants[1]);
-                        v_pileLifo.Push(v_arcsResultants[0]);
-                    }
-                }
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-            return p_pointsOrdonnesConvexHull;
-        }
-        public List<BeanPoint_internal> GetMbo2D(IEnumerable<BeanPoint_internal> p_points, enumModeCalculZ p_modeDeCalculZ, double p_extensionMboEnM)
-        {
-            List<BeanPoint_internal> p_pointsOrdonnesMbo = new List<BeanPoint_internal>();
-            try
-            {
-                double v_alti;
-                switch (p_modeDeCalculZ)
-                {
-                    case enumModeCalculZ.alti_min:
-                        v_alti = p_points.Min(c => c.p10_coord[2]);
-                        break;
-                    case enumModeCalculZ.alti_0:
-                        v_alti = 0;
-                        break;
-                    default:
-                        throw new Exception("Méthode " + p_modeDeCalculZ + " non implémentée.");
-                }
-                //
-                p_pointsOrdonnesMbo = GetMbo2D(p_points, v_alti, p_extensionMboEnM);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-            return p_pointsOrdonnesMbo;
-        }
-        public List<BeanPoint_internal> GetMbo2D(IEnumerable<BeanPoint_internal> p_points, double p_altiZ, double p_extensionMboEnM)
-        {
-            List<BeanPoint_internal> p_pointsOrdonnesMbo = new List<BeanPoint_internal>();
-            try
-            {
-                int v_srid = p_points.First().p11_srid;
-                //
-                double v_minX = p_points.Min(c => c.p10_coord[0]) - p_extensionMboEnM;
-                double v_minY = p_points.Min(c => c.p10_coord[1]) - p_extensionMboEnM;
-                double v_maxX = p_points.Max(c => c.p10_coord[0]) + p_extensionMboEnM;
-                double v_maxY = p_points.Max(c => c.p10_coord[1]) + p_extensionMboEnM;
-                //
-                BeanPoint_internal v_point;
-                //Bas gauche
-                v_point = new BeanPoint_internal(v_minX, v_minY, p_altiZ, v_srid);
-                p_pointsOrdonnesMbo.Add(v_point);
-                //Haut gauche
-                v_point = new BeanPoint_internal(v_minX, v_maxY, p_altiZ, v_srid);
-                p_pointsOrdonnesMbo.Add(v_point);
-                //Haut droit
-                v_point = new BeanPoint_internal(v_maxX, v_maxY, p_altiZ, v_srid);
-                p_pointsOrdonnesMbo.Add(v_point);
-                //Bas droit
-                v_point = new BeanPoint_internal(v_maxX, v_minY, p_altiZ, v_srid);
-                p_pointsOrdonnesMbo.Add(v_point);
-                //Bas gauche
-                v_point = new BeanPoint_internal(v_minX, v_minY, p_altiZ, v_srid);
-                p_pointsOrdonnesMbo.Add(v_point);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-            return p_pointsOrdonnesMbo;
-        }
-        public List<BeanPoint_internal> GetMboPointsProches(IEnumerable<BeanPoint_internal> p_points, int p_nbrePointsCalageSupplSouhaitesMultiplesDe4)
-        {
-            List<BeanPoint_internal> v_pointsOut = new List<BeanPoint_internal>();
-            try
-            {
-                int v_idPointOut;
-                List<BeanPoint_internal> p_pointsOrdonnesMbo = new List<BeanPoint_internal>();
-                int v_srid = p_points.First().p11_srid;
-                //
-                double v_minX = p_points.Min(c => c.p10_coord[0]);
-                double v_minY = p_points.Min(c => c.p10_coord[1]);
-                double v_maxX = p_points.Max(c => c.p10_coord[0]);
-                double v_maxY = p_points.Max(c => c.p10_coord[1]);
-                //
-                HashSet<int> v_pointsDejaTraites = new HashSet<int>();
-                Dictionary<int, BeanPoint_internal> v_dicoPointsSource = p_points.ToDictionary(c => c.p00_id, c => c);
-                Dictionary<int, double[]> v_pointsATester = p_points.ToDictionary(c => c.p00_id, c => c.p10_coord);
-                //
-                double[] v_coordPointAppui;
-                List<double[]> v_listePointsDAppui = new List<double[]>();
-
-                v_coordPointAppui = new double[2] { v_minX, v_minY };
-                v_listePointsDAppui.Add(v_coordPointAppui);
-
-                v_coordPointAppui = new double[2] { v_minX, v_maxY };
-                v_listePointsDAppui.Add(v_coordPointAppui);
-
-                v_coordPointAppui = new double[2] { v_maxX, v_maxY };
-                v_listePointsDAppui.Add(v_coordPointAppui);
-
-                v_coordPointAppui = new double[2] { v_maxX, v_minY };
-                v_listePointsDAppui.Add(v_coordPointAppui);
-
-                //
-                if (p_nbrePointsCalageSupplSouhaitesMultiplesDe4 > 0)
-                {
-                    int v_nbrePointsSupplParArete = (int)Math.Ceiling(p_nbrePointsCalageSupplSouhaitesMultiplesDe4 / 4d);
-                    double v_ecartX = v_maxX - v_minX;
-                    double v_ecartY = v_maxY - v_minY;
-                    double v_decalageEnX = v_ecartX / (v_nbrePointsSupplParArete + 1);
-                    double v_decalageEnY = v_ecartY / (v_nbrePointsSupplParArete + 1);
-                    for (int v_nbrePointsSupp = 1; v_nbrePointsSupp <= v_nbrePointsSupplParArete; v_nbrePointsSupp++)
-                    {
-                        v_coordPointAppui = new double[2] { v_minX + (v_nbrePointsSupp * v_decalageEnX), v_minY };
-                        v_listePointsDAppui.Add(v_coordPointAppui);
-                        v_coordPointAppui = new double[2] { v_minX + (v_nbrePointsSupp * v_decalageEnX), v_maxY };
-                        v_listePointsDAppui.Add(v_coordPointAppui);
-                        v_coordPointAppui = new double[2] { v_minX, v_minY + (v_nbrePointsSupp * v_decalageEnY) };
-                        v_listePointsDAppui.Add(v_coordPointAppui);
-                        v_coordPointAppui = new double[2] { v_maxX, v_minY + (v_nbrePointsSupp * v_decalageEnY) };
-                        v_listePointsDAppui.Add(v_coordPointAppui);
-                    }
-                }
-                //
-
-                foreach (double[] v_pointDAppui in v_listePointsDAppui)
-                {
-                    v_idPointOut = FLabServices.createCalculLow().GetPointLePlusProcheDePoint0XY(v_pointsATester, v_pointDAppui);
-                    if (!v_pointsDejaTraites.Contains(v_idPointOut))
-                    {
-                        v_pointsDejaTraites.Add(v_idPointOut);
-                        v_pointsOut.Add(v_dicoPointsSource[v_idPointOut]);
-                    }
-                }
-                //A REVOIR
-                v_pointsOut = GetOrdonnancementPointsFacette(v_pointsOut, false, true);
-                v_pointsOut.Add(v_pointsOut.First());
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-            return v_pointsOut;
+            return Math.Min(p_facette1.p00_idFacette, p_facette2.p00_idFacette) + "_" + Math.Max(p_facette1.p00_idFacette, p_facette2.p00_idFacette);
         }
         public Dictionary<string, int> GetEtComptePointsDoublonnes(List<BeanPoint_internal> p_pointsToTest)
         {
@@ -1632,6 +1453,50 @@ namespace DEM.Net.Lib.Services.Lab
 
             return v_dicoDoublons;
         }
+        public double GetLongueurArcAuCarre(BeanPoint_internal p_point1, BeanPoint_internal p_point2)
+        {
+            return FLabServices.createCalculLow().GetDistanceEuclidienneCarreeXYZ(p_point1.p10_coord, p_point2.p10_coord);
+        }
+        #endregion UTILITAIRES DIVERS
+
         
+    
+
+        public List<string> GetOrdonnancementArcsAutourPointFacette(BeanPoint_internal p_pointFacette, int p_idPremierArc, bool p_sensHoraireSinonAntihoraire_vf)
+        {
+            List<string> v_codeArcsOrdonnes = null;
+            try
+            {
+                if (p_pointFacette.p41_arcsAssocies == null)
+                {
+                    return null;
+                }
+                if (p_pointFacette.p41_arcsAssocies.Count == 0)
+                {
+                    return new List<string>();
+                }
+                //
+                Dictionary<int, double[]> v_arcsToTest = new Dictionary<int, double[]>();
+                Dictionary<int, double[]> v_d1 = p_pointFacette.p41_arcsAssocies.Where(c => c.Value.p11_pointDbt.p00_id == p_pointFacette.p00_id).ToDictionary(c => c.Value.p00_idArc, c => c.Value.p12_pointFin.p10_coord);
+                Dictionary<int, double[]> v_d2 = p_pointFacette.p41_arcsAssocies.Where(c => c.Value.p12_pointFin.p00_id == p_pointFacette.p00_id).ToDictionary(c => c.Value.p00_idArc, c => c.Value.p11_pointDbt.p10_coord);
+                v_arcsToTest = v_d1.Union(v_d2).ToDictionary(c => c.Key, c => c.Value);
+                //
+                List<int> v_idArcsOrdonnes = FLabServices.createCalculLow().GetOrdonnancement(v_arcsToTest, p_pointFacette.p10_coord, p_idPremierArc, p_sensHoraireSinonAntihoraire_vf);
+                Dictionary<int, string> v_correspondanceIdCode = p_pointFacette.p41_arcsAssocies.ToDictionary(c => c.Value.p00_idArc, c => c.Value.p01_hcodeArc);
+                v_codeArcsOrdonnes = new List<string>();
+                foreach (int v_id in v_idArcsOrdonnes)
+                {
+                    v_codeArcsOrdonnes.Add(v_correspondanceIdCode[v_id]);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return v_codeArcsOrdonnes;
+        }
+
+
+
     }
 }

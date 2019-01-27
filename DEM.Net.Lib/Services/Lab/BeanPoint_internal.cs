@@ -33,10 +33,12 @@ namespace DEM.Net.Lib.Services.Lab
         public int p11_srid { get; set; }
         //
         public bool p21_estPointFacette_vf { get; set; }
+
+        //[Pour construction TIN
         public bool p22_estPointInclus_vf { get; set; }
-        //
         public double p31_ecartAbsAuPlanCourant { get; set; }
-        //
+        
+        //[Pour traitements morphologiques
         public Dictionary<string, BeanArc_internal> p41_arcsAssocies { get; set; }
         public List<string> p42_ordonnancementHorairesArcs { get; set; }
         public bool p43_ordonnancementOK_vf { get; set; }
