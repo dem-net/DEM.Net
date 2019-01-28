@@ -34,7 +34,8 @@ namespace DEM.Net.Lib.Services.Lab
         {
            if(p31_normaleDuPlan==null)
             {
-                p31_normaleDuPlan= FLabServices.createCalculLow().GetNormaleDuPlan(p01_pointsDeFacette[0].p10_coord, p01_pointsDeFacette[2].p10_coord, p01_pointsDeFacette[1].p10_coord);
+                bool p_exceptionSiNotAPlanElseVecteur000_vf = false;
+                p31_normaleDuPlan= FLabServices.createCalculLow().GetNormaleDuPlan(p01_pointsDeFacette[0].p10_coord, p01_pointsDeFacette[2].p10_coord, p01_pointsDeFacette[1].p10_coord, p_exceptionSiNotAPlanElseVecteur000_vf);
             }
             return p31_normaleDuPlan;
         }

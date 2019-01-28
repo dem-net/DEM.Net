@@ -439,7 +439,7 @@ namespace DEM.Net.Lib.Services.Lab
             return v_produitAxB;
         }
         //
-        public double[] GetNormaleDuPlan(double[] p_vector_u, double[] p_vector_w, bool p_normaliserVecteursEnEntree_vf=true)
+        public double[] GetNormaleDuPlan(double[] p_vector_u, double[] p_vector_w, bool p_normaliserVecteursEnEntree_vf, bool p_exceptionSiVecteursColineaires_vecteur0Sinon_vf)
         {
             double[] v_normale = new double[3];
             try
@@ -452,8 +452,16 @@ namespace DEM.Net.Lib.Services.Lab
                 //Contrôle de colinéarité dans le repère xy
                 if ((p_vector_u[0] * p_vector_w[1]) - (p_vector_u[1] * p_vector_w[0]) == 0)
                 {
-                    //throw new Exception("Les points ne doivent pas être alignés.");
-                    return null;
+                    //?Peut en effet être lié à une anomalie (un plan se résolvant à une ligne)
+                    //ou...pas: ex: recherche de la plus forte pente à partir d'un plan horizontal
+                    if(p_exceptionSiVecteursColineaires_vecteur0Sinon_vf)
+                    {
+                        throw new Exception("Les points ne doivent pas être alignés.");
+                    }
+                    else
+                    {
+                        return v_normale;
+                    }
                 }
                 double B = ((p_vector_u[0] * p_vector_w[2]) - (p_vector_w[0] * p_vector_u[2])) / ((p_vector_w[0] * p_vector_u[1]) - (p_vector_u[0] * p_vector_w[1]));
                 double c = 1;
@@ -479,7 +487,7 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_normale;
         }
-        public double[] GetNormaleDuPlan(double[] p_point3D_1, double[] p_point3D_2, double[] p_point3D_3)
+        public double[] GetNormaleDuPlan(double[] p_point3D_1, double[] p_point3D_2, double[] p_point3D_3, bool p_exceptionSiVecteursColineaires_vecteur0Sinon_vf)
         {
             double[] v_normale = new double[3];
             try
@@ -492,7 +500,7 @@ namespace DEM.Net.Lib.Services.Lab
                 double[] w = GetVectorBrutFromTwoPoints(p_point3D_1, p_point3D_3);
                 //
                 bool v_normaliserVecteursEnEntree_vf = true;
-                v_normale = GetNormaleDuPlan(u, w, v_normaliserVecteursEnEntree_vf);
+                v_normale = GetNormaleDuPlan(u, w, v_normaliserVecteursEnEntree_vf, p_exceptionSiVecteursColineaires_vecteur0Sinon_vf);
 
 
             }
@@ -518,12 +526,12 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_coeff;
         }
-        public double[] GetEquationNormaleDuPlan(double[] p_point3D_1, double[] p_point3D_2, double[] p_point3D_3)
+        public double[] GetEquationNormaleDuPlan(double[] p_point3D_1, double[] p_point3D_2, double[] p_point3D_3, bool p_exceptionSiVecteursColineaires_vecteur0Sinon_vf)
         {
             double[] v_coeff = null;
             try
             {
-                double[] v_normale = GetNormaleDuPlan(p_point3D_1, p_point3D_2, p_point3D_3);
+                double[] v_normale = GetNormaleDuPlan(p_point3D_1, p_point3D_2, p_point3D_3,p_exceptionSiVecteursColineaires_vecteur0Sinon_vf);
                 v_coeff = GetEquationNormaleDuPlan(v_normale, p_point3D_1);
             }
             catch (Exception)
@@ -566,7 +574,9 @@ namespace DEM.Net.Lib.Services.Lab
                 double[] v_vecteurNiveau = new double[3] { -1 * p_normaleDuPlan[1], p_normaleDuPlan[0], 0 };
                 //On récupère le vecteur orthogonal aux 2 vecteurs (en fait, il y en aurait 2 possibles, opposé?)
                 bool v_normaliser_vecteursEnEntree_vf = true; //(Normalement le vecteur normal est déjà normalisé mais...)
-                v_vecteurOut = GetNormaleDuPlan(p_normaleDuPlan, v_vecteurNiveau, v_normaliser_vecteursEnEntree_vf);
+                bool v_renvoyerExceptionSiVecteursColineaires_vf = false; 
+                //?false car si le plan est horizontal, le vecteur associé à la courbe de niveau sera 0/0/0 et le vecteur pente devra être 0/0/0
+                v_vecteurOut = GetNormaleDuPlan(p_normaleDuPlan, v_vecteurNiveau, v_normaliser_vecteursEnEntree_vf, v_renvoyerExceptionSiVecteursColineaires_vf);
                 if(p_normaliserVecteurEnSortie_vf && v_vecteurOut!=null)
                 {
                     v_vecteurOut = GetNormalisationVecteurXYZ(v_vecteurOut);
@@ -823,7 +833,7 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_out;
         }
-        //EN COURS
+        
         public bool IsPointDDansCercleCirconscritAuTriangleExplicite(List<double[]> p_pointsTriangle, double[] p_pointToTest)
         {
             bool v_retour = true;

@@ -22,7 +22,7 @@ namespace DEM.Net.Lib.Services.Lab
         double GetDistanceEuclidienneXY(double[] v_point1, double[] v_point2);
         double GetDistanceEuclidienneXYZ(double[] v_point1, double[] v_point2);
         double[] GetEquationNormaleDuPlan(double[] p_normaleAuPlan, double[] p_point3DDuPlan);
-        double[] GetEquationNormaleDuPlan(double[] p_point3D_1, double[] p_point3D_2, double[] p_point3D_3);
+        double[] GetEquationNormaleDuPlan(double[] p_point3D_1, double[] p_point3D_2, double[] p_point3D_3, bool p_exceptionSiVecteursColineaires_vecteur0Sinon_vf);
         double[,] GetEquationParametriqueDroite2D(double[] p_Droite1_pt1, double[] p_Droite1_pt2, bool p_normaliser_vf);
         double[] GetIntersectionDroites2D(double[] p_Droite1_pt1, double[] p_Droite1_pt2, double[] p_Droite2_pt1, double[] p_Droite2_pt2);
         double[] GetIntersectionDroites2DCoeffExplicites(double[] p_coeffDroite1, double[] p_coeffDroite2);
@@ -37,8 +37,8 @@ namespace DEM.Net.Lib.Services.Lab
         double[,] GetMatriceInverse3x3(double[,] p_matriceAInverser);
         double[,] GetMatriceInverse3x3(double[] p_vector1, double[] p_vector2, double[] p_vector3);
         double[,] GetMediatriceByParametres(double[] p_point0, double[] p_point1);
-        double[] GetNormaleDuPlan(double[] p_vector_u, double[] p_vector_w, bool p_normaliserVecteursEnEntree_vf = true);
-        double[] GetNormaleDuPlan(double[] p_point3D_1, double[] p_point3D_2, double[] p_point3D_3);
+        double[] GetNormaleDuPlan(double[] p_vector_u, double[] p_vector_w, bool p_normaliserVecteursEnEntree_vf, bool p_exceptionSiVecteursColineaires_vecteur0Sinon_vf);
+        double[] GetNormaleDuPlan(double[] p_point3D_1, double[] p_point3D_2, double[] p_point3D_3, bool p_exceptionSiVecteursColineaires_vecteur0Sinon_vf);
         double[] GetNormalisationVecteurXY(double[] p_vector);
         double[] GetNormalisationVecteurXYZ(double[] p_vector);
         double GetNormeVecteurXY(double[] p_vector);
