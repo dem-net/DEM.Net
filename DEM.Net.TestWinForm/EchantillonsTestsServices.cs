@@ -10,10 +10,9 @@ namespace DEM.Net.TestWinForm
 {
     public class EchantillonsTestsServices : IServicesApplicatifs
     {
-        public List<BeanPoint_internal> GetPointsTestsByBBox(string p_bbox)
+        public List<BeanPoint_internal> GetPointsTestsByBBox(string p_bbox, DEMDataSet dataset)
         {
             List<BeanPoint_internal> v_pointsToTest = new List<BeanPoint_internal>();
-            DEMDataSet dataset = DEMDataSet.SRTM_GL3;
             try
             {
                 IRasterService v_rasterService = new RasterService();
