@@ -50,7 +50,7 @@ namespace SampleApp
             // chile full
             //_bboxWkt = "POLYGON ((-77.080078125 -56.6562264935022, -66.533203125 -56.6562264935022, -66.533203125 -15.792253570362446, -77.080078125 -15.792253570362446, -77.080078125 -56.6562264935022))";
             // aconcagua
-            _bboxWkt = "POLYGON ((-70.15800476074219 -32.861132322810946, -69.79820251464844 -32.861132322810946, -69.79820251464844 -32.558967346292164, -70.15800476074219 -32.558967346292164, -70.15800476074219 -32.861132322810946))";
+            //_bboxWkt = "POLYGON ((-70.15800476074219 -32.861132322810946, -69.79820251464844 -32.861132322810946, -69.79820251464844 -32.558967346292164, -70.15800476074219 -32.558967346292164, -70.15800476074219 -32.861132322810946))";
             // fogo
             //_bboxWkt = "POLYGON ((-24.5654296875 14.78019397569999, -24.23858642578125 14.78019397569999, -24.23858642578125 15.077427674847987, -24.5654296875 15.077427674847987, -24.5654296875 14.78019397569999))";
             // valgo
@@ -59,7 +59,9 @@ namespace SampleApp
             //_bboxWkt = "POLYGON ((5.01800537109375 43.69369383336777, 5.350341796875 43.69369383336777, 5.350341796875 43.89294437871145, 5.01800537109375 43.89294437871145, 5.01800537109375 43.69369383336777))";
             // france
             //_bboxWkt = "POLYGON ((-6.1962890625 41.1290213474951, 10.04150390625 41.1290213474951, 10.04150390625 51.11041991029264, -6.1962890625 51.11041991029264, -6.1962890625 41.1290213474951))";
-            _normalsDataSet = DEMDataSet.AW3D30;
+            // alps
+            _bboxWkt = "POLYGON ((3.4716796874999996 42.71473218539458, 17.0947265625 42.71473218539458, 17.0947265625 48.67645370777654, 3.4716796874999996 48.67645370777654, 3.4716796874999996 42.71473218539458))";
+            _normalsDataSet = DEMDataSet.SRTM_GL3;
             _meshDataSet = DEMDataSet.AW3D30;
             _outputDirectory = outputDirectory;
             _localdatadir = localDataDir;
@@ -95,9 +97,9 @@ namespace SampleApp
             //=======================
             // Normal map
             Console.WriteLine("Height map...");
-            float Z_FACTOR = 1f;
-            HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, _normalsDataSet);
-            //HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1", "ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
+            float Z_FACTOR = 10f;
+            //HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, _normalsDataSet);
+            HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1", "ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
 
             // hMapNormal = hMapNormal.ReprojectTo(4326, v_outSrid);
             hMapNormal = hMapNormal.ReprojectGeodeticToCartesian();
@@ -109,8 +111,8 @@ namespace SampleApp
 
             //=======================
             // Get height map
-            HeightMap hMap = _elevationService.GetHeightMap(bbox, _meshDataSet);
-            //HeightMap hMap = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1","ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
+            //HeightMap hMap = _elevationService.GetHeightMap(bbox, _meshDataSet);
+            HeightMap hMap = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1","ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
 
             //=======================
             // UV mapping (before projection)

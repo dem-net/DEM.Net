@@ -454,7 +454,7 @@ namespace DEM.Net.Lib
             List<FileMetadata> bboxMetadata = GetCoveringFiles(bbox, dataSet);
 
             // get height map for each file at bbox
-            List<HeightMap> tilesHeightMap = new List<HeightMap>();
+            List<HeightMap> tilesHeightMap = new List<HeightMap>(bboxMetadata.Count);
             foreach (FileMetadata metadata in bboxMetadata)
             {
                 using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, dataSet.FileFormat))
