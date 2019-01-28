@@ -20,11 +20,20 @@ namespace DEM.Net.Lib.Imagery
     {
         public TextureInfo BaseColorTexture { get; set; }
         public TextureInfo NormalTexture { get; set; }
-        public IEnumerable<IEnumerable<Vector2>> TextureCoordSets { get; set; }
+        public IEnumerable<Vector2> TextureCoordSets { get; set; }
 
-        public static PBRTexture Create(TextureInfo baseColorTexture, TextureInfo normalMapTexture = null)
+        public static PBRTexture Create(TextureInfo baseColorTexture, TextureInfo normalMapTexture, IEnumerable<Vector2> textureUVMap = null)
         {
-            return new PBRTexture() { BaseColorTexture = baseColorTexture, NormalTexture = normalMapTexture };
+            return new PBRTexture() {
+                BaseColorTexture = baseColorTexture,
+                NormalTexture = normalMapTexture,
+                TextureCoordSets = textureUVMap
+            };
+        }
+
+        public static PBRTexture Create(TextureInfo baseColorTexture)
+        {
+            return Create(baseColorTexture, null, null);
         }
 
     }

@@ -97,15 +97,16 @@ namespace DEM.Net.Lib.Imagery
             // where is the bbox in the final image ?
 
             // get pixel in full map
-            var localBbox = ConvertWorldToMap(bbox, tiles.First().TileInfo.Zoom);
+            int zoomLevel = tiles.First().TileInfo.Zoom;
+            var projectedBbox = ConvertWorldToMap(bbox, zoomLevel);
             var tilesBbox = GetTilesBoundingBox(tiles);
 
             //DrawDebugBmpBbox(tiles, localBbox, tilesBbox, fileName, mimeType);
             int tileSize = tiles.Provider.TileSize;
-            using (Bitmap bmp = new Bitmap((int)localBbox.Width, (int)localBbox.Height))
+            using (Bitmap bmp = new Bitmap((int)projectedBbox.Width, (int)projectedBbox.Height))
             {
-                int xOffset = (int)(tilesBbox.xMin - localBbox.xMin);
-                int yOffset = (int)(tilesBbox.yMin - localBbox.yMin);
+                int xOffset = (int)(tilesBbox.xMin - projectedBbox.xMin);
+                int yOffset = (int)(tilesBbox.yMin - projectedBbox.yMin);
                 using (Graphics g = Graphics.FromImage(bmp))
                 {
                     foreach (var tile in tiles)
@@ -135,9 +136,8 @@ namespace DEM.Net.Lib.Imagery
                 //    bmpOut.Save(fileName, format);
                 //}
             }
-            return new TextureInfo(fileName, mimeType, (int)localBbox.Width, (int)localBbox.Height);
+            return new TextureInfo(fileName, mimeType, (int)projectedBbox.Width, (int)projectedBbox.Height, zoomLevel, projectedBbox);
             //return new TextureInfo(fileName, format, (int)tilesBbox.Width, (int)tilesBbox.Height);
-
 
         }
 
@@ -146,8 +146,8 @@ namespace DEM.Net.Lib.Imagery
             int tileSize = tiles.Provider.TileSize;
             using (Bitmap bmp = new Bitmap((int)tilesBbox.Width, (int)tilesBbox.Height))
             {
-                int xOffset =  (int)(localBbox.xMin - tilesBbox.xMin);
-                int yOffset =  (int)(localBbox.yMin - tilesBbox.yMin);
+                int xOffset = (int)(localBbox.xMin - tilesBbox.xMin);
+                int yOffset = (int)(localBbox.yMin - tilesBbox.yMin);
                 using (Graphics g = Graphics.FromImage(bmp))
                 {
                     foreach (var tile in tiles)
@@ -167,9 +167,9 @@ namespace DEM.Net.Lib.Imagery
                 }
                 //bmp.Save(Path.ChangeExtension( fileName,".debug.jpg"), format);
                 var ext = Path.GetExtension(fileName);
-                bmp.Save(Path.ChangeExtension(fileName,".debug"+ ext), ConvertFormat(mimeType));
+                bmp.Save(Path.ChangeExtension(fileName, ".debug" + ext), ConvertFormat(mimeType));
             }
-           
+
         }
 
         private ImageFormat ConvertFormat(TextureImageFormat format)
@@ -179,7 +179,7 @@ namespace DEM.Net.Lib.Imagery
             else
                 return ImageFormat.Png;
         }
-        
+
         private Uri BuildUri(ImageryProvider provider, int x, int y, int zoom)
         {
             string[] serverNodes = provider.UrlModel.Servers;
@@ -277,6 +277,35 @@ namespace DEM.Net.Lib.Imagery
         #endregion
 
         #region UV mapping
+
+        public List<Vector2> ComputeUVMap(HeightMap heightMap, TextureInfo textureInfo)
+        {
+            /**********************************
+            * We need to map texture pixels to heightmap points
+            * Linear mapping does not work because or Mercator projection distortion
+            * Pseudo code : 
+            * for each point
+            *   project to texture coordinates (pixelXY at same zoom than texture)
+            *   get pixel offset from origin
+            *   map this offset to (0 -> texWidth, 0 -> textHeight) => (0->1, 0->1)
+            */
+            List<Vector2> uvs = new List<Vector2>(heightMap.Count);
+            var bbox = textureInfo.ProjectedBounds;
+            foreach (GeoPoint geoPoint in heightMap.Coordinates)
+            {
+                PointInt projPoint = TileUtils.LatLongToPixelXY(geoPoint.Latitude, geoPoint.Longitude, textureInfo.ProjectedZoom);
+
+                float xOffset = projPoint.X - (float)bbox.xMin;
+                float uvX = MathHelper.Map(1, textureInfo.Width, 0, 1, xOffset, true);
+
+                float yOffset = projPoint.Y - (float)bbox.yMin;
+                float uvY = MathHelper.Map(1, textureInfo.Height, 0, 1, yOffset, true);
+
+                uvs.Add(new Vector2(uvX, uvY));
+            }
+
+            return uvs;
+        }
 
         #endregion
 

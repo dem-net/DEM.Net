@@ -446,10 +446,17 @@ namespace DEM.Net.glTF
                     if (texture != null)
                     {
                         mesh.TextureCoordsComponentType = MeshPrimitive.TextureCoordsComponentTypeEnum.FLOAT;
-                        mesh.TextureCoordSets = Enumerable.Range(0, 1).Select(i => positions.Select(pos => new Vector2(
-                            MathHelper.Map(min.X, max.X, 0, 1, pos.X, true)
-                            , MathHelper.Map(min.Z, max.Z, 0, 1, pos.Z, true)
-                            )));
+                        if (texture.TextureCoordSets == null)
+                        {
+                            mesh.TextureCoordSets = Enumerable.Range(0, 1).Select(i => positions.Select(pos => new Vector2(
+                                MathHelper.Map(min.X, max.X, 0, 1, pos.X, true)
+                                , MathHelper.Map(min.Z, max.Z, 0, 1, pos.Z, true)
+                                )));
+                        }
+                        else
+                        {
+                            mesh.TextureCoordSets = Enumerable.Range(0, 1).Select(i => texture.TextureCoordSets);
+                        }
                         mesh.Material.MetallicRoughnessMaterial = new PbrMetallicRoughness()
                         {
                             BaseColorFactor = Vector4.One,
@@ -550,7 +557,7 @@ namespace DEM.Net.glTF
         }
         #endregion
 
-        
+
 
     }
 }

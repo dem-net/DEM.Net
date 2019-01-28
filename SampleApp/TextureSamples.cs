@@ -32,7 +32,7 @@ namespace SampleApp
             // sugiton
             //_bboxWkt = "POLYGON ((5.42201042175293 43.20023317388979, 5.459775924682617 43.20023317388979, 5.459775924682617 43.22594305473314, 5.42201042175293 43.22594305473314, 5.42201042175293 43.20023317388979))";
             // ste victoire
-            _bboxWkt = "POLYGON((5.424004809009261 43.68472756348281, 5.884057299243636 43.68472756348281, 5.884057299243636 43.40402056297321, 5.424004809009261 43.40402056297321, 5.424004809009261 43.68472756348281))";
+            //_bboxWkt = "POLYGON((5.424004809009261 43.68472756348281, 5.884057299243636 43.68472756348281, 5.884057299243636 43.40402056297321, 5.424004809009261 43.40402056297321, 5.424004809009261 43.68472756348281))";
             // ventoux
             // _bboxWkt = "POLYGON ((5.192413330078125 44.12209907358672, 5.3015899658203125 44.12209907358672, 5.3015899658203125 44.201897151875094, 5.192413330078125 44.201897151875094, 5.192413330078125 44.12209907358672))";
             //ventoux avigon
@@ -49,6 +49,8 @@ namespace SampleApp
             //_bboxWkt = "POLYGON ((-75.47607421875 -25.74052909277321, -67.08251953125 -25.74052909277321, -67.08251953125 -21.53484700204879, -75.47607421875 -21.53484700204879, -75.47607421875 -25.74052909277321))";
             // chile full
             //_bboxWkt = "POLYGON ((-77.080078125 -56.6562264935022, -66.533203125 -56.6562264935022, -66.533203125 -15.792253570362446, -77.080078125 -15.792253570362446, -77.080078125 -56.6562264935022))";
+            // aconcagua
+            _bboxWkt = "POLYGON ((-70.15800476074219 -32.861132322810946, -69.79820251464844 -32.861132322810946, -69.79820251464844 -32.558967346292164, -70.15800476074219 -32.558967346292164, -70.15800476074219 -32.861132322810946))";
             // fogo
             //_bboxWkt = "POLYGON ((-24.5654296875 14.78019397569999, -24.23858642578125 14.78019397569999, -24.23858642578125 15.077427674847987, -24.5654296875 15.077427674847987, -24.5654296875 14.78019397569999))";
             // valgo
@@ -81,7 +83,7 @@ namespace SampleApp
             ImageryService imageryService = new ImageryService();
 
             Console.WriteLine("Download image tiles...");
-            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 4);
+            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.MapBoxSatelliteStreet, 8);
 
             Console.WriteLine("Construct texture...");
             string fileName = Path.Combine(outputDir, "Texture.jpg");
@@ -93,21 +95,31 @@ namespace SampleApp
             //=======================
             // Normal map
             Console.WriteLine("Height map...");
-            float Z_FACTOR = 2f;
+            float Z_FACTOR = 1f;
             HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, _normalsDataSet);
             //HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1", "ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
 
             // hMapNormal = hMapNormal.ReprojectTo(4326, v_outSrid);
             hMapNormal = hMapNormal.ReprojectGeodeticToCartesian();
 
+            Console.WriteLine("Generate normal map...");
+            TextureInfo normal = imageryService.GenerateNormalMap(hMapNormal, outputDir);
+            //
+            //=======================
+
+            //=======================
+            // Get height map
             HeightMap hMap = _elevationService.GetHeightMap(bbox, _meshDataSet);
             //HeightMap hMap = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1","ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
+
+            //=======================
+            // UV mapping (before projection)
+            PBRTexture pBRTexture = PBRTexture.Create(texInfo, normal, imageryService.ComputeUVMap(hMap, texInfo));
 
             hMap = hMap.ReprojectGeodeticToCartesian();
             hMap = hMap.CenterOnOrigin().ZScale(Z_FACTOR);
 
-            Console.WriteLine("Generate normal map...");
-            TextureInfo normal = imageryService.GenerateNormalMap(hMapNormal, outputDir); //
+           
             //=======================
 
 
@@ -120,13 +132,13 @@ namespace SampleApp
             if (useTIN)
             {
                 Console.WriteLine("Create TIN...");
-                //triangleMesh = GenerateTIN(hMapTIN, glTF, PBRTexture.Create(texInfo, normal));
-                triangleMesh = TINGeneration.GenerateTIN(hMap, glTF, PBRTexture.Create(texInfo, normal));
+                //triangleMesh = GenerateTIN(hMapTIN, glTF, pBRTexture);
+                triangleMesh = TINGeneration.GenerateTIN(hMap, glTF, pBRTexture);
             }
             else
             {
                 Console.WriteLine("GenerateTriangleMesh...");
-                triangleMesh = glTF.GenerateTriangleMesh(hMap, null, PBRTexture.Create(texInfo, normal));
+                triangleMesh = glTF.GenerateTriangleMesh(hMap, null, pBRTexture);
 
             }
             meshes.Add(triangleMesh);

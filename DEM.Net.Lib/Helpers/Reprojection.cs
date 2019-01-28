@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DEM.Net.Lib.Imagery;
 using DotSpatial.Projections;
 
 namespace DEM.Net.Lib
@@ -34,6 +35,7 @@ namespace DEM.Net.Lib
         {
             return points.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR);
         }
+        
         public static IEnumerable<GeoPoint> ReprojectTo(this IEnumerable<GeoPoint> points, int sourceEpsgCode, int destinationEpsgCode)
         {
             if (sourceEpsgCode == destinationEpsgCode)
