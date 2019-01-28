@@ -30,7 +30,8 @@ namespace DEM.Net.Lib.Services.Lab
                 double[] v_pointNormal = new double[3] { v_vecteurNormalXy[0] + p_arc.p11_pointDbt.p10_coord[0], v_vecteurNormalXy[1] + p_arc.p11_pointDbt.p10_coord[1], p_arc.p11_pointDbt.p10_coord[2] };
 
                 double[] v_vecteurNormalAuPlanDePenteMaxi;
-                v_vecteurNormalAuPlanDePenteMaxi = FLabServices.createCalculLow().GetNormaleDuPlan(p_arc.p11_pointDbt.p10_coord, p_arc.p12_pointFin.p10_coord, v_pointNormal);
+                bool p_exceptionSiNotAPlanElseVecteur000_vf = false;
+                v_vecteurNormalAuPlanDePenteMaxi = FLabServices.createCalculLow().GetNormaleDuPlan(p_arc.p11_pointDbt.p10_coord, p_arc.p12_pointFin.p10_coord, v_pointNormal, p_exceptionSiNotAPlanElseVecteur000_vf);
 
                 //=>On calcule la matrice inverse...
                 v_vecteurArc = FLabServices.createCalculLow().GetNormalisationVecteurXYZ(v_vecteurArc);
