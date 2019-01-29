@@ -26,9 +26,9 @@ namespace SampleApp
             _paramTin.p15_nbrePointsSupplMultiples4 = 4;
             _paramTin.p16_initialisation_modeChoixDuPointCentral.p01_excentrationMinimum = 0;
             _paramTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = 1000;
-            _paramTin.p31_nbreIterationsMaxi = 10;
+            
+            //
             var _topolFacettes = FLabServices.createCalculMedium().GetInitialisationTin(v_pointsToTest, _paramTin);
-
             FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, _paramTin);
 
 

@@ -16,8 +16,6 @@ namespace DEM.Net.Lib.Services.Lab
         public BeanParametresChoixDuPointCentral p16_initialisation_modeChoixDuPointCentral { get; set; }
         public BeanParametresChoixDuPointCentral p21_enrichissement_modeChoixDuPointCentral { get; set; }
 
-        public int p31_nbreIterationsMaxi { get; set; }
-
         public BeanParametresDuTin()
          {
             p16_initialisation_modeChoixDuPointCentral = new BeanParametresChoixDuPointCentral();

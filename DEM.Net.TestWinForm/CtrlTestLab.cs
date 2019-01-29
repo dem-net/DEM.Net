@@ -172,24 +172,10 @@ namespace DEM.Net.TestWinForm
             _paramTin.p15_nbrePointsSupplMultiples4 = 4;
             _paramTin.p16_initialisation_modeChoixDuPointCentral.p01_excentrationMinimum = 0;
             _paramTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = Convert.ToDouble(tb_precisionEnM.Text);
-            //_paramTin.p31_nbreIterationsMaxi = Convert.ToInt16(tb_nbreIterations.Text);
-            _paramTin.p31_nbreIterationsMaxi = 10;
+
+            //
             _topolFacettes = FLabServices.createCalculMedium().GetInitialisationTin(_dataPointsTests, _paramTin);
-
-
-            //FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(_topolFacettes, false, false);
-            //FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
-
-            // FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, _paramTin);
-
             FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, _paramTin);
-
-            //List<BeanArc_internal> v_arcs= _topolFacettes.p11_pointsFacettesByIdPoint.Select(c => c.Value).SelectMany(c => c.p41_arcsAssocies).Select(c => c.Value).ToList();
-            //List<int> v_idArcDistinct = v_arcs.Select(c=>c.p00_idArc).Distinct().ToList();
-            //List<string> v_codeArcDistinct = v_arcs.Select(c => c.p01_hcodeArc).Distinct().ToList();
-            ////
-            //List<int> v_idPointDistinct=_topolFacettes.p13_facettesById.Values.SelectMany(c => c.p01_pointsDeFacette).Select(c => c.p00_id).Distinct().ToList();
-            //List<BeanPoint_internal> v_pts0=_topolFacettes.p13_facettesById.Values.SelectMany(c => c.p01_pointsDeFacette).Where(c => c.p41_arcsAssocies.Count == 0).ToList();
 
             bool v_visuSpatialTrace_vf = false;
             if (v_visuSpatialTrace_vf)

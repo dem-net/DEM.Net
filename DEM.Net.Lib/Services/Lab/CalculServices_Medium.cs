@@ -26,7 +26,6 @@ namespace DEM.Net.Lib.Services.Lab
                 v_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral.p00_methodeChoixDuPointCentral = enumMethodeChoixDuPointCentral.pointLePlusExcentre;
                 v_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = 20;
                 //
-                v_parametresDuTin.p31_nbreIterationsMaxi = 20;
             }
             catch (Exception)
             {
