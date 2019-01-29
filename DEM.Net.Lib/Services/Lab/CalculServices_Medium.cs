@@ -162,14 +162,15 @@ namespace DEM.Net.Lib.Services.Lab
                 //=>+ Référencement de la première cellule
                 p_topologieFacette.p21_facetteAvecEcartAbsoluMax = v_facettesTriees.First();
 
-
                 //On parcourt la liste chaînée:
                 do
                 {
                     TraitementDeLaFacetteMaxiByRef(ref p_topologieFacette, p_topologieFacette.p21_facetteAvecEcartAbsoluMax, p_parametresDuTin);
                 }
-                while (p_topologieFacette.p21_facetteAvecEcartAbsoluMax.p24_facetteEcartInf != null);
-
+                while (p_topologieFacette.p21_facetteAvecEcartAbsoluMax!=null);
+                //while (p_topologieFacette.p21_facetteAvecEcartAbsoluMax.p24_facetteEcartInf != null) ;
+                //Pour contrôle:
+                //List<BeanFacette_internal> v_facPb= p_topologieFacette.p13_facettesById.Values.Where(c => c.p21_plusGrandEcartAbsolu > p_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum).ToList();
             }
             catch (Exception)
             {
@@ -460,10 +461,12 @@ namespace DEM.Net.Lib.Services.Lab
                 v_rapportResultTetraedre = GetTetraedreByFacette(ref p_topologieFacette, p_facetteATraiter.p00_idFacette, p_facetteATraiter.p22_pointPlusGrandEcart);
 
                 List<int> v_idNouvellesFacettesBrutes = new List<int>(v_rapportResultTetraedre.p02_newFacettes.Select(c => c.p00_idFacette));
+                //=>On remonte les arcs bases du tétraèdre
                 List<string> v_hcodeArcsATester = v_rapportResultTetraedre.p03_arcsCandidatsOut.Select(c => c.p01_hcodeArc).ToList();
                 HashSet<string> v_HSCodesArcsATester = new HashSet<string>(v_hcodeArcsATester);
 
                 BeanResultatConversions_internal v_rapportResultBascule;
+                //=>Pour chacun de ces arcs, on effectue le contrôle de Delaunay ET s'il y a lieu, on effectue la bascule
                 string v_codeArcCandidat;
                 for (int v_indiceArc = 0; v_indiceArc < v_hcodeArcsATester.Count; v_indiceArc++)
                 {
@@ -486,25 +489,23 @@ namespace DEM.Net.Lib.Services.Lab
                     }
                 }
 
-                //On va calculer l'excentration de chaque parcelle et introduire la parcelle dans la chaine de tri
+                //On calcule l'excentration de chaque nouvelle facette et on l'introduit dans la chaine de tri
                 double v_ecartMini = p_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum;
                 v_idNouvellesFacettesBrutes = v_idNouvellesFacettesBrutes.Distinct().ToList();
                 BeanFacette_internal v_facettePourMaj;
                 bool v_nullSiInfEcentrationMinimale_vf = false;
 
-                //List<BeanFacette_internal> v_facetteToInsert = new List<BeanFacette_internal>();
-                foreach (int v_idNewFacette in v_idNouvellesFacettesBrutes)
+               foreach (int v_idNewFacette in v_idNouvellesFacettesBrutes)
                 {
                     if (!p_topologieFacette.p13_facettesById.ContainsKey(v_idNewFacette))
                     {
                         continue;
                     }
+                    //3732
                     v_facettePourMaj = p_topologieFacette.p13_facettesById[v_idNewFacette];
                     GetAndSetByRefPointExcentreDeLaFacette(ref v_facettePourMaj, p_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral, v_nullSiInfEcentrationMinimale_vf);
-                    //v_facetteToInsert.Add(v_facettePourMaj);
                     InsertDansListeChaineeDesFacettes(ref p_topologieFacette, v_facettePourMaj, v_ecartMini);
                 }
-                //InsertDansListeChaineeDesFacettes(ref p_topologieFacette, v_facetteToInsert, v_ecartMini);
             }
             catch (Exception)
             {

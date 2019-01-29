@@ -274,7 +274,21 @@ namespace DEM.Net.TestWinForm
             MeshPrimitive v_trianglesMesh = glTFService.GenerateTriangleMesh(v_beanToVisu3d.p00_geoPoint, v_beanToVisu3d.p01_listeIndexPointsfacettes.SelectMany(c => c).ToList());
 
             Model model = glTFService.GenerateModel(v_trianglesMesh, "Test Triangles");
-            glTFService.Export(model, "Test3D", $"testTriangles_p{tb_precisionEnM.Text}", false, true);
+            string v_nomFichierOut = "TIN_";
+            if (rdSRTMGL3.Checked)
+            {
+                v_nomFichierOut += "SRTM_GL3";
+            }
+            else if (rdSRTMGL1.Checked)
+            {
+                v_nomFichierOut += "SRTM_GL1";
+            }
+            else
+            {
+                v_nomFichierOut += "AW3D30";
+            }
+            v_nomFichierOut += "_p" + tb_precisionEnM.Text;
+            glTFService.Export(model, "Test3D", v_nomFichierOut, false, true);
             MessageBox.Show("Traitement terminé.");
         }
 
