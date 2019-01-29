@@ -73,6 +73,8 @@
             this.label14 = new System.Windows.Forms.Label();
             this.tb_pasSeparationEntrePoints = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btn_pentesTin_visuST = new System.Windows.Forms.Button();
+            this.label22 = new System.Windows.Forms.Label();
             this.btn_creteEtTalwegTin_visuST = new System.Windows.Forms.Button();
             this.label23 = new System.Windows.Forms.Label();
             this.tb_wkt = new System.Windows.Forms.TextBox();
@@ -86,12 +88,15 @@
             this.btn_testCH = new System.Windows.Forms.Button();
             this.btn_testsDivers = new System.Windows.Forms.Button();
             this.btn_visualisationSpatialTrace = new System.Windows.Forms.Button();
-            this.label22 = new System.Windows.Forms.Label();
-            this.btn_pentesTin_visuST = new System.Windows.Forms.Button();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.rdSRTMGL3 = new System.Windows.Forms.RadioButton();
+            this.rdSRTMGL1 = new System.Windows.Forms.RadioButton();
+            this.rdAW3D30 = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // btn_genererPoints
@@ -502,6 +507,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.groupBox5);
             this.groupBox3.Controls.Add(this.btn_pentesTin_visuST);
             this.groupBox3.Controls.Add(this.label22);
             this.groupBox3.Controls.Add(this.btn_creteEtTalwegTin_visuST);
@@ -527,6 +533,25 @@
             this.groupBox3.TabIndex = 28;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Génération points tests:";
+            // 
+            // btn_pentesTin_visuST
+            // 
+            this.btn_pentesTin_visuST.Location = new System.Drawing.Point(554, 356);
+            this.btn_pentesTin_visuST.Name = "btn_pentesTin_visuST";
+            this.btn_pentesTin_visuST.Size = new System.Drawing.Size(129, 26);
+            this.btn_pentesTin_visuST.TabIndex = 41;
+            this.btn_pentesTin_visuST.Text = "Pentes facettes";
+            this.btn_pentesTin_visuST.UseVisualStyleBackColor = true;
+            this.btn_pentesTin_visuST.Click += new System.EventHandler(this.btn_pentesTin_visuST_Click);
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(563, 305);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(87, 13);
+            this.label22.TabIndex = 40;
+            this.label22.Text = "Visu spatial trace";
             // 
             // btn_creteEtTalwegTin_visuST
             // 
@@ -655,24 +680,51 @@
             this.btn_visualisationSpatialTrace.UseVisualStyleBackColor = true;
             this.btn_visualisationSpatialTrace.Click += new System.EventHandler(this.btn_visualisationSpatialTrace_Click);
             // 
-            // label22
+            // groupBox5
             // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(563, 305);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(87, 13);
-            this.label22.TabIndex = 40;
-            this.label22.Text = "Visu spatial trace";
+            this.groupBox5.Controls.Add(this.rdAW3D30);
+            this.groupBox5.Controls.Add(this.rdSRTMGL1);
+            this.groupBox5.Controls.Add(this.rdSRTMGL3);
+            this.groupBox5.Location = new System.Drawing.Point(6, 231);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(194, 86);
+            this.groupBox5.TabIndex = 29;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Jeu de données";
             // 
-            // btn_pentesTin_visuST
+            // rdSRTMGL3
             // 
-            this.btn_pentesTin_visuST.Location = new System.Drawing.Point(554, 356);
-            this.btn_pentesTin_visuST.Name = "btn_pentesTin_visuST";
-            this.btn_pentesTin_visuST.Size = new System.Drawing.Size(129, 26);
-            this.btn_pentesTin_visuST.TabIndex = 41;
-            this.btn_pentesTin_visuST.Text = "Pentes facettes";
-            this.btn_pentesTin_visuST.UseVisualStyleBackColor = true;
-            this.btn_pentesTin_visuST.Click += new System.EventHandler(this.btn_pentesTin_visuST_Click);
+            this.rdSRTMGL3.AutoSize = true;
+            this.rdSRTMGL3.Checked = true;
+            this.rdSRTMGL3.Location = new System.Drawing.Point(20, 19);
+            this.rdSRTMGL3.Name = "rdSRTMGL3";
+            this.rdSRTMGL3.Size = new System.Drawing.Size(111, 17);
+            this.rdSRTMGL3.TabIndex = 0;
+            this.rdSRTMGL3.TabStop = true;
+            this.rdSRTMGL3.Text = "SRTM_GL3 (90m)";
+            this.rdSRTMGL3.UseVisualStyleBackColor = true;
+            // 
+            // rdSRTMGL1
+            // 
+            this.rdSRTMGL1.AutoSize = true;
+            this.rdSRTMGL1.Location = new System.Drawing.Point(20, 42);
+            this.rdSRTMGL1.Name = "rdSRTMGL1";
+            this.rdSRTMGL1.Size = new System.Drawing.Size(111, 17);
+            this.rdSRTMGL1.TabIndex = 1;
+            this.rdSRTMGL1.TabStop = true;
+            this.rdSRTMGL1.Text = "SRTM_GL1 (30m)";
+            this.rdSRTMGL1.UseVisualStyleBackColor = true;
+            // 
+            // rdAW3D30
+            // 
+            this.rdAW3D30.AutoSize = true;
+            this.rdAW3D30.Location = new System.Drawing.Point(20, 65);
+            this.rdAW3D30.Name = "rdAW3D30";
+            this.rdAW3D30.Size = new System.Drawing.Size(98, 17);
+            this.rdAW3D30.TabIndex = 2;
+            this.rdAW3D30.TabStop = true;
+            this.rdAW3D30.Text = "AW3D30 (30m)";
+            this.rdAW3D30.UseVisualStyleBackColor = true;
             // 
             // CtrlTestLab
             // 
@@ -689,6 +741,8 @@
             this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -754,5 +808,9 @@
         private System.Windows.Forms.Button btn_creteEtTalwegTin_visuST;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Button btn_pentesTin_visuST;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.RadioButton rdSRTMGL3;
+        private System.Windows.Forms.RadioButton rdAW3D30;
+        private System.Windows.Forms.RadioButton rdSRTMGL1;
     }
 }

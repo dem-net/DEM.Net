@@ -99,10 +99,10 @@ namespace DEM.Net.TestWinForm
             FServicesApplicatifs.createVisuSpatialTrace().AfficheVisu();
 
         }
-        
-      
 
-        
+
+
+
         private IEnumerable<GeoPoint> FromBeanPoint_internalToGeoPoint(List<BeanPoint_internal> dataPointsTests)
         {
             return dataPointsTests.Select(ptIn => new GeoPoint(ptIn.p10_coord[1], ptIn.p10_coord[0], (float)ptIn.p10_coord[2], 0, 0));
@@ -163,7 +163,7 @@ namespace DEM.Net.TestWinForm
 
         private void btn_testTin_Click(object sender, EventArgs e)
         {
-           
+
             _paramTin = FLabServices.createCalculMedium().GetParametresDuTinParDefaut();
             _paramTin.p11_initialisation_determinationFrontieres = enumModeDelimitationFrontiere.pointsProchesDuMbo;
             _paramTin.p12_extensionSupplementaireMboEnM = 1000;
@@ -180,7 +180,7 @@ namespace DEM.Net.TestWinForm
             //FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(_topolFacettes, false, false);
             //FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
 
-           // FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, _paramTin);
+            // FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, _paramTin);
 
             FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, _paramTin);
 
@@ -215,26 +215,38 @@ namespace DEM.Net.TestWinForm
             //string v_gorges="Polygon ((6.14901771150602894 43.8582708438193265, 6.30590241369230409 43.8575166880815317, 6.32080646040000005 43.74636314919661828, 6.14561854295865828 43.74579647280887684, 6.14901771150602894 43.8582708438193265))";
             v_bbox = tb_wkt.Text;
 
-
-            _dataPointsTests =FServicesApplicatifs.createEchantillonsTestsServices().GetPointsTestsByBBox(v_bbox);
+            DEMDataSet dataSet = null;
+            if (rdSRTMGL3.Checked)
+            {
+                dataSet = DEMDataSet.SRTM_GL3;
+            }
+            else if (rdSRTMGL1.Checked)
+            {
+                dataSet = DEMDataSet.SRTM_GL1;
+            }
+            else
+            {
+                dataSet = DEMDataSet.AW3D30;
+            }
+            _dataPointsTests = FServicesApplicatifs.createEchantillonsTestsServices().GetPointsTestsByBBox(v_bbox, dataSet);
 
             //Dictionary<string, int> v_doublons;
             //v_doublons=FLabServices.createCalculMedium().GetEtComptePointsDoublonnes(_dataPointsTests);
-            MessageBox.Show("Remontée des points terminée ("+ _dataPointsTests.Count+ " points).");
+            MessageBox.Show("Remontée des points terminée (" + _dataPointsTests.Count + " points).");
         }
 
         private void btnTestFacettes_Click(object sender, EventArgs e)
         {
             BeanFacettesToVisu3D v_beanToVisu3d;
             v_beanToVisu3d = new BeanFacettesToVisu3D();
-            
+
             Dictionary<int, int> v_indiceParIdPoint = new Dictionary<int, int>();
             int v_indice = 0;
             GeoPoint v_geoPoint;
 
-            foreach(BeanPoint_internal v_point in _topolFacettes.p11_pointsFacettesByIdPoint.Values)
+            foreach (BeanPoint_internal v_point in _topolFacettes.p11_pointsFacettesByIdPoint.Values)
             {
-                v_geoPoint = new GeoPoint(v_point.p10_coord[1], v_point.p10_coord[0], (float) v_point.p10_coord[2],0,0);
+                v_geoPoint = new GeoPoint(v_point.p10_coord[1], v_point.p10_coord[0], (float)v_point.p10_coord[2], 0, 0);
                 v_beanToVisu3d.p00_geoPoint.Add(v_geoPoint);
                 v_indiceParIdPoint.Add(v_point.p00_id, v_indice);
                 v_indice++;
@@ -243,11 +255,11 @@ namespace DEM.Net.TestWinForm
             List<int> v_listeIndices;
             bool v_renvoyerNullSiPointsColineaires_vf = true;
             bool v_normalisationSensHoraireSinonAntihoraire = false;
-           
+
             foreach (BeanFacette_internal v_facette in _topolFacettes.p13_facettesById.Values)
             {
                 List<BeanPoint_internal> v_normalisationDuSens = FLabServices.createCalculMedium().GetOrdonnancementPointsFacette(v_facette.p01_pointsDeFacette, v_renvoyerNullSiPointsColineaires_vf, v_normalisationSensHoraireSinonAntihoraire);
-                if(v_normalisationDuSens != null)
+                if (v_normalisationDuSens != null)
                 {
                     v_listeIndices = new List<int>();
                     foreach (BeanPoint_internal v_ptFacette in v_normalisationDuSens)
@@ -255,14 +267,14 @@ namespace DEM.Net.TestWinForm
                         v_listeIndices.Add(v_indiceParIdPoint[v_ptFacette.p00_id]);
                     }
                     v_beanToVisu3d.p01_listeIndexPointsfacettes.Add(v_listeIndices);
-                }      
+                }
             }
             //
             IglTFService glTFService = new glTFService();
             MeshPrimitive v_trianglesMesh = glTFService.GenerateTriangleMesh(v_beanToVisu3d.p00_geoPoint, v_beanToVisu3d.p01_listeIndexPointsfacettes.SelectMany(c => c).ToList());
-              
+
             Model model = glTFService.GenerateModel(v_trianglesMesh, "Test Triangles");
-            glTFService.Export(model, "Test3D", $"testTriangles_p{tb_precisionEnM.Text}",  false, true);
+            glTFService.Export(model, "Test3D", $"testTriangles_p{tb_precisionEnM.Text}", false, true);
             MessageBox.Show("Traitement terminé.");
         }
 
@@ -273,7 +285,7 @@ namespace DEM.Net.TestWinForm
             FServicesApplicatifs.createTestsUnitairesLab().TestUnitairesLab(v_afficherMessageSiko_vf);
         }
 
-      
+
         private void btn_creteEtTalwegTin_visu_Click(object sender, EventArgs e)
         {
             HashSet<enum_qualificationMorpho_arc> v_exclureDeLaVisu = new HashSet<enum_qualificationMorpho_arc>();
