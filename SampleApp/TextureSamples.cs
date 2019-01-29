@@ -69,7 +69,7 @@ namespace SampleApp
 
         internal void Run()
         {
-            bool useTIN = false;
+            bool useTIN = true;
             glTFService glTF = new glTFService();
             string outputDir = Path.GetFullPath(Path.Combine(_outputDirectory, "glTF"));
 
@@ -85,7 +85,7 @@ namespace SampleApp
             ImageryService imageryService = new ImageryService();
 
             Console.WriteLine("Download image tiles...");
-            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.MapBoxSatelliteStreet, 8);
+            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.StamenWaterColor, 4);
 
             Console.WriteLine("Construct texture...");
             string fileName = Path.Combine(outputDir, "Texture.jpg");
