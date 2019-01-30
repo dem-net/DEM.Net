@@ -21,8 +21,7 @@ namespace SampleApp
 {
     class Program
     {
-        static string _RasterDataDirectory;
-        static string _OutputDataDirectory;
+        static string _OutputDataDirectory = @"..\..\..\Data";
 
         [STAThread]
         static void Main(string[] args)
@@ -30,20 +29,17 @@ namespace SampleApp
 
             Logger.StartPerf("Main cold start");
 
-
-            _RasterDataDirectory = GetDataDirectory();
-            _OutputDataDirectory = @"..\..\..\Data";
-
+            DatasetSamples.Run();
 
             // Initialize raster service and Elevation service
-            IRasterService rasterService = new RasterService(_RasterDataDirectory);
+            IRasterService rasterService = new RasterService();
             IElevationService elevationService = new ElevationService(rasterService);
 
             //rasterService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true, true);
             //rasterService.GenerateDirectoryMetadata(DEMDataSet.SRTM_GL3, false, true, true);
-            
-           
-            TextureSamples textureSamples = new TextureSamples(elevationService, _RasterDataDirectory, _OutputDataDirectory);
+
+
+            TextureSamples textureSamples = new TextureSamples(elevationService, _OutputDataDirectory);
             textureSamples.Run();
             textureSamples.RunImagery(true);
 
@@ -64,17 +60,8 @@ namespace SampleApp
 
         }
 
-        private static string GetDataDirectory()
-        {
-            string dataDir = ConfigurationManager.AppSettings["DataDir"];
-            if (dataDir == null)
-            {
-                dataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "DEM.Net");
-            }
-            Logger.Info($"Data directory : {dataDir}.");
-            return dataDir;
-        }
 
-   
+
+
     }
 }

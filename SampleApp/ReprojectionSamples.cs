@@ -83,7 +83,7 @@ namespace SampleApp
 
             // TIN mesh
             Console.WriteLine("Generate TIN TriangleMesh...");
-            MeshPrimitive TINtriangleMesh = TINGeneration.GenerateTIN(hMap, glTF, PBRTexture.Create(texInfo, normalMap));
+            MeshPrimitive TINtriangleMesh = TINGeneration.GenerateTIN(hMap, 10d, glTF, PBRTexture.Create(texInfo, normalMap));
 
             // raw Mesh
             Console.WriteLine("Generate raw TriangleMesh textured...");

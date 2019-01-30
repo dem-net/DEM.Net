@@ -13,7 +13,7 @@ namespace SampleApp
 {
     public static class TINGeneration
     {
-        public static MeshPrimitive GenerateTIN(HeightMap hMap, IglTFService gltf, PBRTexture textures)
+        public static MeshPrimitive GenerateTIN(HeightMap hMap, double precision, IglTFService gltf, PBRTexture textures)
         {
             var v_pointsToTest = GetGeoPointsByHMap(hMap, 2154);
 
@@ -25,8 +25,8 @@ namespace SampleApp
             _paramTin.p14_altitudeParDefaut = -200;
             _paramTin.p15_nbrePointsSupplMultiples4 = 4;
             _paramTin.p16_initialisation_modeChoixDuPointCentral.p01_excentrationMinimum = 0;
-            _paramTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = 1000;
-            
+            _paramTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = precision;
+
             //
             var _topolFacettes = FLabServices.createCalculMedium().GetInitialisationTin(v_pointsToTest, _paramTin);
             FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, _paramTin);

@@ -33,11 +33,10 @@ namespace SampleApp
         {
             bool withTexture = true;
             bool generateTIN = true;
-            glTFService glTF = new glTFService();
+            IglTFService glTF = new glTFService();
             ImageryService imageryService = new ImageryService();
             List<MeshPrimitive> meshes = new List<MeshPrimitive>();
             string outputDir = Path.GetFullPath(Path.Combine(_outputDirectory, "glTF"));
-
 
             //=======================
             /// Line strip from GPX
@@ -91,7 +90,7 @@ namespace SampleApp
             if (generateTIN)
             {
                 hMap.ReprojectTo(4326, 2154);
-                triangleMesh = TINGeneration.GenerateTIN(hMap, glTF, PBRTexture.Create(texInfo, normalMap));
+                triangleMesh = TINGeneration.GenerateTIN(hMap, 10d, glTF, PBRTexture.Create(texInfo, normalMap));
             }
             else
             {

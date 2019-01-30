@@ -24,9 +24,8 @@ namespace SampleApp
         private DEMDataSet _normalsDataSet;
         private DEMDataSet _meshDataSet;
         private readonly string _outputDirectory;
-        private readonly string _localdatadir;
 
-        public TextureSamples(IElevationService elevationService, string localDataDir, string outputDirectory)
+        public TextureSamples(IElevationService elevationService, string outputDirectory)
         {
             _elevationService = elevationService;
             // sugiton
@@ -60,11 +59,12 @@ namespace SampleApp
             // france
             //_bboxWkt = "POLYGON ((-6.1962890625 41.1290213474951, 10.04150390625 41.1290213474951, 10.04150390625 51.11041991029264, -6.1962890625 51.11041991029264, -6.1962890625 41.1290213474951))";
             // alps
-            _bboxWkt = "POLYGON ((3.4716796874999996 42.71473218539458, 17.0947265625 42.71473218539458, 17.0947265625 48.67645370777654, 3.4716796874999996 48.67645370777654, 3.4716796874999996 42.71473218539458))";
-            _normalsDataSet = DEMDataSet.SRTM_GL3;
-            _meshDataSet = DEMDataSet.AW3D30;
+            //_bboxWkt = "POLYGON ((3.4716796874999996 42.71473218539458, 17.0947265625 42.71473218539458, 17.0947265625 48.67645370777654, 3.4716796874999996 48.67645370777654, 3.4716796874999996 42.71473218539458))";
+            // dolomites
+            _bboxWkt = "POLYGON ((11.743698120117186 46.4752265177719, 11.890640258789062 46.4752265177719, 11.890640258789062 46.557916007595786, 11.743698120117186 46.557916007595786, 11.743698120117186 46.4752265177719))";
+            _normalsDataSet = DEMDataSet.SRTM_GL1;
+            _meshDataSet = DEMDataSet.SRTM_GL1;
             _outputDirectory = outputDirectory;
-            _localdatadir = localDataDir;
         }
 
         internal void Run()
@@ -83,9 +83,8 @@ namespace SampleApp
 
 
             ImageryService imageryService = new ImageryService();
-
             Console.WriteLine("Download image tiles...");
-            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.StamenWaterColor, 4);
+            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.MapBoxSatellite, 8);
 
             Console.WriteLine("Construct texture...");
             string fileName = Path.Combine(outputDir, "Texture.jpg");
@@ -97,9 +96,10 @@ namespace SampleApp
             //=======================
             // Normal map
             Console.WriteLine("Height map...");
-            float Z_FACTOR = 10f;
-            //HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, _normalsDataSet);
-            HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1", "ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
+            float Z_FACTOR = 2f;
+            HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, _normalsDataSet);
+            
+            //HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1", "ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
 
             // hMapNormal = hMapNormal.ReprojectTo(4326, v_outSrid);
             hMapNormal = hMapNormal.ReprojectGeodeticToCartesian();
@@ -111,8 +111,8 @@ namespace SampleApp
 
             //=======================
             // Get height map
-            //HeightMap hMap = _elevationService.GetHeightMap(bbox, _meshDataSet);
-            HeightMap hMap = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1","ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
+            HeightMap hMap = _elevationService.GetHeightMap(bbox, _meshDataSet);
+            //HeightMap hMap = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1","ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
 
             //=======================
             // UV mapping (before projection)
@@ -121,7 +121,7 @@ namespace SampleApp
             hMap = hMap.ReprojectGeodeticToCartesian();
             hMap = hMap.CenterOnOrigin().ZScale(Z_FACTOR);
 
-           
+
             //=======================
 
 
@@ -135,7 +135,7 @@ namespace SampleApp
             {
                 Console.WriteLine("Create TIN...");
                 //triangleMesh = GenerateTIN(hMapTIN, glTF, pBRTexture);
-                triangleMesh = TINGeneration.GenerateTIN(hMap, glTF, pBRTexture);
+                triangleMesh = TINGeneration.GenerateTIN(hMap, 10d, glTF, pBRTexture);
             }
             else
             {
