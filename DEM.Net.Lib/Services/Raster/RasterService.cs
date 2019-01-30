@@ -29,7 +29,7 @@ namespace DEM.Net.Lib
         static RasterService()
         {
 
-            _localDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), APP_NAME);
+            _localDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), APP_NAME);
             if (!Directory.Exists(_localDirectory))
                 Directory.CreateDirectory(_localDirectory);
 
