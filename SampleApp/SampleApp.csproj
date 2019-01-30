@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DatasetSamples.cs" />
     <Compile Include="ElevationSamples.cs" />
     <Compile Include="OldSamples.cs" />
     <Compile Include="ReprojectionSamples.cs" />
