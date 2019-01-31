@@ -261,18 +261,29 @@ namespace DEM.Net.Lib
             }
             return heightMap;
         }
-        public string GenerateReportAsString(DEMDataSet dataSet, BoundingBox bbox = null)
+        public string GenerateReportAsString()
         {
-            Dictionary<string, DemFileReport> report = GenerateReport(dataSet, bbox);
-
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("RemoteURL\tIsDownloaded");
-            foreach (var kvp in report)
+            // Get report for downloaded files
+            foreach (DEMDataSet dataset in DEMDataSet.RegisteredDatasets)
             {
-                sb.AppendLine(string.Concat(kvp.Key, '\t', kvp.Value.IsExistingLocally));
+                Dictionary<string, DemFileReport> report = GenerateReport(dataset);
+                int totalFiles = report.Count;
+                int downloadedCount = report.Count(kvp => kvp.Value.IsExistingLocally);
+                int isMetadataGeneratedCount = report.Count(kvp => kvp.Value.IsMetadataGenerated);
+                int isnotMetadataGeneratedCount = report.Count(kvp => !kvp.Value.IsMetadataGenerated);
+
+                var fileSizeBytes = FileSystem.GetDirectorySize(GetLocalDEMPath(dataset));
+                var fileSizeMB = fileSizeBytes / 1024f / 1024f;
+
+                sb.AppendLine($"Dataset : {dataset.Name} report :");
+                sb.AppendLine($"> {totalFiles} file(s) in dataset.");
+                sb.AppendLine($"> {downloadedCount} file(s) dowloaded ({fileSizeMB:F2} MB total).");
+                sb.AppendLine($"> {isMetadataGeneratedCount} file(s) with DEM.Net metadata.");
             }
             return sb.ToString();
         }
+       
 
         public bool BoundingBoxIntersects(BoundingBox bbox1, BoundingBox bbox2)
         {

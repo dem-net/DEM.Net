@@ -34,7 +34,7 @@ namespace DEM.Net.Lib
         /// <returns></returns>
         Dictionary<string, DemFileReport> GenerateReport(DEMDataSet dataSet, BoundingBox bbox = null);
         Dictionary<string, DemFileReport> GenerateReportForLocation(DEMDataSet dataSet, double lat, double lon);
-        string GenerateReportAsString(DEMDataSet dataSet, BoundingBox bbox = null);
+        string GenerateReportAsString();
 
 
         void GenerateFileMetadata(string rasterFileName, DEMFileFormat fileFormat, bool generateBitmap, bool force);
