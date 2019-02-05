@@ -1,0 +1,67 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Services.VisualisationServices
+  commentId: N:DEM.Net.Lib.Services.VisualisationServices
+  id: DEM.Net.Lib.Services.VisualisationServices
+  children:
+  - DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage
+  - DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs
+  - DEM.Net.Lib.Services.VisualisationServices.FVisualisationServices
+  - DEM.Net.Lib.Services.VisualisationServices.IStatsPopulationServices
+  - DEM.Net.Lib.Services.VisualisationServices.IVisualisationSpatialTraceServices
+  - DEM.Net.Lib.Services.VisualisationServices.StatsPopulationServices
+  - DEM.Net.Lib.Services.VisualisationServices.VisualisationSpatialTraceServices
+  langs:
+  - csharp
+  - vb
+  name: DEM.Net.Lib.Services.VisualisationServices
+  nameWithType: DEM.Net.Lib.Services.VisualisationServices
+  fullName: DEM.Net.Lib.Services.VisualisationServices
+  type: Namespace
+  assemblies:
+  - DEM.Net.Lib
+references:
+- uid: DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage
+  commentId: T:DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage
+  parent: DEM.Net.Lib.Services.VisualisationServices
+  name: enumModeSeuillage
+  nameWithType: enumModeSeuillage
+  fullName: DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage
+- uid: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs
+  commentId: T:DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs
+  parent: DEM.Net.Lib.Services.VisualisationServices
+  name: enumProgressionCouleurs
+  nameWithType: enumProgressionCouleurs
+  fullName: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs
+- uid: DEM.Net.Lib.Services.VisualisationServices.FVisualisationServices
+  commentId: T:DEM.Net.Lib.Services.VisualisationServices.FVisualisationServices
+  name: FVisualisationServices
+  nameWithType: FVisualisationServices
+  fullName: DEM.Net.Lib.Services.VisualisationServices.FVisualisationServices
+- uid: DEM.Net.Lib.Services.VisualisationServices.IStatsPopulationServices
+  commentId: T:DEM.Net.Lib.Services.VisualisationServices.IStatsPopulationServices
+  parent: DEM.Net.Lib.Services.VisualisationServices
+  name: IStatsPopulationServices
+  nameWithType: IStatsPopulationServices
+  fullName: DEM.Net.Lib.Services.VisualisationServices.IStatsPopulationServices
+- uid: DEM.Net.Lib.Services.VisualisationServices.IVisualisationSpatialTraceServices
+  commentId: T:DEM.Net.Lib.Services.VisualisationServices.IVisualisationSpatialTraceServices
+  parent: DEM.Net.Lib.Services.VisualisationServices
+  name: IVisualisationSpatialTraceServices
+  nameWithType: IVisualisationSpatialTraceServices
+  fullName: DEM.Net.Lib.Services.VisualisationServices.IVisualisationSpatialTraceServices
+- uid: DEM.Net.Lib.Services.VisualisationServices.StatsPopulationServices
+  commentId: T:DEM.Net.Lib.Services.VisualisationServices.StatsPopulationServices
+  name: StatsPopulationServices
+  nameWithType: StatsPopulationServices
+  fullName: DEM.Net.Lib.Services.VisualisationServices.StatsPopulationServices
+- uid: DEM.Net.Lib.Services.VisualisationServices.VisualisationSpatialTraceServices
+  commentId: T:DEM.Net.Lib.Services.VisualisationServices.VisualisationSpatialTraceServices
+  name: VisualisationSpatialTraceServices
+  nameWithType: VisualisationSpatialTraceServices
+  fullName: DEM.Net.Lib.Services.VisualisationServices.VisualisationSpatialTraceServices
+- uid: DEM.Net.Lib.Services.VisualisationServices
+  commentId: N:DEM.Net.Lib.Services.VisualisationServices
+  name: DEM.Net.Lib.Services.VisualisationServices
+  nameWithType: DEM.Net.Lib.Services.VisualisationServices
+  fullName: DEM.Net.Lib.Services.VisualisationServices

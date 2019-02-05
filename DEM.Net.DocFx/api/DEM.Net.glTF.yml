@@ -1,0 +1,34 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.glTF
+  commentId: N:DEM.Net.glTF
+  id: DEM.Net.glTF
+  children:
+  - DEM.Net.glTF.glTFService
+  - DEM.Net.glTF.IglTFService
+  langs:
+  - csharp
+  - vb
+  name: DEM.Net.glTF
+  nameWithType: DEM.Net.glTF
+  fullName: DEM.Net.glTF
+  type: Namespace
+  assemblies:
+  - DEM.Net.glTF
+references:
+- uid: DEM.Net.glTF.glTFService
+  commentId: T:DEM.Net.glTF.glTFService
+  name: glTFService
+  nameWithType: glTFService
+  fullName: DEM.Net.glTF.glTFService
+- uid: DEM.Net.glTF.IglTFService
+  commentId: T:DEM.Net.glTF.IglTFService
+  parent: DEM.Net.glTF
+  name: IglTFService
+  nameWithType: IglTFService
+  fullName: DEM.Net.glTF.IglTFService
+- uid: DEM.Net.glTF
+  commentId: N:DEM.Net.glTF
+  name: DEM.Net.glTF
+  nameWithType: DEM.Net.glTF
+  fullName: DEM.Net.glTF

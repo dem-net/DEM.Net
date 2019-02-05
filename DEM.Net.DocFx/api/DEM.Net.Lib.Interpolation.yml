@@ -1,0 +1,28 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Interpolation
+  commentId: N:DEM.Net.Lib.Interpolation
+  id: DEM.Net.Lib.Interpolation
+  children:
+  - DEM.Net.Lib.Interpolation.BilinearInterpolator
+  - DEM.Net.Lib.Interpolation.HyperbolicInterpolator
+  langs:
+  - csharp
+  - vb
+  name: DEM.Net.Lib.Interpolation
+  nameWithType: DEM.Net.Lib.Interpolation
+  fullName: DEM.Net.Lib.Interpolation
+  type: Namespace
+  assemblies:
+  - DEM.Net.Lib
+references:
+- uid: DEM.Net.Lib.Interpolation.HyperbolicInterpolator
+  commentId: T:DEM.Net.Lib.Interpolation.HyperbolicInterpolator
+  name: HyperbolicInterpolator
+  nameWithType: HyperbolicInterpolator
+  fullName: DEM.Net.Lib.Interpolation.HyperbolicInterpolator
+- uid: DEM.Net.Lib.Interpolation.BilinearInterpolator
+  commentId: T:DEM.Net.Lib.Interpolation.BilinearInterpolator
+  name: BilinearInterpolator
+  nameWithType: BilinearInterpolator
+  fullName: DEM.Net.Lib.Interpolation.BilinearInterpolator

@@ -1,0 +1,22 @@
+### YamlMime:ManagedReference
+items:
+- uid: SampleApp
+  commentId: N:SampleApp
+  id: SampleApp
+  children:
+  - SampleApp.GpxImport
+  langs:
+  - csharp
+  - vb
+  name: SampleApp
+  nameWithType: SampleApp
+  fullName: SampleApp
+  type: Namespace
+  assemblies:
+  - DEM.Net.Lib
+references:
+- uid: SampleApp.GpxImport
+  commentId: T:SampleApp.GpxImport
+  name: GpxImport
+  nameWithType: GpxImport
+  fullName: SampleApp.GpxImport
