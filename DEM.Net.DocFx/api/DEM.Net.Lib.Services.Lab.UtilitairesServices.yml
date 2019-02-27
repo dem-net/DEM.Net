@@ -22,7 +22,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/UtilitairesServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: UtilitairesServices
     path: ../DEM.Net.Lib/Services/Lab/UtilitairesServices.cs
@@ -67,7 +67,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/UtilitairesServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ConstructPoint
     path: ../DEM.Net.Lib/Services/Lab/UtilitairesServices.cs
@@ -108,7 +108,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/UtilitairesServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GethCodeGeogPoint
     path: ../DEM.Net.Lib/Services/Lab/UtilitairesServices.cs
@@ -152,7 +152,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/UtilitairesServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GethCodeGeogObjet
     path: ../DEM.Net.Lib/Services/Lab/UtilitairesServices.cs
@@ -196,7 +196,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/UtilitairesServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GethCodeGeogSegment
     path: ../DEM.Net.Lib/Services/Lab/UtilitairesServices.cs
@@ -242,7 +242,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/UtilitairesServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetGeometryArc
     path: ../DEM.Net.Lib/Services/Lab/UtilitairesServices.cs
@@ -281,7 +281,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/UtilitairesServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetGeometryLine
     path: ../DEM.Net.Lib/Services/Lab/UtilitairesServices.cs
@@ -327,7 +327,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/UtilitairesServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetGeometryPolygon
     path: ../DEM.Net.Lib/Services/Lab/UtilitairesServices.cs

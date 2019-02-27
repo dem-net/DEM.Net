@@ -30,7 +30,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: CalculServices_Medium
     path: ../DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
@@ -76,7 +76,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetParametresDuTinParDefaut
     path: ../DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
@@ -110,7 +110,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetInitialisationTin
     path: ../DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
@@ -156,7 +156,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: AugmenteDetailsTinByRef
     path: ../DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
@@ -196,7 +196,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetOrdonnancementPointsFacette
     path: ../DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
@@ -240,7 +240,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetConvexHull2D
     path: ../DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
@@ -280,7 +280,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetMbo2D
     path: ../DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
@@ -322,7 +322,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetMbo2D
     path: ../DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
@@ -364,7 +364,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetMboPointsProches
     path: ../DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
@@ -404,7 +404,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetIdPointLePlusEloigneDuPointRef
     path: ../DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
@@ -446,7 +446,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetCentroide
     path: ../DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
@@ -486,7 +486,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetCoordonneesDansNewReferentiel2D
     path: ../DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
@@ -539,7 +539,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetCoordonneesDansNewReferentiel2D
     path: ../DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
@@ -585,7 +585,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetEtComptePointsDoublonnes
     path: ../DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
@@ -626,7 +626,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetLongueurArcAuCarre
     path: ../DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
@@ -665,7 +665,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetOrdonnancementArcsAutourPointFacette
     path: ../DEM.Net.Lib/Services/Lab/CalculServices_Medium.cs

@@ -24,7 +24,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Logger.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Logger
     path: ../DEM.Net.Lib/Services/Logger.cs
@@ -66,7 +66,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Logger.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Info
     path: ../DEM.Net.Lib/Services/Logger.cs
@@ -101,7 +101,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Logger.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Info
     path: ../DEM.Net.Lib/Services/Logger.cs
@@ -141,7 +141,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Logger.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Warning
     path: ../DEM.Net.Lib/Services/Logger.cs
@@ -176,7 +176,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Logger.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Warning
     path: ../DEM.Net.Lib/Services/Logger.cs
@@ -216,7 +216,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Logger.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Error
     path: ../DEM.Net.Lib/Services/Logger.cs
@@ -251,7 +251,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Logger.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Error
     path: ../DEM.Net.Lib/Services/Logger.cs
@@ -291,7 +291,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Logger.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: StartPerf
     path: ../DEM.Net.Lib/Services/Logger.cs
@@ -326,7 +326,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Logger.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: RestartPerf
     path: ../DEM.Net.Lib/Services/Logger.cs
@@ -361,7 +361,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Logger.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: StopPerf
     path: ../DEM.Net.Lib/Services/Logger.cs

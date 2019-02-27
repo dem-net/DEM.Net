@@ -17,7 +17,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/FVisualisationServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: FVisualisationServices
     path: ../DEM.Net.Lib/Services/VisualisationServices/FVisualisationServices.cs
@@ -58,7 +58,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/FVisualisationServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: createSeuillageServices
     path: ../DEM.Net.Lib/Services/VisualisationServices/FVisualisationServices.cs
@@ -92,7 +92,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/FVisualisationServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: createVisualisationSpatialTraceServices
     path: ../DEM.Net.Lib/Services/VisualisationServices/FVisualisationServices.cs

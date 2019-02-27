@@ -19,7 +19,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: enum_qualificationHydro_pointDeFacette
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
@@ -50,7 +50,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: sortie
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
@@ -82,7 +82,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: entree
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
@@ -114,7 +114,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: mixte
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
@@ -146,7 +146,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: indetermine
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs

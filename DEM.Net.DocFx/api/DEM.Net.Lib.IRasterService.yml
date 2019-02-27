@@ -27,7 +27,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/IRasterService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: IRasterService
     path: ../DEM.Net.Lib/Services/Raster/IRasterService.cs
@@ -58,7 +58,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/IRasterService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ParseMetadata
     path: ../DEM.Net.Lib/Services/Raster/IRasterService.cs
@@ -91,7 +91,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/IRasterService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ParseMetadata
     path: ../DEM.Net.Lib/Services/Raster/IRasterService.cs
@@ -126,7 +126,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/IRasterService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: LoadManifestMetadata
     path: ../DEM.Net.Lib/Services/Raster/IRasterService.cs
@@ -159,7 +159,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/IRasterService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: OpenFile
     path: ../DEM.Net.Lib/Services/Raster/IRasterService.cs
@@ -192,7 +192,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/IRasterService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: LocalDirectory
     path: ../DEM.Net.Lib/Services/Raster/IRasterService.cs
@@ -225,7 +225,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/IRasterService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetLocalDEMPath
     path: ../DEM.Net.Lib/Services/Raster/IRasterService.cs
@@ -256,7 +256,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/IRasterService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetLocalDEMFilePath
     path: ../DEM.Net.Lib/Services/Raster/IRasterService.cs
@@ -289,7 +289,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/IRasterService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GenerateDirectoryMetadata
     path: ../DEM.Net.Lib/Services/Raster/IRasterService.cs
@@ -330,7 +330,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/IRasterService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GenerateReport
     path: ../DEM.Net.Lib/Services/Raster/IRasterService.cs
@@ -368,7 +368,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/IRasterService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GenerateReportForLocation
     path: ../DEM.Net.Lib/Services/Raster/IRasterService.cs
@@ -403,7 +403,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/IRasterService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GenerateReportAsString
     path: ../DEM.Net.Lib/Services/Raster/IRasterService.cs
@@ -431,7 +431,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/IRasterService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GenerateFileMetadata
     path: ../DEM.Net.Lib/Services/Raster/IRasterService.cs

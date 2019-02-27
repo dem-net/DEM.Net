@@ -30,7 +30,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GpxWayPoint
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -98,7 +98,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Proximity
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -133,7 +133,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Temperature
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -168,7 +168,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Depth
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -203,7 +203,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DisplayMode
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -238,7 +238,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Categories
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -273,7 +273,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Address
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -308,7 +308,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Phones
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -343,7 +343,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Samples
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -378,7 +378,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Expiration
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -413,7 +413,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Level
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -448,7 +448,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Aliases
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -483,7 +483,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: HasGarminExtensions
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -518,7 +518,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: HasGarminWaypointExtensions
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -553,7 +553,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: HasDlgExtensions
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -588,7 +588,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: HasExtensions
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs

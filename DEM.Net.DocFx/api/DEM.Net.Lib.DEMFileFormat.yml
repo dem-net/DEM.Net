@@ -21,7 +21,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DEMFileFormat.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DEMFileFormat
     path: ../DEM.Net.Lib/Model/DEMFileFormat.cs
@@ -71,7 +71,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DEMFileFormat.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Name
     path: ../DEM.Net.Lib/Model/DEMFileFormat.cs
@@ -120,7 +120,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DEMFileFormat.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: FileExtension
     path: ../DEM.Net.Lib/Model/DEMFileFormat.cs
@@ -169,7 +169,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DEMFileFormat.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: SRTM_HGT
     path: ../DEM.Net.Lib/Model/DEMFileFormat.cs
@@ -204,7 +204,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DEMFileFormat.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GEOTIFF
     path: ../DEM.Net.Lib/Model/DEMFileFormat.cs
@@ -239,7 +239,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DEMFileFormat.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Model/DEMFileFormat.cs
@@ -269,7 +269,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DEMFileFormat.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ToString
     path: ../DEM.Net.Lib/Model/DEMFileFormat.cs

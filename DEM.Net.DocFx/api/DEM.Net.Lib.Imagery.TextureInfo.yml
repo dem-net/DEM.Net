@@ -23,7 +23,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TextureInfo.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: TextureInfo
     path: ../DEM.Net.Lib/Imagery/Structs/TextureInfo.cs
@@ -64,7 +64,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TextureInfo.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: FilePath
     path: ../DEM.Net.Lib/Imagery/Structs/TextureInfo.cs
@@ -99,7 +99,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TextureInfo.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: FileName
     path: ../DEM.Net.Lib/Imagery/Structs/TextureInfo.cs
@@ -134,7 +134,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TextureInfo.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ImageFormat
     path: ../DEM.Net.Lib/Imagery/Structs/TextureInfo.cs
@@ -169,7 +169,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TextureInfo.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Width
     path: ../DEM.Net.Lib/Imagery/Structs/TextureInfo.cs
@@ -204,7 +204,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TextureInfo.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Height
     path: ../DEM.Net.Lib/Imagery/Structs/TextureInfo.cs
@@ -239,7 +239,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TextureInfo.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ProjectedZoom
     path: ../DEM.Net.Lib/Imagery/Structs/TextureInfo.cs
@@ -274,7 +274,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TextureInfo.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ProjectedBounds
     path: ../DEM.Net.Lib/Imagery/Structs/TextureInfo.cs
@@ -309,7 +309,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TextureInfo.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Imagery/Structs/TextureInfo.cs

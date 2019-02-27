@@ -21,7 +21,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: BeanRelationPointToFacette
     path: ../DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
@@ -64,7 +64,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p11_pointRef
     path: ../DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
@@ -99,7 +99,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p12_facetteRef
     path: ../DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
@@ -134,7 +134,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p21_qualifPointDansFacette
     path: ../DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
@@ -169,7 +169,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p31_vecteurPenteMaxiSurFacette_sortant
     path: ../DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
@@ -204,7 +204,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p32_vecteurPenteMaxiSurFacette_entrant
     path: ../DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
@@ -239,7 +239,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs

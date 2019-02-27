@@ -29,7 +29,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoPoint.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GeoPoint
     path: ../DEM.Net.Lib/Model/GeoPoint.cs
@@ -89,7 +89,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoPoint.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Latitude
     path: ../DEM.Net.Lib/Model/GeoPoint.cs
@@ -138,7 +138,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoPoint.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Longitude
     path: ../DEM.Net.Lib/Model/GeoPoint.cs
@@ -187,7 +187,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoPoint.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: XIndex
     path: ../DEM.Net.Lib/Model/GeoPoint.cs
@@ -236,7 +236,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoPoint.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: YIndex
     path: ../DEM.Net.Lib/Model/GeoPoint.cs
@@ -285,7 +285,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoPoint.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Elevation
     path: ../DEM.Net.Lib/Model/GeoPoint.cs
@@ -334,7 +334,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoPoint.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: TileId
     path: ../DEM.Net.Lib/Model/GeoPoint.cs
@@ -383,7 +383,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoPoint.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DistanceFromOriginMeters
     path: ../DEM.Net.Lib/Model/GeoPoint.cs
@@ -434,7 +434,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoPoint.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Model/GeoPoint.cs
@@ -478,7 +478,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoPoint.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Model/GeoPoint.cs
@@ -513,7 +513,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoPoint.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Model/GeoPoint.cs
@@ -543,7 +543,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoPoint.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Clone
     path: ../DEM.Net.Lib/Model/GeoPoint.cs
@@ -575,7 +575,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoPoint.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DistanceSquaredTo
     path: ../DEM.Net.Lib/Model/GeoPoint.cs
@@ -610,7 +610,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoPoint.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Zero
     path: ../DEM.Net.Lib/Model/GeoPoint.cs
@@ -647,7 +647,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoPoint.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ToString
     path: ../DEM.Net.Lib/Model/GeoPoint.cs

@@ -21,7 +21,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/IStatsPopulationServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: IStatsPopulationServices
     path: ../DEM.Net.Lib/Services/VisualisationServices/IStatsPopulationServices.cs
@@ -52,7 +52,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/IStatsPopulationServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetPointsParClasseOrdonnees
     path: ../DEM.Net.Lib/Services/VisualisationServices/IStatsPopulationServices.cs
@@ -96,7 +96,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/IStatsPopulationServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetClassesOrdonnees_parSeuilsDeValeur
     path: ../DEM.Net.Lib/Services/VisualisationServices/IStatsPopulationServices.cs
@@ -132,7 +132,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/IStatsPopulationServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetIdParClassesOrdonnees_parIsoQuantite
     path: ../DEM.Net.Lib/Services/VisualisationServices/IStatsPopulationServices.cs
@@ -168,7 +168,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/IStatsPopulationServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetLabelsClasses
     path: ../DEM.Net.Lib/Services/VisualisationServices/IStatsPopulationServices.cs
@@ -204,7 +204,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/IStatsPopulationServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetSeuilBasClasses_memeEspaceInterclasse
     path: ../DEM.Net.Lib/Services/VisualisationServices/IStatsPopulationServices.cs
@@ -239,7 +239,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/IStatsPopulationServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetSeuilBasClasses_parIsoQuantite
     path: ../DEM.Net.Lib/Services/VisualisationServices/IStatsPopulationServices.cs

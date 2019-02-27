@@ -24,7 +24,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/Raster/HGTFile.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: HGTFile
     path: ../DEM.Net.Lib/IO/Raster/HGTFile.cs
@@ -72,7 +72,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/Raster/HGTFile.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: HGT3601
     path: ../DEM.Net.Lib/IO/Raster/HGTFile.cs
@@ -105,7 +105,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/Raster/HGTFile.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: HGT1201
     path: ../DEM.Net.Lib/IO/Raster/HGTFile.cs
@@ -138,7 +138,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/Raster/HGTFile.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/IO/Raster/HGTFile.cs
@@ -171,7 +171,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/Raster/HGTFile.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetElevationAtPoint
     path: ../DEM.Net.Lib/IO/Raster/HGTFile.cs
@@ -212,7 +212,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/Raster/HGTFile.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ParseMetaData
     path: ../DEM.Net.Lib/IO/Raster/HGTFile.cs
@@ -246,7 +246,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/Raster/HGTFile.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetHeightMapInBBox
     path: ../DEM.Net.Lib/IO/Raster/HGTFile.cs
@@ -287,7 +287,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/Raster/HGTFile.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetHeightMap
     path: ../DEM.Net.Lib/IO/Raster/HGTFile.cs
@@ -324,7 +324,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/Raster/HGTFile.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Dispose
     path: ../DEM.Net.Lib/IO/Raster/HGTFile.cs
@@ -359,7 +359,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/Raster/HGTFile.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Dispose
     path: ../DEM.Net.Lib/IO/Raster/HGTFile.cs

@@ -29,7 +29,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/GeometryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GeometryService
     path: ../DEM.Net.Lib/Services/GeometryService.cs
@@ -71,7 +71,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/GeometryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ParseWKTAsGeometry
     path: ../DEM.Net.Lib/Services/GeometryService.cs
@@ -108,7 +108,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/GeometryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetBoundingBox
     path: ../DEM.Net.Lib/Services/GeometryService.cs
@@ -146,7 +146,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/GeometryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetBoundingBox
     path: ../DEM.Net.Lib/Services/GeometryService.cs
@@ -186,7 +186,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/GeometryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ParseGeoPointAsGeometryLine
     path: ../DEM.Net.Lib/Services/GeometryService.cs
@@ -230,7 +230,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/GeometryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: LineLineIntersection
     path: ../DEM.Net.Lib/Services/GeometryService.cs
@@ -274,7 +274,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/GeometryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ComputeMetrics
     path: ../DEM.Net.Lib/Services/GeometryService.cs
@@ -314,7 +314,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/GeometryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetLength
     path: ../DEM.Net.Lib/Services/GeometryService.cs
@@ -352,7 +352,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/GeometryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DistanceTo
     path: ../DEM.Net.Lib/Services/GeometryService.cs
@@ -394,7 +394,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/GeometryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetLineLength_Meters
     path: ../DEM.Net.Lib/Services/GeometryService.cs
@@ -435,7 +435,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/GeometryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Geometries
     path: ../DEM.Net.Lib/Services/GeometryService.cs
@@ -476,7 +476,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/GeometryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Segments
     path: ../DEM.Net.Lib/Services/GeometryService.cs
@@ -517,7 +517,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/GeometryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ToGeoPoint
     path: ../DEM.Net.Lib/Services/GeometryService.cs
@@ -558,7 +558,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/GeometryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetBoundingBox
     path: ../DEM.Net.Lib/Services/GeometryService.cs
@@ -602,7 +602,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/GeometryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetBoundingBox
     path: ../DEM.Net.Lib/Services/GeometryService.cs

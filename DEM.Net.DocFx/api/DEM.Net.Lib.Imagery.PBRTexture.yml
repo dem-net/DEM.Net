@@ -20,7 +20,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/PBRTexture.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: PBRTexture
     path: ../DEM.Net.Lib/Imagery/Structs/PBRTexture.cs
@@ -63,7 +63,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/PBRTexture.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: BaseColorTexture
     path: ../DEM.Net.Lib/Imagery/Structs/PBRTexture.cs
@@ -98,7 +98,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/PBRTexture.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: NormalTexture
     path: ../DEM.Net.Lib/Imagery/Structs/PBRTexture.cs
@@ -133,7 +133,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/PBRTexture.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: TextureCoordSets
     path: ../DEM.Net.Lib/Imagery/Structs/PBRTexture.cs
@@ -168,7 +168,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/PBRTexture.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Create
     path: ../DEM.Net.Lib/Imagery/Structs/PBRTexture.cs
@@ -212,7 +212,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/PBRTexture.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Create
     path: ../DEM.Net.Lib/Imagery/Structs/PBRTexture.cs

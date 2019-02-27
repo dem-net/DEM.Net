@@ -18,7 +18,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: enumModeDelimitationFrontiere
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
@@ -49,7 +49,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: convexHull
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
@@ -81,7 +81,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: mboSimple
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
@@ -113,7 +113,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: pointsProchesDuMbo
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs

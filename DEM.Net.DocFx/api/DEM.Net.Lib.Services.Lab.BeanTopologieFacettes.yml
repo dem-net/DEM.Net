@@ -32,7 +32,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: BeanTopologieFacettes
     path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
@@ -73,7 +73,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p00_pointsSources
     path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
@@ -108,7 +108,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p11_pointsFacettesByIdPoint
     path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
@@ -143,7 +143,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p12_arcsByCode
     path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
@@ -178,7 +178,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p13_facettesById
     path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
@@ -213,7 +213,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p21_facetteAvecEcartAbsoluMax
     path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
@@ -248,7 +248,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ArcsAjouter
     path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
@@ -284,7 +284,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ArcAjouter
     path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
@@ -317,7 +317,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ArcSupprimer
     path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
@@ -350,7 +350,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ArcSupprimer
     path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
@@ -383,7 +383,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: PointFacAjouter
     path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
@@ -416,7 +416,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: PointsFacAjouter
     path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
@@ -452,7 +452,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: FacetteAjouter
     path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
@@ -485,7 +485,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: FacettesAjouter
     path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
@@ -521,7 +521,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: FacetteSupprimer
     path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
@@ -554,7 +554,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: FacetteSupprimer
     path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
@@ -587,7 +587,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
@@ -617,7 +617,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs

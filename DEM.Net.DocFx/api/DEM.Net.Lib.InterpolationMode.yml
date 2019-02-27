@@ -17,7 +17,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/InterpolationMode.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: InterpolationMode
     path: ../DEM.Net.Lib/Model/InterpolationMode.cs
@@ -48,7 +48,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/InterpolationMode.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Bilinear
     path: ../DEM.Net.Lib/Model/InterpolationMode.cs
@@ -80,7 +80,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/InterpolationMode.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Hyperbolic
     path: ../DEM.Net.Lib/Model/InterpolationMode.cs

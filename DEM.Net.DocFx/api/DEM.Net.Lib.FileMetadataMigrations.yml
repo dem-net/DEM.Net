@@ -16,7 +16,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/FileMetadata.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: FileMetadataMigrations
     path: ../DEM.Net.Lib/Model/FileMetadata.cs
@@ -58,7 +58,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/FileMetadata.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Migrate
     path: ../DEM.Net.Lib/Model/FileMetadata.cs

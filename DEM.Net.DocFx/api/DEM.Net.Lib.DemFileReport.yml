@@ -21,7 +21,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DemFileReport.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DemFileReport
     path: ../DEM.Net.Lib/Model/DemFileReport.cs
@@ -62,7 +62,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DemFileReport.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: URL
     path: ../DEM.Net.Lib/Model/DemFileReport.cs
@@ -97,7 +97,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DemFileReport.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: LocalName
     path: ../DEM.Net.Lib/Model/DemFileReport.cs
@@ -132,7 +132,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DemFileReport.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: LocalZipName
     path: ../DEM.Net.Lib/Model/DemFileReport.cs
@@ -167,7 +167,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DemFileReport.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: IsExistingLocally
     path: ../DEM.Net.Lib/Model/DemFileReport.cs
@@ -202,7 +202,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DemFileReport.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Source
     path: ../DEM.Net.Lib/Model/DemFileReport.cs
@@ -237,7 +237,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DemFileReport.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: IsMetadataGenerated
     path: ../DEM.Net.Lib/Model/DemFileReport.cs

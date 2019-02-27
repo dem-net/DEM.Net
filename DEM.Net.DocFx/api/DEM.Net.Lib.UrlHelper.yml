@@ -16,7 +16,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/UrlHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: UrlHelper
     path: ../DEM.Net.Lib/Helpers/UrlHelper.cs
@@ -58,7 +58,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/UrlHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetFileNameFromUrl
     path: ../DEM.Net.Lib/Helpers/UrlHelper.cs

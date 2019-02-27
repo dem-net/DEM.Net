@@ -17,7 +17,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Smoothing.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Smoothing
     path: ../DEM.Net.Lib/Services/Smoothing.cs
@@ -59,7 +59,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Smoothing.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: WindowSmooth
     path: ../DEM.Net.Lib/Services/Smoothing.cs
@@ -103,7 +103,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Smoothing.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: FeedbackSmooth
     path: ../DEM.Net.Lib/Services/Smoothing.cs

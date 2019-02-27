@@ -21,7 +21,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GpxNamespaces
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -63,7 +63,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GPX_NAMESPACE
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -96,7 +96,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GARMIN_EXTENSIONS_NAMESPACE
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -129,7 +129,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GARMIN_TRACKPOINT_EXTENSIONS_V1_NAMESPACE
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -162,7 +162,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GARMIN_TRACKPOINT_EXTENSIONS_V2_NAMESPACE
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -195,7 +195,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GARMIN_WAYPOINT_EXTENSIONS_NAMESPACE
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -228,7 +228,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DLG_EXTENSIONS_NAMESPACE
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs

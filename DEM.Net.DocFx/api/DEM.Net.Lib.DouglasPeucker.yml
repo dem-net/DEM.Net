@@ -17,7 +17,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/DouglasPeuckerReduction.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DouglasPeucker
     path: ../DEM.Net.Lib/Services/DouglasPeuckerReduction.cs
@@ -59,7 +59,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/DouglasPeuckerReduction.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DouglasPeuckerReduction
     path: ../DEM.Net.Lib/Services/DouglasPeuckerReduction.cs
@@ -106,7 +106,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/DouglasPeuckerReduction.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: PerpendicularDistance
     path: ../DEM.Net.Lib/Services/DouglasPeuckerReduction.cs

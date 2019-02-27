@@ -16,7 +16,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Interpolation/IInterpolator.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: IInterpolator
     path: ../DEM.Net.Lib/Services/Interpolation/IInterpolator.cs
@@ -47,7 +47,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Interpolation/IInterpolator.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Interpolate
     path: ../DEM.Net.Lib/Services/Interpolation/IInterpolator.cs

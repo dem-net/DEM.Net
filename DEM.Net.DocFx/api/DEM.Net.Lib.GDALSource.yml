@@ -32,7 +32,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GDALSource.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GDALSource
     path: ../DEM.Net.Lib/Model/GDALSource.cs
@@ -73,7 +73,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GDALSource.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: RelativeToVRT
     path: ../DEM.Net.Lib/Model/GDALSource.cs
@@ -108,7 +108,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GDALSource.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: SourceFileName
     path: ../DEM.Net.Lib/Model/GDALSource.cs
@@ -143,7 +143,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GDALSource.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Type
     path: ../DEM.Net.Lib/Model/GDALSource.cs
@@ -178,7 +178,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GDALSource.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Properties
     path: ../DEM.Net.Lib/Model/GDALSource.cs
@@ -213,7 +213,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GDALSource.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DstxOff
     path: ../DEM.Net.Lib/Model/GDALSource.cs
@@ -248,7 +248,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GDALSource.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DstyOff
     path: ../DEM.Net.Lib/Model/GDALSource.cs
@@ -283,7 +283,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GDALSource.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DstxSize
     path: ../DEM.Net.Lib/Model/GDALSource.cs
@@ -318,7 +318,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GDALSource.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DstySize
     path: ../DEM.Net.Lib/Model/GDALSource.cs
@@ -353,7 +353,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GDALSource.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: NoData
     path: ../DEM.Net.Lib/Model/GDALSource.cs
@@ -388,7 +388,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GDALSource.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: SourceFileNameAbsolute
     path: ../DEM.Net.Lib/Model/GDALSource.cs
@@ -423,7 +423,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GDALSource.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: LocalFileName
     path: ../DEM.Net.Lib/Model/GDALSource.cs
@@ -458,7 +458,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GDALSource.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: OriginLon
     path: ../DEM.Net.Lib/Model/GDALSource.cs
@@ -493,7 +493,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GDALSource.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: OriginLat
     path: ../DEM.Net.Lib/Model/GDALSource.cs
@@ -528,7 +528,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GDALSource.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DestLon
     path: ../DEM.Net.Lib/Model/GDALSource.cs
@@ -563,7 +563,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GDALSource.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DestLat
     path: ../DEM.Net.Lib/Model/GDALSource.cs
@@ -598,7 +598,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GDALSource.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: BBox
     path: ../DEM.Net.Lib/Model/GDALSource.cs
@@ -633,7 +633,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GDALSource.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Model/GDALSource.cs

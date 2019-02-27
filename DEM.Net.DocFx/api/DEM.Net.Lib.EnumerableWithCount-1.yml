@@ -19,7 +19,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/IEnumerableWithCount.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: EnumerableWithCount
     path: ../DEM.Net.Lib/Helpers/IEnumerableWithCount.cs
@@ -71,7 +71,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/IEnumerableWithCount.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Helpers/IEnumerableWithCount.cs
@@ -109,7 +109,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/IEnumerableWithCount.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Count
     path: ../DEM.Net.Lib/Helpers/IEnumerableWithCount.cs
@@ -148,7 +148,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/IEnumerableWithCount.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetEnumerator
     path: ../DEM.Net.Lib/Helpers/IEnumerableWithCount.cs
@@ -185,7 +185,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/IEnumerableWithCount.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: System.Collections.IEnumerable.GetEnumerator
     path: ../DEM.Net.Lib/Helpers/IEnumerableWithCount.cs

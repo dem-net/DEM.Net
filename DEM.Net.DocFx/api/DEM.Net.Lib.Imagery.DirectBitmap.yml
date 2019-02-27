@@ -25,7 +25,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/DirectBitmap.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DirectBitmap
     path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
@@ -70,7 +70,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/DirectBitmap.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Bitmap
     path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
@@ -105,7 +105,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/DirectBitmap.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Bits
     path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
@@ -140,7 +140,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/DirectBitmap.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Disposed
     path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
@@ -175,7 +175,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/DirectBitmap.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Height
     path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
@@ -210,7 +210,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/DirectBitmap.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Width
     path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
@@ -245,7 +245,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/DirectBitmap.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: BitsHandle
     path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
@@ -280,7 +280,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/DirectBitmap.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
@@ -315,7 +315,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/DirectBitmap.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: SetPixel
     path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
@@ -352,7 +352,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/DirectBitmap.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetPixel
     path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
@@ -389,7 +389,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/DirectBitmap.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Dispose
     path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs

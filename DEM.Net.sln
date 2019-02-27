@@ -17,11 +17,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Net.glTF", "DEM.Net.glT
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6063C77F-B052-4C17-A94D-A4F365137BC9}"
 	ProjectSection(SolutionItems) = preProject
+		LICENSE - ThirdParty.md = LICENSE - ThirdParty.md
 		LICENSE.md = LICENSE.md
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Net.DocFx", "DEM.Net.DocFx\DEM.Net.DocFx.csproj", "{591B0081-0AA4-4FAD-AA60-DCE3BAD2E92B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DEM.Net.DocFx", "DEM.Net.DocFx\DEM.Net.DocFx.csproj", "{591B0081-0AA4-4FAD-AA60-DCE3BAD2E92B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

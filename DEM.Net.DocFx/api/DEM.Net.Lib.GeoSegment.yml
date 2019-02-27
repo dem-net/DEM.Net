@@ -20,7 +20,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoSegment.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GeoSegment
     path: ../DEM.Net.Lib/Model/GeoSegment.cs
@@ -62,7 +62,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoSegment.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Start
     path: ../DEM.Net.Lib/Model/GeoSegment.cs
@@ -97,7 +97,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoSegment.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: End
     path: ../DEM.Net.Lib/Model/GeoSegment.cs
@@ -132,7 +132,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoSegment.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Model/GeoSegment.cs
@@ -162,7 +162,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoSegment.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Model/GeoSegment.cs
@@ -197,7 +197,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/GeoSegment.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ToString
     path: ../DEM.Net.Lib/Model/GeoSegment.cs

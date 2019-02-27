@@ -20,7 +20,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/MapTileInfo.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: MapTileInfo
     path: ../DEM.Net.Lib/Imagery/Structs/MapTileInfo.cs
@@ -61,7 +61,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/MapTileInfo.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Imagery/Structs/MapTileInfo.cs
@@ -98,7 +98,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/MapTileInfo.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Imagery/Structs/MapTileInfo.cs
@@ -133,7 +133,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/MapTileInfo.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: X
     path: ../DEM.Net.Lib/Imagery/Structs/MapTileInfo.cs
@@ -168,7 +168,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/MapTileInfo.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Y
     path: ../DEM.Net.Lib/Imagery/Structs/MapTileInfo.cs
@@ -203,7 +203,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/MapTileInfo.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Zoom
     path: ../DEM.Net.Lib/Imagery/Structs/MapTileInfo.cs

@@ -19,7 +19,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: enumSensPenteArc
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
@@ -50,7 +50,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: montant
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
@@ -82,7 +82,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: descendant
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
@@ -114,7 +114,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: flat
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
@@ -146,7 +146,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: indetermine
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs

@@ -21,7 +21,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxReader.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GpxObjectType
     path: ../DEM.Net.Lib/IO/gpx/GpxReader.cs
@@ -52,7 +52,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxReader.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: None
     path: ../DEM.Net.Lib/IO/gpx/GpxReader.cs
@@ -84,7 +84,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxReader.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Attributes
     path: ../DEM.Net.Lib/IO/gpx/GpxReader.cs
@@ -116,7 +116,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxReader.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Metadata
     path: ../DEM.Net.Lib/IO/gpx/GpxReader.cs
@@ -148,7 +148,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxReader.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: WayPoint
     path: ../DEM.Net.Lib/IO/gpx/GpxReader.cs
@@ -180,7 +180,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxReader.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Route
     path: ../DEM.Net.Lib/IO/gpx/GpxReader.cs
@@ -212,7 +212,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxReader.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Track
     path: ../DEM.Net.Lib/IO/gpx/GpxReader.cs

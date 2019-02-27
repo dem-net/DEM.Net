@@ -44,7 +44,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: MathHelper
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -86,7 +86,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Lerp
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -127,7 +127,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Map
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -174,7 +174,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Clamp
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -222,7 +222,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Max
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -262,7 +262,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Max
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -302,7 +302,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Max
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -342,7 +342,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Max
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -382,7 +382,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Max
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -422,7 +422,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Max
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -462,7 +462,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Max
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -502,7 +502,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Max
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -542,7 +542,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Max
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -582,7 +582,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Max
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -622,7 +622,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Min
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -662,7 +662,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Min
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -702,7 +702,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Min
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -742,7 +742,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Min
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -782,7 +782,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Min
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -822,7 +822,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Min
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -862,7 +862,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Min
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -902,7 +902,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Min
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -942,7 +942,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Min
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -982,7 +982,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Min
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -1022,7 +1022,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Average
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -1062,7 +1062,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Average
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -1102,7 +1102,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Average
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -1142,7 +1142,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Average
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -1182,7 +1182,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Average
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs
@@ -1222,7 +1222,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/MathHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Average
     path: ../DEM.Net.Lib/Helpers/MathHelper.cs

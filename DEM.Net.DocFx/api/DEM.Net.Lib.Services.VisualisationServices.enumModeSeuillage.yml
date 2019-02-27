@@ -17,7 +17,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/enumStats.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: enumModeSeuillage
     path: ../DEM.Net.Lib/Services/VisualisationServices/enumStats.cs
@@ -48,7 +48,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/enumStats.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: memeNombreDIndividus
     path: ../DEM.Net.Lib/Services/VisualisationServices/enumStats.cs
@@ -80,7 +80,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/enumStats.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: memeEspaceInterclasse
     path: ../DEM.Net.Lib/Services/VisualisationServices/enumStats.cs

@@ -19,7 +19,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/FLabServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: FLabServices
     path: ../DEM.Net.Lib/Services/Lab/FLabServices.cs
@@ -60,7 +60,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/FLabServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: createCalculLow
     path: ../DEM.Net.Lib/Services/Lab/FLabServices.cs
@@ -94,7 +94,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/FLabServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: createUtilitaires
     path: ../DEM.Net.Lib/Services/Lab/FLabServices.cs
@@ -128,7 +128,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/FLabServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: createCalculMedium
     path: ../DEM.Net.Lib/Services/Lab/FLabServices.cs
@@ -162,7 +162,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/FLabServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: createGeomorphoServices
     path: ../DEM.Net.Lib/Services/Lab/FLabServices.cs

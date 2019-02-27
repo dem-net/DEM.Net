@@ -18,7 +18,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: enumModeCalculZ
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
@@ -49,7 +49,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: alti_0
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
@@ -81,7 +81,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: alti_min
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
@@ -113,7 +113,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: alti_saisie
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs

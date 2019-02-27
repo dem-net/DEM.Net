@@ -27,7 +27,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: BeanPoint_internal
     path: ../DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
@@ -68,7 +68,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p00_id
     path: ../DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
@@ -103,7 +103,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p01_hCodeGeog
     path: ../DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
@@ -138,7 +138,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p10_coord
     path: ../DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
@@ -173,7 +173,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p11_srid
     path: ../DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
@@ -208,7 +208,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p21_estPointFacette_vf
     path: ../DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
@@ -243,7 +243,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p22_estPointInclus_vf
     path: ../DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
@@ -278,7 +278,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p31_ecartAbsAuPlanCourant
     path: ../DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
@@ -313,7 +313,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p41_arcsAssocies
     path: ../DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
@@ -348,7 +348,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p42_ordonnancementHorairesArcs
     path: ../DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
@@ -383,7 +383,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p43_ordonnancementOK_vf
     path: ../DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
@@ -418,7 +418,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
@@ -456,7 +456,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Services/Lab/BeanPoint_internal.cs

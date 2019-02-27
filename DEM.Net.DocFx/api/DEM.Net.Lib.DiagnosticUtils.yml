@@ -17,7 +17,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/DiagnosticUtils.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DiagnosticUtils
     path: ../DEM.Net.Lib/Services/DiagnosticUtils.cs
@@ -58,7 +58,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/DiagnosticUtils.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: OutputDebugBitmap
     path: ../DEM.Net.Lib/Services/DiagnosticUtils.cs
@@ -97,7 +97,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/DiagnosticUtils.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: OutputDebugBitmap
     path: ../DEM.Net.Lib/Services/DiagnosticUtils.cs

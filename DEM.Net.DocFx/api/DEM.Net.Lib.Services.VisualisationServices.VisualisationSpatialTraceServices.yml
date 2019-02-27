@@ -34,7 +34,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: VisualisationSpatialTraceServices
     path: ../DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
@@ -79,7 +79,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetTableCouleursDegradees
     path: ../DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
@@ -125,7 +125,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetTableCouleursDegradees
     path: ../DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
@@ -168,7 +168,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetTailleAffichageDuPoint
     path: ../DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
@@ -207,7 +207,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetTailleAffichageDuPoint
     path: ../DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
@@ -249,7 +249,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetVisuPointsAlti
     path: ../DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
@@ -291,7 +291,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetVisuPointsAlti
     path: ../DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
@@ -341,7 +341,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetVisuPoints2D
     path: ../DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
@@ -385,7 +385,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetVisuPoints2D
     path: ../DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
@@ -427,7 +427,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetVisuPoint2D
     path: ../DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
@@ -468,7 +468,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetVisuPoint2D
     path: ../DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
@@ -507,7 +507,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetVisuArc2D
     path: ../DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
@@ -546,7 +546,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetVisuVecteur2D
     path: ../DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
@@ -594,7 +594,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetVisuVecteur2D
     path: ../DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
@@ -640,7 +640,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetVisuTopologieFacettes
     path: ../DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
@@ -679,7 +679,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetVisuPentesFacettes
     path: ../DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
@@ -716,7 +716,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetVisuFacette
     path: ../DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
@@ -759,7 +759,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetVisuCreteEtTalweg
     path: ../DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
@@ -799,7 +799,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: AfficheVisu
     path: ../DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
@@ -831,7 +831,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ClearSpatialTrace
     path: ../DEM.Net.Lib/Services/VisualisationServices/VisualisationSpatialTraceServices.cs

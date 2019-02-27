@@ -15,7 +15,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/RasterFileDictionary.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: RasterFileDictionary
     path: ../DEM.Net.Lib/Helpers/RasterFileDictionary.cs

@@ -19,7 +19,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServicesLow_testsDivers.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ICalculServicesLow_testsDivers
     path: ../DEM.Net.Lib/Services/Lab/ICalculServicesLow_testsDivers.cs
@@ -50,7 +50,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServicesLow_testsDivers.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetCoordonneesCercleCirconscritAuTriangle
     path: ../DEM.Net.Lib/Services/Lab/ICalculServicesLow_testsDivers.cs
@@ -84,7 +84,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServicesLow_testsDivers.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: IsPointDDansCercleCirconscritAuTriangleByMatrice
     path: ../DEM.Net.Lib/Services/Lab/ICalculServicesLow_testsDivers.cs
@@ -120,7 +120,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServicesLow_testsDivers.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: IsPointDDansCercleCirconscritAuTriangleExplicite
     path: ../DEM.Net.Lib/Services/Lab/ICalculServicesLow_testsDivers.cs
@@ -156,7 +156,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServicesLow_testsDivers.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetOrdonnancement
     path: ../DEM.Net.Lib/Services/Lab/ICalculServicesLow_testsDivers.cs

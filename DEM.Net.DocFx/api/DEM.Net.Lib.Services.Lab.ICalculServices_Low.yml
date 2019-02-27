@@ -71,7 +71,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ICalculServices_Low
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -102,7 +102,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: AreDroitesParallelesXY
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -142,7 +142,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: AreSegmentsSequants
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -182,7 +182,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: AreVecteursColineairesXY
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -218,7 +218,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: AreVecteursColineairesXYZ
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -254,7 +254,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: AreVectorsSameDimension
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -292,7 +292,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetCentroide
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -326,7 +326,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetCoeffDroite2D
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -362,7 +362,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetCoordDansNewRepereXY
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -404,7 +404,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetCoordDansNewRepereXY
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -444,7 +444,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetCoordDansNewRepereXY
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -486,7 +486,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetCoordonneesCercleCirconscritAuTriangle
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -520,7 +520,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetDeterminantMatrice3x3
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -567,7 +567,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetDeterminantMatrice3x3
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -605,7 +605,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetDistanceEuclidienneCarreeXY
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -641,7 +641,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetDistanceEuclidienneCarreeXYZ
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -677,7 +677,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetDistanceEuclidienneXY
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -713,7 +713,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetDistanceEuclidienneXYZ
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -749,7 +749,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetEquationNormaleDuPlan
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -785,7 +785,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetEquationNormaleDuPlan
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -825,7 +825,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetEquationParametriqueDroite2D
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -863,7 +863,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetIntersectionDroites2D
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -903,7 +903,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetIntersectionDroites2DCoeffExplicites
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -939,7 +939,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetIntersectionDroites2DCoeffParametriques
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -975,7 +975,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetIntersectionDroites2DMethodeParametrique
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1015,7 +1015,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetInverseVector2
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1051,7 +1051,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetMatrice3x3FromCoord
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1093,7 +1093,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetMatrice3x3FromVectors
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1131,7 +1131,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetMatriceChangementDeRepereXY
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1171,7 +1171,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetMatriceInverse2x2
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1205,7 +1205,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetMatriceInverse3x3
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1252,7 +1252,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetMatriceInverse3x3
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1286,7 +1286,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetMatriceInverse3x3
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1324,7 +1324,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetMediatriceByParametres
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1360,7 +1360,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetNormaleDuPlan
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1400,7 +1400,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetNormaleDuPlan
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1440,7 +1440,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetNormalisationVecteurXY
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1474,7 +1474,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetNormalisationVecteurXYZ
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1508,7 +1508,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetNormeVecteurXY
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1542,7 +1542,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetNormeVecteurXYZ
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1576,7 +1576,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetOrdonnancement
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1616,7 +1616,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetOrdonnancement
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1654,7 +1654,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetPenteFromPoints3D
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1690,7 +1690,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetPente
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1724,7 +1724,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetPointLePlusEloigneDePoint0XY
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1760,7 +1760,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetPointLePlusExcentreXY
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1794,7 +1794,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetPointLePlusProcheDePoint0XY
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1830,7 +1830,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetProduitMatriceParVector
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1866,7 +1866,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetProduitMatricesAxB
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1902,7 +1902,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetProduitScalaireXY
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1938,7 +1938,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetProduitScalaireXYZ
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -1974,7 +1974,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetVecteurPenteMaxi
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -2010,7 +2010,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetVectorBrutFromTwoPoints
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -2046,7 +2046,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: IsInversionMatriceOk
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -2084,7 +2084,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: IsMatriceIdentite
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -2120,7 +2120,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: IsPointDDansCercleCirconscritAuTriangleByMatrice
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
@@ -2156,7 +2156,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: IsPointDDansCercleCirconscritAuTriangleExplicite
     path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs

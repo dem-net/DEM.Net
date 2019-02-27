@@ -21,7 +21,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/ElevationMetrics.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ElevationMetrics
     path: ../DEM.Net.Lib/Model/ElevationMetrics.cs
@@ -62,7 +62,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/ElevationMetrics.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: MinElevation
     path: ../DEM.Net.Lib/Model/ElevationMetrics.cs
@@ -97,7 +97,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/ElevationMetrics.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: MaxElevation
     path: ../DEM.Net.Lib/Model/ElevationMetrics.cs
@@ -132,7 +132,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/ElevationMetrics.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Distance
     path: ../DEM.Net.Lib/Model/ElevationMetrics.cs
@@ -167,7 +167,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/ElevationMetrics.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: NumPoints
     path: ../DEM.Net.Lib/Model/ElevationMetrics.cs
@@ -202,7 +202,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/ElevationMetrics.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Climb
     path: ../DEM.Net.Lib/Model/ElevationMetrics.cs
@@ -237,7 +237,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/ElevationMetrics.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Descent
     path: ../DEM.Net.Lib/Model/ElevationMetrics.cs

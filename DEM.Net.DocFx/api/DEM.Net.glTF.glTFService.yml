@@ -25,7 +25,7 @@ items:
   source:
     remote:
       path: DEM.Net.glTF/glTFService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: glTFService
     path: ../DEM.Net.glTF/glTFService.cs
@@ -70,7 +70,7 @@ items:
   source:
     remote:
       path: DEM.Net.glTF/glTFService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Export
     path: ../DEM.Net.glTF/glTFService.cs
@@ -113,7 +113,7 @@ items:
   source:
     remote:
       path: DEM.Net.glTF/glTFService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Import
     path: ../DEM.Net.glTF/glTFService.cs
@@ -150,7 +150,7 @@ items:
   source:
     remote:
       path: DEM.Net.glTF/glTFService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GenerateModel
     path: ../DEM.Net.glTF/glTFService.cs
@@ -189,7 +189,7 @@ items:
   source:
     remote:
       path: DEM.Net.glTF/glTFService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GenerateModel
     path: ../DEM.Net.glTF/glTFService.cs
@@ -231,7 +231,7 @@ items:
   source:
     remote:
       path: DEM.Net.glTF/glTFService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetHeightPlanes
     path: ../DEM.Net.glTF/glTFService.cs
@@ -265,7 +265,7 @@ items:
   source:
     remote:
       path: DEM.Net.glTF/glTFService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GenerateTriangleMesh
     path: ../DEM.Net.glTF/glTFService.cs
@@ -315,7 +315,7 @@ items:
   source:
     remote:
       path: DEM.Net.glTF/glTFService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GenerateLine
     path: ../DEM.Net.glTF/glTFService.cs
@@ -359,7 +359,7 @@ items:
   source:
     remote:
       path: DEM.Net.glTF/glTFService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GenerateTriangleMesh
     path: ../DEM.Net.glTF/glTFService.cs
@@ -405,7 +405,7 @@ items:
   source:
     remote:
       path: DEM.Net.glTF/glTFService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GenerateTriangleMesh
     path: ../DEM.Net.glTF/glTFService.cs
@@ -451,7 +451,7 @@ items:
   source:
     remote:
       path: DEM.Net.glTF/glTFService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GeneratePointMesh
     path: ../DEM.Net.glTF/glTFService.cs

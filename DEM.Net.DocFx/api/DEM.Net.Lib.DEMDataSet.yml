@@ -27,7 +27,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DEMDataSet.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DEMDataSet
     path: ../DEM.Net.Lib/Model/DEMDataSet.cs
@@ -77,7 +77,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DEMDataSet.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Name
     path: ../DEM.Net.Lib/Model/DEMDataSet.cs
@@ -126,7 +126,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DEMDataSet.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Description
     path: ../DEM.Net.Lib/Model/DEMDataSet.cs
@@ -175,7 +175,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DEMDataSet.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: PublicUrl
     path: ../DEM.Net.Lib/Model/DEMDataSet.cs
@@ -224,7 +224,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DEMDataSet.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ResolutionMeters
     path: ../DEM.Net.Lib/Model/DEMDataSet.cs
@@ -273,7 +273,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DEMDataSet.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: FileFormat
     path: ../DEM.Net.Lib/Model/DEMDataSet.cs
@@ -322,7 +322,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DEMDataSet.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: VRTFileUrl
     path: ../DEM.Net.Lib/Model/DEMDataSet.cs
@@ -371,7 +371,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DEMDataSet.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Model/DEMDataSet.cs
@@ -401,7 +401,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DEMDataSet.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: SRTM_GL3
     path: ../DEM.Net.Lib/Model/DEMDataSet.cs
@@ -438,7 +438,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DEMDataSet.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: SRTM_GL1
     path: ../DEM.Net.Lib/Model/DEMDataSet.cs
@@ -475,7 +475,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DEMDataSet.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: AW3D30
     path: ../DEM.Net.Lib/Model/DEMDataSet.cs
@@ -512,7 +512,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DEMDataSet.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: RegisteredDatasets
     path: ../DEM.Net.Lib/Model/DEMDataSet.cs
@@ -549,7 +549,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Model/DEMDataSet.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ToString
     path: ../DEM.Net.Lib/Model/DEMDataSet.cs

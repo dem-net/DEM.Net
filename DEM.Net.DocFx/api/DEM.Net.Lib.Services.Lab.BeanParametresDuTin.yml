@@ -23,7 +23,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: BeanParametresDuTin
     path: ../DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
@@ -64,7 +64,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p11_initialisation_determinationFrontieres
     path: ../DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
@@ -99,7 +99,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p12_extensionSupplementaireMboEnM
     path: ../DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
@@ -134,7 +134,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p13_modeCalculZParDefaut
     path: ../DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
@@ -169,7 +169,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p14_altitudeParDefaut
     path: ../DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
@@ -204,7 +204,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p15_nbrePointsSupplMultiples4
     path: ../DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
@@ -239,7 +239,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p16_initialisation_modeChoixDuPointCentral
     path: ../DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
@@ -274,7 +274,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p21_enrichissement_modeChoixDuPointCentral
     path: ../DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
@@ -309,7 +309,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs

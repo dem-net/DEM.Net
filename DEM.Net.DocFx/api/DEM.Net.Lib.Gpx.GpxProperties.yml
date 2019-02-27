@@ -20,7 +20,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxProperties.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GpxProperties
     path: ../DEM.Net.Lib/IO/gpx/GpxProperties.cs
@@ -61,7 +61,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxProperties.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetValueProperty
     path: ../DEM.Net.Lib/IO/gpx/GpxProperties.cs
@@ -103,7 +103,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxProperties.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetObjectProperty
     path: ../DEM.Net.Lib/IO/gpx/GpxProperties.cs
@@ -145,7 +145,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxProperties.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetListProperty
     path: ../DEM.Net.Lib/IO/gpx/GpxProperties.cs
@@ -185,7 +185,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxProperties.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: SetValueProperty
     path: ../DEM.Net.Lib/IO/gpx/GpxProperties.cs
@@ -227,7 +227,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxProperties.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: SetObjectProperty
     path: ../DEM.Net.Lib/IO/gpx/GpxProperties.cs

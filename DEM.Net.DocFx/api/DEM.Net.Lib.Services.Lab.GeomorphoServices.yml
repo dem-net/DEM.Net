@@ -16,7 +16,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/GeomorphoServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GeomorphoServices
     path: ../DEM.Net.Lib/Services/Lab/GeomorphoServices.cs
@@ -61,7 +61,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/GeomorphoServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetQualificationMorphoDeLArc
     path: ../DEM.Net.Lib/Services/Lab/GeomorphoServices.cs

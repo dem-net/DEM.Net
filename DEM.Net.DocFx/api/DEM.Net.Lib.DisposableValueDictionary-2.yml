@@ -17,7 +17,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/RasterFileDictionary.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DisposableValueDictionary
     path: ../DEM.Net.Lib/Helpers/RasterFileDictionary.cs
@@ -123,7 +123,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/RasterFileDictionary.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Dispose
     path: ../DEM.Net.Lib/Helpers/RasterFileDictionary.cs
@@ -157,7 +157,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/RasterFileDictionary.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Clear
     path: ../DEM.Net.Lib/Helpers/RasterFileDictionary.cs

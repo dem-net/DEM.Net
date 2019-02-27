@@ -17,7 +17,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanParametresChoixDuPointCentral.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: BeanParametresChoixDuPointCentral
     path: ../DEM.Net.Lib/Services/Lab/BeanParametresChoixDuPointCentral.cs
@@ -58,7 +58,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanParametresChoixDuPointCentral.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p00_methodeChoixDuPointCentral
     path: ../DEM.Net.Lib/Services/Lab/BeanParametresChoixDuPointCentral.cs
@@ -93,7 +93,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanParametresChoixDuPointCentral.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p01_excentrationMinimum
     path: ../DEM.Net.Lib/Services/Lab/BeanParametresChoixDuPointCentral.cs

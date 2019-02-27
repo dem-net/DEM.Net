@@ -214,7 +214,7 @@ namespace DEM.Net.TestWinForm
             {
                 dataSet = DEMDataSet.AW3D30;
             }
-            _dataPointsTests = FServicesApplicatifs.createEchantillonsTestsServices().GetPointsTestsByBBox(v_bbox, dataSet);
+            _dataPointsTests = FServicesApplicatifs.createEchantillonsTestsServices().GetPointsTestsByBBox(v_bbox, dataSet, int.Parse(txtSRID.Text));
 
             //Dictionary<string, int> v_doublons;
             //v_doublons=FLabServices.createCalculMedium().GetEtComptePointsDoublonnes(_dataPointsTests);

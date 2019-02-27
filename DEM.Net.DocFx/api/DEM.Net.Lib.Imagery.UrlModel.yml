@@ -18,7 +18,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/UrlModel.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: UrlModel
     path: ../DEM.Net.Lib/Imagery/UrlModel.cs
@@ -59,7 +59,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/UrlModel.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: UrlFormat
     path: ../DEM.Net.Lib/Imagery/UrlModel.cs
@@ -90,7 +90,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/UrlModel.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Servers
     path: ../DEM.Net.Lib/Imagery/UrlModel.cs
@@ -121,7 +121,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/UrlModel.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Imagery/UrlModel.cs

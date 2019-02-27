@@ -19,7 +19,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GpxLink
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -60,7 +60,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Href
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -95,7 +95,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Text
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -130,7 +130,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: MimeType
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -165,7 +165,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Uri
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs

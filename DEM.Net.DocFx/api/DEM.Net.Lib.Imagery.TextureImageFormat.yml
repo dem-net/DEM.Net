@@ -17,7 +17,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TextureImageFormat.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: TextureImageFormat
     path: ../DEM.Net.Lib/Imagery/Structs/TextureImageFormat.cs
@@ -48,7 +48,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TextureImageFormat.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: image_jpeg
     path: ../DEM.Net.Lib/Imagery/Structs/TextureImageFormat.cs
@@ -80,7 +80,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TextureImageFormat.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: image_png
     path: ../DEM.Net.Lib/Imagery/Structs/TextureImageFormat.cs

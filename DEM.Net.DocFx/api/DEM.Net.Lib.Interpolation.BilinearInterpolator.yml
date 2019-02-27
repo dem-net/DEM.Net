@@ -16,7 +16,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Interpolation/BilinearInterpolator.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: BilinearInterpolator
     path: ../DEM.Net.Lib/Services/Interpolation/BilinearInterpolator.cs
@@ -63,7 +63,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Interpolation/BilinearInterpolator.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Interpolate
     path: ../DEM.Net.Lib/Services/Interpolation/BilinearInterpolator.cs

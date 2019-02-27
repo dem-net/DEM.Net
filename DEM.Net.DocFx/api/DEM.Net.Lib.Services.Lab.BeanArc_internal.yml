@@ -28,7 +28,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: BeanArc_internal
     path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
@@ -69,7 +69,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p00_idArc
     path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
@@ -104,7 +104,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p01_hcodeArc
     path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
@@ -139,7 +139,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p11_pointDbt
     path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
@@ -174,7 +174,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p12_pointFin
     path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
@@ -209,7 +209,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p20_statutArc
     path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
@@ -244,7 +244,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p21_facetteGauche
     path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
@@ -279,7 +279,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p22_facetteDroite
     path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
@@ -314,7 +314,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p31_pointsAssocies
     path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
@@ -349,7 +349,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: getSensPenteArc
     path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
@@ -381,7 +381,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: getValeurPente
     path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
@@ -413,7 +413,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: getQualifMorphoDeLArc
     path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
@@ -445,7 +445,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
@@ -480,7 +480,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs

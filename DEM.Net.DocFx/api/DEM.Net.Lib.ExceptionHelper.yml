@@ -16,7 +16,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/ExceptionHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ExceptionHelper
     path: ../DEM.Net.Lib/Helpers/ExceptionHelper.cs
@@ -59,7 +59,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/ExceptionHelper.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetInnerMostException
     path: ../DEM.Net.Lib/Helpers/ExceptionHelper.cs

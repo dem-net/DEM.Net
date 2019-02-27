@@ -20,7 +20,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GpxAddress
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -61,7 +61,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: StreetAddress
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -96,7 +96,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: City
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -131,7 +131,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: State
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -166,7 +166,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Country
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -201,7 +201,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: PostalCode
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs

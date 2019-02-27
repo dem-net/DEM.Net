@@ -21,7 +21,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxWriter.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GpxWriter
     path: ../DEM.Net.Lib/IO/gpx/GpxWriter.cs
@@ -66,7 +66,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxWriter.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/IO/gpx/GpxWriter.cs
@@ -99,7 +99,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxWriter.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Dispose
     path: ../DEM.Net.Lib/IO/gpx/GpxWriter.cs
@@ -131,7 +131,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxWriter.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: WriteMetadata
     path: ../DEM.Net.Lib/IO/gpx/GpxWriter.cs
@@ -164,7 +164,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxWriter.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: WriteWayPoint
     path: ../DEM.Net.Lib/IO/gpx/GpxWriter.cs
@@ -197,7 +197,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxWriter.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: WriteRoute
     path: ../DEM.Net.Lib/IO/gpx/GpxWriter.cs
@@ -230,7 +230,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxWriter.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: WriteTrack
     path: ../DEM.Net.Lib/IO/gpx/GpxWriter.cs

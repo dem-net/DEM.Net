@@ -20,7 +20,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/ImageryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ImageryService
     path: ../DEM.Net.Lib/Imagery/ImageryService.cs
@@ -61,7 +61,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/ImageryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DownloadTiles
     path: ../DEM.Net.Lib/Imagery/ImageryService.cs
@@ -100,7 +100,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/ImageryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ConstructTexture
     path: ../DEM.Net.Lib/Imagery/ImageryService.cs
@@ -141,7 +141,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/ImageryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GenerateNormalMap
     path: ../DEM.Net.Lib/Imagery/ImageryService.cs
@@ -183,7 +183,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/ImageryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: FromVec3NormalToColor
     path: ../DEM.Net.Lib/Imagery/ImageryService.cs
@@ -218,7 +218,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/ImageryService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ComputeUVMap
     path: ../DEM.Net.Lib/Imagery/ImageryService.cs

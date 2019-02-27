@@ -10,7 +10,7 @@ namespace DEM.Net.TestWinForm
 {
     public class EchantillonsTestsServices : IServicesApplicatifs
     {
-        public List<BeanPoint_internal> GetPointsTestsByBBox(string p_bbox, DEMDataSet dataset)
+        public List<BeanPoint_internal> GetPointsTestsByBBox(string p_bbox, DEMDataSet dataset, int sridCible)
         {
             List<BeanPoint_internal> v_pointsToTest = new List<BeanPoint_internal>();
             try
@@ -23,9 +23,9 @@ namespace DEM.Net.TestWinForm
                 HeightMap v_hMap;
                 v_hMap = v_elevationService.GetHeightMap(v_bbox, dataset);
 
-                int v_sridCible = 2154;
-                v_hMap = v_hMap.ReprojectTo(4326, v_sridCible);
-                v_pointsToTest = GetGeoPointsByHMap(v_hMap, v_sridCible);
+                
+                v_hMap = v_hMap.ReprojectTo(4326, sridCible);
+                v_pointsToTest = GetGeoPointsByHMap(v_hMap, sridCible);
             }
             catch (Exception)
             {

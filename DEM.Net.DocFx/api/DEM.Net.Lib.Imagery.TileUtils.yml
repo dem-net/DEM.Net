@@ -28,7 +28,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/TileUtils.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: TileUtils
     path: ../DEM.Net.Lib/Imagery/TileUtils.cs
@@ -72,7 +72,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/TileUtils.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: EARTH_RADIUS
     path: ../DEM.Net.Lib/Imagery/TileUtils.cs
@@ -105,7 +105,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/TileUtils.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: EARTH_CIRCUMFERENCE
     path: ../DEM.Net.Lib/Imagery/TileUtils.cs
@@ -138,7 +138,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/TileUtils.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: MIN_LATITUDE
     path: ../DEM.Net.Lib/Imagery/TileUtils.cs
@@ -171,7 +171,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/TileUtils.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: UsefulDigits
     path: ../DEM.Net.Lib/Imagery/TileUtils.cs
@@ -208,7 +208,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/TileUtils.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: MapSize
     path: ../DEM.Net.Lib/Imagery/TileUtils.cs
@@ -252,7 +252,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/TileUtils.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GroundResolution
     path: ../DEM.Net.Lib/Imagery/TileUtils.cs
@@ -302,7 +302,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/TileUtils.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: MapScale
     path: ../DEM.Net.Lib/Imagery/TileUtils.cs
@@ -355,7 +355,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/TileUtils.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: LatLongToPixelXY
     path: ../DEM.Net.Lib/Imagery/TileUtils.cs
@@ -404,7 +404,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/TileUtils.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: PixelXYToLatLong
     path: ../DEM.Net.Lib/Imagery/TileUtils.cs
@@ -453,7 +453,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/TileUtils.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: PixelXYToTileXY
     path: ../DEM.Net.Lib/Imagery/TileUtils.cs
@@ -492,7 +492,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/TileUtils.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: TileXYToPixelXY
     path: ../DEM.Net.Lib/Imagery/TileUtils.cs
@@ -531,7 +531,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/TileUtils.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: TileXYToQuadKey
     path: ../DEM.Net.Lib/Imagery/TileUtils.cs
@@ -581,7 +581,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/TileUtils.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: QuadKeyToTileXY
     path: ../DEM.Net.Lib/Imagery/TileUtils.cs

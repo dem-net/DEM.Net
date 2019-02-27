@@ -78,14 +78,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DatasetSamples.cs" />
-    <Compile Include="ElevationSamples.cs" />
-    <Compile Include="OldSamples.cs" />
-    <Compile Include="ReprojectionSamples.cs" />
+    <Compile Include="Samples\DatasetSamples.cs" />
+    <Compile Include="Samples\ElevationSamples.cs" />
+    <Compile Include="Samples\OldSamples.cs" />
+    <Compile Include="Samples\ReprojectionSamples.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="GpxSamples.cs" />
-    <Compile Include="TextureSamples.cs" />
+    <Compile Include="Samples\GpxSamples.cs" />
+    <Compile Include="Samples\TextureSamples.cs" />
     <Compile Include="TINGeneration.cs" />
   </ItemGroup>
   <ItemGroup>

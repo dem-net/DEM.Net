@@ -21,7 +21,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/VectorsExtensions.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: VectorsExtensions
     path: ../DEM.Net.Lib/Helpers/VectorsExtensions.cs
@@ -64,7 +64,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/VectorsExtensions.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ToVector3
     path: ../DEM.Net.Lib/Helpers/VectorsExtensions.cs
@@ -108,7 +108,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/VectorsExtensions.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ToVector3
     path: ../DEM.Net.Lib/Helpers/VectorsExtensions.cs
@@ -149,7 +149,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/VectorsExtensions.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ToVector4
     path: ../DEM.Net.Lib/Helpers/VectorsExtensions.cs
@@ -192,7 +192,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/VectorsExtensions.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ToQuadPoints
     path: ../DEM.Net.Lib/Helpers/VectorsExtensions.cs
@@ -234,7 +234,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/VectorsExtensions.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: TriangulateQuadIndices
     path: ../DEM.Net.Lib/Helpers/VectorsExtensions.cs
@@ -272,7 +272,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Helpers/VectorsExtensions.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetStats
     path: ../DEM.Net.Lib/Helpers/VectorsExtensions.cs

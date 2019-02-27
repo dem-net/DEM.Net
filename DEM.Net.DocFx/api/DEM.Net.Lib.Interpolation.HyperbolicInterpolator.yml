@@ -16,7 +16,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Interpolation/HyperbolicInterpolator.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: HyperbolicInterpolator
     path: ../DEM.Net.Lib/Services/Interpolation/HyperbolicInterpolator.cs
@@ -63,7 +63,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Interpolation/HyperbolicInterpolator.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Interpolate
     path: ../DEM.Net.Lib/Services/Interpolation/HyperbolicInterpolator.cs

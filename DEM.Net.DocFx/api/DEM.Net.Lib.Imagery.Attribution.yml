@@ -18,7 +18,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/Attribution.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Attribution
     path: ../DEM.Net.Lib/Imagery/Structs/Attribution.cs
@@ -59,7 +59,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/Attribution.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Imagery/Structs/Attribution.cs
@@ -94,7 +94,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/Attribution.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Text
     path: ../DEM.Net.Lib/Imagery/Structs/Attribution.cs
@@ -129,7 +129,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/Attribution.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Url
     path: ../DEM.Net.Lib/Imagery/Structs/Attribution.cs

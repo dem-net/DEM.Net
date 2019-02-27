@@ -21,7 +21,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ICalculServicesMedium_testDivers
     path: ../DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
@@ -52,7 +52,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetCentroide
     path: ../DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
@@ -86,7 +86,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetCoordonneesDansNewReferentiel2D
     path: ../DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
@@ -126,7 +126,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetCoordonneesDansNewReferentiel2D
     path: ../DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
@@ -166,7 +166,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetEtComptePointsDoublonnes
     path: ../DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
@@ -200,7 +200,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetIdPointLePlusEloigneDuPointRef
     path: ../DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
@@ -236,7 +236,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetLongueurArcAuCarre
     path: ../DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs

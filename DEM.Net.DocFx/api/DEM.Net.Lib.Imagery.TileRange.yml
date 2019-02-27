@@ -27,7 +27,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: TileRange
     path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
@@ -73,7 +73,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
@@ -106,7 +106,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Add
     path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
@@ -139,7 +139,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: AddRange
     path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
@@ -175,7 +175,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Provider
     path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
@@ -210,7 +210,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Start
     path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
@@ -245,7 +245,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: End
     path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
@@ -280,7 +280,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: NumCols
     path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
@@ -315,7 +315,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: NumRows
     path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
@@ -350,7 +350,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: AreaOfInterest
     path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
@@ -385,7 +385,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetEnumerator
     path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
@@ -420,7 +420,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: System.Collections.IEnumerable.GetEnumerator
     path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
@@ -452,7 +452,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: EnumerateRange
     path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs

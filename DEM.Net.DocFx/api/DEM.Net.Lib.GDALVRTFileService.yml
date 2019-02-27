@@ -19,7 +19,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/GDALVRTFileService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GDALVRTFileService
     path: ../DEM.Net.Lib/Services/Raster/GDALVRTFileService.cs
@@ -62,7 +62,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/GDALVRTFileService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Dataset
     path: ../DEM.Net.Lib/Services/Raster/GDALVRTFileService.cs
@@ -97,7 +97,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/GDALVRTFileService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Services/Raster/GDALVRTFileService.cs
@@ -132,7 +132,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/GDALVRTFileService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Setup
     path: ../DEM.Net.Lib/Services/Raster/GDALVRTFileService.cs
@@ -167,7 +167,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/GDALVRTFileService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Sources
     path: ../DEM.Net.Lib/Services/Raster/GDALVRTFileService.cs

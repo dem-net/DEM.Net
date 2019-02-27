@@ -17,7 +17,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: enumOrdonnancementPoints
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
@@ -48,7 +48,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: horaire
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
@@ -80,7 +80,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/enumServices.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: antihoraire
     path: ../DEM.Net.Lib/Services/Lab/enumServices.cs

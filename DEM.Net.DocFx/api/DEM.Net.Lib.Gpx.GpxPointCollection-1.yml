@@ -35,7 +35,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GpxPointCollection
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -88,7 +88,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: AddPoint
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -125,7 +125,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: StartPoint
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -162,7 +162,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: EndPoint
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -199,7 +199,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetLength
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -233,7 +233,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetMinElevation
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -267,7 +267,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetMaxElevation
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -301,7 +301,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ToGpxPoints
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -335,7 +335,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Count
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -374,7 +374,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: IndexOf
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -413,7 +413,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Insert
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -452,7 +452,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: RemoveAt
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -489,7 +489,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: this[]
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -531,7 +531,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Add
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -568,7 +568,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Clear
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -602,7 +602,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Contains
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -641,7 +641,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: CopyTo
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -681,7 +681,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: IsReadOnly
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -720,7 +720,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: Remove
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -759,7 +759,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetEnumerator
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
@@ -796,7 +796,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/Gpx.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: System.Collections.IEnumerable.GetEnumerator
     path: ../DEM.Net.Lib/IO/gpx/Gpx.cs

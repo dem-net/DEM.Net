@@ -27,7 +27,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: BeanFacette_internal
     path: ../DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
@@ -68,7 +68,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p00_idFacette
     path: ../DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
@@ -103,7 +103,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p01_pointsDeFacette
     path: ../DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
@@ -138,7 +138,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p02_arcs
     path: ../DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
@@ -173,7 +173,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p10_pointsInclus
     path: ../DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
@@ -208,7 +208,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p21_plusGrandEcartAbsolu
     path: ../DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
@@ -243,7 +243,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p22_pointPlusGrandEcart
     path: ../DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
@@ -278,7 +278,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p23_facetteEcartSup
     path: ../DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
@@ -313,7 +313,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: p24_facetteEcartInf
     path: ../DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
@@ -348,7 +348,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: getNormaleDuPlan
     path: ../DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
@@ -380,7 +380,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: getVecteurPenteMaxi
     path: ../DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
@@ -412,7 +412,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: getPente
     path: ../DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
@@ -444,7 +444,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Services/Lab/BeanFacette_internal.cs

@@ -18,7 +18,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/RasterSampleFormat.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: RasterSampleFormat
     path: ../DEM.Net.Lib/Services/Raster/RasterSampleFormat.cs
@@ -60,7 +60,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/RasterSampleFormat.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: FLOATING_POINT
     path: ../DEM.Net.Lib/Services/Raster/RasterSampleFormat.cs
@@ -93,7 +93,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/RasterSampleFormat.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: INTEGER
     path: ../DEM.Net.Lib/Services/Raster/RasterSampleFormat.cs
@@ -126,7 +126,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Raster/RasterSampleFormat.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: UNSIGNED_INTEGER
     path: ../DEM.Net.Lib/Services/Raster/RasterSampleFormat.cs

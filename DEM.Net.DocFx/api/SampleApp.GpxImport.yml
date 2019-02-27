@@ -17,7 +17,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxImport.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GpxImport
     path: ../DEM.Net.Lib/IO/gpx/GpxImport.cs
@@ -59,7 +59,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxImport.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ReadGPX
     path: ../DEM.Net.Lib/IO/gpx/GpxImport.cs
@@ -94,7 +94,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/IO/gpx/GpxImport.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ReadGPX_Segments
     path: ../DEM.Net.Lib/IO/gpx/GpxImport.cs

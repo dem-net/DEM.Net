@@ -40,7 +40,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ElevationService
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -85,7 +85,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: NO_DATA_OUT
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -118,7 +118,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: .ctor
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -151,7 +151,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetDEMLocalPath
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -188,7 +188,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DownloadMissingFiles
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -225,7 +225,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: DownloadMissingFiles
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -264,7 +264,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetLineGeometryElevation
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -309,7 +309,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetLineGeometryElevation
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -350,7 +350,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetLineGeometryElevation
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -394,7 +394,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetPointElevation
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -437,7 +437,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetPointElevation
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -482,7 +482,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetPointsElevation
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -528,7 +528,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetPointElevation
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -571,7 +571,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetPointsElevation
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -615,7 +615,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetInterpolator
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -650,7 +650,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ExportElevationTable
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -690,7 +690,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetHeightMap
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -729,7 +729,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetHeightMap
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -770,7 +770,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetHeightMap
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -807,7 +807,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetElevationData
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -857,7 +857,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetTilesBoundingBox
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -897,7 +897,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetCoveringFiles
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -941,7 +941,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: GetCoveringFiles
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -987,7 +987,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: IsBboxIntersectingTile
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -1026,7 +1026,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: IsPointInTile
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs
@@ -1065,7 +1065,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Elevation/ElevationService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: IsPointInTile
     path: ../DEM.Net.Lib/Services/Elevation/ElevationService.cs

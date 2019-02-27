@@ -18,7 +18,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Mesh/MeshService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: MeshService
     path: ../DEM.Net.Lib/Services/Mesh/MeshService.cs
@@ -60,7 +60,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Mesh/MeshService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: TriangulateHeightMap
     path: ../DEM.Net.Lib/Services/Mesh/MeshService.cs
@@ -104,7 +104,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Mesh/MeshService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ComputeNormals
     path: ../DEM.Net.Lib/Services/Mesh/MeshService.cs
@@ -146,7 +146,7 @@ items:
   source:
     remote:
       path: DEM.Net.Lib/Services/Mesh/MeshService.cs
-      branch: dev-xfi
+      branch: dev
       repo: https://github.com/xfischer/DEM.Net.git
     id: ComputeNormals
     path: ../DEM.Net.Lib/Services/Mesh/MeshService.cs
