@@ -97,6 +97,7 @@
     <Compile Include="Helpers\ExceptionHelper.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
     <Compile Include="Helpers\IEnumerableWithCount.cs" />
+    <Compile Include="Helpers\NetworkHelper.cs" />
     <Compile Include="Helpers\Reprojection.cs" />
     <Compile Include="Helpers\RasterFileDictionary.cs" />
     <Compile Include="Helpers\HeightMapExtensions.cs" />

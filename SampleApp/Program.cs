@@ -29,7 +29,7 @@ namespace SampleApp
 
             Logger.StartPerf("Main cold start");
 
-            DatasetSamples.Run();
+            //DatasetSamples.Run();
 
             // Initialize raster service and Elevation service
             IRasterService rasterService = new RasterService();
@@ -38,6 +38,7 @@ namespace SampleApp
             //rasterService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true, true);
             //rasterService.GenerateDirectoryMetadata(DEMDataSet.SRTM_GL3, false, true, true);
 
+            ElevationSamples.Run();
 
             TextureSamples textureSamples = new TextureSamples(elevationService, _OutputDataDirectory);
             textureSamples.Run();

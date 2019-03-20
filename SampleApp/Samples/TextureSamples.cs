@@ -75,6 +75,12 @@ namespace SampleApp
             glTFService glTF = new glTFService();
             string outputDir = Path.GetFullPath(Path.Combine(_outputDirectory, "glTF"));
 
+            Logger.Info("============================");
+            Logger.Info($"= {nameof(TextureSamples)}");
+            Logger.Info("============================");
+            Logger.Info($"= {nameof(TextureSamples)} : Datadirectory report");
+
+
             // Get GPX points
             var bbox = GeometryService.GetBoundingBox(_bboxWkt);
 

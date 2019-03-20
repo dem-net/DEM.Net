@@ -89,6 +89,9 @@
     <None Include="settings.runsettings">
       <SubType>Designer</SubType>
     </None>
+    <None Include="TestData\lauzannier.gpx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TestData\N043E005_AVE_DSM.tif.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

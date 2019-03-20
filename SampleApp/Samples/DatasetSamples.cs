@@ -15,8 +15,8 @@ namespace SampleApp
         {
 
             RasterService rasterService = new RasterService();
-            string sampleName = "DatasetSamples";
-           
+            string sampleName = nameof(DatasetSamples);
+
             Logger.Info("============================");
             Logger.Info($"= {sampleName}");
             Logger.Info("============================");
