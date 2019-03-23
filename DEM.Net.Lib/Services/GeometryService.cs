@@ -25,6 +25,7 @@ namespace DEM.Net.Lib
         public static IGeometry ParseWKTAsGeometry(string geomWKT)
         {
             IGeometry geometry = _wktReader.Read(geomWKT);
+            geometry.SRID = WGS84_SRID;
             return geometry;
         }
         public static BoundingBox GetBoundingBox(string geomWKT)
@@ -47,7 +48,7 @@ namespace DEM.Net.Lib
         /// <returns></returns>
         public static IGeometry ParseGeoPointAsGeometryLine(IEnumerable<GeoPoint> points)
 		{
-            return new LineString(points.Select(pt => new Coordinate(pt.Longitude, pt.Latitude)).ToArray());
+            return new LineString(points.Select(pt => new Coordinate(pt.Longitude, pt.Latitude)).ToArray()) { SRID = WGS84_SRID };
 		}
 
 
@@ -219,7 +220,7 @@ namespace DEM.Net.Lib
                 yield return null;
             }
 
-            for (int i = 0; i < lineGeom.NumPoints; i++)
+            for (int i = 0; i < lineGeom.NumPoints-1; i++)
             {
                 Coordinate[] segCoords = new Coordinate[2];
                 segCoords[0] = lineGeom.Coordinates[i];
