@@ -16,7 +16,7 @@ namespace DEM.Net.Lib
         void DownloadMissingFiles(DEMDataSet dataSet, BoundingBox bbox = null);
 
         /// <summary>
-        /// Given a bounding box and a dataset, downloads all covered tiles
+        /// Given a location and a dataset, downloads all covered tiles
         /// using VRT file specified in dataset
         /// </summary>
         /// <param name="dataSet">DEMDataSet used</param>
@@ -25,6 +25,16 @@ namespace DEM.Net.Lib
         /// <remarks>VRT file is downloaded once. It will be cached in local for 30 days.
         /// </remarks>
         void DownloadMissingFiles(DEMDataSet dataSet, double lat, double lon);
+
+        /// <summary>
+        /// Given a location and a dataset, downloads all covered tiles
+        /// using VRT file specified in dataset
+        /// </summary>
+        /// <param name="dataSet">DEMDataSet used</param>
+        /// <param name="geoPoint">GeoPoint</param>
+        /// <remarks>VRT file is downloaded once. It will be cached in local for 30 days.
+        /// </remarks>
+        void DownloadMissingFiles(DEMDataSet dataSet, GeoPoint geoPoint);
 
         /// <summary>
         /// High level method that retrieves all dataset elevations along given line
@@ -106,7 +116,7 @@ namespace DEM.Net.Lib
         /// <returns></returns>
         HeightMap GetHeightMap(FileMetadata metadata);
         HeightMap GetHeightMap(BoundingBox bbox, string rasterFilePath, DEMFileFormat format);
-        
+
         /// <summary>
         /// Retrieves bounding box for the uning of all raster file list
         /// </summary>

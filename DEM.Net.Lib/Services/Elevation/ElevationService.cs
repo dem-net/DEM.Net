@@ -42,6 +42,14 @@ namespace DEM.Net.Lib
             DownloadMissingFiles_FromReport(report, dataSet);
 
         }
+
+        public void DownloadMissingFiles(DEMDataSet dataSet, GeoPoint geoPoint)
+        {
+            if (geoPoint == null)
+                return;
+
+            DownloadMissingFiles(dataSet, geoPoint.Latitude, geoPoint.Longitude);
+        }
         private void DownloadMissingFiles_FromReport(Dictionary<string, DemFileReport> report, DEMDataSet dataSet)
         {
             // Generate metadata files if missing
@@ -205,7 +213,7 @@ namespace DEM.Net.Lib
                         , true);
 
                     // Get elevation for each point
-                    this.GetElevationData(intersections, dataSet, adjacentRasters, segTiles, interpolator);
+                    intersections = this.GetElevationData(intersections, dataSet, adjacentRasters, segTiles, interpolator);
 
                     // Add to output list
                     geoPoints.AddRange(intersections);
