@@ -83,6 +83,7 @@
     <Compile Include="RasterTests.cs" />
     <Compile Include="ElevationTests.cs" />
     <Compile Include="MiscTests.cs" />
+    <Compile Include="GeometryTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
