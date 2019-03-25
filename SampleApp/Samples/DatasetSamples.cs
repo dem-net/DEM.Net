@@ -33,7 +33,12 @@ namespace SampleApp
 
             Logger.Info("=");
             Logger.Info("============================");
-            
+
+
+
+            //rasterService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true, true);
+            //rasterService.GenerateDirectoryMetadata(DEMDataSet.SRTM_GL3, false, true, true);
+
         }
 
 

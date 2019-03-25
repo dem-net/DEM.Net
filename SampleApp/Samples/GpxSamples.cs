@@ -21,9 +21,9 @@ namespace SampleApp
         private DEMDataSet _dataSet;
         private readonly string _outputDirectory;
 
-        public GpxSamples(IElevationService elevationService, string outputDirectory, string gpxFile)
+        public GpxSamples(string outputDirectory, string gpxFile)
         {
-            _elevationService = elevationService;
+            _elevationService = new ElevationService(new RasterService(outputDirectory));
             _dataSet = DEMDataSet.AW3D30;
             _outputDirectory = outputDirectory;
             _gpxFile = gpxFile;

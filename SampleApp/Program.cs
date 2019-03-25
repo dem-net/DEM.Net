@@ -30,28 +30,21 @@ namespace SampleApp
             Logger.StartPerf("Main cold start");
 
             //DatasetSamples.Run();
+            
+            //ElevationSamples.Run();
 
-            // Initialize raster service and Elevation service
-            IRasterService rasterService = new RasterService();
-            IElevationService elevationService = new ElevationService(rasterService);
+            //TextureSamples textureSamples = new TextureSamples(_OutputDataDirectory);
+            //textureSamples.Run();
+            //textureSamples.RunImagery(true);
 
-            //rasterService.GenerateDirectoryMetadata(DEMDataSet.AW3D30, false, true, true);
-            //rasterService.GenerateDirectoryMetadata(DEMDataSet.SRTM_GL3, false, true, true);
-
-            ElevationSamples.Run();
-
-            TextureSamples textureSamples = new TextureSamples(elevationService, _OutputDataDirectory);
-            textureSamples.Run();
-            textureSamples.RunImagery(true);
-
-            ReprojectionSamples reprojSamples = new ReprojectionSamples(elevationService, _OutputDataDirectory, @"..\..\..\Data\GPX\Vernet-les-bains-Canigou-34km.gpx");
+            ReprojectionSamples reprojSamples = new ReprojectionSamples(_OutputDataDirectory, @"..\..\..\Data\GPX\Vernet-les-bains-Canigou-34km.gpx");
             reprojSamples.Run();
 
 
-            GpxSamples gpxSamples = new GpxSamples(elevationService, _OutputDataDirectory, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
+            GpxSamples gpxSamples = new GpxSamples( _OutputDataDirectory, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
             gpxSamples.Run();
 
-            OldSamples oldSamples = new OldSamples(rasterService, elevationService, _OutputDataDirectory);
+            OldSamples oldSamples = new OldSamples( _OutputDataDirectory);
             oldSamples.Run();
 
 

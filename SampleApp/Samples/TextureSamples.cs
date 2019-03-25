@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace SampleApp
 {
-    class TextureSamples
+     class TextureSamples
     {
         private readonly IElevationService _elevationService;
         private readonly string _bboxWkt;
@@ -25,15 +25,15 @@ namespace SampleApp
         private DEMDataSet _meshDataSet;
         private readonly string _outputDirectory;
 
-        public TextureSamples(IElevationService elevationService, string outputDirectory)
+        public TextureSamples(string outputDirectory)
         {
-            _elevationService = elevationService;
+            _elevationService = new ElevationService(new RasterService(outputDirectory));
             // sugiton
             //_bboxWkt = "POLYGON ((5.42201042175293 43.20023317388979, 5.459775924682617 43.20023317388979, 5.459775924682617 43.22594305473314, 5.42201042175293 43.22594305473314, 5.42201042175293 43.20023317388979))";
             // ste victoire
             //_bboxWkt = "POLYGON((5.424004809009261 43.68472756348281, 5.884057299243636 43.68472756348281, 5.884057299243636 43.40402056297321, 5.424004809009261 43.40402056297321, 5.424004809009261 43.68472756348281))";
             // ventoux
-            // _bboxWkt = "POLYGON ((5.192413330078125 44.12209907358672, 5.3015899658203125 44.12209907358672, 5.3015899658203125 44.201897151875094, 5.192413330078125 44.201897151875094, 5.192413330078125 44.12209907358672))";
+             _bboxWkt = "POLYGON ((5.192413330078125 44.12209907358672, 5.3015899658203125 44.12209907358672, 5.3015899658203125 44.201897151875094, 5.192413330078125 44.201897151875094, 5.192413330078125 44.12209907358672))";
             //ventoux avigon
             //_bboxWkt = "POLYGON ((4.73236083984375 43.902839992663196, 5.401153564453124 43.902839992663196, 5.401153564453124 44.268804788566165, 4.73236083984375 44.268804788566165, 4.73236083984375 43.902839992663196))";
             // duranne
@@ -62,16 +62,15 @@ namespace SampleApp
             //_bboxWkt = "POLYGON ((3.4716796874999996 42.71473218539458, 17.0947265625 42.71473218539458, 17.0947265625 48.67645370777654, 3.4716796874999996 48.67645370777654, 3.4716796874999996 42.71473218539458))";
             // dolomites
             //_bboxWkt = "POLYGON ((11.743698120117186 46.4752265177719, 11.890640258789062 46.4752265177719, 11.890640258789062 46.557916007595786, 11.743698120117186 46.557916007595786, 11.743698120117186 46.4752265177719))";
-            // paine
-            _bboxWkt = "POLYGON ((-73.30764770507812 -51.11473061746101, -72.81875610351562 -51.11473061746101, -72.81875610351562 -50.82415602067789, -73.30764770507812 -50.82415602067789, -73.30764770507812 -51.11473061746101))";
-            _normalsDataSet = DEMDataSet.SRTM_GL1;
-            _meshDataSet = DEMDataSet.SRTM_GL1;
+            
+            _normalsDataSet = DEMDataSet.AW3D30;
+            _meshDataSet = DEMDataSet.SRTM_GL3;
             _outputDirectory = outputDirectory;
         }
 
         internal void Run()
         {
-            bool useTIN = true;
+            bool useTIN = false; // still buggy
             glTFService glTF = new glTFService();
             string outputDir = Path.GetFullPath(Path.Combine(_outputDirectory, "glTF"));
 
@@ -92,7 +91,7 @@ namespace SampleApp
 
             ImageryService imageryService = new ImageryService();
             Console.WriteLine("Download image tiles...");
-            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.MapBoxSatellite, 8);
+            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.MapBoxSatellite, 4);
 
             Console.WriteLine("Construct texture...");
             string fileName = Path.Combine(outputDir, "Texture.jpg");

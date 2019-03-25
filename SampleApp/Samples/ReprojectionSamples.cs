@@ -21,9 +21,9 @@ namespace SampleApp
         private DEMDataSet _dataSet;
         private readonly string _outputDirectory;
 
-        public ReprojectionSamples(IElevationService elevationService, string outputDirectory, string gpxFile)
+        public ReprojectionSamples( string outputDirectory, string gpxFile)
         {
-            _elevationService = elevationService;
+            _elevationService = new ElevationService(new RasterService(outputDirectory));
             _dataSet = DEMDataSet.AW3D30;
             _outputDirectory = outputDirectory;
             _gpxFile = gpxFile;
@@ -55,7 +55,7 @@ namespace SampleApp
             //
 
             Console.WriteLine("Download image tiles...");
-            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 8);
+            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.MapBoxSatellite, 4);
             string fileName = Path.Combine(outputDir, "Texture.jpg");
 
             Console.WriteLine("Construct texture...");

@@ -21,10 +21,10 @@ namespace SampleApp
         private IElevationService elevationService;
         private string _OutputDataDirectory;
 
-        public OldSamples(IRasterService rasterService, IElevationService elevationService, string outputDataDirectory)
+        public OldSamples(string outputDataDirectory)
         {
-            this.rasterService = rasterService;
-            this.elevationService = elevationService;
+            this.rasterService = new RasterService(outputDataDirectory) ;
+            this.elevationService = new ElevationService(rasterService);
             _OutputDataDirectory = outputDataDirectory;
         }
 
