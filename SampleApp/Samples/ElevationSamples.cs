@@ -26,10 +26,10 @@ namespace SampleApp
             Logger.Info("============================");
             Logger.Info($"= {sampleName} : Point elevation");
 
-            double lat1 = -33.466479;
-            double lon1 = -70.660565;
-            double lat2 = -32.901011;
-            double lont2 = -68.814862;
+            double lat1 = 45.179337;
+            double lon1 = 5.721421;
+            double lat2 = 45.212278;
+            double lont2 = 5.468857;
 
 
             foreach (var dataSet in DEMDataSet.RegisteredDatasets)
@@ -70,14 +70,17 @@ namespace SampleApp
             {
                 elevationService.DownloadMissingFiles(dataSet, elevationLine.GetBoundingBox());
                 var elevations = elevationService.GetLineGeometryElevation(elevationLine, dataSet);
-                Logger.Info($"{dataSet.Name} elevation: {string.Join(", ", elevations.Select(e => e.Elevation))}");
+                var metrics = GeometryService.ComputeMetrics(elevations);
+                //Logger.Info($"{dataSet.Name} elevation: {string.Join(", ", elevations.Select(e => e.Elevation))}");
+                Logger.Info($"{dataSet.Name} metrics: {metrics}");
             }
             Logger.StopPerf(sampleName);
 
             Logger.Info("=");
             Logger.Info("============================");
+            
 
         }
-        
+
     }
 }
