@@ -10,6 +10,7 @@ namespace DEM.Net.Lib
     {
         public static HeightMap CenterOnOrigin(this HeightMap heightMap)
         {
+            Logger.Info("CenterOnOrigin...");
             var bbox = heightMap.BoundingBox;
 
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
@@ -17,22 +18,37 @@ namespace DEM.Net.Lib
             heightMap.Coordinates = heightMap.Coordinates.Select(pt => new GeoPoint(pt.Latitude - yOriginOffset, pt.Longitude - xOriginOffset,
                 (float)pt.Elevation.GetValueOrDefault(0), pt.XIndex, pt.YIndex));
 
+            heightMap.BoundingBox = null;
             return heightMap;
         }
 
         public static IEnumerable<GeoPoint> CenterOnOrigin(this IEnumerable<GeoPoint> points)
         {
+            Logger.Info("CenterOnOrigin...");
             var bbox = points.GetBoundingBox();
 
             return points.CenterOnOrigin(bbox);
         }
         public static IEnumerable<GeoPoint> CenterOnOrigin(this IEnumerable<GeoPoint> points, BoundingBox bbox)
         {
+            Logger.Info("CenterOnOrigin...");
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
             points = points.Select(pt => new GeoPoint(pt.Latitude - yOriginOffset, pt.Longitude - xOriginOffset, (float)pt.Elevation, (int)pt.XIndex, (int)pt.YIndex));
 
             return points;
+        }
+
+        /// <summary>
+        /// Helper to get an in memory coordinate list
+        /// useful to generate normal maps and let the same height map follow the pipeline (reproj, center, ...)
+        /// </summary>
+        /// <returns></returns>
+        public static HeightMap BakeCoordinates(this HeightMap heightMap)
+        {
+            heightMap.Coordinates = heightMap.Coordinates.ToList();
+
+            return heightMap;
         }
 
         public static HeightMap ZScale(this HeightMap heightMap, float zFactor = 1f)

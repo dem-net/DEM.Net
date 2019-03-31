@@ -16,13 +16,16 @@ namespace SampleApp
 {
     class ReprojectionSamples
     {
+        private readonly int _destinationSRID;
         private readonly IElevationService _elevationService;
         private readonly string _gpxFile;
         private DEMDataSet _dataSet;
         private readonly string _outputDirectory;
+        
 
-        public ReprojectionSamples( string outputDirectory, string gpxFile)
+        public ReprojectionSamples(string outputDirectory, string gpxFile, int destinationSRID = Reprojection.SRID_PROJECTED_MERCATOR)
         {
+            _destinationSRID = destinationSRID;
             _elevationService = new ElevationService(new RasterService(outputDirectory));
             _dataSet = DEMDataSet.AW3D30;
             _outputDirectory = outputDirectory;
@@ -69,8 +72,11 @@ namespace SampleApp
             Console.WriteLine("Height map...");
             float Z_FACTOR = 2f;
             HeightMap hMap = _elevationService.GetHeightMap(bbox, _dataSet);
-            hMap = hMap.ReprojectGeodeticToCartesian().ZScale(Z_FACTOR);
+            hMap = hMap.ReprojectTo(Reprojection.SRID_GEODETIC, _destinationSRID)
+                        .BakeCoordinates();
             var normalMap = imageryService.GenerateNormalMap(hMap, outputDir);
+            hMap = hMap.CenterOnOrigin()
+                       .ZScale(Z_FACTOR);
 
             //hMap = hMap.CenterOnOrigin(Z_FACTOR);
             //
@@ -83,7 +89,7 @@ namespace SampleApp
 
             // TIN mesh
             Console.WriteLine("Generate TIN TriangleMesh...");
-            MeshPrimitive TINtriangleMesh = TINGeneration.GenerateTIN(hMap, 10d, glTF, PBRTexture.Create(texInfo, normalMap));
+            MeshPrimitive TINtriangleMesh = TINGeneration.GenerateTIN(hMap, 10d, glTF, PBRTexture.Create(texInfo, normalMap), _destinationSRID);
 
             // raw Mesh
             Console.WriteLine("Generate raw TriangleMesh textured...");

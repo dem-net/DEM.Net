@@ -12,8 +12,9 @@ namespace DEM.Net.Lib
     public static class Reprojection
     {
 
-        const int SRID_GEODETIC = 4236;
-        const int SRID_PROJECTED_MERCATOR = 3857;
+        public const int SRID_GEODETIC = 4236;
+        public const int SRID_PROJECTED_LAMBERT_93 = 2154;
+        public const int SRID_PROJECTED_MERCATOR = 3857;
 
         public static HeightMap ReprojectGeodeticToCartesian(this HeightMap heightMap)
         {
@@ -21,21 +22,22 @@ namespace DEM.Net.Lib
 
             return heightMap;
         }
-       
+
         public static HeightMap ReprojectTo(this HeightMap heightMap, int sourceEpsgCode, int destinationEpsgCode)
         {
             if (sourceEpsgCode == destinationEpsgCode)
                 return heightMap;
 
             heightMap.Coordinates = heightMap.Coordinates.ReprojectTo(sourceEpsgCode, destinationEpsgCode);
-
+            heightMap.BoundingBox = null;
             return heightMap;
         }
+       
         public static IEnumerable<GeoPoint> ReprojectGeodeticToCartesian(this IEnumerable<GeoPoint> points)
         {
             return points.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR);
         }
-        
+
         public static IEnumerable<GeoPoint> ReprojectTo(this IEnumerable<GeoPoint> points, int sourceEpsgCode, int destinationEpsgCode)
         {
             if (sourceEpsgCode == destinationEpsgCode)

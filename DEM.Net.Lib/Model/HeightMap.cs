@@ -25,6 +25,7 @@ namespace DEM.Net.Lib
             {
                 if (_bbox == null)
                 {
+                    Logger.Info("Computing bbox...");
                     _bbox = new BoundingBox(Coordinates.Min(c => c.Longitude)
                         , Coordinates.Max(c => c.Longitude)
                         , Coordinates.Min(c => c.Latitude)
@@ -37,7 +38,7 @@ namespace DEM.Net.Lib
                 _bbox = value;
             }
         }
-        
+
         public IEnumerable<GeoPoint> Coordinates { get; set; }
 
         public int Count { get; set; }
@@ -56,6 +57,9 @@ namespace DEM.Net.Lib
         {
             return (HeightMap)this.MemberwiseClone();
         }
+
+        
+     
 
 
     }

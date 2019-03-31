@@ -13,9 +13,9 @@ namespace SampleApp
 {
     public static class TINGeneration
     {
-        public static MeshPrimitive GenerateTIN(HeightMap hMap, double precision, IglTFService gltf, PBRTexture textures)
+        public static MeshPrimitive GenerateTIN(HeightMap hMap, double precision, IglTFService gltf, PBRTexture textures, int srid)
         {
-            var v_pointsToTest = GetGeoPointsByHMap(hMap, 2154);
+            var v_pointsToTest = GetGeoPointsByHMap(hMap, srid);
 
 
             var _paramTin = FLabServices.createCalculMedium().GetParametresDuTinParDefaut();

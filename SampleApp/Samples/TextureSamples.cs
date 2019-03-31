@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace SampleApp
 {
-     class TextureSamples
+    class TextureSamples
     {
         private readonly IElevationService _elevationService;
         private readonly string _bboxWkt;
@@ -33,7 +33,7 @@ namespace SampleApp
             // ste victoire
             //_bboxWkt = "POLYGON((5.424004809009261 43.68472756348281, 5.884057299243636 43.68472756348281, 5.884057299243636 43.40402056297321, 5.424004809009261 43.40402056297321, 5.424004809009261 43.68472756348281))";
             // ventoux
-             _bboxWkt = "POLYGON ((5.192413330078125 44.12209907358672, 5.3015899658203125 44.12209907358672, 5.3015899658203125 44.201897151875094, 5.192413330078125 44.201897151875094, 5.192413330078125 44.12209907358672))";
+            //_bboxWkt = "POLYGON ((5.192413330078125 44.12209907358672, 5.3015899658203125 44.12209907358672, 5.3015899658203125 44.201897151875094, 5.192413330078125 44.201897151875094, 5.192413330078125 44.12209907358672))";
             //ventoux avigon
             //_bboxWkt = "POLYGON ((4.73236083984375 43.902839992663196, 5.401153564453124 43.902839992663196, 5.401153564453124 44.268804788566165, 4.73236083984375 44.268804788566165, 4.73236083984375 43.902839992663196))";
             // duranne
@@ -62,15 +62,17 @@ namespace SampleApp
             //_bboxWkt = "POLYGON ((3.4716796874999996 42.71473218539458, 17.0947265625 42.71473218539458, 17.0947265625 48.67645370777654, 3.4716796874999996 48.67645370777654, 3.4716796874999996 42.71473218539458))";
             // dolomites
             //_bboxWkt = "POLYGON ((11.743698120117186 46.4752265177719, 11.890640258789062 46.4752265177719, 11.890640258789062 46.557916007595786, 11.743698120117186 46.557916007595786, 11.743698120117186 46.4752265177719))";
-            
+            // ste victoire croix
+            _bboxWkt = "POLYGON ((5.581741 43.55651, 5.510674 43.55651, 5.510674 43.513203, 5.581741 43.513203, 5.581741 43.55651))";
             _normalsDataSet = DEMDataSet.AW3D30;
-            _meshDataSet = DEMDataSet.SRTM_GL3;
+            _meshDataSet = DEMDataSet.AW3D30;
             _outputDirectory = outputDirectory;
         }
 
         internal void Run()
         {
-            bool useTIN = false; // still buggy
+            bool useTIN = true; // still buggy with SRID 3857
+            int v_outSrid = Reprojection.SRID_PROJECTED_LAMBERT_93;
             glTFService glTF = new glTFService();
             string outputDir = Path.GetFullPath(Path.Combine(_outputDirectory, "glTF"));
 
@@ -105,11 +107,11 @@ namespace SampleApp
             Console.WriteLine("Height map...");
             float Z_FACTOR = 2f;
             HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, _normalsDataSet);
-            
+
             //HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1", "ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
 
-            // hMapNormal = hMapNormal.ReprojectTo(4326, v_outSrid);
-            hMapNormal = hMapNormal.ReprojectGeodeticToCartesian();
+            hMapNormal = hMapNormal.ReprojectTo(4326, v_outSrid);
+            //hMapNormal = hMapNormal.ReprojectGeodeticToCartesian();
 
             Console.WriteLine("Generate normal map...");
             TextureInfo normal = imageryService.GenerateNormalMap(hMapNormal, outputDir);
@@ -125,7 +127,7 @@ namespace SampleApp
             // UV mapping (before projection)
             PBRTexture pBRTexture = PBRTexture.Create(texInfo, normal, imageryService.ComputeUVMap(hMap, texInfo));
 
-            hMap = hMap.ReprojectGeodeticToCartesian();
+            hMap = hMap.ReprojectTo(4326, v_outSrid);
             hMap = hMap.CenterOnOrigin().ZScale(Z_FACTOR);
 
 
@@ -142,7 +144,7 @@ namespace SampleApp
             {
                 Console.WriteLine("Create TIN...");
                 //triangleMesh = GenerateTIN(hMapTIN, glTF, pBRTexture);
-                triangleMesh = TINGeneration.GenerateTIN(hMap, 10d, glTF, pBRTexture);
+                triangleMesh = TINGeneration.GenerateTIN(hMap, 10d, glTF, pBRTexture, v_outSrid);
             }
             else
             {
@@ -157,58 +159,6 @@ namespace SampleApp
             Model model = glTF.GenerateModel(meshes, this.GetType().Name);
             glTF.Export(model, outputDir, $"{GetType().Name} NONormal", false, true);
         }
-
-
-
-        internal void RunImagery(bool withTexture)
-        {
-            glTFService glTF = new glTFService();
-            List<MeshPrimitive> meshes = new List<MeshPrimitive>();
-            string outputDir = Path.GetFullPath(Path.Combine(_outputDirectory, "glTF"));
-
-            // Get GPX points
-            var bbox = GeometryService.GetBoundingBox(_bboxWkt);
-
-            //=======================
-            // Textures
-            //
-            TextureInfo texInfo = null;
-            if (withTexture)
-            {
-
-                ImageryService imageryService = new ImageryService();
-
-                Console.WriteLine("Download image tiles...");
-                TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.Osm, 4);
-                string fileName = Path.Combine(outputDir, "Texture.png");
-
-                Console.WriteLine("Construct texture...");
-                texInfo = imageryService.ConstructTexture(tiles, bbox, fileName, TextureImageFormat.image_jpeg);
-            }
-            //
-            //=======================
-
-            //=======================
-            // MESH 3D terrain
-
-            Console.WriteLine("Height map...");
-            HeightMap hMap = _elevationService.GetHeightMap(bbox, _meshDataSet);
-
-            //hMap = hMap.ReprojectTo(4326, 2154);
-            hMap = hMap.CenterOnOrigin().ZScale(0.00002f);
-
-            Console.WriteLine("GenerateTriangleMesh...");
-            // generate mesh with texture
-            MeshPrimitive triangleMesh = glTF.GenerateTriangleMesh(hMap, null, PBRTexture.Create(texInfo));
-            meshes.Add(triangleMesh);
-
-            // model export
-            Console.WriteLine("GenerateModel...");
-            Model model = glTF.GenerateModel(meshes, this.GetType().Name);
-            glTF.Export(model, outputDir, $"{GetType().Name} Packed", false, true);
-        }
-
-
 
     }
 }

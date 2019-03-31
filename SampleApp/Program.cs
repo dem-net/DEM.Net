@@ -30,18 +30,19 @@ namespace SampleApp
             Logger.StartPerf("Main cold start");
 
             //DatasetSamples.Run();
-            
+
             //ElevationSamples.Run();
 
             //TextureSamples textureSamples = new TextureSamples(_OutputDataDirectory);
             //textureSamples.Run();
-            //textureSamples.RunImagery(true);
 
-            ReprojectionSamples reprojSamples = new ReprojectionSamples(_OutputDataDirectory, @"..\..\..\Data\GPX\Vernet-les-bains-Canigou-34km.gpx");
-            reprojSamples.Run();
+            //STLSamples.Run();
+
+            //ReprojectionSamples reprojSamples = new ReprojectionSamples(_OutputDataDirectory, @"..\..\..\Data\GPX\Vernet-les-bains-Canigou-34km.gpx", Reprojection.SRID_PROJECTED_MERCATOR);
+            //reprojSamples.Run();
 
 
-            GpxSamples gpxSamples = new GpxSamples( _OutputDataDirectory, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
+            GpxSamples gpxSamples = new GpxSamples( _OutputDataDirectory, @"..\..\..\Data\GPX\ste victoire cretes.gpx");
             gpxSamples.Run();
 
             OldSamples oldSamples = new OldSamples( _OutputDataDirectory);
