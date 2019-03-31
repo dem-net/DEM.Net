@@ -530,7 +530,6 @@ namespace DEM.Net.Lib.Services.Lab
                 //On marque le 'point central' comme 'point facette':
                 p_pointCentral.p21_estPointFacette_vf = true;
                 p_pointCentral.p22_estPointInclus_vf = true;
-               // p_topologieCible.p11_pointsFacettesByIdPoint.Add(p_pointCentral.p00_id, p_pointCentral);
                 p_topologieCible.PointFacAjouter(p_pointCentral);
 
                 //On désaffecte les points inclus (pour permettre leur réaffectation aux nouvelles facettes
@@ -554,7 +553,6 @@ namespace DEM.Net.Lib.Services.Lab
                     v_arc.p20_statutArc = enumStatutArc.arcNONCandidatASuppression;
 
                     v_arcsRayonnants.Add(v_arc);
-                    //p_topologieCible.p12_arcsByCode.Add(v_arc.p01_hcodeArc, v_arc);
                     p_topologieCible.ArcAjouter(v_arc);
                     v_beanRapportOut.p04_arcsAExclureOut.Add(v_arc);
                 }
@@ -594,6 +592,9 @@ namespace DEM.Net.Lib.Services.Lab
                         v_arcCandidatBase = v_arcsBases.Where(c => c.p12_pointFin.p01_hCodeGeog == v_point2.p01_hCodeGeog && c.p11_pointDbt.p01_hCodeGeog == v_point3.p01_hCodeGeog).ToList();
                         v_arcBase = v_arcCandidatBase.First();
                     }
+                    //
+                    
+                    //
                     if (v_arcBase.p21_facetteGauche != null && v_arcBase.p21_facetteGauche.p00_idFacette == p_idFacetteSource)
                     {
                         v_arcBase.p21_facetteGauche = v_facette;
@@ -632,6 +633,20 @@ namespace DEM.Net.Lib.Services.Lab
             }
             return v_beanRapportOut;
         }
+        private bool IsTriangleEstPlatDansLePlanXY(BeanPoint_internal p_point1, BeanPoint_internal p_point2, BeanPoint_internal p_point3)
+        {
+            bool v_retour = true;
+            try
+            {
+                v_retour=FLabServices.createCalculLow().AreDroitesParallelesXY(p_point1.p10_coord, p_point2.p10_coord, p_point1.p10_coord, p_point3.p10_coord);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return v_retour;
+        }
+        
         private BeanResultatConversions_internal TestEtBascule_DelaunayByRef(ref BeanTopologieFacettes p_topologieFacette, string p_hcodeArcCandidatASuppression)
         {
             BeanResultatConversions_internal v_beanRapportOut = new BeanResultatConversions_internal();
@@ -649,36 +664,41 @@ namespace DEM.Net.Lib.Services.Lab
                 BeanPoint_internal v_pointGaucheNewArc = v_facetteGauche.p01_pointsDeFacette.Where(c => c.p01_hCodeGeog != v_arcToTest.p11_pointDbt.p01_hCodeGeog && c.p01_hCodeGeog != v_arcToTest.p12_pointFin.p01_hCodeGeog).First();
                 BeanPoint_internal v_pointDroitNewArc = v_facetteDroite.p01_pointsDeFacette.Where(c => c.p01_hCodeGeog != v_arcToTest.p11_pointDbt.p01_hCodeGeog && c.p01_hCodeGeog != v_arcToTest.p12_pointFin.p01_hCodeGeog).First();
 
-
                 //PHASE A: TESTS - Faut-il 'basculer' (=privilégier les 2 autres triangles séparés par la 2de 'diagonale')?
-
-                //=>On teste si les cercles circonscrits à l'un et l'autre triangle incluent "le 4ème point" (=celui appartenant à l'autre triangle et pas à l'arc) 
-                //(On utilise ici une méthode 'explicite' qui calcule le centre, le rayon afférent et l'écart à ce rayon:
-                //=>Ne nous semble pas plus coûteux que par le test du déterminant qui implique de connaître l'ordonnancement horaire/anti-horaire des points des triangles)
-                List<double[]> v_pointsDuTriangleAvantBascule;
-                v_pointsDuTriangleAvantBascule = v_facetteGauche.p01_pointsDeFacette.Select(t => t.p10_coord).ToList();
-                bool v_isPointDansLeCercle1_vf = FLabServices.createCalculLow().IsPointDDansCercleCirconscritAuTriangleExplicite(v_pointsDuTriangleAvantBascule, v_pointDroitNewArc.p10_coord);
-                v_pointsDuTriangleAvantBascule = v_facetteDroite.p01_pointsDeFacette.Select(t => t.p10_coord).ToList();
-                bool v_isPointDansLeCercle2_vf = FLabServices.createCalculLow().IsPointDDansCercleCirconscritAuTriangleExplicite(v_pointsDuTriangleAvantBascule, v_pointGaucheNewArc.p10_coord);
-
-                //Si les 2 cerccles circonscrits sont "vides"=>alors, la conformation est OK=> inutile de modifier.
-                if (!v_isPointDansLeCercle1_vf && !v_isPointDansLeCercle2_vf)
-                {
-                    v_arcToTest.p20_statutArc = enumStatutArc.arcNONCandidatASuppression;
-                    v_beanRapportOut.p00_modif_vf = false;
-                    return v_beanRapportOut;
-                }
-
-                //On ne peut, toutefois, modifier que si le quadrilatère est strictement convexe 
-                //(Si ce n'est pas le cas, la "2ème diagonale" est  partiellement extérieure ou sur confondues avec 2 arètes du quadrilatère; la modif n'est pas possible
-                //On teste si l'"arc de remplacement" (correspondant à cette "2de diagonale") intersecte strictement l'arc à remplacer dans le plan XY?
                 List<BeanPoint_internal> v_ptsDeLArcTeste = new List<BeanPoint_internal>() { v_arcToTest.p11_pointDbt, v_arcToTest.p12_pointFin };
-                if (!FLabServices.createCalculLow().AreSegmentsSequants(v_arcToTest.p11_pointDbt.p10_coord, v_arcToTest.p12_pointFin.p10_coord, v_pointGaucheNewArc.p10_coord, v_pointDroitNewArc.p10_coord))
-                {
-                    v_beanRapportOut.p00_modif_vf = false;
-                    return v_beanRapportOut;
-                }
+                if (//Si une des facettes est plate=>il faut inverser
+                !IsTriangleEstPlatDansLePlanXY(v_arcToTest.p11_pointDbt, v_arcToTest.p12_pointFin, v_pointGaucheNewArc)
+                 &&
+                !IsTriangleEstPlatDansLePlanXY(v_arcToTest.p11_pointDbt, v_arcToTest.p12_pointFin, v_pointDroitNewArc)
+                )
+                {//Sinon=>on poursuit le test
+                    //=>On teste si les cercles circonscrits à l'un et l'autre triangle incluent "le 4ème point" (=celui appartenant à l'autre triangle et pas à l'arc) 
+                    //(On utilise ici une méthode 'explicite' qui calcule le centre, le rayon afférent et l'écart à ce rayon:
+                    //=>Ne nous semble pas plus coûteux que par le test du déterminant qui implique de connaître l'ordonnancement horaire/anti-horaire des points des triangles)
+                    List<double[]> v_pointsDuTriangleAvantBascule;
+                    v_pointsDuTriangleAvantBascule = v_facetteGauche.p01_pointsDeFacette.Select(t => t.p10_coord).ToList();
+                    bool v_isPointDansLeCercle1_vf = FLabServices.createCalculLow().IsPointDDansCercleCirconscritAuTriangleExplicite(v_pointsDuTriangleAvantBascule, v_pointDroitNewArc.p10_coord);
+                    v_pointsDuTriangleAvantBascule = v_facetteDroite.p01_pointsDeFacette.Select(t => t.p10_coord).ToList();
+                    bool v_isPointDansLeCercle2_vf = FLabServices.createCalculLow().IsPointDDansCercleCirconscritAuTriangleExplicite(v_pointsDuTriangleAvantBascule, v_pointGaucheNewArc.p10_coord);
 
+                    //Si les 2 cerccles circonscrits sont "vides"=>alors, la conformation est OK=> inutile de modifier.
+                    if (!v_isPointDansLeCercle1_vf && !v_isPointDansLeCercle2_vf)
+                    {
+                        v_arcToTest.p20_statutArc = enumStatutArc.arcNONCandidatASuppression;
+                        v_beanRapportOut.p00_modif_vf = false;
+                        return v_beanRapportOut;
+                    }
+
+                    //On ne peut, toutefois, modifier que si le quadrilatère est strictement convexe 
+                    //(Si ce n'est pas le cas, la "2ème diagonale" est  partiellement extérieure ou sur confondues avec 2 arètes du quadrilatère; la modif n'est pas possible
+                    //On teste si l'"arc de remplacement" (correspondant à cette "2de diagonale") intersecte strictement l'arc à remplacer dans le plan XY?
+                    //List<BeanPoint_internal> v_ptsDeLArcTeste = new List<BeanPoint_internal>() { v_arcToTest.p11_pointDbt, v_arcToTest.p12_pointFin };
+                    if (!FLabServices.createCalculLow().AreSegmentsSequants(v_arcToTest.p11_pointDbt.p10_coord, v_arcToTest.p12_pointFin.p10_coord, v_pointGaucheNewArc.p10_coord, v_pointDroitNewArc.p10_coord))
+                    {
+                        v_beanRapportOut.p00_modif_vf = false;
+                        return v_beanRapportOut;
+                    }
+                }
 
 
                 //B-PHASE B 'BASCULE':
@@ -1284,7 +1304,9 @@ namespace DEM.Net.Lib.Services.Lab
                 //    v_pointsLimites[i].p21_estPointFacette_vf = true;
                 //}
                 ////FIN PUSTULE POUR TEST
+                ///
 
+            
                 List<BeanPoint_internal> v_pointsToTest = p_pointsInclus
                     .Where(c => !c.p21_estPointFacette_vf)
                     .Where(c => !c.p22_estPointInclus_vf).ToList();
@@ -1294,6 +1316,16 @@ namespace DEM.Net.Lib.Services.Lab
                 //Je commence par le 'point haut'
                 //'x'>0 et 'y'>=0 ('arc droit'=>abscisses, 'arc gauche'=>ordonnées)
                 v_coordRef = GetCoordonneesDansNewReferentiel2D(v_pointsToTest, p_facette.p01_pointsDeFacette[0].p10_coord, p_facette.p01_pointsDeFacette[1].p10_coord, p_facette.p01_pointsDeFacette[2].p10_coord);
+
+                if(v_coordRef==null) //SI la facette est 'plate' (possible à ce stade)=>Les points ne peuvent pas être "contenus". 
+                    //On risque par contre de perdre des points eux-mêmes strictement alignés sur l'alignement précédent
+                {
+                    p_facette.p10_pointsInclus = new List<BeanPoint_internal>();
+                    return;
+                }
+                    
+
+
                 v_idPointsUtiles = new HashSet<int>(v_coordRef.Where(c => c.Value[0] > 0 && c.Value[1] >= 0).Select(c => c.Key).ToList());
                 v_pointsToTest = v_pointsToTest.Where(c => v_idPointsUtiles.Contains(c.p00_id)).ToList();
                 //Puis...
@@ -1307,7 +1339,7 @@ namespace DEM.Net.Lib.Services.Lab
                     v_point = v_pointsToTest[v_indicePoint];
                     v_point.p22_estPointInclus_vf = true;
                 }
-                p_facette.p10_pointsInclus.AddRange(v_pointsToTest);
+               p_facette.p10_pointsInclus.AddRange(v_pointsToTest);
 
                 //[NOTE: Attention aux '>='! :
                 //=>On doit gérer les symétries de manière à ce que chaque point soit affecté à 1 et à 1 seul triangle:
@@ -1388,6 +1420,7 @@ namespace DEM.Net.Lib.Services.Lab
         /// de premier vecteur directeur i: p_coordPoint0=>p_coordPoint2Abs
         /// de second vecteur directeur j: p_coordPoint0=>p_coordPoint3Ord_orthoSiNull OU d'un vecteur normal à i, 
         ///   de même norme et d'origine p_coordPoint0 si p_coordPoint3Ord_orthoSiNull est null 
+        ///   SI les points du repères sont colinéaires =>renvoie null
         /// </summary>
         /// <param name="p_pointsAReferencer"></param>
         /// <param name="p_coordPoint0"></param>
@@ -1404,6 +1437,10 @@ namespace DEM.Net.Lib.Services.Lab
                 double[,] v_matriceDeConversion;
                 v_matriceDeConversion = v_calcul.GetMatriceChangementDeRepereXY(p_coordPoint0, p_coordPoint2Abs, p_coordPoint3Ord_orthoSiNull, v_normaliser_vf);
                 //
+                if (v_matriceDeConversion==null)
+                {
+                    return null;
+                }
                 double[] v_coord;
                 foreach (BeanPoint_internal v_point in p_pointsAReferencer)
                 {

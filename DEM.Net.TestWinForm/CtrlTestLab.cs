@@ -275,7 +275,7 @@ namespace DEM.Net.TestWinForm
             }
             v_nomFichierOut += "_p" + tb_precisionEnM.Text;
             glTFService.Export(model, "Test3D", v_nomFichierOut, false, true);
-            MessageBox.Show("Traitement terminé.");
+            MessageBox.Show("Traitement terminé =>"+ v_nomFichierOut);
         }
 
         private void btn_testUnitaire_Click(object sender, EventArgs e)
