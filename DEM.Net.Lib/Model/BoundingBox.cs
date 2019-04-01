@@ -64,9 +64,13 @@ namespace DEM.Net.Lib
 
         public BoundingBox Scale(double scale)
         {
-            return new BoundingBox(xMax - Width * scale, xMin + Width * scale, yMax - Height * scale, yMin + Height * scale);
+            return Scale(scale, scale);
         }
-        
+        public BoundingBox Scale(double scaleX, double scaleY)
+        {
+            return new BoundingBox(xMax - Width * scaleX, xMin + Width * scaleX, yMax - Height * scaleY, yMin + Height * scaleY);
+        }
+
         public double[] Center
         {
             get
