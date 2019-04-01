@@ -33,8 +33,8 @@ namespace SampleApp
 
             //ElevationSamples.Run();
 
-            //TextureSamples textureSamples = new TextureSamples(_OutputDataDirectory);
-            //textureSamples.Run();
+            TextureSamples textureSamples = new TextureSamples(_OutputDataDirectory);
+            textureSamples.Run();
 
             //STLSamples.Run();
 
@@ -42,7 +42,7 @@ namespace SampleApp
             //reprojSamples.Run();
 
 
-            GpxSamples gpxSamples = new GpxSamples( _OutputDataDirectory, @"..\..\..\Data\GPX\ste victoire cretes.gpx");
+            GpxSamples gpxSamples = new GpxSamples( _OutputDataDirectory, @"..\..\..\Data\GPX\venturiers.gpx");
             gpxSamples.Run();
 
             OldSamples oldSamples = new OldSamples( _OutputDataDirectory);

@@ -65,14 +65,14 @@ namespace SampleApp
             // ste victoire croix
             _bboxWkt = "POLYGON ((5.581741 43.55651, 5.510674 43.55651, 5.510674 43.513203, 5.581741 43.513203, 5.581741 43.55651))";
             _normalsDataSet = DEMDataSet.AW3D30;
-            _meshDataSet = DEMDataSet.AW3D30;
+            _meshDataSet = DEMDataSet.SRTM_GL3;
             _outputDirectory = outputDirectory;
         }
 
         internal void Run()
         {
-            bool useTIN = true; // still buggy with SRID 3857
-            int v_outSrid = Reprojection.SRID_PROJECTED_LAMBERT_93;
+            bool useTIN = false; // still buggy with SRID 3857
+            int v_outSrid = Reprojection.SRID_PROJECTED_MERCATOR;
             glTFService glTF = new glTFService();
             string outputDir = Path.GetFullPath(Path.Combine(_outputDirectory, "glTF"));
 
