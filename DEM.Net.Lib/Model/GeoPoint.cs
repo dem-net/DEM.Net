@@ -32,7 +32,7 @@ namespace DEM.Net.Lib
 		[Index(6)]
 		public virtual double DistanceFromOriginMeters { get; set; }
 
-		public GeoPoint(double latitude, double longitude, float altitude, int? indexX, int? indexY)
+		public GeoPoint(double latitude, double longitude, double? altitude, int? indexX, int? indexY)
 		{
 			Latitude = latitude;
 			Longitude = longitude;

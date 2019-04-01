@@ -33,20 +33,23 @@ namespace SampleApp
 
             //ElevationSamples.Run();
 
-            TextureSamples textureSamples = new TextureSamples(_OutputDataDirectory);
-            textureSamples.Run();
+            //TextureSamples textureSamples = new TextureSamples(_OutputDataDirectory);
+            //textureSamples.Run();
 
-            //STLSamples.Run();
+            STLSamples.Run(Path.Combine( _OutputDataDirectory,"glTF"));
+
+            GpxSamples gpxSamples = new GpxSamples(_OutputDataDirectory, @"..\..\..\Data\GPX\venturiers.gpx");
+            gpxSamples.Run();
+
+          
 
             //ReprojectionSamples reprojSamples = new ReprojectionSamples(_OutputDataDirectory, @"..\..\..\Data\GPX\Vernet-les-bains-Canigou-34km.gpx", Reprojection.SRID_PROJECTED_MERCATOR);
             //reprojSamples.Run();
 
 
-            GpxSamples gpxSamples = new GpxSamples( _OutputDataDirectory, @"..\..\..\Data\GPX\venturiers.gpx");
-            gpxSamples.Run();
 
-            OldSamples oldSamples = new OldSamples( _OutputDataDirectory);
-            oldSamples.Run();
+            //OldSamples oldSamples = new OldSamples( _OutputDataDirectory);
+            //oldSamples.Run();
 
 
             Logger.StopPerf("Main cold start", true);
