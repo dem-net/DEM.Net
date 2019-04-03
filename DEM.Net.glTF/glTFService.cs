@@ -361,7 +361,6 @@ namespace DEM.Net.glTF
         public MeshPrimitive GenerateTriangleMesh(IEnumerable<Vector3> points, List<int> indices, IEnumerable<Vector4> colors = null, PBRTexture texture = null)
         {
             MeshPrimitive mesh = null;
-            const int TRIANGULATION_MODE = 1; // 2
             try
             {
                 if (points == null || !points.Any())
