@@ -58,12 +58,40 @@ namespace DEM.Net.Lib
 
             return heightMap;
         }
+        public static HeightMap Scale(this HeightMap heightMap, float x = 1f, float y = 1f, float z = 1f)
+        {
+            heightMap.Coordinates = heightMap.Coordinates.Scale(x, y, z);
+            heightMap.BoundingBox = heightMap.BoundingBox.Scale(x, y); // z does not affect bbox
+
+            return heightMap;
+        }
+        public static HeightMap FitIntoMillimeters(this HeightMap heightMap, float maxSize)
+        {
+            float scale = 1f;
+            if (heightMap.BoundingBox.Width > heightMap.BoundingBox.Height)
+            {
+                scale = (float)(maxSize / heightMap.BoundingBox.Width);
+            }
+            else
+            {
+                scale = (float)(maxSize / heightMap.BoundingBox.Height);
+            }
+            heightMap.Coordinates = heightMap.Coordinates.Scale(scale, scale, scale);
+            heightMap.BoundingBox = heightMap.Coordinates.GetBoundingBox();
+            return heightMap;
+        }
         public static IEnumerable<GeoPoint> ZScale(this IEnumerable<GeoPoint> points, float zFactor = 1f)
+        {
+            return points.Scale(1, 1, zFactor);
+        }
+        public static IEnumerable<GeoPoint> Scale(this IEnumerable<GeoPoint> points, float x = 1f, float y = 1f, float z = 1f)
         {
             return points.Select(p =>
             {
                 var pout = p.Clone();
-                pout.Elevation *= zFactor;
+                pout.Longitude *= x;
+                pout.Latitude *= y;
+                pout.Elevation *= z;
                 return pout;
             });
         }

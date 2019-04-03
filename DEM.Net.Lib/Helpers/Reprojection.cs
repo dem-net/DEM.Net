@@ -64,10 +64,10 @@ namespace DEM.Net.Lib
             // Defines the starting coordiante system
             ProjectionInfo pTarget = ProjectionInfo.FromEpsgCode(destinationEpsgCode);
 
-            var minmin = ReprojectPoint(new GeoPoint(bbox.xMin, bbox.yMin), pSource, pTarget);
-            var minmax = ReprojectPoint(new GeoPoint(bbox.xMin, bbox.yMax), pSource, pTarget);
-            var maxmax = ReprojectPoint(new GeoPoint(bbox.xMax, bbox.yMax), pSource, pTarget);
-            var maxmin = ReprojectPoint(new GeoPoint(bbox.xMax, bbox.yMin), pSource, pTarget);
+            var minmin = ReprojectPoint(new GeoPoint(bbox.yMin, bbox.xMin), pSource, pTarget);
+            var minmax = ReprojectPoint(new GeoPoint(bbox.yMin, bbox.xMax), pSource, pTarget);
+            var maxmax = ReprojectPoint(new GeoPoint(bbox.yMax, bbox.xMax), pSource, pTarget);
+            var maxmin = ReprojectPoint(new GeoPoint(bbox.yMax, bbox.xMin), pSource, pTarget);
 
             return GeometryService.GetBoundingBox(new GeoPoint[] { minmin, minmax, maxmax, maxmin });
 
