@@ -78,6 +78,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="HeightMapTests.cs" />
     <Compile Include="DatasetTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RasterTests.cs" />
