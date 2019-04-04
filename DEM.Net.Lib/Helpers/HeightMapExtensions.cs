@@ -65,7 +65,7 @@ namespace DEM.Net.Lib
 
             return heightMap;
         }
-        public static HeightMap FitIntoMillimeters(this HeightMap heightMap, float maxSize)
+        public static HeightMap FitInto(this HeightMap heightMap, float maxSize)
         {
             float scale = 1f;
             if (heightMap.BoundingBox.Width > heightMap.BoundingBox.Height)

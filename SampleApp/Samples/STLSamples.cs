@@ -30,7 +30,7 @@ namespace SampleApp
             heightMap = heightMap.ReprojectGeodeticToCartesian()
                                     .ZScale(2.5f)
                                     .CenterOnOrigin()
-                                    .FitIntoMillimeters(30f);
+                                    .FitInto(300f);
             glTFService glTFService = new glTFService();
             var mesh = glTFService.GenerateTriangleMesh(heightMap);
 
@@ -71,7 +71,7 @@ namespace SampleApp
 
             using (FileStream fs = new FileStream(fileName, FileMode.Create))
             {
-                stlFile.Save(fs);
+                stlFile.Save(fs, false);
             }
         }
 
