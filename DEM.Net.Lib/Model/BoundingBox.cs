@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Lib
 {
-    public class BoundingBox
+    public class BoundingBox : IEquatable<BoundingBox>
     {
         private double _xMin;
         public double xMin
@@ -88,6 +88,36 @@ namespace DEM.Net.Lib
         public override string ToString()
         {
             return $"Xmin: {xMin}, Xmax: {xMax}, Ymin: {yMin}, Ymax: {yMax}";
+        }
+
+        public bool Equals(BoundingBox other)
+        {
+            return _xMin == other.xMin
+                    && _xMax == other.xMax
+                    && _yMin == other.yMin
+                    && _yMax == other.yMax;
+        }
+
+        public static bool operator ==(BoundingBox a, BoundingBox b)
+        {
+            if (Object.ReferenceEquals(a, null))
+            {
+                if (Object.ReferenceEquals(b, null))
+                {
+                    return true;
+                }
+                return false;
+            }
+            if (Object.ReferenceEquals(b, null))
+            {
+                return false;
+            }
+
+            return a.Equals(b);
+        }
+        public static bool operator !=(BoundingBox a, BoundingBox b)
+        {
+            return !(a == b);
         }
 
         public string WKT
