@@ -34,7 +34,7 @@ namespace SampleApp
             glTFService glTFService = new glTFService();
             var mesh = glTFService.GenerateTriangleMesh(heightMap);
 
-            glTFService.RotateX(mesh, (float)Math.PI / 2f);
+            mesh.RotateX((float)Math.PI / 2f);
 
             var stlFileName = Path.Combine(outputDirectory, $"{modelName}.stl");
 

@@ -81,6 +81,7 @@
     <Compile Include="glTFSource\Runtime\SkinJoint.cs" />
     <Compile Include="glTFSource\Runtime\Texture.cs" />
     <Compile Include="IglTFService.cs" />
+    <Compile Include="MeshTransform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

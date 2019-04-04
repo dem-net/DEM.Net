@@ -232,26 +232,7 @@ namespace DEM.Net.glTF
             return GenerateTriangleMesh(heightMap.Coordinates, indices, colors, texture);
         }
 
-        public void RotateX(MeshPrimitive mesh, float angle)
-        {
-            var matrix = Matrix4x4.CreateRotationX(angle);
-            Transform(mesh, matrix);
-        }
-        public void RotateY(MeshPrimitive mesh, float angle)
-        {
-            var matrix = Matrix4x4.CreateRotationY(angle);
-            Transform(mesh, matrix);
-        }
-        public void RotateZ(MeshPrimitive mesh, float angle)
-        {
-            var matrix = Matrix4x4.CreateRotationZ(angle);
-            Transform(mesh, matrix);
-        }
-        public void Transform(MeshPrimitive mesh, Matrix4x4 matrix)
-        {
-            mesh.Positions = mesh.Positions.Select(v => Vector3.Transform(v, matrix));
-            mesh.Normals = mesh.Normals.Select(v => Vector3.Transform(v, matrix));
-        }
+       
 
         public MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector4 color, float width)
         {
