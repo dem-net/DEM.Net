@@ -90,7 +90,10 @@ namespace DEM.Net.glTF
 
         glTFLoader.Schema.Gltf Import(string path);
 
-       
+        void RotateX(MeshPrimitive mesh, float angle);
+        void RotateY(MeshPrimitive mesh, float angle);
+        void RotateZ(MeshPrimitive mesh, float angle);
+        void Transform(MeshPrimitive mesh, Matrix4x4 matrix);
 
         #region Helpers
         IEnumerable<MeshPrimitive> GetHeightPlanes();

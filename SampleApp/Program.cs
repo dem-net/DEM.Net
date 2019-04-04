@@ -38,8 +38,8 @@ namespace SampleApp
 
             STLSamples.Run(Path.Combine( _OutputDataDirectory,"glTF"));
 
-            GpxSamples gpxSamples = new GpxSamples(_OutputDataDirectory, @"..\..\..\Data\GPX\venturiers.gpx");
-            gpxSamples.Run();
+            //GpxSamples gpxSamples = new GpxSamples(_OutputDataDirectory, @"..\..\..\Data\GPX\venturiers.gpx");
+            //gpxSamples.Run();
 
           
 

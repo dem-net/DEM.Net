@@ -9,9 +9,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DEM.Net.glTF
 {
@@ -21,33 +18,33 @@ namespace DEM.Net.glTF
         {
             try
             {
-                var sw = Stopwatch.StartNew();
+                Stopwatch sw = Stopwatch.StartNew();
 
                 Directory.CreateDirectory(outputFolder);
-                var jsonSerializer = new Newtonsoft.Json.JsonSerializer
+                Newtonsoft.Json.JsonSerializer jsonSerializer = new Newtonsoft.Json.JsonSerializer
                 {
                     Formatting = Newtonsoft.Json.Formatting.Indented,
                     ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
                 };
 
 
-                var filename = string.Concat(modelName, ".gltf");
-                var glbFilename = string.Concat(modelName, ".glb");
-                var dataFileName = string.Concat(modelName, ".bin");
+                string filename = string.Concat(modelName, ".gltf");
+                string glbFilename = string.Concat(modelName, ".glb");
+                string dataFileName = string.Concat(modelName, ".bin");
 
-                using (var data = new Data(dataFileName))
+                using (Data data = new Data(dataFileName))
                 {
                     // Passes the desired properties to the runtime layer, which then coverts that data into
                     // a gltf loader object, ready to create the model
-                    var converter = new GLTFConverter { CreateInstanceOverride = model.CreateSchemaInstance };
-                    var gltf = converter.ConvertRuntimeToSchema(model.GLTF, data);
+                    GLTFConverter converter = new GLTFConverter { CreateInstanceOverride = model.CreateSchemaInstance };
+                    glTFLoader.Schema.Gltf gltf = converter.ConvertRuntimeToSchema(model.GLTF, data);
 
                     // Makes last second changes to the model that bypass the runtime layer
                     // in order to add features that don't really exist otherwise
                     model.PostRuntimeChanges(gltf);
 
-                    var assetFile = Path.Combine(outputFolder, filename);
-                    var glbBinChunck = data.ToArray();
+                    string assetFile = Path.Combine(outputFolder, filename);
+                    byte[] glbBinChunck = data.ToArray();
 
                     if (exportglTF)
                     {
@@ -55,13 +52,13 @@ namespace DEM.Net.glTF
                         glTFLoader.Interface.SaveModel(gltf, assetFile);
 
                         // Creates the .bin file and writes the model's data to it
-                        var dataFile = Path.Combine(outputFolder, data.Name);
+                        string dataFile = Path.Combine(outputFolder, data.Name);
                         File.WriteAllBytes(dataFile, glbBinChunck);
                     }
 
                     if (exportGLB)
                     {
-                        var glbFile = Path.Combine(outputFolder, glbFilename);
+                        string glbFile = Path.Combine(outputFolder, glbFilename);
 
                         glTFLoader.Interface.SaveBinaryModelPacked(gltf, glbFile, assetFile, glbBinChunck);
                     }
@@ -235,6 +232,27 @@ namespace DEM.Net.glTF
             return GenerateTriangleMesh(heightMap.Coordinates, indices, colors, texture);
         }
 
+        public void RotateX(MeshPrimitive mesh, float angle)
+        {
+            var matrix = Matrix4x4.CreateRotationX(angle);
+            Transform(mesh, matrix);
+        }
+        public void RotateY(MeshPrimitive mesh, float angle)
+        {
+            var matrix = Matrix4x4.CreateRotationY(angle);
+            Transform(mesh, matrix);
+        }
+        public void RotateZ(MeshPrimitive mesh, float angle)
+        {
+            var matrix = Matrix4x4.CreateRotationZ(angle);
+            Transform(mesh, matrix);
+        }
+        public void Transform(MeshPrimitive mesh, Matrix4x4 matrix)
+        {
+            mesh.Positions = mesh.Positions.Select(v => Vector3.Transform(v, matrix));
+            mesh.Normals = mesh.Normals.Select(v => Vector3.Transform(v, matrix));
+        }
+
         public MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector4 color, float width)
         {
             MeshPrimitive mesh = null;
@@ -268,7 +286,7 @@ namespace DEM.Net.glTF
                     {
                         // https://gist.github.com/gszauer/5718441
                         // Line triangle mesh
-                        var sections = points.Select(pt => pt.ToVector3())
+                        List<Vector3> sections = points.Select(pt => pt.ToVector3())
                             .Distinct()
                             .ToList();
 
@@ -429,7 +447,7 @@ namespace DEM.Net.glTF
                         norm[i] = Vector3.Normalize(norm[i]);
 
                         // Calculate bounds of UV mapping
-                        var pos = positions[i];
+                        Vector3 pos = positions[i];
 
                         // for UV coords
                         min.X = Math.Min(pos.X, min.X);
@@ -482,9 +500,11 @@ namespace DEM.Net.glTF
         private Texture GetTextureFromImage(string texture)
         {
             if (!File.Exists(texture))
+            {
                 throw new ArgumentException("Texture file does not exists");
+            }
 
-            var mimeType = Path.GetExtension(texture.ToLower()).EndsWith("png")
+            glTFLoader.Schema.Image.MimeTypeEnum mimeType = Path.GetExtension(texture.ToLower()).EndsWith("png")
                                 ? glTFLoader.Schema.Image.MimeTypeEnum.image_png
                                 : glTFLoader.Schema.Image.MimeTypeEnum.image_jpeg;
 
@@ -532,9 +552,9 @@ namespace DEM.Net.glTF
                     {
                         // points interpreted as quads where point is at the quad center
                         // Basic point declaration
-                        var vecs = points.ToVector3().ToList();
-                        var deltaZ = vecs.Max(p => p.Z) - vecs.Min(p => p.Z);
-                        var deltaX = vecs.Max(p => p.X) - vecs.Min(p => p.X);
+                        List<Vector3> vecs = points.ToVector3().ToList();
+                        float deltaZ = vecs.Max(p => p.Z) - vecs.Min(p => p.Z);
+                        float deltaX = vecs.Max(p => p.X) - vecs.Min(p => p.X);
                         pointSize = (deltaX * 0.5f) / (float)Math.Sqrt(vecs.Count);
                         IEnumerable<Vector3> vertices = points.ToVector3().SelectMany(v => v.ToQuadPoints(pointSize));
                         List<int> indices = Enumerable.Range(0, points.Count()).SelectMany(i => VectorsExtensions.TriangulateQuadIndices(i * 4)).ToList();

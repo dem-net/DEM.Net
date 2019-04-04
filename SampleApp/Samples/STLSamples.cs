@@ -30,21 +30,22 @@ namespace SampleApp
             heightMap = heightMap.ReprojectGeodeticToCartesian()
                                     .ZScale(2.5f)
                                     .CenterOnOrigin()
-                                    .FitInto(300f);
+                                    .FitInto(250f);
             glTFService glTFService = new glTFService();
             var mesh = glTFService.GenerateTriangleMesh(heightMap);
 
+            glTFService.RotateX(mesh, (float)Math.PI / 2f);
+
             var stlFileName = Path.Combine(outputDirectory, $"{modelName}.stl");
 
-            STLExport(mesh, stlFileName);
+            STLExport(mesh, stlFileName, true);
 
-            var glTF = new glTFService();
-            Model model = glTF.GenerateModel(mesh, modelName);
-            glTF.Export(model, outputDirectory, $"{modelName}", false, true);
+            Model model = glTFService.GenerateModel(mesh, modelName);
+            glTFService.Export(model, outputDirectory, $"{modelName}", false, true);
 
         }
 
-        public static void STLExport(MeshPrimitive mesh, string fileName)
+        public static void STLExport(MeshPrimitive mesh, string fileName, bool ascii = true)
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
             // ...
@@ -71,11 +72,11 @@ namespace SampleApp
 
             using (FileStream fs = new FileStream(fileName, FileMode.Create))
             {
-                stlFile.Save(fs, false);
+                stlFile.Save(fs, ascii);
             }
         }
 
-        private static StlTriangle CreateStlTriangle( Vector3 v1, Vector3 v2, Vector3 v3)
+        private static StlTriangle CreateStlTriangle(Vector3 v1, Vector3 v2, Vector3 v3)
         {
             //Compute the triangle's normal
             Vector3 dir = Vector3.Normalize(Vector3.Cross(v2 - v1, v3 - v1));
