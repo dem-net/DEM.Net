@@ -227,7 +227,6 @@ namespace DEM.Net.TestWinForm
                     v_random = new Random(p_seedMoins1sinon);
                 }
                 //
-                double v_valeur;
                 double v_ecart = p_valeurMax - p_valeurMin;
                 for(int v_indiceLigne=0; v_indiceLigne< p_dimensions; v_indiceLigne++)
                 {

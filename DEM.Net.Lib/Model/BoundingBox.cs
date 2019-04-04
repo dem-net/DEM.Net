@@ -61,7 +61,13 @@ namespace DEM.Net.Lib
             _yMax = ymax;
         }
 
+        public override bool Equals(object obj)
+        {
+            BoundingBox objTyped = obj as BoundingBox;
 
+
+            return this == objTyped;
+        }
         public BoundingBox Scale(double scale)
         {
             return Scale(scale, scale);
@@ -96,6 +102,16 @@ namespace DEM.Net.Lib
                     && _xMax == other.xMax
                     && _yMin == other.yMin
                     && _yMax == other.yMax;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -1820762126;
+            hashCode = hashCode * -1521134295 + _xMin.GetHashCode();
+            hashCode = hashCode * -1521134295 + _xMax.GetHashCode();
+            hashCode = hashCode * -1521134295 + _yMin.GetHashCode();
+            hashCode = hashCode * -1521134295 + _yMax.GetHashCode();
+            return hashCode;
         }
 
         public static bool operator ==(BoundingBox a, BoundingBox b)
