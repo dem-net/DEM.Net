@@ -16,9 +16,10 @@ namespace DEM.Net.Lib
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
             heightMap.Coordinates = heightMap.Coordinates.Select(pt => new GeoPoint(pt.Latitude - yOriginOffset, pt.Longitude - xOriginOffset,
-                (float)pt.Elevation.GetValueOrDefault(0), pt.XIndex, pt.YIndex));
+                pt.Elevation, pt.XIndex, pt.YIndex));
 
-            heightMap.BoundingBox = null;
+            heightMap.BoundingBox = new BoundingBox(bbox.xMin - xOriginOffset, bbox.xMax - xOriginOffset
+                                                    , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset);
             return heightMap;
         }
 
@@ -34,7 +35,7 @@ namespace DEM.Net.Lib
             Logger.Info("CenterOnOrigin...");
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
-            points = points.Select(pt => new GeoPoint(pt.Latitude - yOriginOffset, pt.Longitude - xOriginOffset, (float)pt.Elevation, (int)pt.XIndex, (int)pt.YIndex));
+            points = points.Select(pt => new GeoPoint(pt.Latitude - yOriginOffset, pt.Longitude - xOriginOffset, pt.Elevation, (int)pt.XIndex, (int)pt.YIndex));
 
             return points;
         }
@@ -57,12 +58,40 @@ namespace DEM.Net.Lib
 
             return heightMap;
         }
+        public static HeightMap Scale(this HeightMap heightMap, float x = 1f, float y = 1f, float z = 1f)
+        {
+            heightMap.Coordinates = heightMap.Coordinates.Scale(x, y, z);
+            heightMap.BoundingBox = heightMap.BoundingBox.Scale(x, y); // z does not affect bbox
+
+            return heightMap;
+        }
+        public static HeightMap FitInto(this HeightMap heightMap, float maxSize)
+        {
+            float scale = 1f;
+            if (heightMap.BoundingBox.Width > heightMap.BoundingBox.Height)
+            {
+                scale = (float)(maxSize / heightMap.BoundingBox.Width);
+            }
+            else
+            {
+                scale = (float)(maxSize / heightMap.BoundingBox.Height);
+            }
+            heightMap.Coordinates = heightMap.Coordinates.Scale(scale, scale, scale);
+            heightMap.BoundingBox = heightMap.Coordinates.GetBoundingBox();
+            return heightMap;
+        }
         public static IEnumerable<GeoPoint> ZScale(this IEnumerable<GeoPoint> points, float zFactor = 1f)
+        {
+            return points.Scale(1, 1, zFactor);
+        }
+        public static IEnumerable<GeoPoint> Scale(this IEnumerable<GeoPoint> points, float x = 1f, float y = 1f, float z = 1f)
         {
             return points.Select(p =>
             {
                 var pout = p.Clone();
-                pout.Elevation *= zFactor;
+                pout.Longitude *= x;
+                pout.Latitude *= y;
+                pout.Elevation *= z;
                 return pout;
             });
         }

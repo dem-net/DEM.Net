@@ -35,7 +35,11 @@ namespace DEM.Net.Lib
         }
 
         // Examples datasets
-        // Add any new dataset to 
+        // Add any new dataset
+
+        /// <summary>
+        /// Shuttle Radar Topography Mission (SRTM GL3) Global 90m
+        /// </summary>
         public static DEMDataSet SRTM_GL3
         {
             get
@@ -51,6 +55,9 @@ namespace DEM.Net.Lib
                 };
             }
         }
+        /// <summary>
+        /// Shuttle Radar Topography Mission (SRTM GL1) Global 30m
+        /// </summary>
         public static DEMDataSet SRTM_GL1
         {
             get
@@ -66,6 +73,9 @@ namespace DEM.Net.Lib
                 };
             }
         }
+        /// <summary>
+        /// ALOS World 3D - 30m
+        /// </summary>
         public static DEMDataSet AW3D30
         {
             get

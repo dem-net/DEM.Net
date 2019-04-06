@@ -35,5 +35,6 @@ namespace DEM.Net.Test
             var segments = GeometryService.Segments(lineGeom);
             Assert.IsTrue(segments.Count() == lineGeom.Coordinates.Length - 1, "Segment enumeration failed");
         }
+
     }
 }

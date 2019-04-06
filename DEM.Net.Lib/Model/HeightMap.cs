@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace DEM.Net.Lib
 {
     [Serializable()]
-    public class HeightMap
+    public class HeightMap 
     {
         public HeightMap(int width, int height)
         {
@@ -41,6 +41,9 @@ namespace DEM.Net.Lib
 
         public IEnumerable<GeoPoint> Coordinates { get; set; }
 
+        /// <summary>
+        /// Coordinate count
+        /// </summary>
         public int Count { get; set; }
 
         public float Mininum { get; set; }
@@ -57,10 +60,6 @@ namespace DEM.Net.Lib
         {
             return (HeightMap)this.MemberwiseClone();
         }
-
-        
-     
-
 
     }
 }

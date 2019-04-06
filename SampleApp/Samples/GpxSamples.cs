@@ -57,9 +57,17 @@ namespace SampleApp
             //=======================
 
             //=======================
+            /// Height map (get dem elevation for bbox)
+            ///
+            HeightMap hMap = _elevationService.GetHeightMap(bbox, _dataSet);
+            hMap = hMap.ReprojectTo(4326, _outputSrid).CenterOnOrigin().ZScale(_Z_FACTOR).BakeCoordinates();
+            //
+            //=======================
+
+            //=======================
             // Textures
             //
-            TextureInfo texInfo = null;
+            PBRTexture pbrTexture = null;
             if (_withTexture)
             {
 
@@ -69,24 +77,26 @@ namespace SampleApp
                 string fileName = Path.Combine(outputDir, "Texture.jpg");
 
                 Console.WriteLine("Construct texture...");
-                texInfo = imageryService.ConstructTexture(tiles, bbox, fileName, TextureImageFormat.image_jpeg);
+                TextureInfo texInfo = imageryService.ConstructTexture(tiles, bbox, fileName, TextureImageFormat.image_jpeg);
+
+                //
+                //=======================
+
+                //=======================
+                // Normal map
+                Console.WriteLine("Height map...");
+                //float Z_FACTOR = 0.00002f;
+                
+                //hMap = hMap.CenterOnOrigin().ZScale(Z_FACTOR);
+                var normalMap = imageryService.GenerateNormalMap(hMap, outputDir);
+
+                pbrTexture = PBRTexture.Create(texInfo, normalMap);
+
+                //hMap = hMap.CenterOnOrigin(Z_FACTOR);
+                //
+                //=======================
             }
-            //
-            //=======================
 
-            //=======================
-            // Normal map
-            Console.WriteLine("Height map...");
-            //float Z_FACTOR = 0.00002f;
-            
-            HeightMap hMap = _elevationService.GetHeightMap(bbox, _dataSet);
-            hMap = hMap.ReprojectTo(4326, _outputSrid).CenterOnOrigin().ZScale(_Z_FACTOR).BakeCoordinates();
-            //hMap = hMap.CenterOnOrigin().ZScale(Z_FACTOR);
-            var normalMap = imageryService.GenerateNormalMap(hMap, outputDir);
-
-            //hMap = hMap.CenterOnOrigin(Z_FACTOR);
-            //
-            //=======================
 
             //=======================
             // MESH 3D terrain
@@ -99,7 +109,7 @@ namespace SampleApp
             {
                 try
                 {
-                    triangleMesh = TINGeneration.GenerateTIN(hMap, 10d, glTF, PBRTexture.Create(texInfo, normalMap), _outputSrid);
+                    triangleMesh = TINGeneration.GenerateTIN(hMap, 10d, glTF, pbrTexture, _outputSrid);
                 }
                 catch (Exception e)
                 {
@@ -111,7 +121,7 @@ namespace SampleApp
             {
                 //hMap = hMap.CenterOnOrigin().ZScale(Z_FACTOR);
                 // generate mesh with texture
-                triangleMesh = glTF.GenerateTriangleMesh(hMap, null, PBRTexture.Create(texInfo, normalMap));
+                triangleMesh = glTF.GenerateTriangleMesh(hMap, null, pbrTexture);
             }
             meshes.Add(triangleMesh);
 
