@@ -54,9 +54,6 @@
     <Reference Include="glTFLoader, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\glTF2Loader.1.1.3-alpha\lib\net35\glTFLoader.dll</HintPath>
     </Reference>
-    <Reference Include="IxMilia.Stl, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\IxMilia.Stl.0.1.1\lib\portable45-net45+win8+wpa81\IxMilia.Stl.dll</HintPath>
-    </Reference>
     <Reference Include="NetTopologySuite, Version=1.15.2.0, Culture=neutral, PublicKeyToken=f580a05016ebada1, processorArchitecture=MSIL">
       <HintPath>..\packages\NetTopologySuite.Core.1.15.2\lib\net45\NetTopologySuite.dll</HintPath>
     </Reference>
