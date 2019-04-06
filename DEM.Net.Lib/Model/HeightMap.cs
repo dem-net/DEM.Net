@@ -41,6 +41,9 @@ namespace DEM.Net.Lib
 
         public IEnumerable<GeoPoint> Coordinates { get; set; }
 
+        /// <summary>
+        /// Coordinate count
+        /// </summary>
         public int Count { get; set; }
 
         public float Mininum { get; set; }

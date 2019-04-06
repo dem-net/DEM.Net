@@ -16,14 +16,18 @@ namespace DEM.Net.Lib.Services.Mesh
         /// but height map should be organized a set of rows and columns</param>
         /// <param name="regularTriangulation">(optional) Determines which diagnal is choosen</param>
         /// <returns>List of indexes (triplets) in height map coordinates, indicating each of the triangles vertices</returns>
-        public static EnumerableWithCount<int> TriangulateHeightMap(HeightMap heightMap, bool regularTriangulation = true)
+        public static TriangulationResult TriangulateHeightMap(HeightMap heightMap, bool regularTriangulation = true)
         {
 
             int capacity = ((heightMap.Width - 1) * 6) * (heightMap.Height - 1);
-            EnumerableWithCount<int> indices = new EnumerableWithCount<int>(capacity,
-                TriangulateHeightMap_Internal(heightMap, regularTriangulation));
 
-            return indices;
+            TriangulationResult triangulationResult = new TriangulationResult();
+            triangulationResult.NumIndices = capacity;
+            triangulationResult.Indices = TriangulateHeightMap_Internal(heightMap, regularTriangulation);
+            triangulationResult.Positions = heightMap.Coordinates;
+            triangulationResult.NumPositions = heightMap.Count;
+
+            return triangulationResult;
         }
         private static IEnumerable<int> TriangulateHeightMap_Internal(HeightMap heightMap, bool regularTriangulation = true)
         {
@@ -61,6 +65,135 @@ namespace DEM.Net.Lib.Services.Mesh
                 }
             }
         }
+        /// <summary>
+        /// Triangulate an height map and generates a base of given height
+        /// </summary>
+        /// <param name="heightMap">Gridded set of points. Corrdinates can differ, 
+        /// but height map should be organized a set of rows and columns</param>
+        /// <returns>TriangulationResult</returns>
+        public static TriangulationResult GenerateTriangleMesh_Boxed(HeightMap heightMap)
+        {
+
+            TriangulationResult triangulationResult = new TriangulationResult();
+
+            triangulationResult.NumIndices = ((heightMap.Width - 1) * 6) * (heightMap.Height - 1); // height map plane
+            triangulationResult.NumIndices += ((heightMap.Width - 1) * 6) * 2; // two sides 
+            triangulationResult.NumIndices += ((heightMap.Height - 1) * 6) * 2; // two sizes
+            triangulationResult.NumIndices += 6; // bottom (two big triangles)
+
+            // Regular triangulation
+            triangulationResult.Positions = heightMap.Coordinates;
+            triangulationResult.Indices = TriangulateHeightMap_Internal(heightMap, true);
+
+            // Generate box vertices and trianglation
+            AddHeightMapBase(triangulationResult, heightMap);
+
+            return triangulationResult;
+        }
+
+        private static void AddHeightMapBase(TriangulationResult triangulation, HeightMap heightMap)
+        {
+            // bake coordinates to avoid executing the coords transfrom pipeline
+            var coords = heightMap.Coordinates.ToList();
+            heightMap.Coordinates = coords;
+            int capacity = heightMap.Width * 2 + (heightMap.Height - 2) * 2;
+            var basePoints = new List<GeoPoint>(capacity);
+            var baseIndexes = new List<int>(capacity);
+
+            // x : 0 => width // y : 0
+            int baseIndex0 = coords.Count;
+            int baseIndex = baseIndex0;
+            for (int x = 0; x < heightMap.Width - 1; x++)
+            {
+                var pBase = coords[x].Clone();
+                pBase.Elevation = 0;
+                basePoints.Add(pBase);
+
+                baseIndexes.Add(x);
+                baseIndexes.Add(baseIndex + 1);
+                baseIndexes.Add(baseIndex);
+
+                baseIndexes.Add(x + 1);
+                baseIndexes.Add(baseIndex + 1);
+                baseIndexes.Add(x);
+
+                baseIndex++;
+            }
+            // x : width // y : 0 => height
+            // 
+            for (int y = 0; y < heightMap.Height - 1; y++)
+            {
+                int x = heightMap.Width - 1;
+                int index = x + y * heightMap.Width;
+
+                var pBase = coords[index].Clone();
+                pBase.Elevation = 0;
+                basePoints.Add(pBase);
+
+                baseIndexes.Add(x + y * heightMap.Width);
+                baseIndexes.Add(baseIndex + 1);
+                baseIndexes.Add(baseIndex);
+
+                baseIndexes.Add(x + y * heightMap.Width);
+                baseIndexes.Add(x + (y + 1) * heightMap.Width);
+                baseIndexes.Add(baseIndex + 1);
+
+                baseIndex++;
+            }
+            //// x : width => 0 // y : height
+            for (int x = heightMap.Width - 1; x > 0; x--)
+            {
+                int index = x + (heightMap.Height - 1) * heightMap.Width;
+                var pBase = coords[index].Clone();
+                pBase.Elevation = 0;
+                basePoints.Add(pBase);
+
+                baseIndexes.Add(index);
+                baseIndexes.Add(index - 1);
+                baseIndexes.Add(baseIndex);
+
+                baseIndexes.Add(index - 1);
+                baseIndexes.Add(baseIndex + 1);
+                baseIndexes.Add(baseIndex);
+
+                baseIndex++;
+            }
+            //// x : 0 // y : height => 0
+            for (int y = heightMap.Height - 1; y > 0; y--)
+            {
+                int x = 0;
+                int index = x + y * heightMap.Width;
+
+                var pBase = coords[index].Clone();
+                pBase.Elevation = 0;
+                basePoints.Add(pBase);
+
+                // last base position is the first base generated
+                int nextBaseIndex = baseIndex + 1 > baseIndex0 + capacity - 1 ? baseIndex0 : baseIndex + 1;
+
+                baseIndexes.Add(x + y * heightMap.Width);
+                baseIndexes.Add(nextBaseIndex);
+                baseIndexes.Add(baseIndex);
+
+                baseIndexes.Add(x + y * heightMap.Width);
+                baseIndexes.Add(x + (y - 1) * heightMap.Width);
+                baseIndexes.Add(nextBaseIndex);
+
+
+                baseIndex++;
+            }
+
+
+            // base (2 big triangles)
+
+
+            triangulation.Positions = triangulation.Positions.Concat(basePoints);
+            triangulation.NumPositions += basePoints.Count;
+            triangulation.Indices = triangulation.Indices.Concat(baseIndexes);
+
+
+
+        }
 
         public static IEnumerableWithCount<Vector3> ComputeNormals(List<Vector3> positions, List<int> indices)
         {
@@ -93,7 +226,7 @@ namespace DEM.Net.Lib.Services.Mesh
 
             return new EnumerableWithCount<Vector3>(nV, norm.Select(v => Vector3.Normalize(v)));
         }
-        
+
         /// <summary>
         /// Calculate normals for a given height map
         /// </summary>
@@ -101,7 +234,7 @@ namespace DEM.Net.Lib.Services.Mesh
         /// <returns>Normals for each point of the height map</returns>
         public static IEnumerableWithCount<Vector3> ComputeNormals(HeightMap heightMap)
         {
-            var indices = TriangulateHeightMap(heightMap);
+            var triangulation = TriangulateHeightMap(heightMap);
             var normals = ComputeNormals(
                     heightMap.Coordinates.Select(c =>
                                                             new Vector3((
@@ -109,7 +242,7 @@ namespace DEM.Net.Lib.Services.Mesh
                                                                 (float)c.Latitude,
                                                                 (float)c.Elevation)
                                                             ).ToList(),
-            indices.ToList());
+            triangulation.Indices.ToList());
 
             return normals;
         }

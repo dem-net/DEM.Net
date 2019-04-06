@@ -228,11 +228,23 @@ namespace DEM.Net.glTF
         /// <returns></returns>
         public MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, IEnumerable<Vector4> colors = null, PBRTexture texture = null)
         {
-            List<int> indices = MeshService.TriangulateHeightMap(heightMap).ToList();
-            return GenerateTriangleMesh(heightMap.Coordinates, indices, colors, texture);
+            TriangulationResult triangulation = MeshService.TriangulateHeightMap(heightMap);
+            return GenerateTriangleMesh(triangulation.Positions, triangulation.Indices.ToList(), colors, texture);
         }
+        /// <summary>
+        /// Generate a triangle mesh from supplied height map, triangulating and optionaly mapping UVs
+        /// and generate sides and bottom (like a box where the top is the triangulated height map)
+        /// </summary>
+        /// <param name="heightMap"></param>
+        /// <param name="colors"></param>
+        /// <param name="texture">Texture path relative from the model</param>
+        /// <returns></returns>
+        public MeshPrimitive GenerateTriangleMesh_Boxed(HeightMap heightMap, IEnumerable<Vector4> colors = null, PBRTexture texture = null)
+        {
+            TriangulationResult triangulation = MeshService.GenerateTriangleMesh_Boxed(heightMap);
 
-       
+            return GenerateTriangleMesh(triangulation.Positions, triangulation.Indices.ToList(), colors, texture);
+        }
 
         public MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector4 color, float width)
         {
