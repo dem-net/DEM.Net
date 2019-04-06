@@ -185,6 +185,15 @@ namespace DEM.Net.Lib.Services.Mesh
 
 
             // base (2 big triangles)
+            baseIndexes.Add(baseIndex0);
+            baseIndexes.Add(baseIndex0 + heightMap.Width - 1);
+            baseIndexes.Add(baseIndex0 + heightMap.Width - 1 + heightMap.Height - 1);
+
+            baseIndexes.Add(baseIndex0);
+            baseIndexes.Add(baseIndex0 + heightMap.Width - 1 + heightMap.Height - 1);
+            baseIndexes.Add(baseIndex0 + 2 * (heightMap.Width - 1) + heightMap.Height - 1);
+
+
 
 
             triangulation.Positions = triangulation.Positions.Concat(basePoints);

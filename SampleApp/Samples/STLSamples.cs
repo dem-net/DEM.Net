@@ -19,14 +19,14 @@ namespace SampleApp
         public static void Run(string outputDirectory)
         {
             string modelName = "STL test";
-             string bboxWKT = "POLYGON((5.54888 43.519525, 5.61209 43.519525, 5.61209 43.565225, 5.54888 43.565225, 5.54888 43.519525))";
+            string bboxWKT = "POLYGON((5.54888 43.519525, 5.61209 43.519525, 5.61209 43.565225, 5.54888 43.565225, 5.54888 43.519525))";
             //string bboxWKT = "POLYGON ((5.558267 43.538602, 5.557902 43.538602, 5.557902 43.538353, 5.558267 43.538353, 5.558267 43.538602))";// zoom ste
             RasterService rasterService = new RasterService();
             ElevationService elevationService = new ElevationService(rasterService);
 
             var bbox = GeometryService.GetBoundingBox(bboxWKT);
             //bbox = bbox.Scale(1.3); // test
-            var heightMap = elevationService.GetHeightMap(bbox, DEMDataSet.AW3D30);
+            var heightMap = elevationService.GetHeightMap(bbox, DEMDataSet.SRTM_GL3);
             heightMap = heightMap.ReprojectGeodeticToCartesian()
                                     .ZScale(2.5f)
                                     .CenterOnOrigin()
