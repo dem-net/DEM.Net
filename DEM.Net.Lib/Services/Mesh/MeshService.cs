@@ -95,7 +95,6 @@ namespace DEM.Net.Lib.Services.Mesh
         {
             // bake coordinates to avoid executing the coords transfrom pipeline
             var coords = heightMap.Coordinates.ToList();
-            heightMap.Coordinates = coords;
             int capacity = heightMap.Width * 2 + (heightMap.Height - 2) * 2;
             var basePoints = new List<GeoPoint>(capacity);
             var baseIndexes = new List<int>(capacity);

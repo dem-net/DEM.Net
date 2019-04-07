@@ -37,7 +37,7 @@ namespace SampleApp
 
         internal void Run()
         {
-            
+
             IglTFService glTF = new glTFService();
             ImageryService imageryService = new ImageryService();
             List<MeshPrimitive> meshes = new List<MeshPrimitive>();
@@ -86,7 +86,7 @@ namespace SampleApp
                 // Normal map
                 Console.WriteLine("Height map...");
                 //float Z_FACTOR = 0.00002f;
-                
+
                 //hMap = hMap.CenterOnOrigin().ZScale(Z_FACTOR);
                 var normalMap = imageryService.GenerateNormalMap(hMap, outputDir);
 
@@ -126,7 +126,7 @@ namespace SampleApp
             meshes.Add(triangleMesh);
 
             // take 1 point evert nth
-            
+
             gpxPointsElevated = gpxPointsElevated.Where((x, i) => (i + 1) % _skipGpxPointsEvery == 0);
             gpxPointsElevated = gpxPointsElevated.ZTranslate(_Z_TRANSLATE_GPX_TRACK_METERS)
                                                     .ReprojectTo(4326, _outputSrid)
@@ -134,7 +134,7 @@ namespace SampleApp
                                                     .CenterOnOrigin(hMap.BoundingBox)
                                                     .ZScale(_Z_FACTOR);
 
-            
+
             MeshPrimitive gpxLine = glTF.GenerateLine(gpxPointsElevated, new Vector4(1, 0, 0, 0.5f), _trailWidthMeters);
             meshes.Add(gpxLine);
 

@@ -18,7 +18,7 @@ namespace DEM.Net.Lib
 
         public static HeightMap ReprojectGeodeticToCartesian(this HeightMap heightMap)
         {
-            heightMap.Coordinates = heightMap.Coordinates.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR);
+            heightMap.Coordinates = heightMap.Coordinates.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR, heightMap.Count);
             heightMap.BoundingBox = heightMap.BoundingBox.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR);
             return heightMap;
         }
@@ -28,18 +28,18 @@ namespace DEM.Net.Lib
             if (sourceEpsgCode == destinationEpsgCode)
                 return heightMap;
 
-            heightMap.Coordinates = heightMap.Coordinates.ReprojectTo(sourceEpsgCode, destinationEpsgCode);
+            heightMap.Coordinates = heightMap.Coordinates.ReprojectTo(sourceEpsgCode, destinationEpsgCode, heightMap.Count);
             heightMap.BoundingBox = heightMap.BoundingBox.ReprojectTo(sourceEpsgCode, destinationEpsgCode);
 
             return heightMap;
         }
-       
+
         public static IEnumerable<GeoPoint> ReprojectGeodeticToCartesian(this IEnumerable<GeoPoint> points)
         {
-            return points.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR);
+            return points.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR, null);
         }
 
-        public static IEnumerable<GeoPoint> ReprojectTo(this IEnumerable<GeoPoint> points, int sourceEpsgCode, int destinationEpsgCode)
+        public static IEnumerable<GeoPoint> ReprojectTo(this IEnumerable<GeoPoint> points, int sourceEpsgCode, int destinationEpsgCode, int? pointCount = null)
         {
             if (sourceEpsgCode == destinationEpsgCode)
                 return points;
@@ -50,8 +50,34 @@ namespace DEM.Net.Lib
             // Defines the starting coordiante system
             ProjectionInfo pTarget = ProjectionInfo.FromEpsgCode(destinationEpsgCode);
 
-            return points.Select(pt => ReprojectPoint(pt, pSource, pTarget));
+            if (pointCount == null)
+            {
+                return points.Select(pt => ReprojectPoint(pt, pSource, pTarget));
+            }
+            else
+            {
+                double[] inputPoints = null;
 
+                return points.Select((p, index) =>
+                {
+                    if (inputPoints == null)
+                    {
+                        inputPoints = points.SelectMany(pt => new double[] { pt.Longitude, pt.Latitude }).ToArray();
+                        Reproject.ReprojectPoints(inputPoints, null, pSource, pTarget, 0, pointCount.Value);
+                    }
+                    var pout = p.Clone();
+                    pout.Longitude = inputPoints[2 * index];
+                    pout.Latitude = inputPoints[2 * index + 1];
+
+                    if (index == pointCount - 1)
+                    {
+                        inputPoints = null;
+                    }
+                    return pout;
+                });
+
+
+            }
         }
         public static BoundingBox ReprojectTo(this BoundingBox bbox, int sourceEpsgCode, int destinationEpsgCode)
         {

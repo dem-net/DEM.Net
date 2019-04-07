@@ -149,7 +149,7 @@ namespace SampleApp
             else
             {
                 Console.WriteLine("GenerateTriangleMesh...");
-                triangleMesh = glTF.GenerateTriangleMesh(hMap, null, pBRTexture);
+                triangleMesh = glTF.GenerateTriangleMesh_Boxed(hMap, null, pBRTexture);
 
             }
             meshes.Add(triangleMesh);
