@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="App.SECRETS.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BitMiracle.LibTiff.NET" Version="2.4.626" />
+    <PackageReference Include="DotSpatial.Projections" Version="1.9.0" />
+    <PackageReference Include="GeoAPI.CoordinateSystems" Version="1.7.5" />
+    <PackageReference Include="GeoAPI.Core" Version="1.7.5" />
+    <PackageReference Include="NetTopologySuite" Version="1.15.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DEM.Net.glTF\DEM.Net.glTF.csproj" />
+    <ProjectReference Include="..\DEM.Net.Lib\DEM.Net.Lib.csproj" />
+  </ItemGroup>
+
+</Project>

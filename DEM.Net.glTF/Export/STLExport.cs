@@ -37,7 +37,11 @@ namespace DEM.Net.glTF.Export
             }
 
             // ...
-
+            string folder = System.IO.Path.GetDirectoryName(fileName);
+            if (!System.IO.Directory.Exists(folder))
+            {
+                System.IO.Directory.CreateDirectory(folder);
+            }
             using (FileStream fs = new FileStream(fileName, FileMode.Create))
             {
                 stlFile.Save(fs, ascii);
