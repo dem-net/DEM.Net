@@ -6,7 +6,7 @@ namespace DEM.Net.Samples
 {
     class Program
     {
-        static string _OutputDataDirectory = @"..\..\..\..\Data";
+        static string _OutputDataDirectory = @"..\..\..\..\Data".Replace('\\', Path.DirectorySeparatorChar);
 
         static void Main(string[] args)
         {
@@ -20,19 +20,19 @@ namespace DEM.Net.Samples
 
             STLSamples.Run(Path.Combine(_OutputDataDirectory, "glTF"), DEMDataSet.AW3D30);
 
-            GpxSamples gpxSamples = new GpxSamples(_OutputDataDirectory, Path.Combine(_OutputDataDirectory, @"GPX\venturiers.gpx"));
-            gpxSamples.Run();
+            //GpxSamples gpxSamples = new GpxSamples(_OutputDataDirectory, Path.Combine(_OutputDataDirectory, @"GPX\venturiers.gpx"));
+            //gpxSamples.Run();
 
 
-            //ElevationSamples.Run();
+            ////ElevationSamples.Run();
 
-            TextureSamples textureSamples = new TextureSamples(_OutputDataDirectory);
-            textureSamples.Run();
+            //TextureSamples textureSamples = new TextureSamples(_OutputDataDirectory);
+            //textureSamples.Run();
 
 
 
-            ReprojectionSamples reprojSamples = new ReprojectionSamples("POLYGON ((-69.647827 -33.767732, -69.647827 -32.953368, -70.751202 -32.953368, -70.751202 -33.767732, -69.647827 -33.767732))");
-            reprojSamples.Run();
+            //ReprojectionSamples reprojSamples = new ReprojectionSamples("POLYGON ((-69.647827 -33.767732, -69.647827 -32.953368, -70.751202 -32.953368, -70.751202 -33.767732, -69.647827 -33.767732))");
+            //reprojSamples.Run();
 
 
 

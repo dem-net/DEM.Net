@@ -29,7 +29,7 @@ namespace DEM.Net.Lib
         static RasterService()
         {
 
-            _localDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), APP_NAME);
+            _localDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), APP_NAME);
             if (!Directory.Exists(_localDirectory))
                 Directory.CreateDirectory(_localDirectory);
 
@@ -90,7 +90,7 @@ namespace DEM.Net.Lib
             }
 
             Uri fullPath = new Uri(metadata.Filename, UriKind.Absolute);
-            Uri relRoot = new Uri(Path.GetFullPath(_localDirectory) + "\\", UriKind.Absolute);
+            Uri relRoot = new Uri(Path.GetFullPath(_localDirectory) + Path.DirectorySeparatorChar, UriKind.Absolute);
 
             metadata.Filename = Uri.UnescapeDataString(relRoot.MakeRelativeUri(fullPath).ToString());
             return metadata;
