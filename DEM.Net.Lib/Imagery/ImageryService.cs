@@ -8,6 +8,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
@@ -58,15 +59,33 @@ namespace DEM.Net.Lib.Imagery
             Console.WriteLine($"Downloading {range.Count} tiles...");
             Parallel.ForEach(range, options, tileInfo =>
                 {
-                    using (WebClient webClient = new WebClient())
+                    using (HttpClient client = new HttpClient())
                     {
                         Uri tileUri = BuildUri(provider, tileInfo.X, tileInfo.Y, tileInfo.Zoom);
-                        var imgBytes = webClient.DownloadData(tileUri);
-
                         Console.WriteLine($"Downloading {tileUri}");
-                        tiles.Add(new MapTile(imgBytes, provider.TileSize, tileUri, tileInfo));
-                        //System.Diagnostics.Debug.WriteLine($"Downloading {tileUri} Finished");
+
+                        using (HttpResponseMessage response = client.GetAsync(tileUri).Result)
+                        {
+                            if (response.IsSuccessStatusCode)
+                            {
+                                using (HttpContent content = response.Content)
+                                {
+                                    var contentbytes = content.ReadAsByteArrayAsync().Result;
+                                    tiles.Add(new MapTile(contentbytes, provider.TileSize, tileUri, tileInfo));
+
+                                }
+                            }
+                        }
                     }
+                    //using (WebClient webClient = new WebClient())
+                    //{
+                    //    Uri tileUri = BuildUri(provider, tileInfo.X, tileInfo.Y, tileInfo.Zoom);
+                    //    var imgBytes = webClient.DownloadData(tileUri);
+
+                    //    Console.WriteLine($"Downloading {tileUri}");
+                    //    tiles.Add(new MapTile(imgBytes, provider.TileSize, tileUri, tileInfo));
+                    //    //System.Diagnostics.Debug.WriteLine($"Downloading {tileUri} Finished");
+                    //}
                 }
                 );
             Logger.StopPerf("downloadImages");
