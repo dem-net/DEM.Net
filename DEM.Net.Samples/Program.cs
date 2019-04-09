@@ -1,6 +1,7 @@
 ﻿using DEM.Net.Lib;
 using System.IO;
 using System;
+using System.Diagnostics;
 
 namespace DEM.Net.Samples
 {
@@ -10,6 +11,8 @@ namespace DEM.Net.Samples
 
         static void Main(string[] args)
         {
+            Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
+
             Logger.StartPerf("Main cold start");
 
             //DatasetSamples.Run();
@@ -18,10 +21,10 @@ namespace DEM.Net.Samples
             //string bboxTest = "POLYGON ((5.558267 43.538602, 5.557902 43.538602, 5.557902 43.538353, 5.558267 43.538353, 5.558267 43.538602))";
             //STLSamples.Run(Path.Combine(_OutputDataDirectory, "glTF"), "Test", bboxTest, DEMDataSet.AW3D30);
 
-            STLSamples.Run(Path.Combine(_OutputDataDirectory, "glTF"), DEMDataSet.AW3D30);
+            //STLSamples.Run(Path.Combine(_OutputDataDirectory, "glTF"), DEMDataSet.AW3D30);
 
-            //GpxSamples gpxSamples = new GpxSamples(_OutputDataDirectory, Path.Combine(_OutputDataDirectory, @"GPX\venturiers.gpx"));
-            //gpxSamples.Run();
+            GpxSamples gpxSamples = new GpxSamples(_OutputDataDirectory, Path.Combine(_OutputDataDirectory, "GPX", "venturiers.gpx"));
+            gpxSamples.Run();
 
 
             ////ElevationSamples.Run();
