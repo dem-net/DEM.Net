@@ -36,12 +36,15 @@ namespace DEM.Net.Samples
 
             var bbox = GeometryService.GetBoundingBox(bboxWKT);
             //bbox = bbox.Scale(1.3); // test
-            var heightMap = elevationService.GetHeightMap(bbox, dataset)
+            var heightMap = elevationService.GetHeightMap(bbox, dataset);
+
+            heightMap = heightMap
                                     .ReprojectGeodeticToCartesian()
                                     .ZScale(2f)
                                     .CenterOnOrigin()
                                     .FitInto(250f)
                                     .BakeCoordinates();
+
             glTFService glTFService = new glTFService();
             var mesh = glTFService.GenerateTriangleMesh_Boxed(heightMap);
 

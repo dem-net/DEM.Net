@@ -25,7 +25,7 @@ namespace DEM.Net.Samples
 
         public TextureSamples(string outputDirectory)
         {
-            _elevationService = new ElevationService(new RasterService(outputDirectory));
+            _elevationService = new ElevationService(new RasterService());
             // sugiton
             //_bboxWkt = "POLYGON ((5.42201042175293 43.20023317388979, 5.459775924682617 43.20023317388979, 5.459775924682617 43.22594305473314, 5.42201042175293 43.22594305473314, 5.42201042175293 43.20023317388979))";
             // ste victoire

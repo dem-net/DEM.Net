@@ -29,7 +29,7 @@ namespace DEM.Net.Samples
         int _skipGpxPointsEvery = 1;
         public GpxSamples(string outputDirectory, string gpxFile)
         {
-            _elevationService = new ElevationService(new RasterService(outputDirectory));
+            _elevationService = new ElevationService(new RasterService());
             _dataSet = DEMDataSet.AW3D30;
             _outputDirectory = outputDirectory;
             _gpxFile = gpxFile;
