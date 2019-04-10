@@ -23,7 +23,7 @@ namespace DEM.Net.Test
         {
 
             string fileName = "N043E005_AVE_DSM.tif";
-            string sourceFile = "TestData\\" + fileName + ".zip";
+            string sourceFile = Path.Combine("TestData",  fileName + ".zip");
             bool fileOk = File.Exists(sourceFile);
 
             Assert.True(fileOk, "TestData is missing");
@@ -54,7 +54,7 @@ namespace DEM.Net.Test
         public void Test_FileFormat_HGT()
         {
             string fileName = "N43E005.hgt";
-            string sourceFile = "TestData\\" + fileName + ".zip";
+            string sourceFile = Path.Combine("TestData", fileName + ".zip");
             bool fileOk = File.Exists(sourceFile);
 
             Assert.True(fileOk, "TestData is missing");
@@ -84,7 +84,7 @@ namespace DEM.Net.Test
         public void Test_FileFormat_HGT_OutOfRange()
         {
             string fileName = "N43E005.hgt";
-            string sourceFile = "TestData\\" + fileName + ".zip";
+            string sourceFile = Path.Combine("TestData", fileName + ".zip");
             bool fileOk = File.Exists(sourceFile);
 
             Assert.True(fileOk, "TestData is missing");
