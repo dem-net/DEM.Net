@@ -1,10 +1,14 @@
 ﻿using DEM.Net.Lib.Services.Mesh;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.Primitives;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -70,16 +74,6 @@ namespace DEM.Net.Lib.Imagery
 
                     }
                 }
-                //using (WebClient webClient = new WebClient())
-                //{
-                //    Uri tileUri = BuildUri(provider, tileInfo.X, tileInfo.Y, tileInfo.Zoom);
-                //    var imgBytes = webClient.DownloadData(tileUri);
-
-                //    Console.WriteLine($"Downloading {tileUri}");
-                //    tiles.Add(new MapTile(imgBytes, provider.TileSize, tileUri, tileInfo));
-                //    //System.Diagnostics.Debug.WriteLine($"Downloading {tileUri} Finished");
-                //}
-
                 );
 
             Logger.StopPerf("downloadImages");
@@ -105,8 +99,7 @@ namespace DEM.Net.Lib.Imagery
 
         public TextureInfo ConstructTexture(TileRange tiles, BoundingBox bbox, string fileName, TextureImageFormat mimeType)
         {
-            ImageFormat format = ConvertFormat(mimeType);
-
+            
             // where is the bbox in the final image ?
 
             // get pixel in full map
@@ -116,81 +109,50 @@ namespace DEM.Net.Lib.Imagery
 
             //DrawDebugBmpBbox(tiles, localBbox, tilesBbox, fileName, mimeType);
             int tileSize = tiles.Provider.TileSize;
-            using (Bitmap bmp = new Bitmap((int)projectedBbox.Width, (int)projectedBbox.Height))
+
+
+
+            using (Image<Rgba32> outputImage = new Image<Rgba32>((int)projectedBbox.Width, (int)projectedBbox.Height))
             {
                 int xOffset = (int)(tilesBbox.xMin - projectedBbox.xMin);
                 int yOffset = (int)(tilesBbox.yMin - projectedBbox.yMin);
-                using (Graphics g = Graphics.FromImage(bmp))
+
+                foreach (var tile in tiles)
                 {
-                    foreach (var tile in tiles)
+                    using (Image<Rgba32> tileImg = Image.Load(tile.Image))
                     {
-                        using (MemoryStream stream = new MemoryStream(tile.Image))
-                        {
-                            using (Image tileImg = Image.FromStream(stream))
-                            {
-                                int x = (tile.TileInfo.X - tiles.Start.X) * tileSize + xOffset;
-                                int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize + yOffset;
-                                g.DrawImage(tileImg, x, y);
-                            }
-                        }
+                        int x = (tile.TileInfo.X - tiles.Start.X) * tileSize + xOffset;
+                        int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize + yOffset;
+
+                        outputImage.Mutate(o => o
+                            .DrawImage(tileImg, new Point(x, y), 1f)
+                            );
+
                     }
                 }
-                //bmp.Save(Path.ChangeExtension( fileName,".debug.jpg"), format);
-                bmp.Save(fileName, format);
-                //// power of two texture
-                //int maxSize = Math.Max((int)tilesBbox.Width, (int)tilesBbox.Height);
-                //using (Bitmap bmpOut = new Bitmap(maxSize, maxSize))
-                //{
-                //    using (Graphics g = Graphics.FromImage(bmpOut))
-                //    {
-                //        g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                //        g.DrawImage(bmp, 0, 0, maxSize, maxSize);
-                //    }
-                //    bmpOut.Save(fileName, format);
-                //}
+
+                // with encoder
+                //IImageEncoder encoder = ConvertFormat(mimeType);
+                //outputImage.Save(fileName, encoder);
+
+                outputImage.Save(fileName);
             }
             return new TextureInfo(fileName, mimeType, (int)projectedBbox.Width, (int)projectedBbox.Height, zoomLevel, projectedBbox);
             //return new TextureInfo(fileName, format, (int)tilesBbox.Width, (int)tilesBbox.Height);
 
         }
 
-        private void DrawDebugBmpBbox(TileRange tiles, BoundingBox localBbox, BoundingBox tilesBbox, string fileName, TextureImageFormat mimeType)
+
+        private IImageEncoder ConvertFormat(TextureImageFormat format)
         {
-            int tileSize = tiles.Provider.TileSize;
-            using (Bitmap bmp = new Bitmap((int)tilesBbox.Width, (int)tilesBbox.Height))
-            {
-                int xOffset = (int)(localBbox.xMin - tilesBbox.xMin);
-                int yOffset = (int)(localBbox.yMin - tilesBbox.yMin);
-                using (Graphics g = Graphics.FromImage(bmp))
-                {
-                    foreach (var tile in tiles)
-                    {
-                        using (MemoryStream stream = new MemoryStream(tile.Image))
-                        {
-                            using (Image tileImg = Image.FromStream(stream))
-                            {
-                                int x = (tile.TileInfo.X - tiles.Start.X) * tileSize;
-                                int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize;
-                                g.DrawImage(tileImg, x, y);
-                            }
-                        }
-                    }
-
-                    g.DrawRectangle(Pens.Red, xOffset, yOffset, (int)localBbox.Width, (int)localBbox.Height);
-                }
-                //bmp.Save(Path.ChangeExtension( fileName,".debug.jpg"), format);
-                var ext = Path.GetExtension(fileName);
-                bmp.Save(Path.ChangeExtension(fileName, ".debug" + ext), ConvertFormat(mimeType));
-            }
-
-        }
-
-        private ImageFormat ConvertFormat(TextureImageFormat format)
-        {
+            ImageFormatManager imageFormatManager = new ImageFormatManager();
+            IImageFormat imageFormat = null;
             if (format == TextureImageFormat.image_jpeg)
-                return ImageFormat.Jpeg;
+                imageFormat = imageFormatManager.FindFormatByFileExtension(".jpg");
             else
-                return ImageFormat.Png;
+                imageFormat = imageFormatManager.FindFormatByFileExtension(".png");
+
+            return imageFormatManager.FindEncoder(imageFormat);
         }
 
         public Uri BuildUri(ImageryProvider provider, int x, int y, int zoom)
@@ -239,42 +201,43 @@ namespace DEM.Net.Lib.Imagery
             bool debugBMP = false;
             if (debugBMP)
             {
-                using (var dbm = new DirectBitmap(heightMap.Width, heightMap.Height))
-                using (var dbmHeight = new DirectBitmap(heightMap.Width, heightMap.Height))
-                {
-                    // for debug only
-                    List<Vector3> coordinates = heightMap.Coordinates.Select(c => new Vector3((float)c.Longitude, (float)c.Latitude, (float)c.Elevation)).ToList();
-                    float maxHeight = (float)heightMap.Coordinates.Max(c => c.Elevation.GetValueOrDefault(0));
+                //using (var dbm = new DirectBitmap(heightMap.Width, heightMap.Height))
+                //using (var dbmHeight = new DirectBitmap(heightMap.Width, heightMap.Height))
+                //{
+                //    // for debug only
+                //    List<Vector3> coordinates = heightMap.Coordinates.Select(c => new Vector3((float)c.Longitude, (float)c.Latitude, (float)c.Elevation)).ToList();
+                //    float maxHeight = (float)heightMap.Coordinates.Max(c => c.Elevation.GetValueOrDefault(0));
 
-                    for (int j = 0; j < heightMap.Height; j++)
-                        for (int i = 0; i < heightMap.Width; i++)
-                        {
-                            int index = i + (j * heightMap.Width);
-                            Vector3 norm = normals[index];
-                            Color color = FromVec3NormalToColor(norm);
-                            dbm.SetPixel(i, j, color);
-                            dbmHeight.SetPixel(i, j, FromVec3ToHeightColor(coordinates[index], maxHeight));
-                        }
+                //    for (int j = 0; j < heightMap.Height; j++)
+                //        for (int i = 0; i < heightMap.Width; i++)
+                //        {
+                //            int index = i + (j * heightMap.Width);
+                //            Vector3 norm = normals[index];
+                //            Color color = FromVec3NormalToColor(norm);
+                //            dbm.SetPixel(i, j, color);
+                //            dbmHeight.SetPixel(i, j, FromVec3ToHeightColor(coordinates[index], maxHeight));
+                //        }
 
-                    dbm.Bitmap.Save(Path.Combine(outputDirectory, "normalmap.jpg"), ImageFormat.Jpeg);
-                    dbmHeight.Bitmap.Save(Path.Combine(outputDirectory, "heightmap.jpg"), ImageFormat.Jpeg);
-                }
+                //    dbm.Bitmap.Save(Path.Combine(outputDirectory, "normalmap.jpg"), ImageFormat.Jpeg);
+                //    dbmHeight.Bitmap.Save(Path.Combine(outputDirectory, "heightmap.jpg"), ImageFormat.Jpeg);
+                //}
             }
             else
             {
-                using (var dbm = new DirectBitmap(heightMap.Width, heightMap.Height))
+                using (Image<Bgra32> outputImage = new Image<Bgra32>(heightMap.Width, heightMap.Height))
                 {
-
+                    
                     for (int j = 0; j < heightMap.Height; j++)
                         for (int i = 0; i < heightMap.Width; i++)
                         {
                             int index = i + (j * heightMap.Width);
                             Vector3 norm = normals[index];
-                            Color color = FromVec3NormalToColor(norm);
-                            dbm.SetPixel(i, j, color);
+                            Bgra32 color = FromVec3NormalToColor(norm);
+
+                            outputImage[i, j] = color;
                         }
 
-                    dbm.Bitmap.Save(Path.Combine(outputDirectory, "normalmap.jpg"), ImageFormat.Jpeg);
+                    outputImage.Save(Path.Combine(outputDirectory, "normalmap.jpg"), new JpegEncoder());
                 }
             }
 
@@ -282,17 +245,17 @@ namespace DEM.Net.Lib.Imagery
             return normal;
         }
 
-        private Color FromVec3ToHeightColor(Vector3 vector3, float maxHeight)
+        private Bgra32 FromVec3ToHeightColor(Vector3 vector3, float maxHeight)
         {
-            int height = (int)Math.Round(MathHelper.Map(0, maxHeight, 0, 255, vector3.Z, true), 0);
-            return Color.FromArgb(height, height, height);
+            byte height = (byte)Math.Round(MathHelper.Map(0, maxHeight, 0, 255, vector3.Z, true), 0);
+            return new Bgra32(height, height, height);
         }
 
-        public Color FromVec3NormalToColor(Vector3 normal)
+        public Bgra32 FromVec3NormalToColor(Vector3 normal)
         {
-            return Color.FromArgb((int)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.X, true), 0),
-                (int)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.Y, true), 0),
-                (int)Math.Round(MathHelper.Map(0, -1, 128, 255, -normal.Z, true), 0));
+            return new Bgra32 ((byte)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.X, true), 0),
+                (byte)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.Y, true), 0),
+                (byte)Math.Round(MathHelper.Map(0, -1, 128, 255, -normal.Z, true), 0));
         }
 
         #endregion
