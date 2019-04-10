@@ -79,16 +79,10 @@ namespace DEM.Net.Lib
                     {
                         using (HttpResponseMessage response = client.GetAsync(_dataSet.VRTFileUrl).Result)
                         {
-                            if (response.IsSuccessStatusCode)
+                            using (FileStream fs = new FileStream(_vrtFileName, FileMode.Create, FileAccess.Write))
                             {
-                                using (HttpContent content = response.Content)
-                                {
-                                    using (FileStream fs = new FileStream(_vrtFileName, FileMode.Create, FileAccess.Write))
-                                    {
-                                        var contentbytes = content.ReadAsByteArrayAsync().Result;
-                                        fs.Write(contentbytes, 0, contentbytes.Length);
-                                    }
-                                }
+                                var contentbytes = client.GetByteArrayAsync(_dataSet.VRTFileUrl).Result;
+                                fs.Write(contentbytes, 0, contentbytes.Length);
                             }
                         }
                     }

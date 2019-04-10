@@ -102,46 +102,33 @@ namespace DEM.Net.Lib
 
             using (HttpClient client = new HttpClient())
             {
-                using (HttpResponseMessage response = client.GetAsync(url).Result)
+                //using (HttpResponseMessage response = client.GetAsync(url).Result)
+                //{
+                //    if (response.IsSuccessStatusCode)
+                //    {
+                //        using (HttpContent content = response.Content)
+                //        {
+                //            using (FileStream fs = new FileStream(localFileName, FileMode.Create, FileAccess.Write))
+                //            {
+                //                var contentbytes = content.ReadAsByteArrayAsync().Result;
+                //                fs.Write(contentbytes, 0, contentbytes.Length);
+                //            }
+                //        }
+                //    }
+                //}
+                var contentbytes = client.GetByteArrayAsync(url).Result;
+                using (FileStream fs = new FileStream(localFileName, FileMode.Create, FileAccess.Write))
                 {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        using (HttpContent content = response.Content)
-                        {
-                            using (FileStream fs = new FileStream(localFileName, FileMode.Create, FileAccess.Write))
-                            {
-                                var contentbytes = content.ReadAsByteArrayAsync().Result;
-                                fs.Write(contentbytes, 0, contentbytes.Length);
-                            }
-                        }
-                    }
+                    fs.Write(contentbytes, 0, contentbytes.Length);
                 }
+
             }
 
             _IRasterService.GenerateFileMetadata(localFileName, fileFormat, false, false);
 
 
         }
-        //private void DownloadDEMTile_WebClient(string url, DEMFileFormat fileFormat, string localFileName)
-        //{
-
-        //    // Create directories if not existing
-        //    new FileInfo(localFileName).Directory.Create();
-
-        //    Trace.TraceInformation($"Downloading file {url}...");
-
-
-        //    using (WebClient wc = new WebClient())
-        //    {
-        //        wc.DownloadFile(url, localFileName);
-        //    }
-
-
-        //    _IRasterService.GenerateFileMetadata(localFileName, fileFormat, false, false);
-
-
-        //}
-
+    
         /// <summary>
         /// Extract elevation data along line path
         /// </summary>
