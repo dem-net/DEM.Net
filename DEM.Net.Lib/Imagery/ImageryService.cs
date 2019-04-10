@@ -199,7 +199,7 @@ namespace DEM.Net.Lib.Imagery
                 return ImageFormat.Png;
         }
 
-        private Uri BuildUri(ImageryProvider provider, int x, int y, int zoom)
+        public Uri BuildUri(ImageryProvider provider, int x, int y, int zoom)
         {
             string[] serverNodes = provider.UrlModel.Servers;
             string server = string.Empty;
@@ -214,7 +214,15 @@ namespace DEM.Net.Lib.Imagery
             url = url.Replace("{x}", x.ToString());
             url = url.Replace("{y}", y.ToString());
             url = url.Replace("{z}", zoom.ToString());
-            url = url.Replace("{t}", ConfigurationManager.AppSettings[provider.TokenAppSettingsKey]);
+            if (url.Contains("{t}"))
+            {
+                var token = ConfigurationManager.AppSettings[provider.TokenAppSettingsKey];
+                if (String.IsNullOrWhiteSpace(token))
+                {
+                    Logger.Error($"There is no token found for {provider.Name} provider. Make sure an App.SECRETS.config file is present in running directory with a {provider.TokenAppSettingsKey} key / value.");
+                }
+                url = url.Replace("{t}", token);
+            }
 
             return new Uri(url, UriKind.Absolute);
         }
