@@ -7,8 +7,6 @@ using DEM.Net.Lib.Services.Lab;
 using DEM.Net.Lib.Services.Mesh;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -93,7 +91,7 @@ namespace DEM.Net.Samples
 
             ImageryService imageryService = new ImageryService();
             Console.WriteLine("Download image tiles...");
-            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.MapBoxSatellite, 4);
+            TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.StamenToner, 1);
 
             Console.WriteLine("Construct texture...");
             string fileName = Path.Combine(outputDir, "Texture.jpg");

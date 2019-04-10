@@ -23,14 +23,14 @@ namespace DEM.Net.Samples
 
             //STLSamples.Run(Path.Combine(_OutputDataDirectory, "glTF"), DEMDataSet.AW3D30);
 
-            GpxSamples gpxSamples = new GpxSamples(_OutputDataDirectory, Path.Combine(_OutputDataDirectory, "GPX", "venturiers.gpx"));
-            gpxSamples.Run();
+            //GpxSamples gpxSamples = new GpxSamples(_OutputDataDirectory, Path.Combine(_OutputDataDirectory, "GPX", "venturiers.gpx"));
+            //gpxSamples.Run();
 
 
             ////ElevationSamples.Run();
 
-            //TextureSamples textureSamples = new TextureSamples(_OutputDataDirectory);
-            //textureSamples.Run();
+            TextureSamples textureSamples = new TextureSamples(_OutputDataDirectory);
+            textureSamples.Run();
 
 
 
