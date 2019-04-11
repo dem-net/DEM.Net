@@ -7,13 +7,18 @@
     <PackageVersion>0.1.0</PackageVersion>
     <Authors>Xavier Fischer, Frédéric Aubin</Authors>
     <Copyright>Xavier Fischer, Frédéric Aubin</Copyright>
-    <PackageLicenseUrl>https://github.com/xfischer/DEM.Net</PackageLicenseUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/xfischer/DEM.Net</PackageProjectUrl>
     <PackageReleaseNotes>First official release</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation, Mesh, 3D, glTF, Map, STL</PackageTags>
     <Title>DEM.Net</Title>
     <Description>Digital Elevation model library. Elevation, Heightmaps, STL</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <RepositoryUrl>https://github.com/xfischer/DEM.Net</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageLicenseFile></PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
