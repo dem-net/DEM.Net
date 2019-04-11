@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace DEM.Net.Lib
 {
     [Serializable()]
-    public class HeightMap
+    public class HeightMap 
     {
         public HeightMap(int width, int height)
         {
@@ -25,6 +25,7 @@ namespace DEM.Net.Lib
             {
                 if (_bbox == null)
                 {
+                    Logger.Info("Computing bbox...");
                     _bbox = new BoundingBox(Coordinates.Min(c => c.Longitude)
                         , Coordinates.Max(c => c.Longitude)
                         , Coordinates.Min(c => c.Latitude)
@@ -37,9 +38,12 @@ namespace DEM.Net.Lib
                 _bbox = value;
             }
         }
-        
+
         public IEnumerable<GeoPoint> Coordinates { get; set; }
 
+        /// <summary>
+        /// Coordinate count
+        /// </summary>
         public int Count { get; set; }
 
         public float Mininum { get; set; }
@@ -56,7 +60,6 @@ namespace DEM.Net.Lib
         {
             return (HeightMap)this.MemberwiseClone();
         }
-
 
     }
 }

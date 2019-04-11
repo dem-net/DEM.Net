@@ -30,22 +30,37 @@ namespace SampleApp
             Logger.StartPerf("Main cold start");
 
             //DatasetSamples.Run();
-            
+
             //ElevationSamples.Run();
 
-            //TextureSamples textureSamples = new TextureSamples(_OutputDataDirectory);
-            //textureSamples.Run();
-            //textureSamples.RunImagery(true);
+            TextureSamples textureSamples = new TextureSamples(_OutputDataDirectory);
+            textureSamples.Run();
 
-            ReprojectionSamples reprojSamples = new ReprojectionSamples(_OutputDataDirectory, @"..\..\..\Data\GPX\Vernet-les-bains-Canigou-34km.gpx");
+
+
+            ReprojectionSamples reprojSamples = new ReprojectionSamples("POLYGON ((-69.647827 -33.767732, -69.647827 -32.953368, -70.751202 -32.953368, -70.751202 -33.767732, -69.647827 -33.767732))");
             reprojSamples.Run();
 
 
-            GpxSamples gpxSamples = new GpxSamples( _OutputDataDirectory, @"..\..\..\Data\GPX\Bouleternere-Denivele_de_Noel_2017.gpx");
-            gpxSamples.Run();
 
-            OldSamples oldSamples = new OldSamples( _OutputDataDirectory);
-            oldSamples.Run();
+            string bboxTest = "POLYGON ((5.558267 43.538602, 5.557902 43.538602, 5.557902 43.538353, 5.558267 43.538353, 5.558267 43.538602))";
+            STLSamples.Run(Path.Combine(_OutputDataDirectory, "glTF"), "Test", bboxTest, DEMDataSet.AW3D30);
+
+            string bboxMtBlanc = "POLYGON ((6.944733 45.904438, 6.778999 45.904438, 6.778999 45.776144, 6.944733 45.776144, 6.944733 45.904438))";
+            STLSamples.Run(Path.Combine(_OutputDataDirectory, "glTF"), "Mont Blanc", bboxMtBlanc, DEMDataSet.AW3D30);
+            string steVictoire = "POLYGON((5.54888 43.519525, 5.61209 43.519525, 5.61209 43.565225, 5.54888 43.565225, 5.54888 43.519525))";
+            STLSamples.Run(Path.Combine(_OutputDataDirectory, "glTF"), "Ste Victoire", steVictoire, DEMDataSet.AW3D30);
+            string bboxSantiagoChile = "POLYGON ((-69.647827 -33.767732, -69.647827 -32.953368, -70.751202 -32.953368, -70.751202 -33.767732, -69.647827 -33.767732))";
+            STLSamples.Run(Path.Combine(_OutputDataDirectory, "glTF"), "Santiago de Chile", bboxSantiagoChile, DEMDataSet.SRTM_GL3);
+            //GpxSamples gpxSamples = new GpxSamples(_OutputDataDirectory, @"..\..\..\Data\GPX\venturiers.gpx");
+            //gpxSamples.Run();
+
+
+
+
+
+            //OldSamples oldSamples = new OldSamples( _OutputDataDirectory);
+            //oldSamples.Run();
 
 
             Logger.StopPerf("Main cold start", true);

@@ -127,9 +127,9 @@ namespace DEM.Net.TestWinForm
             double v_xMin = 1500000;
             double v_yMin = 6000000;
             //
-            double[] v_point1;
-            double[] v_point2;
-            double[] v_point3;
+            //double[] v_point1;
+            //double[] v_point2;
+            //double[] v_point3;
             Dictionary<int, double[]> v_points = new Dictionary<int, double[]>();
 
             bool v_renvoyerNullSiColineaire_vf;

@@ -20,7 +20,13 @@ namespace SampleApp
         private readonly string _gpxFile;
         private DEMDataSet _dataSet;
         private readonly string _outputDirectory;
-
+        bool _withTexture = true;
+        bool _generateTIN = false;
+        int _outputSrid = Reprojection.SRID_PROJECTED_MERCATOR;
+        float _Z_FACTOR = 2f;
+        float _Z_TRANSLATE_GPX_TRACK_METERS = 5;
+        float _trailWidthMeters = 5f;
+        int _skipGpxPointsEvery = 1;
         public GpxSamples(string outputDirectory, string gpxFile)
         {
             _elevationService = new ElevationService(new RasterService(outputDirectory));
@@ -31,8 +37,7 @@ namespace SampleApp
 
         internal void Run()
         {
-            bool withTexture = true;
-            bool generateTIN = true;
+
             IglTFService glTF = new glTFService();
             ImageryService imageryService = new ImageryService();
             List<MeshPrimitive> meshes = new List<MeshPrimitive>();
@@ -44,7 +49,7 @@ namespace SampleApp
             // Get GPX points
             var segments = GpxImport.ReadGPX_Segments(_gpxFile);
             var points = segments.SelectMany(seg => seg);
-            var bbox = points.GetBoundingBox().Scale(1.1);
+            var bbox = points.GetBoundingBox().Scale(4, 1.5);
 
             var gpxPointsElevated = _elevationService.GetPointsElevation(points, _dataSet);
 
@@ -52,68 +57,93 @@ namespace SampleApp
             //=======================
 
             //=======================
+            /// Height map (get dem elevation for bbox)
+            ///
+            HeightMap hMap = _elevationService.GetHeightMap(bbox, _dataSet);
+            hMap = hMap.ReprojectTo(4326, _outputSrid).CenterOnOrigin().ZScale(_Z_FACTOR).BakeCoordinates();
+            //
+            //=======================
+
+            //=======================
             // Textures
             //
-            TextureInfo texInfo = null;
-            if (withTexture)
+            PBRTexture pbrTexture = null;
+            if (_withTexture)
             {
 
 
                 Console.WriteLine("Download image tiles...");
-                TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.MapBoxSatelliteStreet, 8);
+                TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.MapBoxSatellite, 8);
                 string fileName = Path.Combine(outputDir, "Texture.jpg");
 
                 Console.WriteLine("Construct texture...");
-                texInfo = imageryService.ConstructTexture(tiles, bbox, fileName, TextureImageFormat.image_jpeg);
+                TextureInfo texInfo = imageryService.ConstructTexture(tiles, bbox, fileName, TextureImageFormat.image_jpeg);
+
+                //
+                //=======================
+
+                //=======================
+                // Normal map
+                Console.WriteLine("Height map...");
+                //float Z_FACTOR = 0.00002f;
+
+                //hMap = hMap.CenterOnOrigin().ZScale(Z_FACTOR);
+                var normalMap = imageryService.GenerateNormalMap(hMap, outputDir);
+
+                pbrTexture = PBRTexture.Create(texInfo, normalMap);
+
+                //hMap = hMap.CenterOnOrigin(Z_FACTOR);
+                //
+                //=======================
             }
-            //
-            //=======================
 
-            //=======================
-            // Normal map
-            Console.WriteLine("Height map...");
-            float Z_FACTOR = 0.00002f;
-            HeightMap hMap = _elevationService.GetHeightMap(bbox, _dataSet);
-            hMap = hMap.CenterOnOrigin().ZScale(Z_FACTOR);
-            var normalMap = imageryService.GenerateNormalMap(hMap, outputDir);
-
-            //hMap = hMap.CenterOnOrigin(Z_FACTOR);
-            //
-            //=======================
 
             //=======================
             // MESH 3D terrain
             Console.WriteLine("Height map...");
-            
+
             Console.WriteLine("GenerateTriangleMesh...");
             MeshPrimitive triangleMesh = null;
-            if (generateTIN)
+            //hMap = _elevationService.GetHeightMap(bbox, _dataSet);
+            if (_generateTIN)
             {
-                hMap.ReprojectTo(4326, 2154);
-                triangleMesh = TINGeneration.GenerateTIN(hMap, 10d, glTF, PBRTexture.Create(texInfo, normalMap));
+                try
+                {
+                    triangleMesh = TINGeneration.GenerateTIN(hMap, 10d, glTF, pbrTexture, _outputSrid);
+                }
+                catch (Exception e)
+                {
+                    Logger.Error($"{e.Message}: {e.ToString()}");
+                }
+
             }
             else
             {
-                hMap = hMap.CenterOnOrigin().ZScale(Z_FACTOR);
+                //hMap = hMap.CenterOnOrigin().ZScale(Z_FACTOR);
                 // generate mesh with texture
-                triangleMesh = glTF.GenerateTriangleMesh(hMap, null, PBRTexture.Create(texInfo, normalMap));
+                triangleMesh = glTF.GenerateTriangleMesh(hMap, null, pbrTexture);
             }
             meshes.Add(triangleMesh);
 
             // take 1 point evert nth
-            int nSkip = 2;
-            gpxPointsElevated = gpxPointsElevated.Where((x, i) => (i + 1) % nSkip == 0);
-            gpxPointsElevated = gpxPointsElevated.Select(pt => { pt.Elevation += 5; return pt; });
-            gpxPointsElevated = gpxPointsElevated.CenterOnOrigin(hMap.BoundingBox).ZScale(0.00002f);
-            MeshPrimitive gpxLine = glTF.GenerateLine(gpxPointsElevated, new Vector4(1, 0, 0, 0.5f), 0.00015f);
+
+            gpxPointsElevated = gpxPointsElevated.Where((x, i) => (i + 1) % _skipGpxPointsEvery == 0);
+            gpxPointsElevated = gpxPointsElevated.ZTranslate(_Z_TRANSLATE_GPX_TRACK_METERS)
+                                                    .ReprojectTo(4326, _outputSrid)
+                                                    .CenterOnOrigin()
+                                                    .CenterOnOrigin(hMap.BoundingBox)
+                                                    .ZScale(_Z_FACTOR);
+
+
+            MeshPrimitive gpxLine = glTF.GenerateLine(gpxPointsElevated, new Vector4(1, 0, 0, 0.5f), _trailWidthMeters);
             meshes.Add(gpxLine);
 
             // model export
             Console.WriteLine("GenerateModel...");
             Model model = glTF.GenerateModel(meshes, this.GetType().Name);
-            glTF.Export(model, outputDir, $"{GetType().Name} Packed", false, true);
+            glTF.Export(model, outputDir, $"{GetType().Name} TIN{_generateTIN}", false, true);
         }
 
-        
+
     }
 }

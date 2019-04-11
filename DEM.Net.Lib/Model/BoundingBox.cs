@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Lib
 {
-    public class BoundingBox
+    public class BoundingBox : IEquatable<BoundingBox>
     {
         private double _xMin;
         public double xMin
@@ -61,12 +61,22 @@ namespace DEM.Net.Lib
             _yMax = ymax;
         }
 
+        public override bool Equals(object obj)
+        {
+            BoundingBox objTyped = obj as BoundingBox;
 
+
+            return this == objTyped;
+        }
         public BoundingBox Scale(double scale)
         {
-            return new BoundingBox(xMax - Width * scale, xMin + Width * scale, yMax - Height * scale, yMin + Height * scale);
+            return Scale(scale, scale);
         }
-        
+        public BoundingBox Scale(double scaleX, double scaleY)
+        {
+            return new BoundingBox(xMax - Width * scaleX, xMin + Width * scaleX, yMax - Height * scaleY, yMin + Height * scaleY);
+        }
+
         public double[] Center
         {
             get
@@ -84,6 +94,46 @@ namespace DEM.Net.Lib
         public override string ToString()
         {
             return $"Xmin: {xMin}, Xmax: {xMax}, Ymin: {yMin}, Ymax: {yMax}";
+        }
+
+        public bool Equals(BoundingBox other)
+        {
+            return _xMin == other.xMin
+                    && _xMax == other.xMax
+                    && _yMin == other.yMin
+                    && _yMax == other.yMax;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -1820762126;
+            hashCode = hashCode * -1521134295 + _xMin.GetHashCode();
+            hashCode = hashCode * -1521134295 + _xMax.GetHashCode();
+            hashCode = hashCode * -1521134295 + _yMin.GetHashCode();
+            hashCode = hashCode * -1521134295 + _yMax.GetHashCode();
+            return hashCode;
+        }
+
+        public static bool operator ==(BoundingBox a, BoundingBox b)
+        {
+            if (Object.ReferenceEquals(a, null))
+            {
+                if (Object.ReferenceEquals(b, null))
+                {
+                    return true;
+                }
+                return false;
+            }
+            if (Object.ReferenceEquals(b, null))
+            {
+                return false;
+            }
+
+            return a.Equals(b);
+        }
+        public static bool operator !=(BoundingBox a, BoundingBox b)
+        {
+            return !(a == b);
         }
 
         public string WKT
