@@ -11,12 +11,13 @@
     <PackageProjectUrl>https://github.com/xfischer/DEM.Net</PackageProjectUrl>
     <PackageReleaseNotes>First official release</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation, Mesh, 3D, glTF, Map, STL</PackageTags>
-    <Title>DEM.Net</Title>
-    <Description>Digital Elevation model library. Elevation, Heightmaps, STL</Description>
+    <Title>DEM.Net.Core</Title>
+    <Description>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/xfischer/DEM.Net</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageLicenseFile></PackageLicenseFile>
+    <Summary>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Summary>
   </PropertyGroup>
 
   <ItemGroup>
