@@ -93,10 +93,10 @@ namespace DEM.Net.Lib.Services.Lab
                 FacetteAjouter(v_fac);
             }
         }
-        public void FacetteSupprimer(BeanFacette_internal p_facetteAAjouter)
+        public void FacetteSupprimer(BeanFacette_internal p_facetteASupprimer)
         {
             //On n'effectue aucun contrôle de cohérence ...
-            FacetteSupprimer(p_facetteAAjouter.p00_idFacette);
+            FacetteSupprimer(p_facetteASupprimer.p00_idFacette);
         }
         public void FacetteSupprimer(int p_idFacetteASupprimer)
         {

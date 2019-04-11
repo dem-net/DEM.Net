@@ -23,14 +23,16 @@ namespace DEM.Net.Lib.Services.Lab
                 {
                     foreach (double v_c in p_coord)
                     {
-                        v_code += Math.Round(v_c, p_nbreDecimalesMoins1SiToutes) + p_separateur;
+                        v_code += Math.Round(v_c, p_nbreDecimalesMoins1SiToutes);
+                        v_code += p_separateur;
                     }
                 }
                 else
                 {
                     foreach (double v_c in p_coord)
                     {
-                        v_code += p_nbreDecimalesMoins1SiToutes+ p_separateur;
+                        v_code += v_c;
+                        v_code += p_separateur;
                     }
                 }
                 v_code = v_code.Substring(0, v_code.Length - 1);
@@ -51,7 +53,8 @@ namespace DEM.Net.Lib.Services.Lab
 
                 foreach(double[] v_point in p_pointsOrd)
                 {
-                    v_code += GethCodeGeogPoint(v_point, p_nbreDecimalesMoins1SiToutes, p_separateur)+ p_separateur;
+                    v_code += GethCodeGeogPoint(v_point, p_nbreDecimalesMoins1SiToutes, p_separateur);
+                    v_code += p_separateur;
                 }
                 v_code = v_code.Substring(0, v_code.Length - 1);
             }

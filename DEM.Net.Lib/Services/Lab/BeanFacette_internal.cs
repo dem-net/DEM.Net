@@ -14,6 +14,7 @@ namespace DEM.Net.Lib.Services.Lab
         //
         public List<BeanPoint_internal> p01_pointsDeFacette { get; set; }
         public List<BeanArc_internal> p02_arcs { get; set; }
+        public bool p03_estVerticale_vf { get; set; }
         //
         public List<BeanPoint_internal> p10_pointsInclus { get; set; }
         //  
