@@ -69,9 +69,9 @@ namespace DEM.Net.Core
             foreach (var pt in points)
             {
                 var p = pt.Clone();
-                pt.Latitude -= y;
-                pt.Longitude -= x;
-                yield return pt;
+                p.Latitude -= y;
+                p.Longitude -= x;
+                yield return p;
             }
             Logger.Info("Offset done...");
         }
@@ -113,7 +113,7 @@ namespace DEM.Net.Core
                 scale = (float)(maxSize / heightMap.BoundingBox.Height);
             }
             heightMap.Coordinates = heightMap.Coordinates.Scale(scale, scale, scale);
-            heightMap.BoundingBox = heightMap.Coordinates.GetBoundingBox();
+            heightMap.BoundingBox = heightMap.BoundingBox.ScaleAbsolute(scale, scale);
             return heightMap;
         }
         public static IEnumerable<GeoPoint> ZScale(this IEnumerable<GeoPoint> points, float zFactor = 1f)
@@ -129,7 +129,7 @@ namespace DEM.Net.Core
                 pout.Longitude *= x;
                 pout.Latitude *= y;
                 pout.Elevation *= z;
-                yield return pt;
+                yield return pout;
             }
             Logger.Info("Scale done...");
 
@@ -147,7 +147,7 @@ namespace DEM.Net.Core
             {
                 var pout = pt.Clone();
                 pout.Elevation += distance;
-                yield return pt;
+                yield return pout;
             }
             Logger.Info("ZTranslate done...");
 

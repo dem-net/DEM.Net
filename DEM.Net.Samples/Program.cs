@@ -51,7 +51,8 @@ namespace DEM.Net.Samples
 
             Logger.StartPerf("Main cold start");
 
-            //STLSamples.Run(Path.Combine(_OutputDataDirectory, "glTF");
+            STLSamples.Run(serviceProvider, Path.Combine(_OutputDataDirectory, "glTF"), @"/Users/xavier/Documents/Repos/DEM.Net/Data/Raster/ASTGTM2_N43E005_dem.tif", DEMFileFormat.GEOTIFF);
+
             STLSamples.Run(serviceProvider, Path.Combine(_OutputDataDirectory, "glTF"), DEMDataSet.AW3D30);
 
             GpxSamples gpxSamples = new GpxSamples(_OutputDataDirectory, Path.Combine(_OutputDataDirectory, "GPX", "venturiers.gpx"));

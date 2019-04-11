@@ -100,6 +100,10 @@ namespace DEM.Net.Core
         {
             return new BoundingBox(xMax - Width * scaleX, xMin + Width * scaleX, yMax - Height * scaleY, yMin + Height * scaleY);
         }
+        public BoundingBox ScaleAbsolute(double scaleX, double scaleY)
+        {
+            return new BoundingBox(xMax * scaleX, xMin * scaleX, yMax * scaleY, yMin * scaleY);
+        }
 
         public double[] Center
         {
