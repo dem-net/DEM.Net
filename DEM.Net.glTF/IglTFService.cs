@@ -28,6 +28,7 @@ using AssetGenerator;
 using AssetGenerator.Runtime;
 using DEM.Net.Core;
 using DEM.Net.Core.Imagery;
+using DEM.Net.Core.Services.Mesh;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +48,8 @@ namespace DEM.Net.glTF
         /// <param name="heightMap">Height map.</param>
         /// <param name="colors">Colors.</param>
         /// <param name="texture">Texture.</param>
-        MeshPrimitive GenerateTriangleMesh_Boxed(HeightMap heightMap, IEnumerable<Vector4> colors = null, PBRTexture texture = null);
+        MeshPrimitive GenerateTriangleMesh_Boxed(HeightMap heightMap, IEnumerable<Vector4> colors = null, PBRTexture texture = null
+            , BoxBaseThickness thickness = BoxBaseThickness.FixedElevation, float zValue = 0f);
 
         /// <summary>
         /// Triangulates the height map and build a triangle mesh

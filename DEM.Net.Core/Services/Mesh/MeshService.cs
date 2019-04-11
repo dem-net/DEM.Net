@@ -96,7 +96,8 @@ namespace DEM.Net.Core.Services.Mesh
         /// <param name="heightMap">Gridded set of points. Corrdinates can differ, 
         /// but height map should be organized a set of rows and columns</param>
         /// <returns>TriangulationResult</returns>
-        public static TriangulationResult GenerateTriangleMesh_Boxed(HeightMap heightMap)
+        public static TriangulationResult GenerateTriangleMesh_Boxed(HeightMap heightMap
+                    , BoxBaseThickness thickness, float zValue)
         {
 
             TriangulationResult triangulationResult = new TriangulationResult();
@@ -111,12 +112,12 @@ namespace DEM.Net.Core.Services.Mesh
             triangulationResult.Indices = TriangulateHeightMap_Internal(heightMap, true);
 
             // Generate box vertices and trianglation
-            AddHeightMapBase(triangulationResult, heightMap);
+            AddHeightMapBase(triangulationResult, heightMap, thickness, zValue);
 
             return triangulationResult;
         }
 
-        private static void AddHeightMapBase(TriangulationResult triangulation, HeightMap heightMap)
+        private static void AddHeightMapBase(TriangulationResult triangulation, HeightMap heightMap, BoxBaseThickness thickness, float zValue)
         {
             // bake coordinates to avoid executing the coords transfrom pipeline
             var coords = heightMap.Coordinates.ToList();
@@ -124,13 +125,27 @@ namespace DEM.Net.Core.Services.Mesh
             var basePoints = new List<GeoPoint>(capacity);
             var baseIndexes = new List<int>(capacity);
 
+            float baseElevation = 0;
+            switch(thickness)
+            {
+                case BoxBaseThickness.FromMinimumPoint:
+                    baseElevation = (float)coords.Min(p => p.Elevation).GetValueOrDefault(0) - zValue;
+                    break;
+
+                default:
+                case BoxBaseThickness.FixedElevation:
+                    baseElevation = zValue;
+                    break;
+
+            }
+
             // x : 0 => width // y : 0
             int baseIndex0 = coords.Count;
             int baseIndex = baseIndex0;
             for (int x = 0; x < heightMap.Width - 1; x++)
             {
                 var pBase = coords[x].Clone();
-                pBase.Elevation = 0;
+                pBase.Elevation = baseElevation;
                 basePoints.Add(pBase);
 
                 baseIndexes.Add(x);
@@ -151,7 +166,7 @@ namespace DEM.Net.Core.Services.Mesh
                 int index = x + y * heightMap.Width;
 
                 var pBase = coords[index].Clone();
-                pBase.Elevation = 0;
+                pBase.Elevation = baseElevation;
                 basePoints.Add(pBase);
 
                 baseIndexes.Add(x + y * heightMap.Width);
@@ -169,7 +184,7 @@ namespace DEM.Net.Core.Services.Mesh
             {
                 int index = x + (heightMap.Height - 1) * heightMap.Width;
                 var pBase = coords[index].Clone();
-                pBase.Elevation = 0;
+                pBase.Elevation = baseElevation;
                 basePoints.Add(pBase);
 
                 baseIndexes.Add(index);
@@ -189,7 +204,7 @@ namespace DEM.Net.Core.Services.Mesh
                 int index = x + y * heightMap.Width;
 
                 var pBase = coords[index].Clone();
-                pBase.Elevation = 0;
+                pBase.Elevation = baseElevation;
                 basePoints.Add(pBase);
 
                 // last base position is the first base generated

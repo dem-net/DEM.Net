@@ -250,12 +250,12 @@ namespace DEM.Net.Core
 
                     if (heightValue < -10)
                     {
-                        heightMap.Mininum = Math.Min(heightMap.Mininum, heightValue);
+                        heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
                         heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
                     }
                     else if (heightValue < 32768)
                     {
-                        heightMap.Mininum = Math.Min(heightMap.Mininum, heightValue);
+                        heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
                         heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
                     }
                     else
@@ -338,7 +338,7 @@ namespace DEM.Net.Core
                     }
                     if (heightValue < 32768)
                     {
-                        heightMap.Mininum = Math.Min(metadata.MininumAltitude, heightValue);
+                        heightMap.Minimum = Math.Min(metadata.MinimumAltitude, heightValue);
                         heightMap.Maximum = Math.Max(metadata.MaximumAltitude, heightValue);
                     }
                     else

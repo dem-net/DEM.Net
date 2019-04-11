@@ -77,7 +77,7 @@ namespace DEM.Net.Core
         public double pixelSizeY { get; set; }
         public DEMFileFormat fileFormat { get; set; }
 
-        public float MininumAltitude { get; set; }
+        public float MinimumAltitude { get; set; }
         public float MaximumAltitude { get; set; }
         public double EndLongitude
         {

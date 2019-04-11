@@ -73,7 +73,7 @@ namespace DEM.Net.Samples
                                     .FitInto(250f)
                                     .BakeCoordinates();
 
-            var mesh = glTFService.GenerateTriangleMesh_Boxed(heightMap);
+            var mesh = glTFService.GenerateTriangleMesh_Boxed(heightMap, null,null, Core.Services.Mesh.BoxBaseThickness.FromMinimumPoint, 5);
 
             // STL axis differ from glTF 
             mesh.RotateX((float)Math.PI / 2f);

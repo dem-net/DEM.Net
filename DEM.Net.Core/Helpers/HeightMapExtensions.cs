@@ -91,6 +91,8 @@ namespace DEM.Net.Core
         public static HeightMap ZScale(this HeightMap heightMap, float zFactor = 1f)
         {
             heightMap.Coordinates = heightMap.Coordinates.ZScale(zFactor);
+            heightMap.Minimum *= zFactor;
+            heightMap.Maximum *= zFactor;
 
             return heightMap;
         }
@@ -98,6 +100,8 @@ namespace DEM.Net.Core
         {
             heightMap.Coordinates = heightMap.Coordinates.Scale(x, y, z);
             heightMap.BoundingBox = heightMap.BoundingBox.Scale(x, y); // z does not affect bbox
+            heightMap.Minimum *= z;
+            heightMap.Maximum *= z;
 
             return heightMap;
         }
@@ -137,6 +141,8 @@ namespace DEM.Net.Core
         public static HeightMap ZTranslate(this HeightMap heightMap, float distance)
         {
             heightMap.Coordinates = heightMap.Coordinates.ZTranslate(distance);
+            heightMap.Minimum += distance;
+            heightMap.Maximum += distance;
 
             return heightMap;
         }
@@ -174,7 +180,7 @@ namespace DEM.Net.Core
 
             HeightMap hMap = new HeightMap(heightMap.Width / step, heightMap.Height / step);
             hMap.Maximum = heightMap.Maximum;
-            hMap.Mininum = heightMap.Mininum;
+            hMap.Minimum = heightMap.Minimum;
             hMap.BoundingBox = heightMap.BoundingBox;
             hMap.Coordinates = DownsampleCoordinates(heightMap.Coordinates.ToList(), heightMap.Width, heightMap.Height, step).ToList();
 

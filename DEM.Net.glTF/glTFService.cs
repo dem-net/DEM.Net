@@ -265,9 +265,9 @@ namespace DEM.Net.glTF
         /// <param name="colors"></param>
         /// <param name="texture">Texture path relative from the model</param>
         /// <returns></returns>
-        public MeshPrimitive GenerateTriangleMesh_Boxed(HeightMap heightMap, IEnumerable<Vector4> colors = null, PBRTexture texture = null)
+        public MeshPrimitive GenerateTriangleMesh_Boxed(HeightMap heightMap, IEnumerable<Vector4> colors = null, PBRTexture texture = null, BoxBaseThickness thickness = BoxBaseThickness.FixedElevation, float zValue = 0f)
         {
-            TriangulationResult triangulation = MeshService.GenerateTriangleMesh_Boxed(heightMap);
+            TriangulationResult triangulation = MeshService.GenerateTriangleMesh_Boxed(heightMap, thickness, zValue);
 
             return GenerateTriangleMesh(triangulation.Positions, triangulation.Indices.ToList(), colors, texture);
         }

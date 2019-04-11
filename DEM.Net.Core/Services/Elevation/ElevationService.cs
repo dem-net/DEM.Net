@@ -489,8 +489,8 @@ namespace DEM.Net.Core
                                                     , ymax: tilesHeightMap.Max(h => h.BoundingBox.yMax));
             heightMap.Coordinates = tilesHeightMap.SelectMany(hmap => hmap.Coordinates).Sort();
             heightMap.Count = totalWidth * totalHeight;
-            heightMap.Mininum = tilesHeightMap.Min(hmap => hmap.Mininum);
-            heightMap.Maximum = tilesHeightMap.Min(hmap => hmap.Maximum);
+            heightMap.Minimum = tilesHeightMap.Min(hmap => hmap.Minimum);
+            heightMap.Maximum = tilesHeightMap.Max(hmap => hmap.Maximum);
 
             Debug.Assert(heightMap.Count == tilesHeightMap.Sum(h => h.Count));
 

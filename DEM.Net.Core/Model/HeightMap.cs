@@ -71,11 +71,11 @@ namespace DEM.Net.Core
         /// </summary>
         public int Count { get; set; }
 
-        public float Mininum { get; set; }
+        public float Minimum { get; set; }
         public float Maximum { get; set; }
         public float Range
         {
-            get { return Maximum - Mininum; }
+            get { return Maximum - Minimum; }
         }
 
         public int Width { get; private set; }

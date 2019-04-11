@@ -76,7 +76,7 @@ namespace DEM.Net.Core
 			//		}
 			//		else
 			//		{
-			//			normalizedValue = (ushort)((geoPoint.Elevation - heightMap.Mininum) / range * 255);
+			//			normalizedValue = (ushort)((geoPoint.Elevation - heightMap.Minimum) / range * 255);
 			//		}
 
 			//		rgbValues[geoPoint.YIndex.Value * bmpData.Stride + geoPoint.XIndex.Value] = (byte)normalizedValue;
