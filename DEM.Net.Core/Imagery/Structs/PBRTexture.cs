@@ -30,7 +30,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Lib.Imagery
+namespace DEM.Net.Core.Imagery
 {
     /// <summary>
     /// Physical Based Rendering (PBR) set of textures

@@ -1,5 +1,5 @@
-﻿using DEM.Net.Lib.Services.Lab;
-using DEM.Net.Lib.Services.VisualisationServices;
+﻿using DEM.Net.Core.Services.Lab;
+using DEM.Net.Core.Services.VisualisationServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;

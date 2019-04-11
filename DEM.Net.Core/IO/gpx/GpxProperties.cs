@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DEM.Net.Lib.Gpx
+namespace DEM.Net.Core.Gpx
 {
     public class GpxProperties
     {

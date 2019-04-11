@@ -30,7 +30,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Lib.Imagery
+namespace DEM.Net.Core.Imagery
 {
     public class TextureInfo
     {

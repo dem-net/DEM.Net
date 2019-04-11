@@ -1,10 +1,10 @@
-﻿using DEM.Net.Lib.Services.Lab;
+﻿using DEM.Net.Core.Services.Lab;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DEM.Net.Lib;
+using DEM.Net.Core;
 
 namespace DEM.Net.TestWinForm
 {
@@ -17,7 +17,7 @@ namespace DEM.Net.TestWinForm
             {
                 IRasterService v_rasterService = new RasterService();
                 IElevationService v_elevationService = new ElevationService(v_rasterService);
-                Lib.BoundingBox v_bbox = GeometryService.GetBoundingBox(p_bbox);
+                BoundingBox v_bbox = GeometryService.GetBoundingBox(p_bbox);
                 v_elevationService.DownloadMissingFiles(dataset, v_bbox);
                 //
                 HeightMap v_hMap;

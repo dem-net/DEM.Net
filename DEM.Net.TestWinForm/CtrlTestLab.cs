@@ -7,14 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DEM.Net.Lib.Services.Lab;
+using DEM.Net.Core.Services.Lab;
 using System.IO;
 using DEM.Net.glTF;
 using System.Numerics;
 using AssetGenerator.Runtime;
 using AssetGenerator;
-using DEM.Net.Lib;
-using DEM.Net.Lib.Services.VisualisationServices;
+using DEM.Net.Core;
+using DEM.Net.Core.Services.VisualisationServices;
 using NetTopologySuite.Diagnostics.Tracing;
 using GeoAPI.Geometries;
 

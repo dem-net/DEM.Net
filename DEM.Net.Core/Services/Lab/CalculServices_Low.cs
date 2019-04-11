@@ -23,14 +23,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using DEM.Net.Lib.Services.VisualisationServices;
+using DEM.Net.Core.Services.VisualisationServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Lib.Services.Lab
+namespace DEM.Net.Core.Services.Lab
 {
     public class CalculServices_Low :  ICalculServices_Low, ICalculServicesLow_testsDivers
     {

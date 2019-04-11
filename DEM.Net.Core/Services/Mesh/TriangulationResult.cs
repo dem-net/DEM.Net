@@ -23,14 +23,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using DEM.Net.Lib;
+using DEM.Net.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Lib.Services.Mesh
+namespace DEM.Net.Core.Services.Mesh
 {
     public class TriangulationResult
     {

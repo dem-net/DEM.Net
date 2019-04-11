@@ -24,7 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using DEM.Net.Lib;
+using DEM.Net.Core;
 using System.IO;
 using System;
 using System.Diagnostics;

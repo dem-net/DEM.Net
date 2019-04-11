@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
-using DEM.Net.Lib;
+using DEM.Net.Core;
 using Xunit;
 
 namespace DEM.Net.Test

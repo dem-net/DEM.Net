@@ -23,7 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-namespace DEM.Net.Lib.Imagery
+namespace DEM.Net.Core.Imagery
 {
     public class UrlModel
     {

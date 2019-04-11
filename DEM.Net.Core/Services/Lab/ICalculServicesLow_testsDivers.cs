@@ -25,7 +25,7 @@
 
 using System.Collections.Generic;
 
-namespace DEM.Net.Lib.Services.Lab
+namespace DEM.Net.Core.Services.Lab
 {
     public interface ICalculServicesLow_testsDivers
     {

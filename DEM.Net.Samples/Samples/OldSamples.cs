@@ -35,7 +35,7 @@ using System.Threading.Tasks;
 using AssetGenerator;
 using AssetGenerator.Runtime;
 using DEM.Net.glTF;
-using DEM.Net.Lib;
+using DEM.Net.Core;
 using GeoAPI.Geometries;
 using Newtonsoft.Json;
 
@@ -533,7 +533,7 @@ namespace DEM.Net.Samples
         private void GeoTiffTests(IRasterService rasterService, string tiffPath, DEMFileFormat fileFormat)
         {
 
-            DEM.Net.Lib.BoundingBox bbox = new DEM.Net.Lib.BoundingBox(1897950, 1898106, 3150520, 3150700);
+            BoundingBox bbox = new BoundingBox(1897950, 1898106, 3150520, 3150700);
 
             HeightMap hmap = null;
             FileMetadata metaData = rasterService.ParseMetadata(tiffPath, fileFormat);
@@ -680,7 +680,7 @@ namespace DEM.Net.Samples
         //{
         //    SpatialTrace.Enable();
         //    SpatialTrace.Clear();
-        //    DEM.Net.Lib.BoundingBox bbox = null;
+        //    DEM.Net.Core.BoundingBox bbox = null;
         //    if (wktBbox != null)
         //    {
         //        IGeometry geom = GeometryService.ParseWKTAsGeometry(wktBbox);

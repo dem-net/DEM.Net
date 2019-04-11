@@ -32,7 +32,7 @@ using GeoAPI.Geometries;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 
-namespace DEM.Net.Lib
+namespace DEM.Net.Core
 {
 	public static class GeometryService
 	{

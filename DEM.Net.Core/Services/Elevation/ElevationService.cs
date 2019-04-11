@@ -23,7 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using DEM.Net.Lib.Interpolation;
+using DEM.Net.Core.Interpolation;
 using GeoAPI.Geometries;
 using System;
 using System.Collections.Generic;
@@ -36,7 +36,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Lib
+namespace DEM.Net.Core
 {
     public class ElevationService : IElevationService
     {

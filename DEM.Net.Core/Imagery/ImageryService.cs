@@ -23,7 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using DEM.Net.Lib.Services.Mesh;
+using DEM.Net.Core.Services.Mesh;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Formats.Jpeg;
@@ -42,7 +42,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Lib.Imagery
+namespace DEM.Net.Core.Imagery
 {
     public class ImageryService
     {

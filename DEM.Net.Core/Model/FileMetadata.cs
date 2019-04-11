@@ -31,7 +31,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Lib
+namespace DEM.Net.Core
 {
     /// <summary>
     /// Metadata file generated on the fly.

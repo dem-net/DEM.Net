@@ -23,14 +23,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using DEM.Net.Lib;
+using DEM.Net.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Lib
+namespace DEM.Net.Core
 {
     /// <summary>
     /// Dictionary with IDisposable values than can be used in a using block

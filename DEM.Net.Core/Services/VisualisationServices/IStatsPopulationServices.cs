@@ -24,9 +24,9 @@
 // THE SOFTWARE.
 
 using System.Collections.Generic;
-using DEM.Net.Lib.Services.Lab;
+using DEM.Net.Core.Services.Lab;
 
-namespace DEM.Net.Lib.Services.VisualisationServices
+namespace DEM.Net.Core.Services.VisualisationServices
 {
     public interface IStatsPopulationServices
     {

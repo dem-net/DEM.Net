@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using DEM.Net.Lib;
+using DEM.Net.Core;
 using GeoAPI.Geometries;
 using Xunit;
 

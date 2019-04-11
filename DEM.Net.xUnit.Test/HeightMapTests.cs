@@ -1,4 +1,4 @@
-﻿using DEM.Net.Lib;
+﻿using DEM.Net.Core;
 using Xunit;
 
 namespace DEM.Net.Test

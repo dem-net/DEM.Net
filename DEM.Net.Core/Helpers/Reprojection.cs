@@ -29,10 +29,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DEM.Net.Lib.Imagery;
+using DEM.Net.Core.Imagery;
 using DotSpatial.Projections;
 
-namespace DEM.Net.Lib
+namespace DEM.Net.Core
 {
     public static class Reprojection
     {

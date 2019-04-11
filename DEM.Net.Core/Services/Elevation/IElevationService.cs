@@ -26,7 +26,7 @@
 using System.Collections.Generic;
 using GeoAPI.Geometries;
 
-namespace DEM.Net.Lib
+namespace DEM.Net.Core
 {
     public interface IElevationService
     {

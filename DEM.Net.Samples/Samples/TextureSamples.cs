@@ -27,10 +27,10 @@
 using AssetGenerator;
 using AssetGenerator.Runtime;
 using DEM.Net.glTF;
-using DEM.Net.Lib;
-using DEM.Net.Lib.Imagery;
-using DEM.Net.Lib.Services.Lab;
-using DEM.Net.Lib.Services.Mesh;
+using DEM.Net.Core;
+using DEM.Net.Core.Imagery;
+using DEM.Net.Core.Services.Lab;
+using DEM.Net.Core.Services.Mesh;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;

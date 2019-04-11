@@ -33,7 +33,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Lib
+namespace DEM.Net.Core
 {
     public class RasterService : IRasterService
     {

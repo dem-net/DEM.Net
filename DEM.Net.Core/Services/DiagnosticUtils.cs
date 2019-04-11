@@ -30,7 +30,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Lib
+namespace DEM.Net.Core
 {
 	public class DiagnosticUtils
 	{

@@ -29,7 +29,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Lib.Interpolation
+namespace DEM.Net.Core.Interpolation
 {
     /// <summary>
     /// Standard interpolation

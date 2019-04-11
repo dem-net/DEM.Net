@@ -30,7 +30,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Lib.Services.Mesh
+namespace DEM.Net.Core.Services.Mesh
 {
     public static class MeshService
     {

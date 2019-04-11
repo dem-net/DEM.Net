@@ -30,7 +30,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Lib.IO
+namespace DEM.Net.Core.IO
 {
 	internal class NoLogTiffErrorHandler : TiffErrorHandler
 	{

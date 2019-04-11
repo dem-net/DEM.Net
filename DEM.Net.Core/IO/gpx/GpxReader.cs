@@ -11,7 +11,7 @@ using System.Globalization;
 using System.IO;
 using System.Xml;
 
-namespace DEM.Net.Lib.Gpx
+namespace DEM.Net.Core.Gpx
 {
     public enum GpxObjectType { None, Attributes, Metadata, WayPoint, Route, Track };
 

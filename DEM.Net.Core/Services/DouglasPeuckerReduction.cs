@@ -29,7 +29,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Lib
+namespace DEM.Net.Core
 {
 	//
 	// Code from https://gist.github.com/oliverheilig/7777382

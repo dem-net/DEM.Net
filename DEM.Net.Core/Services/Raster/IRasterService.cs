@@ -26,7 +26,7 @@
 using BitMiracle.LibTiff.Classic;
 using System.Collections.Generic;
 
-namespace DEM.Net.Lib
+namespace DEM.Net.Core
 {
     public interface IRasterService
     {

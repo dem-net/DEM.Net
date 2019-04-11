@@ -35,7 +35,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace DEM.Net.Lib
+namespace DEM.Net.Core
 {
     /// <summary>
     /// Remote GDAL VRT file handling

@@ -28,7 +28,7 @@ using AssetGenerator;
 using AssetGenerator.Runtime;
 using DEM.Net.glTF;
 using DEM.Net.glTF.Export;
-using DEM.Net.Lib;
+using DEM.Net.Core;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;

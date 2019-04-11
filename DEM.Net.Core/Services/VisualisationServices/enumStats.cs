@@ -29,7 +29,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Lib.Services.VisualisationServices
+namespace DEM.Net.Core.Services.VisualisationServices
 {
     public enum enumModeSeuillage
     {

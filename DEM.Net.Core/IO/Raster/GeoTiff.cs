@@ -24,14 +24,14 @@
 // THE SOFTWARE.
 
 using BitMiracle.LibTiff.Classic;
-using DEM.Net.Lib.IO;
-using DEM.Net.Lib;
+using DEM.Net.Core.IO;
+using DEM.Net.Core;
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DEM.Net.Lib
+namespace DEM.Net.Core
 {
 
     public class GeoTiff : IRasterFile

@@ -1,4 +1,4 @@
-﻿using DEM.Net.Lib.Gpx;
+﻿using DEM.Net.Core.Gpx;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Lib
+namespace DEM.Net.Core
 {
     public static class GpxImport
     {

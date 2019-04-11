@@ -27,7 +27,7 @@ using GeoAPI.Geometries;
 using NetTopologySuite.Geometries;
 using System.Collections.Generic;
 
-namespace DEM.Net.Lib.Services.Lab
+namespace DEM.Net.Core.Services.Lab
 {
     public interface IUtilitairesServices
     {

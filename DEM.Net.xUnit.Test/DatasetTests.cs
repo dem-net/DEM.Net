@@ -1,4 +1,4 @@
-﻿using DEM.Net.Lib;
+﻿using DEM.Net.Core;
 using DEM.Net.xUnit.Test;
 using System;
 using System.IO;
