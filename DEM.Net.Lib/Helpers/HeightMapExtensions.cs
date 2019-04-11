@@ -15,8 +15,7 @@ namespace DEM.Net.Lib
 
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
-            heightMap.Coordinates = heightMap.Coordinates.Select(pt => new GeoPoint(pt.Latitude - yOriginOffset, pt.Longitude - xOriginOffset,
-                pt.Elevation, pt.XIndex, pt.YIndex));
+            heightMap.Coordinates = heightMap.Coordinates.Offset(xOriginOffset, yOriginOffset);
 
             heightMap.BoundingBox = new BoundingBox(bbox.xMin - xOriginOffset, bbox.xMax - xOriginOffset
                                                     , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset);
@@ -35,9 +34,21 @@ namespace DEM.Net.Lib
             Logger.Info("CenterOnOrigin...");
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
-            points = points.Select(pt => new GeoPoint(pt.Latitude - yOriginOffset, pt.Longitude - xOriginOffset, pt.Elevation, (int)pt.XIndex, (int)pt.YIndex));
+            points = points.Offset(xOriginOffset, yOriginOffset);
 
             return points;
+        }
+        private static IEnumerable<GeoPoint> Offset(this IEnumerable<GeoPoint> points, double x, double y)
+        {
+            Logger.Info("Offset...");
+            foreach (var pt in points)
+            {
+                var p = pt.Clone();
+                pt.Latitude -= y;
+                pt.Longitude -= x;
+                yield return pt;
+            }
+            Logger.Info("Offset done...");
         }
 
         /// <summary>
@@ -86,14 +97,17 @@ namespace DEM.Net.Lib
         }
         public static IEnumerable<GeoPoint> Scale(this IEnumerable<GeoPoint> points, float x = 1f, float y = 1f, float z = 1f)
         {
-            return points.Select(p =>
+            Logger.Info("Scale...");
+            foreach (var pt in points)
             {
-                var pout = p.Clone();
+                var pout = pt.Clone();
                 pout.Longitude *= x;
                 pout.Latitude *= y;
                 pout.Elevation *= z;
-                return pout;
-            });
+                yield return pt;
+            }
+            Logger.Info("Scale done...");
+
         }
         public static HeightMap ZTranslate(this HeightMap heightMap, float distance)
         {
@@ -103,12 +117,15 @@ namespace DEM.Net.Lib
         }
         public static IEnumerable<GeoPoint> ZTranslate(this IEnumerable<GeoPoint> points, float distance)
         {
-            return points.Select(p =>
+            Logger.Info("ZTranslate...");
+            foreach (var pt in points)
             {
-                var pout = p.Clone();
+                var pout = pt.Clone();
                 pout.Elevation += distance;
-                return pout;
-            });
+                yield return pt;
+            }
+            Logger.Info("ZTranslate done...");
+
         }
 
         public static HeightMap Sort(this HeightMap heightMap)

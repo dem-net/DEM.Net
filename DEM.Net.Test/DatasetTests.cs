@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DEM.Net.Lib;
-using System.Windows.Media.Imaging;
 using System.IO;
 using System.Linq;
 

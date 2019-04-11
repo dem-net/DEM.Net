@@ -16,6 +16,11 @@ namespace DEM.Net.Lib.Imagery
         public int MaxDegreeOfParallelism { get; set; } = 2;
         public int MaxZoom { get; set; } = 19;
 
+        public override string ToString()
+        {
+            return Name;
+        }
+
         public static ImageryProvider Osm = new ImageryProvider()
         {
             Name = "OpenStreetMap",

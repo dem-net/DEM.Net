@@ -155,8 +155,8 @@ namespace DEM.Net.Lib
                         // replace directory
                         oldMetadata.Filename = oldMetadata.Filename.Replace(dir.FullName, dataRootDirectory);
                         Uri fullPath = new Uri(oldMetadata.Filename, UriKind.Absolute);
-                        if (!dataRootDirectory.EndsWith("\\"))
-                            dataRootDirectory += "\\";
+                        if (!(dataRootDirectory.Last() == Path.DirectorySeparatorChar))
+                            dataRootDirectory += Path.DirectorySeparatorChar;
                         Uri relRoot = new Uri(dataRootDirectory, UriKind.Absolute);
 
                         oldMetadata.Filename = Uri.UnescapeDataString(relRoot.MakeRelativeUri(fullPath).ToString());

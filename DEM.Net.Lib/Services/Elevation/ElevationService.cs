@@ -73,7 +73,7 @@ namespace DEM.Net.Lib
                     Parallel.ForEach(filesToDownload, options, file =>
                    {
 
-                       DownloadDEMTile_WebClient(file.URL, dataSet.FileFormat, file.LocalName);
+                       DownloadDEMTile_HttpClient(file.URL, dataSet.FileFormat, file.LocalName);
 
                    }
                     );
@@ -91,7 +91,8 @@ namespace DEM.Net.Lib
             }
         }
 
-        async Task DownloadDEMTile_HttpClient(string url, DEMFileFormat fileFormat, string localFileName)
+
+        private void DownloadDEMTile_HttpClient(string url, DEMFileFormat fileFormat, string localFileName)
         {
 
             // Create directories if not existing
@@ -99,56 +100,35 @@ namespace DEM.Net.Lib
 
             Trace.TraceInformation($"Downloading file {url}...");
 
-            Uri uri = new Uri(url);
-            ServicePoint sp = ServicePointManager.FindServicePoint(uri);
-            sp.ConnectionLimit = 50;
-
-
-            using (var client = new HttpClient())
+            using (HttpClient client = new HttpClient())
             {
-                client.Timeout = TimeSpan.FromMinutes(5);
-                string requestUrl = url;
-
-
-
-                var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-                var sendTask = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-                var response = sendTask.EnsureSuccessStatusCode();
-                var httpStream = await response.Content.ReadAsStreamAsync();
-
-
-                using (var fileStream = File.Create(localFileName))
-                using (var reader = new StreamReader(httpStream))
+                //using (HttpResponseMessage response = client.GetAsync(url).Result)
+                //{
+                //    if (response.IsSuccessStatusCode)
+                //    {
+                //        using (HttpContent content = response.Content)
+                //        {
+                //            using (FileStream fs = new FileStream(localFileName, FileMode.Create, FileAccess.Write))
+                //            {
+                //                var contentbytes = content.ReadAsByteArrayAsync().Result;
+                //                fs.Write(contentbytes, 0, contentbytes.Length);
+                //            }
+                //        }
+                //    }
+                //}
+                var contentbytes = client.GetByteArrayAsync(url).Result;
+                using (FileStream fs = new FileStream(localFileName, FileMode.Create, FileAccess.Write))
                 {
-                    httpStream.CopyTo(fileStream);
-                    fileStream.Flush();
+                    fs.Write(contentbytes, 0, contentbytes.Length);
                 }
-            }
 
+            }
 
             _IRasterService.GenerateFileMetadata(localFileName, fileFormat, false, false);
 
 
         }
-        private void DownloadDEMTile_WebClient(string url, DEMFileFormat fileFormat, string localFileName)
-        {
-
-            // Create directories if not existing
-            new FileInfo(localFileName).Directory.Create();
-
-            Trace.TraceInformation($"Downloading file {url}...");
-
-            using (WebClient wc = new WebClient())
-            {
-                wc.DownloadFile(url, localFileName);
-            }
-
-
-            _IRasterService.GenerateFileMetadata(localFileName, fileFormat, false, false);
-
-
-        }
-
+    
         /// <summary>
         /// Extract elevation data along line path
         /// </summary>

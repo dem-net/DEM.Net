@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -74,10 +75,21 @@ namespace DEM.Net.Lib
                 if (download)
                 {
                     Trace.TraceInformation($"Downloading file from {_dataSet.VRTFileUrl}...");
-                    using (WebClient webClient = new WebClient())
+                    using (HttpClient client = new HttpClient())
                     {
-                        webClient.DownloadFile(_dataSet.VRTFileUrl, _vrtFileName);
+                        using (HttpResponseMessage response = client.GetAsync(_dataSet.VRTFileUrl).Result)
+                        {
+                            using (FileStream fs = new FileStream(_vrtFileName, FileMode.Create, FileAccess.Write))
+                            {
+                                var contentbytes = client.GetByteArrayAsync(_dataSet.VRTFileUrl).Result;
+                                fs.Write(contentbytes, 0, contentbytes.Length);
+                            }
+                        }
                     }
+                    //using (WebClient webClient = new WebClient())
+                    //{
+                    //    webClient.DownloadFile(_dataSet.VRTFileUrl, _vrtFileName);
+                    //}
                 }
 
                 // Cache
