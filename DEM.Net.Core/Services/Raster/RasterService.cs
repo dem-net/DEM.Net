@@ -61,18 +61,6 @@ namespace DEM.Net.Lib
             _metadataCatalogCache = new Dictionary<string, List<FileMetadata>>();
         }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="dataDirectory">Path to data directory. If null, ApplicationData folder will be used.</param>
-        public RasterService(string dataDirectory = null)
-        {
-            if (dataDirectory != null)
-            {
-                Directory.CreateDirectory(dataDirectory);
-                _localDirectory = dataDirectory;
-            }
-        }
 
         public IRasterFile OpenFile(string filePath, DEMFileFormat fileFormat)
         {

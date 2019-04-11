@@ -28,37 +28,46 @@ using DEM.Net.Lib;
 using System.IO;
 using System;
 using System.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
+using DEM.Net.glTF;
 
 namespace DEM.Net.Samples
 {
+
     class Program
     {
         static string _OutputDataDirectory = @"..\..\..\..\Data".Replace('\\', Path.DirectorySeparatorChar);
 
+
         static void Main(string[] args)
         {
+            var collection = new ServiceCollection();
+            collection.AddSingleton<IRasterService, RasterService>();
+            collection.AddSingleton<IElevationService, ElevationService>();
+            collection.AddSingleton<IglTFService, glTFService>();
+            var serviceProvider = collection.BuildServiceProvider();
+
             //Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
 
             Logger.StartPerf("Main cold start");
 
-            DatasetSamples.Run();
-
-
-            STLSamples.Run(Path.Combine(_OutputDataDirectory, "glTF"), DEMDataSet.AW3D30);
+            //STLSamples.Run(Path.Combine(_OutputDataDirectory, "glTF");
+            STLSamples.Run(serviceProvider, Path.Combine(_OutputDataDirectory, "glTF"), DEMDataSet.AW3D30);
 
             GpxSamples gpxSamples = new GpxSamples(_OutputDataDirectory, Path.Combine(_OutputDataDirectory, "GPX", "venturiers.gpx"));
-            gpxSamples.Run();
+            gpxSamples.Run(serviceProvider);
 
+            DatasetSamples.Run(serviceProvider);
 
-            ElevationSamples.Run();
+            ElevationSamples.Run(serviceProvider);
 
             TextureSamples textureSamples = new TextureSamples(_OutputDataDirectory);
-            textureSamples.Run();
+            textureSamples.Run(serviceProvider);
 
 
 
             ReprojectionSamples reprojSamples = new ReprojectionSamples("POLYGON ((-69.647827 -33.767732, -69.647827 -32.953368, -70.751202 -32.953368, -70.751202 -33.767732, -69.647827 -33.767732))");
-            reprojSamples.Run();
+            reprojSamples.Run(serviceProvider);
 
 
 

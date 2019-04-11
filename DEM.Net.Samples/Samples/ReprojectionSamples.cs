@@ -51,7 +51,7 @@ namespace DEM.Net.Samples
             _elevationService = new ElevationService(new RasterService());
         }
 
-        internal void Run()
+        internal void Run(Microsoft.Extensions.DependencyInjection.ServiceProvider serviceProvider)
         {
             //=======================
             // Normal map

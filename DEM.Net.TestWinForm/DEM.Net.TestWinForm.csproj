@@ -267,9 +267,9 @@
       <Project>{ce185808-4b76-4e86-9f8c-b28bda08cd8b}</Project>
       <Name>DEM.Net.glTF</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DEM.Net.Lib\DEM.Net.Lib.csproj">
-      <Project>{f2994abd-c59e-4067-9b23-249ac1716264}</Project>
-      <Name>DEM.Net.Lib</Name>
+    <ProjectReference Include="..\DEM.Net.Core\DEM.Net.Core.csproj">
+      <Project>{B335092D-4D33-4DC4-A02D-EB8731AF3D76}</Project>
+      <Name>DEM.Net.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

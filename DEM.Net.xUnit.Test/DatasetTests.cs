@@ -15,7 +15,7 @@ namespace DEM.Net.Test
         
         public DatasetTests()
         {
-            _rasterService = new RasterService(".");
+            _rasterService = new RasterService();
             _elevationService = new ElevationService(_rasterService);
 
         }

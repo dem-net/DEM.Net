@@ -13,7 +13,7 @@ namespace DEM.Net.Test
 
         public RasterTests()
         {
-            _rasterService = new RasterService("."); // local dir
+            _rasterService = new RasterService(); // local dir
             _elevationService = new ElevationService(_rasterService);
 
         }

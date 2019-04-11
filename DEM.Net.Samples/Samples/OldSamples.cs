@@ -49,7 +49,7 @@ namespace DEM.Net.Samples
 
         public OldSamples(string outputDataDirectory)
         {
-            this.rasterService = new RasterService(outputDataDirectory) ;
+            this.rasterService = new RasterService() ;
             this.elevationService = new ElevationService(rasterService);
             _OutputDataDirectory = outputDataDirectory;
         }
@@ -552,7 +552,7 @@ namespace DEM.Net.Samples
         private void GeoTiffBenchmark()
         {
             DEMDataSet dataSet = DEMDataSet.AW3D30;
-            IElevationService elevationServiceLibTiff = new ElevationService(new RasterService(_OutputDataDirectory));
+            IElevationService elevationServiceLibTiff = new ElevationService(new RasterService());
 
             string wkt = WKT_BREST_NICE;
             elevationServiceLibTiff.DownloadMissingFiles(dataSet, GeometryService.GetBoundingBox(wkt));

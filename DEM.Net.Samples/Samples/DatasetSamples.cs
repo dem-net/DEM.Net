@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using DEM.Net.Lib;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,10 +38,9 @@ namespace DEM.Net.Samples
     class DatasetSamples
     {
         
-        public static void Run()
+        public static void Run(ServiceProvider serviceProvider)
         {
-
-            RasterService rasterService = new RasterService();
+            IRasterService rasterService = serviceProvider.GetService<IRasterService>();
             string sampleName = nameof(DatasetSamples);
 
             Logger.Info("============================");

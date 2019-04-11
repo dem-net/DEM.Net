@@ -30,6 +30,7 @@ using DEM.Net.glTF;
 using DEM.Net.Lib;
 using DEM.Net.Lib.Imagery;
 using DEM.Net.Lib.Services.Lab;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -42,7 +43,6 @@ namespace DEM.Net.Samples
 {
     class GpxSamples
     {
-        private readonly IElevationService _elevationService;
         private readonly string _gpxFile;
         private DEMDataSet _dataSet;
         private readonly string _outputDirectory;
@@ -55,16 +55,16 @@ namespace DEM.Net.Samples
         int _skipGpxPointsEvery = 1;
         public GpxSamples(string outputDirectory, string gpxFile)
         {
-            _elevationService = new ElevationService(new RasterService());
             _dataSet = DEMDataSet.AW3D30;
             _outputDirectory = outputDirectory;
             _gpxFile = gpxFile;
         }
 
-        internal void Run()
+        internal void Run(ServiceProvider serviceProvider)
         {
+            IElevationService elevationService = serviceProvider.GetService<IElevationService>();
+            IglTFService glTF = serviceProvider.GetService<IglTFService>();
 
-            IglTFService glTF = new glTFService();
             ImageryService imageryService = new ImageryService();
             List<MeshPrimitive> meshes = new List<MeshPrimitive>();
             string outputDir = Path.GetFullPath(Path.Combine(_outputDirectory, "glTF"));
@@ -77,7 +77,7 @@ namespace DEM.Net.Samples
             var points = segments.SelectMany(seg => seg);
             var bbox = points.GetBoundingBox().Scale(4, 1.5);
 
-            var gpxPointsElevated = _elevationService.GetPointsElevation(points, _dataSet);
+            var gpxPointsElevated = elevationService.GetPointsElevation(points, _dataSet);
 
             //
             //=======================
@@ -85,7 +85,7 @@ namespace DEM.Net.Samples
             //=======================
             /// Height map (get dem elevation for bbox)
             ///
-            HeightMap hMap = _elevationService.GetHeightMap(bbox, _dataSet);
+            HeightMap hMap = elevationService.GetHeightMap(bbox, _dataSet);
             hMap = hMap.ReprojectTo(4326, _outputSrid).CenterOnOrigin().ZScale(_Z_FACTOR).BakeCoordinates();
             //
             //=======================
@@ -99,7 +99,7 @@ namespace DEM.Net.Samples
 
 
                 Console.WriteLine("Download image tiles...");
-                TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.MapBoxSatellite, 8);
+                TileRange tiles = imageryService.DownloadTiles(bbox, ImageryProvider.MapBoxSatellite, 4);
                 string fileName = Path.Combine(outputDir, "Texture.jpg");
 
                 Console.WriteLine("Construct texture...");

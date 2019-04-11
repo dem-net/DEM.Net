@@ -29,6 +29,7 @@ using AssetGenerator.Runtime;
 using DEM.Net.glTF;
 using DEM.Net.glTF.Export;
 using DEM.Net.Lib;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -42,7 +43,7 @@ namespace DEM.Net.Samples
 {
     class STLSamples
     {
-        public static void Run(string outputDirectory, DEMDataSet dataset)
+        public static void Run(ServiceProvider serviceProvider, string outputDirectory, DEMDataSet dataset)
         {
             //string modelName= "Montagne Sainte Victoire";
             //string bboxWKT = "POLYGON((5.54888 43.519525, 5.61209 43.519525, 5.61209 43.565225, 5.54888 43.565225, 5.54888 43.519525))";
@@ -57,8 +58,9 @@ namespace DEM.Net.Samples
             Logger.RestartPerf("STL");
             // small test
             //string bboxWKT = "POLYGON ((5.558267 43.538602, 5.557902 43.538602, 5.557902 43.538353, 5.558267 43.538353, 5.558267 43.538602))";// zoom ste
-            RasterService rasterService = new RasterService();
-            ElevationService elevationService = new ElevationService(rasterService);
+
+            IElevationService elevationService = serviceProvider.GetService<IElevationService>();
+            IglTFService glTFService = serviceProvider.GetService<IglTFService>();
 
             var bbox = GeometryService.GetBoundingBox(bboxWKT);
             //bbox = bbox.Scale(1.3); // test
@@ -71,7 +73,6 @@ namespace DEM.Net.Samples
                                     .FitInto(250f)
                                     .BakeCoordinates();
 
-            glTFService glTFService = new glTFService();
             var mesh = glTFService.GenerateTriangleMesh_Boxed(heightMap);
 
             // STL axis differ from glTF 

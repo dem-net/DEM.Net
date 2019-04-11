@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using DEM.Net.Lib;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,10 +36,11 @@ namespace DEM.Net.Samples
 {
     public static class ElevationSamples
     {
-        public static void Run()
+        public static void Run(ServiceProvider serviceProvider)
         {
-            RasterService rasterService = new RasterService();
-            IElevationService elevationService = new ElevationService(rasterService);
+            IRasterService rasterService = serviceProvider.GetService<IRasterService>();
+            IElevationService elevationService = serviceProvider.GetService<IElevationService>();
+
             string sampleName = nameof(ElevationSamples);
 
             Logger.Info("============================");

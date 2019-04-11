@@ -40,7 +40,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DEM.Net.glTF\DEM.Net.glTF.csproj" />
-    <ProjectReference Include="..\DEM.Net.Lib\DEM.Net.Lib.csproj" />
+    <ProjectReference Include="..\DEM.Net.Core\DEM.Net.Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -31,6 +31,7 @@ using DEM.Net.Lib;
 using DEM.Net.Lib.Imagery;
 using DEM.Net.Lib.Services.Lab;
 using DEM.Net.Lib.Services.Mesh;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -43,7 +44,6 @@ namespace DEM.Net.Samples
 {
     class TextureSamples
     {
-        private readonly IElevationService _elevationService;
         private readonly string _bboxWkt;
         private DEMDataSet _normalsDataSet;
         private DEMDataSet _meshDataSet;
@@ -51,7 +51,6 @@ namespace DEM.Net.Samples
 
         public TextureSamples(string outputDirectory)
         {
-            _elevationService = new ElevationService(new RasterService());
             // sugiton
             //_bboxWkt = "POLYGON ((5.42201042175293 43.20023317388979, 5.459775924682617 43.20023317388979, 5.459775924682617 43.22594305473314, 5.42201042175293 43.22594305473314, 5.42201042175293 43.20023317388979))";
             // ste victoire
@@ -93,11 +92,13 @@ namespace DEM.Net.Samples
             _outputDirectory = outputDirectory;
         }
 
-        internal void Run()
+        internal void Run(ServiceProvider serviceProvider)
         {
             bool useTIN = false; // still buggy with SRID 3857
             int v_outSrid = Reprojection.SRID_PROJECTED_MERCATOR;
-            glTFService glTF = new glTFService();
+            IglTFService glTF = serviceProvider.GetService<IglTFService>();
+            IElevationService elevationService = serviceProvider.GetService<IElevationService>();
+
             string outputDir = Path.GetFullPath(Path.Combine(_outputDirectory, "glTF"));
 
             Logger.Info("============================");
@@ -130,7 +131,7 @@ namespace DEM.Net.Samples
             // Normal map
             Console.WriteLine("Height map...");
             float Z_FACTOR = 2f;
-            HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, _normalsDataSet);
+            HeightMap hMapNormal = elevationService.GetHeightMap(bbox, _normalsDataSet);
 
             //HeightMap hMapNormal = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1", "ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
 
@@ -144,7 +145,7 @@ namespace DEM.Net.Samples
 
             //=======================
             // Get height map
-            HeightMap hMap = _elevationService.GetHeightMap(bbox, _meshDataSet);
+            HeightMap hMap = elevationService.GetHeightMap(bbox, _meshDataSet);
             //HeightMap hMap = _elevationService.GetHeightMap(bbox, Path.Combine(_localdatadir, "ETOPO1","ETOPO1_Bed_g_geotiff.tif"), DEMFileFormat.GEOTIFF);
 
             //=======================

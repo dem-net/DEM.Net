@@ -40,6 +40,16 @@ namespace DEM.Net.glTF
     public interface IglTFService
     {
         /// <summary>
+        /// Generates the triangle with a base, and sides connecting the base.
+        /// This is a STL compliant mesh which is water tight
+        /// </summary>
+        /// <returns>The triangle mesh boxed.</returns>
+        /// <param name="heightMap">Height map.</param>
+        /// <param name="colors">Colors.</param>
+        /// <param name="texture">Texture.</param>
+        MeshPrimitive GenerateTriangleMesh_Boxed(HeightMap heightMap, IEnumerable<Vector4> colors = null, PBRTexture texture = null);
+
+        /// <summary>
         /// Triangulates the height map and build a triangle mesh
         /// </summary>
         /// <param name="heightMap"></param>
