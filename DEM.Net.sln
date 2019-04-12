@@ -9,9 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DEM.Net.Samples", "DEM.Net.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DEM.Net.xUnit.Test", "DEM.Net.xUnit.Test\DEM.Net.xUnit.Test.csproj", "{33F6AD6A-91B8-46BF-A00B-338869907800}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Net.Core", "DEM.Net.Core\DEM.Net.Core.csproj", "{B335092D-4D33-4DC4-A02D-EB8731AF3D76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DEM.Net.Core", "DEM.Net.Core\DEM.Net.Core.csproj", "{B335092D-4D33-4DC4-A02D-EB8731AF3D76}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Net.TestWinForm", "DEM.Net.TestWinForm\DEM.Net.TestWinForm.csproj", "{9417FC33-D64A-4B15-AD47-286382F1FF21}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "License", "License", "{D6ED085C-7DDE-428D-B70E-ABDCD84EEF71}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE - ThirdParty.md = LICENSE - ThirdParty.md
+		LICENSE.md = LICENSE.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

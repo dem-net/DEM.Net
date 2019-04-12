@@ -1,23 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!--<TargetFrameworks>netstandard2.0;net45</TargetFrameworks>-->
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackOnBuild>true</PackOnBuild>
     <PackageId>DEM.Net.Core</PackageId>
-    <PackageVersion>0.1.0</PackageVersion>
+    <PackageVersion>0.1.0-alpha</PackageVersion>
     <Authors>Xavier Fischer, Frédéric Aubin</Authors>
     <Copyright>Xavier Fischer, Frédéric Aubin</Copyright>
     <Owners>Xavier Fischer</Owners>
-    <PackageProjectUrl>https://github.com/xfischer/DEM.Net</PackageProjectUrl>
-    <PackageReleaseNotes>First official release</PackageReleaseNotes>
-    <PackageTags>DEM, Terrain, Elevation, Mesh, 3D, glTF, Map, STL</PackageTags>
+    <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
+    <PackageReleaseNotes>First official beta release</PackageReleaseNotes>
+    <PackageTags>DEM, Terrain, Elevation</PackageTags>
     <Title>DEM.Net.Core</Title>
     <Description>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <RepositoryUrl>https://github.com/xfischer/DEM.Net</RepositoryUrl>
+    <RepositoryUrl>https://github.com/dem-net/DEM.Net/commit/a5d9d732af6856bf1cdd8b6c810f5a7a4d8398da</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageLicenseFile></PackageLicenseFile>
     <Summary>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Summary>
+    <Version>0.1.0-alpha</Version>
+    <Product>DEM.Net</Product>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,7 +36,6 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
     <PackageReference Include="ZeroFormatter.Interfaces" Version="1.6.4" />
-    <PackageReference Include="Microsoft.DotNet.Analyzers.Compatibility" Version="0.2.12-alpha" />
     <PackageReference Include="NuGet.Build.Packaging" Version="0.2.0" />
   </ItemGroup>
 
