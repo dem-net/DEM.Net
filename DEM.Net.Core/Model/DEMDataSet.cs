@@ -28,28 +28,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ZeroFormatter;
 
 namespace DEM.Net.Core
 {
-    [ZeroFormattable]
     public class DEMDataSet
     {
-
-        [Index(0)]
         public virtual string Name { get; set; }
 
-        [Index(1)]
         public virtual string Description { get; set; }
-        [Index(2)]
         public virtual string PublicUrl { get; set; }
-        [Index(3)]
         public virtual int ResolutionMeters { get; set; }
 
-        [Index(4)]
         public virtual DEMFileFormat FileFormat { get; set; }
 
-        [Index(5)]
         /// <summary>
         /// GDAL Virtual 
         /// </summary>

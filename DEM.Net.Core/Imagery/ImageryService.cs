@@ -24,12 +24,6 @@
 // THE SOFTWARE.
 
 using DEM.Net.Core.Services.Mesh;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.Formats.Jpeg;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
-using SixLabors.Primitives;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -42,6 +36,19 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
+#if NETFULL
+using System.Drawing;
+using System.Drawing.Imaging;
+#elif NETSTANDARD
+using Microsoft.Extensions.Configuration;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.Primitives;
+#endif
+
 namespace DEM.Net.Core.Imagery
 {
     public class ImageryService
@@ -49,6 +56,22 @@ namespace DEM.Net.Core.Imagery
         #region Tiled imagery
 
         private int _serverCycle = 0;
+#if NETSTANDARD
+        private readonly IConfigurationRoot _config;
+
+        public ImageryService()
+        {
+            _config = new ConfigurationBuilder()
+                 .SetBasePath(Directory.GetCurrentDirectory())
+                 .AddJsonFile(Path.Combine("Config", "tokens.json"), optional: true, reloadOnChange: true)
+                 .Build();
+        }
+#elif NETFULL
+        public ImageryService()
+        {
+
+        }
+#endif
 
         public TileRange DownloadTiles(BoundingBox bbox, ImageryProvider provider, int minTilesPerImage = 4)
         {
@@ -124,7 +147,7 @@ namespace DEM.Net.Core.Imagery
 
         public TextureInfo ConstructTexture(TileRange tiles, BoundingBox bbox, string fileName, TextureImageFormat mimeType)
         {
-            
+
             // where is the bbox in the final image ?
 
             // get pixel in full map
@@ -135,8 +158,33 @@ namespace DEM.Net.Core.Imagery
             //DrawDebugBmpBbox(tiles, localBbox, tilesBbox, fileName, mimeType);
             int tileSize = tiles.Provider.TileSize;
 
+#if NETFULL
+            ImageFormat format = mimeType == TextureImageFormat.image_jpeg ?
+                 ImageFormat.Jpeg
+                 : ImageFormat.Png;
 
-
+            using (Bitmap bmp = new Bitmap((int)projectedBbox.Width, (int)projectedBbox.Height))
+            {
+                int xOffset = (int)(tilesBbox.xMin - projectedBbox.xMin);
+                int yOffset = (int)(tilesBbox.yMin - projectedBbox.yMin);
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    foreach (var tile in tiles)
+                    {
+                        using (MemoryStream stream = new MemoryStream(tile.Image))
+                        {
+                            using (Image tileImg = Image.FromStream(stream))
+                            {
+                                int x = (tile.TileInfo.X - tiles.Start.X) * tileSize + xOffset;
+                                int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize + yOffset;
+                                g.DrawImage(tileImg, x, y);
+                            }
+                        }
+                    }
+                }
+                bmp.Save(fileName, format);
+            }
+#else
             using (Image<Rgba32> outputImage = new Image<Rgba32>((int)projectedBbox.Width, (int)projectedBbox.Height))
             {
                 int xOffset = (int)(tilesBbox.xMin - projectedBbox.xMin);
@@ -162,12 +210,14 @@ namespace DEM.Net.Core.Imagery
 
                 outputImage.Save(fileName);
             }
+#endif
             return new TextureInfo(fileName, mimeType, (int)projectedBbox.Width, (int)projectedBbox.Height, zoomLevel, projectedBbox);
             //return new TextureInfo(fileName, format, (int)tilesBbox.Width, (int)tilesBbox.Height);
 
         }
 
 
+#if NETSTANDARD
         private IImageEncoder ConvertFormat(TextureImageFormat format)
         {
             ImageFormatManager imageFormatManager = new ImageFormatManager();
@@ -179,6 +229,7 @@ namespace DEM.Net.Core.Imagery
 
             return imageFormatManager.FindEncoder(imageFormat);
         }
+#endif
 
         public Uri BuildUri(ImageryProvider provider, int x, int y, int zoom)
         {
@@ -197,11 +248,21 @@ namespace DEM.Net.Core.Imagery
             url = url.Replace("{z}", zoom.ToString());
             if (url.Contains("{t}"))
             {
+#if NETFULL
                 var token = ConfigurationManager.AppSettings[provider.TokenAppSettingsKey];
                 if (String.IsNullOrWhiteSpace(token))
                 {
                     Logger.Error($"There is no token found for {provider.Name} provider. Make sure an App.SECRETS.config file is present in running directory with a {provider.TokenAppSettingsKey} key / value.");
                 }
+#else
+                
+                IConfigurationSection configurationSection = _config.GetSection("Tokens").GetSection(provider.TokenAppSettingsKey);
+                var token = configurationSection.Value;
+                if (String.IsNullOrWhiteSpace(token))
+                {
+                    Logger.Error($"There is no token found for {provider.Name} provider. Make sure a config/tokens.json file is present in running directory with a {provider.TokenAppSettingsKey} key / value.");
+                }                
+#endif
                 url = url.Replace("{t}", token);
             }
 
@@ -223,53 +284,45 @@ namespace DEM.Net.Core.Imagery
         {
             List<Vector3> normals = MeshService.ComputeNormals(heightMap).ToList();
 
-            bool debugBMP = false;
-            if (debugBMP)
+#if NETSTANDARD
+            using (Image<Bgra32> outputImage = new Image<Bgra32>(heightMap.Width, heightMap.Height))
             {
-                //using (var dbm = new DirectBitmap(heightMap.Width, heightMap.Height))
-                //using (var dbmHeight = new DirectBitmap(heightMap.Width, heightMap.Height))
-                //{
-                //    // for debug only
-                //    List<Vector3> coordinates = heightMap.Coordinates.Select(c => new Vector3((float)c.Longitude, (float)c.Latitude, (float)c.Elevation)).ToList();
-                //    float maxHeight = (float)heightMap.Coordinates.Max(c => c.Elevation.GetValueOrDefault(0));
 
-                //    for (int j = 0; j < heightMap.Height; j++)
-                //        for (int i = 0; i < heightMap.Width; i++)
-                //        {
-                //            int index = i + (j * heightMap.Width);
-                //            Vector3 norm = normals[index];
-                //            Color color = FromVec3NormalToColor(norm);
-                //            dbm.SetPixel(i, j, color);
-                //            dbmHeight.SetPixel(i, j, FromVec3ToHeightColor(coordinates[index], maxHeight));
-                //        }
+                for (int j = 0; j < heightMap.Height; j++)
+                    for (int i = 0; i < heightMap.Width; i++)
+                    {
+                        int index = i + (j * heightMap.Width);
+                        Vector3 norm = normals[index];
+                        Bgra32 color = FromVec3NormalToColor(norm);
 
-                //    dbm.Bitmap.Save(Path.Combine(outputDirectory, "normalmap.jpg"), ImageFormat.Jpeg);
-                //    dbmHeight.Bitmap.Save(Path.Combine(outputDirectory, "heightmap.jpg"), ImageFormat.Jpeg);
-                //}
+                        outputImage[i, j] = color;
+                    }
+
+                outputImage.Save(Path.Combine(outputDirectory, "normalmap.jpg"), new JpegEncoder());
             }
-            else
+#elif NETFULL
+            using (var dbm = new DirectBitmap(heightMap.Width, heightMap.Height))
             {
-                using (Image<Bgra32> outputImage = new Image<Bgra32>(heightMap.Width, heightMap.Height))
-                {
-                    
-                    for (int j = 0; j < heightMap.Height; j++)
-                        for (int i = 0; i < heightMap.Width; i++)
-                        {
-                            int index = i + (j * heightMap.Width);
-                            Vector3 norm = normals[index];
-                            Bgra32 color = FromVec3NormalToColor(norm);
 
-                            outputImage[i, j] = color;
-                        }
+                for (int j = 0; j < heightMap.Height; j++)
+                    for (int i = 0; i < heightMap.Width; i++)
+                    {
+                        int index = i + (j * heightMap.Width);
+                        Vector3 norm = normals[index];
+                        Color color = FromVec3NormalToColor(norm);
+                        dbm.SetPixel(i, j, color);
+                    }
 
-                    outputImage.Save(Path.Combine(outputDirectory, "normalmap.jpg"), new JpegEncoder());
-                }
+                dbm.Bitmap.Save(Path.Combine(outputDirectory, "normalmap.jpg"), ImageFormat.Jpeg);
             }
+#endif
+
 
             TextureInfo normal = new TextureInfo(Path.Combine(outputDirectory, "normalmap.jpg"), TextureImageFormat.image_jpeg, heightMap.Width, heightMap.Height);
             return normal;
         }
 
+#if NETSTANDARD
         private Bgra32 FromVec3ToHeightColor(Vector3 vector3, float maxHeight)
         {
             byte height = (byte)Math.Round(MathHelper.Map(0, maxHeight, 0, 255, vector3.Z, true), 0);
@@ -278,14 +331,28 @@ namespace DEM.Net.Core.Imagery
 
         public Bgra32 FromVec3NormalToColor(Vector3 normal)
         {
-            return new Bgra32 ((byte)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.X, true), 0),
+            return new Bgra32((byte)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.X, true), 0),
                 (byte)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.Y, true), 0),
                 (byte)Math.Round(MathHelper.Map(0, -1, 128, 255, -normal.Z, true), 0));
         }
+#elif NETFULL
+        private Color FromVec3ToHeightColor(Vector3 vector3, float maxHeight)
+        {
+            int height = (int)Math.Round(MathHelper.Map(0, maxHeight, 0, 255, vector3.Z, true), 0);
+            return Color.FromArgb(height, height, height);
+        }
 
-        #endregion
+        public Color FromVec3NormalToColor(Vector3 normal)
+        {
+            return Color.FromArgb((int)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.X, true), 0),
+                (int)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.Y, true), 0),
+                (int)Math.Round(MathHelper.Map(0, -1, 128, 255, -normal.Z, true), 0));
+        }
+#endif
 
-        #region UV mapping
+#endregion
+
+#region UV mapping
 
         public List<Vector2> ComputeUVMap(HeightMap heightMap, TextureInfo textureInfo)
         {
@@ -316,7 +383,7 @@ namespace DEM.Net.Core.Imagery
             return uvs;
         }
 
-        #endregion
+#endregion
 
 
     }

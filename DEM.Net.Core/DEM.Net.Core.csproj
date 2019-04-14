@@ -1,11 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!--<TargetFrameworks>netstandard2.0;net45</TargetFrameworks>-->
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
     <PackOnBuild>true</PackOnBuild>
     <PackageId>DEM.Net.Core</PackageId>
-    <PackageVersion>0.1.0-alpha</PackageVersion>
     <Authors>Xavier Fischer, Frédéric Aubin</Authors>
     <Copyright>Xavier Fischer, Frédéric Aubin</Copyright>
     <Owners>Xavier Fischer</Owners>
@@ -14,15 +12,42 @@
     <PackageTags>DEM, Terrain, Elevation</PackageTags>
     <Title>DEM.Net.Core</Title>
     <Description>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Description>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/dem-net/DEM.Net/commit/a5d9d732af6856bf1cdd8b6c810f5a7a4d8398da</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageLicenseFile></PackageLicenseFile>
     <Summary>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Summary>
-    <Version>0.1.0-alpha</Version>
+    <Version>0.1.0-beta0002</Version>
     <Product>DEM.Net</Product>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <ApplicationIcon />
+    <OutputType>Library</OutputType>
+    <StartupObject />
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
   </PropertyGroup>
+
+  <!-- Define NETFULL and NETSTANDARD for all matching targets -->
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
+    <DefineConstants>NETCORE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net46'">
+    <DefineConstants>NET46;NETFULL</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Conditionally obtain references for the .NET Framework 4.6 target -->
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+
+  <!-- .NET Standard 2.0 references, compilation flags and build options -->
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
+    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0006" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="BitMiracle.LibTiff.NET" Version="2.4.626" />
@@ -30,13 +55,16 @@
     <PackageReference Include="GeoAPI.CoordinateSystems" Version="1.7.5" />
     <PackageReference Include="GeoAPI.Core" Version="1.7.5" />
     <PackageReference Include="NetTopologySuite" Version="1.15.2" />
-    <PackageReference Include="NetTopologySuite.Diagnostics.Tracing" Version="0.0.1" />
+    <PackageReference Include="NetTopologySuite.Diagnostics.Tracing" Version="0.0.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0006" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-    <PackageReference Include="ZeroFormatter.Interfaces" Version="1.6.4" />
     <PackageReference Include="NuGet.Build.Packaging" Version="0.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Config\tokens.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ProjectExtensions>

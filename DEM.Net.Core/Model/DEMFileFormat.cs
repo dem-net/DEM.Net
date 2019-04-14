@@ -28,19 +28,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ZeroFormatter;
 
 namespace DEM.Net.Core
 {
-	[ZeroFormattable]
 	public class DEMFileFormat
 	{
-
-		[Index(0)]
 		public virtual string Name { get; set; }
 
-
-		[Index(1)]
 		public virtual string FileExtension { get; set; }
 
 		public static readonly DEMFileFormat SRTM_HGT = new DEMFileFormat("Shuttle Radar Topography Mission (SRTM) Data file.", ".hgt");
