@@ -1,0 +1,2723 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  commentId: T:DEM.Net.Lib.Gpx.GpxPointCollection`1
+  id: GpxPointCollection`1
+  parent: DEM.Net.Lib.Gpx
+  children:
+  - DEM.Net.Lib.Gpx.GpxPointCollection`1.Add(`0)
+  - DEM.Net.Lib.Gpx.GpxPointCollection`1.AddPoint(`0)
+  - DEM.Net.Lib.Gpx.GpxPointCollection`1.Clear
+  - DEM.Net.Lib.Gpx.GpxPointCollection`1.Contains(`0)
+  - DEM.Net.Lib.Gpx.GpxPointCollection`1.CopyTo(`0[],System.Int32)
+  - DEM.Net.Lib.Gpx.GpxPointCollection`1.Count
+  - DEM.Net.Lib.Gpx.GpxPointCollection`1.EndPoint
+  - DEM.Net.Lib.Gpx.GpxPointCollection`1.GetEnumerator
+  - DEM.Net.Lib.Gpx.GpxPointCollection`1.GetLength
+  - DEM.Net.Lib.Gpx.GpxPointCollection`1.GetMaxElevation
+  - DEM.Net.Lib.Gpx.GpxPointCollection`1.GetMinElevation
+  - DEM.Net.Lib.Gpx.GpxPointCollection`1.IndexOf(`0)
+  - DEM.Net.Lib.Gpx.GpxPointCollection`1.Insert(System.Int32,`0)
+  - DEM.Net.Lib.Gpx.GpxPointCollection`1.IsReadOnly
+  - DEM.Net.Lib.Gpx.GpxPointCollection`1.Item(System.Int32)
+  - DEM.Net.Lib.Gpx.GpxPointCollection`1.Remove(`0)
+  - DEM.Net.Lib.Gpx.GpxPointCollection`1.RemoveAt(System.Int32)
+  - DEM.Net.Lib.Gpx.GpxPointCollection`1.StartPoint
+  - DEM.Net.Lib.Gpx.GpxPointCollection`1.System#Collections#IEnumerable#GetEnumerator
+  - DEM.Net.Lib.Gpx.GpxPointCollection`1.ToGpxPoints
+  langs:
+  - csharp
+  - vb
+  name: GpxPointCollection<T>
+  nameWithType: GpxPointCollection<T>
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GpxPointCollection
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 375
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: 'public class GpxPointCollection<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnumerable where T : GpxPoint'
+    typeParameters:
+    - id: T
+    content.vb: >-
+      Public Class GpxPointCollection(Of T As GpxPoint)
+          Implements IList(Of T), ICollection(Of T), IEnumerable(Of T), IEnumerable
+  inheritance:
+  - System.Object
+  implements:
+  - System.Collections.Generic.IList{{T}}
+  - System.Collections.Generic.ICollection{{T}}
+  - System.Collections.Generic.IEnumerable{{T}}
+  - System.Collections.IEnumerable
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  nameWithType.vb: GpxPointCollection(Of T)
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T)
+  name.vb: GpxPointCollection(Of T)
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.AddPoint(`0)
+  commentId: M:DEM.Net.Lib.Gpx.GpxPointCollection`1.AddPoint(`0)
+  id: AddPoint(`0)
+  parent: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  langs:
+  - csharp
+  - vb
+  name: AddPoint(T)
+  nameWithType: GpxPointCollection<T>.AddPoint(T)
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.AddPoint(T)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: AddPoint
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 379
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public GpxPoint AddPoint(T point)
+    parameters:
+    - id: point
+      type: '{T}'
+    return:
+      type: DEM.Net.Lib.Gpx.GpxPoint
+    content.vb: Public Function AddPoint(point As T) As GpxPoint
+  overload: DEM.Net.Lib.Gpx.GpxPointCollection`1.AddPoint*
+  nameWithType.vb: GpxPointCollection(Of T).AddPoint(T)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).AddPoint(T)
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.StartPoint
+  commentId: P:DEM.Net.Lib.Gpx.GpxPointCollection`1.StartPoint
+  id: StartPoint
+  parent: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  langs:
+  - csharp
+  - vb
+  name: StartPoint
+  nameWithType: GpxPointCollection<T>.StartPoint
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.StartPoint
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: StartPoint
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 385
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public T StartPoint { get; }
+    parameters: []
+    return:
+      type: '{T}'
+    content.vb: Public ReadOnly Property StartPoint As T
+  overload: DEM.Net.Lib.Gpx.GpxPointCollection`1.StartPoint*
+  nameWithType.vb: GpxPointCollection(Of T).StartPoint
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).StartPoint
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.EndPoint
+  commentId: P:DEM.Net.Lib.Gpx.GpxPointCollection`1.EndPoint
+  id: EndPoint
+  parent: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  langs:
+  - csharp
+  - vb
+  name: EndPoint
+  nameWithType: GpxPointCollection<T>.EndPoint
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.EndPoint
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: EndPoint
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 390
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public T EndPoint { get; }
+    parameters: []
+    return:
+      type: '{T}'
+    content.vb: Public ReadOnly Property EndPoint As T
+  overload: DEM.Net.Lib.Gpx.GpxPointCollection`1.EndPoint*
+  nameWithType.vb: GpxPointCollection(Of T).EndPoint
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).EndPoint
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.GetLength
+  commentId: M:DEM.Net.Lib.Gpx.GpxPointCollection`1.GetLength
+  id: GetLength
+  parent: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  langs:
+  - csharp
+  - vb
+  name: GetLength()
+  nameWithType: GpxPointCollection<T>.GetLength()
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.GetLength()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetLength
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 395
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public double GetLength()
+    return:
+      type: System.Double
+    content.vb: Public Function GetLength As Double
+  overload: DEM.Net.Lib.Gpx.GpxPointCollection`1.GetLength*
+  nameWithType.vb: GpxPointCollection(Of T).GetLength()
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).GetLength()
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.GetMinElevation
+  commentId: M:DEM.Net.Lib.Gpx.GpxPointCollection`1.GetMinElevation
+  id: GetMinElevation
+  parent: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  langs:
+  - csharp
+  - vb
+  name: GetMinElevation()
+  nameWithType: GpxPointCollection<T>.GetMinElevation()
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.GetMinElevation()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetMinElevation
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 408
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public double? GetMinElevation()
+    return:
+      type: System.Nullable{System.Double}
+    content.vb: Public Function GetMinElevation As Double?
+  overload: DEM.Net.Lib.Gpx.GpxPointCollection`1.GetMinElevation*
+  nameWithType.vb: GpxPointCollection(Of T).GetMinElevation()
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).GetMinElevation()
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.GetMaxElevation
+  commentId: M:DEM.Net.Lib.Gpx.GpxPointCollection`1.GetMaxElevation
+  id: GetMaxElevation
+  parent: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  langs:
+  - csharp
+  - vb
+  name: GetMaxElevation()
+  nameWithType: GpxPointCollection<T>.GetMaxElevation()
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.GetMaxElevation()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetMaxElevation
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 413
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public double? GetMaxElevation()
+    return:
+      type: System.Nullable{System.Double}
+    content.vb: Public Function GetMaxElevation As Double?
+  overload: DEM.Net.Lib.Gpx.GpxPointCollection`1.GetMaxElevation*
+  nameWithType.vb: GpxPointCollection(Of T).GetMaxElevation()
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).GetMaxElevation()
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.ToGpxPoints
+  commentId: M:DEM.Net.Lib.Gpx.GpxPointCollection`1.ToGpxPoints
+  id: ToGpxPoints
+  parent: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  langs:
+  - csharp
+  - vb
+  name: ToGpxPoints()
+  nameWithType: GpxPointCollection<T>.ToGpxPoints()
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.ToGpxPoints()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ToGpxPoints
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 418
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public GpxPointCollection<GpxPoint> ToGpxPoints()
+    return:
+      type: DEM.Net.Lib.Gpx.GpxPointCollection{DEM.Net.Lib.Gpx.GpxPoint}
+    content.vb: Public Function ToGpxPoints As GpxPointCollection(Of GpxPoint)
+  overload: DEM.Net.Lib.Gpx.GpxPointCollection`1.ToGpxPoints*
+  nameWithType.vb: GpxPointCollection(Of T).ToGpxPoints()
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).ToGpxPoints()
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.Count
+  commentId: P:DEM.Net.Lib.Gpx.GpxPointCollection`1.Count
+  id: Count
+  parent: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  langs:
+  - csharp
+  - vb
+  name: Count
+  nameWithType: GpxPointCollection<T>.Count
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.Count
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Count
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 438
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public int Count { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public ReadOnly Property Count As Integer
+  overload: DEM.Net.Lib.Gpx.GpxPointCollection`1.Count*
+  implements:
+  - System.Collections.Generic.ICollection{{T}}.Count
+  nameWithType.vb: GpxPointCollection(Of T).Count
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).Count
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.IndexOf(`0)
+  commentId: M:DEM.Net.Lib.Gpx.GpxPointCollection`1.IndexOf(`0)
+  id: IndexOf(`0)
+  parent: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  langs:
+  - csharp
+  - vb
+  name: IndexOf(T)
+  nameWithType: GpxPointCollection<T>.IndexOf(T)
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.IndexOf(T)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: IndexOf
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 443
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public int IndexOf(T item)
+    parameters:
+    - id: item
+      type: '{T}'
+    return:
+      type: System.Int32
+    content.vb: Public Function IndexOf(item As T) As Integer
+  overload: DEM.Net.Lib.Gpx.GpxPointCollection`1.IndexOf*
+  implements:
+  - System.Collections.Generic.IList{{T}}.IndexOf({T})
+  nameWithType.vb: GpxPointCollection(Of T).IndexOf(T)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).IndexOf(T)
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.Insert(System.Int32,`0)
+  commentId: M:DEM.Net.Lib.Gpx.GpxPointCollection`1.Insert(System.Int32,`0)
+  id: Insert(System.Int32,`0)
+  parent: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  langs:
+  - csharp
+  - vb
+  name: Insert(Int32, T)
+  nameWithType: GpxPointCollection<T>.Insert(Int32, T)
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.Insert(System.Int32, T)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Insert
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 448
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public void Insert(int index, T item)
+    parameters:
+    - id: index
+      type: System.Int32
+    - id: item
+      type: '{T}'
+    content.vb: Public Sub Insert(index As Integer, item As T)
+  overload: DEM.Net.Lib.Gpx.GpxPointCollection`1.Insert*
+  implements:
+  - System.Collections.Generic.IList{{T}}.Insert(System.Int32,{T})
+  nameWithType.vb: GpxPointCollection(Of T).Insert(Int32, T)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).Insert(System.Int32, T)
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.RemoveAt(System.Int32)
+  commentId: M:DEM.Net.Lib.Gpx.GpxPointCollection`1.RemoveAt(System.Int32)
+  id: RemoveAt(System.Int32)
+  parent: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  langs:
+  - csharp
+  - vb
+  name: RemoveAt(Int32)
+  nameWithType: GpxPointCollection<T>.RemoveAt(Int32)
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.RemoveAt(System.Int32)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: RemoveAt
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 453
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public void RemoveAt(int index)
+    parameters:
+    - id: index
+      type: System.Int32
+    content.vb: Public Sub RemoveAt(index As Integer)
+  overload: DEM.Net.Lib.Gpx.GpxPointCollection`1.RemoveAt*
+  implements:
+  - System.Collections.Generic.IList{{T}}.RemoveAt(System.Int32)
+  nameWithType.vb: GpxPointCollection(Of T).RemoveAt(Int32)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).RemoveAt(System.Int32)
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.Item(System.Int32)
+  commentId: P:DEM.Net.Lib.Gpx.GpxPointCollection`1.Item(System.Int32)
+  id: Item(System.Int32)
+  parent: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  langs:
+  - csharp
+  - vb
+  name: Item[Int32]
+  nameWithType: GpxPointCollection<T>.Item[Int32]
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.Item[System.Int32]
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: this[]
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 458
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public T this[int index] { get; set; }
+    parameters:
+    - id: index
+      type: System.Int32
+    return:
+      type: '{T}'
+    content.vb: Public Property Item(index As Integer) As T
+  overload: DEM.Net.Lib.Gpx.GpxPointCollection`1.Item*
+  implements:
+  - System.Collections.Generic.IList{{T}}.Item(System.Int32)
+  nameWithType.vb: GpxPointCollection(Of T).Item(Int32)
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).Item(System.Int32)
+  name.vb: Item(Int32)
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.Add(`0)
+  commentId: M:DEM.Net.Lib.Gpx.GpxPointCollection`1.Add(`0)
+  id: Add(`0)
+  parent: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  langs:
+  - csharp
+  - vb
+  name: Add(T)
+  nameWithType: GpxPointCollection<T>.Add(T)
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.Add(T)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Add
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 464
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public void Add(T item)
+    parameters:
+    - id: item
+      type: '{T}'
+    content.vb: Public Sub Add(item As T)
+  overload: DEM.Net.Lib.Gpx.GpxPointCollection`1.Add*
+  implements:
+  - System.Collections.Generic.ICollection{{T}}.Add({T})
+  nameWithType.vb: GpxPointCollection(Of T).Add(T)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).Add(T)
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.Clear
+  commentId: M:DEM.Net.Lib.Gpx.GpxPointCollection`1.Clear
+  id: Clear
+  parent: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  langs:
+  - csharp
+  - vb
+  name: Clear()
+  nameWithType: GpxPointCollection<T>.Clear()
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.Clear()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Clear
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 469
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public void Clear()
+    content.vb: Public Sub Clear
+  overload: DEM.Net.Lib.Gpx.GpxPointCollection`1.Clear*
+  implements:
+  - System.Collections.Generic.ICollection{{T}}.Clear
+  nameWithType.vb: GpxPointCollection(Of T).Clear()
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).Clear()
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.Contains(`0)
+  commentId: M:DEM.Net.Lib.Gpx.GpxPointCollection`1.Contains(`0)
+  id: Contains(`0)
+  parent: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  langs:
+  - csharp
+  - vb
+  name: Contains(T)
+  nameWithType: GpxPointCollection<T>.Contains(T)
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.Contains(T)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Contains
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 474
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public bool Contains(T item)
+    parameters:
+    - id: item
+      type: '{T}'
+    return:
+      type: System.Boolean
+    content.vb: Public Function Contains(item As T) As Boolean
+  overload: DEM.Net.Lib.Gpx.GpxPointCollection`1.Contains*
+  implements:
+  - System.Collections.Generic.ICollection{{T}}.Contains({T})
+  nameWithType.vb: GpxPointCollection(Of T).Contains(T)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).Contains(T)
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.CopyTo(`0[],System.Int32)
+  commentId: M:DEM.Net.Lib.Gpx.GpxPointCollection`1.CopyTo(`0[],System.Int32)
+  id: CopyTo(`0[],System.Int32)
+  parent: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  langs:
+  - csharp
+  - vb
+  name: CopyTo(T[], Int32)
+  nameWithType: GpxPointCollection<T>.CopyTo(T[], Int32)
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.CopyTo(T[], System.Int32)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: CopyTo
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 479
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public void CopyTo(T[] array, int arrayIndex)
+    parameters:
+    - id: array
+      type: '{T}[]'
+    - id: arrayIndex
+      type: System.Int32
+    content.vb: Public Sub CopyTo(array As T(), arrayIndex As Integer)
+  overload: DEM.Net.Lib.Gpx.GpxPointCollection`1.CopyTo*
+  implements:
+  - System.Collections.Generic.ICollection{{T}}.CopyTo({T}[],System.Int32)
+  nameWithType.vb: GpxPointCollection(Of T).CopyTo(T(), Int32)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).CopyTo(T(), System.Int32)
+  name.vb: CopyTo(T(), Int32)
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.IsReadOnly
+  commentId: P:DEM.Net.Lib.Gpx.GpxPointCollection`1.IsReadOnly
+  id: IsReadOnly
+  parent: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  langs:
+  - csharp
+  - vb
+  name: IsReadOnly
+  nameWithType: GpxPointCollection<T>.IsReadOnly
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.IsReadOnly
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: IsReadOnly
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 484
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public bool IsReadOnly { get; }
+    parameters: []
+    return:
+      type: System.Boolean
+    content.vb: Public ReadOnly Property IsReadOnly As Boolean
+  overload: DEM.Net.Lib.Gpx.GpxPointCollection`1.IsReadOnly*
+  implements:
+  - System.Collections.Generic.ICollection{{T}}.IsReadOnly
+  nameWithType.vb: GpxPointCollection(Of T).IsReadOnly
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).IsReadOnly
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.Remove(`0)
+  commentId: M:DEM.Net.Lib.Gpx.GpxPointCollection`1.Remove(`0)
+  id: Remove(`0)
+  parent: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  langs:
+  - csharp
+  - vb
+  name: Remove(T)
+  nameWithType: GpxPointCollection<T>.Remove(T)
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.Remove(T)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Remove
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 489
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public bool Remove(T item)
+    parameters:
+    - id: item
+      type: '{T}'
+    return:
+      type: System.Boolean
+    content.vb: Public Function Remove(item As T) As Boolean
+  overload: DEM.Net.Lib.Gpx.GpxPointCollection`1.Remove*
+  implements:
+  - System.Collections.Generic.ICollection{{T}}.Remove({T})
+  nameWithType.vb: GpxPointCollection(Of T).Remove(T)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).Remove(T)
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.GetEnumerator
+  commentId: M:DEM.Net.Lib.Gpx.GpxPointCollection`1.GetEnumerator
+  id: GetEnumerator
+  parent: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  langs:
+  - csharp
+  - vb
+  name: GetEnumerator()
+  nameWithType: GpxPointCollection<T>.GetEnumerator()
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.GetEnumerator()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetEnumerator
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 494
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public IEnumerator<T> GetEnumerator()
+    return:
+      type: System.Collections.Generic.IEnumerator{{T}}
+    content.vb: Public Function GetEnumerator As IEnumerator(Of T)
+  overload: DEM.Net.Lib.Gpx.GpxPointCollection`1.GetEnumerator*
+  implements:
+  - System.Collections.Generic.IEnumerable{{T}}.GetEnumerator
+  nameWithType.vb: GpxPointCollection(Of T).GetEnumerator()
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).GetEnumerator()
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.System#Collections#IEnumerable#GetEnumerator
+  commentId: M:DEM.Net.Lib.Gpx.GpxPointCollection`1.System#Collections#IEnumerable#GetEnumerator
+  id: System#Collections#IEnumerable#GetEnumerator
+  isEii: true
+  parent: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  langs:
+  - csharp
+  - vb
+  name: IEnumerable.GetEnumerator()
+  nameWithType: GpxPointCollection<T>.IEnumerable.GetEnumerator()
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.System.Collections.IEnumerable.GetEnumerator()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: System.Collections.IEnumerable.GetEnumerator
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 499
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: IEnumerator IEnumerable.GetEnumerator()
+    return:
+      type: System.Collections.IEnumerator
+    content.vb: Function System.Collections.IEnumerable.GetEnumerator As IEnumerator Implements IEnumerable.GetEnumerator
+  overload: DEM.Net.Lib.Gpx.GpxPointCollection`1.System#Collections#IEnumerable#GetEnumerator*
+  implements:
+  - System.Collections.IEnumerable.GetEnumerator
+  nameWithType.vb: GpxPointCollection(Of T).System.Collections.IEnumerable.GetEnumerator()
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).System.Collections.IEnumerable.GetEnumerator()
+  name.vb: System.Collections.IEnumerable.GetEnumerator()
+references:
+- uid: DEM.Net.Lib.Gpx
+  commentId: N:DEM.Net.Lib.Gpx
+  name: DEM.Net.Lib.Gpx
+  nameWithType: DEM.Net.Lib.Gpx
+  fullName: DEM.Net.Lib.Gpx
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Collections.Generic.IList{{T}}
+  commentId: T:System.Collections.Generic.IList{`0}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IList`1
+  name: IList<T>
+  nameWithType: IList<T>
+  fullName: System.Collections.Generic.IList<T>
+  nameWithType.vb: IList(Of T)
+  fullName.vb: System.Collections.Generic.IList(Of T)
+  name.vb: IList(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IList`1
+    name: IList
+    nameWithType: IList
+    fullName: System.Collections.Generic.IList
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IList`1
+    name: IList
+    nameWithType: IList
+    fullName: System.Collections.Generic.IList
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.ICollection{{T}}
+  commentId: T:System.Collections.Generic.ICollection{`0}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.ICollection`1
+  name: ICollection<T>
+  nameWithType: ICollection<T>
+  fullName: System.Collections.Generic.ICollection<T>
+  nameWithType.vb: ICollection(Of T)
+  fullName.vb: System.Collections.Generic.ICollection(Of T)
+  name.vb: ICollection(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.ICollection`1
+    name: ICollection
+    nameWithType: ICollection
+    fullName: System.Collections.Generic.ICollection
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.ICollection`1
+    name: ICollection
+    nameWithType: ICollection
+    fullName: System.Collections.Generic.ICollection
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IEnumerable{{T}}
+  commentId: T:System.Collections.Generic.IEnumerable{`0}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  name: IEnumerable<T>
+  nameWithType: IEnumerable<T>
+  fullName: System.Collections.Generic.IEnumerable<T>
+  nameWithType.vb: IEnumerable(Of T)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
+  name.vb: IEnumerable(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.IEnumerable
+  commentId: T:System.Collections.IEnumerable
+  parent: System.Collections
+  isExternal: true
+  name: IEnumerable
+  nameWithType: IEnumerable
+  fullName: System.Collections.IEnumerable
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: System.Collections.Generic.IList`1
+  commentId: T:System.Collections.Generic.IList`1
+  isExternal: true
+  name: IList<T>
+  nameWithType: IList<T>
+  fullName: System.Collections.Generic.IList<T>
+  nameWithType.vb: IList(Of T)
+  fullName.vb: System.Collections.Generic.IList(Of T)
+  name.vb: IList(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IList`1
+    name: IList
+    nameWithType: IList
+    fullName: System.Collections.Generic.IList
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IList`1
+    name: IList
+    nameWithType: IList
+    fullName: System.Collections.Generic.IList
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: System.Collections.Generic.ICollection`1
+  commentId: T:System.Collections.Generic.ICollection`1
+  isExternal: true
+  name: ICollection<T>
+  nameWithType: ICollection<T>
+  fullName: System.Collections.Generic.ICollection<T>
+  nameWithType.vb: ICollection(Of T)
+  fullName.vb: System.Collections.Generic.ICollection(Of T)
+  name.vb: ICollection(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.ICollection`1
+    name: ICollection
+    nameWithType: ICollection
+    fullName: System.Collections.Generic.ICollection
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.ICollection`1
+    name: ICollection
+    nameWithType: ICollection
+    fullName: System.Collections.Generic.ICollection
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IEnumerable`1
+  commentId: T:System.Collections.Generic.IEnumerable`1
+  isExternal: true
+  name: IEnumerable<T>
+  nameWithType: IEnumerable<T>
+  fullName: System.Collections.Generic.IEnumerable<T>
+  nameWithType.vb: IEnumerable(Of T)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
+  name.vb: IEnumerable(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections
+  commentId: N:System.Collections
+  isExternal: true
+  name: System.Collections
+  nameWithType: System.Collections
+  fullName: System.Collections
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.AddPoint*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxPointCollection`1.AddPoint
+  name: AddPoint
+  nameWithType: GpxPointCollection<T>.AddPoint
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.AddPoint
+  nameWithType.vb: GpxPointCollection(Of T).AddPoint
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).AddPoint
+- uid: '{T}'
+  commentId: '!:T'
+  definition: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: DEM.Net.Lib.Gpx.GpxPoint
+  commentId: T:DEM.Net.Lib.Gpx.GpxPoint
+  parent: DEM.Net.Lib.Gpx
+  name: GpxPoint
+  nameWithType: GpxPoint
+  fullName: DEM.Net.Lib.Gpx.GpxPoint
+- uid: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.StartPoint*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxPointCollection`1.StartPoint
+  name: StartPoint
+  nameWithType: GpxPointCollection<T>.StartPoint
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.StartPoint
+  nameWithType.vb: GpxPointCollection(Of T).StartPoint
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).StartPoint
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.EndPoint*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxPointCollection`1.EndPoint
+  name: EndPoint
+  nameWithType: GpxPointCollection<T>.EndPoint
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.EndPoint
+  nameWithType.vb: GpxPointCollection(Of T).EndPoint
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).EndPoint
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.GetLength*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxPointCollection`1.GetLength
+  name: GetLength
+  nameWithType: GpxPointCollection<T>.GetLength
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.GetLength
+  nameWithType.vb: GpxPointCollection(Of T).GetLength
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).GetLength
+- uid: System.Double
+  commentId: T:System.Double
+  parent: System
+  isExternal: true
+  name: Double
+  nameWithType: Double
+  fullName: System.Double
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.GetMinElevation*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxPointCollection`1.GetMinElevation
+  name: GetMinElevation
+  nameWithType: GpxPointCollection<T>.GetMinElevation
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.GetMinElevation
+  nameWithType.vb: GpxPointCollection(Of T).GetMinElevation
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).GetMinElevation
+- uid: System.Nullable{System.Double}
+  commentId: T:System.Nullable{System.Double}
+  parent: System
+  definition: System.Nullable`1
+  name: Nullable<Double>
+  nameWithType: Nullable<Double>
+  fullName: System.Nullable<System.Double>
+  nameWithType.vb: Nullable(Of Double)
+  fullName.vb: System.Nullable(Of System.Double)
+  name.vb: Nullable(Of Double)
+  spec.csharp:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Double
+    name: Double
+    nameWithType: Double
+    fullName: System.Double
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Double
+    name: Double
+    nameWithType: Double
+    fullName: System.Double
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Nullable`1
+  commentId: T:System.Nullable`1
+  isExternal: true
+  name: Nullable<T>
+  nameWithType: Nullable<T>
+  fullName: System.Nullable<T>
+  nameWithType.vb: Nullable(Of T)
+  fullName.vb: System.Nullable(Of T)
+  name.vb: Nullable(Of T)
+  spec.csharp:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.GetMaxElevation*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxPointCollection`1.GetMaxElevation
+  name: GetMaxElevation
+  nameWithType: GpxPointCollection<T>.GetMaxElevation
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.GetMaxElevation
+  nameWithType.vb: GpxPointCollection(Of T).GetMaxElevation
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).GetMaxElevation
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.ToGpxPoints*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxPointCollection`1.ToGpxPoints
+  name: ToGpxPoints
+  nameWithType: GpxPointCollection<T>.ToGpxPoints
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.ToGpxPoints
+  nameWithType.vb: GpxPointCollection(Of T).ToGpxPoints
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).ToGpxPoints
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection{DEM.Net.Lib.Gpx.GpxPoint}
+  commentId: T:DEM.Net.Lib.Gpx.GpxPointCollection{DEM.Net.Lib.Gpx.GpxPoint}
+  parent: DEM.Net.Lib.Gpx
+  definition: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  name: GpxPointCollection<GpxPoint>
+  nameWithType: GpxPointCollection<GpxPoint>
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<DEM.Net.Lib.Gpx.GpxPoint>
+  nameWithType.vb: GpxPointCollection(Of GpxPoint)
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of DEM.Net.Lib.Gpx.GpxPoint)
+  name.vb: GpxPointCollection(Of GpxPoint)
+  spec.csharp:
+  - uid: DEM.Net.Lib.Gpx.GpxPointCollection`1
+    name: GpxPointCollection
+    nameWithType: GpxPointCollection
+    fullName: DEM.Net.Lib.Gpx.GpxPointCollection
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: DEM.Net.Lib.Gpx.GpxPoint
+    name: GpxPoint
+    nameWithType: GpxPoint
+    fullName: DEM.Net.Lib.Gpx.GpxPoint
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: DEM.Net.Lib.Gpx.GpxPointCollection`1
+    name: GpxPointCollection
+    nameWithType: GpxPointCollection
+    fullName: DEM.Net.Lib.Gpx.GpxPointCollection
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: DEM.Net.Lib.Gpx.GpxPoint
+    name: GpxPoint
+    nameWithType: GpxPoint
+    fullName: DEM.Net.Lib.Gpx.GpxPoint
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1
+  commentId: T:DEM.Net.Lib.Gpx.GpxPointCollection`1
+  name: GpxPointCollection<T>
+  nameWithType: GpxPointCollection<T>
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>
+  nameWithType.vb: GpxPointCollection(Of T)
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T)
+  name.vb: GpxPointCollection(Of T)
+  spec.csharp:
+  - uid: DEM.Net.Lib.Gpx.GpxPointCollection`1
+    name: GpxPointCollection
+    nameWithType: GpxPointCollection
+    fullName: DEM.Net.Lib.Gpx.GpxPointCollection
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: DEM.Net.Lib.Gpx.GpxPointCollection`1
+    name: GpxPointCollection
+    nameWithType: GpxPointCollection
+    fullName: DEM.Net.Lib.Gpx.GpxPointCollection
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.Count*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxPointCollection`1.Count
+  name: Count
+  nameWithType: GpxPointCollection<T>.Count
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.Count
+  nameWithType.vb: GpxPointCollection(Of T).Count
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).Count
+- uid: System.Collections.Generic.ICollection{{T}}.Count
+  commentId: P:System.Collections.Generic.ICollection{`0}.Count
+  parent: System.Collections.Generic.ICollection{{T}}
+  definition: System.Collections.Generic.ICollection`1.Count
+  name: Count
+  nameWithType: ICollection<T>.Count
+  fullName: System.Collections.Generic.ICollection<T>.Count
+  nameWithType.vb: ICollection(Of T).Count
+  fullName.vb: System.Collections.Generic.ICollection(Of T).Count
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: System.Collections.Generic.ICollection`1.Count
+  commentId: P:System.Collections.Generic.ICollection`1.Count
+  isExternal: true
+  name: Count
+  nameWithType: ICollection<T>.Count
+  fullName: System.Collections.Generic.ICollection<T>.Count
+  nameWithType.vb: ICollection(Of T).Count
+  fullName.vb: System.Collections.Generic.ICollection(Of T).Count
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.IndexOf*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxPointCollection`1.IndexOf
+  name: IndexOf
+  nameWithType: GpxPointCollection<T>.IndexOf
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.IndexOf
+  nameWithType.vb: GpxPointCollection(Of T).IndexOf
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).IndexOf
+- uid: System.Collections.Generic.IList{{T}}.IndexOf({T})
+  commentId: M:System.Collections.Generic.IList{`0}.IndexOf(`0)
+  parent: System.Collections.Generic.IList{{T}}
+  definition: System.Collections.Generic.IList`1.IndexOf(`0)
+  name: IndexOf(T)
+  nameWithType: IList<T>.IndexOf(T)
+  fullName: System.Collections.Generic.IList<T>.IndexOf(T)
+  nameWithType.vb: IList(Of T).IndexOf(T)
+  fullName.vb: System.Collections.Generic.IList(Of T).IndexOf(T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IList`1.IndexOf(`0)
+    name: IndexOf
+    nameWithType: IList<T>.IndexOf
+    fullName: System.Collections.Generic.IList<T>.IndexOf
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.Generic.IList`1.IndexOf(`0)
+    name: IndexOf
+    nameWithType: IList(Of T).IndexOf
+    fullName: System.Collections.Generic.IList(Of T).IndexOf
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IList`1.IndexOf(`0)
+  commentId: M:System.Collections.Generic.IList`1.IndexOf(`0)
+  isExternal: true
+  name: IndexOf(T)
+  nameWithType: IList<T>.IndexOf(T)
+  fullName: System.Collections.Generic.IList<T>.IndexOf(T)
+  nameWithType.vb: IList(Of T).IndexOf(T)
+  fullName.vb: System.Collections.Generic.IList(Of T).IndexOf(T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IList`1.IndexOf(`0)
+    name: IndexOf
+    nameWithType: IList<T>.IndexOf
+    fullName: System.Collections.Generic.IList<T>.IndexOf
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.Generic.IList`1.IndexOf(`0)
+    name: IndexOf
+    nameWithType: IList(Of T).IndexOf
+    fullName: System.Collections.Generic.IList(Of T).IndexOf
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.Insert*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxPointCollection`1.Insert
+  name: Insert
+  nameWithType: GpxPointCollection<T>.Insert
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.Insert
+  nameWithType.vb: GpxPointCollection(Of T).Insert
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).Insert
+- uid: System.Collections.Generic.IList{{T}}.Insert(System.Int32,{T})
+  commentId: M:System.Collections.Generic.IList{`0}.Insert(System.Int32,`0)
+  parent: System.Collections.Generic.IList{{T}}
+  definition: System.Collections.Generic.IList`1.Insert(System.Int32,`0)
+  name: Insert(Int32, T)
+  nameWithType: IList<T>.Insert(Int32, T)
+  fullName: System.Collections.Generic.IList<T>.Insert(System.Int32, T)
+  nameWithType.vb: IList(Of T).Insert(Int32, T)
+  fullName.vb: System.Collections.Generic.IList(Of T).Insert(System.Int32, T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IList`1.Insert(System.Int32,`0)
+    name: Insert
+    nameWithType: IList<T>.Insert
+    fullName: System.Collections.Generic.IList<T>.Insert
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.Generic.IList`1.Insert(System.Int32,`0)
+    name: Insert
+    nameWithType: IList(Of T).Insert
+    fullName: System.Collections.Generic.IList(Of T).Insert
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IList`1.Insert(System.Int32,`0)
+  commentId: M:System.Collections.Generic.IList`1.Insert(System.Int32,`0)
+  isExternal: true
+  name: Insert(Int32, T)
+  nameWithType: IList<T>.Insert(Int32, T)
+  fullName: System.Collections.Generic.IList<T>.Insert(System.Int32, T)
+  nameWithType.vb: IList(Of T).Insert(Int32, T)
+  fullName.vb: System.Collections.Generic.IList(Of T).Insert(System.Int32, T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IList`1.Insert(System.Int32,`0)
+    name: Insert
+    nameWithType: IList<T>.Insert
+    fullName: System.Collections.Generic.IList<T>.Insert
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.Generic.IList`1.Insert(System.Int32,`0)
+    name: Insert
+    nameWithType: IList(Of T).Insert
+    fullName: System.Collections.Generic.IList(Of T).Insert
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.RemoveAt*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxPointCollection`1.RemoveAt
+  name: RemoveAt
+  nameWithType: GpxPointCollection<T>.RemoveAt
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.RemoveAt
+  nameWithType.vb: GpxPointCollection(Of T).RemoveAt
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).RemoveAt
+- uid: System.Collections.Generic.IList{{T}}.RemoveAt(System.Int32)
+  commentId: M:System.Collections.Generic.IList{`0}.RemoveAt(System.Int32)
+  parent: System.Collections.Generic.IList{{T}}
+  definition: System.Collections.Generic.IList`1.RemoveAt(System.Int32)
+  name: RemoveAt(Int32)
+  nameWithType: IList<T>.RemoveAt(Int32)
+  fullName: System.Collections.Generic.IList<T>.RemoveAt(System.Int32)
+  nameWithType.vb: IList(Of T).RemoveAt(Int32)
+  fullName.vb: System.Collections.Generic.IList(Of T).RemoveAt(System.Int32)
+  spec.csharp:
+  - uid: System.Collections.Generic.IList`1.RemoveAt(System.Int32)
+    name: RemoveAt
+    nameWithType: IList<T>.RemoveAt
+    fullName: System.Collections.Generic.IList<T>.RemoveAt
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.Generic.IList`1.RemoveAt(System.Int32)
+    name: RemoveAt
+    nameWithType: IList(Of T).RemoveAt
+    fullName: System.Collections.Generic.IList(Of T).RemoveAt
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IList`1.RemoveAt(System.Int32)
+  commentId: M:System.Collections.Generic.IList`1.RemoveAt(System.Int32)
+  isExternal: true
+  name: RemoveAt(Int32)
+  nameWithType: IList<T>.RemoveAt(Int32)
+  fullName: System.Collections.Generic.IList<T>.RemoveAt(System.Int32)
+  nameWithType.vb: IList(Of T).RemoveAt(Int32)
+  fullName.vb: System.Collections.Generic.IList(Of T).RemoveAt(System.Int32)
+  spec.csharp:
+  - uid: System.Collections.Generic.IList`1.RemoveAt(System.Int32)
+    name: RemoveAt
+    nameWithType: IList<T>.RemoveAt
+    fullName: System.Collections.Generic.IList<T>.RemoveAt
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.Generic.IList`1.RemoveAt(System.Int32)
+    name: RemoveAt
+    nameWithType: IList(Of T).RemoveAt
+    fullName: System.Collections.Generic.IList(Of T).RemoveAt
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.Item*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxPointCollection`1.Item
+  name: Item
+  nameWithType: GpxPointCollection<T>.Item
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.Item
+  nameWithType.vb: GpxPointCollection(Of T).Item
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).Item
+- uid: System.Collections.Generic.IList{{T}}.Item(System.Int32)
+  commentId: P:System.Collections.Generic.IList{`0}.Item(System.Int32)
+  parent: System.Collections.Generic.IList{{T}}
+  definition: System.Collections.Generic.IList`1.Item(System.Int32)
+  name: Item[Int32]
+  nameWithType: IList<T>.Item[Int32]
+  fullName: System.Collections.Generic.IList<T>.Item[System.Int32]
+  nameWithType.vb: IList(Of T).Item(Int32)
+  fullName.vb: System.Collections.Generic.IList(Of T).Item(System.Int32)
+  name.vb: Item(Int32)
+  spec.csharp:
+  - uid: System.Collections.Generic.IList`1.Item(System.Int32)
+    name: Item
+    nameWithType: IList<T>.Item
+    fullName: System.Collections.Generic.IList<T>.Item
+    isExternal: true
+  - name: '['
+    nameWithType: '['
+    fullName: '['
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ']'
+    nameWithType: ']'
+    fullName: ']'
+  spec.vb:
+  - uid: System.Collections.Generic.IList`1.Item(System.Int32)
+    name: Item
+    nameWithType: IList(Of T).Item
+    fullName: System.Collections.Generic.IList(Of T).Item
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IList`1.Item(System.Int32)
+  commentId: P:System.Collections.Generic.IList`1.Item(System.Int32)
+  isExternal: true
+  name: Item[Int32]
+  nameWithType: IList<T>.Item[Int32]
+  fullName: System.Collections.Generic.IList<T>.Item[System.Int32]
+  nameWithType.vb: IList(Of T).Item(Int32)
+  fullName.vb: System.Collections.Generic.IList(Of T).Item(System.Int32)
+  name.vb: Item(Int32)
+  spec.csharp:
+  - uid: System.Collections.Generic.IList`1.Item(System.Int32)
+    name: Item
+    nameWithType: IList<T>.Item
+    fullName: System.Collections.Generic.IList<T>.Item
+    isExternal: true
+  - name: '['
+    nameWithType: '['
+    fullName: '['
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ']'
+    nameWithType: ']'
+    fullName: ']'
+  spec.vb:
+  - uid: System.Collections.Generic.IList`1.Item(System.Int32)
+    name: Item
+    nameWithType: IList(Of T).Item
+    fullName: System.Collections.Generic.IList(Of T).Item
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.Add*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxPointCollection`1.Add
+  name: Add
+  nameWithType: GpxPointCollection<T>.Add
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.Add
+  nameWithType.vb: GpxPointCollection(Of T).Add
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).Add
+- uid: System.Collections.Generic.ICollection{{T}}.Add({T})
+  commentId: M:System.Collections.Generic.ICollection{`0}.Add(`0)
+  parent: System.Collections.Generic.ICollection{{T}}
+  definition: System.Collections.Generic.ICollection`1.Add(`0)
+  name: Add(T)
+  nameWithType: ICollection<T>.Add(T)
+  fullName: System.Collections.Generic.ICollection<T>.Add(T)
+  nameWithType.vb: ICollection(Of T).Add(T)
+  fullName.vb: System.Collections.Generic.ICollection(Of T).Add(T)
+  spec.csharp:
+  - uid: System.Collections.Generic.ICollection`1.Add(`0)
+    name: Add
+    nameWithType: ICollection<T>.Add
+    fullName: System.Collections.Generic.ICollection<T>.Add
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.Generic.ICollection`1.Add(`0)
+    name: Add
+    nameWithType: ICollection(Of T).Add
+    fullName: System.Collections.Generic.ICollection(Of T).Add
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.ICollection`1.Add(`0)
+  commentId: M:System.Collections.Generic.ICollection`1.Add(`0)
+  isExternal: true
+  name: Add(T)
+  nameWithType: ICollection<T>.Add(T)
+  fullName: System.Collections.Generic.ICollection<T>.Add(T)
+  nameWithType.vb: ICollection(Of T).Add(T)
+  fullName.vb: System.Collections.Generic.ICollection(Of T).Add(T)
+  spec.csharp:
+  - uid: System.Collections.Generic.ICollection`1.Add(`0)
+    name: Add
+    nameWithType: ICollection<T>.Add
+    fullName: System.Collections.Generic.ICollection<T>.Add
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.Generic.ICollection`1.Add(`0)
+    name: Add
+    nameWithType: ICollection(Of T).Add
+    fullName: System.Collections.Generic.ICollection(Of T).Add
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.Clear*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxPointCollection`1.Clear
+  name: Clear
+  nameWithType: GpxPointCollection<T>.Clear
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.Clear
+  nameWithType.vb: GpxPointCollection(Of T).Clear
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).Clear
+- uid: System.Collections.Generic.ICollection{{T}}.Clear
+  commentId: M:System.Collections.Generic.ICollection{`0}.Clear
+  parent: System.Collections.Generic.ICollection{{T}}
+  definition: System.Collections.Generic.ICollection`1.Clear
+  name: Clear()
+  nameWithType: ICollection<T>.Clear()
+  fullName: System.Collections.Generic.ICollection<T>.Clear()
+  nameWithType.vb: ICollection(Of T).Clear()
+  fullName.vb: System.Collections.Generic.ICollection(Of T).Clear()
+  spec.csharp:
+  - uid: System.Collections.Generic.ICollection`1.Clear
+    name: Clear
+    nameWithType: ICollection<T>.Clear
+    fullName: System.Collections.Generic.ICollection<T>.Clear
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.Generic.ICollection`1.Clear
+    name: Clear
+    nameWithType: ICollection(Of T).Clear
+    fullName: System.Collections.Generic.ICollection(Of T).Clear
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.ICollection`1.Clear
+  commentId: M:System.Collections.Generic.ICollection`1.Clear
+  isExternal: true
+  name: Clear()
+  nameWithType: ICollection<T>.Clear()
+  fullName: System.Collections.Generic.ICollection<T>.Clear()
+  nameWithType.vb: ICollection(Of T).Clear()
+  fullName.vb: System.Collections.Generic.ICollection(Of T).Clear()
+  spec.csharp:
+  - uid: System.Collections.Generic.ICollection`1.Clear
+    name: Clear
+    nameWithType: ICollection<T>.Clear
+    fullName: System.Collections.Generic.ICollection<T>.Clear
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.Generic.ICollection`1.Clear
+    name: Clear
+    nameWithType: ICollection(Of T).Clear
+    fullName: System.Collections.Generic.ICollection(Of T).Clear
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.Contains*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxPointCollection`1.Contains
+  name: Contains
+  nameWithType: GpxPointCollection<T>.Contains
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.Contains
+  nameWithType.vb: GpxPointCollection(Of T).Contains
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).Contains
+- uid: System.Collections.Generic.ICollection{{T}}.Contains({T})
+  commentId: M:System.Collections.Generic.ICollection{`0}.Contains(`0)
+  parent: System.Collections.Generic.ICollection{{T}}
+  definition: System.Collections.Generic.ICollection`1.Contains(`0)
+  name: Contains(T)
+  nameWithType: ICollection<T>.Contains(T)
+  fullName: System.Collections.Generic.ICollection<T>.Contains(T)
+  nameWithType.vb: ICollection(Of T).Contains(T)
+  fullName.vb: System.Collections.Generic.ICollection(Of T).Contains(T)
+  spec.csharp:
+  - uid: System.Collections.Generic.ICollection`1.Contains(`0)
+    name: Contains
+    nameWithType: ICollection<T>.Contains
+    fullName: System.Collections.Generic.ICollection<T>.Contains
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.Generic.ICollection`1.Contains(`0)
+    name: Contains
+    nameWithType: ICollection(Of T).Contains
+    fullName: System.Collections.Generic.ICollection(Of T).Contains
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  nameWithType: Boolean
+  fullName: System.Boolean
+- uid: System.Collections.Generic.ICollection`1.Contains(`0)
+  commentId: M:System.Collections.Generic.ICollection`1.Contains(`0)
+  isExternal: true
+  name: Contains(T)
+  nameWithType: ICollection<T>.Contains(T)
+  fullName: System.Collections.Generic.ICollection<T>.Contains(T)
+  nameWithType.vb: ICollection(Of T).Contains(T)
+  fullName.vb: System.Collections.Generic.ICollection(Of T).Contains(T)
+  spec.csharp:
+  - uid: System.Collections.Generic.ICollection`1.Contains(`0)
+    name: Contains
+    nameWithType: ICollection<T>.Contains
+    fullName: System.Collections.Generic.ICollection<T>.Contains
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.Generic.ICollection`1.Contains(`0)
+    name: Contains
+    nameWithType: ICollection(Of T).Contains
+    fullName: System.Collections.Generic.ICollection(Of T).Contains
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.CopyTo*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxPointCollection`1.CopyTo
+  name: CopyTo
+  nameWithType: GpxPointCollection<T>.CopyTo
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.CopyTo
+  nameWithType.vb: GpxPointCollection(Of T).CopyTo
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).CopyTo
+- uid: System.Collections.Generic.ICollection{{T}}.CopyTo({T}[],System.Int32)
+  commentId: M:System.Collections.Generic.ICollection{`0}.CopyTo(`0[],System.Int32)
+  parent: System.Collections.Generic.ICollection{{T}}
+  definition: System.Collections.Generic.ICollection`1.CopyTo(`0[],System.Int32)
+  name: CopyTo(T[], Int32)
+  nameWithType: ICollection<T>.CopyTo(T[], Int32)
+  fullName: System.Collections.Generic.ICollection<T>.CopyTo(T[], System.Int32)
+  nameWithType.vb: ICollection(Of T).CopyTo(T(), Int32)
+  fullName.vb: System.Collections.Generic.ICollection(Of T).CopyTo(T(), System.Int32)
+  name.vb: CopyTo(T(), Int32)
+  spec.csharp:
+  - uid: System.Collections.Generic.ICollection`1.CopyTo(`0[],System.Int32)
+    name: CopyTo
+    nameWithType: ICollection<T>.CopyTo
+    fullName: System.Collections.Generic.ICollection<T>.CopyTo
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.Generic.ICollection`1.CopyTo(`0[],System.Int32)
+    name: CopyTo
+    nameWithType: ICollection(Of T).CopyTo
+    fullName: System.Collections.Generic.ICollection(Of T).CopyTo
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: '{T}[]'
+  isExternal: true
+  name: T[]
+  nameWithType: T[]
+  fullName: T[]
+  nameWithType.vb: T()
+  fullName.vb: T()
+  name.vb: T()
+  spec.csharp:
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: System.Collections.Generic.ICollection`1.CopyTo(`0[],System.Int32)
+  commentId: M:System.Collections.Generic.ICollection`1.CopyTo(`0[],System.Int32)
+  isExternal: true
+  name: CopyTo(T[], Int32)
+  nameWithType: ICollection<T>.CopyTo(T[], Int32)
+  fullName: System.Collections.Generic.ICollection<T>.CopyTo(T[], System.Int32)
+  nameWithType.vb: ICollection(Of T).CopyTo(T(), Int32)
+  fullName.vb: System.Collections.Generic.ICollection(Of T).CopyTo(T(), System.Int32)
+  name.vb: CopyTo(T(), Int32)
+  spec.csharp:
+  - uid: System.Collections.Generic.ICollection`1.CopyTo(`0[],System.Int32)
+    name: CopyTo
+    nameWithType: ICollection<T>.CopyTo
+    fullName: System.Collections.Generic.ICollection<T>.CopyTo
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.Generic.ICollection`1.CopyTo(`0[],System.Int32)
+    name: CopyTo
+    nameWithType: ICollection(Of T).CopyTo
+    fullName: System.Collections.Generic.ICollection(Of T).CopyTo
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.IsReadOnly*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxPointCollection`1.IsReadOnly
+  name: IsReadOnly
+  nameWithType: GpxPointCollection<T>.IsReadOnly
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.IsReadOnly
+  nameWithType.vb: GpxPointCollection(Of T).IsReadOnly
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).IsReadOnly
+- uid: System.Collections.Generic.ICollection{{T}}.IsReadOnly
+  commentId: P:System.Collections.Generic.ICollection{`0}.IsReadOnly
+  parent: System.Collections.Generic.ICollection{{T}}
+  definition: System.Collections.Generic.ICollection`1.IsReadOnly
+  name: IsReadOnly
+  nameWithType: ICollection<T>.IsReadOnly
+  fullName: System.Collections.Generic.ICollection<T>.IsReadOnly
+  nameWithType.vb: ICollection(Of T).IsReadOnly
+  fullName.vb: System.Collections.Generic.ICollection(Of T).IsReadOnly
+- uid: System.Collections.Generic.ICollection`1.IsReadOnly
+  commentId: P:System.Collections.Generic.ICollection`1.IsReadOnly
+  isExternal: true
+  name: IsReadOnly
+  nameWithType: ICollection<T>.IsReadOnly
+  fullName: System.Collections.Generic.ICollection<T>.IsReadOnly
+  nameWithType.vb: ICollection(Of T).IsReadOnly
+  fullName.vb: System.Collections.Generic.ICollection(Of T).IsReadOnly
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.Remove*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxPointCollection`1.Remove
+  name: Remove
+  nameWithType: GpxPointCollection<T>.Remove
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.Remove
+  nameWithType.vb: GpxPointCollection(Of T).Remove
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).Remove
+- uid: System.Collections.Generic.ICollection{{T}}.Remove({T})
+  commentId: M:System.Collections.Generic.ICollection{`0}.Remove(`0)
+  parent: System.Collections.Generic.ICollection{{T}}
+  definition: System.Collections.Generic.ICollection`1.Remove(`0)
+  name: Remove(T)
+  nameWithType: ICollection<T>.Remove(T)
+  fullName: System.Collections.Generic.ICollection<T>.Remove(T)
+  nameWithType.vb: ICollection(Of T).Remove(T)
+  fullName.vb: System.Collections.Generic.ICollection(Of T).Remove(T)
+  spec.csharp:
+  - uid: System.Collections.Generic.ICollection`1.Remove(`0)
+    name: Remove
+    nameWithType: ICollection<T>.Remove
+    fullName: System.Collections.Generic.ICollection<T>.Remove
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.Generic.ICollection`1.Remove(`0)
+    name: Remove
+    nameWithType: ICollection(Of T).Remove
+    fullName: System.Collections.Generic.ICollection(Of T).Remove
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.ICollection`1.Remove(`0)
+  commentId: M:System.Collections.Generic.ICollection`1.Remove(`0)
+  isExternal: true
+  name: Remove(T)
+  nameWithType: ICollection<T>.Remove(T)
+  fullName: System.Collections.Generic.ICollection<T>.Remove(T)
+  nameWithType.vb: ICollection(Of T).Remove(T)
+  fullName.vb: System.Collections.Generic.ICollection(Of T).Remove(T)
+  spec.csharp:
+  - uid: System.Collections.Generic.ICollection`1.Remove(`0)
+    name: Remove
+    nameWithType: ICollection<T>.Remove
+    fullName: System.Collections.Generic.ICollection<T>.Remove
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.Generic.ICollection`1.Remove(`0)
+    name: Remove
+    nameWithType: ICollection(Of T).Remove
+    fullName: System.Collections.Generic.ICollection(Of T).Remove
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.GetEnumerator*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxPointCollection`1.GetEnumerator
+  name: GetEnumerator
+  nameWithType: GpxPointCollection<T>.GetEnumerator
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.GetEnumerator
+  nameWithType.vb: GpxPointCollection(Of T).GetEnumerator
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).GetEnumerator
+- uid: System.Collections.Generic.IEnumerable{{T}}.GetEnumerator
+  commentId: M:System.Collections.Generic.IEnumerable{`0}.GetEnumerator
+  parent: System.Collections.Generic.IEnumerable{{T}}
+  definition: System.Collections.Generic.IEnumerable`1.GetEnumerator
+  name: GetEnumerator()
+  nameWithType: IEnumerable<T>.GetEnumerator()
+  fullName: System.Collections.Generic.IEnumerable<T>.GetEnumerator()
+  nameWithType.vb: IEnumerable(Of T).GetEnumerator()
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T).GetEnumerator()
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1.GetEnumerator
+    name: GetEnumerator
+    nameWithType: IEnumerable<T>.GetEnumerator
+    fullName: System.Collections.Generic.IEnumerable<T>.GetEnumerator
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1.GetEnumerator
+    name: GetEnumerator
+    nameWithType: IEnumerable(Of T).GetEnumerator
+    fullName: System.Collections.Generic.IEnumerable(Of T).GetEnumerator
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IEnumerator{{T}}
+  commentId: T:System.Collections.Generic.IEnumerator{`0}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerator`1
+  name: IEnumerator<T>
+  nameWithType: IEnumerator<T>
+  fullName: System.Collections.Generic.IEnumerator<T>
+  nameWithType.vb: IEnumerator(Of T)
+  fullName.vb: System.Collections.Generic.IEnumerator(Of T)
+  name.vb: IEnumerator(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerator`1
+    name: IEnumerator
+    nameWithType: IEnumerator
+    fullName: System.Collections.Generic.IEnumerator
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerator`1
+    name: IEnumerator
+    nameWithType: IEnumerator
+    fullName: System.Collections.Generic.IEnumerator
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IEnumerable`1.GetEnumerator
+  commentId: M:System.Collections.Generic.IEnumerable`1.GetEnumerator
+  isExternal: true
+  name: GetEnumerator()
+  nameWithType: IEnumerable<T>.GetEnumerator()
+  fullName: System.Collections.Generic.IEnumerable<T>.GetEnumerator()
+  nameWithType.vb: IEnumerable(Of T).GetEnumerator()
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T).GetEnumerator()
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1.GetEnumerator
+    name: GetEnumerator
+    nameWithType: IEnumerable<T>.GetEnumerator
+    fullName: System.Collections.Generic.IEnumerable<T>.GetEnumerator
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1.GetEnumerator
+    name: GetEnumerator
+    nameWithType: IEnumerable(Of T).GetEnumerator
+    fullName: System.Collections.Generic.IEnumerable(Of T).GetEnumerator
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IEnumerator`1
+  commentId: T:System.Collections.Generic.IEnumerator`1
+  isExternal: true
+  name: IEnumerator<T>
+  nameWithType: IEnumerator<T>
+  fullName: System.Collections.Generic.IEnumerator<T>
+  nameWithType.vb: IEnumerator(Of T)
+  fullName.vb: System.Collections.Generic.IEnumerator(Of T)
+  name.vb: IEnumerator(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerator`1
+    name: IEnumerator
+    nameWithType: IEnumerator
+    fullName: System.Collections.Generic.IEnumerator
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerator`1
+    name: IEnumerator
+    nameWithType: IEnumerator
+    fullName: System.Collections.Generic.IEnumerator
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Gpx.GpxPointCollection`1.System#Collections#IEnumerable#GetEnumerator*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxPointCollection`1.System#Collections#IEnumerable#GetEnumerator
+  name: IEnumerable.GetEnumerator
+  nameWithType: GpxPointCollection<T>.IEnumerable.GetEnumerator
+  fullName: DEM.Net.Lib.Gpx.GpxPointCollection<T>.System.Collections.IEnumerable.GetEnumerator
+  nameWithType.vb: GpxPointCollection(Of T).System.Collections.IEnumerable.GetEnumerator
+  fullName.vb: DEM.Net.Lib.Gpx.GpxPointCollection(Of T).System.Collections.IEnumerable.GetEnumerator
+  name.vb: System.Collections.IEnumerable.GetEnumerator
+- uid: System.Collections.IEnumerable.GetEnumerator
+  commentId: M:System.Collections.IEnumerable.GetEnumerator
+  parent: System.Collections.IEnumerable
+  isExternal: true
+  name: GetEnumerator()
+  nameWithType: IEnumerable.GetEnumerator()
+  fullName: System.Collections.IEnumerable.GetEnumerator()
+  spec.csharp:
+  - uid: System.Collections.IEnumerable.GetEnumerator
+    name: GetEnumerator
+    nameWithType: IEnumerable.GetEnumerator
+    fullName: System.Collections.IEnumerable.GetEnumerator
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.IEnumerable.GetEnumerator
+    name: GetEnumerator
+    nameWithType: IEnumerable.GetEnumerator
+    fullName: System.Collections.IEnumerable.GetEnumerator
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.IEnumerator
+  commentId: T:System.Collections.IEnumerator
+  parent: System.Collections
+  isExternal: true
+  name: IEnumerator
+  nameWithType: IEnumerator
+  fullName: System.Collections.IEnumerator

@@ -1,0 +1,623 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.DEMFileFormat
+  commentId: T:DEM.Net.Lib.DEMFileFormat
+  id: DEMFileFormat
+  parent: DEM.Net.Lib
+  children:
+  - DEM.Net.Lib.DEMFileFormat.#ctor
+  - DEM.Net.Lib.DEMFileFormat.FileExtension
+  - DEM.Net.Lib.DEMFileFormat.GEOTIFF
+  - DEM.Net.Lib.DEMFileFormat.Name
+  - DEM.Net.Lib.DEMFileFormat.SRTM_HGT
+  - DEM.Net.Lib.DEMFileFormat.ToString
+  langs:
+  - csharp
+  - vb
+  name: DEMFileFormat
+  nameWithType: DEMFileFormat
+  fullName: DEM.Net.Lib.DEMFileFormat
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/DEMFileFormat.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: DEMFileFormat
+    path: ../DEM.Net.Lib/Model/DEMFileFormat.cs
+    startLine: 9
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: >-
+      [ZeroFormattable]
+
+      public class DEMFileFormat
+    content.vb: >-
+      <ZeroFormattable>
+
+      Public Class DEMFileFormat
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  attributes:
+  - type: ZeroFormatter.ZeroFormattableAttribute
+    ctor: ZeroFormatter.ZeroFormattableAttribute.#ctor
+    arguments: []
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.DEMFileFormat.Name
+  commentId: P:DEM.Net.Lib.DEMFileFormat.Name
+  id: Name
+  parent: DEM.Net.Lib.DEMFileFormat
+  langs:
+  - csharp
+  - vb
+  name: Name
+  nameWithType: DEMFileFormat.Name
+  fullName: DEM.Net.Lib.DEMFileFormat.Name
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/DEMFileFormat.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Name
+    path: ../DEM.Net.Lib/Model/DEMFileFormat.cs
+    startLine: 13
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: >-
+      [Index(0)]
+
+      public virtual string Name { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: >-
+      <Index(0)>
+
+      Public Overridable Property Name As String
+  overload: DEM.Net.Lib.DEMFileFormat.Name*
+  attributes:
+  - type: ZeroFormatter.IndexAttribute
+    ctor: ZeroFormatter.IndexAttribute.#ctor(System.Int32)
+    arguments:
+    - type: System.Int32
+      value: 0
+  modifiers.csharp:
+  - public
+  - virtual
+  - get
+  - set
+  modifiers.vb:
+  - Public
+  - Overridable
+- uid: DEM.Net.Lib.DEMFileFormat.FileExtension
+  commentId: P:DEM.Net.Lib.DEMFileFormat.FileExtension
+  id: FileExtension
+  parent: DEM.Net.Lib.DEMFileFormat
+  langs:
+  - csharp
+  - vb
+  name: FileExtension
+  nameWithType: DEMFileFormat.FileExtension
+  fullName: DEM.Net.Lib.DEMFileFormat.FileExtension
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/DEMFileFormat.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: FileExtension
+    path: ../DEM.Net.Lib/Model/DEMFileFormat.cs
+    startLine: 17
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: >-
+      [Index(1)]
+
+      public virtual string FileExtension { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: >-
+      <Index(1)>
+
+      Public Overridable Property FileExtension As String
+  overload: DEM.Net.Lib.DEMFileFormat.FileExtension*
+  attributes:
+  - type: ZeroFormatter.IndexAttribute
+    ctor: ZeroFormatter.IndexAttribute.#ctor(System.Int32)
+    arguments:
+    - type: System.Int32
+      value: 1
+  modifiers.csharp:
+  - public
+  - virtual
+  - get
+  - set
+  modifiers.vb:
+  - Public
+  - Overridable
+- uid: DEM.Net.Lib.DEMFileFormat.SRTM_HGT
+  commentId: F:DEM.Net.Lib.DEMFileFormat.SRTM_HGT
+  id: SRTM_HGT
+  parent: DEM.Net.Lib.DEMFileFormat
+  langs:
+  - csharp
+  - vb
+  name: SRTM_HGT
+  nameWithType: DEMFileFormat.SRTM_HGT
+  fullName: DEM.Net.Lib.DEMFileFormat.SRTM_HGT
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/DEMFileFormat.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: SRTM_HGT
+    path: ../DEM.Net.Lib/Model/DEMFileFormat.cs
+    startLine: 20
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public static readonly DEMFileFormat SRTM_HGT
+    return:
+      type: DEM.Net.Lib.DEMFileFormat
+    content.vb: Public Shared ReadOnly SRTM_HGT As DEMFileFormat
+  modifiers.csharp:
+  - public
+  - static
+  - readonly
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: DEM.Net.Lib.DEMFileFormat.GEOTIFF
+  commentId: F:DEM.Net.Lib.DEMFileFormat.GEOTIFF
+  id: GEOTIFF
+  parent: DEM.Net.Lib.DEMFileFormat
+  langs:
+  - csharp
+  - vb
+  name: GEOTIFF
+  nameWithType: DEMFileFormat.GEOTIFF
+  fullName: DEM.Net.Lib.DEMFileFormat.GEOTIFF
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/DEMFileFormat.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GEOTIFF
+    path: ../DEM.Net.Lib/Model/DEMFileFormat.cs
+    startLine: 21
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public static readonly DEMFileFormat GEOTIFF
+    return:
+      type: DEM.Net.Lib.DEMFileFormat
+    content.vb: Public Shared ReadOnly GEOTIFF As DEMFileFormat
+  modifiers.csharp:
+  - public
+  - static
+  - readonly
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: DEM.Net.Lib.DEMFileFormat.#ctor
+  commentId: M:DEM.Net.Lib.DEMFileFormat.#ctor
+  id: '#ctor'
+  parent: DEM.Net.Lib.DEMFileFormat
+  langs:
+  - csharp
+  - vb
+  name: DEMFileFormat()
+  nameWithType: DEMFileFormat.DEMFileFormat()
+  fullName: DEM.Net.Lib.DEMFileFormat.DEMFileFormat()
+  type: Constructor
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/DEMFileFormat.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: .ctor
+    path: ../DEM.Net.Lib/Model/DEMFileFormat.cs
+    startLine: 29
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public DEMFileFormat()
+    content.vb: Public Sub New
+  overload: DEM.Net.Lib.DEMFileFormat.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.DEMFileFormat.ToString
+  commentId: M:DEM.Net.Lib.DEMFileFormat.ToString
+  id: ToString
+  parent: DEM.Net.Lib.DEMFileFormat
+  langs:
+  - csharp
+  - vb
+  name: ToString()
+  nameWithType: DEMFileFormat.ToString()
+  fullName: DEM.Net.Lib.DEMFileFormat.ToString()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/DEMFileFormat.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ToString
+    path: ../DEM.Net.Lib/Model/DEMFileFormat.cs
+    startLine: 34
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public override string ToString()
+    return:
+      type: System.String
+    content.vb: Public Overrides Function ToString As String
+  overridden: System.Object.ToString
+  overload: DEM.Net.Lib.DEMFileFormat.ToString*
+  modifiers.csharp:
+  - public
+  - override
+  modifiers.vb:
+  - Public
+  - Overrides
+references:
+- uid: DEM.Net.Lib
+  commentId: N:DEM.Net.Lib
+  name: DEM.Net.Lib
+  nameWithType: DEM.Net.Lib
+  fullName: DEM.Net.Lib
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.DEMFileFormat.Name*
+  commentId: Overload:DEM.Net.Lib.DEMFileFormat.Name
+  name: Name
+  nameWithType: DEMFileFormat.Name
+  fullName: DEM.Net.Lib.DEMFileFormat.Name
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: DEM.Net.Lib.DEMFileFormat.FileExtension*
+  commentId: Overload:DEM.Net.Lib.DEMFileFormat.FileExtension
+  name: FileExtension
+  nameWithType: DEMFileFormat.FileExtension
+  fullName: DEM.Net.Lib.DEMFileFormat.FileExtension
+- uid: DEM.Net.Lib.DEMFileFormat
+  commentId: T:DEM.Net.Lib.DEMFileFormat
+  parent: DEM.Net.Lib
+  name: DEMFileFormat
+  nameWithType: DEMFileFormat
+  fullName: DEM.Net.Lib.DEMFileFormat
+- uid: DEM.Net.Lib.DEMFileFormat.#ctor*
+  commentId: Overload:DEM.Net.Lib.DEMFileFormat.#ctor
+  name: DEMFileFormat
+  nameWithType: DEMFileFormat.DEMFileFormat
+  fullName: DEM.Net.Lib.DEMFileFormat.DEMFileFormat
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.DEMFileFormat.ToString*
+  commentId: Overload:DEM.Net.Lib.DEMFileFormat.ToString
+  name: ToString
+  nameWithType: DEMFileFormat.ToString
+  fullName: DEM.Net.Lib.DEMFileFormat.ToString

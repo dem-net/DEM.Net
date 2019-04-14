@@ -1,0 +1,635 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Reprojection
+  commentId: T:DEM.Net.Lib.Reprojection
+  id: Reprojection
+  parent: DEM.Net.Lib
+  children:
+  - DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian(DEM.Net.Lib.HeightMap)
+  - DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian(System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint})
+  - DEM.Net.Lib.Reprojection.ReprojectTo(DEM.Net.Lib.HeightMap,System.Int32,System.Int32)
+  - DEM.Net.Lib.Reprojection.ReprojectTo(System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint},System.Int32,System.Int32)
+  langs:
+  - csharp
+  - vb
+  name: Reprojection
+  nameWithType: Reprojection
+  fullName: DEM.Net.Lib.Reprojection
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Helpers/Reprojection.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Reprojection
+    path: ../DEM.Net.Lib/Helpers/Reprojection.cs
+    startLine: 11
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public static class Reprojection
+    content.vb: Public Module Reprojection
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - static
+  - class
+  modifiers.vb:
+  - Public
+  - Module
+- uid: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian(DEM.Net.Lib.HeightMap)
+  commentId: M:DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian(DEM.Net.Lib.HeightMap)
+  id: ReprojectGeodeticToCartesian(DEM.Net.Lib.HeightMap)
+  isExtensionMethod: true
+  parent: DEM.Net.Lib.Reprojection
+  langs:
+  - csharp
+  - vb
+  name: ReprojectGeodeticToCartesian(HeightMap)
+  nameWithType: Reprojection.ReprojectGeodeticToCartesian(HeightMap)
+  fullName: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian(DEM.Net.Lib.HeightMap)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Helpers/Reprojection.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ReprojectGeodeticToCartesian
+    path: ../DEM.Net.Lib/Helpers/Reprojection.cs
+    startLine: 17
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public static HeightMap ReprojectGeodeticToCartesian(this HeightMap heightMap)
+    parameters:
+    - id: heightMap
+      type: DEM.Net.Lib.HeightMap
+    return:
+      type: DEM.Net.Lib.HeightMap
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Function ReprojectGeodeticToCartesian(heightMap As HeightMap) As HeightMap
+  overload: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: DEM.Net.Lib.Reprojection.ReprojectTo(DEM.Net.Lib.HeightMap,System.Int32,System.Int32)
+  commentId: M:DEM.Net.Lib.Reprojection.ReprojectTo(DEM.Net.Lib.HeightMap,System.Int32,System.Int32)
+  id: ReprojectTo(DEM.Net.Lib.HeightMap,System.Int32,System.Int32)
+  isExtensionMethod: true
+  parent: DEM.Net.Lib.Reprojection
+  langs:
+  - csharp
+  - vb
+  name: ReprojectTo(HeightMap, Int32, Int32)
+  nameWithType: Reprojection.ReprojectTo(HeightMap, Int32, Int32)
+  fullName: DEM.Net.Lib.Reprojection.ReprojectTo(DEM.Net.Lib.HeightMap, System.Int32, System.Int32)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Helpers/Reprojection.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ReprojectTo
+    path: ../DEM.Net.Lib/Helpers/Reprojection.cs
+    startLine: 24
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public static HeightMap ReprojectTo(this HeightMap heightMap, int sourceEpsgCode, int destinationEpsgCode)
+    parameters:
+    - id: heightMap
+      type: DEM.Net.Lib.HeightMap
+    - id: sourceEpsgCode
+      type: System.Int32
+    - id: destinationEpsgCode
+      type: System.Int32
+    return:
+      type: DEM.Net.Lib.HeightMap
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Function ReprojectTo(heightMap As HeightMap, sourceEpsgCode As Integer, destinationEpsgCode As Integer) As HeightMap
+  overload: DEM.Net.Lib.Reprojection.ReprojectTo*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian(System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint})
+  commentId: M:DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian(System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint})
+  id: ReprojectGeodeticToCartesian(System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint})
+  isExtensionMethod: true
+  parent: DEM.Net.Lib.Reprojection
+  langs:
+  - csharp
+  - vb
+  name: ReprojectGeodeticToCartesian(IEnumerable<GeoPoint>)
+  nameWithType: Reprojection.ReprojectGeodeticToCartesian(IEnumerable<GeoPoint>)
+  fullName: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian(System.Collections.Generic.IEnumerable<DEM.Net.Lib.GeoPoint>)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Helpers/Reprojection.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ReprojectGeodeticToCartesian
+    path: ../DEM.Net.Lib/Helpers/Reprojection.cs
+    startLine: 33
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public static IEnumerable<GeoPoint> ReprojectGeodeticToCartesian(this IEnumerable<GeoPoint> points)
+    parameters:
+    - id: points
+      type: System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint}
+    return:
+      type: System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint}
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Function ReprojectGeodeticToCartesian(points As IEnumerable(Of GeoPoint)) As IEnumerable(Of GeoPoint)
+  overload: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian*
+  nameWithType.vb: Reprojection.ReprojectGeodeticToCartesian(IEnumerable(Of GeoPoint))
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian(System.Collections.Generic.IEnumerable(Of DEM.Net.Lib.GeoPoint))
+  name.vb: ReprojectGeodeticToCartesian(IEnumerable(Of GeoPoint))
+- uid: DEM.Net.Lib.Reprojection.ReprojectTo(System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint},System.Int32,System.Int32)
+  commentId: M:DEM.Net.Lib.Reprojection.ReprojectTo(System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint},System.Int32,System.Int32)
+  id: ReprojectTo(System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint},System.Int32,System.Int32)
+  isExtensionMethod: true
+  parent: DEM.Net.Lib.Reprojection
+  langs:
+  - csharp
+  - vb
+  name: ReprojectTo(IEnumerable<GeoPoint>, Int32, Int32)
+  nameWithType: Reprojection.ReprojectTo(IEnumerable<GeoPoint>, Int32, Int32)
+  fullName: DEM.Net.Lib.Reprojection.ReprojectTo(System.Collections.Generic.IEnumerable<DEM.Net.Lib.GeoPoint>, System.Int32, System.Int32)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Helpers/Reprojection.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ReprojectTo
+    path: ../DEM.Net.Lib/Helpers/Reprojection.cs
+    startLine: 38
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public static IEnumerable<GeoPoint> ReprojectTo(this IEnumerable<GeoPoint> points, int sourceEpsgCode, int destinationEpsgCode)
+    parameters:
+    - id: points
+      type: System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint}
+    - id: sourceEpsgCode
+      type: System.Int32
+    - id: destinationEpsgCode
+      type: System.Int32
+    return:
+      type: System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint}
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Function ReprojectTo(points As IEnumerable(Of GeoPoint), sourceEpsgCode As Integer, destinationEpsgCode As Integer) As IEnumerable(Of GeoPoint)
+  overload: DEM.Net.Lib.Reprojection.ReprojectTo*
+  nameWithType.vb: Reprojection.ReprojectTo(IEnumerable(Of GeoPoint), Int32, Int32)
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: DEM.Net.Lib.Reprojection.ReprojectTo(System.Collections.Generic.IEnumerable(Of DEM.Net.Lib.GeoPoint), System.Int32, System.Int32)
+  name.vb: ReprojectTo(IEnumerable(Of GeoPoint), Int32, Int32)
+references:
+- uid: DEM.Net.Lib
+  commentId: N:DEM.Net.Lib
+  name: DEM.Net.Lib
+  nameWithType: DEM.Net.Lib
+  fullName: DEM.Net.Lib
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian*
+  commentId: Overload:DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian
+  name: ReprojectGeodeticToCartesian
+  nameWithType: Reprojection.ReprojectGeodeticToCartesian
+  fullName: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian
+- uid: DEM.Net.Lib.HeightMap
+  commentId: T:DEM.Net.Lib.HeightMap
+  parent: DEM.Net.Lib
+  name: HeightMap
+  nameWithType: HeightMap
+  fullName: DEM.Net.Lib.HeightMap
+- uid: DEM.Net.Lib.Reprojection.ReprojectTo*
+  commentId: Overload:DEM.Net.Lib.Reprojection.ReprojectTo
+  name: ReprojectTo
+  nameWithType: Reprojection.ReprojectTo
+  fullName: DEM.Net.Lib.Reprojection.ReprojectTo
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint}
+  commentId: T:System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  name: IEnumerable<GeoPoint>
+  nameWithType: IEnumerable<GeoPoint>
+  fullName: System.Collections.Generic.IEnumerable<DEM.Net.Lib.GeoPoint>
+  nameWithType.vb: IEnumerable(Of GeoPoint)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of DEM.Net.Lib.GeoPoint)
+  name.vb: IEnumerable(Of GeoPoint)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: DEM.Net.Lib.GeoPoint
+    name: GeoPoint
+    nameWithType: GeoPoint
+    fullName: DEM.Net.Lib.GeoPoint
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: DEM.Net.Lib.GeoPoint
+    name: GeoPoint
+    nameWithType: GeoPoint
+    fullName: DEM.Net.Lib.GeoPoint
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IEnumerable`1
+  commentId: T:System.Collections.Generic.IEnumerable`1
+  isExternal: true
+  name: IEnumerable<T>
+  nameWithType: IEnumerable<T>
+  fullName: System.Collections.Generic.IEnumerable<T>
+  nameWithType.vb: IEnumerable(Of T)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
+  name.vb: IEnumerable(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic

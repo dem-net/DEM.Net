@@ -1,0 +1,1344 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.GeoPoint
+  commentId: T:DEM.Net.Lib.GeoPoint
+  id: GeoPoint
+  parent: DEM.Net.Lib
+  children:
+  - DEM.Net.Lib.GeoPoint.#ctor
+  - DEM.Net.Lib.GeoPoint.#ctor(System.Double,System.Double)
+  - DEM.Net.Lib.GeoPoint.#ctor(System.Double,System.Double,System.Single,System.Nullable{System.Int32},System.Nullable{System.Int32})
+  - DEM.Net.Lib.GeoPoint.Clone
+  - DEM.Net.Lib.GeoPoint.DistanceFromOriginMeters
+  - DEM.Net.Lib.GeoPoint.DistanceSquaredTo(DEM.Net.Lib.GeoPoint)
+  - DEM.Net.Lib.GeoPoint.Elevation
+  - DEM.Net.Lib.GeoPoint.Latitude
+  - DEM.Net.Lib.GeoPoint.Longitude
+  - DEM.Net.Lib.GeoPoint.TileId
+  - DEM.Net.Lib.GeoPoint.ToString
+  - DEM.Net.Lib.GeoPoint.XIndex
+  - DEM.Net.Lib.GeoPoint.YIndex
+  - DEM.Net.Lib.GeoPoint.Zero
+  langs:
+  - csharp
+  - vb
+  name: GeoPoint
+  nameWithType: GeoPoint
+  fullName: DEM.Net.Lib.GeoPoint
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoPoint.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GeoPoint
+    path: ../DEM.Net.Lib/Model/GeoPoint.cs
+    startLine: 10
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: >-
+      [ZeroFormattable]
+
+      [Serializable]
+
+      public class GeoPoint
+    content.vb: >-
+      <ZeroFormattable>
+
+      <Serializable>
+
+      Public Class GeoPoint
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  extensionMethods:
+  - DEM.Net.Lib.GeoPoint.DEM.Net.Lib.VectorsExtensions.ToVector3
+  - DEM.Net.Lib.GeoPoint.DEM.Net.Lib.GeometryService.DistanceTo(DEM.Net.Lib.GeoPoint)
+  attributes:
+  - type: ZeroFormatter.ZeroFormattableAttribute
+    ctor: ZeroFormatter.ZeroFormattableAttribute.#ctor
+    arguments: []
+  - type: System.SerializableAttribute
+    ctor: System.SerializableAttribute.#ctor
+    arguments: []
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.GeoPoint.Latitude
+  commentId: P:DEM.Net.Lib.GeoPoint.Latitude
+  id: Latitude
+  parent: DEM.Net.Lib.GeoPoint
+  langs:
+  - csharp
+  - vb
+  name: Latitude
+  nameWithType: GeoPoint.Latitude
+  fullName: DEM.Net.Lib.GeoPoint.Latitude
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoPoint.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Latitude
+    path: ../DEM.Net.Lib/Model/GeoPoint.cs
+    startLine: 14
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: >-
+      [Index(0)]
+
+      public virtual double Latitude { get; set; }
+    parameters: []
+    return:
+      type: System.Double
+    content.vb: >-
+      <Index(0)>
+
+      Public Overridable Property Latitude As Double
+  overload: DEM.Net.Lib.GeoPoint.Latitude*
+  attributes:
+  - type: ZeroFormatter.IndexAttribute
+    ctor: ZeroFormatter.IndexAttribute.#ctor(System.Int32)
+    arguments:
+    - type: System.Int32
+      value: 0
+  modifiers.csharp:
+  - public
+  - virtual
+  - get
+  - set
+  modifiers.vb:
+  - Public
+  - Overridable
+- uid: DEM.Net.Lib.GeoPoint.Longitude
+  commentId: P:DEM.Net.Lib.GeoPoint.Longitude
+  id: Longitude
+  parent: DEM.Net.Lib.GeoPoint
+  langs:
+  - csharp
+  - vb
+  name: Longitude
+  nameWithType: GeoPoint.Longitude
+  fullName: DEM.Net.Lib.GeoPoint.Longitude
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoPoint.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Longitude
+    path: ../DEM.Net.Lib/Model/GeoPoint.cs
+    startLine: 16
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: >-
+      [Index(1)]
+
+      public virtual double Longitude { get; set; }
+    parameters: []
+    return:
+      type: System.Double
+    content.vb: >-
+      <Index(1)>
+
+      Public Overridable Property Longitude As Double
+  overload: DEM.Net.Lib.GeoPoint.Longitude*
+  attributes:
+  - type: ZeroFormatter.IndexAttribute
+    ctor: ZeroFormatter.IndexAttribute.#ctor(System.Int32)
+    arguments:
+    - type: System.Int32
+      value: 1
+  modifiers.csharp:
+  - public
+  - virtual
+  - get
+  - set
+  modifiers.vb:
+  - Public
+  - Overridable
+- uid: DEM.Net.Lib.GeoPoint.XIndex
+  commentId: P:DEM.Net.Lib.GeoPoint.XIndex
+  id: XIndex
+  parent: DEM.Net.Lib.GeoPoint
+  langs:
+  - csharp
+  - vb
+  name: XIndex
+  nameWithType: GeoPoint.XIndex
+  fullName: DEM.Net.Lib.GeoPoint.XIndex
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoPoint.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: XIndex
+    path: ../DEM.Net.Lib/Model/GeoPoint.cs
+    startLine: 18
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: >-
+      [Index(2)]
+
+      public virtual int? XIndex { get; set; }
+    parameters: []
+    return:
+      type: System.Nullable{System.Int32}
+    content.vb: >-
+      <Index(2)>
+
+      Public Overridable Property XIndex As Integer?
+  overload: DEM.Net.Lib.GeoPoint.XIndex*
+  attributes:
+  - type: ZeroFormatter.IndexAttribute
+    ctor: ZeroFormatter.IndexAttribute.#ctor(System.Int32)
+    arguments:
+    - type: System.Int32
+      value: 2
+  modifiers.csharp:
+  - public
+  - virtual
+  - get
+  - set
+  modifiers.vb:
+  - Public
+  - Overridable
+- uid: DEM.Net.Lib.GeoPoint.YIndex
+  commentId: P:DEM.Net.Lib.GeoPoint.YIndex
+  id: YIndex
+  parent: DEM.Net.Lib.GeoPoint
+  langs:
+  - csharp
+  - vb
+  name: YIndex
+  nameWithType: GeoPoint.YIndex
+  fullName: DEM.Net.Lib.GeoPoint.YIndex
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoPoint.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: YIndex
+    path: ../DEM.Net.Lib/Model/GeoPoint.cs
+    startLine: 20
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: >-
+      [Index(3)]
+
+      public virtual int? YIndex { get; set; }
+    parameters: []
+    return:
+      type: System.Nullable{System.Int32}
+    content.vb: >-
+      <Index(3)>
+
+      Public Overridable Property YIndex As Integer?
+  overload: DEM.Net.Lib.GeoPoint.YIndex*
+  attributes:
+  - type: ZeroFormatter.IndexAttribute
+    ctor: ZeroFormatter.IndexAttribute.#ctor(System.Int32)
+    arguments:
+    - type: System.Int32
+      value: 3
+  modifiers.csharp:
+  - public
+  - virtual
+  - get
+  - set
+  modifiers.vb:
+  - Public
+  - Overridable
+- uid: DEM.Net.Lib.GeoPoint.Elevation
+  commentId: P:DEM.Net.Lib.GeoPoint.Elevation
+  id: Elevation
+  parent: DEM.Net.Lib.GeoPoint
+  langs:
+  - csharp
+  - vb
+  name: Elevation
+  nameWithType: GeoPoint.Elevation
+  fullName: DEM.Net.Lib.GeoPoint.Elevation
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoPoint.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Elevation
+    path: ../DEM.Net.Lib/Model/GeoPoint.cs
+    startLine: 22
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: >-
+      [Index(4)]
+
+      public virtual double? Elevation { get; set; }
+    parameters: []
+    return:
+      type: System.Nullable{System.Double}
+    content.vb: >-
+      <Index(4)>
+
+      Public Overridable Property Elevation As Double?
+  overload: DEM.Net.Lib.GeoPoint.Elevation*
+  attributes:
+  - type: ZeroFormatter.IndexAttribute
+    ctor: ZeroFormatter.IndexAttribute.#ctor(System.Int32)
+    arguments:
+    - type: System.Int32
+      value: 4
+  modifiers.csharp:
+  - public
+  - virtual
+  - get
+  - set
+  modifiers.vb:
+  - Public
+  - Overridable
+- uid: DEM.Net.Lib.GeoPoint.TileId
+  commentId: P:DEM.Net.Lib.GeoPoint.TileId
+  id: TileId
+  parent: DEM.Net.Lib.GeoPoint
+  langs:
+  - csharp
+  - vb
+  name: TileId
+  nameWithType: GeoPoint.TileId
+  fullName: DEM.Net.Lib.GeoPoint.TileId
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoPoint.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: TileId
+    path: ../DEM.Net.Lib/Model/GeoPoint.cs
+    startLine: 24
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: >-
+      [Index(5)]
+
+      public virtual string TileId { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: >-
+      <Index(5)>
+
+      Public Overridable Property TileId As String
+  overload: DEM.Net.Lib.GeoPoint.TileId*
+  attributes:
+  - type: ZeroFormatter.IndexAttribute
+    ctor: ZeroFormatter.IndexAttribute.#ctor(System.Int32)
+    arguments:
+    - type: System.Int32
+      value: 5
+  modifiers.csharp:
+  - public
+  - virtual
+  - get
+  - set
+  modifiers.vb:
+  - Public
+  - Overridable
+- uid: DEM.Net.Lib.GeoPoint.DistanceFromOriginMeters
+  commentId: P:DEM.Net.Lib.GeoPoint.DistanceFromOriginMeters
+  id: DistanceFromOriginMeters
+  parent: DEM.Net.Lib.GeoPoint
+  langs:
+  - csharp
+  - vb
+  name: DistanceFromOriginMeters
+  nameWithType: GeoPoint.DistanceFromOriginMeters
+  fullName: DEM.Net.Lib.GeoPoint.DistanceFromOriginMeters
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoPoint.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: DistanceFromOriginMeters
+    path: ../DEM.Net.Lib/Model/GeoPoint.cs
+    startLine: 31
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  summary: "\nWhen this point is part of a List and ComputePointsDistances is called, this field\nstores the distance from this point to origin point in meters.\n"
+  example: []
+  syntax:
+    content: >-
+      [Index(6)]
+
+      public virtual double DistanceFromOriginMeters { get; set; }
+    parameters: []
+    return:
+      type: System.Double
+    content.vb: >-
+      <Index(6)>
+
+      Public Overridable Property DistanceFromOriginMeters As Double
+  overload: DEM.Net.Lib.GeoPoint.DistanceFromOriginMeters*
+  attributes:
+  - type: ZeroFormatter.IndexAttribute
+    ctor: ZeroFormatter.IndexAttribute.#ctor(System.Int32)
+    arguments:
+    - type: System.Int32
+      value: 6
+  modifiers.csharp:
+  - public
+  - virtual
+  - get
+  - set
+  modifiers.vb:
+  - Public
+  - Overridable
+- uid: DEM.Net.Lib.GeoPoint.#ctor(System.Double,System.Double,System.Single,System.Nullable{System.Int32},System.Nullable{System.Int32})
+  commentId: M:DEM.Net.Lib.GeoPoint.#ctor(System.Double,System.Double,System.Single,System.Nullable{System.Int32},System.Nullable{System.Int32})
+  id: '#ctor(System.Double,System.Double,System.Single,System.Nullable{System.Int32},System.Nullable{System.Int32})'
+  parent: DEM.Net.Lib.GeoPoint
+  langs:
+  - csharp
+  - vb
+  name: GeoPoint(Double, Double, Single, Nullable<Int32>, Nullable<Int32>)
+  nameWithType: GeoPoint.GeoPoint(Double, Double, Single, Nullable<Int32>, Nullable<Int32>)
+  fullName: DEM.Net.Lib.GeoPoint.GeoPoint(System.Double, System.Double, System.Single, System.Nullable<System.Int32>, System.Nullable<System.Int32>)
+  type: Constructor
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoPoint.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: .ctor
+    path: ../DEM.Net.Lib/Model/GeoPoint.cs
+    startLine: 34
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public GeoPoint(double latitude, double longitude, float altitude, int? indexX, int? indexY)
+    parameters:
+    - id: latitude
+      type: System.Double
+    - id: longitude
+      type: System.Double
+    - id: altitude
+      type: System.Single
+    - id: indexX
+      type: System.Nullable{System.Int32}
+    - id: indexY
+      type: System.Nullable{System.Int32}
+    content.vb: Public Sub New(latitude As Double, longitude As Double, altitude As Single, indexX As Integer?, indexY As Integer?)
+  overload: DEM.Net.Lib.GeoPoint.#ctor*
+  nameWithType.vb: GeoPoint.GeoPoint(Double, Double, Single, Nullable(Of Int32), Nullable(Of Int32))
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.GeoPoint.GeoPoint(System.Double, System.Double, System.Single, System.Nullable(Of System.Int32), System.Nullable(Of System.Int32))
+  name.vb: GeoPoint(Double, Double, Single, Nullable(Of Int32), Nullable(Of Int32))
+- uid: DEM.Net.Lib.GeoPoint.#ctor(System.Double,System.Double)
+  commentId: M:DEM.Net.Lib.GeoPoint.#ctor(System.Double,System.Double)
+  id: '#ctor(System.Double,System.Double)'
+  parent: DEM.Net.Lib.GeoPoint
+  langs:
+  - csharp
+  - vb
+  name: GeoPoint(Double, Double)
+  nameWithType: GeoPoint.GeoPoint(Double, Double)
+  fullName: DEM.Net.Lib.GeoPoint.GeoPoint(System.Double, System.Double)
+  type: Constructor
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoPoint.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: .ctor
+    path: ../DEM.Net.Lib/Model/GeoPoint.cs
+    startLine: 43
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public GeoPoint(double latitude, double longitude)
+    parameters:
+    - id: latitude
+      type: System.Double
+    - id: longitude
+      type: System.Double
+    content.vb: Public Sub New(latitude As Double, longitude As Double)
+  overload: DEM.Net.Lib.GeoPoint.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.GeoPoint.#ctor
+  commentId: M:DEM.Net.Lib.GeoPoint.#ctor
+  id: '#ctor'
+  parent: DEM.Net.Lib.GeoPoint
+  langs:
+  - csharp
+  - vb
+  name: GeoPoint()
+  nameWithType: GeoPoint.GeoPoint()
+  fullName: DEM.Net.Lib.GeoPoint.GeoPoint()
+  type: Constructor
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoPoint.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: .ctor
+    path: ../DEM.Net.Lib/Model/GeoPoint.cs
+    startLine: 51
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public GeoPoint()
+    content.vb: Public Sub New
+  overload: DEM.Net.Lib.GeoPoint.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.GeoPoint.Clone
+  commentId: M:DEM.Net.Lib.GeoPoint.Clone
+  id: Clone
+  parent: DEM.Net.Lib.GeoPoint
+  langs:
+  - csharp
+  - vb
+  name: Clone()
+  nameWithType: GeoPoint.Clone()
+  fullName: DEM.Net.Lib.GeoPoint.Clone()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoPoint.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Clone
+    path: ../DEM.Net.Lib/Model/GeoPoint.cs
+    startLine: 56
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public GeoPoint Clone()
+    return:
+      type: DEM.Net.Lib.GeoPoint
+    content.vb: Public Function Clone As GeoPoint
+  overload: DEM.Net.Lib.GeoPoint.Clone*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.GeoPoint.DistanceSquaredTo(DEM.Net.Lib.GeoPoint)
+  commentId: M:DEM.Net.Lib.GeoPoint.DistanceSquaredTo(DEM.Net.Lib.GeoPoint)
+  id: DistanceSquaredTo(DEM.Net.Lib.GeoPoint)
+  parent: DEM.Net.Lib.GeoPoint
+  langs:
+  - csharp
+  - vb
+  name: DistanceSquaredTo(GeoPoint)
+  nameWithType: GeoPoint.DistanceSquaredTo(GeoPoint)
+  fullName: DEM.Net.Lib.GeoPoint.DistanceSquaredTo(DEM.Net.Lib.GeoPoint)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoPoint.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: DistanceSquaredTo
+    path: ../DEM.Net.Lib/Model/GeoPoint.cs
+    startLine: 61
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public double DistanceSquaredTo(GeoPoint pt)
+    parameters:
+    - id: pt
+      type: DEM.Net.Lib.GeoPoint
+    return:
+      type: System.Double
+    content.vb: Public Function DistanceSquaredTo(pt As GeoPoint) As Double
+  overload: DEM.Net.Lib.GeoPoint.DistanceSquaredTo*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.GeoPoint.Zero
+  commentId: P:DEM.Net.Lib.GeoPoint.Zero
+  id: Zero
+  parent: DEM.Net.Lib.GeoPoint
+  langs:
+  - csharp
+  - vb
+  name: Zero
+  nameWithType: GeoPoint.Zero
+  fullName: DEM.Net.Lib.GeoPoint.Zero
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoPoint.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Zero
+    path: ../DEM.Net.Lib/Model/GeoPoint.cs
+    startLine: 68
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public static GeoPoint Zero { get; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.GeoPoint
+    content.vb: Public Shared ReadOnly Property Zero As GeoPoint
+  overload: DEM.Net.Lib.GeoPoint.Zero*
+  modifiers.csharp:
+  - public
+  - static
+  - get
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: DEM.Net.Lib.GeoPoint.ToString
+  commentId: M:DEM.Net.Lib.GeoPoint.ToString
+  id: ToString
+  parent: DEM.Net.Lib.GeoPoint
+  langs:
+  - csharp
+  - vb
+  name: ToString()
+  nameWithType: GeoPoint.ToString()
+  fullName: DEM.Net.Lib.GeoPoint.ToString()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoPoint.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ToString
+    path: ../DEM.Net.Lib/Model/GeoPoint.cs
+    startLine: 72
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public override string ToString()
+    return:
+      type: System.String
+    content.vb: Public Overrides Function ToString As String
+  overridden: System.Object.ToString
+  overload: DEM.Net.Lib.GeoPoint.ToString*
+  modifiers.csharp:
+  - public
+  - override
+  modifiers.vb:
+  - Public
+  - Overrides
+references:
+- uid: DEM.Net.Lib
+  commentId: N:DEM.Net.Lib
+  name: DEM.Net.Lib
+  nameWithType: DEM.Net.Lib
+  fullName: DEM.Net.Lib
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.GeoPoint.DEM.Net.Lib.VectorsExtensions.ToVector3
+  commentId: M:DEM.Net.Lib.VectorsExtensions.ToVector3(DEM.Net.Lib.GeoPoint)
+  parent: DEM.Net.Lib.VectorsExtensions
+  definition: DEM.Net.Lib.VectorsExtensions.ToVector3(DEM.Net.Lib.GeoPoint)
+  name: ToVector3()
+  nameWithType: VectorsExtensions.ToVector3()
+  fullName: DEM.Net.Lib.VectorsExtensions.ToVector3()
+  spec.csharp:
+  - uid: DEM.Net.Lib.VectorsExtensions.ToVector3
+    name: ToVector3
+    nameWithType: VectorsExtensions.ToVector3
+    fullName: DEM.Net.Lib.VectorsExtensions.ToVector3
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.VectorsExtensions.ToVector3
+    name: ToVector3
+    nameWithType: VectorsExtensions.ToVector3
+    fullName: DEM.Net.Lib.VectorsExtensions.ToVector3
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.GeoPoint.DEM.Net.Lib.GeometryService.DistanceTo(DEM.Net.Lib.GeoPoint)
+  commentId: M:DEM.Net.Lib.GeometryService.DistanceTo(DEM.Net.Lib.GeoPoint,DEM.Net.Lib.GeoPoint)
+  parent: DEM.Net.Lib.GeometryService
+  definition: DEM.Net.Lib.GeometryService.DistanceTo(DEM.Net.Lib.GeoPoint,DEM.Net.Lib.GeoPoint)
+  name: DistanceTo(GeoPoint)
+  nameWithType: GeometryService.DistanceTo(GeoPoint)
+  fullName: DEM.Net.Lib.GeometryService.DistanceTo(DEM.Net.Lib.GeoPoint)
+  spec.csharp:
+  - uid: DEM.Net.Lib.GeometryService.DistanceTo(DEM.Net.Lib.GeoPoint)
+    name: DistanceTo
+    nameWithType: GeometryService.DistanceTo
+    fullName: DEM.Net.Lib.GeometryService.DistanceTo
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.GeoPoint
+    name: GeoPoint
+    nameWithType: GeoPoint
+    fullName: DEM.Net.Lib.GeoPoint
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.GeometryService.DistanceTo(DEM.Net.Lib.GeoPoint)
+    name: DistanceTo
+    nameWithType: GeometryService.DistanceTo
+    fullName: DEM.Net.Lib.GeometryService.DistanceTo
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.GeoPoint
+    name: GeoPoint
+    nameWithType: GeoPoint
+    fullName: DEM.Net.Lib.GeoPoint
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.VectorsExtensions.ToVector3(DEM.Net.Lib.GeoPoint)
+  commentId: M:DEM.Net.Lib.VectorsExtensions.ToVector3(DEM.Net.Lib.GeoPoint)
+  name: ToVector3(GeoPoint)
+  nameWithType: VectorsExtensions.ToVector3(GeoPoint)
+  fullName: DEM.Net.Lib.VectorsExtensions.ToVector3(DEM.Net.Lib.GeoPoint)
+  spec.csharp:
+  - uid: DEM.Net.Lib.VectorsExtensions.ToVector3(DEM.Net.Lib.GeoPoint)
+    name: ToVector3
+    nameWithType: VectorsExtensions.ToVector3
+    fullName: DEM.Net.Lib.VectorsExtensions.ToVector3
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.GeoPoint
+    name: GeoPoint
+    nameWithType: GeoPoint
+    fullName: DEM.Net.Lib.GeoPoint
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.VectorsExtensions.ToVector3(DEM.Net.Lib.GeoPoint)
+    name: ToVector3
+    nameWithType: VectorsExtensions.ToVector3
+    fullName: DEM.Net.Lib.VectorsExtensions.ToVector3
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.GeoPoint
+    name: GeoPoint
+    nameWithType: GeoPoint
+    fullName: DEM.Net.Lib.GeoPoint
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.VectorsExtensions
+  commentId: T:DEM.Net.Lib.VectorsExtensions
+  parent: DEM.Net.Lib
+  name: VectorsExtensions
+  nameWithType: VectorsExtensions
+  fullName: DEM.Net.Lib.VectorsExtensions
+- uid: DEM.Net.Lib.GeometryService.DistanceTo(DEM.Net.Lib.GeoPoint,DEM.Net.Lib.GeoPoint)
+  commentId: M:DEM.Net.Lib.GeometryService.DistanceTo(DEM.Net.Lib.GeoPoint,DEM.Net.Lib.GeoPoint)
+  name: DistanceTo(GeoPoint, GeoPoint)
+  nameWithType: GeometryService.DistanceTo(GeoPoint, GeoPoint)
+  fullName: DEM.Net.Lib.GeometryService.DistanceTo(DEM.Net.Lib.GeoPoint, DEM.Net.Lib.GeoPoint)
+  spec.csharp:
+  - uid: DEM.Net.Lib.GeometryService.DistanceTo(DEM.Net.Lib.GeoPoint,DEM.Net.Lib.GeoPoint)
+    name: DistanceTo
+    nameWithType: GeometryService.DistanceTo
+    fullName: DEM.Net.Lib.GeometryService.DistanceTo
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.GeoPoint
+    name: GeoPoint
+    nameWithType: GeoPoint
+    fullName: DEM.Net.Lib.GeoPoint
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: DEM.Net.Lib.GeoPoint
+    name: GeoPoint
+    nameWithType: GeoPoint
+    fullName: DEM.Net.Lib.GeoPoint
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.GeometryService.DistanceTo(DEM.Net.Lib.GeoPoint,DEM.Net.Lib.GeoPoint)
+    name: DistanceTo
+    nameWithType: GeometryService.DistanceTo
+    fullName: DEM.Net.Lib.GeometryService.DistanceTo
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.GeoPoint
+    name: GeoPoint
+    nameWithType: GeoPoint
+    fullName: DEM.Net.Lib.GeoPoint
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: DEM.Net.Lib.GeoPoint
+    name: GeoPoint
+    nameWithType: GeoPoint
+    fullName: DEM.Net.Lib.GeoPoint
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.GeometryService
+  commentId: T:DEM.Net.Lib.GeometryService
+  parent: DEM.Net.Lib
+  name: GeometryService
+  nameWithType: GeometryService
+  fullName: DEM.Net.Lib.GeometryService
+- uid: DEM.Net.Lib.GeoPoint.Latitude*
+  commentId: Overload:DEM.Net.Lib.GeoPoint.Latitude
+  name: Latitude
+  nameWithType: GeoPoint.Latitude
+  fullName: DEM.Net.Lib.GeoPoint.Latitude
+- uid: System.Double
+  commentId: T:System.Double
+  parent: System
+  isExternal: true
+  name: Double
+  nameWithType: Double
+  fullName: System.Double
+- uid: DEM.Net.Lib.GeoPoint.Longitude*
+  commentId: Overload:DEM.Net.Lib.GeoPoint.Longitude
+  name: Longitude
+  nameWithType: GeoPoint.Longitude
+  fullName: DEM.Net.Lib.GeoPoint.Longitude
+- uid: DEM.Net.Lib.GeoPoint.XIndex*
+  commentId: Overload:DEM.Net.Lib.GeoPoint.XIndex
+  name: XIndex
+  nameWithType: GeoPoint.XIndex
+  fullName: DEM.Net.Lib.GeoPoint.XIndex
+- uid: System.Nullable{System.Int32}
+  commentId: T:System.Nullable{System.Int32}
+  parent: System
+  definition: System.Nullable`1
+  name: Nullable<Int32>
+  nameWithType: Nullable<Int32>
+  fullName: System.Nullable<System.Int32>
+  nameWithType.vb: Nullable(Of Int32)
+  fullName.vb: System.Nullable(Of System.Int32)
+  name.vb: Nullable(Of Int32)
+  spec.csharp:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Nullable`1
+  commentId: T:System.Nullable`1
+  isExternal: true
+  name: Nullable<T>
+  nameWithType: Nullable<T>
+  fullName: System.Nullable<T>
+  nameWithType.vb: Nullable(Of T)
+  fullName.vb: System.Nullable(Of T)
+  name.vb: Nullable(Of T)
+  spec.csharp:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.GeoPoint.YIndex*
+  commentId: Overload:DEM.Net.Lib.GeoPoint.YIndex
+  name: YIndex
+  nameWithType: GeoPoint.YIndex
+  fullName: DEM.Net.Lib.GeoPoint.YIndex
+- uid: DEM.Net.Lib.GeoPoint.Elevation*
+  commentId: Overload:DEM.Net.Lib.GeoPoint.Elevation
+  name: Elevation
+  nameWithType: GeoPoint.Elevation
+  fullName: DEM.Net.Lib.GeoPoint.Elevation
+- uid: System.Nullable{System.Double}
+  commentId: T:System.Nullable{System.Double}
+  parent: System
+  definition: System.Nullable`1
+  name: Nullable<Double>
+  nameWithType: Nullable<Double>
+  fullName: System.Nullable<System.Double>
+  nameWithType.vb: Nullable(Of Double)
+  fullName.vb: System.Nullable(Of System.Double)
+  name.vb: Nullable(Of Double)
+  spec.csharp:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Double
+    name: Double
+    nameWithType: Double
+    fullName: System.Double
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Double
+    name: Double
+    nameWithType: Double
+    fullName: System.Double
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.GeoPoint.TileId*
+  commentId: Overload:DEM.Net.Lib.GeoPoint.TileId
+  name: TileId
+  nameWithType: GeoPoint.TileId
+  fullName: DEM.Net.Lib.GeoPoint.TileId
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: DEM.Net.Lib.GeoPoint.DistanceFromOriginMeters*
+  commentId: Overload:DEM.Net.Lib.GeoPoint.DistanceFromOriginMeters
+  name: DistanceFromOriginMeters
+  nameWithType: GeoPoint.DistanceFromOriginMeters
+  fullName: DEM.Net.Lib.GeoPoint.DistanceFromOriginMeters
+- uid: DEM.Net.Lib.GeoPoint.#ctor*
+  commentId: Overload:DEM.Net.Lib.GeoPoint.#ctor
+  name: GeoPoint
+  nameWithType: GeoPoint.GeoPoint
+  fullName: DEM.Net.Lib.GeoPoint.GeoPoint
+- uid: System.Single
+  commentId: T:System.Single
+  parent: System
+  isExternal: true
+  name: Single
+  nameWithType: Single
+  fullName: System.Single
+- uid: DEM.Net.Lib.GeoPoint.Clone*
+  commentId: Overload:DEM.Net.Lib.GeoPoint.Clone
+  name: Clone
+  nameWithType: GeoPoint.Clone
+  fullName: DEM.Net.Lib.GeoPoint.Clone
+- uid: DEM.Net.Lib.GeoPoint
+  commentId: T:DEM.Net.Lib.GeoPoint
+  parent: DEM.Net.Lib
+  name: GeoPoint
+  nameWithType: GeoPoint
+  fullName: DEM.Net.Lib.GeoPoint
+- uid: DEM.Net.Lib.GeoPoint.DistanceSquaredTo*
+  commentId: Overload:DEM.Net.Lib.GeoPoint.DistanceSquaredTo
+  name: DistanceSquaredTo
+  nameWithType: GeoPoint.DistanceSquaredTo
+  fullName: DEM.Net.Lib.GeoPoint.DistanceSquaredTo
+- uid: DEM.Net.Lib.GeoPoint.Zero*
+  commentId: Overload:DEM.Net.Lib.GeoPoint.Zero
+  name: Zero
+  nameWithType: GeoPoint.Zero
+  fullName: DEM.Net.Lib.GeoPoint.Zero
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.GeoPoint.ToString*
+  commentId: Overload:DEM.Net.Lib.GeoPoint.ToString
+  name: ToString
+  nameWithType: GeoPoint.ToString
+  fullName: DEM.Net.Lib.GeoPoint.ToString

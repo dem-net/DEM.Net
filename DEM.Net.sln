@@ -1,23 +1,22 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Net.WebApi", "DEM.Net.WebApi\DEM.Net.WebApi.csproj", "{3E1E1C96-9F88-4CD1-BB75-2FFF437E23B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DEM.Net.glTF", "DEM.Net.glTF\DEM.Net.glTF.csproj", "{CE185808-4B76-4E86-9F8C-B28BDA08CD8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Net.Lib", "DEM.Net.Lib\DEM.Net.Lib.csproj", "{7A31B996-9F8C-4ABF-AC33-E80D2914BC0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DEM.Net.Samples", "DEM.Net.Samples\DEM.Net.Samples.csproj", "{B6BCAD86-9C70-49C4-8926-A4A6ECF4BCE1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Net.Test", "DEM.Net.Test\DEM.Net.Test.csproj", "{1C49F486-E950-41A5-8571-3913686A6A6D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DEM.Net.xUnit.Test", "DEM.Net.xUnit.Test\DEM.Net.xUnit.Test.csproj", "{33F6AD6A-91B8-46BF-A00B-338869907800}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp", "SampleApp\SampleApp.csproj", "{6375EA11-8111-4C8F-9840-2E4A04D742BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DEM.Net.Core", "DEM.Net.Core\DEM.Net.Core.csproj", "{B335092D-4D33-4DC4-A02D-EB8731AF3D76}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Net.TestWinForm", "DEM.Net.TestWinForm\DEM.Net.TestWinForm.csproj", "{9417FC33-D64A-4B15-AD47-286382F1FF21}"
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Net.glTF", "DEM.Net.glTF\DEM.Net.glTF.csproj", "{31079223-207D-4075-9C4C-AB001E978C94}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6063C77F-B052-4C17-A94D-A4F365137BC9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "License", "License", "{D6ED085C-7DDE-428D-B70E-ABDCD84EEF71}"
 	ProjectSection(SolutionItems) = preProject
+		LICENSE - ThirdParty.md = LICENSE - ThirdParty.md
 		LICENSE.md = LICENSE.md
-		README.md = README.md
 	EndProjectSection
 EndProject
 Global
@@ -26,35 +25,39 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3E1E1C96-9F88-4CD1-BB75-2FFF437E23B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3E1E1C96-9F88-4CD1-BB75-2FFF437E23B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3E1E1C96-9F88-4CD1-BB75-2FFF437E23B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3E1E1C96-9F88-4CD1-BB75-2FFF437E23B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7A31B996-9F8C-4ABF-AC33-E80D2914BC0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7A31B996-9F8C-4ABF-AC33-E80D2914BC0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7A31B996-9F8C-4ABF-AC33-E80D2914BC0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7A31B996-9F8C-4ABF-AC33-E80D2914BC0F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1C49F486-E950-41A5-8571-3913686A6A6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1C49F486-E950-41A5-8571-3913686A6A6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1C49F486-E950-41A5-8571-3913686A6A6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1C49F486-E950-41A5-8571-3913686A6A6D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6375EA11-8111-4C8F-9840-2E4A04D742BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6375EA11-8111-4C8F-9840-2E4A04D742BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6375EA11-8111-4C8F-9840-2E4A04D742BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6375EA11-8111-4C8F-9840-2E4A04D742BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE185808-4B76-4E86-9F8C-B28BDA08CD8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE185808-4B76-4E86-9F8C-B28BDA08CD8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE185808-4B76-4E86-9F8C-B28BDA08CD8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE185808-4B76-4E86-9F8C-B28BDA08CD8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6BCAD86-9C70-49C4-8926-A4A6ECF4BCE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6BCAD86-9C70-49C4-8926-A4A6ECF4BCE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6BCAD86-9C70-49C4-8926-A4A6ECF4BCE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6BCAD86-9C70-49C4-8926-A4A6ECF4BCE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33F6AD6A-91B8-46BF-A00B-338869907800}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33F6AD6A-91B8-46BF-A00B-338869907800}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33F6AD6A-91B8-46BF-A00B-338869907800}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33F6AD6A-91B8-46BF-A00B-338869907800}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B335092D-4D33-4DC4-A02D-EB8731AF3D76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B335092D-4D33-4DC4-A02D-EB8731AF3D76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B335092D-4D33-4DC4-A02D-EB8731AF3D76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B335092D-4D33-4DC4-A02D-EB8731AF3D76}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9417FC33-D64A-4B15-AD47-286382F1FF21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9417FC33-D64A-4B15-AD47-286382F1FF21}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9417FC33-D64A-4B15-AD47-286382F1FF21}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9417FC33-D64A-4B15-AD47-286382F1FF21}.Release|Any CPU.Build.0 = Release|Any CPU
-		{31079223-207D-4075-9C4C-AB001E978C94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{31079223-207D-4075-9C4C-AB001E978C94}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{31079223-207D-4075-9C4C-AB001E978C94}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{31079223-207D-4075-9C4C-AB001E978C94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9417FC33-D64A-4B15-AD47-286382F1FF21}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{9417FC33-D64A-4B15-AD47-286382F1FF21}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {C4A49615-9FA9-4B0D-AFF9-2A03EF625444}
+		SolutionGuid = {90A80639-9A5C-49A0-B58A-DA6AAAF035AB}
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$1.DirectoryNamespaceAssociation = PrefixedHierarchical
+		$0.StandardHeader = $2
+		$0.VersionControlPolicy = $3
+		description = Elevation library for .Net Core
 	EndGlobalSection
 EndGlobal

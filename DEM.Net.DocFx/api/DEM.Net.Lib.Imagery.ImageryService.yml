@@ -1,0 +1,736 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Imagery.ImageryService
+  commentId: T:DEM.Net.Lib.Imagery.ImageryService
+  id: ImageryService
+  parent: DEM.Net.Lib.Imagery
+  children:
+  - DEM.Net.Lib.Imagery.ImageryService.ComputeUVMap(DEM.Net.Lib.HeightMap,DEM.Net.Lib.Imagery.TextureInfo)
+  - DEM.Net.Lib.Imagery.ImageryService.ConstructTexture(DEM.Net.Lib.Imagery.TileRange,DEM.Net.Lib.BoundingBox,System.String,DEM.Net.Lib.Imagery.TextureImageFormat)
+  - DEM.Net.Lib.Imagery.ImageryService.DownloadTiles(DEM.Net.Lib.BoundingBox,DEM.Net.Lib.Imagery.ImageryProvider,System.Int32)
+  - DEM.Net.Lib.Imagery.ImageryService.FromVec3NormalToColor(System.Numerics.Vector3)
+  - DEM.Net.Lib.Imagery.ImageryService.GenerateNormalMap(DEM.Net.Lib.HeightMap,System.String)
+  langs:
+  - csharp
+  - vb
+  name: ImageryService
+  nameWithType: ImageryService
+  fullName: DEM.Net.Lib.Imagery.ImageryService
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/ImageryService.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ImageryService
+    path: ../DEM.Net.Lib/Imagery/ImageryService.cs
+    startLine: 16
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public class ImageryService
+    content.vb: Public Class ImageryService
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.Imagery.ImageryService.DownloadTiles(DEM.Net.Lib.BoundingBox,DEM.Net.Lib.Imagery.ImageryProvider,System.Int32)
+  commentId: M:DEM.Net.Lib.Imagery.ImageryService.DownloadTiles(DEM.Net.Lib.BoundingBox,DEM.Net.Lib.Imagery.ImageryProvider,System.Int32)
+  id: DownloadTiles(DEM.Net.Lib.BoundingBox,DEM.Net.Lib.Imagery.ImageryProvider,System.Int32)
+  parent: DEM.Net.Lib.Imagery.ImageryService
+  langs:
+  - csharp
+  - vb
+  name: DownloadTiles(BoundingBox, ImageryProvider, Int32)
+  nameWithType: ImageryService.DownloadTiles(BoundingBox, ImageryProvider, Int32)
+  fullName: DEM.Net.Lib.Imagery.ImageryService.DownloadTiles(DEM.Net.Lib.BoundingBox, DEM.Net.Lib.Imagery.ImageryProvider, System.Int32)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/ImageryService.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: DownloadTiles
+    path: ../DEM.Net.Lib/Imagery/ImageryService.cs
+    startLine: 22
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public TileRange DownloadTiles(BoundingBox bbox, ImageryProvider provider, int minTilesPerImage = 4)
+    parameters:
+    - id: bbox
+      type: DEM.Net.Lib.BoundingBox
+    - id: provider
+      type: DEM.Net.Lib.Imagery.ImageryProvider
+    - id: minTilesPerImage
+      type: System.Int32
+    return:
+      type: DEM.Net.Lib.Imagery.TileRange
+    content.vb: Public Function DownloadTiles(bbox As BoundingBox, provider As ImageryProvider, minTilesPerImage As Integer = 4) As TileRange
+  overload: DEM.Net.Lib.Imagery.ImageryService.DownloadTiles*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Imagery.ImageryService.ConstructTexture(DEM.Net.Lib.Imagery.TileRange,DEM.Net.Lib.BoundingBox,System.String,DEM.Net.Lib.Imagery.TextureImageFormat)
+  commentId: M:DEM.Net.Lib.Imagery.ImageryService.ConstructTexture(DEM.Net.Lib.Imagery.TileRange,DEM.Net.Lib.BoundingBox,System.String,DEM.Net.Lib.Imagery.TextureImageFormat)
+  id: ConstructTexture(DEM.Net.Lib.Imagery.TileRange,DEM.Net.Lib.BoundingBox,System.String,DEM.Net.Lib.Imagery.TextureImageFormat)
+  parent: DEM.Net.Lib.Imagery.ImageryService
+  langs:
+  - csharp
+  - vb
+  name: ConstructTexture(TileRange, BoundingBox, String, TextureImageFormat)
+  nameWithType: ImageryService.ConstructTexture(TileRange, BoundingBox, String, TextureImageFormat)
+  fullName: DEM.Net.Lib.Imagery.ImageryService.ConstructTexture(DEM.Net.Lib.Imagery.TileRange, DEM.Net.Lib.BoundingBox, System.String, DEM.Net.Lib.Imagery.TextureImageFormat)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/ImageryService.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ConstructTexture
+    path: ../DEM.Net.Lib/Imagery/ImageryService.cs
+    startLine: 92
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public TextureInfo ConstructTexture(TileRange tiles, BoundingBox bbox, string fileName, TextureImageFormat mimeType)
+    parameters:
+    - id: tiles
+      type: DEM.Net.Lib.Imagery.TileRange
+    - id: bbox
+      type: DEM.Net.Lib.BoundingBox
+    - id: fileName
+      type: System.String
+    - id: mimeType
+      type: DEM.Net.Lib.Imagery.TextureImageFormat
+    return:
+      type: DEM.Net.Lib.Imagery.TextureInfo
+    content.vb: Public Function ConstructTexture(tiles As TileRange, bbox As BoundingBox, fileName As String, mimeType As TextureImageFormat) As TextureInfo
+  overload: DEM.Net.Lib.Imagery.ImageryService.ConstructTexture*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Imagery.ImageryService.GenerateNormalMap(DEM.Net.Lib.HeightMap,System.String)
+  commentId: M:DEM.Net.Lib.Imagery.ImageryService.GenerateNormalMap(DEM.Net.Lib.HeightMap,System.String)
+  id: GenerateNormalMap(DEM.Net.Lib.HeightMap,System.String)
+  parent: DEM.Net.Lib.Imagery.ImageryService
+  langs:
+  - csharp
+  - vb
+  name: GenerateNormalMap(HeightMap, String)
+  nameWithType: ImageryService.GenerateNormalMap(HeightMap, String)
+  fullName: DEM.Net.Lib.Imagery.ImageryService.GenerateNormalMap(DEM.Net.Lib.HeightMap, System.String)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/ImageryService.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GenerateNormalMap
+    path: ../DEM.Net.Lib/Imagery/ImageryService.cs
+    startLine: 213
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  summary: "\nGenerate normal texture from height map.\nNote : heightMap should be in projected coordinates (see ReprojectToCartesian())\n"
+  example: []
+  syntax:
+    content: public TextureInfo GenerateNormalMap(HeightMap heightMap, string outputDirectory)
+    parameters:
+    - id: heightMap
+      type: DEM.Net.Lib.HeightMap
+      description: heightMap in projected coordinates
+    - id: outputDirectory
+      type: System.String
+      description: ''
+    return:
+      type: DEM.Net.Lib.Imagery.TextureInfo
+      description: ''
+    content.vb: Public Function GenerateNormalMap(heightMap As HeightMap, outputDirectory As String) As TextureInfo
+  overload: DEM.Net.Lib.Imagery.ImageryService.GenerateNormalMap*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Imagery.ImageryService.FromVec3NormalToColor(System.Numerics.Vector3)
+  commentId: M:DEM.Net.Lib.Imagery.ImageryService.FromVec3NormalToColor(System.Numerics.Vector3)
+  id: FromVec3NormalToColor(System.Numerics.Vector3)
+  parent: DEM.Net.Lib.Imagery.ImageryService
+  langs:
+  - csharp
+  - vb
+  name: FromVec3NormalToColor(Vector3)
+  nameWithType: ImageryService.FromVec3NormalToColor(Vector3)
+  fullName: DEM.Net.Lib.Imagery.ImageryService.FromVec3NormalToColor(System.Numerics.Vector3)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/ImageryService.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: FromVec3NormalToColor
+    path: ../DEM.Net.Lib/Imagery/ImageryService.cs
+    startLine: 269
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public Color FromVec3NormalToColor(Vector3 normal)
+    parameters:
+    - id: normal
+      type: System.Numerics.Vector3
+    return:
+      type: System.Drawing.Color
+    content.vb: Public Function FromVec3NormalToColor(normal As Vector3) As Color
+  overload: DEM.Net.Lib.Imagery.ImageryService.FromVec3NormalToColor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Imagery.ImageryService.ComputeUVMap(DEM.Net.Lib.HeightMap,DEM.Net.Lib.Imagery.TextureInfo)
+  commentId: M:DEM.Net.Lib.Imagery.ImageryService.ComputeUVMap(DEM.Net.Lib.HeightMap,DEM.Net.Lib.Imagery.TextureInfo)
+  id: ComputeUVMap(DEM.Net.Lib.HeightMap,DEM.Net.Lib.Imagery.TextureInfo)
+  parent: DEM.Net.Lib.Imagery.ImageryService
+  langs:
+  - csharp
+  - vb
+  name: ComputeUVMap(HeightMap, TextureInfo)
+  nameWithType: ImageryService.ComputeUVMap(HeightMap, TextureInfo)
+  fullName: DEM.Net.Lib.Imagery.ImageryService.ComputeUVMap(DEM.Net.Lib.HeightMap, DEM.Net.Lib.Imagery.TextureInfo)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/ImageryService.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ComputeUVMap
+    path: ../DEM.Net.Lib/Imagery/ImageryService.cs
+    startLine: 280
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public List<Vector2> ComputeUVMap(HeightMap heightMap, TextureInfo textureInfo)
+    parameters:
+    - id: heightMap
+      type: DEM.Net.Lib.HeightMap
+    - id: textureInfo
+      type: DEM.Net.Lib.Imagery.TextureInfo
+    return:
+      type: System.Collections.Generic.List{System.Numerics.Vector2}
+    content.vb: Public Function ComputeUVMap(heightMap As HeightMap, textureInfo As TextureInfo) As List(Of Vector2)
+  overload: DEM.Net.Lib.Imagery.ImageryService.ComputeUVMap*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: DEM.Net.Lib.Imagery
+  commentId: N:DEM.Net.Lib.Imagery
+  name: DEM.Net.Lib.Imagery
+  nameWithType: DEM.Net.Lib.Imagery
+  fullName: DEM.Net.Lib.Imagery
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.Imagery.ImageryService.DownloadTiles*
+  commentId: Overload:DEM.Net.Lib.Imagery.ImageryService.DownloadTiles
+  name: DownloadTiles
+  nameWithType: ImageryService.DownloadTiles
+  fullName: DEM.Net.Lib.Imagery.ImageryService.DownloadTiles
+- uid: DEM.Net.Lib.BoundingBox
+  commentId: T:DEM.Net.Lib.BoundingBox
+  parent: DEM.Net.Lib
+  name: BoundingBox
+  nameWithType: BoundingBox
+  fullName: DEM.Net.Lib.BoundingBox
+- uid: DEM.Net.Lib.Imagery.ImageryProvider
+  commentId: T:DEM.Net.Lib.Imagery.ImageryProvider
+  parent: DEM.Net.Lib.Imagery
+  name: ImageryProvider
+  nameWithType: ImageryProvider
+  fullName: DEM.Net.Lib.Imagery.ImageryProvider
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: DEM.Net.Lib.Imagery.TileRange
+  commentId: T:DEM.Net.Lib.Imagery.TileRange
+  parent: DEM.Net.Lib.Imagery
+  name: TileRange
+  nameWithType: TileRange
+  fullName: DEM.Net.Lib.Imagery.TileRange
+- uid: DEM.Net.Lib
+  commentId: N:DEM.Net.Lib
+  name: DEM.Net.Lib
+  nameWithType: DEM.Net.Lib
+  fullName: DEM.Net.Lib
+- uid: DEM.Net.Lib.Imagery.ImageryService.ConstructTexture*
+  commentId: Overload:DEM.Net.Lib.Imagery.ImageryService.ConstructTexture
+  name: ConstructTexture
+  nameWithType: ImageryService.ConstructTexture
+  fullName: DEM.Net.Lib.Imagery.ImageryService.ConstructTexture
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: DEM.Net.Lib.Imagery.TextureImageFormat
+  commentId: T:DEM.Net.Lib.Imagery.TextureImageFormat
+  parent: DEM.Net.Lib.Imagery
+  name: TextureImageFormat
+  nameWithType: TextureImageFormat
+  fullName: DEM.Net.Lib.Imagery.TextureImageFormat
+- uid: DEM.Net.Lib.Imagery.TextureInfo
+  commentId: T:DEM.Net.Lib.Imagery.TextureInfo
+  parent: DEM.Net.Lib.Imagery
+  name: TextureInfo
+  nameWithType: TextureInfo
+  fullName: DEM.Net.Lib.Imagery.TextureInfo
+- uid: DEM.Net.Lib.Imagery.ImageryService.GenerateNormalMap*
+  commentId: Overload:DEM.Net.Lib.Imagery.ImageryService.GenerateNormalMap
+  name: GenerateNormalMap
+  nameWithType: ImageryService.GenerateNormalMap
+  fullName: DEM.Net.Lib.Imagery.ImageryService.GenerateNormalMap
+- uid: DEM.Net.Lib.HeightMap
+  commentId: T:DEM.Net.Lib.HeightMap
+  parent: DEM.Net.Lib
+  name: HeightMap
+  nameWithType: HeightMap
+  fullName: DEM.Net.Lib.HeightMap
+- uid: DEM.Net.Lib.Imagery.ImageryService.FromVec3NormalToColor*
+  commentId: Overload:DEM.Net.Lib.Imagery.ImageryService.FromVec3NormalToColor
+  name: FromVec3NormalToColor
+  nameWithType: ImageryService.FromVec3NormalToColor
+  fullName: DEM.Net.Lib.Imagery.ImageryService.FromVec3NormalToColor
+- uid: System.Numerics.Vector3
+  commentId: T:System.Numerics.Vector3
+  parent: System.Numerics
+  isExternal: true
+  name: Vector3
+  nameWithType: Vector3
+  fullName: System.Numerics.Vector3
+- uid: System.Drawing.Color
+  commentId: T:System.Drawing.Color
+  parent: System.Drawing
+  isExternal: true
+  name: Color
+  nameWithType: Color
+  fullName: System.Drawing.Color
+- uid: System.Numerics
+  commentId: N:System.Numerics
+  isExternal: true
+  name: System.Numerics
+  nameWithType: System.Numerics
+  fullName: System.Numerics
+- uid: System.Drawing
+  commentId: N:System.Drawing
+  isExternal: true
+  name: System.Drawing
+  nameWithType: System.Drawing
+  fullName: System.Drawing
+- uid: DEM.Net.Lib.Imagery.ImageryService.ComputeUVMap*
+  commentId: Overload:DEM.Net.Lib.Imagery.ImageryService.ComputeUVMap
+  name: ComputeUVMap
+  nameWithType: ImageryService.ComputeUVMap
+  fullName: DEM.Net.Lib.Imagery.ImageryService.ComputeUVMap
+- uid: System.Collections.Generic.List{System.Numerics.Vector2}
+  commentId: T:System.Collections.Generic.List{System.Numerics.Vector2}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<Vector2>
+  nameWithType: List<Vector2>
+  fullName: System.Collections.Generic.List<System.Numerics.Vector2>
+  nameWithType.vb: List(Of Vector2)
+  fullName.vb: System.Collections.Generic.List(Of System.Numerics.Vector2)
+  name.vb: List(Of Vector2)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Numerics.Vector2
+    name: Vector2
+    nameWithType: Vector2
+    fullName: System.Numerics.Vector2
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Numerics.Vector2
+    name: Vector2
+    nameWithType: Vector2
+    fullName: System.Numerics.Vector2
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.List`1
+  commentId: T:System.Collections.Generic.List`1
+  isExternal: true
+  name: List<T>
+  nameWithType: List<T>
+  fullName: System.Collections.Generic.List<T>
+  nameWithType.vb: List(Of T)
+  fullName.vb: System.Collections.Generic.List(Of T)
+  name.vb: List(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic

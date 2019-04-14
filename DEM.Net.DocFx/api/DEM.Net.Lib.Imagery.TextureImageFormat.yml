@@ -1,0 +1,112 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Imagery.TextureImageFormat
+  commentId: T:DEM.Net.Lib.Imagery.TextureImageFormat
+  id: TextureImageFormat
+  parent: DEM.Net.Lib.Imagery
+  children:
+  - DEM.Net.Lib.Imagery.TextureImageFormat.image_jpeg
+  - DEM.Net.Lib.Imagery.TextureImageFormat.image_png
+  langs:
+  - csharp
+  - vb
+  name: TextureImageFormat
+  nameWithType: TextureImageFormat
+  fullName: DEM.Net.Lib.Imagery.TextureImageFormat
+  type: Enum
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/TextureImageFormat.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: TextureImageFormat
+    path: ../DEM.Net.Lib/Imagery/Structs/TextureImageFormat.cs
+    startLine: 8
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public enum TextureImageFormat
+    content.vb: Public Enum TextureImageFormat
+  modifiers.csharp:
+  - public
+  - enum
+  modifiers.vb:
+  - Public
+  - Enum
+- uid: DEM.Net.Lib.Imagery.TextureImageFormat.image_jpeg
+  commentId: F:DEM.Net.Lib.Imagery.TextureImageFormat.image_jpeg
+  id: image_jpeg
+  parent: DEM.Net.Lib.Imagery.TextureImageFormat
+  langs:
+  - csharp
+  - vb
+  name: image_jpeg
+  nameWithType: TextureImageFormat.image_jpeg
+  fullName: DEM.Net.Lib.Imagery.TextureImageFormat.image_jpeg
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/TextureImageFormat.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: image_jpeg
+    path: ../DEM.Net.Lib/Imagery/Structs/TextureImageFormat.cs
+    startLine: 10
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: image_jpeg = 0
+    return:
+      type: DEM.Net.Lib.Imagery.TextureImageFormat
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.Imagery.TextureImageFormat.image_png
+  commentId: F:DEM.Net.Lib.Imagery.TextureImageFormat.image_png
+  id: image_png
+  parent: DEM.Net.Lib.Imagery.TextureImageFormat
+  langs:
+  - csharp
+  - vb
+  name: image_png
+  nameWithType: TextureImageFormat.image_png
+  fullName: DEM.Net.Lib.Imagery.TextureImageFormat.image_png
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/TextureImageFormat.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: image_png
+    path: ../DEM.Net.Lib/Imagery/Structs/TextureImageFormat.cs
+    startLine: 11
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: image_png = 1
+    return:
+      type: DEM.Net.Lib.Imagery.TextureImageFormat
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+references:
+- uid: DEM.Net.Lib.Imagery
+  commentId: N:DEM.Net.Lib.Imagery
+  name: DEM.Net.Lib.Imagery
+  nameWithType: DEM.Net.Lib.Imagery
+  fullName: DEM.Net.Lib.Imagery
+- uid: DEM.Net.Lib.Imagery.TextureImageFormat
+  commentId: T:DEM.Net.Lib.Imagery.TextureImageFormat
+  parent: DEM.Net.Lib.Imagery
+  name: TextureImageFormat
+  nameWithType: TextureImageFormat
+  fullName: DEM.Net.Lib.Imagery.TextureImageFormat

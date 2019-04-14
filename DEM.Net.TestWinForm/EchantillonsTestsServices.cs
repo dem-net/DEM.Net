@@ -1,32 +1,31 @@
-﻿using DEM.Net.Lib.Services.Lab;
+﻿using DEM.Net.Core.Services.Lab;
 using System;
 using System.Collections.Generic;
-using SqlServerSpatial.Toolkit;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DEM.Net.Lib;
+using DEM.Net.Core;
 
 namespace DEM.Net.TestWinForm
 {
     public class EchantillonsTestsServices : IServicesApplicatifs
     {
-        public List<BeanPoint_internal> GetPointsTestsByBBox(string p_bbox)
+        public List<BeanPoint_internal> GetPointsTestsByBBox(string p_bbox, DEMDataSet dataset, int sridCible)
         {
             List<BeanPoint_internal> v_pointsToTest = new List<BeanPoint_internal>();
             try
             {
                 IRasterService v_rasterService = new RasterService();
                 IElevationService v_elevationService = new ElevationService(v_rasterService);
-                Lib.BoundingBox v_bbox = GeometryService.GetBoundingBox(p_bbox);
-                v_elevationService.DownloadMissingFiles(DEMDataSet.SRTM_GL3, v_bbox);
+                BoundingBox v_bbox = GeometryService.GetBoundingBox(p_bbox);
+                v_elevationService.DownloadMissingFiles(dataset, v_bbox);
                 //
                 HeightMap v_hMap;
-                v_hMap = v_elevationService.GetHeightMap(v_bbox, DEMDataSet.SRTM_GL3);
+                v_hMap = v_elevationService.GetHeightMap(v_bbox, dataset);
 
-                int v_sridCible = 2154;
-                v_hMap = v_hMap.ReprojectTo(4326, v_sridCible);
-                v_pointsToTest = GetGeoPointsByHMap(v_hMap, v_sridCible);
+                
+                v_hMap = v_hMap.ReprojectTo(4326, sridCible);
+                v_pointsToTest = GetGeoPointsByHMap(v_hMap, sridCible);
             }
             catch (Exception)
             {
@@ -37,7 +36,7 @@ namespace DEM.Net.TestWinForm
         }
         public List<BeanPoint_internal> GetGeoPointsByHMap(HeightMap p_hMap, int p_srid)
         {
-           return p_hMap.Coordinates.Select(c => GetPointInternalFromGeoPoint(c, p_srid)).ToList();
+            return p_hMap.Coordinates.Select(c => GetPointInternalFromGeoPoint(c, p_srid)).ToList();
         }
         public BeanPoint_internal GetPointInternalFromGeoPoint(GeoPoint p_geoPoint, int p_srid)
         {

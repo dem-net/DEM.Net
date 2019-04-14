@@ -1,0 +1,868 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Imagery.DirectBitmap
+  commentId: T:DEM.Net.Lib.Imagery.DirectBitmap
+  id: DirectBitmap
+  parent: DEM.Net.Lib.Imagery
+  children:
+  - DEM.Net.Lib.Imagery.DirectBitmap.#ctor(System.Int32,System.Int32)
+  - DEM.Net.Lib.Imagery.DirectBitmap.Bitmap
+  - DEM.Net.Lib.Imagery.DirectBitmap.Bits
+  - DEM.Net.Lib.Imagery.DirectBitmap.BitsHandle
+  - DEM.Net.Lib.Imagery.DirectBitmap.Dispose
+  - DEM.Net.Lib.Imagery.DirectBitmap.Disposed
+  - DEM.Net.Lib.Imagery.DirectBitmap.GetPixel(System.Int32,System.Int32)
+  - DEM.Net.Lib.Imagery.DirectBitmap.Height
+  - DEM.Net.Lib.Imagery.DirectBitmap.SetPixel(System.Int32,System.Int32,System.Drawing.Color)
+  - DEM.Net.Lib.Imagery.DirectBitmap.Width
+  langs:
+  - csharp
+  - vb
+  name: DirectBitmap
+  nameWithType: DirectBitmap
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/DirectBitmap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: DirectBitmap
+    path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
+    startLine: 8
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: 'public class DirectBitmap : IDisposable'
+    content.vb: >-
+      Public Class DirectBitmap
+          Implements IDisposable
+  inheritance:
+  - System.Object
+  implements:
+  - System.IDisposable
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.Imagery.DirectBitmap.Bitmap
+  commentId: P:DEM.Net.Lib.Imagery.DirectBitmap.Bitmap
+  id: Bitmap
+  parent: DEM.Net.Lib.Imagery.DirectBitmap
+  langs:
+  - csharp
+  - vb
+  name: Bitmap
+  nameWithType: DirectBitmap.Bitmap
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap.Bitmap
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/DirectBitmap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Bitmap
+    path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
+    startLine: 10
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public Bitmap Bitmap { get; }
+    parameters: []
+    return:
+      type: System.Drawing.Bitmap
+    content.vb: Public ReadOnly Property Bitmap As Bitmap
+  overload: DEM.Net.Lib.Imagery.DirectBitmap.Bitmap*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Imagery.DirectBitmap.Bits
+  commentId: P:DEM.Net.Lib.Imagery.DirectBitmap.Bits
+  id: Bits
+  parent: DEM.Net.Lib.Imagery.DirectBitmap
+  langs:
+  - csharp
+  - vb
+  name: Bits
+  nameWithType: DirectBitmap.Bits
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap.Bits
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/DirectBitmap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Bits
+    path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
+    startLine: 11
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public int[] Bits { get; }
+    parameters: []
+    return:
+      type: System.Int32[]
+    content.vb: Public ReadOnly Property Bits As Integer()
+  overload: DEM.Net.Lib.Imagery.DirectBitmap.Bits*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Imagery.DirectBitmap.Disposed
+  commentId: P:DEM.Net.Lib.Imagery.DirectBitmap.Disposed
+  id: Disposed
+  parent: DEM.Net.Lib.Imagery.DirectBitmap
+  langs:
+  - csharp
+  - vb
+  name: Disposed
+  nameWithType: DirectBitmap.Disposed
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap.Disposed
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/DirectBitmap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Disposed
+    path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
+    startLine: 12
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public bool Disposed { get; }
+    parameters: []
+    return:
+      type: System.Boolean
+    content.vb: Public ReadOnly Property Disposed As Boolean
+  overload: DEM.Net.Lib.Imagery.DirectBitmap.Disposed*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Imagery.DirectBitmap.Height
+  commentId: P:DEM.Net.Lib.Imagery.DirectBitmap.Height
+  id: Height
+  parent: DEM.Net.Lib.Imagery.DirectBitmap
+  langs:
+  - csharp
+  - vb
+  name: Height
+  nameWithType: DirectBitmap.Height
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap.Height
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/DirectBitmap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Height
+    path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
+    startLine: 13
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public int Height { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public ReadOnly Property Height As Integer
+  overload: DEM.Net.Lib.Imagery.DirectBitmap.Height*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Imagery.DirectBitmap.Width
+  commentId: P:DEM.Net.Lib.Imagery.DirectBitmap.Width
+  id: Width
+  parent: DEM.Net.Lib.Imagery.DirectBitmap
+  langs:
+  - csharp
+  - vb
+  name: Width
+  nameWithType: DirectBitmap.Width
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap.Width
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/DirectBitmap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Width
+    path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
+    startLine: 14
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public int Width { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public ReadOnly Property Width As Integer
+  overload: DEM.Net.Lib.Imagery.DirectBitmap.Width*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Imagery.DirectBitmap.BitsHandle
+  commentId: P:DEM.Net.Lib.Imagery.DirectBitmap.BitsHandle
+  id: BitsHandle
+  parent: DEM.Net.Lib.Imagery.DirectBitmap
+  langs:
+  - csharp
+  - vb
+  name: BitsHandle
+  nameWithType: DirectBitmap.BitsHandle
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap.BitsHandle
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/DirectBitmap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: BitsHandle
+    path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
+    startLine: 16
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: protected GCHandle BitsHandle { get; }
+    parameters: []
+    return:
+      type: System.Runtime.InteropServices.GCHandle
+    content.vb: Protected ReadOnly Property BitsHandle As GCHandle
+  overload: DEM.Net.Lib.Imagery.DirectBitmap.BitsHandle*
+  modifiers.csharp:
+  - protected
+  - get
+  modifiers.vb:
+  - Protected
+  - ReadOnly
+- uid: DEM.Net.Lib.Imagery.DirectBitmap.#ctor(System.Int32,System.Int32)
+  commentId: M:DEM.Net.Lib.Imagery.DirectBitmap.#ctor(System.Int32,System.Int32)
+  id: '#ctor(System.Int32,System.Int32)'
+  parent: DEM.Net.Lib.Imagery.DirectBitmap
+  langs:
+  - csharp
+  - vb
+  name: DirectBitmap(Int32, Int32)
+  nameWithType: DirectBitmap.DirectBitmap(Int32, Int32)
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap.DirectBitmap(System.Int32, System.Int32)
+  type: Constructor
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/DirectBitmap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: .ctor
+    path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
+    startLine: 18
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public DirectBitmap(int width, int height)
+    parameters:
+    - id: width
+      type: System.Int32
+    - id: height
+      type: System.Int32
+    content.vb: Public Sub New(width As Integer, height As Integer)
+  overload: DEM.Net.Lib.Imagery.DirectBitmap.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Imagery.DirectBitmap.SetPixel(System.Int32,System.Int32,System.Drawing.Color)
+  commentId: M:DEM.Net.Lib.Imagery.DirectBitmap.SetPixel(System.Int32,System.Int32,System.Drawing.Color)
+  id: SetPixel(System.Int32,System.Int32,System.Drawing.Color)
+  parent: DEM.Net.Lib.Imagery.DirectBitmap
+  langs:
+  - csharp
+  - vb
+  name: SetPixel(Int32, Int32, Color)
+  nameWithType: DirectBitmap.SetPixel(Int32, Int32, Color)
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap.SetPixel(System.Int32, System.Int32, System.Drawing.Color)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/DirectBitmap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: SetPixel
+    path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
+    startLine: 27
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public void SetPixel(int x, int y, Color colour)
+    parameters:
+    - id: x
+      type: System.Int32
+    - id: y
+      type: System.Int32
+    - id: colour
+      type: System.Drawing.Color
+    content.vb: Public Sub SetPixel(x As Integer, y As Integer, colour As Color)
+  overload: DEM.Net.Lib.Imagery.DirectBitmap.SetPixel*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Imagery.DirectBitmap.GetPixel(System.Int32,System.Int32)
+  commentId: M:DEM.Net.Lib.Imagery.DirectBitmap.GetPixel(System.Int32,System.Int32)
+  id: GetPixel(System.Int32,System.Int32)
+  parent: DEM.Net.Lib.Imagery.DirectBitmap
+  langs:
+  - csharp
+  - vb
+  name: GetPixel(Int32, Int32)
+  nameWithType: DirectBitmap.GetPixel(Int32, Int32)
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap.GetPixel(System.Int32, System.Int32)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/DirectBitmap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetPixel
+    path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
+    startLine: 35
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public Color GetPixel(int x, int y)
+    parameters:
+    - id: x
+      type: System.Int32
+    - id: y
+      type: System.Int32
+    return:
+      type: System.Drawing.Color
+    content.vb: Public Function GetPixel(x As Integer, y As Integer) As Color
+  overload: DEM.Net.Lib.Imagery.DirectBitmap.GetPixel*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Imagery.DirectBitmap.Dispose
+  commentId: M:DEM.Net.Lib.Imagery.DirectBitmap.Dispose
+  id: Dispose
+  parent: DEM.Net.Lib.Imagery.DirectBitmap
+  langs:
+  - csharp
+  - vb
+  name: Dispose()
+  nameWithType: DirectBitmap.Dispose()
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap.Dispose()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/DirectBitmap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Dispose
+    path: ../DEM.Net.Lib/Imagery/DirectBitmap.cs
+    startLine: 44
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public void Dispose()
+    content.vb: Public Sub Dispose
+  overload: DEM.Net.Lib.Imagery.DirectBitmap.Dispose*
+  implements:
+  - System.IDisposable.Dispose
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: DEM.Net.Lib.Imagery
+  commentId: N:DEM.Net.Lib.Imagery
+  name: DEM.Net.Lib.Imagery
+  nameWithType: DEM.Net.Lib.Imagery
+  fullName: DEM.Net.Lib.Imagery
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.IDisposable
+  commentId: T:System.IDisposable
+  parent: System
+  isExternal: true
+  name: IDisposable
+  nameWithType: IDisposable
+  fullName: System.IDisposable
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.Imagery.DirectBitmap.Bitmap*
+  commentId: Overload:DEM.Net.Lib.Imagery.DirectBitmap.Bitmap
+  name: Bitmap
+  nameWithType: DirectBitmap.Bitmap
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap.Bitmap
+- uid: System.Drawing.Bitmap
+  commentId: T:System.Drawing.Bitmap
+  parent: System.Drawing
+  isExternal: true
+  name: Bitmap
+  nameWithType: Bitmap
+  fullName: System.Drawing.Bitmap
+- uid: System.Drawing
+  commentId: N:System.Drawing
+  isExternal: true
+  name: System.Drawing
+  nameWithType: System.Drawing
+  fullName: System.Drawing
+- uid: DEM.Net.Lib.Imagery.DirectBitmap.Bits*
+  commentId: Overload:DEM.Net.Lib.Imagery.DirectBitmap.Bits
+  name: Bits
+  nameWithType: DirectBitmap.Bits
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap.Bits
+- uid: System.Int32[]
+  isExternal: true
+  name: Int32[]
+  nameWithType: Int32[]
+  fullName: System.Int32[]
+  nameWithType.vb: Int32()
+  fullName.vb: System.Int32()
+  name.vb: Int32()
+  spec.csharp:
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: DEM.Net.Lib.Imagery.DirectBitmap.Disposed*
+  commentId: Overload:DEM.Net.Lib.Imagery.DirectBitmap.Disposed
+  name: Disposed
+  nameWithType: DirectBitmap.Disposed
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap.Disposed
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  nameWithType: Boolean
+  fullName: System.Boolean
+- uid: DEM.Net.Lib.Imagery.DirectBitmap.Height*
+  commentId: Overload:DEM.Net.Lib.Imagery.DirectBitmap.Height
+  name: Height
+  nameWithType: DirectBitmap.Height
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap.Height
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: DEM.Net.Lib.Imagery.DirectBitmap.Width*
+  commentId: Overload:DEM.Net.Lib.Imagery.DirectBitmap.Width
+  name: Width
+  nameWithType: DirectBitmap.Width
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap.Width
+- uid: DEM.Net.Lib.Imagery.DirectBitmap.BitsHandle*
+  commentId: Overload:DEM.Net.Lib.Imagery.DirectBitmap.BitsHandle
+  name: BitsHandle
+  nameWithType: DirectBitmap.BitsHandle
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap.BitsHandle
+- uid: System.Runtime.InteropServices.GCHandle
+  commentId: T:System.Runtime.InteropServices.GCHandle
+  parent: System.Runtime.InteropServices
+  isExternal: true
+  name: GCHandle
+  nameWithType: GCHandle
+  fullName: System.Runtime.InteropServices.GCHandle
+- uid: System.Runtime.InteropServices
+  commentId: N:System.Runtime.InteropServices
+  isExternal: true
+  name: System.Runtime.InteropServices
+  nameWithType: System.Runtime.InteropServices
+  fullName: System.Runtime.InteropServices
+- uid: DEM.Net.Lib.Imagery.DirectBitmap.#ctor*
+  commentId: Overload:DEM.Net.Lib.Imagery.DirectBitmap.#ctor
+  name: DirectBitmap
+  nameWithType: DirectBitmap.DirectBitmap
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap.DirectBitmap
+- uid: DEM.Net.Lib.Imagery.DirectBitmap.SetPixel*
+  commentId: Overload:DEM.Net.Lib.Imagery.DirectBitmap.SetPixel
+  name: SetPixel
+  nameWithType: DirectBitmap.SetPixel
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap.SetPixel
+- uid: System.Drawing.Color
+  commentId: T:System.Drawing.Color
+  parent: System.Drawing
+  isExternal: true
+  name: Color
+  nameWithType: Color
+  fullName: System.Drawing.Color
+- uid: DEM.Net.Lib.Imagery.DirectBitmap.GetPixel*
+  commentId: Overload:DEM.Net.Lib.Imagery.DirectBitmap.GetPixel
+  name: GetPixel
+  nameWithType: DirectBitmap.GetPixel
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap.GetPixel
+- uid: DEM.Net.Lib.Imagery.DirectBitmap.Dispose*
+  commentId: Overload:DEM.Net.Lib.Imagery.DirectBitmap.Dispose
+  name: Dispose
+  nameWithType: DirectBitmap.Dispose
+  fullName: DEM.Net.Lib.Imagery.DirectBitmap.Dispose
+- uid: System.IDisposable.Dispose
+  commentId: M:System.IDisposable.Dispose
+  parent: System.IDisposable
+  isExternal: true
+  name: Dispose()
+  nameWithType: IDisposable.Dispose()
+  fullName: System.IDisposable.Dispose()
+  spec.csharp:
+  - uid: System.IDisposable.Dispose
+    name: Dispose
+    nameWithType: IDisposable.Dispose
+    fullName: System.IDisposable.Dispose
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.IDisposable.Dispose
+    name: Dispose
+    nameWithType: IDisposable.Dispose
+    fullName: System.IDisposable.Dispose
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )

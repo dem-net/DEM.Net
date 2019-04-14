@@ -1,0 +1,615 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.GDALVRTFileService
+  commentId: T:DEM.Net.Lib.GDALVRTFileService
+  id: GDALVRTFileService
+  parent: DEM.Net.Lib
+  children:
+  - DEM.Net.Lib.GDALVRTFileService.#ctor(System.String,DEM.Net.Lib.DEMDataSet)
+  - DEM.Net.Lib.GDALVRTFileService.Dataset
+  - DEM.Net.Lib.GDALVRTFileService.Setup(System.Boolean)
+  - DEM.Net.Lib.GDALVRTFileService.Sources
+  langs:
+  - csharp
+  - vb
+  name: GDALVRTFileService
+  nameWithType: GDALVRTFileService
+  fullName: DEM.Net.Lib.GDALVRTFileService
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Raster/GDALVRTFileService.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GDALVRTFileService
+    path: ../DEM.Net.Lib/Services/Raster/GDALVRTFileService.cs
+    startLine: 17
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  summary: "\nRemote GDAL VRT file handling\nDownloads and enumerates through tiles referenced in VRT file\n"
+  example: []
+  syntax:
+    content: public class GDALVRTFileService
+    content.vb: Public Class GDALVRTFileService
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.GDALVRTFileService.Dataset
+  commentId: P:DEM.Net.Lib.GDALVRTFileService.Dataset
+  id: Dataset
+  parent: DEM.Net.Lib.GDALVRTFileService
+  langs:
+  - csharp
+  - vb
+  name: Dataset
+  nameWithType: GDALVRTFileService.Dataset
+  fullName: DEM.Net.Lib.GDALVRTFileService.Dataset
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Raster/GDALVRTFileService.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Dataset
+    path: ../DEM.Net.Lib/Services/Raster/GDALVRTFileService.cs
+    startLine: 28
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public DEMDataSet Dataset { get; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.DEMDataSet
+    content.vb: Public ReadOnly Property Dataset As DEMDataSet
+  overload: DEM.Net.Lib.GDALVRTFileService.Dataset*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.GDALVRTFileService.#ctor(System.String,DEM.Net.Lib.DEMDataSet)
+  commentId: M:DEM.Net.Lib.GDALVRTFileService.#ctor(System.String,DEM.Net.Lib.DEMDataSet)
+  id: '#ctor(System.String,DEM.Net.Lib.DEMDataSet)'
+  parent: DEM.Net.Lib.GDALVRTFileService
+  langs:
+  - csharp
+  - vb
+  name: GDALVRTFileService(String, DEMDataSet)
+  nameWithType: GDALVRTFileService.GDALVRTFileService(String, DEMDataSet)
+  fullName: DEM.Net.Lib.GDALVRTFileService.GDALVRTFileService(System.String, DEM.Net.Lib.DEMDataSet)
+  type: Constructor
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Raster/GDALVRTFileService.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: .ctor
+    path: ../DEM.Net.Lib/Services/Raster/GDALVRTFileService.cs
+    startLine: 30
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public GDALVRTFileService(string localDirectory, DEMDataSet dataSet)
+    parameters:
+    - id: localDirectory
+      type: System.String
+    - id: dataSet
+      type: DEM.Net.Lib.DEMDataSet
+    content.vb: Public Sub New(localDirectory As String, dataSet As DEMDataSet)
+  overload: DEM.Net.Lib.GDALVRTFileService.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.GDALVRTFileService.Setup(System.Boolean)
+  commentId: M:DEM.Net.Lib.GDALVRTFileService.Setup(System.Boolean)
+  id: Setup(System.Boolean)
+  parent: DEM.Net.Lib.GDALVRTFileService
+  langs:
+  - csharp
+  - vb
+  name: Setup(Boolean)
+  nameWithType: GDALVRTFileService.Setup(Boolean)
+  fullName: DEM.Net.Lib.GDALVRTFileService.Setup(System.Boolean)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Raster/GDALVRTFileService.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Setup
+    path: ../DEM.Net.Lib/Services/Raster/GDALVRTFileService.cs
+    startLine: 39
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  summary: "\nEnsures local directories are created and download VRT file if needed\n"
+  example: []
+  syntax:
+    content: public void Setup(bool useMemoryCache)
+    parameters:
+    - id: useMemoryCache
+      type: System.Boolean
+    content.vb: Public Sub Setup(useMemoryCache As Boolean)
+  overload: DEM.Net.Lib.GDALVRTFileService.Setup*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.GDALVRTFileService.Sources
+  commentId: M:DEM.Net.Lib.GDALVRTFileService.Sources
+  id: Sources
+  parent: DEM.Net.Lib.GDALVRTFileService
+  langs:
+  - csharp
+  - vb
+  name: Sources()
+  nameWithType: GDALVRTFileService.Sources()
+  fullName: DEM.Net.Lib.GDALVRTFileService.Sources()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Raster/GDALVRTFileService.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Sources
+    path: ../DEM.Net.Lib/Services/Raster/GDALVRTFileService.cs
+    startLine: 112
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  summary: "\nEnumerates throught all the sources\nSupports only VRTRasterBand with ComplexSource or SimpleSource\n"
+  example: []
+  syntax:
+    content: public IEnumerable<GDALSource> Sources()
+    return:
+      type: System.Collections.Generic.IEnumerable{DEM.Net.Lib.GDALSource}
+      description: ''
+    content.vb: Public Function Sources As IEnumerable(Of GDALSource)
+  overload: DEM.Net.Lib.GDALVRTFileService.Sources*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: DEM.Net.Lib
+  commentId: N:DEM.Net.Lib
+  name: DEM.Net.Lib
+  nameWithType: DEM.Net.Lib
+  fullName: DEM.Net.Lib
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.GDALVRTFileService.Dataset*
+  commentId: Overload:DEM.Net.Lib.GDALVRTFileService.Dataset
+  name: Dataset
+  nameWithType: GDALVRTFileService.Dataset
+  fullName: DEM.Net.Lib.GDALVRTFileService.Dataset
+- uid: DEM.Net.Lib.DEMDataSet
+  commentId: T:DEM.Net.Lib.DEMDataSet
+  parent: DEM.Net.Lib
+  name: DEMDataSet
+  nameWithType: DEMDataSet
+  fullName: DEM.Net.Lib.DEMDataSet
+- uid: DEM.Net.Lib.GDALVRTFileService.#ctor*
+  commentId: Overload:DEM.Net.Lib.GDALVRTFileService.#ctor
+  name: GDALVRTFileService
+  nameWithType: GDALVRTFileService.GDALVRTFileService
+  fullName: DEM.Net.Lib.GDALVRTFileService.GDALVRTFileService
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: DEM.Net.Lib.GDALVRTFileService.Setup*
+  commentId: Overload:DEM.Net.Lib.GDALVRTFileService.Setup
+  name: Setup
+  nameWithType: GDALVRTFileService.Setup
+  fullName: DEM.Net.Lib.GDALVRTFileService.Setup
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  nameWithType: Boolean
+  fullName: System.Boolean
+- uid: DEM.Net.Lib.GDALVRTFileService.Sources*
+  commentId: Overload:DEM.Net.Lib.GDALVRTFileService.Sources
+  name: Sources
+  nameWithType: GDALVRTFileService.Sources
+  fullName: DEM.Net.Lib.GDALVRTFileService.Sources
+- uid: System.Collections.Generic.IEnumerable{DEM.Net.Lib.GDALSource}
+  commentId: T:System.Collections.Generic.IEnumerable{DEM.Net.Lib.GDALSource}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  name: IEnumerable<GDALSource>
+  nameWithType: IEnumerable<GDALSource>
+  fullName: System.Collections.Generic.IEnumerable<DEM.Net.Lib.GDALSource>
+  nameWithType.vb: IEnumerable(Of GDALSource)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of DEM.Net.Lib.GDALSource)
+  name.vb: IEnumerable(Of GDALSource)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: DEM.Net.Lib.GDALSource
+    name: GDALSource
+    nameWithType: GDALSource
+    fullName: DEM.Net.Lib.GDALSource
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: DEM.Net.Lib.GDALSource
+    name: GDALSource
+    nameWithType: GDALSource
+    fullName: DEM.Net.Lib.GDALSource
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IEnumerable`1
+  commentId: T:System.Collections.Generic.IEnumerable`1
+  isExternal: true
+  name: IEnumerable<T>
+  nameWithType: IEnumerable<T>
+  fullName: System.Collections.Generic.IEnumerable<T>
+  nameWithType.vb: IEnumerable(Of T)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
+  name.vb: IEnumerable(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic

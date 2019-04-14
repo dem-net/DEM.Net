@@ -1,0 +1,554 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Gpx.GpxAddress
+  commentId: T:DEM.Net.Lib.Gpx.GpxAddress
+  id: GpxAddress
+  parent: DEM.Net.Lib.Gpx
+  children:
+  - DEM.Net.Lib.Gpx.GpxAddress.City
+  - DEM.Net.Lib.Gpx.GpxAddress.Country
+  - DEM.Net.Lib.Gpx.GpxAddress.PostalCode
+  - DEM.Net.Lib.Gpx.GpxAddress.State
+  - DEM.Net.Lib.Gpx.GpxAddress.StreetAddress
+  langs:
+  - csharp
+  - vb
+  name: GpxAddress
+  nameWithType: GpxAddress
+  fullName: DEM.Net.Lib.Gpx.GpxAddress
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GpxAddress
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 619
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public class GpxAddress
+    content.vb: Public Class GpxAddress
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.Gpx.GpxAddress.StreetAddress
+  commentId: P:DEM.Net.Lib.Gpx.GpxAddress.StreetAddress
+  id: StreetAddress
+  parent: DEM.Net.Lib.Gpx.GpxAddress
+  langs:
+  - csharp
+  - vb
+  name: StreetAddress
+  nameWithType: GpxAddress.StreetAddress
+  fullName: DEM.Net.Lib.Gpx.GpxAddress.StreetAddress
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: StreetAddress
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 621
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public string StreetAddress { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property StreetAddress As String
+  overload: DEM.Net.Lib.Gpx.GpxAddress.StreetAddress*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Gpx.GpxAddress.City
+  commentId: P:DEM.Net.Lib.Gpx.GpxAddress.City
+  id: City
+  parent: DEM.Net.Lib.Gpx.GpxAddress
+  langs:
+  - csharp
+  - vb
+  name: City
+  nameWithType: GpxAddress.City
+  fullName: DEM.Net.Lib.Gpx.GpxAddress.City
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: City
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 622
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public string City { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property City As String
+  overload: DEM.Net.Lib.Gpx.GpxAddress.City*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Gpx.GpxAddress.State
+  commentId: P:DEM.Net.Lib.Gpx.GpxAddress.State
+  id: State
+  parent: DEM.Net.Lib.Gpx.GpxAddress
+  langs:
+  - csharp
+  - vb
+  name: State
+  nameWithType: GpxAddress.State
+  fullName: DEM.Net.Lib.Gpx.GpxAddress.State
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: State
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 623
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public string State { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property State As String
+  overload: DEM.Net.Lib.Gpx.GpxAddress.State*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Gpx.GpxAddress.Country
+  commentId: P:DEM.Net.Lib.Gpx.GpxAddress.Country
+  id: Country
+  parent: DEM.Net.Lib.Gpx.GpxAddress
+  langs:
+  - csharp
+  - vb
+  name: Country
+  nameWithType: GpxAddress.Country
+  fullName: DEM.Net.Lib.Gpx.GpxAddress.Country
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Country
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 624
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public string Country { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property Country As String
+  overload: DEM.Net.Lib.Gpx.GpxAddress.Country*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Gpx.GpxAddress.PostalCode
+  commentId: P:DEM.Net.Lib.Gpx.GpxAddress.PostalCode
+  id: PostalCode
+  parent: DEM.Net.Lib.Gpx.GpxAddress
+  langs:
+  - csharp
+  - vb
+  name: PostalCode
+  nameWithType: GpxAddress.PostalCode
+  fullName: DEM.Net.Lib.Gpx.GpxAddress.PostalCode
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: PostalCode
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 625
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public string PostalCode { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property PostalCode As String
+  overload: DEM.Net.Lib.Gpx.GpxAddress.PostalCode*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+references:
+- uid: DEM.Net.Lib.Gpx
+  commentId: N:DEM.Net.Lib.Gpx
+  name: DEM.Net.Lib.Gpx
+  nameWithType: DEM.Net.Lib.Gpx
+  fullName: DEM.Net.Lib.Gpx
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.Gpx.GpxAddress.StreetAddress*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxAddress.StreetAddress
+  name: StreetAddress
+  nameWithType: GpxAddress.StreetAddress
+  fullName: DEM.Net.Lib.Gpx.GpxAddress.StreetAddress
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: DEM.Net.Lib.Gpx.GpxAddress.City*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxAddress.City
+  name: City
+  nameWithType: GpxAddress.City
+  fullName: DEM.Net.Lib.Gpx.GpxAddress.City
+- uid: DEM.Net.Lib.Gpx.GpxAddress.State*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxAddress.State
+  name: State
+  nameWithType: GpxAddress.State
+  fullName: DEM.Net.Lib.Gpx.GpxAddress.State
+- uid: DEM.Net.Lib.Gpx.GpxAddress.Country*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxAddress.Country
+  name: Country
+  nameWithType: GpxAddress.Country
+  fullName: DEM.Net.Lib.Gpx.GpxAddress.Country
+- uid: DEM.Net.Lib.Gpx.GpxAddress.PostalCode*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxAddress.PostalCode
+  name: PostalCode
+  nameWithType: GpxAddress.PostalCode
+  fullName: DEM.Net.Lib.Gpx.GpxAddress.PostalCode

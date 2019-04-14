@@ -1,0 +1,437 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral
+  commentId: T:DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral
+  id: BeanParametresChoixDuPointCentral
+  parent: DEM.Net.Lib.Services.Lab
+  children:
+  - DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral.p00_methodeChoixDuPointCentral
+  - DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral.p01_excentrationMinimum
+  langs:
+  - csharp
+  - vb
+  name: BeanParametresChoixDuPointCentral
+  nameWithType: BeanParametresChoixDuPointCentral
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanParametresChoixDuPointCentral.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: BeanParametresChoixDuPointCentral
+    path: ../DEM.Net.Lib/Services/Lab/BeanParametresChoixDuPointCentral.cs
+    startLine: 8
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public class BeanParametresChoixDuPointCentral
+    content.vb: Public Class BeanParametresChoixDuPointCentral
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral.p00_methodeChoixDuPointCentral
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral.p00_methodeChoixDuPointCentral
+  id: p00_methodeChoixDuPointCentral
+  parent: DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral
+  langs:
+  - csharp
+  - vb
+  name: p00_methodeChoixDuPointCentral
+  nameWithType: BeanParametresChoixDuPointCentral.p00_methodeChoixDuPointCentral
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral.p00_methodeChoixDuPointCentral
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanParametresChoixDuPointCentral.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p00_methodeChoixDuPointCentral
+    path: ../DEM.Net.Lib/Services/Lab/BeanParametresChoixDuPointCentral.cs
+    startLine: 10
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public enumMethodeChoixDuPointCentral p00_methodeChoixDuPointCentral { get; set; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Services.Lab.enumMethodeChoixDuPointCentral
+    content.vb: Public Property p00_methodeChoixDuPointCentral As enumMethodeChoixDuPointCentral
+  overload: DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral.p00_methodeChoixDuPointCentral*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral.p01_excentrationMinimum
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral.p01_excentrationMinimum
+  id: p01_excentrationMinimum
+  parent: DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral
+  langs:
+  - csharp
+  - vb
+  name: p01_excentrationMinimum
+  nameWithType: BeanParametresChoixDuPointCentral.p01_excentrationMinimum
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral.p01_excentrationMinimum
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanParametresChoixDuPointCentral.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p01_excentrationMinimum
+    path: ../DEM.Net.Lib/Services/Lab/BeanParametresChoixDuPointCentral.cs
+    startLine: 12
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public double p01_excentrationMinimum { get; set; }
+    parameters: []
+    return:
+      type: System.Double
+    content.vb: Public Property p01_excentrationMinimum As Double
+  overload: DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral.p01_excentrationMinimum*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+references:
+- uid: DEM.Net.Lib.Services.Lab
+  commentId: N:DEM.Net.Lib.Services.Lab
+  name: DEM.Net.Lib.Services.Lab
+  nameWithType: DEM.Net.Lib.Services.Lab
+  fullName: DEM.Net.Lib.Services.Lab
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral.p00_methodeChoixDuPointCentral*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral.p00_methodeChoixDuPointCentral
+  name: p00_methodeChoixDuPointCentral
+  nameWithType: BeanParametresChoixDuPointCentral.p00_methodeChoixDuPointCentral
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral.p00_methodeChoixDuPointCentral
+- uid: DEM.Net.Lib.Services.Lab.enumMethodeChoixDuPointCentral
+  commentId: T:DEM.Net.Lib.Services.Lab.enumMethodeChoixDuPointCentral
+  parent: DEM.Net.Lib.Services.Lab
+  name: enumMethodeChoixDuPointCentral
+  nameWithType: enumMethodeChoixDuPointCentral
+  fullName: DEM.Net.Lib.Services.Lab.enumMethodeChoixDuPointCentral
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral.p01_excentrationMinimum*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral.p01_excentrationMinimum
+  name: p01_excentrationMinimum
+  nameWithType: BeanParametresChoixDuPointCentral.p01_excentrationMinimum
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral.p01_excentrationMinimum
+- uid: System.Double
+  commentId: T:System.Double
+  parent: System
+  isExternal: true
+  name: Double
+  nameWithType: Double
+  fullName: System.Double

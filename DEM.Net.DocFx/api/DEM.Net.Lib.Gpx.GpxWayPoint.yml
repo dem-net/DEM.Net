@@ -1,0 +1,1486 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint
+  commentId: T:DEM.Net.Lib.Gpx.GpxWayPoint
+  id: GpxWayPoint
+  parent: DEM.Net.Lib.Gpx
+  children:
+  - DEM.Net.Lib.Gpx.GpxWayPoint.Address
+  - DEM.Net.Lib.Gpx.GpxWayPoint.Aliases
+  - DEM.Net.Lib.Gpx.GpxWayPoint.Categories
+  - DEM.Net.Lib.Gpx.GpxWayPoint.Depth
+  - DEM.Net.Lib.Gpx.GpxWayPoint.DisplayMode
+  - DEM.Net.Lib.Gpx.GpxWayPoint.Expiration
+  - DEM.Net.Lib.Gpx.GpxWayPoint.HasDlgExtensions
+  - DEM.Net.Lib.Gpx.GpxWayPoint.HasExtensions
+  - DEM.Net.Lib.Gpx.GpxWayPoint.HasGarminExtensions
+  - DEM.Net.Lib.Gpx.GpxWayPoint.HasGarminWaypointExtensions
+  - DEM.Net.Lib.Gpx.GpxWayPoint.Level
+  - DEM.Net.Lib.Gpx.GpxWayPoint.Phones
+  - DEM.Net.Lib.Gpx.GpxWayPoint.Proximity
+  - DEM.Net.Lib.Gpx.GpxWayPoint.Samples
+  - DEM.Net.Lib.Gpx.GpxWayPoint.Temperature
+  langs:
+  - csharp
+  - vb
+  name: GpxWayPoint
+  nameWithType: GpxWayPoint
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GpxWayPoint
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 186
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: 'public class GpxWayPoint : GpxPoint'
+    content.vb: >-
+      Public Class GpxWayPoint
+          Inherits GpxPoint
+  inheritance:
+  - System.Object
+  - DEM.Net.Lib.Gpx.GpxPoint
+  inheritedMembers:
+  - DEM.Net.Lib.Gpx.GpxPoint.Properties_
+  - DEM.Net.Lib.Gpx.GpxPoint.Latitude
+  - DEM.Net.Lib.Gpx.GpxPoint.Longitude
+  - DEM.Net.Lib.Gpx.GpxPoint.Elevation
+  - DEM.Net.Lib.Gpx.GpxPoint.Time
+  - DEM.Net.Lib.Gpx.GpxPoint.MagneticVar
+  - DEM.Net.Lib.Gpx.GpxPoint.GeoidHeight
+  - DEM.Net.Lib.Gpx.GpxPoint.Name
+  - DEM.Net.Lib.Gpx.GpxPoint.Comment
+  - DEM.Net.Lib.Gpx.GpxPoint.Description
+  - DEM.Net.Lib.Gpx.GpxPoint.Source
+  - DEM.Net.Lib.Gpx.GpxPoint.Links
+  - DEM.Net.Lib.Gpx.GpxPoint.Symbol
+  - DEM.Net.Lib.Gpx.GpxPoint.Type
+  - DEM.Net.Lib.Gpx.GpxPoint.FixType
+  - DEM.Net.Lib.Gpx.GpxPoint.Satelites
+  - DEM.Net.Lib.Gpx.GpxPoint.Hdop
+  - DEM.Net.Lib.Gpx.GpxPoint.Vdop
+  - DEM.Net.Lib.Gpx.GpxPoint.Pdop
+  - DEM.Net.Lib.Gpx.GpxPoint.AgeOfData
+  - DEM.Net.Lib.Gpx.GpxPoint.DgpsId
+  - DEM.Net.Lib.Gpx.GpxPoint.HttpLink
+  - DEM.Net.Lib.Gpx.GpxPoint.EmailLink
+  - DEM.Net.Lib.Gpx.GpxPoint.GetDistanceFrom(DEM.Net.Lib.Gpx.GpxPoint)
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.Proximity
+  commentId: P:DEM.Net.Lib.Gpx.GpxWayPoint.Proximity
+  id: Proximity
+  parent: DEM.Net.Lib.Gpx.GpxWayPoint
+  langs:
+  - csharp
+  - vb
+  name: Proximity
+  nameWithType: GpxWayPoint.Proximity
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.Proximity
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Proximity
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 190
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public double? Proximity { get; set; }
+    parameters: []
+    return:
+      type: System.Nullable{System.Double}
+    content.vb: Public Property Proximity As Double?
+  overload: DEM.Net.Lib.Gpx.GpxWayPoint.Proximity*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.Temperature
+  commentId: P:DEM.Net.Lib.Gpx.GpxWayPoint.Temperature
+  id: Temperature
+  parent: DEM.Net.Lib.Gpx.GpxWayPoint
+  langs:
+  - csharp
+  - vb
+  name: Temperature
+  nameWithType: GpxWayPoint.Temperature
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.Temperature
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Temperature
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 196
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public double? Temperature { get; set; }
+    parameters: []
+    return:
+      type: System.Nullable{System.Double}
+    content.vb: Public Property Temperature As Double?
+  overload: DEM.Net.Lib.Gpx.GpxWayPoint.Temperature*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.Depth
+  commentId: P:DEM.Net.Lib.Gpx.GpxWayPoint.Depth
+  id: Depth
+  parent: DEM.Net.Lib.Gpx.GpxWayPoint
+  langs:
+  - csharp
+  - vb
+  name: Depth
+  nameWithType: GpxWayPoint.Depth
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.Depth
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Depth
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 202
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public double? Depth { get; set; }
+    parameters: []
+    return:
+      type: System.Nullable{System.Double}
+    content.vb: Public Property Depth As Double?
+  overload: DEM.Net.Lib.Gpx.GpxWayPoint.Depth*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.DisplayMode
+  commentId: P:DEM.Net.Lib.Gpx.GpxWayPoint.DisplayMode
+  id: DisplayMode
+  parent: DEM.Net.Lib.Gpx.GpxWayPoint
+  langs:
+  - csharp
+  - vb
+  name: DisplayMode
+  nameWithType: GpxWayPoint.DisplayMode
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.DisplayMode
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: DisplayMode
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 208
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public string DisplayMode { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property DisplayMode As String
+  overload: DEM.Net.Lib.Gpx.GpxWayPoint.DisplayMode*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.Categories
+  commentId: P:DEM.Net.Lib.Gpx.GpxWayPoint.Categories
+  id: Categories
+  parent: DEM.Net.Lib.Gpx.GpxWayPoint
+  langs:
+  - csharp
+  - vb
+  name: Categories
+  nameWithType: GpxWayPoint.Categories
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.Categories
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Categories
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 214
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public IList<string> Categories { get; }
+    parameters: []
+    return:
+      type: System.Collections.Generic.IList{System.String}
+    content.vb: Public ReadOnly Property Categories As IList(Of String)
+  overload: DEM.Net.Lib.Gpx.GpxWayPoint.Categories*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.Address
+  commentId: P:DEM.Net.Lib.Gpx.GpxWayPoint.Address
+  id: Address
+  parent: DEM.Net.Lib.Gpx.GpxWayPoint
+  langs:
+  - csharp
+  - vb
+  name: Address
+  nameWithType: GpxWayPoint.Address
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.Address
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Address
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 219
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public GpxAddress Address { get; set; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Gpx.GpxAddress
+    content.vb: Public Property Address As GpxAddress
+  overload: DEM.Net.Lib.Gpx.GpxWayPoint.Address*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.Phones
+  commentId: P:DEM.Net.Lib.Gpx.GpxWayPoint.Phones
+  id: Phones
+  parent: DEM.Net.Lib.Gpx.GpxWayPoint
+  langs:
+  - csharp
+  - vb
+  name: Phones
+  nameWithType: GpxWayPoint.Phones
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.Phones
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Phones
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 225
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public IList<GpxPhone> Phones { get; }
+    parameters: []
+    return:
+      type: System.Collections.Generic.IList{DEM.Net.Lib.Gpx.GpxPhone}
+    content.vb: Public ReadOnly Property Phones As IList(Of GpxPhone)
+  overload: DEM.Net.Lib.Gpx.GpxWayPoint.Phones*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.Samples
+  commentId: P:DEM.Net.Lib.Gpx.GpxWayPoint.Samples
+  id: Samples
+  parent: DEM.Net.Lib.Gpx.GpxWayPoint
+  langs:
+  - csharp
+  - vb
+  name: Samples
+  nameWithType: GpxWayPoint.Samples
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.Samples
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Samples
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 232
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public int? Samples { get; set; }
+    parameters: []
+    return:
+      type: System.Nullable{System.Int32}
+    content.vb: Public Property Samples As Integer?
+  overload: DEM.Net.Lib.Gpx.GpxWayPoint.Samples*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.Expiration
+  commentId: P:DEM.Net.Lib.Gpx.GpxWayPoint.Expiration
+  id: Expiration
+  parent: DEM.Net.Lib.Gpx.GpxWayPoint
+  langs:
+  - csharp
+  - vb
+  name: Expiration
+  nameWithType: GpxWayPoint.Expiration
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.Expiration
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Expiration
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 238
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public DateTime? Expiration { get; set; }
+    parameters: []
+    return:
+      type: System.Nullable{System.DateTime}
+    content.vb: Public Property Expiration As Date?
+  overload: DEM.Net.Lib.Gpx.GpxWayPoint.Expiration*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.Level
+  commentId: P:DEM.Net.Lib.Gpx.GpxWayPoint.Level
+  id: Level
+  parent: DEM.Net.Lib.Gpx.GpxWayPoint
+  langs:
+  - csharp
+  - vb
+  name: Level
+  nameWithType: GpxWayPoint.Level
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.Level
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Level
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 246
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public int? Level { get; set; }
+    parameters: []
+    return:
+      type: System.Nullable{System.Int32}
+    content.vb: Public Property Level As Integer?
+  overload: DEM.Net.Lib.Gpx.GpxWayPoint.Level*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.Aliases
+  commentId: P:DEM.Net.Lib.Gpx.GpxWayPoint.Aliases
+  id: Aliases
+  parent: DEM.Net.Lib.Gpx.GpxWayPoint
+  langs:
+  - csharp
+  - vb
+  name: Aliases
+  nameWithType: GpxWayPoint.Aliases
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.Aliases
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Aliases
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 252
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public IList<string> Aliases { get; }
+    parameters: []
+    return:
+      type: System.Collections.Generic.IList{System.String}
+    content.vb: Public ReadOnly Property Aliases As IList(Of String)
+  overload: DEM.Net.Lib.Gpx.GpxWayPoint.Aliases*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.HasGarminExtensions
+  commentId: P:DEM.Net.Lib.Gpx.GpxWayPoint.HasGarminExtensions
+  id: HasGarminExtensions
+  parent: DEM.Net.Lib.Gpx.GpxWayPoint
+  langs:
+  - csharp
+  - vb
+  name: HasGarminExtensions
+  nameWithType: GpxWayPoint.HasGarminExtensions
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.HasGarminExtensions
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: HasGarminExtensions
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 257
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public bool HasGarminExtensions { get; }
+    parameters: []
+    return:
+      type: System.Boolean
+    content.vb: Public ReadOnly Property HasGarminExtensions As Boolean
+  overload: DEM.Net.Lib.Gpx.GpxWayPoint.HasGarminExtensions*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.HasGarminWaypointExtensions
+  commentId: P:DEM.Net.Lib.Gpx.GpxWayPoint.HasGarminWaypointExtensions
+  id: HasGarminWaypointExtensions
+  parent: DEM.Net.Lib.Gpx.GpxWayPoint
+  langs:
+  - csharp
+  - vb
+  name: HasGarminWaypointExtensions
+  nameWithType: GpxWayPoint.HasGarminWaypointExtensions
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.HasGarminWaypointExtensions
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: HasGarminWaypointExtensions
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 267
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public bool HasGarminWaypointExtensions { get; }
+    parameters: []
+    return:
+      type: System.Boolean
+    content.vb: Public ReadOnly Property HasGarminWaypointExtensions As Boolean
+  overload: DEM.Net.Lib.Gpx.GpxWayPoint.HasGarminWaypointExtensions*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.HasDlgExtensions
+  commentId: P:DEM.Net.Lib.Gpx.GpxWayPoint.HasDlgExtensions
+  id: HasDlgExtensions
+  parent: DEM.Net.Lib.Gpx.GpxWayPoint
+  langs:
+  - csharp
+  - vb
+  name: HasDlgExtensions
+  nameWithType: GpxWayPoint.HasDlgExtensions
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.HasDlgExtensions
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: HasDlgExtensions
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 272
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public bool HasDlgExtensions { get; }
+    parameters: []
+    return:
+      type: System.Boolean
+    content.vb: Public ReadOnly Property HasDlgExtensions As Boolean
+  overload: DEM.Net.Lib.Gpx.GpxWayPoint.HasDlgExtensions*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.HasExtensions
+  commentId: P:DEM.Net.Lib.Gpx.GpxWayPoint.HasExtensions
+  id: HasExtensions
+  parent: DEM.Net.Lib.Gpx.GpxWayPoint
+  langs:
+  - csharp
+  - vb
+  name: HasExtensions
+  nameWithType: GpxWayPoint.HasExtensions
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.HasExtensions
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: HasExtensions
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 277
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public bool HasExtensions { get; }
+    parameters: []
+    return:
+      type: System.Boolean
+    content.vb: Public ReadOnly Property HasExtensions As Boolean
+  overload: DEM.Net.Lib.Gpx.GpxWayPoint.HasExtensions*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+references:
+- uid: DEM.Net.Lib.Gpx
+  commentId: N:DEM.Net.Lib.Gpx
+  name: DEM.Net.Lib.Gpx
+  nameWithType: DEM.Net.Lib.Gpx
+  fullName: DEM.Net.Lib.Gpx
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: DEM.Net.Lib.Gpx.GpxPoint
+  commentId: T:DEM.Net.Lib.Gpx.GpxPoint
+  parent: DEM.Net.Lib.Gpx
+  name: GpxPoint
+  nameWithType: GpxPoint
+  fullName: DEM.Net.Lib.Gpx.GpxPoint
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Properties_
+  commentId: F:DEM.Net.Lib.Gpx.GpxPoint.Properties_
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Properties_
+  nameWithType: GpxPoint.Properties_
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Properties_
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Latitude
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Latitude
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Latitude
+  nameWithType: GpxPoint.Latitude
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Latitude
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Longitude
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Longitude
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Longitude
+  nameWithType: GpxPoint.Longitude
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Longitude
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Elevation
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Elevation
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Elevation
+  nameWithType: GpxPoint.Elevation
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Elevation
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Time
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Time
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Time
+  nameWithType: GpxPoint.Time
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Time
+- uid: DEM.Net.Lib.Gpx.GpxPoint.MagneticVar
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.MagneticVar
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: MagneticVar
+  nameWithType: GpxPoint.MagneticVar
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.MagneticVar
+- uid: DEM.Net.Lib.Gpx.GpxPoint.GeoidHeight
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.GeoidHeight
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: GeoidHeight
+  nameWithType: GpxPoint.GeoidHeight
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.GeoidHeight
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Name
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Name
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Name
+  nameWithType: GpxPoint.Name
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Name
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Comment
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Comment
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Comment
+  nameWithType: GpxPoint.Comment
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Comment
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Description
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Description
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Description
+  nameWithType: GpxPoint.Description
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Description
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Source
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Source
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Source
+  nameWithType: GpxPoint.Source
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Source
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Links
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Links
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Links
+  nameWithType: GpxPoint.Links
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Links
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Symbol
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Symbol
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Symbol
+  nameWithType: GpxPoint.Symbol
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Symbol
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Type
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Type
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Type
+  nameWithType: GpxPoint.Type
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Type
+- uid: DEM.Net.Lib.Gpx.GpxPoint.FixType
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.FixType
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: FixType
+  nameWithType: GpxPoint.FixType
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.FixType
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Satelites
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Satelites
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Satelites
+  nameWithType: GpxPoint.Satelites
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Satelites
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Hdop
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Hdop
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Hdop
+  nameWithType: GpxPoint.Hdop
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Hdop
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Vdop
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Vdop
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Vdop
+  nameWithType: GpxPoint.Vdop
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Vdop
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Pdop
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Pdop
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Pdop
+  nameWithType: GpxPoint.Pdop
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Pdop
+- uid: DEM.Net.Lib.Gpx.GpxPoint.AgeOfData
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.AgeOfData
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: AgeOfData
+  nameWithType: GpxPoint.AgeOfData
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.AgeOfData
+- uid: DEM.Net.Lib.Gpx.GpxPoint.DgpsId
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.DgpsId
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: DgpsId
+  nameWithType: GpxPoint.DgpsId
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.DgpsId
+- uid: DEM.Net.Lib.Gpx.GpxPoint.HttpLink
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.HttpLink
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: HttpLink
+  nameWithType: GpxPoint.HttpLink
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.HttpLink
+- uid: DEM.Net.Lib.Gpx.GpxPoint.EmailLink
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.EmailLink
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: EmailLink
+  nameWithType: GpxPoint.EmailLink
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.EmailLink
+- uid: DEM.Net.Lib.Gpx.GpxPoint.GetDistanceFrom(DEM.Net.Lib.Gpx.GpxPoint)
+  commentId: M:DEM.Net.Lib.Gpx.GpxPoint.GetDistanceFrom(DEM.Net.Lib.Gpx.GpxPoint)
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: GetDistanceFrom(GpxPoint)
+  nameWithType: GpxPoint.GetDistanceFrom(GpxPoint)
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.GetDistanceFrom(DEM.Net.Lib.Gpx.GpxPoint)
+  spec.csharp:
+  - uid: DEM.Net.Lib.Gpx.GpxPoint.GetDistanceFrom(DEM.Net.Lib.Gpx.GpxPoint)
+    name: GetDistanceFrom
+    nameWithType: GpxPoint.GetDistanceFrom
+    fullName: DEM.Net.Lib.Gpx.GpxPoint.GetDistanceFrom
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.Gpx.GpxPoint
+    name: GpxPoint
+    nameWithType: GpxPoint
+    fullName: DEM.Net.Lib.Gpx.GpxPoint
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.Gpx.GpxPoint.GetDistanceFrom(DEM.Net.Lib.Gpx.GpxPoint)
+    name: GetDistanceFrom
+    nameWithType: GpxPoint.GetDistanceFrom
+    fullName: DEM.Net.Lib.Gpx.GpxPoint.GetDistanceFrom
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.Gpx.GpxPoint
+    name: GpxPoint
+    nameWithType: GpxPoint
+    fullName: DEM.Net.Lib.Gpx.GpxPoint
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.Proximity*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxWayPoint.Proximity
+  name: Proximity
+  nameWithType: GpxWayPoint.Proximity
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.Proximity
+- uid: System.Nullable{System.Double}
+  commentId: T:System.Nullable{System.Double}
+  parent: System
+  definition: System.Nullable`1
+  name: Nullable<Double>
+  nameWithType: Nullable<Double>
+  fullName: System.Nullable<System.Double>
+  nameWithType.vb: Nullable(Of Double)
+  fullName.vb: System.Nullable(Of System.Double)
+  name.vb: Nullable(Of Double)
+  spec.csharp:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Double
+    name: Double
+    nameWithType: Double
+    fullName: System.Double
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Double
+    name: Double
+    nameWithType: Double
+    fullName: System.Double
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Nullable`1
+  commentId: T:System.Nullable`1
+  isExternal: true
+  name: Nullable<T>
+  nameWithType: Nullable<T>
+  fullName: System.Nullable<T>
+  nameWithType.vb: Nullable(Of T)
+  fullName.vb: System.Nullable(Of T)
+  name.vb: Nullable(Of T)
+  spec.csharp:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.Temperature*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxWayPoint.Temperature
+  name: Temperature
+  nameWithType: GpxWayPoint.Temperature
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.Temperature
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.Depth*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxWayPoint.Depth
+  name: Depth
+  nameWithType: GpxWayPoint.Depth
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.Depth
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.DisplayMode*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxWayPoint.DisplayMode
+  name: DisplayMode
+  nameWithType: GpxWayPoint.DisplayMode
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.DisplayMode
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.Categories*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxWayPoint.Categories
+  name: Categories
+  nameWithType: GpxWayPoint.Categories
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.Categories
+- uid: System.Collections.Generic.IList{System.String}
+  commentId: T:System.Collections.Generic.IList{System.String}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IList`1
+  name: IList<String>
+  nameWithType: IList<String>
+  fullName: System.Collections.Generic.IList<System.String>
+  nameWithType.vb: IList(Of String)
+  fullName.vb: System.Collections.Generic.IList(Of System.String)
+  name.vb: IList(Of String)
+  spec.csharp:
+  - uid: System.Collections.Generic.IList`1
+    name: IList
+    nameWithType: IList
+    fullName: System.Collections.Generic.IList
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IList`1
+    name: IList
+    nameWithType: IList
+    fullName: System.Collections.Generic.IList
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IList`1
+  commentId: T:System.Collections.Generic.IList`1
+  isExternal: true
+  name: IList<T>
+  nameWithType: IList<T>
+  fullName: System.Collections.Generic.IList<T>
+  nameWithType.vb: IList(Of T)
+  fullName.vb: System.Collections.Generic.IList(Of T)
+  name.vb: IList(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IList`1
+    name: IList
+    nameWithType: IList
+    fullName: System.Collections.Generic.IList
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IList`1
+    name: IList
+    nameWithType: IList
+    fullName: System.Collections.Generic.IList
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.Address*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxWayPoint.Address
+  name: Address
+  nameWithType: GpxWayPoint.Address
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.Address
+- uid: DEM.Net.Lib.Gpx.GpxAddress
+  commentId: T:DEM.Net.Lib.Gpx.GpxAddress
+  parent: DEM.Net.Lib.Gpx
+  name: GpxAddress
+  nameWithType: GpxAddress
+  fullName: DEM.Net.Lib.Gpx.GpxAddress
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.Phones*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxWayPoint.Phones
+  name: Phones
+  nameWithType: GpxWayPoint.Phones
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.Phones
+- uid: System.Collections.Generic.IList{DEM.Net.Lib.Gpx.GpxPhone}
+  commentId: T:System.Collections.Generic.IList{DEM.Net.Lib.Gpx.GpxPhone}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IList`1
+  name: IList<GpxPhone>
+  nameWithType: IList<GpxPhone>
+  fullName: System.Collections.Generic.IList<DEM.Net.Lib.Gpx.GpxPhone>
+  nameWithType.vb: IList(Of GpxPhone)
+  fullName.vb: System.Collections.Generic.IList(Of DEM.Net.Lib.Gpx.GpxPhone)
+  name.vb: IList(Of GpxPhone)
+  spec.csharp:
+  - uid: System.Collections.Generic.IList`1
+    name: IList
+    nameWithType: IList
+    fullName: System.Collections.Generic.IList
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: DEM.Net.Lib.Gpx.GpxPhone
+    name: GpxPhone
+    nameWithType: GpxPhone
+    fullName: DEM.Net.Lib.Gpx.GpxPhone
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IList`1
+    name: IList
+    nameWithType: IList
+    fullName: System.Collections.Generic.IList
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: DEM.Net.Lib.Gpx.GpxPhone
+    name: GpxPhone
+    nameWithType: GpxPhone
+    fullName: DEM.Net.Lib.Gpx.GpxPhone
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.Samples*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxWayPoint.Samples
+  name: Samples
+  nameWithType: GpxWayPoint.Samples
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.Samples
+- uid: System.Nullable{System.Int32}
+  commentId: T:System.Nullable{System.Int32}
+  parent: System
+  definition: System.Nullable`1
+  name: Nullable<Int32>
+  nameWithType: Nullable<Int32>
+  fullName: System.Nullable<System.Int32>
+  nameWithType.vb: Nullable(Of Int32)
+  fullName.vb: System.Nullable(Of System.Int32)
+  name.vb: Nullable(Of Int32)
+  spec.csharp:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.Expiration*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxWayPoint.Expiration
+  name: Expiration
+  nameWithType: GpxWayPoint.Expiration
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.Expiration
+- uid: System.Nullable{System.DateTime}
+  commentId: T:System.Nullable{System.DateTime}
+  parent: System
+  definition: System.Nullable`1
+  name: Nullable<DateTime>
+  nameWithType: Nullable<DateTime>
+  fullName: System.Nullable<System.DateTime>
+  nameWithType.vb: Nullable(Of DateTime)
+  fullName.vb: System.Nullable(Of System.DateTime)
+  name.vb: Nullable(Of DateTime)
+  spec.csharp:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.DateTime
+    name: DateTime
+    nameWithType: DateTime
+    fullName: System.DateTime
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.DateTime
+    name: DateTime
+    nameWithType: DateTime
+    fullName: System.DateTime
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.Level*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxWayPoint.Level
+  name: Level
+  nameWithType: GpxWayPoint.Level
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.Level
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.Aliases*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxWayPoint.Aliases
+  name: Aliases
+  nameWithType: GpxWayPoint.Aliases
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.Aliases
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.HasGarminExtensions*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxWayPoint.HasGarminExtensions
+  name: HasGarminExtensions
+  nameWithType: GpxWayPoint.HasGarminExtensions
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.HasGarminExtensions
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  nameWithType: Boolean
+  fullName: System.Boolean
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.HasGarminWaypointExtensions*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxWayPoint.HasGarminWaypointExtensions
+  name: HasGarminWaypointExtensions
+  nameWithType: GpxWayPoint.HasGarminWaypointExtensions
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.HasGarminWaypointExtensions
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.HasDlgExtensions*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxWayPoint.HasDlgExtensions
+  name: HasDlgExtensions
+  nameWithType: GpxWayPoint.HasDlgExtensions
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.HasDlgExtensions
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint.HasExtensions*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxWayPoint.HasExtensions
+  name: HasExtensions
+  nameWithType: GpxWayPoint.HasExtensions
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint.HasExtensions

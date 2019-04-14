@@ -1,28 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Windows.Media;
+using System.Drawing;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DEM.Net.Lib.Services.Lab;
+using DEM.Net.Core.Services.Lab;
 using System.IO;
-using SqlServerSpatial.Toolkit;
 using DEM.Net.glTF;
 using System.Numerics;
 using AssetGenerator.Runtime;
 using AssetGenerator;
-using DEM.Net.Lib;
-using DEM.Net.Lib.Services.VisualisationServices;
-using Microsoft.SqlServer.Types;
+using DEM.Net.Core;
+using DEM.Net.Core.Services.VisualisationServices;
+using NetTopologySuite.Diagnostics.Tracing;
+using GeoAPI.Geometries;
 
 namespace DEM.Net.TestWinForm
 {
     public partial class CtrlTestLab : UserControl
     {
         private static BeanParamGenerationAutoDePointsTests _paramGenerationPoints;
+        BeanParametresDuTin _paramTin;
         private static List<BeanPoint_internal> _dataPointsTests;
         private static BeanTopologieFacettes _topolFacettes;
 
@@ -99,16 +100,9 @@ namespace DEM.Net.TestWinForm
 
         }
 
-        private void btnTestPoints_Click(object sender, EventArgs e)
-        {
-            IglTFService glTFService = new glTFService();
 
-            MeshPrimitive pointMesh = glTFService.GeneratePointMesh(FromBeanPoint_internalToGeoPoint(_dataPointsTests), new Vector3(1, 0, 0), 1f);
-            Model model = glTFService.GenerateModel(pointMesh, "Test Points");
-            glTFService.Export(model, "testpoints.glb", "Test points", false, true);
-        }
 
-        
+
         private IEnumerable<GeoPoint> FromBeanPoint_internalToGeoPoint(List<BeanPoint_internal> dataPointsTests)
         {
             return dataPointsTests.Select(ptIn => new GeoPoint(ptIn.p10_coord[1], ptIn.p10_coord[0], (float)ptIn.p10_coord[2], 0, 0));
@@ -120,12 +114,16 @@ namespace DEM.Net.TestWinForm
 
         private void btn_testsDivers_Click(object sender, EventArgs e)
         {
-            double[] v_decalage = new double[2];
-            v_decalage[0] += 10000;
-            v_decalage[1] += -10000;
-            FLabServices.createCalculMedium().TestMatrice(_dataPointsTests, v_decalage);
+            ////TEST MATRICES 2D et changement référentiel
+            //double[] v_decalage = new double[2];
+            //v_decalage[0] += 10000;
+            //v_decalage[1] += -10000;
+            //FServicesApplicatifs.createTestsDivers().TestChangementReferentiel2D(_dataPointsTests, v_decalage);
 
-            MessageBox.Show("Traitement terminé.");
+            //
+            //FServicesApplicatifs.createTestsDivers().TestCercleCirconscritAuTriangle();
+            //FServicesApplicatifs.createTestsDivers().TestIsInCercleCirconscrit();
+            FServicesApplicatifs.createTestsDivers().TestOrdonnancement();
         }
 
         private void btn_testCH_Click(object sender, EventArgs e)
@@ -143,13 +141,13 @@ namespace DEM.Net.TestWinForm
             }
 
             string v_label = "";
-            Color v_couleurBase = Color.FromScRgb(255, 0, 255, 255);
+            Color v_couleurBase = Color.FromArgb(255, 0, 255, 255);
             FServicesApplicatifs.createVisuSpatialTrace().GetVisuPoints2D(_dataPointsTests, v_label, v_couleurBase, -1);
             v_label = "CH";
             FServicesApplicatifs.createVisuSpatialTrace().GetVisuPoints2D(v_pointConvexHull, v_label, 10);
 
             SpatialTrace.Enable();
-            SqlGeometry v_ligneCh;
+            IGeometry v_ligneCh;
             for (int v_indexPt = 0; v_indexPt < v_pointConvexHull.Count - 1; v_indexPt++)
             {
                 v_ligneCh = FLabServices.createUtilitaires().GetGeometryLine(v_pointConvexHull[v_indexPt].p10_coord, v_pointConvexHull[v_indexPt + 1].p10_coord, 2154, true);
@@ -165,24 +163,26 @@ namespace DEM.Net.TestWinForm
 
         private void btn_testTin_Click(object sender, EventArgs e)
         {
-            BeanParametresDuTin v_paramTin;
-            v_paramTin = FLabServices.createCalculMedium().GetParametresDuTinParDefaut();
-            v_paramTin.p11_initialisation_determinationFrontieres = enumModeDelimitationFrontiere.convexHull;
-            v_paramTin.p14_initialisation_modeChoixDuPointCentral.p01_excentrationMinimum = 0;
-            v_paramTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = 20;
-            v_paramTin.p31_nbreIterationsMaxi = 5;
-            _topolFacettes = FLabServices.createCalculMedium().GetInitialisationTin(_dataPointsTests, v_paramTin);
 
-           // FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(_topolFacettes,false);
-            FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, v_paramTin);
-            bool v_visuSpatialTrace_vf = true;
+            _paramTin = FLabServices.createCalculMedium().GetParametresDuTinParDefaut();
+            _paramTin.p11_initialisation_determinationFrontieres = enumModeDelimitationFrontiere.pointsProchesDuMbo;
+            _paramTin.p12_extensionSupplementaireMboEnM = 1000;
+            _paramTin.p13_modeCalculZParDefaut = enumModeCalculZ.alti_0;
+            _paramTin.p14_altitudeParDefaut = -200;
+            _paramTin.p15_nbrePointsSupplMultiples4 = 4;
+            _paramTin.p16_initialisation_modeChoixDuPointCentral.p01_excentrationMinimum = 0;
+            _paramTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = Convert.ToDouble(tb_precisionEnM.Text);
+
+            //
+            _topolFacettes = FLabServices.createCalculMedium().GetInitialisationTin(_dataPointsTests, _paramTin);
+            FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, _paramTin);
+
+            bool v_visuSpatialTrace_vf = false;
             if (v_visuSpatialTrace_vf)
             {
                 FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuTopologieFacettes(_topolFacettes, false, false);
                 FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
             }
-          
-
             MessageBox.Show("Traitement terminé.");
         }
 
@@ -195,47 +195,115 @@ namespace DEM.Net.TestWinForm
 
         private void btn_genererPointsReels_Click(object sender, EventArgs e)
         {
-            string v_bbox= "POLYGON((5.523314005345696 43.576096090257955, 5.722441202611321 43.576096090257955, 5.722441202611321 43.46456490270913, 5.523314005345696 43.46456490270913, 5.523314005345696 43.576096090257955))";
-           _dataPointsTests=FServicesApplicatifs.createEchantillonsTestsServices().GetPointsTestsByBBox(v_bbox);
+            string v_bbox;
+            //string v_sainteVictoire= "POLYGON((5.523314005345696 43.576096090257955, 5.722441202611321 43.576096090257955, 5.722441202611321 43.46456490270913, 5.523314005345696 43.46456490270913, 5.523314005345696 43.576096090257955))";
+            //string v_eyger= "Polygon((8.12951188622090193 46.634254667789655, 7.8854960299327308 46.63327193616965616, 7.89909222133881617 46.4319282954101098, 8.13595218741325965 46.43143509785498679, 8.12951188622090193 46.634254667789655))";
+            //string v_gorges="Polygon ((6.14901771150602894 43.8582708438193265, 6.30590241369230409 43.8575166880815317, 6.32080646040000005 43.74636314919661828, 6.14561854295865828 43.74579647280887684, 6.14901771150602894 43.8582708438193265))";
+            v_bbox = tb_wkt.Text;
+            //v_bbox = v_gorges;
+
+             DEMDataSet dataSet = null;
+            if (rdSRTMGL3.Checked)
+            {
+                dataSet = DEMDataSet.SRTM_GL3;
+            }
+            else if (rdSRTMGL1.Checked)
+            {
+                dataSet = DEMDataSet.SRTM_GL1;
+            }
+            else
+            {
+                dataSet = DEMDataSet.AW3D30;
+            }
+            _dataPointsTests = FServicesApplicatifs.createEchantillonsTestsServices().GetPointsTestsByBBox(v_bbox, dataSet, int.Parse(txtSRID.Text));
 
             //Dictionary<string, int> v_doublons;
             //v_doublons=FLabServices.createCalculMedium().GetEtComptePointsDoublonnes(_dataPointsTests);
-            MessageBox.Show("Remontée des points terminée ("+ _dataPointsTests.Count+ " points).");
+            MessageBox.Show("Remontée des points terminée (" + _dataPointsTests.Count + " points).");
         }
 
         private void btnTestFacettes_Click(object sender, EventArgs e)
         {
             BeanFacettesToVisu3D v_beanToVisu3d;
             v_beanToVisu3d = new BeanFacettesToVisu3D();
-            
+
             Dictionary<int, int> v_indiceParIdPoint = new Dictionary<int, int>();
             int v_indice = 0;
             GeoPoint v_geoPoint;
 
-            foreach(BeanPoint_internal v_point in _topolFacettes.p11_pointsFacettesByIdPoint.Values)
+            foreach (BeanPoint_internal v_point in _topolFacettes.p11_pointsFacettesByIdPoint.Values)
             {
-                v_geoPoint = new GeoPoint(v_point.p10_coord[0], v_point.p10_coord[1], (float) v_point.p10_coord[2],0,0);
+                v_geoPoint = new GeoPoint(v_point.p10_coord[1], v_point.p10_coord[0], (float)v_point.p10_coord[2], 0, 0);
                 v_beanToVisu3d.p00_geoPoint.Add(v_geoPoint);
                 v_indiceParIdPoint.Add(v_point.p00_id, v_indice);
                 v_indice++;
             }
-            //
+            //Création des listes d'indices et normalisation du sens des points favettes
             List<int> v_listeIndices;
+            bool v_renvoyerNullSiPointsColineaires_vf = true;
+            bool v_normalisationSensHoraireSinonAntihoraire = false;
+
             foreach (BeanFacette_internal v_facette in _topolFacettes.p13_facettesById.Values)
             {
-                v_listeIndices = new List<int>();
-                foreach(BeanPoint_internal v_ptFacette in v_facette.p01_pointsDeFacette)
+                List<BeanPoint_internal> v_normalisationDuSens = FLabServices.createCalculMedium().GetOrdonnancementPointsFacette(v_facette.p01_pointsDeFacette, v_renvoyerNullSiPointsColineaires_vf, v_normalisationSensHoraireSinonAntihoraire);
+                if (v_normalisationDuSens != null)
                 {
-                    v_listeIndices.Add(v_indiceParIdPoint[v_ptFacette.p00_id]);
+                    v_listeIndices = new List<int>();
+                    foreach (BeanPoint_internal v_ptFacette in v_normalisationDuSens)
+                    {
+                        v_listeIndices.Add(v_indiceParIdPoint[v_ptFacette.p00_id]);
+                    }
+                    v_beanToVisu3d.p01_listeIndexPointsfacettes.Add(v_listeIndices);
                 }
-                v_beanToVisu3d.p01_listeIndexPointsfacettes.Add(v_listeIndices);
             }
             //
             IglTFService glTFService = new glTFService();
             MeshPrimitive v_trianglesMesh = glTFService.GenerateTriangleMesh(v_beanToVisu3d.p00_geoPoint, v_beanToVisu3d.p01_listeIndexPointsfacettes.SelectMany(c => c).ToList());
-              
+
             Model model = glTFService.GenerateModel(v_trianglesMesh, "Test Triangles");
-            glTFService.Export(model, "Test3D", "testTriangles.glb",  false, true);
+            string v_nomFichierOut = "TIN_";
+            if (rdSRTMGL3.Checked)
+            {
+                v_nomFichierOut += "SRTM_GL3";
+            }
+            else if (rdSRTMGL1.Checked)
+            {
+                v_nomFichierOut += "SRTM_GL1";
+            }
+            else
+            {
+                v_nomFichierOut += "AW3D30";
+            }
+            v_nomFichierOut += "_p" + tb_precisionEnM.Text;
+            glTFService.Export(model, "Test3D", v_nomFichierOut, false, true);
+            MessageBox.Show("Traitement terminé =>"+ v_nomFichierOut);
+        }
+
+        private void btn_testUnitaire_Click(object sender, EventArgs e)
+        {
+            bool v_afficherMessageSiko_vf = true;
+            //
+            FServicesApplicatifs.createTestsUnitairesLab().TestUnitairesLab(v_afficherMessageSiko_vf);
+        }
+
+
+        private void btn_creteEtTalwegTin_visu_Click(object sender, EventArgs e)
+        {
+            HashSet<enum_qualificationMorpho_arc> v_exclureDeLaVisu = new HashSet<enum_qualificationMorpho_arc>();
+            v_exclureDeLaVisu.Add(enum_qualificationMorpho_arc.autre);
+            //v_exclureDeLaVisu.Add(enum_qualificationMorpho_arc.talweg);
+            //v_exclureDeLaVisu.Add(enum_qualificationMorpho_arc.crete);
+
+            FServicesApplicatifs.createVisuSpatialTrace().GetVisuCreteEtTalweg(_topolFacettes, v_exclureDeLaVisu);
+            FServicesApplicatifs.createVisuSpatialTrace().AfficheVisu();
+            MessageBox.Show("Traitement terminé.");
+        }
+
+        private void btn_pentesTin_visuST_Click(object sender, EventArgs e)
+        {
+            int p_nbreClasses = 7;
+            FVisualisationServices.createVisualisationSpatialTraceServices().GetVisuPentesFacettes(_topolFacettes, p_nbreClasses);
+            FServicesApplicatifs.createVisuSpatialTrace().AfficheVisu();
             MessageBox.Show("Traitement terminé.");
         }
     }

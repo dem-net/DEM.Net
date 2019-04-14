@@ -1,0 +1,1185 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.GDALSource
+  commentId: T:DEM.Net.Lib.GDALSource
+  id: GDALSource
+  parent: DEM.Net.Lib
+  children:
+  - DEM.Net.Lib.GDALSource.#ctor
+  - DEM.Net.Lib.GDALSource.BBox
+  - DEM.Net.Lib.GDALSource.DestLat
+  - DEM.Net.Lib.GDALSource.DestLon
+  - DEM.Net.Lib.GDALSource.DstxOff
+  - DEM.Net.Lib.GDALSource.DstxSize
+  - DEM.Net.Lib.GDALSource.DstyOff
+  - DEM.Net.Lib.GDALSource.DstySize
+  - DEM.Net.Lib.GDALSource.LocalFileName
+  - DEM.Net.Lib.GDALSource.NoData
+  - DEM.Net.Lib.GDALSource.OriginLat
+  - DEM.Net.Lib.GDALSource.OriginLon
+  - DEM.Net.Lib.GDALSource.Properties
+  - DEM.Net.Lib.GDALSource.RelativeToVRT
+  - DEM.Net.Lib.GDALSource.SourceFileName
+  - DEM.Net.Lib.GDALSource.SourceFileNameAbsolute
+  - DEM.Net.Lib.GDALSource.Type
+  langs:
+  - csharp
+  - vb
+  name: GDALSource
+  nameWithType: GDALSource
+  fullName: DEM.Net.Lib.GDALSource
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GDALSource.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GDALSource
+    path: ../DEM.Net.Lib/Model/GDALSource.cs
+    startLine: 8
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public class GDALSource
+    content.vb: Public Class GDALSource
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.GDALSource.RelativeToVRT
+  commentId: P:DEM.Net.Lib.GDALSource.RelativeToVRT
+  id: RelativeToVRT
+  parent: DEM.Net.Lib.GDALSource
+  langs:
+  - csharp
+  - vb
+  name: RelativeToVRT
+  nameWithType: GDALSource.RelativeToVRT
+  fullName: DEM.Net.Lib.GDALSource.RelativeToVRT
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GDALSource.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: RelativeToVRT
+    path: ../DEM.Net.Lib/Model/GDALSource.cs
+    startLine: 11
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public bool RelativeToVRT { get; set; }
+    parameters: []
+    return:
+      type: System.Boolean
+    content.vb: Public Property RelativeToVRT As Boolean
+  overload: DEM.Net.Lib.GDALSource.RelativeToVRT*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.GDALSource.SourceFileName
+  commentId: P:DEM.Net.Lib.GDALSource.SourceFileName
+  id: SourceFileName
+  parent: DEM.Net.Lib.GDALSource
+  langs:
+  - csharp
+  - vb
+  name: SourceFileName
+  nameWithType: GDALSource.SourceFileName
+  fullName: DEM.Net.Lib.GDALSource.SourceFileName
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GDALSource.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: SourceFileName
+    path: ../DEM.Net.Lib/Model/GDALSource.cs
+    startLine: 12
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public string SourceFileName { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property SourceFileName As String
+  overload: DEM.Net.Lib.GDALSource.SourceFileName*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.GDALSource.Type
+  commentId: P:DEM.Net.Lib.GDALSource.Type
+  id: Type
+  parent: DEM.Net.Lib.GDALSource
+  langs:
+  - csharp
+  - vb
+  name: Type
+  nameWithType: GDALSource.Type
+  fullName: DEM.Net.Lib.GDALSource.Type
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GDALSource.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Type
+    path: ../DEM.Net.Lib/Model/GDALSource.cs
+    startLine: 13
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public string Type { get; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public ReadOnly Property Type As String
+  overload: DEM.Net.Lib.GDALSource.Type*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.GDALSource.Properties
+  commentId: P:DEM.Net.Lib.GDALSource.Properties
+  id: Properties
+  parent: DEM.Net.Lib.GDALSource
+  langs:
+  - csharp
+  - vb
+  name: Properties
+  nameWithType: GDALSource.Properties
+  fullName: DEM.Net.Lib.GDALSource.Properties
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GDALSource.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Properties
+    path: ../DEM.Net.Lib/Model/GDALSource.cs
+    startLine: 14
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public Dictionary<string, string> Properties { get; set; }
+    parameters: []
+    return:
+      type: System.Collections.Generic.Dictionary{System.String,System.String}
+    content.vb: Public Property Properties As Dictionary(Of String, String)
+  overload: DEM.Net.Lib.GDALSource.Properties*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.GDALSource.DstxOff
+  commentId: P:DEM.Net.Lib.GDALSource.DstxOff
+  id: DstxOff
+  parent: DEM.Net.Lib.GDALSource
+  langs:
+  - csharp
+  - vb
+  name: DstxOff
+  nameWithType: GDALSource.DstxOff
+  fullName: DEM.Net.Lib.GDALSource.DstxOff
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GDALSource.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: DstxOff
+    path: ../DEM.Net.Lib/Model/GDALSource.cs
+    startLine: 15
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public int DstxOff { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public ReadOnly Property DstxOff As Integer
+  overload: DEM.Net.Lib.GDALSource.DstxOff*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.GDALSource.DstyOff
+  commentId: P:DEM.Net.Lib.GDALSource.DstyOff
+  id: DstyOff
+  parent: DEM.Net.Lib.GDALSource
+  langs:
+  - csharp
+  - vb
+  name: DstyOff
+  nameWithType: GDALSource.DstyOff
+  fullName: DEM.Net.Lib.GDALSource.DstyOff
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GDALSource.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: DstyOff
+    path: ../DEM.Net.Lib/Model/GDALSource.cs
+    startLine: 16
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public int DstyOff { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public ReadOnly Property DstyOff As Integer
+  overload: DEM.Net.Lib.GDALSource.DstyOff*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.GDALSource.DstxSize
+  commentId: P:DEM.Net.Lib.GDALSource.DstxSize
+  id: DstxSize
+  parent: DEM.Net.Lib.GDALSource
+  langs:
+  - csharp
+  - vb
+  name: DstxSize
+  nameWithType: GDALSource.DstxSize
+  fullName: DEM.Net.Lib.GDALSource.DstxSize
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GDALSource.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: DstxSize
+    path: ../DEM.Net.Lib/Model/GDALSource.cs
+    startLine: 17
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public int DstxSize { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public ReadOnly Property DstxSize As Integer
+  overload: DEM.Net.Lib.GDALSource.DstxSize*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.GDALSource.DstySize
+  commentId: P:DEM.Net.Lib.GDALSource.DstySize
+  id: DstySize
+  parent: DEM.Net.Lib.GDALSource
+  langs:
+  - csharp
+  - vb
+  name: DstySize
+  nameWithType: GDALSource.DstySize
+  fullName: DEM.Net.Lib.GDALSource.DstySize
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GDALSource.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: DstySize
+    path: ../DEM.Net.Lib/Model/GDALSource.cs
+    startLine: 18
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public int DstySize { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public ReadOnly Property DstySize As Integer
+  overload: DEM.Net.Lib.GDALSource.DstySize*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.GDALSource.NoData
+  commentId: P:DEM.Net.Lib.GDALSource.NoData
+  id: NoData
+  parent: DEM.Net.Lib.GDALSource
+  langs:
+  - csharp
+  - vb
+  name: NoData
+  nameWithType: GDALSource.NoData
+  fullName: DEM.Net.Lib.GDALSource.NoData
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GDALSource.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: NoData
+    path: ../DEM.Net.Lib/Model/GDALSource.cs
+    startLine: 19
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public double NoData { get; }
+    parameters: []
+    return:
+      type: System.Double
+    content.vb: Public ReadOnly Property NoData As Double
+  overload: DEM.Net.Lib.GDALSource.NoData*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.GDALSource.SourceFileNameAbsolute
+  commentId: P:DEM.Net.Lib.GDALSource.SourceFileNameAbsolute
+  id: SourceFileNameAbsolute
+  parent: DEM.Net.Lib.GDALSource
+  langs:
+  - csharp
+  - vb
+  name: SourceFileNameAbsolute
+  nameWithType: GDALSource.SourceFileNameAbsolute
+  fullName: DEM.Net.Lib.GDALSource.SourceFileNameAbsolute
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GDALSource.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: SourceFileNameAbsolute
+    path: ../DEM.Net.Lib/Model/GDALSource.cs
+    startLine: 20
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public string SourceFileNameAbsolute { get; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public ReadOnly Property SourceFileNameAbsolute As String
+  overload: DEM.Net.Lib.GDALSource.SourceFileNameAbsolute*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.GDALSource.LocalFileName
+  commentId: P:DEM.Net.Lib.GDALSource.LocalFileName
+  id: LocalFileName
+  parent: DEM.Net.Lib.GDALSource
+  langs:
+  - csharp
+  - vb
+  name: LocalFileName
+  nameWithType: GDALSource.LocalFileName
+  fullName: DEM.Net.Lib.GDALSource.LocalFileName
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GDALSource.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: LocalFileName
+    path: ../DEM.Net.Lib/Model/GDALSource.cs
+    startLine: 21
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public string LocalFileName { get; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public ReadOnly Property LocalFileName As String
+  overload: DEM.Net.Lib.GDALSource.LocalFileName*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.GDALSource.OriginLon
+  commentId: P:DEM.Net.Lib.GDALSource.OriginLon
+  id: OriginLon
+  parent: DEM.Net.Lib.GDALSource
+  langs:
+  - csharp
+  - vb
+  name: OriginLon
+  nameWithType: GDALSource.OriginLon
+  fullName: DEM.Net.Lib.GDALSource.OriginLon
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GDALSource.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: OriginLon
+    path: ../DEM.Net.Lib/Model/GDALSource.cs
+    startLine: 22
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public double OriginLon { get; }
+    parameters: []
+    return:
+      type: System.Double
+    content.vb: Public ReadOnly Property OriginLon As Double
+  overload: DEM.Net.Lib.GDALSource.OriginLon*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.GDALSource.OriginLat
+  commentId: P:DEM.Net.Lib.GDALSource.OriginLat
+  id: OriginLat
+  parent: DEM.Net.Lib.GDALSource
+  langs:
+  - csharp
+  - vb
+  name: OriginLat
+  nameWithType: GDALSource.OriginLat
+  fullName: DEM.Net.Lib.GDALSource.OriginLat
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GDALSource.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: OriginLat
+    path: ../DEM.Net.Lib/Model/GDALSource.cs
+    startLine: 23
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public double OriginLat { get; }
+    parameters: []
+    return:
+      type: System.Double
+    content.vb: Public ReadOnly Property OriginLat As Double
+  overload: DEM.Net.Lib.GDALSource.OriginLat*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.GDALSource.DestLon
+  commentId: P:DEM.Net.Lib.GDALSource.DestLon
+  id: DestLon
+  parent: DEM.Net.Lib.GDALSource
+  langs:
+  - csharp
+  - vb
+  name: DestLon
+  nameWithType: GDALSource.DestLon
+  fullName: DEM.Net.Lib.GDALSource.DestLon
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GDALSource.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: DestLon
+    path: ../DEM.Net.Lib/Model/GDALSource.cs
+    startLine: 24
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public double DestLon { get; }
+    parameters: []
+    return:
+      type: System.Double
+    content.vb: Public ReadOnly Property DestLon As Double
+  overload: DEM.Net.Lib.GDALSource.DestLon*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.GDALSource.DestLat
+  commentId: P:DEM.Net.Lib.GDALSource.DestLat
+  id: DestLat
+  parent: DEM.Net.Lib.GDALSource
+  langs:
+  - csharp
+  - vb
+  name: DestLat
+  nameWithType: GDALSource.DestLat
+  fullName: DEM.Net.Lib.GDALSource.DestLat
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GDALSource.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: DestLat
+    path: ../DEM.Net.Lib/Model/GDALSource.cs
+    startLine: 25
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public double DestLat { get; }
+    parameters: []
+    return:
+      type: System.Double
+    content.vb: Public ReadOnly Property DestLat As Double
+  overload: DEM.Net.Lib.GDALSource.DestLat*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.GDALSource.BBox
+  commentId: P:DEM.Net.Lib.GDALSource.BBox
+  id: BBox
+  parent: DEM.Net.Lib.GDALSource
+  langs:
+  - csharp
+  - vb
+  name: BBox
+  nameWithType: GDALSource.BBox
+  fullName: DEM.Net.Lib.GDALSource.BBox
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GDALSource.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: BBox
+    path: ../DEM.Net.Lib/Model/GDALSource.cs
+    startLine: 26
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public BoundingBox BBox { get; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.BoundingBox
+    content.vb: Public ReadOnly Property BBox As BoundingBox
+  overload: DEM.Net.Lib.GDALSource.BBox*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.GDALSource.#ctor
+  commentId: M:DEM.Net.Lib.GDALSource.#ctor
+  id: '#ctor'
+  parent: DEM.Net.Lib.GDALSource
+  langs:
+  - csharp
+  - vb
+  name: GDALSource()
+  nameWithType: GDALSource.GDALSource()
+  fullName: DEM.Net.Lib.GDALSource.GDALSource()
+  type: Constructor
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GDALSource.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: .ctor
+    path: ../DEM.Net.Lib/Model/GDALSource.cs
+    startLine: 28
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public GDALSource()
+    content.vb: Public Sub New
+  overload: DEM.Net.Lib.GDALSource.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: DEM.Net.Lib
+  commentId: N:DEM.Net.Lib
+  name: DEM.Net.Lib
+  nameWithType: DEM.Net.Lib
+  fullName: DEM.Net.Lib
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.GDALSource.RelativeToVRT*
+  commentId: Overload:DEM.Net.Lib.GDALSource.RelativeToVRT
+  name: RelativeToVRT
+  nameWithType: GDALSource.RelativeToVRT
+  fullName: DEM.Net.Lib.GDALSource.RelativeToVRT
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  nameWithType: Boolean
+  fullName: System.Boolean
+- uid: DEM.Net.Lib.GDALSource.SourceFileName*
+  commentId: Overload:DEM.Net.Lib.GDALSource.SourceFileName
+  name: SourceFileName
+  nameWithType: GDALSource.SourceFileName
+  fullName: DEM.Net.Lib.GDALSource.SourceFileName
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: DEM.Net.Lib.GDALSource.Type*
+  commentId: Overload:DEM.Net.Lib.GDALSource.Type
+  name: Type
+  nameWithType: GDALSource.Type
+  fullName: DEM.Net.Lib.GDALSource.Type
+- uid: DEM.Net.Lib.GDALSource.Properties*
+  commentId: Overload:DEM.Net.Lib.GDALSource.Properties
+  name: Properties
+  nameWithType: GDALSource.Properties
+  fullName: DEM.Net.Lib.GDALSource.Properties
+- uid: System.Collections.Generic.Dictionary{System.String,System.String}
+  commentId: T:System.Collections.Generic.Dictionary{System.String,System.String}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.Dictionary`2
+  name: Dictionary<String, String>
+  nameWithType: Dictionary<String, String>
+  fullName: System.Collections.Generic.Dictionary<System.String, System.String>
+  nameWithType.vb: Dictionary(Of String, String)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, System.String)
+  name.vb: Dictionary(Of String, String)
+  spec.csharp:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.Dictionary`2
+  commentId: T:System.Collections.Generic.Dictionary`2
+  isExternal: true
+  name: Dictionary<TKey, TValue>
+  nameWithType: Dictionary<TKey, TValue>
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>
+  nameWithType.vb: Dictionary(Of TKey, TValue)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue)
+  name.vb: Dictionary(Of TKey, TValue)
+  spec.csharp:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: TKey
+    nameWithType: TKey
+    fullName: TKey
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: TValue
+    nameWithType: TValue
+    fullName: TValue
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: TKey
+    nameWithType: TKey
+    fullName: TKey
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: TValue
+    nameWithType: TValue
+    fullName: TValue
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: DEM.Net.Lib.GDALSource.DstxOff*
+  commentId: Overload:DEM.Net.Lib.GDALSource.DstxOff
+  name: DstxOff
+  nameWithType: GDALSource.DstxOff
+  fullName: DEM.Net.Lib.GDALSource.DstxOff
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: DEM.Net.Lib.GDALSource.DstyOff*
+  commentId: Overload:DEM.Net.Lib.GDALSource.DstyOff
+  name: DstyOff
+  nameWithType: GDALSource.DstyOff
+  fullName: DEM.Net.Lib.GDALSource.DstyOff
+- uid: DEM.Net.Lib.GDALSource.DstxSize*
+  commentId: Overload:DEM.Net.Lib.GDALSource.DstxSize
+  name: DstxSize
+  nameWithType: GDALSource.DstxSize
+  fullName: DEM.Net.Lib.GDALSource.DstxSize
+- uid: DEM.Net.Lib.GDALSource.DstySize*
+  commentId: Overload:DEM.Net.Lib.GDALSource.DstySize
+  name: DstySize
+  nameWithType: GDALSource.DstySize
+  fullName: DEM.Net.Lib.GDALSource.DstySize
+- uid: DEM.Net.Lib.GDALSource.NoData*
+  commentId: Overload:DEM.Net.Lib.GDALSource.NoData
+  name: NoData
+  nameWithType: GDALSource.NoData
+  fullName: DEM.Net.Lib.GDALSource.NoData
+- uid: System.Double
+  commentId: T:System.Double
+  parent: System
+  isExternal: true
+  name: Double
+  nameWithType: Double
+  fullName: System.Double
+- uid: DEM.Net.Lib.GDALSource.SourceFileNameAbsolute*
+  commentId: Overload:DEM.Net.Lib.GDALSource.SourceFileNameAbsolute
+  name: SourceFileNameAbsolute
+  nameWithType: GDALSource.SourceFileNameAbsolute
+  fullName: DEM.Net.Lib.GDALSource.SourceFileNameAbsolute
+- uid: DEM.Net.Lib.GDALSource.LocalFileName*
+  commentId: Overload:DEM.Net.Lib.GDALSource.LocalFileName
+  name: LocalFileName
+  nameWithType: GDALSource.LocalFileName
+  fullName: DEM.Net.Lib.GDALSource.LocalFileName
+- uid: DEM.Net.Lib.GDALSource.OriginLon*
+  commentId: Overload:DEM.Net.Lib.GDALSource.OriginLon
+  name: OriginLon
+  nameWithType: GDALSource.OriginLon
+  fullName: DEM.Net.Lib.GDALSource.OriginLon
+- uid: DEM.Net.Lib.GDALSource.OriginLat*
+  commentId: Overload:DEM.Net.Lib.GDALSource.OriginLat
+  name: OriginLat
+  nameWithType: GDALSource.OriginLat
+  fullName: DEM.Net.Lib.GDALSource.OriginLat
+- uid: DEM.Net.Lib.GDALSource.DestLon*
+  commentId: Overload:DEM.Net.Lib.GDALSource.DestLon
+  name: DestLon
+  nameWithType: GDALSource.DestLon
+  fullName: DEM.Net.Lib.GDALSource.DestLon
+- uid: DEM.Net.Lib.GDALSource.DestLat*
+  commentId: Overload:DEM.Net.Lib.GDALSource.DestLat
+  name: DestLat
+  nameWithType: GDALSource.DestLat
+  fullName: DEM.Net.Lib.GDALSource.DestLat
+- uid: DEM.Net.Lib.GDALSource.BBox*
+  commentId: Overload:DEM.Net.Lib.GDALSource.BBox
+  name: BBox
+  nameWithType: GDALSource.BBox
+  fullName: DEM.Net.Lib.GDALSource.BBox
+- uid: DEM.Net.Lib.BoundingBox
+  commentId: T:DEM.Net.Lib.BoundingBox
+  parent: DEM.Net.Lib
+  name: BoundingBox
+  nameWithType: BoundingBox
+  fullName: DEM.Net.Lib.BoundingBox
+- uid: DEM.Net.Lib.GDALSource.#ctor*
+  commentId: Overload:DEM.Net.Lib.GDALSource.#ctor
+  name: GDALSource
+  nameWithType: GDALSource.GDALSource
+  fullName: DEM.Net.Lib.GDALSource.GDALSource

@@ -1,0 +1,112 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Services.Lab.enumOrdonnancementPoints
+  commentId: T:DEM.Net.Lib.Services.Lab.enumOrdonnancementPoints
+  id: enumOrdonnancementPoints
+  parent: DEM.Net.Lib.Services.Lab
+  children:
+  - DEM.Net.Lib.Services.Lab.enumOrdonnancementPoints.antihoraire
+  - DEM.Net.Lib.Services.Lab.enumOrdonnancementPoints.horaire
+  langs:
+  - csharp
+  - vb
+  name: enumOrdonnancementPoints
+  nameWithType: enumOrdonnancementPoints
+  fullName: DEM.Net.Lib.Services.Lab.enumOrdonnancementPoints
+  type: Enum
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/enumServices.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: enumOrdonnancementPoints
+    path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
+    startLine: 31
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public enum enumOrdonnancementPoints
+    content.vb: Public Enum enumOrdonnancementPoints
+  modifiers.csharp:
+  - public
+  - enum
+  modifiers.vb:
+  - Public
+  - Enum
+- uid: DEM.Net.Lib.Services.Lab.enumOrdonnancementPoints.horaire
+  commentId: F:DEM.Net.Lib.Services.Lab.enumOrdonnancementPoints.horaire
+  id: horaire
+  parent: DEM.Net.Lib.Services.Lab.enumOrdonnancementPoints
+  langs:
+  - csharp
+  - vb
+  name: horaire
+  nameWithType: enumOrdonnancementPoints.horaire
+  fullName: DEM.Net.Lib.Services.Lab.enumOrdonnancementPoints.horaire
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/enumServices.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: horaire
+    path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
+    startLine: 33
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: horaire = 0
+    return:
+      type: DEM.Net.Lib.Services.Lab.enumOrdonnancementPoints
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.Services.Lab.enumOrdonnancementPoints.antihoraire
+  commentId: F:DEM.Net.Lib.Services.Lab.enumOrdonnancementPoints.antihoraire
+  id: antihoraire
+  parent: DEM.Net.Lib.Services.Lab.enumOrdonnancementPoints
+  langs:
+  - csharp
+  - vb
+  name: antihoraire
+  nameWithType: enumOrdonnancementPoints.antihoraire
+  fullName: DEM.Net.Lib.Services.Lab.enumOrdonnancementPoints.antihoraire
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/enumServices.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: antihoraire
+    path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
+    startLine: 34
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: antihoraire = 1
+    return:
+      type: DEM.Net.Lib.Services.Lab.enumOrdonnancementPoints
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+references:
+- uid: DEM.Net.Lib.Services.Lab
+  commentId: N:DEM.Net.Lib.Services.Lab
+  name: DEM.Net.Lib.Services.Lab
+  nameWithType: DEM.Net.Lib.Services.Lab
+  fullName: DEM.Net.Lib.Services.Lab
+- uid: DEM.Net.Lib.Services.Lab.enumOrdonnancementPoints
+  commentId: T:DEM.Net.Lib.Services.Lab.enumOrdonnancementPoints
+  parent: DEM.Net.Lib.Services.Lab
+  name: enumOrdonnancementPoints
+  nameWithType: enumOrdonnancementPoints
+  fullName: DEM.Net.Lib.Services.Lab.enumOrdonnancementPoints

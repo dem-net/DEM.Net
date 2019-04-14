@@ -1,0 +1,554 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Gpx.GpxNamespaces
+  commentId: T:DEM.Net.Lib.Gpx.GpxNamespaces
+  id: GpxNamespaces
+  parent: DEM.Net.Lib.Gpx
+  children:
+  - DEM.Net.Lib.Gpx.GpxNamespaces.DLG_EXTENSIONS_NAMESPACE
+  - DEM.Net.Lib.Gpx.GpxNamespaces.GARMIN_EXTENSIONS_NAMESPACE
+  - DEM.Net.Lib.Gpx.GpxNamespaces.GARMIN_TRACKPOINT_EXTENSIONS_V1_NAMESPACE
+  - DEM.Net.Lib.Gpx.GpxNamespaces.GARMIN_TRACKPOINT_EXTENSIONS_V2_NAMESPACE
+  - DEM.Net.Lib.Gpx.GpxNamespaces.GARMIN_WAYPOINT_EXTENSIONS_NAMESPACE
+  - DEM.Net.Lib.Gpx.GpxNamespaces.GPX_NAMESPACE
+  langs:
+  - csharp
+  - vb
+  name: GpxNamespaces
+  nameWithType: GpxNamespaces
+  fullName: DEM.Net.Lib.Gpx.GpxNamespaces
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GpxNamespaces
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 14
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public static class GpxNamespaces
+    content.vb: Public Module GpxNamespaces
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - static
+  - class
+  modifiers.vb:
+  - Public
+  - Module
+- uid: DEM.Net.Lib.Gpx.GpxNamespaces.GPX_NAMESPACE
+  commentId: F:DEM.Net.Lib.Gpx.GpxNamespaces.GPX_NAMESPACE
+  id: GPX_NAMESPACE
+  parent: DEM.Net.Lib.Gpx.GpxNamespaces
+  langs:
+  - csharp
+  - vb
+  name: GPX_NAMESPACE
+  nameWithType: GpxNamespaces.GPX_NAMESPACE
+  fullName: DEM.Net.Lib.Gpx.GpxNamespaces.GPX_NAMESPACE
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GPX_NAMESPACE
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 16
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public const string GPX_NAMESPACE = "http://www.topografix.com/GPX/1/1"
+    return:
+      type: System.String
+    content.vb: Public Const GPX_NAMESPACE As String = "http://www.topografix.com/GPX/1/1"
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.Gpx.GpxNamespaces.GARMIN_EXTENSIONS_NAMESPACE
+  commentId: F:DEM.Net.Lib.Gpx.GpxNamespaces.GARMIN_EXTENSIONS_NAMESPACE
+  id: GARMIN_EXTENSIONS_NAMESPACE
+  parent: DEM.Net.Lib.Gpx.GpxNamespaces
+  langs:
+  - csharp
+  - vb
+  name: GARMIN_EXTENSIONS_NAMESPACE
+  nameWithType: GpxNamespaces.GARMIN_EXTENSIONS_NAMESPACE
+  fullName: DEM.Net.Lib.Gpx.GpxNamespaces.GARMIN_EXTENSIONS_NAMESPACE
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GARMIN_EXTENSIONS_NAMESPACE
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 17
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public const string GARMIN_EXTENSIONS_NAMESPACE = "http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+    return:
+      type: System.String
+    content.vb: Public Const GARMIN_EXTENSIONS_NAMESPACE As String = "http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.Gpx.GpxNamespaces.GARMIN_TRACKPOINT_EXTENSIONS_V1_NAMESPACE
+  commentId: F:DEM.Net.Lib.Gpx.GpxNamespaces.GARMIN_TRACKPOINT_EXTENSIONS_V1_NAMESPACE
+  id: GARMIN_TRACKPOINT_EXTENSIONS_V1_NAMESPACE
+  parent: DEM.Net.Lib.Gpx.GpxNamespaces
+  langs:
+  - csharp
+  - vb
+  name: GARMIN_TRACKPOINT_EXTENSIONS_V1_NAMESPACE
+  nameWithType: GpxNamespaces.GARMIN_TRACKPOINT_EXTENSIONS_V1_NAMESPACE
+  fullName: DEM.Net.Lib.Gpx.GpxNamespaces.GARMIN_TRACKPOINT_EXTENSIONS_V1_NAMESPACE
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GARMIN_TRACKPOINT_EXTENSIONS_V1_NAMESPACE
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 18
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public const string GARMIN_TRACKPOINT_EXTENSIONS_V1_NAMESPACE = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+    return:
+      type: System.String
+    content.vb: Public Const GARMIN_TRACKPOINT_EXTENSIONS_V1_NAMESPACE As String = "http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.Gpx.GpxNamespaces.GARMIN_TRACKPOINT_EXTENSIONS_V2_NAMESPACE
+  commentId: F:DEM.Net.Lib.Gpx.GpxNamespaces.GARMIN_TRACKPOINT_EXTENSIONS_V2_NAMESPACE
+  id: GARMIN_TRACKPOINT_EXTENSIONS_V2_NAMESPACE
+  parent: DEM.Net.Lib.Gpx.GpxNamespaces
+  langs:
+  - csharp
+  - vb
+  name: GARMIN_TRACKPOINT_EXTENSIONS_V2_NAMESPACE
+  nameWithType: GpxNamespaces.GARMIN_TRACKPOINT_EXTENSIONS_V2_NAMESPACE
+  fullName: DEM.Net.Lib.Gpx.GpxNamespaces.GARMIN_TRACKPOINT_EXTENSIONS_V2_NAMESPACE
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GARMIN_TRACKPOINT_EXTENSIONS_V2_NAMESPACE
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 19
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public const string GARMIN_TRACKPOINT_EXTENSIONS_V2_NAMESPACE = "http://www.garmin.com/xmlschemas/TrackPointExtension/v2"
+    return:
+      type: System.String
+    content.vb: Public Const GARMIN_TRACKPOINT_EXTENSIONS_V2_NAMESPACE As String = "http://www.garmin.com/xmlschemas/TrackPointExtension/v2"
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.Gpx.GpxNamespaces.GARMIN_WAYPOINT_EXTENSIONS_NAMESPACE
+  commentId: F:DEM.Net.Lib.Gpx.GpxNamespaces.GARMIN_WAYPOINT_EXTENSIONS_NAMESPACE
+  id: GARMIN_WAYPOINT_EXTENSIONS_NAMESPACE
+  parent: DEM.Net.Lib.Gpx.GpxNamespaces
+  langs:
+  - csharp
+  - vb
+  name: GARMIN_WAYPOINT_EXTENSIONS_NAMESPACE
+  nameWithType: GpxNamespaces.GARMIN_WAYPOINT_EXTENSIONS_NAMESPACE
+  fullName: DEM.Net.Lib.Gpx.GpxNamespaces.GARMIN_WAYPOINT_EXTENSIONS_NAMESPACE
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GARMIN_WAYPOINT_EXTENSIONS_NAMESPACE
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 20
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public const string GARMIN_WAYPOINT_EXTENSIONS_NAMESPACE = "http://www.garmin.com/xmlschemas/WaypointExtension/v1"
+    return:
+      type: System.String
+    content.vb: Public Const GARMIN_WAYPOINT_EXTENSIONS_NAMESPACE As String = "http://www.garmin.com/xmlschemas/WaypointExtension/v1"
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.Gpx.GpxNamespaces.DLG_EXTENSIONS_NAMESPACE
+  commentId: F:DEM.Net.Lib.Gpx.GpxNamespaces.DLG_EXTENSIONS_NAMESPACE
+  id: DLG_EXTENSIONS_NAMESPACE
+  parent: DEM.Net.Lib.Gpx.GpxNamespaces
+  langs:
+  - csharp
+  - vb
+  name: DLG_EXTENSIONS_NAMESPACE
+  nameWithType: GpxNamespaces.DLG_EXTENSIONS_NAMESPACE
+  fullName: DEM.Net.Lib.Gpx.GpxNamespaces.DLG_EXTENSIONS_NAMESPACE
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: DLG_EXTENSIONS_NAMESPACE
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 21
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public const string DLG_EXTENSIONS_NAMESPACE = "http://dlg.krakow.pl/gpx/extensions/v1"
+    return:
+      type: System.String
+    content.vb: Public Const DLG_EXTENSIONS_NAMESPACE As String = "http://dlg.krakow.pl/gpx/extensions/v1"
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+references:
+- uid: DEM.Net.Lib.Gpx
+  commentId: N:DEM.Net.Lib.Gpx
+  name: DEM.Net.Lib.Gpx
+  nameWithType: DEM.Net.Lib.Gpx
+  fullName: DEM.Net.Lib.Gpx
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String

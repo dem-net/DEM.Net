@@ -1,0 +1,801 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Gpx.GpxReader
+  commentId: T:DEM.Net.Lib.Gpx.GpxReader
+  id: GpxReader
+  parent: DEM.Net.Lib.Gpx
+  children:
+  - DEM.Net.Lib.Gpx.GpxReader.#ctor(System.IO.Stream)
+  - DEM.Net.Lib.Gpx.GpxReader.Attributes
+  - DEM.Net.Lib.Gpx.GpxReader.Dispose
+  - DEM.Net.Lib.Gpx.GpxReader.Metadata
+  - DEM.Net.Lib.Gpx.GpxReader.ObjectType
+  - DEM.Net.Lib.Gpx.GpxReader.Read
+  - DEM.Net.Lib.Gpx.GpxReader.Route
+  - DEM.Net.Lib.Gpx.GpxReader.Track
+  - DEM.Net.Lib.Gpx.GpxReader.WayPoint
+  langs:
+  - csharp
+  - vb
+  name: GpxReader
+  nameWithType: GpxReader
+  fullName: DEM.Net.Lib.Gpx.GpxReader
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/GpxReader.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GpxReader
+    path: ../DEM.Net.Lib/IO/gpx/GpxReader.cs
+    startLine: 17
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: 'public class GpxReader : IDisposable'
+    content.vb: >-
+      Public Class GpxReader
+          Implements IDisposable
+  inheritance:
+  - System.Object
+  implements:
+  - System.IDisposable
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.Gpx.GpxReader.ObjectType
+  commentId: P:DEM.Net.Lib.Gpx.GpxReader.ObjectType
+  id: ObjectType
+  parent: DEM.Net.Lib.Gpx.GpxReader
+  langs:
+  - csharp
+  - vb
+  name: ObjectType
+  nameWithType: GpxReader.ObjectType
+  fullName: DEM.Net.Lib.Gpx.GpxReader.ObjectType
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/GpxReader.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ObjectType
+    path: ../DEM.Net.Lib/IO/gpx/GpxReader.cs
+    startLine: 21
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public GpxObjectType ObjectType { get; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Gpx.GpxObjectType
+    content.vb: Public ReadOnly Property ObjectType As GpxObjectType
+  overload: DEM.Net.Lib.Gpx.GpxReader.ObjectType*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Gpx.GpxReader.Attributes
+  commentId: P:DEM.Net.Lib.Gpx.GpxReader.Attributes
+  id: Attributes
+  parent: DEM.Net.Lib.Gpx.GpxReader
+  langs:
+  - csharp
+  - vb
+  name: Attributes
+  nameWithType: GpxReader.Attributes
+  fullName: DEM.Net.Lib.Gpx.GpxReader.Attributes
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/GpxReader.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Attributes
+    path: ../DEM.Net.Lib/IO/gpx/GpxReader.cs
+    startLine: 22
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public GpxAttributes Attributes { get; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Gpx.GpxAttributes
+    content.vb: Public ReadOnly Property Attributes As GpxAttributes
+  overload: DEM.Net.Lib.Gpx.GpxReader.Attributes*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Gpx.GpxReader.Metadata
+  commentId: P:DEM.Net.Lib.Gpx.GpxReader.Metadata
+  id: Metadata
+  parent: DEM.Net.Lib.Gpx.GpxReader
+  langs:
+  - csharp
+  - vb
+  name: Metadata
+  nameWithType: GpxReader.Metadata
+  fullName: DEM.Net.Lib.Gpx.GpxReader.Metadata
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/GpxReader.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Metadata
+    path: ../DEM.Net.Lib/IO/gpx/GpxReader.cs
+    startLine: 23
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public GpxMetadata Metadata { get; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Gpx.GpxMetadata
+    content.vb: Public ReadOnly Property Metadata As GpxMetadata
+  overload: DEM.Net.Lib.Gpx.GpxReader.Metadata*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Gpx.GpxReader.WayPoint
+  commentId: P:DEM.Net.Lib.Gpx.GpxReader.WayPoint
+  id: WayPoint
+  parent: DEM.Net.Lib.Gpx.GpxReader
+  langs:
+  - csharp
+  - vb
+  name: WayPoint
+  nameWithType: GpxReader.WayPoint
+  fullName: DEM.Net.Lib.Gpx.GpxReader.WayPoint
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/GpxReader.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: WayPoint
+    path: ../DEM.Net.Lib/IO/gpx/GpxReader.cs
+    startLine: 24
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public GpxWayPoint WayPoint { get; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Gpx.GpxWayPoint
+    content.vb: Public ReadOnly Property WayPoint As GpxWayPoint
+  overload: DEM.Net.Lib.Gpx.GpxReader.WayPoint*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Gpx.GpxReader.Route
+  commentId: P:DEM.Net.Lib.Gpx.GpxReader.Route
+  id: Route
+  parent: DEM.Net.Lib.Gpx.GpxReader
+  langs:
+  - csharp
+  - vb
+  name: Route
+  nameWithType: GpxReader.Route
+  fullName: DEM.Net.Lib.Gpx.GpxReader.Route
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/GpxReader.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Route
+    path: ../DEM.Net.Lib/IO/gpx/GpxReader.cs
+    startLine: 25
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public GpxRoute Route { get; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Gpx.GpxRoute
+    content.vb: Public ReadOnly Property Route As GpxRoute
+  overload: DEM.Net.Lib.Gpx.GpxReader.Route*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Gpx.GpxReader.Track
+  commentId: P:DEM.Net.Lib.Gpx.GpxReader.Track
+  id: Track
+  parent: DEM.Net.Lib.Gpx.GpxReader
+  langs:
+  - csharp
+  - vb
+  name: Track
+  nameWithType: GpxReader.Track
+  fullName: DEM.Net.Lib.Gpx.GpxReader.Track
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/GpxReader.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Track
+    path: ../DEM.Net.Lib/IO/gpx/GpxReader.cs
+    startLine: 26
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public GpxTrack Track { get; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Gpx.GpxTrack
+    content.vb: Public ReadOnly Property Track As GpxTrack
+  overload: DEM.Net.Lib.Gpx.GpxReader.Track*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Gpx.GpxReader.#ctor(System.IO.Stream)
+  commentId: M:DEM.Net.Lib.Gpx.GpxReader.#ctor(System.IO.Stream)
+  id: '#ctor(System.IO.Stream)'
+  parent: DEM.Net.Lib.Gpx.GpxReader
+  langs:
+  - csharp
+  - vb
+  name: GpxReader(Stream)
+  nameWithType: GpxReader.GpxReader(Stream)
+  fullName: DEM.Net.Lib.Gpx.GpxReader.GpxReader(System.IO.Stream)
+  type: Constructor
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/GpxReader.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: .ctor
+    path: ../DEM.Net.Lib/IO/gpx/GpxReader.cs
+    startLine: 28
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public GpxReader(Stream stream)
+    parameters:
+    - id: stream
+      type: System.IO.Stream
+    content.vb: Public Sub New(stream As Stream)
+  overload: DEM.Net.Lib.Gpx.GpxReader.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Gpx.GpxReader.Read
+  commentId: M:DEM.Net.Lib.Gpx.GpxReader.Read
+  id: Read
+  parent: DEM.Net.Lib.Gpx.GpxReader
+  langs:
+  - csharp
+  - vb
+  name: Read()
+  nameWithType: GpxReader.Read()
+  fullName: DEM.Net.Lib.Gpx.GpxReader.Read()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/GpxReader.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Read
+    path: ../DEM.Net.Lib/IO/gpx/GpxReader.cs
+    startLine: 47
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public bool Read()
+    return:
+      type: System.Boolean
+    content.vb: Public Function Read As Boolean
+  overload: DEM.Net.Lib.Gpx.GpxReader.Read*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Gpx.GpxReader.Dispose
+  commentId: M:DEM.Net.Lib.Gpx.GpxReader.Dispose
+  id: Dispose
+  parent: DEM.Net.Lib.Gpx.GpxReader
+  langs:
+  - csharp
+  - vb
+  name: Dispose()
+  nameWithType: GpxReader.Dispose()
+  fullName: DEM.Net.Lib.Gpx.GpxReader.Dispose()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/GpxReader.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Dispose
+    path: ../DEM.Net.Lib/IO/gpx/GpxReader.cs
+    startLine: 93
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public void Dispose()
+    content.vb: Public Sub Dispose
+  overload: DEM.Net.Lib.Gpx.GpxReader.Dispose*
+  implements:
+  - System.IDisposable.Dispose
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: DEM.Net.Lib.Gpx
+  commentId: N:DEM.Net.Lib.Gpx
+  name: DEM.Net.Lib.Gpx
+  nameWithType: DEM.Net.Lib.Gpx
+  fullName: DEM.Net.Lib.Gpx
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.IDisposable
+  commentId: T:System.IDisposable
+  parent: System
+  isExternal: true
+  name: IDisposable
+  nameWithType: IDisposable
+  fullName: System.IDisposable
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.Gpx.GpxReader.ObjectType*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxReader.ObjectType
+  name: ObjectType
+  nameWithType: GpxReader.ObjectType
+  fullName: DEM.Net.Lib.Gpx.GpxReader.ObjectType
+- uid: DEM.Net.Lib.Gpx.GpxObjectType
+  commentId: T:DEM.Net.Lib.Gpx.GpxObjectType
+  parent: DEM.Net.Lib.Gpx
+  name: GpxObjectType
+  nameWithType: GpxObjectType
+  fullName: DEM.Net.Lib.Gpx.GpxObjectType
+- uid: DEM.Net.Lib.Gpx.GpxReader.Attributes*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxReader.Attributes
+  name: Attributes
+  nameWithType: GpxReader.Attributes
+  fullName: DEM.Net.Lib.Gpx.GpxReader.Attributes
+- uid: DEM.Net.Lib.Gpx.GpxAttributes
+  commentId: T:DEM.Net.Lib.Gpx.GpxAttributes
+  parent: DEM.Net.Lib.Gpx
+  name: GpxAttributes
+  nameWithType: GpxAttributes
+  fullName: DEM.Net.Lib.Gpx.GpxAttributes
+- uid: DEM.Net.Lib.Gpx.GpxReader.Metadata*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxReader.Metadata
+  name: Metadata
+  nameWithType: GpxReader.Metadata
+  fullName: DEM.Net.Lib.Gpx.GpxReader.Metadata
+- uid: DEM.Net.Lib.Gpx.GpxMetadata
+  commentId: T:DEM.Net.Lib.Gpx.GpxMetadata
+  parent: DEM.Net.Lib.Gpx
+  name: GpxMetadata
+  nameWithType: GpxMetadata
+  fullName: DEM.Net.Lib.Gpx.GpxMetadata
+- uid: DEM.Net.Lib.Gpx.GpxReader.WayPoint*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxReader.WayPoint
+  name: WayPoint
+  nameWithType: GpxReader.WayPoint
+  fullName: DEM.Net.Lib.Gpx.GpxReader.WayPoint
+- uid: DEM.Net.Lib.Gpx.GpxWayPoint
+  commentId: T:DEM.Net.Lib.Gpx.GpxWayPoint
+  parent: DEM.Net.Lib.Gpx
+  name: GpxWayPoint
+  nameWithType: GpxWayPoint
+  fullName: DEM.Net.Lib.Gpx.GpxWayPoint
+- uid: DEM.Net.Lib.Gpx.GpxReader.Route*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxReader.Route
+  name: Route
+  nameWithType: GpxReader.Route
+  fullName: DEM.Net.Lib.Gpx.GpxReader.Route
+- uid: DEM.Net.Lib.Gpx.GpxRoute
+  commentId: T:DEM.Net.Lib.Gpx.GpxRoute
+  parent: DEM.Net.Lib.Gpx
+  name: GpxRoute
+  nameWithType: GpxRoute
+  fullName: DEM.Net.Lib.Gpx.GpxRoute
+- uid: DEM.Net.Lib.Gpx.GpxReader.Track*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxReader.Track
+  name: Track
+  nameWithType: GpxReader.Track
+  fullName: DEM.Net.Lib.Gpx.GpxReader.Track
+- uid: DEM.Net.Lib.Gpx.GpxTrack
+  commentId: T:DEM.Net.Lib.Gpx.GpxTrack
+  parent: DEM.Net.Lib.Gpx
+  name: GpxTrack
+  nameWithType: GpxTrack
+  fullName: DEM.Net.Lib.Gpx.GpxTrack
+- uid: DEM.Net.Lib.Gpx.GpxReader.#ctor*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxReader.#ctor
+  name: GpxReader
+  nameWithType: GpxReader.GpxReader
+  fullName: DEM.Net.Lib.Gpx.GpxReader.GpxReader
+- uid: System.IO.Stream
+  commentId: T:System.IO.Stream
+  parent: System.IO
+  isExternal: true
+  name: Stream
+  nameWithType: Stream
+  fullName: System.IO.Stream
+- uid: System.IO
+  commentId: N:System.IO
+  isExternal: true
+  name: System.IO
+  nameWithType: System.IO
+  fullName: System.IO
+- uid: DEM.Net.Lib.Gpx.GpxReader.Read*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxReader.Read
+  name: Read
+  nameWithType: GpxReader.Read
+  fullName: DEM.Net.Lib.Gpx.GpxReader.Read
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  nameWithType: Boolean
+  fullName: System.Boolean
+- uid: DEM.Net.Lib.Gpx.GpxReader.Dispose*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxReader.Dispose
+  name: Dispose
+  nameWithType: GpxReader.Dispose
+  fullName: DEM.Net.Lib.Gpx.GpxReader.Dispose
+- uid: System.IDisposable.Dispose
+  commentId: M:System.IDisposable.Dispose
+  parent: System.IDisposable
+  isExternal: true
+  name: Dispose()
+  nameWithType: IDisposable.Dispose()
+  fullName: System.IDisposable.Dispose()
+  spec.csharp:
+  - uid: System.IDisposable.Dispose
+    name: Dispose
+    nameWithType: IDisposable.Dispose
+    fullName: System.IDisposable.Dispose
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.IDisposable.Dispose
+    name: Dispose
+    nameWithType: IDisposable.Dispose
+    fullName: System.IDisposable.Dispose
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )

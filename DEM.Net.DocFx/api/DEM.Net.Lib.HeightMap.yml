@@ -1,0 +1,1480 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.HeightMap
+  commentId: T:DEM.Net.Lib.HeightMap
+  id: HeightMap
+  parent: DEM.Net.Lib
+  children:
+  - DEM.Net.Lib.HeightMap.#ctor(System.Int32,System.Int32)
+  - DEM.Net.Lib.HeightMap.BoundingBox
+  - DEM.Net.Lib.HeightMap.Clone
+  - DEM.Net.Lib.HeightMap.Coordinates
+  - DEM.Net.Lib.HeightMap.Count
+  - DEM.Net.Lib.HeightMap.Height
+  - DEM.Net.Lib.HeightMap.Maximum
+  - DEM.Net.Lib.HeightMap.Mininum
+  - DEM.Net.Lib.HeightMap.Range
+  - DEM.Net.Lib.HeightMap.Width
+  langs:
+  - csharp
+  - vb
+  name: HeightMap
+  nameWithType: HeightMap
+  fullName: DEM.Net.Lib.HeightMap
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/HeightMap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: HeightMap
+    path: ../DEM.Net.Lib/Model/HeightMap.cs
+    startLine: 9
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: >-
+      [Serializable]
+
+      public class HeightMap
+    content.vb: >-
+      <Serializable>
+
+      Public Class HeightMap
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  extensionMethods:
+  - DEM.Net.Lib.HeightMap.DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian
+  - DEM.Net.Lib.HeightMap.DEM.Net.Lib.Reprojection.ReprojectTo(System.Int32,System.Int32)
+  - DEM.Net.Lib.HeightMap.DEM.Net.Lib.HeightMapExtensions.CenterOnOrigin
+  - DEM.Net.Lib.HeightMap.DEM.Net.Lib.HeightMapExtensions.ZScale(System.Single)
+  - DEM.Net.Lib.HeightMap.DEM.Net.Lib.HeightMapExtensions.ZTranslate(System.Single)
+  - DEM.Net.Lib.HeightMap.DEM.Net.Lib.HeightMapExtensions.Sort
+  - DEM.Net.Lib.HeightMap.DEM.Net.Lib.HeightMapExtensions.Downsample(System.Int32)
+  attributes:
+  - type: System.SerializableAttribute
+    ctor: System.SerializableAttribute.#ctor
+    arguments: []
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.HeightMap.#ctor(System.Int32,System.Int32)
+  commentId: M:DEM.Net.Lib.HeightMap.#ctor(System.Int32,System.Int32)
+  id: '#ctor(System.Int32,System.Int32)'
+  parent: DEM.Net.Lib.HeightMap
+  langs:
+  - csharp
+  - vb
+  name: HeightMap(Int32, Int32)
+  nameWithType: HeightMap.HeightMap(Int32, Int32)
+  fullName: DEM.Net.Lib.HeightMap.HeightMap(System.Int32, System.Int32)
+  type: Constructor
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/HeightMap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: .ctor
+    path: ../DEM.Net.Lib/Model/HeightMap.cs
+    startLine: 12
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public HeightMap(int width, int height)
+    parameters:
+    - id: width
+      type: System.Int32
+    - id: height
+      type: System.Int32
+    content.vb: Public Sub New(width As Integer, height As Integer)
+  overload: DEM.Net.Lib.HeightMap.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.HeightMap.BoundingBox
+  commentId: P:DEM.Net.Lib.HeightMap.BoundingBox
+  id: BoundingBox
+  parent: DEM.Net.Lib.HeightMap
+  langs:
+  - csharp
+  - vb
+  name: BoundingBox
+  nameWithType: HeightMap.BoundingBox
+  fullName: DEM.Net.Lib.HeightMap.BoundingBox
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/HeightMap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: BoundingBox
+    path: ../DEM.Net.Lib/Model/HeightMap.cs
+    startLine: 21
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public BoundingBox BoundingBox { get; set; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.BoundingBox
+    content.vb: Public Property BoundingBox As BoundingBox
+  overload: DEM.Net.Lib.HeightMap.BoundingBox*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.HeightMap.Coordinates
+  commentId: P:DEM.Net.Lib.HeightMap.Coordinates
+  id: Coordinates
+  parent: DEM.Net.Lib.HeightMap
+  langs:
+  - csharp
+  - vb
+  name: Coordinates
+  nameWithType: HeightMap.Coordinates
+  fullName: DEM.Net.Lib.HeightMap.Coordinates
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/HeightMap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Coordinates
+    path: ../DEM.Net.Lib/Model/HeightMap.cs
+    startLine: 40
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public IEnumerable<GeoPoint> Coordinates { get; set; }
+    parameters: []
+    return:
+      type: System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint}
+    content.vb: Public Property Coordinates As IEnumerable(Of GeoPoint)
+  overload: DEM.Net.Lib.HeightMap.Coordinates*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.HeightMap.Count
+  commentId: P:DEM.Net.Lib.HeightMap.Count
+  id: Count
+  parent: DEM.Net.Lib.HeightMap
+  langs:
+  - csharp
+  - vb
+  name: Count
+  nameWithType: HeightMap.Count
+  fullName: DEM.Net.Lib.HeightMap.Count
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/HeightMap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Count
+    path: ../DEM.Net.Lib/Model/HeightMap.cs
+    startLine: 42
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public int Count { get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Property Count As Integer
+  overload: DEM.Net.Lib.HeightMap.Count*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.HeightMap.Mininum
+  commentId: P:DEM.Net.Lib.HeightMap.Mininum
+  id: Mininum
+  parent: DEM.Net.Lib.HeightMap
+  langs:
+  - csharp
+  - vb
+  name: Mininum
+  nameWithType: HeightMap.Mininum
+  fullName: DEM.Net.Lib.HeightMap.Mininum
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/HeightMap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Mininum
+    path: ../DEM.Net.Lib/Model/HeightMap.cs
+    startLine: 44
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public float Mininum { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Property Mininum As Single
+  overload: DEM.Net.Lib.HeightMap.Mininum*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.HeightMap.Maximum
+  commentId: P:DEM.Net.Lib.HeightMap.Maximum
+  id: Maximum
+  parent: DEM.Net.Lib.HeightMap
+  langs:
+  - csharp
+  - vb
+  name: Maximum
+  nameWithType: HeightMap.Maximum
+  fullName: DEM.Net.Lib.HeightMap.Maximum
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/HeightMap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Maximum
+    path: ../DEM.Net.Lib/Model/HeightMap.cs
+    startLine: 45
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public float Maximum { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Property Maximum As Single
+  overload: DEM.Net.Lib.HeightMap.Maximum*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.HeightMap.Range
+  commentId: P:DEM.Net.Lib.HeightMap.Range
+  id: Range
+  parent: DEM.Net.Lib.HeightMap
+  langs:
+  - csharp
+  - vb
+  name: Range
+  nameWithType: HeightMap.Range
+  fullName: DEM.Net.Lib.HeightMap.Range
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/HeightMap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Range
+    path: ../DEM.Net.Lib/Model/HeightMap.cs
+    startLine: 46
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public float Range { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public ReadOnly Property Range As Single
+  overload: DEM.Net.Lib.HeightMap.Range*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.HeightMap.Width
+  commentId: P:DEM.Net.Lib.HeightMap.Width
+  id: Width
+  parent: DEM.Net.Lib.HeightMap
+  langs:
+  - csharp
+  - vb
+  name: Width
+  nameWithType: HeightMap.Width
+  fullName: DEM.Net.Lib.HeightMap.Width
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/HeightMap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Width
+    path: ../DEM.Net.Lib/Model/HeightMap.cs
+    startLine: 51
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public int Width { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public ReadOnly Property Width As Integer
+  overload: DEM.Net.Lib.HeightMap.Width*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.HeightMap.Height
+  commentId: P:DEM.Net.Lib.HeightMap.Height
+  id: Height
+  parent: DEM.Net.Lib.HeightMap
+  langs:
+  - csharp
+  - vb
+  name: Height
+  nameWithType: HeightMap.Height
+  fullName: DEM.Net.Lib.HeightMap.Height
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/HeightMap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Height
+    path: ../DEM.Net.Lib/Model/HeightMap.cs
+    startLine: 52
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public int Height { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public ReadOnly Property Height As Integer
+  overload: DEM.Net.Lib.HeightMap.Height*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.HeightMap.Clone
+  commentId: M:DEM.Net.Lib.HeightMap.Clone
+  id: Clone
+  parent: DEM.Net.Lib.HeightMap
+  langs:
+  - csharp
+  - vb
+  name: Clone()
+  nameWithType: HeightMap.Clone()
+  fullName: DEM.Net.Lib.HeightMap.Clone()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/HeightMap.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Clone
+    path: ../DEM.Net.Lib/Model/HeightMap.cs
+    startLine: 54
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public HeightMap Clone()
+    return:
+      type: DEM.Net.Lib.HeightMap
+    content.vb: Public Function Clone As HeightMap
+  overload: DEM.Net.Lib.HeightMap.Clone*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: DEM.Net.Lib
+  commentId: N:DEM.Net.Lib
+  name: DEM.Net.Lib
+  nameWithType: DEM.Net.Lib
+  fullName: DEM.Net.Lib
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.HeightMap.DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian
+  commentId: M:DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian(DEM.Net.Lib.HeightMap)
+  parent: DEM.Net.Lib.Reprojection
+  definition: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian(DEM.Net.Lib.HeightMap)
+  name: ReprojectGeodeticToCartesian()
+  nameWithType: Reprojection.ReprojectGeodeticToCartesian()
+  fullName: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian()
+  spec.csharp:
+  - uid: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian
+    name: ReprojectGeodeticToCartesian
+    nameWithType: Reprojection.ReprojectGeodeticToCartesian
+    fullName: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian
+    name: ReprojectGeodeticToCartesian
+    nameWithType: Reprojection.ReprojectGeodeticToCartesian
+    fullName: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.HeightMap.DEM.Net.Lib.Reprojection.ReprojectTo(System.Int32,System.Int32)
+  commentId: M:DEM.Net.Lib.Reprojection.ReprojectTo(DEM.Net.Lib.HeightMap,System.Int32,System.Int32)
+  parent: DEM.Net.Lib.Reprojection
+  definition: DEM.Net.Lib.Reprojection.ReprojectTo(DEM.Net.Lib.HeightMap,System.Int32,System.Int32)
+  name: ReprojectTo(Int32, Int32)
+  nameWithType: Reprojection.ReprojectTo(Int32, Int32)
+  fullName: DEM.Net.Lib.Reprojection.ReprojectTo(System.Int32, System.Int32)
+  spec.csharp:
+  - uid: DEM.Net.Lib.Reprojection.ReprojectTo(System.Int32,System.Int32)
+    name: ReprojectTo
+    nameWithType: Reprojection.ReprojectTo
+    fullName: DEM.Net.Lib.Reprojection.ReprojectTo
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.Reprojection.ReprojectTo(System.Int32,System.Int32)
+    name: ReprojectTo
+    nameWithType: Reprojection.ReprojectTo
+    fullName: DEM.Net.Lib.Reprojection.ReprojectTo
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.HeightMap.DEM.Net.Lib.HeightMapExtensions.CenterOnOrigin
+  commentId: M:DEM.Net.Lib.HeightMapExtensions.CenterOnOrigin(DEM.Net.Lib.HeightMap)
+  parent: DEM.Net.Lib.HeightMapExtensions
+  definition: DEM.Net.Lib.HeightMapExtensions.CenterOnOrigin(DEM.Net.Lib.HeightMap)
+  name: CenterOnOrigin()
+  nameWithType: HeightMapExtensions.CenterOnOrigin()
+  fullName: DEM.Net.Lib.HeightMapExtensions.CenterOnOrigin()
+  spec.csharp:
+  - uid: DEM.Net.Lib.HeightMapExtensions.CenterOnOrigin
+    name: CenterOnOrigin
+    nameWithType: HeightMapExtensions.CenterOnOrigin
+    fullName: DEM.Net.Lib.HeightMapExtensions.CenterOnOrigin
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.HeightMapExtensions.CenterOnOrigin
+    name: CenterOnOrigin
+    nameWithType: HeightMapExtensions.CenterOnOrigin
+    fullName: DEM.Net.Lib.HeightMapExtensions.CenterOnOrigin
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.HeightMap.DEM.Net.Lib.HeightMapExtensions.ZScale(System.Single)
+  commentId: M:DEM.Net.Lib.HeightMapExtensions.ZScale(DEM.Net.Lib.HeightMap,System.Single)
+  parent: DEM.Net.Lib.HeightMapExtensions
+  definition: DEM.Net.Lib.HeightMapExtensions.ZScale(DEM.Net.Lib.HeightMap,System.Single)
+  name: ZScale(Single)
+  nameWithType: HeightMapExtensions.ZScale(Single)
+  fullName: DEM.Net.Lib.HeightMapExtensions.ZScale(System.Single)
+  spec.csharp:
+  - uid: DEM.Net.Lib.HeightMapExtensions.ZScale(System.Single)
+    name: ZScale
+    nameWithType: HeightMapExtensions.ZScale
+    fullName: DEM.Net.Lib.HeightMapExtensions.ZScale
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Single
+    name: Single
+    nameWithType: Single
+    fullName: System.Single
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.HeightMapExtensions.ZScale(System.Single)
+    name: ZScale
+    nameWithType: HeightMapExtensions.ZScale
+    fullName: DEM.Net.Lib.HeightMapExtensions.ZScale
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Single
+    name: Single
+    nameWithType: Single
+    fullName: System.Single
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.HeightMap.DEM.Net.Lib.HeightMapExtensions.ZTranslate(System.Single)
+  commentId: M:DEM.Net.Lib.HeightMapExtensions.ZTranslate(DEM.Net.Lib.HeightMap,System.Single)
+  parent: DEM.Net.Lib.HeightMapExtensions
+  definition: DEM.Net.Lib.HeightMapExtensions.ZTranslate(DEM.Net.Lib.HeightMap,System.Single)
+  name: ZTranslate(Single)
+  nameWithType: HeightMapExtensions.ZTranslate(Single)
+  fullName: DEM.Net.Lib.HeightMapExtensions.ZTranslate(System.Single)
+  spec.csharp:
+  - uid: DEM.Net.Lib.HeightMapExtensions.ZTranslate(System.Single)
+    name: ZTranslate
+    nameWithType: HeightMapExtensions.ZTranslate
+    fullName: DEM.Net.Lib.HeightMapExtensions.ZTranslate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Single
+    name: Single
+    nameWithType: Single
+    fullName: System.Single
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.HeightMapExtensions.ZTranslate(System.Single)
+    name: ZTranslate
+    nameWithType: HeightMapExtensions.ZTranslate
+    fullName: DEM.Net.Lib.HeightMapExtensions.ZTranslate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Single
+    name: Single
+    nameWithType: Single
+    fullName: System.Single
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.HeightMap.DEM.Net.Lib.HeightMapExtensions.Sort
+  commentId: M:DEM.Net.Lib.HeightMapExtensions.Sort(DEM.Net.Lib.HeightMap)
+  parent: DEM.Net.Lib.HeightMapExtensions
+  definition: DEM.Net.Lib.HeightMapExtensions.Sort(DEM.Net.Lib.HeightMap)
+  name: Sort()
+  nameWithType: HeightMapExtensions.Sort()
+  fullName: DEM.Net.Lib.HeightMapExtensions.Sort()
+  spec.csharp:
+  - uid: DEM.Net.Lib.HeightMapExtensions.Sort
+    name: Sort
+    nameWithType: HeightMapExtensions.Sort
+    fullName: DEM.Net.Lib.HeightMapExtensions.Sort
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.HeightMapExtensions.Sort
+    name: Sort
+    nameWithType: HeightMapExtensions.Sort
+    fullName: DEM.Net.Lib.HeightMapExtensions.Sort
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.HeightMap.DEM.Net.Lib.HeightMapExtensions.Downsample(System.Int32)
+  commentId: M:DEM.Net.Lib.HeightMapExtensions.Downsample(DEM.Net.Lib.HeightMap,System.Int32)
+  parent: DEM.Net.Lib.HeightMapExtensions
+  definition: DEM.Net.Lib.HeightMapExtensions.Downsample(DEM.Net.Lib.HeightMap,System.Int32)
+  name: Downsample(Int32)
+  nameWithType: HeightMapExtensions.Downsample(Int32)
+  fullName: DEM.Net.Lib.HeightMapExtensions.Downsample(System.Int32)
+  spec.csharp:
+  - uid: DEM.Net.Lib.HeightMapExtensions.Downsample(System.Int32)
+    name: Downsample
+    nameWithType: HeightMapExtensions.Downsample
+    fullName: DEM.Net.Lib.HeightMapExtensions.Downsample
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.HeightMapExtensions.Downsample(System.Int32)
+    name: Downsample
+    nameWithType: HeightMapExtensions.Downsample
+    fullName: DEM.Net.Lib.HeightMapExtensions.Downsample
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian(DEM.Net.Lib.HeightMap)
+  commentId: M:DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian(DEM.Net.Lib.HeightMap)
+  name: ReprojectGeodeticToCartesian(HeightMap)
+  nameWithType: Reprojection.ReprojectGeodeticToCartesian(HeightMap)
+  fullName: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian(DEM.Net.Lib.HeightMap)
+  spec.csharp:
+  - uid: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian(DEM.Net.Lib.HeightMap)
+    name: ReprojectGeodeticToCartesian
+    nameWithType: Reprojection.ReprojectGeodeticToCartesian
+    fullName: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.HeightMap
+    name: HeightMap
+    nameWithType: HeightMap
+    fullName: DEM.Net.Lib.HeightMap
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian(DEM.Net.Lib.HeightMap)
+    name: ReprojectGeodeticToCartesian
+    nameWithType: Reprojection.ReprojectGeodeticToCartesian
+    fullName: DEM.Net.Lib.Reprojection.ReprojectGeodeticToCartesian
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.HeightMap
+    name: HeightMap
+    nameWithType: HeightMap
+    fullName: DEM.Net.Lib.HeightMap
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Reprojection
+  commentId: T:DEM.Net.Lib.Reprojection
+  parent: DEM.Net.Lib
+  name: Reprojection
+  nameWithType: Reprojection
+  fullName: DEM.Net.Lib.Reprojection
+- uid: DEM.Net.Lib.Reprojection.ReprojectTo(DEM.Net.Lib.HeightMap,System.Int32,System.Int32)
+  commentId: M:DEM.Net.Lib.Reprojection.ReprojectTo(DEM.Net.Lib.HeightMap,System.Int32,System.Int32)
+  isExternal: true
+  name: ReprojectTo(HeightMap, Int32, Int32)
+  nameWithType: Reprojection.ReprojectTo(HeightMap, Int32, Int32)
+  fullName: DEM.Net.Lib.Reprojection.ReprojectTo(DEM.Net.Lib.HeightMap, System.Int32, System.Int32)
+  spec.csharp:
+  - uid: DEM.Net.Lib.Reprojection.ReprojectTo(DEM.Net.Lib.HeightMap,System.Int32,System.Int32)
+    name: ReprojectTo
+    nameWithType: Reprojection.ReprojectTo
+    fullName: DEM.Net.Lib.Reprojection.ReprojectTo
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.HeightMap
+    name: HeightMap
+    nameWithType: HeightMap
+    fullName: DEM.Net.Lib.HeightMap
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.Reprojection.ReprojectTo(DEM.Net.Lib.HeightMap,System.Int32,System.Int32)
+    name: ReprojectTo
+    nameWithType: Reprojection.ReprojectTo
+    fullName: DEM.Net.Lib.Reprojection.ReprojectTo
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.HeightMap
+    name: HeightMap
+    nameWithType: HeightMap
+    fullName: DEM.Net.Lib.HeightMap
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.HeightMapExtensions.CenterOnOrigin(DEM.Net.Lib.HeightMap)
+  commentId: M:DEM.Net.Lib.HeightMapExtensions.CenterOnOrigin(DEM.Net.Lib.HeightMap)
+  name: CenterOnOrigin(HeightMap)
+  nameWithType: HeightMapExtensions.CenterOnOrigin(HeightMap)
+  fullName: DEM.Net.Lib.HeightMapExtensions.CenterOnOrigin(DEM.Net.Lib.HeightMap)
+  spec.csharp:
+  - uid: DEM.Net.Lib.HeightMapExtensions.CenterOnOrigin(DEM.Net.Lib.HeightMap)
+    name: CenterOnOrigin
+    nameWithType: HeightMapExtensions.CenterOnOrigin
+    fullName: DEM.Net.Lib.HeightMapExtensions.CenterOnOrigin
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.HeightMap
+    name: HeightMap
+    nameWithType: HeightMap
+    fullName: DEM.Net.Lib.HeightMap
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.HeightMapExtensions.CenterOnOrigin(DEM.Net.Lib.HeightMap)
+    name: CenterOnOrigin
+    nameWithType: HeightMapExtensions.CenterOnOrigin
+    fullName: DEM.Net.Lib.HeightMapExtensions.CenterOnOrigin
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.HeightMap
+    name: HeightMap
+    nameWithType: HeightMap
+    fullName: DEM.Net.Lib.HeightMap
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.HeightMapExtensions
+  commentId: T:DEM.Net.Lib.HeightMapExtensions
+  parent: DEM.Net.Lib
+  name: HeightMapExtensions
+  nameWithType: HeightMapExtensions
+  fullName: DEM.Net.Lib.HeightMapExtensions
+- uid: DEM.Net.Lib.HeightMapExtensions.ZScale(DEM.Net.Lib.HeightMap,System.Single)
+  commentId: M:DEM.Net.Lib.HeightMapExtensions.ZScale(DEM.Net.Lib.HeightMap,System.Single)
+  isExternal: true
+  name: ZScale(HeightMap, Single)
+  nameWithType: HeightMapExtensions.ZScale(HeightMap, Single)
+  fullName: DEM.Net.Lib.HeightMapExtensions.ZScale(DEM.Net.Lib.HeightMap, System.Single)
+  spec.csharp:
+  - uid: DEM.Net.Lib.HeightMapExtensions.ZScale(DEM.Net.Lib.HeightMap,System.Single)
+    name: ZScale
+    nameWithType: HeightMapExtensions.ZScale
+    fullName: DEM.Net.Lib.HeightMapExtensions.ZScale
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.HeightMap
+    name: HeightMap
+    nameWithType: HeightMap
+    fullName: DEM.Net.Lib.HeightMap
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Single
+    name: Single
+    nameWithType: Single
+    fullName: System.Single
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.HeightMapExtensions.ZScale(DEM.Net.Lib.HeightMap,System.Single)
+    name: ZScale
+    nameWithType: HeightMapExtensions.ZScale
+    fullName: DEM.Net.Lib.HeightMapExtensions.ZScale
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.HeightMap
+    name: HeightMap
+    nameWithType: HeightMap
+    fullName: DEM.Net.Lib.HeightMap
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Single
+    name: Single
+    nameWithType: Single
+    fullName: System.Single
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.HeightMapExtensions.ZTranslate(DEM.Net.Lib.HeightMap,System.Single)
+  commentId: M:DEM.Net.Lib.HeightMapExtensions.ZTranslate(DEM.Net.Lib.HeightMap,System.Single)
+  isExternal: true
+  name: ZTranslate(HeightMap, Single)
+  nameWithType: HeightMapExtensions.ZTranslate(HeightMap, Single)
+  fullName: DEM.Net.Lib.HeightMapExtensions.ZTranslate(DEM.Net.Lib.HeightMap, System.Single)
+  spec.csharp:
+  - uid: DEM.Net.Lib.HeightMapExtensions.ZTranslate(DEM.Net.Lib.HeightMap,System.Single)
+    name: ZTranslate
+    nameWithType: HeightMapExtensions.ZTranslate
+    fullName: DEM.Net.Lib.HeightMapExtensions.ZTranslate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.HeightMap
+    name: HeightMap
+    nameWithType: HeightMap
+    fullName: DEM.Net.Lib.HeightMap
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Single
+    name: Single
+    nameWithType: Single
+    fullName: System.Single
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.HeightMapExtensions.ZTranslate(DEM.Net.Lib.HeightMap,System.Single)
+    name: ZTranslate
+    nameWithType: HeightMapExtensions.ZTranslate
+    fullName: DEM.Net.Lib.HeightMapExtensions.ZTranslate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.HeightMap
+    name: HeightMap
+    nameWithType: HeightMap
+    fullName: DEM.Net.Lib.HeightMap
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Single
+    name: Single
+    nameWithType: Single
+    fullName: System.Single
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.HeightMapExtensions.Sort(DEM.Net.Lib.HeightMap)
+  commentId: M:DEM.Net.Lib.HeightMapExtensions.Sort(DEM.Net.Lib.HeightMap)
+  name: Sort(HeightMap)
+  nameWithType: HeightMapExtensions.Sort(HeightMap)
+  fullName: DEM.Net.Lib.HeightMapExtensions.Sort(DEM.Net.Lib.HeightMap)
+  spec.csharp:
+  - uid: DEM.Net.Lib.HeightMapExtensions.Sort(DEM.Net.Lib.HeightMap)
+    name: Sort
+    nameWithType: HeightMapExtensions.Sort
+    fullName: DEM.Net.Lib.HeightMapExtensions.Sort
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.HeightMap
+    name: HeightMap
+    nameWithType: HeightMap
+    fullName: DEM.Net.Lib.HeightMap
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.HeightMapExtensions.Sort(DEM.Net.Lib.HeightMap)
+    name: Sort
+    nameWithType: HeightMapExtensions.Sort
+    fullName: DEM.Net.Lib.HeightMapExtensions.Sort
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.HeightMap
+    name: HeightMap
+    nameWithType: HeightMap
+    fullName: DEM.Net.Lib.HeightMap
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.HeightMapExtensions.Downsample(DEM.Net.Lib.HeightMap,System.Int32)
+  commentId: M:DEM.Net.Lib.HeightMapExtensions.Downsample(DEM.Net.Lib.HeightMap,System.Int32)
+  isExternal: true
+  name: Downsample(HeightMap, Int32)
+  nameWithType: HeightMapExtensions.Downsample(HeightMap, Int32)
+  fullName: DEM.Net.Lib.HeightMapExtensions.Downsample(DEM.Net.Lib.HeightMap, System.Int32)
+  spec.csharp:
+  - uid: DEM.Net.Lib.HeightMapExtensions.Downsample(DEM.Net.Lib.HeightMap,System.Int32)
+    name: Downsample
+    nameWithType: HeightMapExtensions.Downsample
+    fullName: DEM.Net.Lib.HeightMapExtensions.Downsample
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.HeightMap
+    name: HeightMap
+    nameWithType: HeightMap
+    fullName: DEM.Net.Lib.HeightMap
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.HeightMapExtensions.Downsample(DEM.Net.Lib.HeightMap,System.Int32)
+    name: Downsample
+    nameWithType: HeightMapExtensions.Downsample
+    fullName: DEM.Net.Lib.HeightMapExtensions.Downsample
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.HeightMap
+    name: HeightMap
+    nameWithType: HeightMap
+    fullName: DEM.Net.Lib.HeightMap
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.HeightMap.#ctor*
+  commentId: Overload:DEM.Net.Lib.HeightMap.#ctor
+  name: HeightMap
+  nameWithType: HeightMap.HeightMap
+  fullName: DEM.Net.Lib.HeightMap.HeightMap
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: DEM.Net.Lib.HeightMap.BoundingBox*
+  commentId: Overload:DEM.Net.Lib.HeightMap.BoundingBox
+  name: BoundingBox
+  nameWithType: HeightMap.BoundingBox
+  fullName: DEM.Net.Lib.HeightMap.BoundingBox
+- uid: DEM.Net.Lib.BoundingBox
+  commentId: T:DEM.Net.Lib.BoundingBox
+  parent: DEM.Net.Lib
+  name: BoundingBox
+  nameWithType: BoundingBox
+  fullName: DEM.Net.Lib.BoundingBox
+- uid: DEM.Net.Lib.HeightMap.Coordinates*
+  commentId: Overload:DEM.Net.Lib.HeightMap.Coordinates
+  name: Coordinates
+  nameWithType: HeightMap.Coordinates
+  fullName: DEM.Net.Lib.HeightMap.Coordinates
+- uid: System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint}
+  commentId: T:System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  name: IEnumerable<GeoPoint>
+  nameWithType: IEnumerable<GeoPoint>
+  fullName: System.Collections.Generic.IEnumerable<DEM.Net.Lib.GeoPoint>
+  nameWithType.vb: IEnumerable(Of GeoPoint)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of DEM.Net.Lib.GeoPoint)
+  name.vb: IEnumerable(Of GeoPoint)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: DEM.Net.Lib.GeoPoint
+    name: GeoPoint
+    nameWithType: GeoPoint
+    fullName: DEM.Net.Lib.GeoPoint
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: DEM.Net.Lib.GeoPoint
+    name: GeoPoint
+    nameWithType: GeoPoint
+    fullName: DEM.Net.Lib.GeoPoint
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IEnumerable`1
+  commentId: T:System.Collections.Generic.IEnumerable`1
+  isExternal: true
+  name: IEnumerable<T>
+  nameWithType: IEnumerable<T>
+  fullName: System.Collections.Generic.IEnumerable<T>
+  nameWithType.vb: IEnumerable(Of T)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
+  name.vb: IEnumerable(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: DEM.Net.Lib.HeightMap.Count*
+  commentId: Overload:DEM.Net.Lib.HeightMap.Count
+  name: Count
+  nameWithType: HeightMap.Count
+  fullName: DEM.Net.Lib.HeightMap.Count
+- uid: DEM.Net.Lib.HeightMap.Mininum*
+  commentId: Overload:DEM.Net.Lib.HeightMap.Mininum
+  name: Mininum
+  nameWithType: HeightMap.Mininum
+  fullName: DEM.Net.Lib.HeightMap.Mininum
+- uid: System.Single
+  commentId: T:System.Single
+  parent: System
+  isExternal: true
+  name: Single
+  nameWithType: Single
+  fullName: System.Single
+- uid: DEM.Net.Lib.HeightMap.Maximum*
+  commentId: Overload:DEM.Net.Lib.HeightMap.Maximum
+  name: Maximum
+  nameWithType: HeightMap.Maximum
+  fullName: DEM.Net.Lib.HeightMap.Maximum
+- uid: DEM.Net.Lib.HeightMap.Range*
+  commentId: Overload:DEM.Net.Lib.HeightMap.Range
+  name: Range
+  nameWithType: HeightMap.Range
+  fullName: DEM.Net.Lib.HeightMap.Range
+- uid: DEM.Net.Lib.HeightMap.Width*
+  commentId: Overload:DEM.Net.Lib.HeightMap.Width
+  name: Width
+  nameWithType: HeightMap.Width
+  fullName: DEM.Net.Lib.HeightMap.Width
+- uid: DEM.Net.Lib.HeightMap.Height*
+  commentId: Overload:DEM.Net.Lib.HeightMap.Height
+  name: Height
+  nameWithType: HeightMap.Height
+  fullName: DEM.Net.Lib.HeightMap.Height
+- uid: DEM.Net.Lib.HeightMap.Clone*
+  commentId: Overload:DEM.Net.Lib.HeightMap.Clone
+  name: Clone
+  nameWithType: HeightMap.Clone
+  fullName: DEM.Net.Lib.HeightMap.Clone
+- uid: DEM.Net.Lib.HeightMap
+  commentId: T:DEM.Net.Lib.HeightMap
+  parent: DEM.Net.Lib
+  name: HeightMap
+  nameWithType: HeightMap
+  fullName: DEM.Net.Lib.HeightMap

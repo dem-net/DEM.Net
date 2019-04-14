@@ -1,0 +1,2761 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  commentId: T:DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  id: ICalculServices_Low
+  parent: DEM.Net.Lib.Services.Lab
+  children:
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreDroitesParallelesXY(System.Double[],System.Double[],System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreSegmentsSequants(System.Double[],System.Double[],System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVecteursColineairesXY(System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVecteursColineairesXYZ(System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVectorsSameDimension(System.Double[],System.Double[],System.Boolean)
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCentroide(System.Collections.Generic.List{System.Double[]})
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoeffDroite2D(System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY(System.Collections.Generic.Dictionary{System.Int32,System.Double[]},System.Double[],System.Double[],System.Double[],System.Boolean)
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY(System.Double[],System.Double[],System.Double[],System.Double[],System.Boolean)
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY(System.Double[0:,0:],System.Double[],System.Double[],System.Boolean)
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordonneesCercleCirconscritAuTriangle(System.Collections.Generic.List{System.Double[]})
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDeterminantMatrice3x3(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDeterminantMatrice3x3(System.Double[],System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneCarreeXY(System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneCarreeXYZ(System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneXY(System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneXYZ(System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationNormaleDuPlan(System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationNormaleDuPlan(System.Double[],System.Double[],System.Double[],System.Boolean)
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationParametriqueDroite2D(System.Double[],System.Double[],System.Boolean)
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2D(System.Double[],System.Double[],System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DCoeffExplicites(System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DCoeffParametriques(System.Double[0:,0:],System.Double[0:,0:])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DMethodeParametrique(System.Double[],System.Double[],System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetInverseVector2(System.Double[0:,0:],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatrice3x3FromCoord(System.Double[],System.Double[],System.Double[],System.Double[],System.Boolean)
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatrice3x3FromVectors(System.Double[],System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceChangementDeRepereXY(System.Double[],System.Double[],System.Double[],System.Boolean)
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse2x2(System.Double[0:,0:])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse3x3(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse3x3(System.Double[],System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse3x3(System.Double[0:,0:])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMediatriceByParametres(System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormaleDuPlan(System.Double[],System.Double[],System.Boolean,System.Boolean)
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormaleDuPlan(System.Double[],System.Double[],System.Double[],System.Boolean)
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormalisationVecteurXY(System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormalisationVecteurXYZ(System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormeVecteurXY(System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormeVecteurXYZ(System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetOrdonnancement(System.Collections.Generic.Dictionary{System.Int32,System.Double[]},System.Boolean,System.Boolean)
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetOrdonnancement(System.Collections.Generic.Dictionary{System.Int32,System.Double[]},System.Double[],System.Int32,System.Boolean)
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPente(System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPenteFromPoints3D(System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusEloigneDePoint0XY(System.Collections.Generic.Dictionary{System.Int32,System.Double[]},System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusExcentreXY(System.Collections.Generic.Dictionary{System.Int32,System.Double[]})
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusProcheDePoint0XY(System.Collections.Generic.Dictionary{System.Int32,System.Double[]},System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitMatriceParVector(System.Double[0:,0:],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitMatricesAxB(System.Double[0:,0:],System.Double[0:,0:])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitScalaireXY(System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitScalaireXYZ(System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetVecteurPenteMaxi(System.Double[],System.Boolean)
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetVectorBrutFromTwoPoints(System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsInversionMatriceOk(System.Double[0:,0:],System.Double[0:,0:],System.Int32)
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsMatriceIdentite(System.Double[0:,0:],System.Int32)
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleByMatrice(System.Collections.Generic.List{System.Double[]},System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleExplicite(System.Collections.Generic.List{System.Double[]},System.Double[])
+  langs:
+  - csharp
+  - vb
+  name: ICalculServices_Low
+  nameWithType: ICalculServices_Low
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  type: Interface
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ICalculServices_Low
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 4
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public interface ICalculServices_Low
+    content.vb: Public Interface ICalculServices_Low
+  modifiers.csharp:
+  - public
+  - interface
+  modifiers.vb:
+  - Public
+  - Interface
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreDroitesParallelesXY(System.Double[],System.Double[],System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreDroitesParallelesXY(System.Double[],System.Double[],System.Double[],System.Double[])
+  id: AreDroitesParallelesXY(System.Double[],System.Double[],System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: AreDroitesParallelesXY(Double[], Double[], Double[], Double[])
+  nameWithType: ICalculServices_Low.AreDroitesParallelesXY(Double[], Double[], Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreDroitesParallelesXY(System.Double[], System.Double[], System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: AreDroitesParallelesXY
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 6
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: bool AreDroitesParallelesXY(double[] p_Droite1_pt1, double[] p_Droite1_pt2, double[] p_Droite2_pt1, double[] p_Droite2_pt2)
+    parameters:
+    - id: p_Droite1_pt1
+      type: System.Double[]
+    - id: p_Droite1_pt2
+      type: System.Double[]
+    - id: p_Droite2_pt1
+      type: System.Double[]
+    - id: p_Droite2_pt2
+      type: System.Double[]
+    return:
+      type: System.Boolean
+    content.vb: Function AreDroitesParallelesXY(p_Droite1_pt1 As Double(), p_Droite1_pt2 As Double(), p_Droite2_pt1 As Double(), p_Droite2_pt2 As Double()) As Boolean
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreDroitesParallelesXY*
+  nameWithType.vb: ICalculServices_Low.AreDroitesParallelesXY(Double(), Double(), Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreDroitesParallelesXY(System.Double(), System.Double(), System.Double(), System.Double())
+  name.vb: AreDroitesParallelesXY(Double(), Double(), Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreSegmentsSequants(System.Double[],System.Double[],System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreSegmentsSequants(System.Double[],System.Double[],System.Double[],System.Double[])
+  id: AreSegmentsSequants(System.Double[],System.Double[],System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: AreSegmentsSequants(Double[], Double[], Double[], Double[])
+  nameWithType: ICalculServices_Low.AreSegmentsSequants(Double[], Double[], Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreSegmentsSequants(System.Double[], System.Double[], System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: AreSegmentsSequants
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 7
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: bool AreSegmentsSequants(double[] p_Segment1_pt1, double[] p_Segment1_pt2, double[] p_Segment2_pt1, double[] p_Segment2_pt2)
+    parameters:
+    - id: p_Segment1_pt1
+      type: System.Double[]
+    - id: p_Segment1_pt2
+      type: System.Double[]
+    - id: p_Segment2_pt1
+      type: System.Double[]
+    - id: p_Segment2_pt2
+      type: System.Double[]
+    return:
+      type: System.Boolean
+    content.vb: Function AreSegmentsSequants(p_Segment1_pt1 As Double(), p_Segment1_pt2 As Double(), p_Segment2_pt1 As Double(), p_Segment2_pt2 As Double()) As Boolean
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreSegmentsSequants*
+  nameWithType.vb: ICalculServices_Low.AreSegmentsSequants(Double(), Double(), Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreSegmentsSequants(System.Double(), System.Double(), System.Double(), System.Double())
+  name.vb: AreSegmentsSequants(Double(), Double(), Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVecteursColineairesXY(System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVecteursColineairesXY(System.Double[],System.Double[])
+  id: AreVecteursColineairesXY(System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: AreVecteursColineairesXY(Double[], Double[])
+  nameWithType: ICalculServices_Low.AreVecteursColineairesXY(Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVecteursColineairesXY(System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: AreVecteursColineairesXY
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 8
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: bool AreVecteursColineairesXY(double[] p_vector1, double[] p_vector2)
+    parameters:
+    - id: p_vector1
+      type: System.Double[]
+    - id: p_vector2
+      type: System.Double[]
+    return:
+      type: System.Boolean
+    content.vb: Function AreVecteursColineairesXY(p_vector1 As Double(), p_vector2 As Double()) As Boolean
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVecteursColineairesXY*
+  nameWithType.vb: ICalculServices_Low.AreVecteursColineairesXY(Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVecteursColineairesXY(System.Double(), System.Double())
+  name.vb: AreVecteursColineairesXY(Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVecteursColineairesXYZ(System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVecteursColineairesXYZ(System.Double[],System.Double[])
+  id: AreVecteursColineairesXYZ(System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: AreVecteursColineairesXYZ(Double[], Double[])
+  nameWithType: ICalculServices_Low.AreVecteursColineairesXYZ(Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVecteursColineairesXYZ(System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: AreVecteursColineairesXYZ
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 9
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: bool AreVecteursColineairesXYZ(double[] p_vector1, double[] p_vector2)
+    parameters:
+    - id: p_vector1
+      type: System.Double[]
+    - id: p_vector2
+      type: System.Double[]
+    return:
+      type: System.Boolean
+    content.vb: Function AreVecteursColineairesXYZ(p_vector1 As Double(), p_vector2 As Double()) As Boolean
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVecteursColineairesXYZ*
+  nameWithType.vb: ICalculServices_Low.AreVecteursColineairesXYZ(Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVecteursColineairesXYZ(System.Double(), System.Double())
+  name.vb: AreVecteursColineairesXYZ(Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVectorsSameDimension(System.Double[],System.Double[],System.Boolean)
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVectorsSameDimension(System.Double[],System.Double[],System.Boolean)
+  id: AreVectorsSameDimension(System.Double[],System.Double[],System.Boolean)
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: AreVectorsSameDimension(Double[], Double[], Boolean)
+  nameWithType: ICalculServices_Low.AreVectorsSameDimension(Double[], Double[], Boolean)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVectorsSameDimension(System.Double[], System.Double[], System.Boolean)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: AreVectorsSameDimension
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 10
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: bool AreVectorsSameDimension(double[] p_vector1, double[] p_vector2, bool p_exceptionSiFalse)
+    parameters:
+    - id: p_vector1
+      type: System.Double[]
+    - id: p_vector2
+      type: System.Double[]
+    - id: p_exceptionSiFalse
+      type: System.Boolean
+    return:
+      type: System.Boolean
+    content.vb: Function AreVectorsSameDimension(p_vector1 As Double(), p_vector2 As Double(), p_exceptionSiFalse As Boolean) As Boolean
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVectorsSameDimension*
+  nameWithType.vb: ICalculServices_Low.AreVectorsSameDimension(Double(), Double(), Boolean)
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVectorsSameDimension(System.Double(), System.Double(), System.Boolean)
+  name.vb: AreVectorsSameDimension(Double(), Double(), Boolean)
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCentroide(System.Collections.Generic.List{System.Double[]})
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCentroide(System.Collections.Generic.List{System.Double[]})
+  id: GetCentroide(System.Collections.Generic.List{System.Double[]})
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetCentroide(List<Double[]>)
+  nameWithType: ICalculServices_Low.GetCentroide(List<Double[]>)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCentroide(System.Collections.Generic.List<System.Double[]>)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetCentroide
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 11
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetCentroide(List<double[]> p_coordPoints)
+    parameters:
+    - id: p_coordPoints
+      type: System.Collections.Generic.List{System.Double[]}
+    return:
+      type: System.Double[]
+    content.vb: Function GetCentroide(p_coordPoints As List(Of Double())) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCentroide*
+  nameWithType.vb: ICalculServices_Low.GetCentroide(List(Of Double()))
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCentroide(System.Collections.Generic.List(Of System.Double()))
+  name.vb: GetCentroide(List(Of Double()))
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoeffDroite2D(System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoeffDroite2D(System.Double[],System.Double[])
+  id: GetCoeffDroite2D(System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetCoeffDroite2D(Double[], Double[])
+  nameWithType: ICalculServices_Low.GetCoeffDroite2D(Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoeffDroite2D(System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetCoeffDroite2D
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 12
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetCoeffDroite2D(double[] p_Droite1_pt1, double[] p_Droite1_pt2)
+    parameters:
+    - id: p_Droite1_pt1
+      type: System.Double[]
+    - id: p_Droite1_pt2
+      type: System.Double[]
+    return:
+      type: System.Double[]
+    content.vb: Function GetCoeffDroite2D(p_Droite1_pt1 As Double(), p_Droite1_pt2 As Double()) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoeffDroite2D*
+  nameWithType.vb: ICalculServices_Low.GetCoeffDroite2D(Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoeffDroite2D(System.Double(), System.Double())
+  name.vb: GetCoeffDroite2D(Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY(System.Collections.Generic.Dictionary{System.Int32,System.Double[]},System.Double[],System.Double[],System.Double[],System.Boolean)
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY(System.Collections.Generic.Dictionary{System.Int32,System.Double[]},System.Double[],System.Double[],System.Double[],System.Boolean)
+  id: GetCoordDansNewRepereXY(System.Collections.Generic.Dictionary{System.Int32,System.Double[]},System.Double[],System.Double[],System.Double[],System.Boolean)
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetCoordDansNewRepereXY(Dictionary<Int32, Double[]>, Double[], Double[], Double[], Boolean)
+  nameWithType: ICalculServices_Low.GetCoordDansNewRepereXY(Dictionary<Int32, Double[]>, Double[], Double[], Double[], Boolean)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY(System.Collections.Generic.Dictionary<System.Int32, System.Double[]>, System.Double[], System.Double[], System.Double[], System.Boolean)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetCoordDansNewRepereXY
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 13
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: Dictionary<int, double[]> GetCoordDansNewRepereXY(Dictionary<int, double[]> p_pointsAReferencer, double[] p_coordPoint0, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord_orthoSiNull = null, bool p_normaliser_vf = false)
+    parameters:
+    - id: p_pointsAReferencer
+      type: System.Collections.Generic.Dictionary{System.Int32,System.Double[]}
+    - id: p_coordPoint0
+      type: System.Double[]
+    - id: p_coordPoint2Abs
+      type: System.Double[]
+    - id: p_coordPoint3Ord_orthoSiNull
+      type: System.Double[]
+    - id: p_normaliser_vf
+      type: System.Boolean
+    return:
+      type: System.Collections.Generic.Dictionary{System.Int32,System.Double[]}
+    content.vb: Function GetCoordDansNewRepereXY(p_pointsAReferencer As Dictionary(Of Integer, Double()), p_coordPoint0 As Double(), p_coordPoint2Abs As Double(), p_coordPoint3Ord_orthoSiNull As Double() = Nothing, p_normaliser_vf As Boolean = False) As Dictionary(Of Integer, Double())
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY*
+  nameWithType.vb: ICalculServices_Low.GetCoordDansNewRepereXY(Dictionary(Of Int32, Double()), Double(), Double(), Double(), Boolean)
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY(System.Collections.Generic.Dictionary(Of System.Int32, System.Double()), System.Double(), System.Double(), System.Double(), System.Boolean)
+  name.vb: GetCoordDansNewRepereXY(Dictionary(Of Int32, Double()), Double(), Double(), Double(), Boolean)
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY(System.Double[0:,0:],System.Double[],System.Double[],System.Boolean)
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY(System.Double[0:,0:],System.Double[],System.Double[],System.Boolean)
+  id: GetCoordDansNewRepereXY(System.Double[0:,0:],System.Double[],System.Double[],System.Boolean)
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetCoordDansNewRepereXY(Double[,], Double[], Double[], Boolean)
+  nameWithType: ICalculServices_Low.GetCoordDansNewRepereXY(Double[,], Double[], Double[], Boolean)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY(System.Double[,], System.Double[], System.Double[], System.Boolean)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetCoordDansNewRepereXY
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 14
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetCoordDansNewRepereXY(double[, ] p_matriceNewRepere, double[] p_origineDuRepere, double[] p_pointToTranslate, bool p_normaliser_vf = false)
+    parameters:
+    - id: p_matriceNewRepere
+      type: System.Double[,]
+    - id: p_origineDuRepere
+      type: System.Double[]
+    - id: p_pointToTranslate
+      type: System.Double[]
+    - id: p_normaliser_vf
+      type: System.Boolean
+    return:
+      type: System.Double[]
+    content.vb: Function GetCoordDansNewRepereXY(p_matriceNewRepere As Double(,), p_origineDuRepere As Double(), p_pointToTranslate As Double(), p_normaliser_vf As Boolean = False) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY*
+  nameWithType.vb: ICalculServices_Low.GetCoordDansNewRepereXY(Double(,), Double(), Double(), Boolean)
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY(System.Double(,), System.Double(), System.Double(), System.Boolean)
+  name.vb: GetCoordDansNewRepereXY(Double(,), Double(), Double(), Boolean)
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY(System.Double[],System.Double[],System.Double[],System.Double[],System.Boolean)
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY(System.Double[],System.Double[],System.Double[],System.Double[],System.Boolean)
+  id: GetCoordDansNewRepereXY(System.Double[],System.Double[],System.Double[],System.Double[],System.Boolean)
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetCoordDansNewRepereXY(Double[], Double[], Double[], Double[], Boolean)
+  nameWithType: ICalculServices_Low.GetCoordDansNewRepereXY(Double[], Double[], Double[], Double[], Boolean)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY(System.Double[], System.Double[], System.Double[], System.Double[], System.Boolean)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetCoordDansNewRepereXY
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 15
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetCoordDansNewRepereXY(double[] p_pointAReferencer, double[] p_coordPoint0, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord_orthoSiNull = null, bool p_normaliser_vf = false)
+    parameters:
+    - id: p_pointAReferencer
+      type: System.Double[]
+    - id: p_coordPoint0
+      type: System.Double[]
+    - id: p_coordPoint2Abs
+      type: System.Double[]
+    - id: p_coordPoint3Ord_orthoSiNull
+      type: System.Double[]
+    - id: p_normaliser_vf
+      type: System.Boolean
+    return:
+      type: System.Double[]
+    content.vb: Function GetCoordDansNewRepereXY(p_pointAReferencer As Double(), p_coordPoint0 As Double(), p_coordPoint2Abs As Double(), p_coordPoint3Ord_orthoSiNull As Double() = Nothing, p_normaliser_vf As Boolean = False) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY*
+  nameWithType.vb: ICalculServices_Low.GetCoordDansNewRepereXY(Double(), Double(), Double(), Double(), Boolean)
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY(System.Double(), System.Double(), System.Double(), System.Double(), System.Boolean)
+  name.vb: GetCoordDansNewRepereXY(Double(), Double(), Double(), Double(), Boolean)
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordonneesCercleCirconscritAuTriangle(System.Collections.Generic.List{System.Double[]})
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordonneesCercleCirconscritAuTriangle(System.Collections.Generic.List{System.Double[]})
+  id: GetCoordonneesCercleCirconscritAuTriangle(System.Collections.Generic.List{System.Double[]})
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetCoordonneesCercleCirconscritAuTriangle(List<Double[]>)
+  nameWithType: ICalculServices_Low.GetCoordonneesCercleCirconscritAuTriangle(List<Double[]>)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordonneesCercleCirconscritAuTriangle(System.Collections.Generic.List<System.Double[]>)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetCoordonneesCercleCirconscritAuTriangle
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 16
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetCoordonneesCercleCirconscritAuTriangle(List<double[]> p_pointsTriangle)
+    parameters:
+    - id: p_pointsTriangle
+      type: System.Collections.Generic.List{System.Double[]}
+    return:
+      type: System.Double[]
+    content.vb: Function GetCoordonneesCercleCirconscritAuTriangle(p_pointsTriangle As List(Of Double())) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordonneesCercleCirconscritAuTriangle*
+  nameWithType.vb: ICalculServices_Low.GetCoordonneesCercleCirconscritAuTriangle(List(Of Double()))
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordonneesCercleCirconscritAuTriangle(System.Collections.Generic.List(Of System.Double()))
+  name.vb: GetCoordonneesCercleCirconscritAuTriangle(List(Of Double()))
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDeterminantMatrice3x3(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDeterminantMatrice3x3(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)
+  id: GetDeterminantMatrice3x3(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetDeterminantMatrice3x3(Double, Double, Double, Double, Double, Double, Double, Double, Double)
+  nameWithType: ICalculServices_Low.GetDeterminantMatrice3x3(Double, Double, Double, Double, Double, Double, Double, Double, Double)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDeterminantMatrice3x3(System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetDeterminantMatrice3x3
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 17
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double GetDeterminantMatrice3x3(double p_v1_a, double p_v1_b, double p_v1_c, double p_v2_d, double p_v2_e, double p_v2_f, double p_v3_g, double p_v3_h, double p_v3_i)
+    parameters:
+    - id: p_v1_a
+      type: System.Double
+    - id: p_v1_b
+      type: System.Double
+    - id: p_v1_c
+      type: System.Double
+    - id: p_v2_d
+      type: System.Double
+    - id: p_v2_e
+      type: System.Double
+    - id: p_v2_f
+      type: System.Double
+    - id: p_v3_g
+      type: System.Double
+    - id: p_v3_h
+      type: System.Double
+    - id: p_v3_i
+      type: System.Double
+    return:
+      type: System.Double
+    content.vb: Function GetDeterminantMatrice3x3(p_v1_a As Double, p_v1_b As Double, p_v1_c As Double, p_v2_d As Double, p_v2_e As Double, p_v2_f As Double, p_v3_g As Double, p_v3_h As Double, p_v3_i As Double) As Double
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDeterminantMatrice3x3*
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDeterminantMatrice3x3(System.Double[],System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDeterminantMatrice3x3(System.Double[],System.Double[],System.Double[])
+  id: GetDeterminantMatrice3x3(System.Double[],System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetDeterminantMatrice3x3(Double[], Double[], Double[])
+  nameWithType: ICalculServices_Low.GetDeterminantMatrice3x3(Double[], Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDeterminantMatrice3x3(System.Double[], System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetDeterminantMatrice3x3
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 18
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double GetDeterminantMatrice3x3(double[] p_vector1, double[] p_vector2, double[] p_vector3)
+    parameters:
+    - id: p_vector1
+      type: System.Double[]
+    - id: p_vector2
+      type: System.Double[]
+    - id: p_vector3
+      type: System.Double[]
+    return:
+      type: System.Double
+    content.vb: Function GetDeterminantMatrice3x3(p_vector1 As Double(), p_vector2 As Double(), p_vector3 As Double()) As Double
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDeterminantMatrice3x3*
+  nameWithType.vb: ICalculServices_Low.GetDeterminantMatrice3x3(Double(), Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDeterminantMatrice3x3(System.Double(), System.Double(), System.Double())
+  name.vb: GetDeterminantMatrice3x3(Double(), Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneCarreeXY(System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneCarreeXY(System.Double[],System.Double[])
+  id: GetDistanceEuclidienneCarreeXY(System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetDistanceEuclidienneCarreeXY(Double[], Double[])
+  nameWithType: ICalculServices_Low.GetDistanceEuclidienneCarreeXY(Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneCarreeXY(System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetDistanceEuclidienneCarreeXY
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 19
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double GetDistanceEuclidienneCarreeXY(double[] v_point1, double[] v_point2)
+    parameters:
+    - id: v_point1
+      type: System.Double[]
+    - id: v_point2
+      type: System.Double[]
+    return:
+      type: System.Double
+    content.vb: Function GetDistanceEuclidienneCarreeXY(v_point1 As Double(), v_point2 As Double()) As Double
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneCarreeXY*
+  nameWithType.vb: ICalculServices_Low.GetDistanceEuclidienneCarreeXY(Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneCarreeXY(System.Double(), System.Double())
+  name.vb: GetDistanceEuclidienneCarreeXY(Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneCarreeXYZ(System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneCarreeXYZ(System.Double[],System.Double[])
+  id: GetDistanceEuclidienneCarreeXYZ(System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetDistanceEuclidienneCarreeXYZ(Double[], Double[])
+  nameWithType: ICalculServices_Low.GetDistanceEuclidienneCarreeXYZ(Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneCarreeXYZ(System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetDistanceEuclidienneCarreeXYZ
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 20
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double GetDistanceEuclidienneCarreeXYZ(double[] v_point1, double[] v_point2)
+    parameters:
+    - id: v_point1
+      type: System.Double[]
+    - id: v_point2
+      type: System.Double[]
+    return:
+      type: System.Double
+    content.vb: Function GetDistanceEuclidienneCarreeXYZ(v_point1 As Double(), v_point2 As Double()) As Double
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneCarreeXYZ*
+  nameWithType.vb: ICalculServices_Low.GetDistanceEuclidienneCarreeXYZ(Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneCarreeXYZ(System.Double(), System.Double())
+  name.vb: GetDistanceEuclidienneCarreeXYZ(Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneXY(System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneXY(System.Double[],System.Double[])
+  id: GetDistanceEuclidienneXY(System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetDistanceEuclidienneXY(Double[], Double[])
+  nameWithType: ICalculServices_Low.GetDistanceEuclidienneXY(Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneXY(System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetDistanceEuclidienneXY
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 21
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double GetDistanceEuclidienneXY(double[] v_point1, double[] v_point2)
+    parameters:
+    - id: v_point1
+      type: System.Double[]
+    - id: v_point2
+      type: System.Double[]
+    return:
+      type: System.Double
+    content.vb: Function GetDistanceEuclidienneXY(v_point1 As Double(), v_point2 As Double()) As Double
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneXY*
+  nameWithType.vb: ICalculServices_Low.GetDistanceEuclidienneXY(Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneXY(System.Double(), System.Double())
+  name.vb: GetDistanceEuclidienneXY(Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneXYZ(System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneXYZ(System.Double[],System.Double[])
+  id: GetDistanceEuclidienneXYZ(System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetDistanceEuclidienneXYZ(Double[], Double[])
+  nameWithType: ICalculServices_Low.GetDistanceEuclidienneXYZ(Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneXYZ(System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetDistanceEuclidienneXYZ
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 22
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double GetDistanceEuclidienneXYZ(double[] v_point1, double[] v_point2)
+    parameters:
+    - id: v_point1
+      type: System.Double[]
+    - id: v_point2
+      type: System.Double[]
+    return:
+      type: System.Double
+    content.vb: Function GetDistanceEuclidienneXYZ(v_point1 As Double(), v_point2 As Double()) As Double
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneXYZ*
+  nameWithType.vb: ICalculServices_Low.GetDistanceEuclidienneXYZ(Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneXYZ(System.Double(), System.Double())
+  name.vb: GetDistanceEuclidienneXYZ(Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationNormaleDuPlan(System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationNormaleDuPlan(System.Double[],System.Double[])
+  id: GetEquationNormaleDuPlan(System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetEquationNormaleDuPlan(Double[], Double[])
+  nameWithType: ICalculServices_Low.GetEquationNormaleDuPlan(Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationNormaleDuPlan(System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetEquationNormaleDuPlan
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 23
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetEquationNormaleDuPlan(double[] p_normaleAuPlan, double[] p_point3DDuPlan)
+    parameters:
+    - id: p_normaleAuPlan
+      type: System.Double[]
+    - id: p_point3DDuPlan
+      type: System.Double[]
+    return:
+      type: System.Double[]
+    content.vb: Function GetEquationNormaleDuPlan(p_normaleAuPlan As Double(), p_point3DDuPlan As Double()) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationNormaleDuPlan*
+  nameWithType.vb: ICalculServices_Low.GetEquationNormaleDuPlan(Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationNormaleDuPlan(System.Double(), System.Double())
+  name.vb: GetEquationNormaleDuPlan(Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationNormaleDuPlan(System.Double[],System.Double[],System.Double[],System.Boolean)
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationNormaleDuPlan(System.Double[],System.Double[],System.Double[],System.Boolean)
+  id: GetEquationNormaleDuPlan(System.Double[],System.Double[],System.Double[],System.Boolean)
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetEquationNormaleDuPlan(Double[], Double[], Double[], Boolean)
+  nameWithType: ICalculServices_Low.GetEquationNormaleDuPlan(Double[], Double[], Double[], Boolean)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationNormaleDuPlan(System.Double[], System.Double[], System.Double[], System.Boolean)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetEquationNormaleDuPlan
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 24
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetEquationNormaleDuPlan(double[] p_point3D_1, double[] p_point3D_2, double[] p_point3D_3, bool p_exceptionSiVecteursColineaires_vecteur0Sinon_vf)
+    parameters:
+    - id: p_point3D_1
+      type: System.Double[]
+    - id: p_point3D_2
+      type: System.Double[]
+    - id: p_point3D_3
+      type: System.Double[]
+    - id: p_exceptionSiVecteursColineaires_vecteur0Sinon_vf
+      type: System.Boolean
+    return:
+      type: System.Double[]
+    content.vb: Function GetEquationNormaleDuPlan(p_point3D_1 As Double(), p_point3D_2 As Double(), p_point3D_3 As Double(), p_exceptionSiVecteursColineaires_vecteur0Sinon_vf As Boolean) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationNormaleDuPlan*
+  nameWithType.vb: ICalculServices_Low.GetEquationNormaleDuPlan(Double(), Double(), Double(), Boolean)
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationNormaleDuPlan(System.Double(), System.Double(), System.Double(), System.Boolean)
+  name.vb: GetEquationNormaleDuPlan(Double(), Double(), Double(), Boolean)
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationParametriqueDroite2D(System.Double[],System.Double[],System.Boolean)
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationParametriqueDroite2D(System.Double[],System.Double[],System.Boolean)
+  id: GetEquationParametriqueDroite2D(System.Double[],System.Double[],System.Boolean)
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetEquationParametriqueDroite2D(Double[], Double[], Boolean)
+  nameWithType: ICalculServices_Low.GetEquationParametriqueDroite2D(Double[], Double[], Boolean)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationParametriqueDroite2D(System.Double[], System.Double[], System.Boolean)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetEquationParametriqueDroite2D
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 25
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[, ] GetEquationParametriqueDroite2D(double[] p_Droite1_pt1, double[] p_Droite1_pt2, bool p_normaliser_vf)
+    parameters:
+    - id: p_Droite1_pt1
+      type: System.Double[]
+    - id: p_Droite1_pt2
+      type: System.Double[]
+    - id: p_normaliser_vf
+      type: System.Boolean
+    return:
+      type: System.Double[,]
+    content.vb: Function GetEquationParametriqueDroite2D(p_Droite1_pt1 As Double(), p_Droite1_pt2 As Double(), p_normaliser_vf As Boolean) As Double(,)
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationParametriqueDroite2D*
+  nameWithType.vb: ICalculServices_Low.GetEquationParametriqueDroite2D(Double(), Double(), Boolean)
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationParametriqueDroite2D(System.Double(), System.Double(), System.Boolean)
+  name.vb: GetEquationParametriqueDroite2D(Double(), Double(), Boolean)
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2D(System.Double[],System.Double[],System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2D(System.Double[],System.Double[],System.Double[],System.Double[])
+  id: GetIntersectionDroites2D(System.Double[],System.Double[],System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetIntersectionDroites2D(Double[], Double[], Double[], Double[])
+  nameWithType: ICalculServices_Low.GetIntersectionDroites2D(Double[], Double[], Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2D(System.Double[], System.Double[], System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetIntersectionDroites2D
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 26
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetIntersectionDroites2D(double[] p_Droite1_pt1, double[] p_Droite1_pt2, double[] p_Droite2_pt1, double[] p_Droite2_pt2)
+    parameters:
+    - id: p_Droite1_pt1
+      type: System.Double[]
+    - id: p_Droite1_pt2
+      type: System.Double[]
+    - id: p_Droite2_pt1
+      type: System.Double[]
+    - id: p_Droite2_pt2
+      type: System.Double[]
+    return:
+      type: System.Double[]
+    content.vb: Function GetIntersectionDroites2D(p_Droite1_pt1 As Double(), p_Droite1_pt2 As Double(), p_Droite2_pt1 As Double(), p_Droite2_pt2 As Double()) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2D*
+  nameWithType.vb: ICalculServices_Low.GetIntersectionDroites2D(Double(), Double(), Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2D(System.Double(), System.Double(), System.Double(), System.Double())
+  name.vb: GetIntersectionDroites2D(Double(), Double(), Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DCoeffExplicites(System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DCoeffExplicites(System.Double[],System.Double[])
+  id: GetIntersectionDroites2DCoeffExplicites(System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetIntersectionDroites2DCoeffExplicites(Double[], Double[])
+  nameWithType: ICalculServices_Low.GetIntersectionDroites2DCoeffExplicites(Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DCoeffExplicites(System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetIntersectionDroites2DCoeffExplicites
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 27
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetIntersectionDroites2DCoeffExplicites(double[] p_coeffDroite1, double[] p_coeffDroite2)
+    parameters:
+    - id: p_coeffDroite1
+      type: System.Double[]
+    - id: p_coeffDroite2
+      type: System.Double[]
+    return:
+      type: System.Double[]
+    content.vb: Function GetIntersectionDroites2DCoeffExplicites(p_coeffDroite1 As Double(), p_coeffDroite2 As Double()) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DCoeffExplicites*
+  nameWithType.vb: ICalculServices_Low.GetIntersectionDroites2DCoeffExplicites(Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DCoeffExplicites(System.Double(), System.Double())
+  name.vb: GetIntersectionDroites2DCoeffExplicites(Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DCoeffParametriques(System.Double[0:,0:],System.Double[0:,0:])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DCoeffParametriques(System.Double[0:,0:],System.Double[0:,0:])
+  id: GetIntersectionDroites2DCoeffParametriques(System.Double[0:,0:],System.Double[0:,0:])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetIntersectionDroites2DCoeffParametriques(Double[,], Double[,])
+  nameWithType: ICalculServices_Low.GetIntersectionDroites2DCoeffParametriques(Double[,], Double[,])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DCoeffParametriques(System.Double[,], System.Double[,])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetIntersectionDroites2DCoeffParametriques
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 28
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetIntersectionDroites2DCoeffParametriques(double[, ] p_parametresDroite1, double[, ] p_parametresDroite2)
+    parameters:
+    - id: p_parametresDroite1
+      type: System.Double[,]
+    - id: p_parametresDroite2
+      type: System.Double[,]
+    return:
+      type: System.Double[]
+    content.vb: Function GetIntersectionDroites2DCoeffParametriques(p_parametresDroite1 As Double(,), p_parametresDroite2 As Double(,)) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DCoeffParametriques*
+  nameWithType.vb: ICalculServices_Low.GetIntersectionDroites2DCoeffParametriques(Double(,), Double(,))
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DCoeffParametriques(System.Double(,), System.Double(,))
+  name.vb: GetIntersectionDroites2DCoeffParametriques(Double(,), Double(,))
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DMethodeParametrique(System.Double[],System.Double[],System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DMethodeParametrique(System.Double[],System.Double[],System.Double[],System.Double[])
+  id: GetIntersectionDroites2DMethodeParametrique(System.Double[],System.Double[],System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetIntersectionDroites2DMethodeParametrique(Double[], Double[], Double[], Double[])
+  nameWithType: ICalculServices_Low.GetIntersectionDroites2DMethodeParametrique(Double[], Double[], Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DMethodeParametrique(System.Double[], System.Double[], System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetIntersectionDroites2DMethodeParametrique
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 29
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetIntersectionDroites2DMethodeParametrique(double[] p_Droite1_pt1, double[] p_Droite1_pt2, double[] p_Droite2_pt1, double[] p_Droite2_pt2)
+    parameters:
+    - id: p_Droite1_pt1
+      type: System.Double[]
+    - id: p_Droite1_pt2
+      type: System.Double[]
+    - id: p_Droite2_pt1
+      type: System.Double[]
+    - id: p_Droite2_pt2
+      type: System.Double[]
+    return:
+      type: System.Double[]
+    content.vb: Function GetIntersectionDroites2DMethodeParametrique(p_Droite1_pt1 As Double(), p_Droite1_pt2 As Double(), p_Droite2_pt1 As Double(), p_Droite2_pt2 As Double()) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DMethodeParametrique*
+  nameWithType.vb: ICalculServices_Low.GetIntersectionDroites2DMethodeParametrique(Double(), Double(), Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DMethodeParametrique(System.Double(), System.Double(), System.Double(), System.Double())
+  name.vb: GetIntersectionDroites2DMethodeParametrique(Double(), Double(), Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetInverseVector2(System.Double[0:,0:],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetInverseVector2(System.Double[0:,0:],System.Double[])
+  id: GetInverseVector2(System.Double[0:,0:],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetInverseVector2(Double[,], Double[])
+  nameWithType: ICalculServices_Low.GetInverseVector2(Double[,], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetInverseVector2(System.Double[,], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetInverseVector2
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 30
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetInverseVector2(double[, ] p_matrice, double[] p_vectorToInverse)
+    parameters:
+    - id: p_matrice
+      type: System.Double[,]
+    - id: p_vectorToInverse
+      type: System.Double[]
+    return:
+      type: System.Double[]
+    content.vb: Function GetInverseVector2(p_matrice As Double(,), p_vectorToInverse As Double()) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetInverseVector2*
+  nameWithType.vb: ICalculServices_Low.GetInverseVector2(Double(,), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetInverseVector2(System.Double(,), System.Double())
+  name.vb: GetInverseVector2(Double(,), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatrice3x3FromCoord(System.Double[],System.Double[],System.Double[],System.Double[],System.Boolean)
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatrice3x3FromCoord(System.Double[],System.Double[],System.Double[],System.Double[],System.Boolean)
+  id: GetMatrice3x3FromCoord(System.Double[],System.Double[],System.Double[],System.Double[],System.Boolean)
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetMatrice3x3FromCoord(Double[], Double[], Double[], Double[], Boolean)
+  nameWithType: ICalculServices_Low.GetMatrice3x3FromCoord(Double[], Double[], Double[], Double[], Boolean)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatrice3x3FromCoord(System.Double[], System.Double[], System.Double[], System.Double[], System.Boolean)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetMatrice3x3FromCoord
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 31
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[, ] GetMatrice3x3FromCoord(double[] p_coordPointOrigine, double[] p_coordPoint1, double[] p_coordPoint2, double[] p_coordPoint3, bool p_normaliser_vf)
+    parameters:
+    - id: p_coordPointOrigine
+      type: System.Double[]
+    - id: p_coordPoint1
+      type: System.Double[]
+    - id: p_coordPoint2
+      type: System.Double[]
+    - id: p_coordPoint3
+      type: System.Double[]
+    - id: p_normaliser_vf
+      type: System.Boolean
+    return:
+      type: System.Double[,]
+    content.vb: Function GetMatrice3x3FromCoord(p_coordPointOrigine As Double(), p_coordPoint1 As Double(), p_coordPoint2 As Double(), p_coordPoint3 As Double(), p_normaliser_vf As Boolean) As Double(,)
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatrice3x3FromCoord*
+  nameWithType.vb: ICalculServices_Low.GetMatrice3x3FromCoord(Double(), Double(), Double(), Double(), Boolean)
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatrice3x3FromCoord(System.Double(), System.Double(), System.Double(), System.Double(), System.Boolean)
+  name.vb: GetMatrice3x3FromCoord(Double(), Double(), Double(), Double(), Boolean)
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatrice3x3FromVectors(System.Double[],System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatrice3x3FromVectors(System.Double[],System.Double[],System.Double[])
+  id: GetMatrice3x3FromVectors(System.Double[],System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetMatrice3x3FromVectors(Double[], Double[], Double[])
+  nameWithType: ICalculServices_Low.GetMatrice3x3FromVectors(Double[], Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatrice3x3FromVectors(System.Double[], System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetMatrice3x3FromVectors
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 32
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[, ] GetMatrice3x3FromVectors(double[] p_vector1, double[] p_vector2, double[] p_vector3)
+    parameters:
+    - id: p_vector1
+      type: System.Double[]
+    - id: p_vector2
+      type: System.Double[]
+    - id: p_vector3
+      type: System.Double[]
+    return:
+      type: System.Double[,]
+    content.vb: Function GetMatrice3x3FromVectors(p_vector1 As Double(), p_vector2 As Double(), p_vector3 As Double()) As Double(,)
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatrice3x3FromVectors*
+  nameWithType.vb: ICalculServices_Low.GetMatrice3x3FromVectors(Double(), Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatrice3x3FromVectors(System.Double(), System.Double(), System.Double())
+  name.vb: GetMatrice3x3FromVectors(Double(), Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceChangementDeRepereXY(System.Double[],System.Double[],System.Double[],System.Boolean)
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceChangementDeRepereXY(System.Double[],System.Double[],System.Double[],System.Boolean)
+  id: GetMatriceChangementDeRepereXY(System.Double[],System.Double[],System.Double[],System.Boolean)
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetMatriceChangementDeRepereXY(Double[], Double[], Double[], Boolean)
+  nameWithType: ICalculServices_Low.GetMatriceChangementDeRepereXY(Double[], Double[], Double[], Boolean)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceChangementDeRepereXY(System.Double[], System.Double[], System.Double[], System.Boolean)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetMatriceChangementDeRepereXY
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 33
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[, ] GetMatriceChangementDeRepereXY(double[] p_coordPoint0, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord_orthoSiNull = null, bool p_normaliser_vf = true)
+    parameters:
+    - id: p_coordPoint0
+      type: System.Double[]
+    - id: p_coordPoint2Abs
+      type: System.Double[]
+    - id: p_coordPoint3Ord_orthoSiNull
+      type: System.Double[]
+    - id: p_normaliser_vf
+      type: System.Boolean
+    return:
+      type: System.Double[,]
+    content.vb: Function GetMatriceChangementDeRepereXY(p_coordPoint0 As Double(), p_coordPoint2Abs As Double(), p_coordPoint3Ord_orthoSiNull As Double() = Nothing, p_normaliser_vf As Boolean = True) As Double(,)
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceChangementDeRepereXY*
+  nameWithType.vb: ICalculServices_Low.GetMatriceChangementDeRepereXY(Double(), Double(), Double(), Boolean)
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceChangementDeRepereXY(System.Double(), System.Double(), System.Double(), System.Boolean)
+  name.vb: GetMatriceChangementDeRepereXY(Double(), Double(), Double(), Boolean)
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse2x2(System.Double[0:,0:])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse2x2(System.Double[0:,0:])
+  id: GetMatriceInverse2x2(System.Double[0:,0:])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetMatriceInverse2x2(Double[,])
+  nameWithType: ICalculServices_Low.GetMatriceInverse2x2(Double[,])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse2x2(System.Double[,])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetMatriceInverse2x2
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 34
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[, ] GetMatriceInverse2x2(double[, ] p_matriceToInverse)
+    parameters:
+    - id: p_matriceToInverse
+      type: System.Double[,]
+    return:
+      type: System.Double[,]
+    content.vb: Function GetMatriceInverse2x2(p_matriceToInverse As Double(,)) As Double(,)
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse2x2*
+  nameWithType.vb: ICalculServices_Low.GetMatriceInverse2x2(Double(,))
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse2x2(System.Double(,))
+  name.vb: GetMatriceInverse2x2(Double(,))
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse3x3(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse3x3(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)
+  id: GetMatriceInverse3x3(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetMatriceInverse3x3(Double, Double, Double, Double, Double, Double, Double, Double, Double)
+  nameWithType: ICalculServices_Low.GetMatriceInverse3x3(Double, Double, Double, Double, Double, Double, Double, Double, Double)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse3x3(System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetMatriceInverse3x3
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 35
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[, ] GetMatriceInverse3x3(double p_v1_a, double p_v1_b, double p_v1_c, double p_v2_d, double p_v2_e, double p_v2_f, double p_v3_g, double p_v3_h, double p_v3_i)
+    parameters:
+    - id: p_v1_a
+      type: System.Double
+    - id: p_v1_b
+      type: System.Double
+    - id: p_v1_c
+      type: System.Double
+    - id: p_v2_d
+      type: System.Double
+    - id: p_v2_e
+      type: System.Double
+    - id: p_v2_f
+      type: System.Double
+    - id: p_v3_g
+      type: System.Double
+    - id: p_v3_h
+      type: System.Double
+    - id: p_v3_i
+      type: System.Double
+    return:
+      type: System.Double[,]
+    content.vb: Function GetMatriceInverse3x3(p_v1_a As Double, p_v1_b As Double, p_v1_c As Double, p_v2_d As Double, p_v2_e As Double, p_v2_f As Double, p_v3_g As Double, p_v3_h As Double, p_v3_i As Double) As Double(,)
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse3x3*
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse3x3(System.Double[0:,0:])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse3x3(System.Double[0:,0:])
+  id: GetMatriceInverse3x3(System.Double[0:,0:])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetMatriceInverse3x3(Double[,])
+  nameWithType: ICalculServices_Low.GetMatriceInverse3x3(Double[,])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse3x3(System.Double[,])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetMatriceInverse3x3
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 36
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[, ] GetMatriceInverse3x3(double[, ] p_matriceAInverser)
+    parameters:
+    - id: p_matriceAInverser
+      type: System.Double[,]
+    return:
+      type: System.Double[,]
+    content.vb: Function GetMatriceInverse3x3(p_matriceAInverser As Double(,)) As Double(,)
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse3x3*
+  nameWithType.vb: ICalculServices_Low.GetMatriceInverse3x3(Double(,))
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse3x3(System.Double(,))
+  name.vb: GetMatriceInverse3x3(Double(,))
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse3x3(System.Double[],System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse3x3(System.Double[],System.Double[],System.Double[])
+  id: GetMatriceInverse3x3(System.Double[],System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetMatriceInverse3x3(Double[], Double[], Double[])
+  nameWithType: ICalculServices_Low.GetMatriceInverse3x3(Double[], Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse3x3(System.Double[], System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetMatriceInverse3x3
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 37
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[, ] GetMatriceInverse3x3(double[] p_vector1, double[] p_vector2, double[] p_vector3)
+    parameters:
+    - id: p_vector1
+      type: System.Double[]
+    - id: p_vector2
+      type: System.Double[]
+    - id: p_vector3
+      type: System.Double[]
+    return:
+      type: System.Double[,]
+    content.vb: Function GetMatriceInverse3x3(p_vector1 As Double(), p_vector2 As Double(), p_vector3 As Double()) As Double(,)
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse3x3*
+  nameWithType.vb: ICalculServices_Low.GetMatriceInverse3x3(Double(), Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse3x3(System.Double(), System.Double(), System.Double())
+  name.vb: GetMatriceInverse3x3(Double(), Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMediatriceByParametres(System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMediatriceByParametres(System.Double[],System.Double[])
+  id: GetMediatriceByParametres(System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetMediatriceByParametres(Double[], Double[])
+  nameWithType: ICalculServices_Low.GetMediatriceByParametres(Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMediatriceByParametres(System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetMediatriceByParametres
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 38
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[, ] GetMediatriceByParametres(double[] p_point0, double[] p_point1)
+    parameters:
+    - id: p_point0
+      type: System.Double[]
+    - id: p_point1
+      type: System.Double[]
+    return:
+      type: System.Double[,]
+    content.vb: Function GetMediatriceByParametres(p_point0 As Double(), p_point1 As Double()) As Double(,)
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMediatriceByParametres*
+  nameWithType.vb: ICalculServices_Low.GetMediatriceByParametres(Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMediatriceByParametres(System.Double(), System.Double())
+  name.vb: GetMediatriceByParametres(Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormaleDuPlan(System.Double[],System.Double[],System.Boolean,System.Boolean)
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormaleDuPlan(System.Double[],System.Double[],System.Boolean,System.Boolean)
+  id: GetNormaleDuPlan(System.Double[],System.Double[],System.Boolean,System.Boolean)
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetNormaleDuPlan(Double[], Double[], Boolean, Boolean)
+  nameWithType: ICalculServices_Low.GetNormaleDuPlan(Double[], Double[], Boolean, Boolean)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormaleDuPlan(System.Double[], System.Double[], System.Boolean, System.Boolean)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetNormaleDuPlan
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 39
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetNormaleDuPlan(double[] p_vector_u, double[] p_vector_w, bool p_normaliserVecteursEnEntree_vf, bool p_exceptionSiVecteursColineaires_vecteur0Sinon_vf)
+    parameters:
+    - id: p_vector_u
+      type: System.Double[]
+    - id: p_vector_w
+      type: System.Double[]
+    - id: p_normaliserVecteursEnEntree_vf
+      type: System.Boolean
+    - id: p_exceptionSiVecteursColineaires_vecteur0Sinon_vf
+      type: System.Boolean
+    return:
+      type: System.Double[]
+    content.vb: Function GetNormaleDuPlan(p_vector_u As Double(), p_vector_w As Double(), p_normaliserVecteursEnEntree_vf As Boolean, p_exceptionSiVecteursColineaires_vecteur0Sinon_vf As Boolean) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormaleDuPlan*
+  nameWithType.vb: ICalculServices_Low.GetNormaleDuPlan(Double(), Double(), Boolean, Boolean)
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormaleDuPlan(System.Double(), System.Double(), System.Boolean, System.Boolean)
+  name.vb: GetNormaleDuPlan(Double(), Double(), Boolean, Boolean)
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormaleDuPlan(System.Double[],System.Double[],System.Double[],System.Boolean)
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormaleDuPlan(System.Double[],System.Double[],System.Double[],System.Boolean)
+  id: GetNormaleDuPlan(System.Double[],System.Double[],System.Double[],System.Boolean)
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetNormaleDuPlan(Double[], Double[], Double[], Boolean)
+  nameWithType: ICalculServices_Low.GetNormaleDuPlan(Double[], Double[], Double[], Boolean)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormaleDuPlan(System.Double[], System.Double[], System.Double[], System.Boolean)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetNormaleDuPlan
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 40
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetNormaleDuPlan(double[] p_point3D_1, double[] p_point3D_2, double[] p_point3D_3, bool p_exceptionSiVecteursColineaires_vecteur0Sinon_vf)
+    parameters:
+    - id: p_point3D_1
+      type: System.Double[]
+    - id: p_point3D_2
+      type: System.Double[]
+    - id: p_point3D_3
+      type: System.Double[]
+    - id: p_exceptionSiVecteursColineaires_vecteur0Sinon_vf
+      type: System.Boolean
+    return:
+      type: System.Double[]
+    content.vb: Function GetNormaleDuPlan(p_point3D_1 As Double(), p_point3D_2 As Double(), p_point3D_3 As Double(), p_exceptionSiVecteursColineaires_vecteur0Sinon_vf As Boolean) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormaleDuPlan*
+  nameWithType.vb: ICalculServices_Low.GetNormaleDuPlan(Double(), Double(), Double(), Boolean)
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormaleDuPlan(System.Double(), System.Double(), System.Double(), System.Boolean)
+  name.vb: GetNormaleDuPlan(Double(), Double(), Double(), Boolean)
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormalisationVecteurXY(System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormalisationVecteurXY(System.Double[])
+  id: GetNormalisationVecteurXY(System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetNormalisationVecteurXY(Double[])
+  nameWithType: ICalculServices_Low.GetNormalisationVecteurXY(Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormalisationVecteurXY(System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetNormalisationVecteurXY
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 41
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetNormalisationVecteurXY(double[] p_vector)
+    parameters:
+    - id: p_vector
+      type: System.Double[]
+    return:
+      type: System.Double[]
+    content.vb: Function GetNormalisationVecteurXY(p_vector As Double()) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormalisationVecteurXY*
+  nameWithType.vb: ICalculServices_Low.GetNormalisationVecteurXY(Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormalisationVecteurXY(System.Double())
+  name.vb: GetNormalisationVecteurXY(Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormalisationVecteurXYZ(System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormalisationVecteurXYZ(System.Double[])
+  id: GetNormalisationVecteurXYZ(System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetNormalisationVecteurXYZ(Double[])
+  nameWithType: ICalculServices_Low.GetNormalisationVecteurXYZ(Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormalisationVecteurXYZ(System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetNormalisationVecteurXYZ
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 42
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetNormalisationVecteurXYZ(double[] p_vector)
+    parameters:
+    - id: p_vector
+      type: System.Double[]
+    return:
+      type: System.Double[]
+    content.vb: Function GetNormalisationVecteurXYZ(p_vector As Double()) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormalisationVecteurXYZ*
+  nameWithType.vb: ICalculServices_Low.GetNormalisationVecteurXYZ(Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormalisationVecteurXYZ(System.Double())
+  name.vb: GetNormalisationVecteurXYZ(Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormeVecteurXY(System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormeVecteurXY(System.Double[])
+  id: GetNormeVecteurXY(System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetNormeVecteurXY(Double[])
+  nameWithType: ICalculServices_Low.GetNormeVecteurXY(Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormeVecteurXY(System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetNormeVecteurXY
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 43
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double GetNormeVecteurXY(double[] p_vector)
+    parameters:
+    - id: p_vector
+      type: System.Double[]
+    return:
+      type: System.Double
+    content.vb: Function GetNormeVecteurXY(p_vector As Double()) As Double
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormeVecteurXY*
+  nameWithType.vb: ICalculServices_Low.GetNormeVecteurXY(Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormeVecteurXY(System.Double())
+  name.vb: GetNormeVecteurXY(Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormeVecteurXYZ(System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormeVecteurXYZ(System.Double[])
+  id: GetNormeVecteurXYZ(System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetNormeVecteurXYZ(Double[])
+  nameWithType: ICalculServices_Low.GetNormeVecteurXYZ(Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormeVecteurXYZ(System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetNormeVecteurXYZ
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 44
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double GetNormeVecteurXYZ(double[] p_vector)
+    parameters:
+    - id: p_vector
+      type: System.Double[]
+    return:
+      type: System.Double
+    content.vb: Function GetNormeVecteurXYZ(p_vector As Double()) As Double
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormeVecteurXYZ*
+  nameWithType.vb: ICalculServices_Low.GetNormeVecteurXYZ(Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormeVecteurXYZ(System.Double())
+  name.vb: GetNormeVecteurXYZ(Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetOrdonnancement(System.Collections.Generic.Dictionary{System.Int32,System.Double[]},System.Double[],System.Int32,System.Boolean)
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetOrdonnancement(System.Collections.Generic.Dictionary{System.Int32,System.Double[]},System.Double[],System.Int32,System.Boolean)
+  id: GetOrdonnancement(System.Collections.Generic.Dictionary{System.Int32,System.Double[]},System.Double[],System.Int32,System.Boolean)
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetOrdonnancement(Dictionary<Int32, Double[]>, Double[], Int32, Boolean)
+  nameWithType: ICalculServices_Low.GetOrdonnancement(Dictionary<Int32, Double[]>, Double[], Int32, Boolean)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetOrdonnancement(System.Collections.Generic.Dictionary<System.Int32, System.Double[]>, System.Double[], System.Int32, System.Boolean)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetOrdonnancement
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 45
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: List<int> GetOrdonnancement(Dictionary<int, double[]> p_pointsATester, double[] p_pointCentral, int p_idPremierPoint, bool p_horaireSinonAntihoraire_vf)
+    parameters:
+    - id: p_pointsATester
+      type: System.Collections.Generic.Dictionary{System.Int32,System.Double[]}
+    - id: p_pointCentral
+      type: System.Double[]
+    - id: p_idPremierPoint
+      type: System.Int32
+    - id: p_horaireSinonAntihoraire_vf
+      type: System.Boolean
+    return:
+      type: System.Collections.Generic.List{System.Int32}
+    content.vb: Function GetOrdonnancement(p_pointsATester As Dictionary(Of Integer, Double()), p_pointCentral As Double(), p_idPremierPoint As Integer, p_horaireSinonAntihoraire_vf As Boolean) As List(Of Integer)
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetOrdonnancement*
+  nameWithType.vb: ICalculServices_Low.GetOrdonnancement(Dictionary(Of Int32, Double()), Double(), Int32, Boolean)
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetOrdonnancement(System.Collections.Generic.Dictionary(Of System.Int32, System.Double()), System.Double(), System.Int32, System.Boolean)
+  name.vb: GetOrdonnancement(Dictionary(Of Int32, Double()), Double(), Int32, Boolean)
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetOrdonnancement(System.Collections.Generic.Dictionary{System.Int32,System.Double[]},System.Boolean,System.Boolean)
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetOrdonnancement(System.Collections.Generic.Dictionary{System.Int32,System.Double[]},System.Boolean,System.Boolean)
+  id: GetOrdonnancement(System.Collections.Generic.Dictionary{System.Int32,System.Double[]},System.Boolean,System.Boolean)
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetOrdonnancement(Dictionary<Int32, Double[]>, Boolean, Boolean)
+  nameWithType: ICalculServices_Low.GetOrdonnancement(Dictionary<Int32, Double[]>, Boolean, Boolean)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetOrdonnancement(System.Collections.Generic.Dictionary<System.Int32, System.Double[]>, System.Boolean, System.Boolean)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetOrdonnancement
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 46
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: List<int> GetOrdonnancement(Dictionary<int, double[]> p_pointsATester, bool p_renvoyerNullSiColineaires_vf, bool p_horaireSinonAntohoraire_vf)
+    parameters:
+    - id: p_pointsATester
+      type: System.Collections.Generic.Dictionary{System.Int32,System.Double[]}
+    - id: p_renvoyerNullSiColineaires_vf
+      type: System.Boolean
+    - id: p_horaireSinonAntohoraire_vf
+      type: System.Boolean
+    return:
+      type: System.Collections.Generic.List{System.Int32}
+    content.vb: Function GetOrdonnancement(p_pointsATester As Dictionary(Of Integer, Double()), p_renvoyerNullSiColineaires_vf As Boolean, p_horaireSinonAntohoraire_vf As Boolean) As List(Of Integer)
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetOrdonnancement*
+  nameWithType.vb: ICalculServices_Low.GetOrdonnancement(Dictionary(Of Int32, Double()), Boolean, Boolean)
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetOrdonnancement(System.Collections.Generic.Dictionary(Of System.Int32, System.Double()), System.Boolean, System.Boolean)
+  name.vb: GetOrdonnancement(Dictionary(Of Int32, Double()), Boolean, Boolean)
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPenteFromPoints3D(System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPenteFromPoints3D(System.Double[],System.Double[])
+  id: GetPenteFromPoints3D(System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetPenteFromPoints3D(Double[], Double[])
+  nameWithType: ICalculServices_Low.GetPenteFromPoints3D(Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPenteFromPoints3D(System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetPenteFromPoints3D
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 47
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double GetPenteFromPoints3D(double[] p_pointDOrigine, double[] p_point2)
+    parameters:
+    - id: p_pointDOrigine
+      type: System.Double[]
+    - id: p_point2
+      type: System.Double[]
+    return:
+      type: System.Double
+    content.vb: Function GetPenteFromPoints3D(p_pointDOrigine As Double(), p_point2 As Double()) As Double
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPenteFromPoints3D*
+  nameWithType.vb: ICalculServices_Low.GetPenteFromPoints3D(Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPenteFromPoints3D(System.Double(), System.Double())
+  name.vb: GetPenteFromPoints3D(Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPente(System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPente(System.Double[])
+  id: GetPente(System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetPente(Double[])
+  nameWithType: ICalculServices_Low.GetPente(Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPente(System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetPente
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 48
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double GetPente(double[] p_vecteur3D)
+    parameters:
+    - id: p_vecteur3D
+      type: System.Double[]
+    return:
+      type: System.Double
+    content.vb: Function GetPente(p_vecteur3D As Double()) As Double
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPente*
+  nameWithType.vb: ICalculServices_Low.GetPente(Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPente(System.Double())
+  name.vb: GetPente(Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusEloigneDePoint0XY(System.Collections.Generic.Dictionary{System.Int32,System.Double[]},System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusEloigneDePoint0XY(System.Collections.Generic.Dictionary{System.Int32,System.Double[]},System.Double[])
+  id: GetPointLePlusEloigneDePoint0XY(System.Collections.Generic.Dictionary{System.Int32,System.Double[]},System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetPointLePlusEloigneDePoint0XY(Dictionary<Int32, Double[]>, Double[])
+  nameWithType: ICalculServices_Low.GetPointLePlusEloigneDePoint0XY(Dictionary<Int32, Double[]>, Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusEloigneDePoint0XY(System.Collections.Generic.Dictionary<System.Int32, System.Double[]>, System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetPointLePlusEloigneDePoint0XY
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 49
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: int GetPointLePlusEloigneDePoint0XY(Dictionary<int, double[]> p_pointsATester, double[] p_coordPoint0)
+    parameters:
+    - id: p_pointsATester
+      type: System.Collections.Generic.Dictionary{System.Int32,System.Double[]}
+    - id: p_coordPoint0
+      type: System.Double[]
+    return:
+      type: System.Int32
+    content.vb: Function GetPointLePlusEloigneDePoint0XY(p_pointsATester As Dictionary(Of Integer, Double()), p_coordPoint0 As Double()) As Integer
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusEloigneDePoint0XY*
+  nameWithType.vb: ICalculServices_Low.GetPointLePlusEloigneDePoint0XY(Dictionary(Of Int32, Double()), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusEloigneDePoint0XY(System.Collections.Generic.Dictionary(Of System.Int32, System.Double()), System.Double())
+  name.vb: GetPointLePlusEloigneDePoint0XY(Dictionary(Of Int32, Double()), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusExcentreXY(System.Collections.Generic.Dictionary{System.Int32,System.Double[]})
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusExcentreXY(System.Collections.Generic.Dictionary{System.Int32,System.Double[]})
+  id: GetPointLePlusExcentreXY(System.Collections.Generic.Dictionary{System.Int32,System.Double[]})
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetPointLePlusExcentreXY(Dictionary<Int32, Double[]>)
+  nameWithType: ICalculServices_Low.GetPointLePlusExcentreXY(Dictionary<Int32, Double[]>)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusExcentreXY(System.Collections.Generic.Dictionary<System.Int32, System.Double[]>)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetPointLePlusExcentreXY
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 50
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: int GetPointLePlusExcentreXY(Dictionary<int, double[]> p_pointsATester)
+    parameters:
+    - id: p_pointsATester
+      type: System.Collections.Generic.Dictionary{System.Int32,System.Double[]}
+    return:
+      type: System.Int32
+    content.vb: Function GetPointLePlusExcentreXY(p_pointsATester As Dictionary(Of Integer, Double())) As Integer
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusExcentreXY*
+  nameWithType.vb: ICalculServices_Low.GetPointLePlusExcentreXY(Dictionary(Of Int32, Double()))
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusExcentreXY(System.Collections.Generic.Dictionary(Of System.Int32, System.Double()))
+  name.vb: GetPointLePlusExcentreXY(Dictionary(Of Int32, Double()))
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusProcheDePoint0XY(System.Collections.Generic.Dictionary{System.Int32,System.Double[]},System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusProcheDePoint0XY(System.Collections.Generic.Dictionary{System.Int32,System.Double[]},System.Double[])
+  id: GetPointLePlusProcheDePoint0XY(System.Collections.Generic.Dictionary{System.Int32,System.Double[]},System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetPointLePlusProcheDePoint0XY(Dictionary<Int32, Double[]>, Double[])
+  nameWithType: ICalculServices_Low.GetPointLePlusProcheDePoint0XY(Dictionary<Int32, Double[]>, Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusProcheDePoint0XY(System.Collections.Generic.Dictionary<System.Int32, System.Double[]>, System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetPointLePlusProcheDePoint0XY
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 51
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: int GetPointLePlusProcheDePoint0XY(Dictionary<int, double[]> p_pointsATester, double[] p_coordPoint0)
+    parameters:
+    - id: p_pointsATester
+      type: System.Collections.Generic.Dictionary{System.Int32,System.Double[]}
+    - id: p_coordPoint0
+      type: System.Double[]
+    return:
+      type: System.Int32
+    content.vb: Function GetPointLePlusProcheDePoint0XY(p_pointsATester As Dictionary(Of Integer, Double()), p_coordPoint0 As Double()) As Integer
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusProcheDePoint0XY*
+  nameWithType.vb: ICalculServices_Low.GetPointLePlusProcheDePoint0XY(Dictionary(Of Int32, Double()), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusProcheDePoint0XY(System.Collections.Generic.Dictionary(Of System.Int32, System.Double()), System.Double())
+  name.vb: GetPointLePlusProcheDePoint0XY(Dictionary(Of Int32, Double()), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitMatriceParVector(System.Double[0:,0:],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitMatriceParVector(System.Double[0:,0:],System.Double[])
+  id: GetProduitMatriceParVector(System.Double[0:,0:],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetProduitMatriceParVector(Double[,], Double[])
+  nameWithType: ICalculServices_Low.GetProduitMatriceParVector(Double[,], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitMatriceParVector(System.Double[,], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetProduitMatriceParVector
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 52
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetProduitMatriceParVector(double[, ] p_matrice, double[] p_vector)
+    parameters:
+    - id: p_matrice
+      type: System.Double[,]
+    - id: p_vector
+      type: System.Double[]
+    return:
+      type: System.Double[]
+    content.vb: Function GetProduitMatriceParVector(p_matrice As Double(,), p_vector As Double()) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitMatriceParVector*
+  nameWithType.vb: ICalculServices_Low.GetProduitMatriceParVector(Double(,), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitMatriceParVector(System.Double(,), System.Double())
+  name.vb: GetProduitMatriceParVector(Double(,), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitMatricesAxB(System.Double[0:,0:],System.Double[0:,0:])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitMatricesAxB(System.Double[0:,0:],System.Double[0:,0:])
+  id: GetProduitMatricesAxB(System.Double[0:,0:],System.Double[0:,0:])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetProduitMatricesAxB(Double[,], Double[,])
+  nameWithType: ICalculServices_Low.GetProduitMatricesAxB(Double[,], Double[,])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitMatricesAxB(System.Double[,], System.Double[,])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetProduitMatricesAxB
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 53
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[, ] GetProduitMatricesAxB(double[, ] v_matriceA, double[, ] v_matriceB)
+    parameters:
+    - id: v_matriceA
+      type: System.Double[,]
+    - id: v_matriceB
+      type: System.Double[,]
+    return:
+      type: System.Double[,]
+    content.vb: Function GetProduitMatricesAxB(v_matriceA As Double(,), v_matriceB As Double(,)) As Double(,)
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitMatricesAxB*
+  nameWithType.vb: ICalculServices_Low.GetProduitMatricesAxB(Double(,), Double(,))
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitMatricesAxB(System.Double(,), System.Double(,))
+  name.vb: GetProduitMatricesAxB(Double(,), Double(,))
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitScalaireXY(System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitScalaireXY(System.Double[],System.Double[])
+  id: GetProduitScalaireXY(System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetProduitScalaireXY(Double[], Double[])
+  nameWithType: ICalculServices_Low.GetProduitScalaireXY(Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitScalaireXY(System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetProduitScalaireXY
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 54
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double GetProduitScalaireXY(double[] p_vector1, double[] p_vector2)
+    parameters:
+    - id: p_vector1
+      type: System.Double[]
+    - id: p_vector2
+      type: System.Double[]
+    return:
+      type: System.Double
+    content.vb: Function GetProduitScalaireXY(p_vector1 As Double(), p_vector2 As Double()) As Double
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitScalaireXY*
+  nameWithType.vb: ICalculServices_Low.GetProduitScalaireXY(Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitScalaireXY(System.Double(), System.Double())
+  name.vb: GetProduitScalaireXY(Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitScalaireXYZ(System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitScalaireXYZ(System.Double[],System.Double[])
+  id: GetProduitScalaireXYZ(System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetProduitScalaireXYZ(Double[], Double[])
+  nameWithType: ICalculServices_Low.GetProduitScalaireXYZ(Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitScalaireXYZ(System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetProduitScalaireXYZ
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 55
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double GetProduitScalaireXYZ(double[] p_vector1, double[] p_vector2)
+    parameters:
+    - id: p_vector1
+      type: System.Double[]
+    - id: p_vector2
+      type: System.Double[]
+    return:
+      type: System.Double
+    content.vb: Function GetProduitScalaireXYZ(p_vector1 As Double(), p_vector2 As Double()) As Double
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitScalaireXYZ*
+  nameWithType.vb: ICalculServices_Low.GetProduitScalaireXYZ(Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitScalaireXYZ(System.Double(), System.Double())
+  name.vb: GetProduitScalaireXYZ(Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetVecteurPenteMaxi(System.Double[],System.Boolean)
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetVecteurPenteMaxi(System.Double[],System.Boolean)
+  id: GetVecteurPenteMaxi(System.Double[],System.Boolean)
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetVecteurPenteMaxi(Double[], Boolean)
+  nameWithType: ICalculServices_Low.GetVecteurPenteMaxi(Double[], Boolean)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetVecteurPenteMaxi(System.Double[], System.Boolean)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetVecteurPenteMaxi
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 56
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetVecteurPenteMaxi(double[] p_normaleDuPlan, bool p_normaliserVecteurEnSortie_vf = true)
+    parameters:
+    - id: p_normaleDuPlan
+      type: System.Double[]
+    - id: p_normaliserVecteurEnSortie_vf
+      type: System.Boolean
+    return:
+      type: System.Double[]
+    content.vb: Function GetVecteurPenteMaxi(p_normaleDuPlan As Double(), p_normaliserVecteurEnSortie_vf As Boolean = True) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetVecteurPenteMaxi*
+  nameWithType.vb: ICalculServices_Low.GetVecteurPenteMaxi(Double(), Boolean)
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetVecteurPenteMaxi(System.Double(), System.Boolean)
+  name.vb: GetVecteurPenteMaxi(Double(), Boolean)
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetVectorBrutFromTwoPoints(System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetVectorBrutFromTwoPoints(System.Double[],System.Double[])
+  id: GetVectorBrutFromTwoPoints(System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: GetVectorBrutFromTwoPoints(Double[], Double[])
+  nameWithType: ICalculServices_Low.GetVectorBrutFromTwoPoints(Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetVectorBrutFromTwoPoints(System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetVectorBrutFromTwoPoints
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 57
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetVectorBrutFromTwoPoints(double[] p_pointOrigine, double[] p_point2)
+    parameters:
+    - id: p_pointOrigine
+      type: System.Double[]
+    - id: p_point2
+      type: System.Double[]
+    return:
+      type: System.Double[]
+    content.vb: Function GetVectorBrutFromTwoPoints(p_pointOrigine As Double(), p_point2 As Double()) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetVectorBrutFromTwoPoints*
+  nameWithType.vb: ICalculServices_Low.GetVectorBrutFromTwoPoints(Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetVectorBrutFromTwoPoints(System.Double(), System.Double())
+  name.vb: GetVectorBrutFromTwoPoints(Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsInversionMatriceOk(System.Double[0:,0:],System.Double[0:,0:],System.Int32)
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsInversionMatriceOk(System.Double[0:,0:],System.Double[0:,0:],System.Int32)
+  id: IsInversionMatriceOk(System.Double[0:,0:],System.Double[0:,0:],System.Int32)
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: IsInversionMatriceOk(Double[,], Double[,], Int32)
+  nameWithType: ICalculServices_Low.IsInversionMatriceOk(Double[,], Double[,], Int32)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsInversionMatriceOk(System.Double[,], System.Double[,], System.Int32)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: IsInversionMatriceOk
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 58
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: bool IsInversionMatriceOk(double[, ] p_matriceAInverser, double[, ] p_matriceInverse, int p_toleranceDArrondi)
+    parameters:
+    - id: p_matriceAInverser
+      type: System.Double[,]
+    - id: p_matriceInverse
+      type: System.Double[,]
+    - id: p_toleranceDArrondi
+      type: System.Int32
+    return:
+      type: System.Boolean
+    content.vb: Function IsInversionMatriceOk(p_matriceAInverser As Double(,), p_matriceInverse As Double(,), p_toleranceDArrondi As Integer) As Boolean
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsInversionMatriceOk*
+  nameWithType.vb: ICalculServices_Low.IsInversionMatriceOk(Double(,), Double(,), Int32)
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsInversionMatriceOk(System.Double(,), System.Double(,), System.Int32)
+  name.vb: IsInversionMatriceOk(Double(,), Double(,), Int32)
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsMatriceIdentite(System.Double[0:,0:],System.Int32)
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsMatriceIdentite(System.Double[0:,0:],System.Int32)
+  id: IsMatriceIdentite(System.Double[0:,0:],System.Int32)
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: IsMatriceIdentite(Double[,], Int32)
+  nameWithType: ICalculServices_Low.IsMatriceIdentite(Double[,], Int32)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsMatriceIdentite(System.Double[,], System.Int32)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: IsMatriceIdentite
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 59
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: bool IsMatriceIdentite(double[, ] p_matriceIdentiteAttendue, int p_toleranceDArrondi)
+    parameters:
+    - id: p_matriceIdentiteAttendue
+      type: System.Double[,]
+    - id: p_toleranceDArrondi
+      type: System.Int32
+    return:
+      type: System.Boolean
+    content.vb: Function IsMatriceIdentite(p_matriceIdentiteAttendue As Double(,), p_toleranceDArrondi As Integer) As Boolean
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsMatriceIdentite*
+  nameWithType.vb: ICalculServices_Low.IsMatriceIdentite(Double(,), Int32)
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsMatriceIdentite(System.Double(,), System.Int32)
+  name.vb: IsMatriceIdentite(Double(,), Int32)
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleByMatrice(System.Collections.Generic.List{System.Double[]},System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleByMatrice(System.Collections.Generic.List{System.Double[]},System.Double[])
+  id: IsPointDDansCercleCirconscritAuTriangleByMatrice(System.Collections.Generic.List{System.Double[]},System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: IsPointDDansCercleCirconscritAuTriangleByMatrice(List<Double[]>, Double[])
+  nameWithType: ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleByMatrice(List<Double[]>, Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleByMatrice(System.Collections.Generic.List<System.Double[]>, System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: IsPointDDansCercleCirconscritAuTriangleByMatrice
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 60
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: bool IsPointDDansCercleCirconscritAuTriangleByMatrice(List<double[]> p_pointsTriangle, double[] p_coordPtD)
+    parameters:
+    - id: p_pointsTriangle
+      type: System.Collections.Generic.List{System.Double[]}
+    - id: p_coordPtD
+      type: System.Double[]
+    return:
+      type: System.Boolean
+    content.vb: Function IsPointDDansCercleCirconscritAuTriangleByMatrice(p_pointsTriangle As List(Of Double()), p_coordPtD As Double()) As Boolean
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleByMatrice*
+  nameWithType.vb: ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleByMatrice(List(Of Double()), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleByMatrice(System.Collections.Generic.List(Of System.Double()), System.Double())
+  name.vb: IsPointDDansCercleCirconscritAuTriangleByMatrice(List(Of Double()), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleExplicite(System.Collections.Generic.List{System.Double[]},System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleExplicite(System.Collections.Generic.List{System.Double[]},System.Double[])
+  id: IsPointDDansCercleCirconscritAuTriangleExplicite(System.Collections.Generic.List{System.Double[]},System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  langs:
+  - csharp
+  - vb
+  name: IsPointDDansCercleCirconscritAuTriangleExplicite(List<Double[]>, Double[])
+  nameWithType: ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleExplicite(List<Double[]>, Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleExplicite(System.Collections.Generic.List<System.Double[]>, System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: IsPointDDansCercleCirconscritAuTriangleExplicite
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServices_Low.cs
+    startLine: 61
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: bool IsPointDDansCercleCirconscritAuTriangleExplicite(List<double[]> p_pointsTriangle, double[] p_pointToTest)
+    parameters:
+    - id: p_pointsTriangle
+      type: System.Collections.Generic.List{System.Double[]}
+    - id: p_pointToTest
+      type: System.Double[]
+    return:
+      type: System.Boolean
+    content.vb: Function IsPointDDansCercleCirconscritAuTriangleExplicite(p_pointsTriangle As List(Of Double()), p_pointToTest As Double()) As Boolean
+  overload: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleExplicite*
+  nameWithType.vb: ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleExplicite(List(Of Double()), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleExplicite(System.Collections.Generic.List(Of System.Double()), System.Double())
+  name.vb: IsPointDDansCercleCirconscritAuTriangleExplicite(List(Of Double()), Double())
+references:
+- uid: DEM.Net.Lib.Services.Lab
+  commentId: N:DEM.Net.Lib.Services.Lab
+  name: DEM.Net.Lib.Services.Lab
+  nameWithType: DEM.Net.Lib.Services.Lab
+  fullName: DEM.Net.Lib.Services.Lab
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreDroitesParallelesXY*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreDroitesParallelesXY
+  name: AreDroitesParallelesXY
+  nameWithType: ICalculServices_Low.AreDroitesParallelesXY
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreDroitesParallelesXY
+- uid: System.Double[]
+  isExternal: true
+  name: Double[]
+  nameWithType: Double[]
+  fullName: System.Double[]
+  nameWithType.vb: Double()
+  fullName.vb: System.Double()
+  name.vb: Double()
+  spec.csharp:
+  - uid: System.Double
+    name: Double
+    nameWithType: Double
+    fullName: System.Double
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.Double
+    name: Double
+    nameWithType: Double
+    fullName: System.Double
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  nameWithType: Boolean
+  fullName: System.Boolean
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreSegmentsSequants*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreSegmentsSequants
+  name: AreSegmentsSequants
+  nameWithType: ICalculServices_Low.AreSegmentsSequants
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreSegmentsSequants
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVecteursColineairesXY*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVecteursColineairesXY
+  name: AreVecteursColineairesXY
+  nameWithType: ICalculServices_Low.AreVecteursColineairesXY
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVecteursColineairesXY
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVecteursColineairesXYZ*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVecteursColineairesXYZ
+  name: AreVecteursColineairesXYZ
+  nameWithType: ICalculServices_Low.AreVecteursColineairesXYZ
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVecteursColineairesXYZ
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVectorsSameDimension*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVectorsSameDimension
+  name: AreVectorsSameDimension
+  nameWithType: ICalculServices_Low.AreVectorsSameDimension
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.AreVectorsSameDimension
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCentroide*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCentroide
+  name: GetCentroide
+  nameWithType: ICalculServices_Low.GetCentroide
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCentroide
+- uid: System.Collections.Generic.List{System.Double[]}
+  commentId: T:System.Collections.Generic.List{System.Double[]}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<Double[]>
+  nameWithType: List<Double[]>
+  fullName: System.Collections.Generic.List<System.Double[]>
+  nameWithType.vb: List(Of Double())
+  fullName.vb: System.Collections.Generic.List(Of System.Double())
+  name.vb: List(Of Double())
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Double
+    name: Double
+    nameWithType: Double
+    fullName: System.Double
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Double
+    name: Double
+    nameWithType: Double
+    fullName: System.Double
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.List`1
+  commentId: T:System.Collections.Generic.List`1
+  isExternal: true
+  name: List<T>
+  nameWithType: List<T>
+  fullName: System.Collections.Generic.List<T>
+  nameWithType.vb: List(Of T)
+  fullName.vb: System.Collections.Generic.List(Of T)
+  name.vb: List(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoeffDroite2D*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoeffDroite2D
+  name: GetCoeffDroite2D
+  nameWithType: ICalculServices_Low.GetCoeffDroite2D
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoeffDroite2D
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY
+  name: GetCoordDansNewRepereXY
+  nameWithType: ICalculServices_Low.GetCoordDansNewRepereXY
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordDansNewRepereXY
+- uid: System.Collections.Generic.Dictionary{System.Int32,System.Double[]}
+  commentId: T:System.Collections.Generic.Dictionary{System.Int32,System.Double[]}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.Dictionary`2
+  name: Dictionary<Int32, Double[]>
+  nameWithType: Dictionary<Int32, Double[]>
+  fullName: System.Collections.Generic.Dictionary<System.Int32, System.Double[]>
+  nameWithType.vb: Dictionary(Of Int32, Double())
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.Int32, System.Double())
+  name.vb: Dictionary(Of Int32, Double())
+  spec.csharp:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Double
+    name: Double
+    nameWithType: Double
+    fullName: System.Double
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Double
+    name: Double
+    nameWithType: Double
+    fullName: System.Double
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.Dictionary`2
+  commentId: T:System.Collections.Generic.Dictionary`2
+  isExternal: true
+  name: Dictionary<TKey, TValue>
+  nameWithType: Dictionary<TKey, TValue>
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>
+  nameWithType.vb: Dictionary(Of TKey, TValue)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue)
+  name.vb: Dictionary(Of TKey, TValue)
+  spec.csharp:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: TKey
+    nameWithType: TKey
+    fullName: TKey
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: TValue
+    nameWithType: TValue
+    fullName: TValue
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: TKey
+    nameWithType: TKey
+    fullName: TKey
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: TValue
+    nameWithType: TValue
+    fullName: TValue
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Double[,]
+  isExternal: true
+  name: Double[,]
+  nameWithType: Double[,]
+  fullName: System.Double[,]
+  nameWithType.vb: Double(,)
+  fullName.vb: System.Double(,)
+  name.vb: Double(,)
+  spec.csharp:
+  - uid: System.Double
+    name: Double
+    nameWithType: Double
+    fullName: System.Double
+    isExternal: true
+  - name: '[,]'
+    nameWithType: '[,]'
+    fullName: '[,]'
+  spec.vb:
+  - uid: System.Double
+    name: Double
+    nameWithType: Double
+    fullName: System.Double
+    isExternal: true
+  - name: (,)
+    nameWithType: (,)
+    fullName: (,)
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordonneesCercleCirconscritAuTriangle*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordonneesCercleCirconscritAuTriangle
+  name: GetCoordonneesCercleCirconscritAuTriangle
+  nameWithType: ICalculServices_Low.GetCoordonneesCercleCirconscritAuTriangle
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetCoordonneesCercleCirconscritAuTriangle
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDeterminantMatrice3x3*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDeterminantMatrice3x3
+  name: GetDeterminantMatrice3x3
+  nameWithType: ICalculServices_Low.GetDeterminantMatrice3x3
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDeterminantMatrice3x3
+- uid: System.Double
+  commentId: T:System.Double
+  parent: System
+  isExternal: true
+  name: Double
+  nameWithType: Double
+  fullName: System.Double
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneCarreeXY*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneCarreeXY
+  name: GetDistanceEuclidienneCarreeXY
+  nameWithType: ICalculServices_Low.GetDistanceEuclidienneCarreeXY
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneCarreeXY
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneCarreeXYZ*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneCarreeXYZ
+  name: GetDistanceEuclidienneCarreeXYZ
+  nameWithType: ICalculServices_Low.GetDistanceEuclidienneCarreeXYZ
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneCarreeXYZ
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneXY*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneXY
+  name: GetDistanceEuclidienneXY
+  nameWithType: ICalculServices_Low.GetDistanceEuclidienneXY
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneXY
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneXYZ*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneXYZ
+  name: GetDistanceEuclidienneXYZ
+  nameWithType: ICalculServices_Low.GetDistanceEuclidienneXYZ
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetDistanceEuclidienneXYZ
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationNormaleDuPlan*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationNormaleDuPlan
+  name: GetEquationNormaleDuPlan
+  nameWithType: ICalculServices_Low.GetEquationNormaleDuPlan
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationNormaleDuPlan
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationParametriqueDroite2D*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationParametriqueDroite2D
+  name: GetEquationParametriqueDroite2D
+  nameWithType: ICalculServices_Low.GetEquationParametriqueDroite2D
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetEquationParametriqueDroite2D
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2D*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2D
+  name: GetIntersectionDroites2D
+  nameWithType: ICalculServices_Low.GetIntersectionDroites2D
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2D
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DCoeffExplicites*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DCoeffExplicites
+  name: GetIntersectionDroites2DCoeffExplicites
+  nameWithType: ICalculServices_Low.GetIntersectionDroites2DCoeffExplicites
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DCoeffExplicites
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DCoeffParametriques*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DCoeffParametriques
+  name: GetIntersectionDroites2DCoeffParametriques
+  nameWithType: ICalculServices_Low.GetIntersectionDroites2DCoeffParametriques
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DCoeffParametriques
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DMethodeParametrique*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DMethodeParametrique
+  name: GetIntersectionDroites2DMethodeParametrique
+  nameWithType: ICalculServices_Low.GetIntersectionDroites2DMethodeParametrique
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetIntersectionDroites2DMethodeParametrique
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetInverseVector2*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetInverseVector2
+  name: GetInverseVector2
+  nameWithType: ICalculServices_Low.GetInverseVector2
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetInverseVector2
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatrice3x3FromCoord*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatrice3x3FromCoord
+  name: GetMatrice3x3FromCoord
+  nameWithType: ICalculServices_Low.GetMatrice3x3FromCoord
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatrice3x3FromCoord
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatrice3x3FromVectors*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatrice3x3FromVectors
+  name: GetMatrice3x3FromVectors
+  nameWithType: ICalculServices_Low.GetMatrice3x3FromVectors
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatrice3x3FromVectors
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceChangementDeRepereXY*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceChangementDeRepereXY
+  name: GetMatriceChangementDeRepereXY
+  nameWithType: ICalculServices_Low.GetMatriceChangementDeRepereXY
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceChangementDeRepereXY
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse2x2*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse2x2
+  name: GetMatriceInverse2x2
+  nameWithType: ICalculServices_Low.GetMatriceInverse2x2
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse2x2
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse3x3*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse3x3
+  name: GetMatriceInverse3x3
+  nameWithType: ICalculServices_Low.GetMatriceInverse3x3
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMatriceInverse3x3
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMediatriceByParametres*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMediatriceByParametres
+  name: GetMediatriceByParametres
+  nameWithType: ICalculServices_Low.GetMediatriceByParametres
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetMediatriceByParametres
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormaleDuPlan*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormaleDuPlan
+  name: GetNormaleDuPlan
+  nameWithType: ICalculServices_Low.GetNormaleDuPlan
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormaleDuPlan
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormalisationVecteurXY*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormalisationVecteurXY
+  name: GetNormalisationVecteurXY
+  nameWithType: ICalculServices_Low.GetNormalisationVecteurXY
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormalisationVecteurXY
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormalisationVecteurXYZ*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormalisationVecteurXYZ
+  name: GetNormalisationVecteurXYZ
+  nameWithType: ICalculServices_Low.GetNormalisationVecteurXYZ
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormalisationVecteurXYZ
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormeVecteurXY*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormeVecteurXY
+  name: GetNormeVecteurXY
+  nameWithType: ICalculServices_Low.GetNormeVecteurXY
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormeVecteurXY
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormeVecteurXYZ*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormeVecteurXYZ
+  name: GetNormeVecteurXYZ
+  nameWithType: ICalculServices_Low.GetNormeVecteurXYZ
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetNormeVecteurXYZ
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetOrdonnancement*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetOrdonnancement
+  name: GetOrdonnancement
+  nameWithType: ICalculServices_Low.GetOrdonnancement
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetOrdonnancement
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: System.Collections.Generic.List{System.Int32}
+  commentId: T:System.Collections.Generic.List{System.Int32}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<Int32>
+  nameWithType: List<Int32>
+  fullName: System.Collections.Generic.List<System.Int32>
+  nameWithType.vb: List(Of Int32)
+  fullName.vb: System.Collections.Generic.List(Of System.Int32)
+  name.vb: List(Of Int32)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPenteFromPoints3D*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPenteFromPoints3D
+  name: GetPenteFromPoints3D
+  nameWithType: ICalculServices_Low.GetPenteFromPoints3D
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPenteFromPoints3D
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPente*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPente
+  name: GetPente
+  nameWithType: ICalculServices_Low.GetPente
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPente
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusEloigneDePoint0XY*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusEloigneDePoint0XY
+  name: GetPointLePlusEloigneDePoint0XY
+  nameWithType: ICalculServices_Low.GetPointLePlusEloigneDePoint0XY
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusEloigneDePoint0XY
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusExcentreXY*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusExcentreXY
+  name: GetPointLePlusExcentreXY
+  nameWithType: ICalculServices_Low.GetPointLePlusExcentreXY
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusExcentreXY
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusProcheDePoint0XY*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusProcheDePoint0XY
+  name: GetPointLePlusProcheDePoint0XY
+  nameWithType: ICalculServices_Low.GetPointLePlusProcheDePoint0XY
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetPointLePlusProcheDePoint0XY
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitMatriceParVector*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitMatriceParVector
+  name: GetProduitMatriceParVector
+  nameWithType: ICalculServices_Low.GetProduitMatriceParVector
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitMatriceParVector
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitMatricesAxB*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitMatricesAxB
+  name: GetProduitMatricesAxB
+  nameWithType: ICalculServices_Low.GetProduitMatricesAxB
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitMatricesAxB
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitScalaireXY*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitScalaireXY
+  name: GetProduitScalaireXY
+  nameWithType: ICalculServices_Low.GetProduitScalaireXY
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitScalaireXY
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitScalaireXYZ*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitScalaireXYZ
+  name: GetProduitScalaireXYZ
+  nameWithType: ICalculServices_Low.GetProduitScalaireXYZ
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetProduitScalaireXYZ
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetVecteurPenteMaxi*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetVecteurPenteMaxi
+  name: GetVecteurPenteMaxi
+  nameWithType: ICalculServices_Low.GetVecteurPenteMaxi
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetVecteurPenteMaxi
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetVectorBrutFromTwoPoints*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetVectorBrutFromTwoPoints
+  name: GetVectorBrutFromTwoPoints
+  nameWithType: ICalculServices_Low.GetVectorBrutFromTwoPoints
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.GetVectorBrutFromTwoPoints
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsInversionMatriceOk*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsInversionMatriceOk
+  name: IsInversionMatriceOk
+  nameWithType: ICalculServices_Low.IsInversionMatriceOk
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsInversionMatriceOk
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsMatriceIdentite*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsMatriceIdentite
+  name: IsMatriceIdentite
+  nameWithType: ICalculServices_Low.IsMatriceIdentite
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsMatriceIdentite
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleByMatrice*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleByMatrice
+  name: IsPointDDansCercleCirconscritAuTriangleByMatrice
+  nameWithType: ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleByMatrice
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleByMatrice
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleExplicite*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleExplicite
+  name: IsPointDDansCercleCirconscritAuTriangleExplicite
+  nameWithType: ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleExplicite
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low.IsPointDDansCercleCirconscritAuTriangleExplicite

@@ -1,0 +1,697 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresDuTin
+  commentId: T:DEM.Net.Lib.Services.Lab.BeanParametresDuTin
+  id: BeanParametresDuTin
+  parent: DEM.Net.Lib.Services.Lab
+  children:
+  - DEM.Net.Lib.Services.Lab.BeanParametresDuTin.#ctor
+  - DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p11_initialisation_determinationFrontieres
+  - DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p12_extensionSupplementaireMboEnM
+  - DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p13_modeCalculZParDefaut
+  - DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p14_altitudeParDefaut
+  - DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p15_nbrePointsSupplMultiples4
+  - DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p16_initialisation_modeChoixDuPointCentral
+  - DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p21_enrichissement_modeChoixDuPointCentral
+  langs:
+  - csharp
+  - vb
+  name: BeanParametresDuTin
+  nameWithType: BeanParametresDuTin
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresDuTin
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: BeanParametresDuTin
+    path: ../DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
+    startLine: 8
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public class BeanParametresDuTin
+    content.vb: Public Class BeanParametresDuTin
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p11_initialisation_determinationFrontieres
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p11_initialisation_determinationFrontieres
+  id: p11_initialisation_determinationFrontieres
+  parent: DEM.Net.Lib.Services.Lab.BeanParametresDuTin
+  langs:
+  - csharp
+  - vb
+  name: p11_initialisation_determinationFrontieres
+  nameWithType: BeanParametresDuTin.p11_initialisation_determinationFrontieres
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p11_initialisation_determinationFrontieres
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p11_initialisation_determinationFrontieres
+    path: ../DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
+    startLine: 10
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public enumModeDelimitationFrontiere p11_initialisation_determinationFrontieres { get; set; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Services.Lab.enumModeDelimitationFrontiere
+    content.vb: Public Property p11_initialisation_determinationFrontieres As enumModeDelimitationFrontiere
+  overload: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p11_initialisation_determinationFrontieres*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p12_extensionSupplementaireMboEnM
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p12_extensionSupplementaireMboEnM
+  id: p12_extensionSupplementaireMboEnM
+  parent: DEM.Net.Lib.Services.Lab.BeanParametresDuTin
+  langs:
+  - csharp
+  - vb
+  name: p12_extensionSupplementaireMboEnM
+  nameWithType: BeanParametresDuTin.p12_extensionSupplementaireMboEnM
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p12_extensionSupplementaireMboEnM
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p12_extensionSupplementaireMboEnM
+    path: ../DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
+    startLine: 11
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public double p12_extensionSupplementaireMboEnM { get; set; }
+    parameters: []
+    return:
+      type: System.Double
+    content.vb: Public Property p12_extensionSupplementaireMboEnM As Double
+  overload: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p12_extensionSupplementaireMboEnM*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p13_modeCalculZParDefaut
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p13_modeCalculZParDefaut
+  id: p13_modeCalculZParDefaut
+  parent: DEM.Net.Lib.Services.Lab.BeanParametresDuTin
+  langs:
+  - csharp
+  - vb
+  name: p13_modeCalculZParDefaut
+  nameWithType: BeanParametresDuTin.p13_modeCalculZParDefaut
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p13_modeCalculZParDefaut
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p13_modeCalculZParDefaut
+    path: ../DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
+    startLine: 12
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public enumModeCalculZ p13_modeCalculZParDefaut { get; set; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Services.Lab.enumModeCalculZ
+    content.vb: Public Property p13_modeCalculZParDefaut As enumModeCalculZ
+  overload: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p13_modeCalculZParDefaut*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p14_altitudeParDefaut
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p14_altitudeParDefaut
+  id: p14_altitudeParDefaut
+  parent: DEM.Net.Lib.Services.Lab.BeanParametresDuTin
+  langs:
+  - csharp
+  - vb
+  name: p14_altitudeParDefaut
+  nameWithType: BeanParametresDuTin.p14_altitudeParDefaut
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p14_altitudeParDefaut
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p14_altitudeParDefaut
+    path: ../DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
+    startLine: 13
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public double p14_altitudeParDefaut { get; set; }
+    parameters: []
+    return:
+      type: System.Double
+    content.vb: Public Property p14_altitudeParDefaut As Double
+  overload: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p14_altitudeParDefaut*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p15_nbrePointsSupplMultiples4
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p15_nbrePointsSupplMultiples4
+  id: p15_nbrePointsSupplMultiples4
+  parent: DEM.Net.Lib.Services.Lab.BeanParametresDuTin
+  langs:
+  - csharp
+  - vb
+  name: p15_nbrePointsSupplMultiples4
+  nameWithType: BeanParametresDuTin.p15_nbrePointsSupplMultiples4
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p15_nbrePointsSupplMultiples4
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p15_nbrePointsSupplMultiples4
+    path: ../DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
+    startLine: 14
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public int p15_nbrePointsSupplMultiples4 { get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Property p15_nbrePointsSupplMultiples4 As Integer
+  overload: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p15_nbrePointsSupplMultiples4*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p16_initialisation_modeChoixDuPointCentral
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p16_initialisation_modeChoixDuPointCentral
+  id: p16_initialisation_modeChoixDuPointCentral
+  parent: DEM.Net.Lib.Services.Lab.BeanParametresDuTin
+  langs:
+  - csharp
+  - vb
+  name: p16_initialisation_modeChoixDuPointCentral
+  nameWithType: BeanParametresDuTin.p16_initialisation_modeChoixDuPointCentral
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p16_initialisation_modeChoixDuPointCentral
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p16_initialisation_modeChoixDuPointCentral
+    path: ../DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
+    startLine: 15
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public BeanParametresChoixDuPointCentral p16_initialisation_modeChoixDuPointCentral { get; set; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral
+    content.vb: Public Property p16_initialisation_modeChoixDuPointCentral As BeanParametresChoixDuPointCentral
+  overload: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p16_initialisation_modeChoixDuPointCentral*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p21_enrichissement_modeChoixDuPointCentral
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p21_enrichissement_modeChoixDuPointCentral
+  id: p21_enrichissement_modeChoixDuPointCentral
+  parent: DEM.Net.Lib.Services.Lab.BeanParametresDuTin
+  langs:
+  - csharp
+  - vb
+  name: p21_enrichissement_modeChoixDuPointCentral
+  nameWithType: BeanParametresDuTin.p21_enrichissement_modeChoixDuPointCentral
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p21_enrichissement_modeChoixDuPointCentral
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p21_enrichissement_modeChoixDuPointCentral
+    path: ../DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
+    startLine: 16
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public BeanParametresChoixDuPointCentral p21_enrichissement_modeChoixDuPointCentral { get; set; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral
+    content.vb: Public Property p21_enrichissement_modeChoixDuPointCentral As BeanParametresChoixDuPointCentral
+  overload: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p21_enrichissement_modeChoixDuPointCentral*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.#ctor
+  commentId: M:DEM.Net.Lib.Services.Lab.BeanParametresDuTin.#ctor
+  id: '#ctor'
+  parent: DEM.Net.Lib.Services.Lab.BeanParametresDuTin
+  langs:
+  - csharp
+  - vb
+  name: BeanParametresDuTin()
+  nameWithType: BeanParametresDuTin.BeanParametresDuTin()
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.BeanParametresDuTin()
+  type: Constructor
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: .ctor
+    path: ../DEM.Net.Lib/Services/Lab/BeanParametresDuTin.cs
+    startLine: 18
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public BeanParametresDuTin()
+    content.vb: Public Sub New
+  overload: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: DEM.Net.Lib.Services.Lab
+  commentId: N:DEM.Net.Lib.Services.Lab
+  name: DEM.Net.Lib.Services.Lab
+  nameWithType: DEM.Net.Lib.Services.Lab
+  fullName: DEM.Net.Lib.Services.Lab
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p11_initialisation_determinationFrontieres*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p11_initialisation_determinationFrontieres
+  name: p11_initialisation_determinationFrontieres
+  nameWithType: BeanParametresDuTin.p11_initialisation_determinationFrontieres
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p11_initialisation_determinationFrontieres
+- uid: DEM.Net.Lib.Services.Lab.enumModeDelimitationFrontiere
+  commentId: T:DEM.Net.Lib.Services.Lab.enumModeDelimitationFrontiere
+  parent: DEM.Net.Lib.Services.Lab
+  name: enumModeDelimitationFrontiere
+  nameWithType: enumModeDelimitationFrontiere
+  fullName: DEM.Net.Lib.Services.Lab.enumModeDelimitationFrontiere
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p12_extensionSupplementaireMboEnM*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p12_extensionSupplementaireMboEnM
+  name: p12_extensionSupplementaireMboEnM
+  nameWithType: BeanParametresDuTin.p12_extensionSupplementaireMboEnM
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p12_extensionSupplementaireMboEnM
+- uid: System.Double
+  commentId: T:System.Double
+  parent: System
+  isExternal: true
+  name: Double
+  nameWithType: Double
+  fullName: System.Double
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p13_modeCalculZParDefaut*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p13_modeCalculZParDefaut
+  name: p13_modeCalculZParDefaut
+  nameWithType: BeanParametresDuTin.p13_modeCalculZParDefaut
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p13_modeCalculZParDefaut
+- uid: DEM.Net.Lib.Services.Lab.enumModeCalculZ
+  commentId: T:DEM.Net.Lib.Services.Lab.enumModeCalculZ
+  parent: DEM.Net.Lib.Services.Lab
+  name: enumModeCalculZ
+  nameWithType: enumModeCalculZ
+  fullName: DEM.Net.Lib.Services.Lab.enumModeCalculZ
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p14_altitudeParDefaut*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p14_altitudeParDefaut
+  name: p14_altitudeParDefaut
+  nameWithType: BeanParametresDuTin.p14_altitudeParDefaut
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p14_altitudeParDefaut
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p15_nbrePointsSupplMultiples4*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p15_nbrePointsSupplMultiples4
+  name: p15_nbrePointsSupplMultiples4
+  nameWithType: BeanParametresDuTin.p15_nbrePointsSupplMultiples4
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p15_nbrePointsSupplMultiples4
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p16_initialisation_modeChoixDuPointCentral*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p16_initialisation_modeChoixDuPointCentral
+  name: p16_initialisation_modeChoixDuPointCentral
+  nameWithType: BeanParametresDuTin.p16_initialisation_modeChoixDuPointCentral
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p16_initialisation_modeChoixDuPointCentral
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral
+  commentId: T:DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral
+  parent: DEM.Net.Lib.Services.Lab
+  name: BeanParametresChoixDuPointCentral
+  nameWithType: BeanParametresChoixDuPointCentral
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresChoixDuPointCentral
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p21_enrichissement_modeChoixDuPointCentral*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p21_enrichissement_modeChoixDuPointCentral
+  name: p21_enrichissement_modeChoixDuPointCentral
+  nameWithType: BeanParametresDuTin.p21_enrichissement_modeChoixDuPointCentral
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.p21_enrichissement_modeChoixDuPointCentral
+- uid: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.#ctor*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanParametresDuTin.#ctor
+  name: BeanParametresDuTin
+  nameWithType: BeanParametresDuTin.BeanParametresDuTin
+  fullName: DEM.Net.Lib.Services.Lab.BeanParametresDuTin.BeanParametresDuTin

@@ -1,0 +1,103 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.IInterpolator
+  commentId: T:DEM.Net.Lib.IInterpolator
+  id: IInterpolator
+  parent: DEM.Net.Lib
+  children:
+  - DEM.Net.Lib.IInterpolator.Interpolate(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)
+  langs:
+  - csharp
+  - vb
+  name: IInterpolator
+  nameWithType: IInterpolator
+  fullName: DEM.Net.Lib.IInterpolator
+  type: Interface
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Interpolation/IInterpolator.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: IInterpolator
+    path: ../DEM.Net.Lib/Services/Interpolation/IInterpolator.cs
+    startLine: 8
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public interface IInterpolator
+    content.vb: Public Interface IInterpolator
+  modifiers.csharp:
+  - public
+  - interface
+  modifiers.vb:
+  - Public
+  - Interface
+- uid: DEM.Net.Lib.IInterpolator.Interpolate(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)
+  commentId: M:DEM.Net.Lib.IInterpolator.Interpolate(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)
+  id: Interpolate(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)
+  parent: DEM.Net.Lib.IInterpolator
+  langs:
+  - csharp
+  - vb
+  name: Interpolate(Single, Single, Single, Single, Single, Single)
+  nameWithType: IInterpolator.Interpolate(Single, Single, Single, Single, Single, Single)
+  fullName: DEM.Net.Lib.IInterpolator.Interpolate(System.Single, System.Single, System.Single, System.Single, System.Single, System.Single)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Interpolation/IInterpolator.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Interpolate
+    path: ../DEM.Net.Lib/Services/Interpolation/IInterpolator.cs
+    startLine: 27
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  summary: "\n\n\nThe concept of linear interpolation between two points can be extended to bilinear interpolation within \nthe grid cell. The function is said to be linear in each variable when the other is held fixed. \n\nFor example, to determine the height hi at x, y in Figure 5, the elevations at y on the vertical \nboundaries of the grid cell can be linearly interpolated between h1 and h3 at ha, and h2 and h4 at hb.\nFinally, the required elevation at x can be linearly interpolated between ha and hb. \n\nSource : http://www.geocomputation.org/1999/082/gc_082.htm\n"
+  example: []
+  syntax:
+    content: float Interpolate(float southWestHeight, float southEastHeight, float northWestHeight, float northEastHeight, float x, float y)
+    parameters:
+    - id: southWestHeight
+      type: System.Single
+    - id: southEastHeight
+      type: System.Single
+    - id: northWestHeight
+      type: System.Single
+    - id: northEastHeight
+      type: System.Single
+    - id: x
+      type: System.Single
+    - id: y
+      type: System.Single
+    return:
+      type: System.Single
+      description: ''
+    content.vb: Function Interpolate(southWestHeight As Single, southEastHeight As Single, northWestHeight As Single, northEastHeight As Single, x As Single, y As Single) As Single
+  overload: DEM.Net.Lib.IInterpolator.Interpolate*
+references:
+- uid: DEM.Net.Lib
+  commentId: N:DEM.Net.Lib
+  name: DEM.Net.Lib
+  nameWithType: DEM.Net.Lib
+  fullName: DEM.Net.Lib
+- uid: DEM.Net.Lib.IInterpolator.Interpolate*
+  commentId: Overload:DEM.Net.Lib.IInterpolator.Interpolate
+  name: Interpolate
+  nameWithType: IInterpolator.Interpolate
+  fullName: DEM.Net.Lib.IInterpolator.Interpolate
+- uid: System.Single
+  commentId: T:System.Single
+  parent: System
+  isExternal: true
+  name: Single
+  nameWithType: Single
+  fullName: System.Single
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System

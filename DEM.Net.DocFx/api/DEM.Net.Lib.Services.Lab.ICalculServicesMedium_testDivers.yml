@@ -1,0 +1,678 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers
+  commentId: T:DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers
+  id: ICalculServicesMedium_testDivers
+  parent: DEM.Net.Lib.Services.Lab
+  children:
+  - DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCentroide(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanPoint_internal})
+  - DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCoordonneesDansNewReferentiel2D(DEM.Net.Lib.Services.Lab.BeanPoint_internal,System.Double[],System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCoordonneesDansNewReferentiel2D(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanPoint_internal},System.Double[],System.Double[],System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetEtComptePointsDoublonnes(System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal})
+  - DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetIdPointLePlusEloigneDuPointRef(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanPoint_internal},System.Double[])
+  - DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetLongueurArcAuCarre(DEM.Net.Lib.Services.Lab.BeanPoint_internal,DEM.Net.Lib.Services.Lab.BeanPoint_internal)
+  langs:
+  - csharp
+  - vb
+  name: ICalculServicesMedium_testDivers
+  nameWithType: ICalculServicesMedium_testDivers
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers
+  type: Interface
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ICalculServicesMedium_testDivers
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
+    startLine: 4
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public interface ICalculServicesMedium_testDivers
+    content.vb: Public Interface ICalculServicesMedium_testDivers
+  modifiers.csharp:
+  - public
+  - interface
+  modifiers.vb:
+  - Public
+  - Interface
+- uid: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCentroide(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanPoint_internal})
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCentroide(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanPoint_internal})
+  id: GetCentroide(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanPoint_internal})
+  parent: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers
+  langs:
+  - csharp
+  - vb
+  name: GetCentroide(IEnumerable<BeanPoint_internal>)
+  nameWithType: ICalculServicesMedium_testDivers.GetCentroide(IEnumerable<BeanPoint_internal>)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCentroide(System.Collections.Generic.IEnumerable<DEM.Net.Lib.Services.Lab.BeanPoint_internal>)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetCentroide
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
+    startLine: 6
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetCentroide(IEnumerable<BeanPoint_internal> p_points)
+    parameters:
+    - id: p_points
+      type: System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanPoint_internal}
+    return:
+      type: System.Double[]
+    content.vb: Function GetCentroide(p_points As IEnumerable(Of BeanPoint_internal)) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCentroide*
+  nameWithType.vb: ICalculServicesMedium_testDivers.GetCentroide(IEnumerable(Of BeanPoint_internal))
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCentroide(System.Collections.Generic.IEnumerable(Of DEM.Net.Lib.Services.Lab.BeanPoint_internal))
+  name.vb: GetCentroide(IEnumerable(Of BeanPoint_internal))
+- uid: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCoordonneesDansNewReferentiel2D(DEM.Net.Lib.Services.Lab.BeanPoint_internal,System.Double[],System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCoordonneesDansNewReferentiel2D(DEM.Net.Lib.Services.Lab.BeanPoint_internal,System.Double[],System.Double[],System.Double[])
+  id: GetCoordonneesDansNewReferentiel2D(DEM.Net.Lib.Services.Lab.BeanPoint_internal,System.Double[],System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers
+  langs:
+  - csharp
+  - vb
+  name: GetCoordonneesDansNewReferentiel2D(BeanPoint_internal, Double[], Double[], Double[])
+  nameWithType: ICalculServicesMedium_testDivers.GetCoordonneesDansNewReferentiel2D(BeanPoint_internal, Double[], Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCoordonneesDansNewReferentiel2D(DEM.Net.Lib.Services.Lab.BeanPoint_internal, System.Double[], System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetCoordonneesDansNewReferentiel2D
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
+    startLine: 7
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double[] GetCoordonneesDansNewReferentiel2D(BeanPoint_internal p_pointAReferencer, double[] p_coordPoint0, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord_orthoSiNull = null)
+    parameters:
+    - id: p_pointAReferencer
+      type: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    - id: p_coordPoint0
+      type: System.Double[]
+    - id: p_coordPoint2Abs
+      type: System.Double[]
+    - id: p_coordPoint3Ord_orthoSiNull
+      type: System.Double[]
+    return:
+      type: System.Double[]
+    content.vb: Function GetCoordonneesDansNewReferentiel2D(p_pointAReferencer As BeanPoint_internal, p_coordPoint0 As Double(), p_coordPoint2Abs As Double(), p_coordPoint3Ord_orthoSiNull As Double() = Nothing) As Double()
+  overload: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCoordonneesDansNewReferentiel2D*
+  nameWithType.vb: ICalculServicesMedium_testDivers.GetCoordonneesDansNewReferentiel2D(BeanPoint_internal, Double(), Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCoordonneesDansNewReferentiel2D(DEM.Net.Lib.Services.Lab.BeanPoint_internal, System.Double(), System.Double(), System.Double())
+  name.vb: GetCoordonneesDansNewReferentiel2D(BeanPoint_internal, Double(), Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCoordonneesDansNewReferentiel2D(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanPoint_internal},System.Double[],System.Double[],System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCoordonneesDansNewReferentiel2D(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanPoint_internal},System.Double[],System.Double[],System.Double[])
+  id: GetCoordonneesDansNewReferentiel2D(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanPoint_internal},System.Double[],System.Double[],System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers
+  langs:
+  - csharp
+  - vb
+  name: GetCoordonneesDansNewReferentiel2D(IEnumerable<BeanPoint_internal>, Double[], Double[], Double[])
+  nameWithType: ICalculServicesMedium_testDivers.GetCoordonneesDansNewReferentiel2D(IEnumerable<BeanPoint_internal>, Double[], Double[], Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCoordonneesDansNewReferentiel2D(System.Collections.Generic.IEnumerable<DEM.Net.Lib.Services.Lab.BeanPoint_internal>, System.Double[], System.Double[], System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetCoordonneesDansNewReferentiel2D
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
+    startLine: 8
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: Dictionary<int, double[]> GetCoordonneesDansNewReferentiel2D(IEnumerable<BeanPoint_internal> p_pointsAReferencer, double[] p_coordPoint0, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord_orthoSiNull = null)
+    parameters:
+    - id: p_pointsAReferencer
+      type: System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanPoint_internal}
+    - id: p_coordPoint0
+      type: System.Double[]
+    - id: p_coordPoint2Abs
+      type: System.Double[]
+    - id: p_coordPoint3Ord_orthoSiNull
+      type: System.Double[]
+    return:
+      type: System.Collections.Generic.Dictionary{System.Int32,System.Double[]}
+    content.vb: Function GetCoordonneesDansNewReferentiel2D(p_pointsAReferencer As IEnumerable(Of BeanPoint_internal), p_coordPoint0 As Double(), p_coordPoint2Abs As Double(), p_coordPoint3Ord_orthoSiNull As Double() = Nothing) As Dictionary(Of Integer, Double())
+  overload: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCoordonneesDansNewReferentiel2D*
+  nameWithType.vb: ICalculServicesMedium_testDivers.GetCoordonneesDansNewReferentiel2D(IEnumerable(Of BeanPoint_internal), Double(), Double(), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCoordonneesDansNewReferentiel2D(System.Collections.Generic.IEnumerable(Of DEM.Net.Lib.Services.Lab.BeanPoint_internal), System.Double(), System.Double(), System.Double())
+  name.vb: GetCoordonneesDansNewReferentiel2D(IEnumerable(Of BeanPoint_internal), Double(), Double(), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetEtComptePointsDoublonnes(System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal})
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetEtComptePointsDoublonnes(System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal})
+  id: GetEtComptePointsDoublonnes(System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal})
+  parent: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers
+  langs:
+  - csharp
+  - vb
+  name: GetEtComptePointsDoublonnes(List<BeanPoint_internal>)
+  nameWithType: ICalculServicesMedium_testDivers.GetEtComptePointsDoublonnes(List<BeanPoint_internal>)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetEtComptePointsDoublonnes(System.Collections.Generic.List<DEM.Net.Lib.Services.Lab.BeanPoint_internal>)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetEtComptePointsDoublonnes
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
+    startLine: 9
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: Dictionary<string, int> GetEtComptePointsDoublonnes(List<BeanPoint_internal> p_pointsToTest)
+    parameters:
+    - id: p_pointsToTest
+      type: System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal}
+    return:
+      type: System.Collections.Generic.Dictionary{System.String,System.Int32}
+    content.vb: Function GetEtComptePointsDoublonnes(p_pointsToTest As List(Of BeanPoint_internal)) As Dictionary(Of String, Integer)
+  overload: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetEtComptePointsDoublonnes*
+  nameWithType.vb: ICalculServicesMedium_testDivers.GetEtComptePointsDoublonnes(List(Of BeanPoint_internal))
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetEtComptePointsDoublonnes(System.Collections.Generic.List(Of DEM.Net.Lib.Services.Lab.BeanPoint_internal))
+  name.vb: GetEtComptePointsDoublonnes(List(Of BeanPoint_internal))
+- uid: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetIdPointLePlusEloigneDuPointRef(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanPoint_internal},System.Double[])
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetIdPointLePlusEloigneDuPointRef(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanPoint_internal},System.Double[])
+  id: GetIdPointLePlusEloigneDuPointRef(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanPoint_internal},System.Double[])
+  parent: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers
+  langs:
+  - csharp
+  - vb
+  name: GetIdPointLePlusEloigneDuPointRef(IEnumerable<BeanPoint_internal>, Double[])
+  nameWithType: ICalculServicesMedium_testDivers.GetIdPointLePlusEloigneDuPointRef(IEnumerable<BeanPoint_internal>, Double[])
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetIdPointLePlusEloigneDuPointRef(System.Collections.Generic.IEnumerable<DEM.Net.Lib.Services.Lab.BeanPoint_internal>, System.Double[])
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetIdPointLePlusEloigneDuPointRef
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
+    startLine: 10
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: BeanPoint_internal GetIdPointLePlusEloigneDuPointRef(IEnumerable<BeanPoint_internal> p_points, double[] p_pointRef)
+    parameters:
+    - id: p_points
+      type: System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanPoint_internal}
+    - id: p_pointRef
+      type: System.Double[]
+    return:
+      type: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    content.vb: Function GetIdPointLePlusEloigneDuPointRef(p_points As IEnumerable(Of BeanPoint_internal), p_pointRef As Double()) As BeanPoint_internal
+  overload: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetIdPointLePlusEloigneDuPointRef*
+  nameWithType.vb: ICalculServicesMedium_testDivers.GetIdPointLePlusEloigneDuPointRef(IEnumerable(Of BeanPoint_internal), Double())
+  fullName.vb: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetIdPointLePlusEloigneDuPointRef(System.Collections.Generic.IEnumerable(Of DEM.Net.Lib.Services.Lab.BeanPoint_internal), System.Double())
+  name.vb: GetIdPointLePlusEloigneDuPointRef(IEnumerable(Of BeanPoint_internal), Double())
+- uid: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetLongueurArcAuCarre(DEM.Net.Lib.Services.Lab.BeanPoint_internal,DEM.Net.Lib.Services.Lab.BeanPoint_internal)
+  commentId: M:DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetLongueurArcAuCarre(DEM.Net.Lib.Services.Lab.BeanPoint_internal,DEM.Net.Lib.Services.Lab.BeanPoint_internal)
+  id: GetLongueurArcAuCarre(DEM.Net.Lib.Services.Lab.BeanPoint_internal,DEM.Net.Lib.Services.Lab.BeanPoint_internal)
+  parent: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers
+  langs:
+  - csharp
+  - vb
+  name: GetLongueurArcAuCarre(BeanPoint_internal, BeanPoint_internal)
+  nameWithType: ICalculServicesMedium_testDivers.GetLongueurArcAuCarre(BeanPoint_internal, BeanPoint_internal)
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetLongueurArcAuCarre(DEM.Net.Lib.Services.Lab.BeanPoint_internal, DEM.Net.Lib.Services.Lab.BeanPoint_internal)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetLongueurArcAuCarre
+    path: ../DEM.Net.Lib/Services/Lab/ICalculServicesMedium_testsDivers.cs
+    startLine: 11
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: double GetLongueurArcAuCarre(BeanPoint_internal p_point1, BeanPoint_internal p_point2)
+    parameters:
+    - id: p_point1
+      type: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    - id: p_point2
+      type: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    return:
+      type: System.Double
+    content.vb: Function GetLongueurArcAuCarre(p_point1 As BeanPoint_internal, p_point2 As BeanPoint_internal) As Double
+  overload: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetLongueurArcAuCarre*
+references:
+- uid: DEM.Net.Lib.Services.Lab
+  commentId: N:DEM.Net.Lib.Services.Lab
+  name: DEM.Net.Lib.Services.Lab
+  nameWithType: DEM.Net.Lib.Services.Lab
+  fullName: DEM.Net.Lib.Services.Lab
+- uid: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCentroide*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCentroide
+  name: GetCentroide
+  nameWithType: ICalculServicesMedium_testDivers.GetCentroide
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCentroide
+- uid: System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanPoint_internal}
+  commentId: T:System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanPoint_internal}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  name: IEnumerable<BeanPoint_internal>
+  nameWithType: IEnumerable<BeanPoint_internal>
+  fullName: System.Collections.Generic.IEnumerable<DEM.Net.Lib.Services.Lab.BeanPoint_internal>
+  nameWithType.vb: IEnumerable(Of BeanPoint_internal)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of DEM.Net.Lib.Services.Lab.BeanPoint_internal)
+  name.vb: IEnumerable(Of BeanPoint_internal)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    name: BeanPoint_internal
+    nameWithType: BeanPoint_internal
+    fullName: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    name: BeanPoint_internal
+    nameWithType: BeanPoint_internal
+    fullName: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Double[]
+  isExternal: true
+  name: Double[]
+  nameWithType: Double[]
+  fullName: System.Double[]
+  nameWithType.vb: Double()
+  fullName.vb: System.Double()
+  name.vb: Double()
+  spec.csharp:
+  - uid: System.Double
+    name: Double
+    nameWithType: Double
+    fullName: System.Double
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.Double
+    name: Double
+    nameWithType: Double
+    fullName: System.Double
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: System.Collections.Generic.IEnumerable`1
+  commentId: T:System.Collections.Generic.IEnumerable`1
+  isExternal: true
+  name: IEnumerable<T>
+  nameWithType: IEnumerable<T>
+  fullName: System.Collections.Generic.IEnumerable<T>
+  nameWithType.vb: IEnumerable(Of T)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
+  name.vb: IEnumerable(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCoordonneesDansNewReferentiel2D*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCoordonneesDansNewReferentiel2D
+  name: GetCoordonneesDansNewReferentiel2D
+  nameWithType: ICalculServicesMedium_testDivers.GetCoordonneesDansNewReferentiel2D
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetCoordonneesDansNewReferentiel2D
+- uid: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+  commentId: T:DEM.Net.Lib.Services.Lab.BeanPoint_internal
+  parent: DEM.Net.Lib.Services.Lab
+  name: BeanPoint_internal
+  nameWithType: BeanPoint_internal
+  fullName: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+- uid: System.Collections.Generic.Dictionary{System.Int32,System.Double[]}
+  commentId: T:System.Collections.Generic.Dictionary{System.Int32,System.Double[]}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.Dictionary`2
+  name: Dictionary<Int32, Double[]>
+  nameWithType: Dictionary<Int32, Double[]>
+  fullName: System.Collections.Generic.Dictionary<System.Int32, System.Double[]>
+  nameWithType.vb: Dictionary(Of Int32, Double())
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.Int32, System.Double())
+  name.vb: Dictionary(Of Int32, Double())
+  spec.csharp:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Double
+    name: Double
+    nameWithType: Double
+    fullName: System.Double
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Double
+    name: Double
+    nameWithType: Double
+    fullName: System.Double
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.Dictionary`2
+  commentId: T:System.Collections.Generic.Dictionary`2
+  isExternal: true
+  name: Dictionary<TKey, TValue>
+  nameWithType: Dictionary<TKey, TValue>
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>
+  nameWithType.vb: Dictionary(Of TKey, TValue)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue)
+  name.vb: Dictionary(Of TKey, TValue)
+  spec.csharp:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: TKey
+    nameWithType: TKey
+    fullName: TKey
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: TValue
+    nameWithType: TValue
+    fullName: TValue
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: TKey
+    nameWithType: TKey
+    fullName: TKey
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: TValue
+    nameWithType: TValue
+    fullName: TValue
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetEtComptePointsDoublonnes*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetEtComptePointsDoublonnes
+  name: GetEtComptePointsDoublonnes
+  nameWithType: ICalculServicesMedium_testDivers.GetEtComptePointsDoublonnes
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetEtComptePointsDoublonnes
+- uid: System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal}
+  commentId: T:System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<BeanPoint_internal>
+  nameWithType: List<BeanPoint_internal>
+  fullName: System.Collections.Generic.List<DEM.Net.Lib.Services.Lab.BeanPoint_internal>
+  nameWithType.vb: List(Of BeanPoint_internal)
+  fullName.vb: System.Collections.Generic.List(Of DEM.Net.Lib.Services.Lab.BeanPoint_internal)
+  name.vb: List(Of BeanPoint_internal)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    name: BeanPoint_internal
+    nameWithType: BeanPoint_internal
+    fullName: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    name: BeanPoint_internal
+    nameWithType: BeanPoint_internal
+    fullName: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.Dictionary{System.String,System.Int32}
+  commentId: T:System.Collections.Generic.Dictionary{System.String,System.Int32}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.Dictionary`2
+  name: Dictionary<String, Int32>
+  nameWithType: Dictionary<String, Int32>
+  fullName: System.Collections.Generic.Dictionary<System.String, System.Int32>
+  nameWithType.vb: Dictionary(Of String, Int32)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, System.Int32)
+  name.vb: Dictionary(Of String, Int32)
+  spec.csharp:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.List`1
+  commentId: T:System.Collections.Generic.List`1
+  isExternal: true
+  name: List<T>
+  nameWithType: List<T>
+  fullName: System.Collections.Generic.List<T>
+  nameWithType.vb: List(Of T)
+  fullName.vb: System.Collections.Generic.List(Of T)
+  name.vb: List(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetIdPointLePlusEloigneDuPointRef*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetIdPointLePlusEloigneDuPointRef
+  name: GetIdPointLePlusEloigneDuPointRef
+  nameWithType: ICalculServicesMedium_testDivers.GetIdPointLePlusEloigneDuPointRef
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetIdPointLePlusEloigneDuPointRef
+- uid: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetLongueurArcAuCarre*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetLongueurArcAuCarre
+  name: GetLongueurArcAuCarre
+  nameWithType: ICalculServicesMedium_testDivers.GetLongueurArcAuCarre
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServicesMedium_testDivers.GetLongueurArcAuCarre
+- uid: System.Double
+  commentId: T:System.Double
+  parent: System
+  isExternal: true
+  name: Double
+  nameWithType: Double
+  fullName: System.Double
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System

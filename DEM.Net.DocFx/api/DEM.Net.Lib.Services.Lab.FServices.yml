@@ -1,0 +1,480 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Services.Lab.FServices
+  commentId: T:DEM.Net.Lib.Services.Lab.FServices
+  id: FServices
+  parent: DEM.Net.Lib.Services.Lab
+  children:
+  - DEM.Net.Lib.Services.Lab.FServices.createCalculLow
+  - DEM.Net.Lib.Services.Lab.FServices.createCalculMedium
+  - DEM.Net.Lib.Services.Lab.FServices.createUtilitaires
+  langs:
+  - csharp
+  - vb
+  name: FServices
+  nameWithType: FServices
+  fullName: DEM.Net.Lib.Services.Lab.FServices
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/FServices.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: FServices
+    path: ../DEM.Net.Lib/Services/Lab/FServices.cs
+    startLine: 8
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public class FServices
+    content.vb: Public Class FServices
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.Services.Lab.FServices.createCalculLow
+  commentId: M:DEM.Net.Lib.Services.Lab.FServices.createCalculLow
+  id: createCalculLow
+  parent: DEM.Net.Lib.Services.Lab.FServices
+  langs:
+  - csharp
+  - vb
+  name: createCalculLow()
+  nameWithType: FServices.createCalculLow()
+  fullName: DEM.Net.Lib.Services.Lab.FServices.createCalculLow()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/FServices.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: createCalculLow
+    path: ../DEM.Net.Lib/Services/Lab/FServices.cs
+    startLine: 10
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public static ICalculServices_Low createCalculLow()
+    return:
+      type: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+    content.vb: Public Shared Function createCalculLow As ICalculServices_Low
+  overload: DEM.Net.Lib.Services.Lab.FServices.createCalculLow*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: DEM.Net.Lib.Services.Lab.FServices.createUtilitaires
+  commentId: M:DEM.Net.Lib.Services.Lab.FServices.createUtilitaires
+  id: createUtilitaires
+  parent: DEM.Net.Lib.Services.Lab.FServices
+  langs:
+  - csharp
+  - vb
+  name: createUtilitaires()
+  nameWithType: FServices.createUtilitaires()
+  fullName: DEM.Net.Lib.Services.Lab.FServices.createUtilitaires()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/FServices.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: createUtilitaires
+    path: ../DEM.Net.Lib/Services/Lab/FServices.cs
+    startLine: 14
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public static IUtilitairesServices createUtilitaires()
+    return:
+      type: DEM.Net.Lib.Services.Lab.IUtilitairesServices
+    content.vb: Public Shared Function createUtilitaires As IUtilitairesServices
+  overload: DEM.Net.Lib.Services.Lab.FServices.createUtilitaires*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: DEM.Net.Lib.Services.Lab.FServices.createCalculMedium
+  commentId: M:DEM.Net.Lib.Services.Lab.FServices.createCalculMedium
+  id: createCalculMedium
+  parent: DEM.Net.Lib.Services.Lab.FServices
+  langs:
+  - csharp
+  - vb
+  name: createCalculMedium()
+  nameWithType: FServices.createCalculMedium()
+  fullName: DEM.Net.Lib.Services.Lab.FServices.createCalculMedium()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/FServices.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: createCalculMedium
+    path: ../DEM.Net.Lib/Services/Lab/FServices.cs
+    startLine: 18
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public static ICalculServices_Medium createCalculMedium()
+    return:
+      type: DEM.Net.Lib.Services.Lab.ICalculServices_Medium
+    content.vb: Public Shared Function createCalculMedium As ICalculServices_Medium
+  overload: DEM.Net.Lib.Services.Lab.FServices.createCalculMedium*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+references:
+- uid: DEM.Net.Lib.Services.Lab
+  commentId: N:DEM.Net.Lib.Services.Lab
+  name: DEM.Net.Lib.Services.Lab
+  nameWithType: DEM.Net.Lib.Services.Lab
+  fullName: DEM.Net.Lib.Services.Lab
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.Services.Lab.FServices.createCalculLow*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.FServices.createCalculLow
+  name: createCalculLow
+  nameWithType: FServices.createCalculLow
+  fullName: DEM.Net.Lib.Services.Lab.FServices.createCalculLow
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  commentId: T:DEM.Net.Lib.Services.Lab.ICalculServices_Low
+  parent: DEM.Net.Lib.Services.Lab
+  name: ICalculServices_Low
+  nameWithType: ICalculServices_Low
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Low
+- uid: DEM.Net.Lib.Services.Lab.FServices.createUtilitaires*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.FServices.createUtilitaires
+  name: createUtilitaires
+  nameWithType: FServices.createUtilitaires
+  fullName: DEM.Net.Lib.Services.Lab.FServices.createUtilitaires
+- uid: DEM.Net.Lib.Services.Lab.IUtilitairesServices
+  commentId: T:DEM.Net.Lib.Services.Lab.IUtilitairesServices
+  parent: DEM.Net.Lib.Services.Lab
+  name: IUtilitairesServices
+  nameWithType: IUtilitairesServices
+  fullName: DEM.Net.Lib.Services.Lab.IUtilitairesServices
+- uid: DEM.Net.Lib.Services.Lab.FServices.createCalculMedium*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.FServices.createCalculMedium
+  name: createCalculMedium
+  nameWithType: FServices.createCalculMedium
+  fullName: DEM.Net.Lib.Services.Lab.FServices.createCalculMedium
+- uid: DEM.Net.Lib.Services.Lab.ICalculServices_Medium
+  commentId: T:DEM.Net.Lib.Services.Lab.ICalculServices_Medium
+  parent: DEM.Net.Lib.Services.Lab
+  name: ICalculServices_Medium
+  nameWithType: ICalculServices_Medium
+  fullName: DEM.Net.Lib.Services.Lab.ICalculServices_Medium

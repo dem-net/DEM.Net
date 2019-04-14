@@ -1,0 +1,178 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs
+  commentId: T:DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs
+  id: enumProgressionCouleurs
+  parent: DEM.Net.Lib.Services.VisualisationServices
+  children:
+  - DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs.blue
+  - DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs.green
+  - DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs.greenVersRed
+  - DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs.red
+  langs:
+  - csharp
+  - vb
+  name: enumProgressionCouleurs
+  nameWithType: enumProgressionCouleurs
+  fullName: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs
+  type: Enum
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/VisualisationServices/enumVisualisationSpatiaTrace.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: enumProgressionCouleurs
+    path: ../DEM.Net.Lib/Services/VisualisationServices/enumVisualisationSpatiaTrace.cs
+    startLine: 8
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.VisualisationServices
+  syntax:
+    content: public enum enumProgressionCouleurs
+    content.vb: Public Enum enumProgressionCouleurs
+  modifiers.csharp:
+  - public
+  - enum
+  modifiers.vb:
+  - Public
+  - Enum
+- uid: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs.red
+  commentId: F:DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs.red
+  id: red
+  parent: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs
+  langs:
+  - csharp
+  - vb
+  name: red
+  nameWithType: enumProgressionCouleurs.red
+  fullName: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs.red
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/VisualisationServices/enumVisualisationSpatiaTrace.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: red
+    path: ../DEM.Net.Lib/Services/VisualisationServices/enumVisualisationSpatiaTrace.cs
+    startLine: 10
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.VisualisationServices
+  syntax:
+    content: red = 0
+    return:
+      type: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs.green
+  commentId: F:DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs.green
+  id: green
+  parent: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs
+  langs:
+  - csharp
+  - vb
+  name: green
+  nameWithType: enumProgressionCouleurs.green
+  fullName: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs.green
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/VisualisationServices/enumVisualisationSpatiaTrace.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: green
+    path: ../DEM.Net.Lib/Services/VisualisationServices/enumVisualisationSpatiaTrace.cs
+    startLine: 11
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.VisualisationServices
+  syntax:
+    content: green = 1
+    return:
+      type: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs.blue
+  commentId: F:DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs.blue
+  id: blue
+  parent: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs
+  langs:
+  - csharp
+  - vb
+  name: blue
+  nameWithType: enumProgressionCouleurs.blue
+  fullName: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs.blue
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/VisualisationServices/enumVisualisationSpatiaTrace.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: blue
+    path: ../DEM.Net.Lib/Services/VisualisationServices/enumVisualisationSpatiaTrace.cs
+    startLine: 12
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.VisualisationServices
+  syntax:
+    content: blue = 2
+    return:
+      type: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs.greenVersRed
+  commentId: F:DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs.greenVersRed
+  id: greenVersRed
+  parent: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs
+  langs:
+  - csharp
+  - vb
+  name: greenVersRed
+  nameWithType: enumProgressionCouleurs.greenVersRed
+  fullName: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs.greenVersRed
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/VisualisationServices/enumVisualisationSpatiaTrace.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: greenVersRed
+    path: ../DEM.Net.Lib/Services/VisualisationServices/enumVisualisationSpatiaTrace.cs
+    startLine: 13
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.VisualisationServices
+  syntax:
+    content: greenVersRed = 3
+    return:
+      type: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+references:
+- uid: DEM.Net.Lib.Services.VisualisationServices
+  commentId: N:DEM.Net.Lib.Services.VisualisationServices
+  name: DEM.Net.Lib.Services.VisualisationServices
+  nameWithType: DEM.Net.Lib.Services.VisualisationServices
+  fullName: DEM.Net.Lib.Services.VisualisationServices
+- uid: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs
+  commentId: T:DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs
+  parent: DEM.Net.Lib.Services.VisualisationServices
+  name: enumProgressionCouleurs
+  nameWithType: enumProgressionCouleurs
+  fullName: DEM.Net.Lib.Services.VisualisationServices.enumProgressionCouleurs

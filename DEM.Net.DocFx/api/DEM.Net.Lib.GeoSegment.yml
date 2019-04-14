@@ -1,0 +1,621 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.GeoSegment
+  commentId: T:DEM.Net.Lib.GeoSegment
+  id: GeoSegment
+  parent: DEM.Net.Lib
+  children:
+  - DEM.Net.Lib.GeoSegment.#ctor
+  - DEM.Net.Lib.GeoSegment.#ctor(DEM.Net.Lib.GeoPoint,DEM.Net.Lib.GeoPoint)
+  - DEM.Net.Lib.GeoSegment.End
+  - DEM.Net.Lib.GeoSegment.Start
+  - DEM.Net.Lib.GeoSegment.ToString
+  langs:
+  - csharp
+  - vb
+  name: GeoSegment
+  nameWithType: GeoSegment
+  fullName: DEM.Net.Lib.GeoSegment
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoSegment.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GeoSegment
+    path: ../DEM.Net.Lib/Model/GeoSegment.cs
+    startLine: 8
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public class GeoSegment
+    content.vb: Public Class GeoSegment
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  extensionMethods:
+  - DEM.Net.Lib.GeoSegment.DEM.Net.Lib.GeometryService.GetBoundingBox
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.GeoSegment.Start
+  commentId: P:DEM.Net.Lib.GeoSegment.Start
+  id: Start
+  parent: DEM.Net.Lib.GeoSegment
+  langs:
+  - csharp
+  - vb
+  name: Start
+  nameWithType: GeoSegment.Start
+  fullName: DEM.Net.Lib.GeoSegment.Start
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoSegment.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Start
+    path: ../DEM.Net.Lib/Model/GeoSegment.cs
+    startLine: 10
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public GeoPoint Start { get; set; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.GeoPoint
+    content.vb: Public Property Start As GeoPoint
+  overload: DEM.Net.Lib.GeoSegment.Start*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.GeoSegment.End
+  commentId: P:DEM.Net.Lib.GeoSegment.End
+  id: End
+  parent: DEM.Net.Lib.GeoSegment
+  langs:
+  - csharp
+  - vb
+  name: End
+  nameWithType: GeoSegment.End
+  fullName: DEM.Net.Lib.GeoSegment.End
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoSegment.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: End
+    path: ../DEM.Net.Lib/Model/GeoSegment.cs
+    startLine: 11
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public GeoPoint End { get; set; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.GeoPoint
+    content.vb: Public Property End As GeoPoint
+  overload: DEM.Net.Lib.GeoSegment.End*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.GeoSegment.#ctor
+  commentId: M:DEM.Net.Lib.GeoSegment.#ctor
+  id: '#ctor'
+  parent: DEM.Net.Lib.GeoSegment
+  langs:
+  - csharp
+  - vb
+  name: GeoSegment()
+  nameWithType: GeoSegment.GeoSegment()
+  fullName: DEM.Net.Lib.GeoSegment.GeoSegment()
+  type: Constructor
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoSegment.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: .ctor
+    path: ../DEM.Net.Lib/Model/GeoSegment.cs
+    startLine: 13
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public GeoSegment()
+    content.vb: Public Sub New
+  overload: DEM.Net.Lib.GeoSegment.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.GeoSegment.#ctor(DEM.Net.Lib.GeoPoint,DEM.Net.Lib.GeoPoint)
+  commentId: M:DEM.Net.Lib.GeoSegment.#ctor(DEM.Net.Lib.GeoPoint,DEM.Net.Lib.GeoPoint)
+  id: '#ctor(DEM.Net.Lib.GeoPoint,DEM.Net.Lib.GeoPoint)'
+  parent: DEM.Net.Lib.GeoSegment
+  langs:
+  - csharp
+  - vb
+  name: GeoSegment(GeoPoint, GeoPoint)
+  nameWithType: GeoSegment.GeoSegment(GeoPoint, GeoPoint)
+  fullName: DEM.Net.Lib.GeoSegment.GeoSegment(DEM.Net.Lib.GeoPoint, DEM.Net.Lib.GeoPoint)
+  type: Constructor
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoSegment.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: .ctor
+    path: ../DEM.Net.Lib/Model/GeoSegment.cs
+    startLine: 17
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public GeoSegment(GeoPoint start, GeoPoint end)
+    parameters:
+    - id: start
+      type: DEM.Net.Lib.GeoPoint
+    - id: end
+      type: DEM.Net.Lib.GeoPoint
+    content.vb: Public Sub New(start As GeoPoint, end As GeoPoint)
+  overload: DEM.Net.Lib.GeoSegment.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.GeoSegment.ToString
+  commentId: M:DEM.Net.Lib.GeoSegment.ToString
+  id: ToString
+  parent: DEM.Net.Lib.GeoSegment
+  langs:
+  - csharp
+  - vb
+  name: ToString()
+  nameWithType: GeoSegment.ToString()
+  fullName: DEM.Net.Lib.GeoSegment.ToString()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/GeoSegment.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ToString
+    path: ../DEM.Net.Lib/Model/GeoSegment.cs
+    startLine: 23
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public override string ToString()
+    return:
+      type: System.String
+    content.vb: Public Overrides Function ToString As String
+  overridden: System.Object.ToString
+  overload: DEM.Net.Lib.GeoSegment.ToString*
+  modifiers.csharp:
+  - public
+  - override
+  modifiers.vb:
+  - Public
+  - Overrides
+references:
+- uid: DEM.Net.Lib
+  commentId: N:DEM.Net.Lib
+  name: DEM.Net.Lib
+  nameWithType: DEM.Net.Lib
+  fullName: DEM.Net.Lib
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.GeoSegment.DEM.Net.Lib.GeometryService.GetBoundingBox
+  commentId: M:DEM.Net.Lib.GeometryService.GetBoundingBox(DEM.Net.Lib.GeoSegment)
+  parent: DEM.Net.Lib.GeometryService
+  definition: DEM.Net.Lib.GeometryService.GetBoundingBox(DEM.Net.Lib.GeoSegment)
+  name: GetBoundingBox()
+  nameWithType: GeometryService.GetBoundingBox()
+  fullName: DEM.Net.Lib.GeometryService.GetBoundingBox()
+  spec.csharp:
+  - uid: DEM.Net.Lib.GeometryService.GetBoundingBox
+    name: GetBoundingBox
+    nameWithType: GeometryService.GetBoundingBox
+    fullName: DEM.Net.Lib.GeometryService.GetBoundingBox
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.GeometryService.GetBoundingBox
+    name: GetBoundingBox
+    nameWithType: GeometryService.GetBoundingBox
+    fullName: DEM.Net.Lib.GeometryService.GetBoundingBox
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.GeometryService.GetBoundingBox(DEM.Net.Lib.GeoSegment)
+  commentId: M:DEM.Net.Lib.GeometryService.GetBoundingBox(DEM.Net.Lib.GeoSegment)
+  name: GetBoundingBox(GeoSegment)
+  nameWithType: GeometryService.GetBoundingBox(GeoSegment)
+  fullName: DEM.Net.Lib.GeometryService.GetBoundingBox(DEM.Net.Lib.GeoSegment)
+  spec.csharp:
+  - uid: DEM.Net.Lib.GeometryService.GetBoundingBox(DEM.Net.Lib.GeoSegment)
+    name: GetBoundingBox
+    nameWithType: GeometryService.GetBoundingBox
+    fullName: DEM.Net.Lib.GeometryService.GetBoundingBox
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.GeoSegment
+    name: GeoSegment
+    nameWithType: GeoSegment
+    fullName: DEM.Net.Lib.GeoSegment
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.GeometryService.GetBoundingBox(DEM.Net.Lib.GeoSegment)
+    name: GetBoundingBox
+    nameWithType: GeometryService.GetBoundingBox
+    fullName: DEM.Net.Lib.GeometryService.GetBoundingBox
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.GeoSegment
+    name: GeoSegment
+    nameWithType: GeoSegment
+    fullName: DEM.Net.Lib.GeoSegment
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.GeometryService
+  commentId: T:DEM.Net.Lib.GeometryService
+  parent: DEM.Net.Lib
+  name: GeometryService
+  nameWithType: GeometryService
+  fullName: DEM.Net.Lib.GeometryService
+- uid: DEM.Net.Lib.GeoSegment.Start*
+  commentId: Overload:DEM.Net.Lib.GeoSegment.Start
+  name: Start
+  nameWithType: GeoSegment.Start
+  fullName: DEM.Net.Lib.GeoSegment.Start
+- uid: DEM.Net.Lib.GeoPoint
+  commentId: T:DEM.Net.Lib.GeoPoint
+  parent: DEM.Net.Lib
+  name: GeoPoint
+  nameWithType: GeoPoint
+  fullName: DEM.Net.Lib.GeoPoint
+- uid: DEM.Net.Lib.GeoSegment.End*
+  commentId: Overload:DEM.Net.Lib.GeoSegment.End
+  name: End
+  nameWithType: GeoSegment.End
+  fullName: DEM.Net.Lib.GeoSegment.End
+- uid: DEM.Net.Lib.GeoSegment.#ctor*
+  commentId: Overload:DEM.Net.Lib.GeoSegment.#ctor
+  name: GeoSegment
+  nameWithType: GeoSegment.GeoSegment
+  fullName: DEM.Net.Lib.GeoSegment.GeoSegment
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.GeoSegment.ToString*
+  commentId: Overload:DEM.Net.Lib.GeoSegment.ToString
+  name: ToString
+  nameWithType: GeoSegment.ToString
+  fullName: DEM.Net.Lib.GeoSegment.ToString
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String

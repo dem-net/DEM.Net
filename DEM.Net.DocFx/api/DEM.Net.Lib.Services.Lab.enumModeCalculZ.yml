@@ -1,0 +1,145 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Services.Lab.enumModeCalculZ
+  commentId: T:DEM.Net.Lib.Services.Lab.enumModeCalculZ
+  id: enumModeCalculZ
+  parent: DEM.Net.Lib.Services.Lab
+  children:
+  - DEM.Net.Lib.Services.Lab.enumModeCalculZ.alti_0
+  - DEM.Net.Lib.Services.Lab.enumModeCalculZ.alti_min
+  - DEM.Net.Lib.Services.Lab.enumModeCalculZ.alti_saisie
+  langs:
+  - csharp
+  - vb
+  name: enumModeCalculZ
+  nameWithType: enumModeCalculZ
+  fullName: DEM.Net.Lib.Services.Lab.enumModeCalculZ
+  type: Enum
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/enumServices.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: enumModeCalculZ
+    path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
+    startLine: 25
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public enum enumModeCalculZ
+    content.vb: Public Enum enumModeCalculZ
+  modifiers.csharp:
+  - public
+  - enum
+  modifiers.vb:
+  - Public
+  - Enum
+- uid: DEM.Net.Lib.Services.Lab.enumModeCalculZ.alti_0
+  commentId: F:DEM.Net.Lib.Services.Lab.enumModeCalculZ.alti_0
+  id: alti_0
+  parent: DEM.Net.Lib.Services.Lab.enumModeCalculZ
+  langs:
+  - csharp
+  - vb
+  name: alti_0
+  nameWithType: enumModeCalculZ.alti_0
+  fullName: DEM.Net.Lib.Services.Lab.enumModeCalculZ.alti_0
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/enumServices.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: alti_0
+    path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
+    startLine: 27
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: alti_0 = 0
+    return:
+      type: DEM.Net.Lib.Services.Lab.enumModeCalculZ
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.Services.Lab.enumModeCalculZ.alti_min
+  commentId: F:DEM.Net.Lib.Services.Lab.enumModeCalculZ.alti_min
+  id: alti_min
+  parent: DEM.Net.Lib.Services.Lab.enumModeCalculZ
+  langs:
+  - csharp
+  - vb
+  name: alti_min
+  nameWithType: enumModeCalculZ.alti_min
+  fullName: DEM.Net.Lib.Services.Lab.enumModeCalculZ.alti_min
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/enumServices.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: alti_min
+    path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
+    startLine: 28
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: alti_min = 1
+    return:
+      type: DEM.Net.Lib.Services.Lab.enumModeCalculZ
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.Services.Lab.enumModeCalculZ.alti_saisie
+  commentId: F:DEM.Net.Lib.Services.Lab.enumModeCalculZ.alti_saisie
+  id: alti_saisie
+  parent: DEM.Net.Lib.Services.Lab.enumModeCalculZ
+  langs:
+  - csharp
+  - vb
+  name: alti_saisie
+  nameWithType: enumModeCalculZ.alti_saisie
+  fullName: DEM.Net.Lib.Services.Lab.enumModeCalculZ.alti_saisie
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/enumServices.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: alti_saisie
+    path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
+    startLine: 29
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: alti_saisie = 2
+    return:
+      type: DEM.Net.Lib.Services.Lab.enumModeCalculZ
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+references:
+- uid: DEM.Net.Lib.Services.Lab
+  commentId: N:DEM.Net.Lib.Services.Lab
+  name: DEM.Net.Lib.Services.Lab
+  nameWithType: DEM.Net.Lib.Services.Lab
+  fullName: DEM.Net.Lib.Services.Lab
+- uid: DEM.Net.Lib.Services.Lab.enumModeCalculZ
+  commentId: T:DEM.Net.Lib.Services.Lab.enumModeCalculZ
+  parent: DEM.Net.Lib.Services.Lab
+  name: enumModeCalculZ
+  nameWithType: enumModeCalculZ
+  fullName: DEM.Net.Lib.Services.Lab.enumModeCalculZ

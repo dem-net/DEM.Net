@@ -1,0 +1,472 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Imagery.Attribution
+  commentId: T:DEM.Net.Lib.Imagery.Attribution
+  id: Attribution
+  parent: DEM.Net.Lib.Imagery
+  children:
+  - DEM.Net.Lib.Imagery.Attribution.#ctor(System.String,System.String)
+  - DEM.Net.Lib.Imagery.Attribution.Text
+  - DEM.Net.Lib.Imagery.Attribution.Url
+  langs:
+  - csharp
+  - vb
+  name: Attribution
+  nameWithType: Attribution
+  fullName: DEM.Net.Lib.Imagery.Attribution
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/Attribution.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Attribution
+    path: ../DEM.Net.Lib/Imagery/Structs/Attribution.cs
+    startLine: 9
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public class Attribution
+    content.vb: Public Class Attribution
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.Imagery.Attribution.#ctor(System.String,System.String)
+  commentId: M:DEM.Net.Lib.Imagery.Attribution.#ctor(System.String,System.String)
+  id: '#ctor(System.String,System.String)'
+  parent: DEM.Net.Lib.Imagery.Attribution
+  langs:
+  - csharp
+  - vb
+  name: Attribution(String, String)
+  nameWithType: Attribution.Attribution(String, String)
+  fullName: DEM.Net.Lib.Imagery.Attribution.Attribution(System.String, System.String)
+  type: Constructor
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/Attribution.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: .ctor
+    path: ../DEM.Net.Lib/Imagery/Structs/Attribution.cs
+    startLine: 11
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public Attribution(string text = null, string url = null)
+    parameters:
+    - id: text
+      type: System.String
+    - id: url
+      type: System.String
+    content.vb: Public Sub New(text As String = Nothing, url As String = Nothing)
+  overload: DEM.Net.Lib.Imagery.Attribution.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Imagery.Attribution.Text
+  commentId: P:DEM.Net.Lib.Imagery.Attribution.Text
+  id: Text
+  parent: DEM.Net.Lib.Imagery.Attribution
+  langs:
+  - csharp
+  - vb
+  name: Text
+  nameWithType: Attribution.Text
+  fullName: DEM.Net.Lib.Imagery.Attribution.Text
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/Attribution.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Text
+    path: ../DEM.Net.Lib/Imagery/Structs/Attribution.cs
+    startLine: 17
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public string Text { get; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public ReadOnly Property Text As String
+  overload: DEM.Net.Lib.Imagery.Attribution.Text*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Imagery.Attribution.Url
+  commentId: P:DEM.Net.Lib.Imagery.Attribution.Url
+  id: Url
+  parent: DEM.Net.Lib.Imagery.Attribution
+  langs:
+  - csharp
+  - vb
+  name: Url
+  nameWithType: Attribution.Url
+  fullName: DEM.Net.Lib.Imagery.Attribution.Url
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/Attribution.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Url
+    path: ../DEM.Net.Lib/Imagery/Structs/Attribution.cs
+    startLine: 18
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public string Url { get; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public ReadOnly Property Url As String
+  overload: DEM.Net.Lib.Imagery.Attribution.Url*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+references:
+- uid: DEM.Net.Lib.Imagery
+  commentId: N:DEM.Net.Lib.Imagery
+  name: DEM.Net.Lib.Imagery
+  nameWithType: DEM.Net.Lib.Imagery
+  fullName: DEM.Net.Lib.Imagery
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.Imagery.Attribution.#ctor*
+  commentId: Overload:DEM.Net.Lib.Imagery.Attribution.#ctor
+  name: Attribution
+  nameWithType: Attribution.Attribution
+  fullName: DEM.Net.Lib.Imagery.Attribution.Attribution
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: DEM.Net.Lib.Imagery.Attribution.Text*
+  commentId: Overload:DEM.Net.Lib.Imagery.Attribution.Text
+  name: Text
+  nameWithType: Attribution.Text
+  fullName: DEM.Net.Lib.Imagery.Attribution.Text
+- uid: DEM.Net.Lib.Imagery.Attribution.Url*
+  commentId: Overload:DEM.Net.Lib.Imagery.Attribution.Url
+  name: Url
+  nameWithType: Attribution.Url
+  fullName: DEM.Net.Lib.Imagery.Attribution.Url

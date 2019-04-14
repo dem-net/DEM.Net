@@ -1,0 +1,112 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage
+  commentId: T:DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage
+  id: enumModeSeuillage
+  parent: DEM.Net.Lib.Services.VisualisationServices
+  children:
+  - DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage.memeEspaceInterclasse
+  - DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage.memeNombreDIndividus
+  langs:
+  - csharp
+  - vb
+  name: enumModeSeuillage
+  nameWithType: enumModeSeuillage
+  fullName: DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage
+  type: Enum
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/VisualisationServices/enumStats.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: enumModeSeuillage
+    path: ../DEM.Net.Lib/Services/VisualisationServices/enumStats.cs
+    startLine: 8
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.VisualisationServices
+  syntax:
+    content: public enum enumModeSeuillage
+    content.vb: Public Enum enumModeSeuillage
+  modifiers.csharp:
+  - public
+  - enum
+  modifiers.vb:
+  - Public
+  - Enum
+- uid: DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage.memeNombreDIndividus
+  commentId: F:DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage.memeNombreDIndividus
+  id: memeNombreDIndividus
+  parent: DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage
+  langs:
+  - csharp
+  - vb
+  name: memeNombreDIndividus
+  nameWithType: enumModeSeuillage.memeNombreDIndividus
+  fullName: DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage.memeNombreDIndividus
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/VisualisationServices/enumStats.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: memeNombreDIndividus
+    path: ../DEM.Net.Lib/Services/VisualisationServices/enumStats.cs
+    startLine: 10
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.VisualisationServices
+  syntax:
+    content: memeNombreDIndividus = 0
+    return:
+      type: DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage.memeEspaceInterclasse
+  commentId: F:DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage.memeEspaceInterclasse
+  id: memeEspaceInterclasse
+  parent: DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage
+  langs:
+  - csharp
+  - vb
+  name: memeEspaceInterclasse
+  nameWithType: enumModeSeuillage.memeEspaceInterclasse
+  fullName: DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage.memeEspaceInterclasse
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/VisualisationServices/enumStats.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: memeEspaceInterclasse
+    path: ../DEM.Net.Lib/Services/VisualisationServices/enumStats.cs
+    startLine: 11
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.VisualisationServices
+  syntax:
+    content: memeEspaceInterclasse = 1
+    return:
+      type: DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+references:
+- uid: DEM.Net.Lib.Services.VisualisationServices
+  commentId: N:DEM.Net.Lib.Services.VisualisationServices
+  name: DEM.Net.Lib.Services.VisualisationServices
+  nameWithType: DEM.Net.Lib.Services.VisualisationServices
+  fullName: DEM.Net.Lib.Services.VisualisationServices
+- uid: DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage
+  commentId: T:DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage
+  parent: DEM.Net.Lib.Services.VisualisationServices
+  name: enumModeSeuillage
+  nameWithType: enumModeSeuillage
+  fullName: DEM.Net.Lib.Services.VisualisationServices.enumModeSeuillage

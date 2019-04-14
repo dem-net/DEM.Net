@@ -1,0 +1,1476 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes
+  commentId: T:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes
+  id: BeanTopologieFacettes
+  parent: DEM.Net.Lib.Services.Lab
+  children:
+  - DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.#ctor
+  - DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.#ctor(System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal})
+  - DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcAjouter(DEM.Net.Lib.Services.Lab.BeanArc_internal)
+  - DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcsAjouter(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanArc_internal})
+  - DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcSupprimer(DEM.Net.Lib.Services.Lab.BeanArc_internal)
+  - DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcSupprimer(System.String)
+  - DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteAjouter(DEM.Net.Lib.Services.Lab.BeanFacette_internal)
+  - DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacettesAjouter(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanFacette_internal})
+  - DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteSupprimer(DEM.Net.Lib.Services.Lab.BeanFacette_internal)
+  - DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteSupprimer(System.Int32)
+  - DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p00_pointsSources
+  - DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p11_pointsFacettesByIdPoint
+  - DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p12_arcsByCode
+  - DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p13_facettesById
+  - DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p21_facetteAvecEcartAbsoluMax
+  - DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.PointFacAjouter(DEM.Net.Lib.Services.Lab.BeanPoint_internal)
+  - DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.PointsFacAjouter(System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal})
+  langs:
+  - csharp
+  - vb
+  name: BeanTopologieFacettes
+  nameWithType: BeanTopologieFacettes
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: BeanTopologieFacettes
+    path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+    startLine: 8
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public class BeanTopologieFacettes
+    content.vb: Public Class BeanTopologieFacettes
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p00_pointsSources
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p00_pointsSources
+  id: p00_pointsSources
+  parent: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes
+  langs:
+  - csharp
+  - vb
+  name: p00_pointsSources
+  nameWithType: BeanTopologieFacettes.p00_pointsSources
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p00_pointsSources
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p00_pointsSources
+    path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+    startLine: 10
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public List<BeanPoint_internal> p00_pointsSources { get; set; }
+    parameters: []
+    return:
+      type: System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal}
+    content.vb: Public Property p00_pointsSources As List(Of BeanPoint_internal)
+  overload: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p00_pointsSources*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p11_pointsFacettesByIdPoint
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p11_pointsFacettesByIdPoint
+  id: p11_pointsFacettesByIdPoint
+  parent: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes
+  langs:
+  - csharp
+  - vb
+  name: p11_pointsFacettesByIdPoint
+  nameWithType: BeanTopologieFacettes.p11_pointsFacettesByIdPoint
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p11_pointsFacettesByIdPoint
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p11_pointsFacettesByIdPoint
+    path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+    startLine: 12
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public Dictionary<int, BeanPoint_internal> p11_pointsFacettesByIdPoint { get; set; }
+    parameters: []
+    return:
+      type: System.Collections.Generic.Dictionary{System.Int32,DEM.Net.Lib.Services.Lab.BeanPoint_internal}
+    content.vb: Public Property p11_pointsFacettesByIdPoint As Dictionary(Of Integer, BeanPoint_internal)
+  overload: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p11_pointsFacettesByIdPoint*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p12_arcsByCode
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p12_arcsByCode
+  id: p12_arcsByCode
+  parent: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes
+  langs:
+  - csharp
+  - vb
+  name: p12_arcsByCode
+  nameWithType: BeanTopologieFacettes.p12_arcsByCode
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p12_arcsByCode
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p12_arcsByCode
+    path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+    startLine: 13
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public Dictionary<string, BeanArc_internal> p12_arcsByCode { get; set; }
+    parameters: []
+    return:
+      type: System.Collections.Generic.Dictionary{System.String,DEM.Net.Lib.Services.Lab.BeanArc_internal}
+    content.vb: Public Property p12_arcsByCode As Dictionary(Of String, BeanArc_internal)
+  overload: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p12_arcsByCode*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p13_facettesById
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p13_facettesById
+  id: p13_facettesById
+  parent: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes
+  langs:
+  - csharp
+  - vb
+  name: p13_facettesById
+  nameWithType: BeanTopologieFacettes.p13_facettesById
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p13_facettesById
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p13_facettesById
+    path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+    startLine: 14
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public Dictionary<int, BeanFacette_internal> p13_facettesById { get; set; }
+    parameters: []
+    return:
+      type: System.Collections.Generic.Dictionary{System.Int32,DEM.Net.Lib.Services.Lab.BeanFacette_internal}
+    content.vb: Public Property p13_facettesById As Dictionary(Of Integer, BeanFacette_internal)
+  overload: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p13_facettesById*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p21_facetteAvecEcartAbsoluMax
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p21_facetteAvecEcartAbsoluMax
+  id: p21_facetteAvecEcartAbsoluMax
+  parent: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes
+  langs:
+  - csharp
+  - vb
+  name: p21_facetteAvecEcartAbsoluMax
+  nameWithType: BeanTopologieFacettes.p21_facetteAvecEcartAbsoluMax
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p21_facetteAvecEcartAbsoluMax
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p21_facetteAvecEcartAbsoluMax
+    path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+    startLine: 16
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public BeanFacette_internal p21_facetteAvecEcartAbsoluMax { get; set; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+    content.vb: Public Property p21_facetteAvecEcartAbsoluMax As BeanFacette_internal
+  overload: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p21_facetteAvecEcartAbsoluMax*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcsAjouter(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanArc_internal})
+  commentId: M:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcsAjouter(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanArc_internal})
+  id: ArcsAjouter(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanArc_internal})
+  parent: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes
+  langs:
+  - csharp
+  - vb
+  name: ArcsAjouter(IEnumerable<BeanArc_internal>)
+  nameWithType: BeanTopologieFacettes.ArcsAjouter(IEnumerable<BeanArc_internal>)
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcsAjouter(System.Collections.Generic.IEnumerable<DEM.Net.Lib.Services.Lab.BeanArc_internal>)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ArcsAjouter
+    path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+    startLine: 21
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public void ArcsAjouter(IEnumerable<BeanArc_internal> p_arcsAAjouter)
+    parameters:
+    - id: p_arcsAAjouter
+      type: System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanArc_internal}
+    content.vb: Public Sub ArcsAjouter(p_arcsAAjouter As IEnumerable(Of BeanArc_internal))
+  overload: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcsAjouter*
+  nameWithType.vb: BeanTopologieFacettes.ArcsAjouter(IEnumerable(Of BeanArc_internal))
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcsAjouter(System.Collections.Generic.IEnumerable(Of DEM.Net.Lib.Services.Lab.BeanArc_internal))
+  name.vb: ArcsAjouter(IEnumerable(Of BeanArc_internal))
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcAjouter(DEM.Net.Lib.Services.Lab.BeanArc_internal)
+  commentId: M:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcAjouter(DEM.Net.Lib.Services.Lab.BeanArc_internal)
+  id: ArcAjouter(DEM.Net.Lib.Services.Lab.BeanArc_internal)
+  parent: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes
+  langs:
+  - csharp
+  - vb
+  name: ArcAjouter(BeanArc_internal)
+  nameWithType: BeanTopologieFacettes.ArcAjouter(BeanArc_internal)
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcAjouter(DEM.Net.Lib.Services.Lab.BeanArc_internal)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ArcAjouter
+    path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+    startLine: 28
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public void ArcAjouter(BeanArc_internal p_arcAAjouter)
+    parameters:
+    - id: p_arcAAjouter
+      type: DEM.Net.Lib.Services.Lab.BeanArc_internal
+    content.vb: Public Sub ArcAjouter(p_arcAAjouter As BeanArc_internal)
+  overload: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcAjouter*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcSupprimer(DEM.Net.Lib.Services.Lab.BeanArc_internal)
+  commentId: M:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcSupprimer(DEM.Net.Lib.Services.Lab.BeanArc_internal)
+  id: ArcSupprimer(DEM.Net.Lib.Services.Lab.BeanArc_internal)
+  parent: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes
+  langs:
+  - csharp
+  - vb
+  name: ArcSupprimer(BeanArc_internal)
+  nameWithType: BeanTopologieFacettes.ArcSupprimer(BeanArc_internal)
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcSupprimer(DEM.Net.Lib.Services.Lab.BeanArc_internal)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ArcSupprimer
+    path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+    startLine: 46
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public void ArcSupprimer(BeanArc_internal p_arcASupprimer)
+    parameters:
+    - id: p_arcASupprimer
+      type: DEM.Net.Lib.Services.Lab.BeanArc_internal
+    content.vb: Public Sub ArcSupprimer(p_arcASupprimer As BeanArc_internal)
+  overload: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcSupprimer*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcSupprimer(System.String)
+  commentId: M:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcSupprimer(System.String)
+  id: ArcSupprimer(System.String)
+  parent: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes
+  langs:
+  - csharp
+  - vb
+  name: ArcSupprimer(String)
+  nameWithType: BeanTopologieFacettes.ArcSupprimer(String)
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcSupprimer(System.String)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ArcSupprimer
+    path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+    startLine: 60
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public void ArcSupprimer(string p_codeArcASupprimer)
+    parameters:
+    - id: p_codeArcASupprimer
+      type: System.String
+    content.vb: Public Sub ArcSupprimer(p_codeArcASupprimer As String)
+  overload: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcSupprimer*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.PointFacAjouter(DEM.Net.Lib.Services.Lab.BeanPoint_internal)
+  commentId: M:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.PointFacAjouter(DEM.Net.Lib.Services.Lab.BeanPoint_internal)
+  id: PointFacAjouter(DEM.Net.Lib.Services.Lab.BeanPoint_internal)
+  parent: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes
+  langs:
+  - csharp
+  - vb
+  name: PointFacAjouter(BeanPoint_internal)
+  nameWithType: BeanTopologieFacettes.PointFacAjouter(BeanPoint_internal)
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.PointFacAjouter(DEM.Net.Lib.Services.Lab.BeanPoint_internal)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: PointFacAjouter
+    path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+    startLine: 66
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public void PointFacAjouter(BeanPoint_internal p_pointAAjouter)
+    parameters:
+    - id: p_pointAAjouter
+      type: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    content.vb: Public Sub PointFacAjouter(p_pointAAjouter As BeanPoint_internal)
+  overload: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.PointFacAjouter*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.PointsFacAjouter(System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal})
+  commentId: M:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.PointsFacAjouter(System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal})
+  id: PointsFacAjouter(System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal})
+  parent: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes
+  langs:
+  - csharp
+  - vb
+  name: PointsFacAjouter(List<BeanPoint_internal>)
+  nameWithType: BeanTopologieFacettes.PointsFacAjouter(List<BeanPoint_internal>)
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.PointsFacAjouter(System.Collections.Generic.List<DEM.Net.Lib.Services.Lab.BeanPoint_internal>)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: PointsFacAjouter
+    path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+    startLine: 74
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public void PointsFacAjouter(List<BeanPoint_internal> p_pointsAAjouter)
+    parameters:
+    - id: p_pointsAAjouter
+      type: System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal}
+    content.vb: Public Sub PointsFacAjouter(p_pointsAAjouter As List(Of BeanPoint_internal))
+  overload: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.PointsFacAjouter*
+  nameWithType.vb: BeanTopologieFacettes.PointsFacAjouter(List(Of BeanPoint_internal))
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.PointsFacAjouter(System.Collections.Generic.List(Of DEM.Net.Lib.Services.Lab.BeanPoint_internal))
+  name.vb: PointsFacAjouter(List(Of BeanPoint_internal))
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteAjouter(DEM.Net.Lib.Services.Lab.BeanFacette_internal)
+  commentId: M:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteAjouter(DEM.Net.Lib.Services.Lab.BeanFacette_internal)
+  id: FacetteAjouter(DEM.Net.Lib.Services.Lab.BeanFacette_internal)
+  parent: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes
+  langs:
+  - csharp
+  - vb
+  name: FacetteAjouter(BeanFacette_internal)
+  nameWithType: BeanTopologieFacettes.FacetteAjouter(BeanFacette_internal)
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteAjouter(DEM.Net.Lib.Services.Lab.BeanFacette_internal)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: FacetteAjouter
+    path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+    startLine: 83
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public void FacetteAjouter(BeanFacette_internal p_facetteAAjouter)
+    parameters:
+    - id: p_facetteAAjouter
+      type: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+    content.vb: Public Sub FacetteAjouter(p_facetteAAjouter As BeanFacette_internal)
+  overload: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteAjouter*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacettesAjouter(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanFacette_internal})
+  commentId: M:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacettesAjouter(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanFacette_internal})
+  id: FacettesAjouter(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanFacette_internal})
+  parent: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes
+  langs:
+  - csharp
+  - vb
+  name: FacettesAjouter(IEnumerable<BeanFacette_internal>)
+  nameWithType: BeanTopologieFacettes.FacettesAjouter(IEnumerable<BeanFacette_internal>)
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacettesAjouter(System.Collections.Generic.IEnumerable<DEM.Net.Lib.Services.Lab.BeanFacette_internal>)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: FacettesAjouter
+    path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+    startLine: 88
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public void FacettesAjouter(IEnumerable<BeanFacette_internal> p_facetteAAjouter)
+    parameters:
+    - id: p_facetteAAjouter
+      type: System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanFacette_internal}
+    content.vb: Public Sub FacettesAjouter(p_facetteAAjouter As IEnumerable(Of BeanFacette_internal))
+  overload: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacettesAjouter*
+  nameWithType.vb: BeanTopologieFacettes.FacettesAjouter(IEnumerable(Of BeanFacette_internal))
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacettesAjouter(System.Collections.Generic.IEnumerable(Of DEM.Net.Lib.Services.Lab.BeanFacette_internal))
+  name.vb: FacettesAjouter(IEnumerable(Of BeanFacette_internal))
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteSupprimer(DEM.Net.Lib.Services.Lab.BeanFacette_internal)
+  commentId: M:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteSupprimer(DEM.Net.Lib.Services.Lab.BeanFacette_internal)
+  id: FacetteSupprimer(DEM.Net.Lib.Services.Lab.BeanFacette_internal)
+  parent: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes
+  langs:
+  - csharp
+  - vb
+  name: FacetteSupprimer(BeanFacette_internal)
+  nameWithType: BeanTopologieFacettes.FacetteSupprimer(BeanFacette_internal)
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteSupprimer(DEM.Net.Lib.Services.Lab.BeanFacette_internal)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: FacetteSupprimer
+    path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+    startLine: 95
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public void FacetteSupprimer(BeanFacette_internal p_facetteAAjouter)
+    parameters:
+    - id: p_facetteAAjouter
+      type: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+    content.vb: Public Sub FacetteSupprimer(p_facetteAAjouter As BeanFacette_internal)
+  overload: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteSupprimer*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteSupprimer(System.Int32)
+  commentId: M:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteSupprimer(System.Int32)
+  id: FacetteSupprimer(System.Int32)
+  parent: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes
+  langs:
+  - csharp
+  - vb
+  name: FacetteSupprimer(Int32)
+  nameWithType: BeanTopologieFacettes.FacetteSupprimer(Int32)
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteSupprimer(System.Int32)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: FacetteSupprimer
+    path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+    startLine: 100
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public void FacetteSupprimer(int p_idFacetteASupprimer)
+    parameters:
+    - id: p_idFacetteASupprimer
+      type: System.Int32
+    content.vb: Public Sub FacetteSupprimer(p_idFacetteASupprimer As Integer)
+  overload: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteSupprimer*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.#ctor
+  commentId: M:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.#ctor
+  id: '#ctor'
+  parent: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes
+  langs:
+  - csharp
+  - vb
+  name: BeanTopologieFacettes()
+  nameWithType: BeanTopologieFacettes.BeanTopologieFacettes()
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.BeanTopologieFacettes()
+  type: Constructor
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: .ctor
+    path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+    startLine: 128
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public BeanTopologieFacettes()
+    content.vb: Public Sub New
+  overload: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.#ctor(System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal})
+  commentId: M:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.#ctor(System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal})
+  id: '#ctor(System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal})'
+  parent: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes
+  langs:
+  - csharp
+  - vb
+  name: BeanTopologieFacettes(List<BeanPoint_internal>)
+  nameWithType: BeanTopologieFacettes.BeanTopologieFacettes(List<BeanPoint_internal>)
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.BeanTopologieFacettes(System.Collections.Generic.List<DEM.Net.Lib.Services.Lab.BeanPoint_internal>)
+  type: Constructor
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: .ctor
+    path: ../DEM.Net.Lib/Services/Lab/BeanTopologieFacettes.cs
+    startLine: 135
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public BeanTopologieFacettes(List<BeanPoint_internal> v_pointsSources)
+    parameters:
+    - id: v_pointsSources
+      type: System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal}
+    content.vb: Public Sub New(v_pointsSources As List(Of BeanPoint_internal))
+  overload: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.#ctor*
+  nameWithType.vb: BeanTopologieFacettes.BeanTopologieFacettes(List(Of BeanPoint_internal))
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.BeanTopologieFacettes(System.Collections.Generic.List(Of DEM.Net.Lib.Services.Lab.BeanPoint_internal))
+  name.vb: BeanTopologieFacettes(List(Of BeanPoint_internal))
+references:
+- uid: DEM.Net.Lib.Services.Lab
+  commentId: N:DEM.Net.Lib.Services.Lab
+  name: DEM.Net.Lib.Services.Lab
+  nameWithType: DEM.Net.Lib.Services.Lab
+  fullName: DEM.Net.Lib.Services.Lab
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p00_pointsSources*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p00_pointsSources
+  name: p00_pointsSources
+  nameWithType: BeanTopologieFacettes.p00_pointsSources
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p00_pointsSources
+- uid: System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal}
+  commentId: T:System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<BeanPoint_internal>
+  nameWithType: List<BeanPoint_internal>
+  fullName: System.Collections.Generic.List<DEM.Net.Lib.Services.Lab.BeanPoint_internal>
+  nameWithType.vb: List(Of BeanPoint_internal)
+  fullName.vb: System.Collections.Generic.List(Of DEM.Net.Lib.Services.Lab.BeanPoint_internal)
+  name.vb: List(Of BeanPoint_internal)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    name: BeanPoint_internal
+    nameWithType: BeanPoint_internal
+    fullName: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    name: BeanPoint_internal
+    nameWithType: BeanPoint_internal
+    fullName: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.List`1
+  commentId: T:System.Collections.Generic.List`1
+  isExternal: true
+  name: List<T>
+  nameWithType: List<T>
+  fullName: System.Collections.Generic.List<T>
+  nameWithType.vb: List(Of T)
+  fullName.vb: System.Collections.Generic.List(Of T)
+  name.vb: List(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p11_pointsFacettesByIdPoint*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p11_pointsFacettesByIdPoint
+  name: p11_pointsFacettesByIdPoint
+  nameWithType: BeanTopologieFacettes.p11_pointsFacettesByIdPoint
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p11_pointsFacettesByIdPoint
+- uid: System.Collections.Generic.Dictionary{System.Int32,DEM.Net.Lib.Services.Lab.BeanPoint_internal}
+  commentId: T:System.Collections.Generic.Dictionary{System.Int32,DEM.Net.Lib.Services.Lab.BeanPoint_internal}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.Dictionary`2
+  name: Dictionary<Int32, BeanPoint_internal>
+  nameWithType: Dictionary<Int32, BeanPoint_internal>
+  fullName: System.Collections.Generic.Dictionary<System.Int32, DEM.Net.Lib.Services.Lab.BeanPoint_internal>
+  nameWithType.vb: Dictionary(Of Int32, BeanPoint_internal)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.Int32, DEM.Net.Lib.Services.Lab.BeanPoint_internal)
+  name.vb: Dictionary(Of Int32, BeanPoint_internal)
+  spec.csharp:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    name: BeanPoint_internal
+    nameWithType: BeanPoint_internal
+    fullName: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    name: BeanPoint_internal
+    nameWithType: BeanPoint_internal
+    fullName: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.Dictionary`2
+  commentId: T:System.Collections.Generic.Dictionary`2
+  isExternal: true
+  name: Dictionary<TKey, TValue>
+  nameWithType: Dictionary<TKey, TValue>
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>
+  nameWithType.vb: Dictionary(Of TKey, TValue)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue)
+  name.vb: Dictionary(Of TKey, TValue)
+  spec.csharp:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: TKey
+    nameWithType: TKey
+    fullName: TKey
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: TValue
+    nameWithType: TValue
+    fullName: TValue
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: TKey
+    nameWithType: TKey
+    fullName: TKey
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: TValue
+    nameWithType: TValue
+    fullName: TValue
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p12_arcsByCode*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p12_arcsByCode
+  name: p12_arcsByCode
+  nameWithType: BeanTopologieFacettes.p12_arcsByCode
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p12_arcsByCode
+- uid: System.Collections.Generic.Dictionary{System.String,DEM.Net.Lib.Services.Lab.BeanArc_internal}
+  commentId: T:System.Collections.Generic.Dictionary{System.String,DEM.Net.Lib.Services.Lab.BeanArc_internal}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.Dictionary`2
+  name: Dictionary<String, BeanArc_internal>
+  nameWithType: Dictionary<String, BeanArc_internal>
+  fullName: System.Collections.Generic.Dictionary<System.String, DEM.Net.Lib.Services.Lab.BeanArc_internal>
+  nameWithType.vb: Dictionary(Of String, BeanArc_internal)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, DEM.Net.Lib.Services.Lab.BeanArc_internal)
+  name.vb: Dictionary(Of String, BeanArc_internal)
+  spec.csharp:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: DEM.Net.Lib.Services.Lab.BeanArc_internal
+    name: BeanArc_internal
+    nameWithType: BeanArc_internal
+    fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: DEM.Net.Lib.Services.Lab.BeanArc_internal
+    name: BeanArc_internal
+    nameWithType: BeanArc_internal
+    fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p13_facettesById*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p13_facettesById
+  name: p13_facettesById
+  nameWithType: BeanTopologieFacettes.p13_facettesById
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p13_facettesById
+- uid: System.Collections.Generic.Dictionary{System.Int32,DEM.Net.Lib.Services.Lab.BeanFacette_internal}
+  commentId: T:System.Collections.Generic.Dictionary{System.Int32,DEM.Net.Lib.Services.Lab.BeanFacette_internal}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.Dictionary`2
+  name: Dictionary<Int32, BeanFacette_internal>
+  nameWithType: Dictionary<Int32, BeanFacette_internal>
+  fullName: System.Collections.Generic.Dictionary<System.Int32, DEM.Net.Lib.Services.Lab.BeanFacette_internal>
+  nameWithType.vb: Dictionary(Of Int32, BeanFacette_internal)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.Int32, DEM.Net.Lib.Services.Lab.BeanFacette_internal)
+  name.vb: Dictionary(Of Int32, BeanFacette_internal)
+  spec.csharp:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+    name: BeanFacette_internal
+    nameWithType: BeanFacette_internal
+    fullName: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+    name: BeanFacette_internal
+    nameWithType: BeanFacette_internal
+    fullName: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p21_facetteAvecEcartAbsoluMax*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p21_facetteAvecEcartAbsoluMax
+  name: p21_facetteAvecEcartAbsoluMax
+  nameWithType: BeanTopologieFacettes.p21_facetteAvecEcartAbsoluMax
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.p21_facetteAvecEcartAbsoluMax
+- uid: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+  commentId: T:DEM.Net.Lib.Services.Lab.BeanFacette_internal
+  parent: DEM.Net.Lib.Services.Lab
+  name: BeanFacette_internal
+  nameWithType: BeanFacette_internal
+  fullName: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcsAjouter*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcsAjouter
+  name: ArcsAjouter
+  nameWithType: BeanTopologieFacettes.ArcsAjouter
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcsAjouter
+- uid: System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanArc_internal}
+  commentId: T:System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanArc_internal}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  name: IEnumerable<BeanArc_internal>
+  nameWithType: IEnumerable<BeanArc_internal>
+  fullName: System.Collections.Generic.IEnumerable<DEM.Net.Lib.Services.Lab.BeanArc_internal>
+  nameWithType.vb: IEnumerable(Of BeanArc_internal)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of DEM.Net.Lib.Services.Lab.BeanArc_internal)
+  name.vb: IEnumerable(Of BeanArc_internal)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: DEM.Net.Lib.Services.Lab.BeanArc_internal
+    name: BeanArc_internal
+    nameWithType: BeanArc_internal
+    fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: DEM.Net.Lib.Services.Lab.BeanArc_internal
+    name: BeanArc_internal
+    nameWithType: BeanArc_internal
+    fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IEnumerable`1
+  commentId: T:System.Collections.Generic.IEnumerable`1
+  isExternal: true
+  name: IEnumerable<T>
+  nameWithType: IEnumerable<T>
+  fullName: System.Collections.Generic.IEnumerable<T>
+  nameWithType.vb: IEnumerable(Of T)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
+  name.vb: IEnumerable(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcAjouter*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcAjouter
+  name: ArcAjouter
+  nameWithType: BeanTopologieFacettes.ArcAjouter
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcAjouter
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal
+  commentId: T:DEM.Net.Lib.Services.Lab.BeanArc_internal
+  parent: DEM.Net.Lib.Services.Lab
+  name: BeanArc_internal
+  nameWithType: BeanArc_internal
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcSupprimer*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcSupprimer
+  name: ArcSupprimer
+  nameWithType: BeanTopologieFacettes.ArcSupprimer
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.ArcSupprimer
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.PointFacAjouter*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.PointFacAjouter
+  name: PointFacAjouter
+  nameWithType: BeanTopologieFacettes.PointFacAjouter
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.PointFacAjouter
+- uid: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+  commentId: T:DEM.Net.Lib.Services.Lab.BeanPoint_internal
+  parent: DEM.Net.Lib.Services.Lab
+  name: BeanPoint_internal
+  nameWithType: BeanPoint_internal
+  fullName: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.PointsFacAjouter*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.PointsFacAjouter
+  name: PointsFacAjouter
+  nameWithType: BeanTopologieFacettes.PointsFacAjouter
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.PointsFacAjouter
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteAjouter*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteAjouter
+  name: FacetteAjouter
+  nameWithType: BeanTopologieFacettes.FacetteAjouter
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteAjouter
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacettesAjouter*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacettesAjouter
+  name: FacettesAjouter
+  nameWithType: BeanTopologieFacettes.FacettesAjouter
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacettesAjouter
+- uid: System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanFacette_internal}
+  commentId: T:System.Collections.Generic.IEnumerable{DEM.Net.Lib.Services.Lab.BeanFacette_internal}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  name: IEnumerable<BeanFacette_internal>
+  nameWithType: IEnumerable<BeanFacette_internal>
+  fullName: System.Collections.Generic.IEnumerable<DEM.Net.Lib.Services.Lab.BeanFacette_internal>
+  nameWithType.vb: IEnumerable(Of BeanFacette_internal)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of DEM.Net.Lib.Services.Lab.BeanFacette_internal)
+  name.vb: IEnumerable(Of BeanFacette_internal)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+    name: BeanFacette_internal
+    nameWithType: BeanFacette_internal
+    fullName: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+    name: BeanFacette_internal
+    nameWithType: BeanFacette_internal
+    fullName: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteSupprimer*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteSupprimer
+  name: FacetteSupprimer
+  nameWithType: BeanTopologieFacettes.FacetteSupprimer
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.FacetteSupprimer
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.#ctor*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.#ctor
+  name: BeanTopologieFacettes
+  nameWithType: BeanTopologieFacettes.BeanTopologieFacettes
+  fullName: DEM.Net.Lib.Services.Lab.BeanTopologieFacettes.BeanTopologieFacettes

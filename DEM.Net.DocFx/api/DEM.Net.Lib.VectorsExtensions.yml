@@ -1,0 +1,845 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.VectorsExtensions
+  commentId: T:DEM.Net.Lib.VectorsExtensions
+  id: VectorsExtensions
+  parent: DEM.Net.Lib
+  children:
+  - DEM.Net.Lib.VectorsExtensions.GetStats(System.Collections.Generic.IEnumerable{System.Numerics.Vector3},System.Numerics.Vector3@,System.Numerics.Vector3@,System.Numerics.Vector3@)
+  - DEM.Net.Lib.VectorsExtensions.ToQuadPoints(System.Numerics.Vector3,System.Single)
+  - DEM.Net.Lib.VectorsExtensions.ToVector3(DEM.Net.Lib.GeoPoint)
+  - DEM.Net.Lib.VectorsExtensions.ToVector3(System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint})
+  - DEM.Net.Lib.VectorsExtensions.ToVector4(System.Numerics.Vector3,System.Single)
+  - DEM.Net.Lib.VectorsExtensions.TriangulateQuadIndices(System.Int32)
+  langs:
+  - csharp
+  - vb
+  name: VectorsExtensions
+  nameWithType: VectorsExtensions
+  fullName: DEM.Net.Lib.VectorsExtensions
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Helpers/VectorsExtensions.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: VectorsExtensions
+    path: ../DEM.Net.Lib/Helpers/VectorsExtensions.cs
+    startLine: 10
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public static class VectorsExtensions
+    content.vb: Public Module VectorsExtensions
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - static
+  - class
+  modifiers.vb:
+  - Public
+  - Module
+- uid: DEM.Net.Lib.VectorsExtensions.ToVector3(System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint})
+  commentId: M:DEM.Net.Lib.VectorsExtensions.ToVector3(System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint})
+  id: ToVector3(System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint})
+  isExtensionMethod: true
+  parent: DEM.Net.Lib.VectorsExtensions
+  langs:
+  - csharp
+  - vb
+  name: ToVector3(IEnumerable<GeoPoint>)
+  nameWithType: VectorsExtensions.ToVector3(IEnumerable<GeoPoint>)
+  fullName: DEM.Net.Lib.VectorsExtensions.ToVector3(System.Collections.Generic.IEnumerable<DEM.Net.Lib.GeoPoint>)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Helpers/VectorsExtensions.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ToVector3
+    path: ../DEM.Net.Lib/Helpers/VectorsExtensions.cs
+    startLine: 12
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public static IEnumerable<Vector3> ToVector3(this IEnumerable<GeoPoint> geoPoint)
+    parameters:
+    - id: geoPoint
+      type: System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint}
+    return:
+      type: System.Collections.Generic.IEnumerable{System.Numerics.Vector3}
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Function ToVector3(geoPoint As IEnumerable(Of GeoPoint)) As IEnumerable(Of Vector3)
+  overload: DEM.Net.Lib.VectorsExtensions.ToVector3*
+  nameWithType.vb: VectorsExtensions.ToVector3(IEnumerable(Of GeoPoint))
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: DEM.Net.Lib.VectorsExtensions.ToVector3(System.Collections.Generic.IEnumerable(Of DEM.Net.Lib.GeoPoint))
+  name.vb: ToVector3(IEnumerable(Of GeoPoint))
+- uid: DEM.Net.Lib.VectorsExtensions.ToVector3(DEM.Net.Lib.GeoPoint)
+  commentId: M:DEM.Net.Lib.VectorsExtensions.ToVector3(DEM.Net.Lib.GeoPoint)
+  id: ToVector3(DEM.Net.Lib.GeoPoint)
+  isExtensionMethod: true
+  parent: DEM.Net.Lib.VectorsExtensions
+  langs:
+  - csharp
+  - vb
+  name: ToVector3(GeoPoint)
+  nameWithType: VectorsExtensions.ToVector3(GeoPoint)
+  fullName: DEM.Net.Lib.VectorsExtensions.ToVector3(DEM.Net.Lib.GeoPoint)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Helpers/VectorsExtensions.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ToVector3
+    path: ../DEM.Net.Lib/Helpers/VectorsExtensions.cs
+    startLine: 16
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public static Vector3 ToVector3(this GeoPoint geoPoint)
+    parameters:
+    - id: geoPoint
+      type: DEM.Net.Lib.GeoPoint
+    return:
+      type: System.Numerics.Vector3
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Function ToVector3(geoPoint As GeoPoint) As Vector3
+  overload: DEM.Net.Lib.VectorsExtensions.ToVector3*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: DEM.Net.Lib.VectorsExtensions.ToVector4(System.Numerics.Vector3,System.Single)
+  commentId: M:DEM.Net.Lib.VectorsExtensions.ToVector4(System.Numerics.Vector3,System.Single)
+  id: ToVector4(System.Numerics.Vector3,System.Single)
+  isExtensionMethod: true
+  parent: DEM.Net.Lib.VectorsExtensions
+  langs:
+  - csharp
+  - vb
+  name: ToVector4(Vector3, Single)
+  nameWithType: VectorsExtensions.ToVector4(Vector3, Single)
+  fullName: DEM.Net.Lib.VectorsExtensions.ToVector4(System.Numerics.Vector3, System.Single)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Helpers/VectorsExtensions.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ToVector4
+    path: ../DEM.Net.Lib/Helpers/VectorsExtensions.cs
+    startLine: 20
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public static Vector4 ToVector4(this Vector3 vector3, float w = 0F)
+    parameters:
+    - id: vector3
+      type: System.Numerics.Vector3
+    - id: w
+      type: System.Single
+    return:
+      type: System.Numerics.Vector4
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Function ToVector4(vector3 As Vector3, w As Single = 0F) As Vector4
+  overload: DEM.Net.Lib.VectorsExtensions.ToVector4*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: DEM.Net.Lib.VectorsExtensions.ToQuadPoints(System.Numerics.Vector3,System.Single)
+  commentId: M:DEM.Net.Lib.VectorsExtensions.ToQuadPoints(System.Numerics.Vector3,System.Single)
+  id: ToQuadPoints(System.Numerics.Vector3,System.Single)
+  isExtensionMethod: true
+  parent: DEM.Net.Lib.VectorsExtensions
+  langs:
+  - csharp
+  - vb
+  name: ToQuadPoints(Vector3, Single)
+  nameWithType: VectorsExtensions.ToQuadPoints(Vector3, Single)
+  fullName: DEM.Net.Lib.VectorsExtensions.ToQuadPoints(System.Numerics.Vector3, System.Single)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Helpers/VectorsExtensions.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ToQuadPoints
+    path: ../DEM.Net.Lib/Helpers/VectorsExtensions.cs
+    startLine: 24
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public static IEnumerable<Vector3> ToQuadPoints(this Vector3 vertex, float pointSize)
+    parameters:
+    - id: vertex
+      type: System.Numerics.Vector3
+    - id: pointSize
+      type: System.Single
+    return:
+      type: System.Collections.Generic.IEnumerable{System.Numerics.Vector3}
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Function ToQuadPoints(vertex As Vector3, pointSize As Single) As IEnumerable(Of Vector3)
+  overload: DEM.Net.Lib.VectorsExtensions.ToQuadPoints*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: DEM.Net.Lib.VectorsExtensions.TriangulateQuadIndices(System.Int32)
+  commentId: M:DEM.Net.Lib.VectorsExtensions.TriangulateQuadIndices(System.Int32)
+  id: TriangulateQuadIndices(System.Int32)
+  parent: DEM.Net.Lib.VectorsExtensions
+  langs:
+  - csharp
+  - vb
+  name: TriangulateQuadIndices(Int32)
+  nameWithType: VectorsExtensions.TriangulateQuadIndices(Int32)
+  fullName: DEM.Net.Lib.VectorsExtensions.TriangulateQuadIndices(System.Int32)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Helpers/VectorsExtensions.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: TriangulateQuadIndices
+    path: ../DEM.Net.Lib/Helpers/VectorsExtensions.cs
+    startLine: 40
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public static IEnumerable<int> TriangulateQuadIndices(int startindex)
+    parameters:
+    - id: startindex
+      type: System.Int32
+    return:
+      type: System.Collections.Generic.IEnumerable{System.Int32}
+    content.vb: Public Shared Function TriangulateQuadIndices(startindex As Integer) As IEnumerable(Of Integer)
+  overload: DEM.Net.Lib.VectorsExtensions.TriangulateQuadIndices*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: DEM.Net.Lib.VectorsExtensions.GetStats(System.Collections.Generic.IEnumerable{System.Numerics.Vector3},System.Numerics.Vector3@,System.Numerics.Vector3@,System.Numerics.Vector3@)
+  commentId: M:DEM.Net.Lib.VectorsExtensions.GetStats(System.Collections.Generic.IEnumerable{System.Numerics.Vector3},System.Numerics.Vector3@,System.Numerics.Vector3@,System.Numerics.Vector3@)
+  id: GetStats(System.Collections.Generic.IEnumerable{System.Numerics.Vector3},System.Numerics.Vector3@,System.Numerics.Vector3@,System.Numerics.Vector3@)
+  isExtensionMethod: true
+  parent: DEM.Net.Lib.VectorsExtensions
+  langs:
+  - csharp
+  - vb
+  name: GetStats(IEnumerable<Vector3>, out Vector3, out Vector3, out Vector3)
+  nameWithType: VectorsExtensions.GetStats(IEnumerable<Vector3>, out Vector3, out Vector3, out Vector3)
+  fullName: DEM.Net.Lib.VectorsExtensions.GetStats(System.Collections.Generic.IEnumerable<System.Numerics.Vector3>, out System.Numerics.Vector3, out System.Numerics.Vector3, out System.Numerics.Vector3)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Helpers/VectorsExtensions.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetStats
+    path: ../DEM.Net.Lib/Helpers/VectorsExtensions.cs
+    startLine: 51
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public static void GetStats(this IEnumerable<Vector3> vectors, out Vector3 average, out Vector3 min, out Vector3 max)
+    parameters:
+    - id: vectors
+      type: System.Collections.Generic.IEnumerable{System.Numerics.Vector3}
+    - id: average
+      type: System.Numerics.Vector3
+    - id: min
+      type: System.Numerics.Vector3
+    - id: max
+      type: System.Numerics.Vector3
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Sub GetStats(vectors As IEnumerable(Of Vector3), ByRef average As Vector3, ByRef min As Vector3, ByRef max As Vector3)
+  overload: DEM.Net.Lib.VectorsExtensions.GetStats*
+  nameWithType.vb: VectorsExtensions.GetStats(IEnumerable(Of Vector3), ByRef Vector3, ByRef Vector3, ByRef Vector3)
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: DEM.Net.Lib.VectorsExtensions.GetStats(System.Collections.Generic.IEnumerable(Of System.Numerics.Vector3), ByRef System.Numerics.Vector3, ByRef System.Numerics.Vector3, ByRef System.Numerics.Vector3)
+  name.vb: GetStats(IEnumerable(Of Vector3), ByRef Vector3, ByRef Vector3, ByRef Vector3)
+references:
+- uid: DEM.Net.Lib
+  commentId: N:DEM.Net.Lib
+  name: DEM.Net.Lib
+  nameWithType: DEM.Net.Lib
+  fullName: DEM.Net.Lib
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.VectorsExtensions.ToVector3*
+  commentId: Overload:DEM.Net.Lib.VectorsExtensions.ToVector3
+  name: ToVector3
+  nameWithType: VectorsExtensions.ToVector3
+  fullName: DEM.Net.Lib.VectorsExtensions.ToVector3
+- uid: System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint}
+  commentId: T:System.Collections.Generic.IEnumerable{DEM.Net.Lib.GeoPoint}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  name: IEnumerable<GeoPoint>
+  nameWithType: IEnumerable<GeoPoint>
+  fullName: System.Collections.Generic.IEnumerable<DEM.Net.Lib.GeoPoint>
+  nameWithType.vb: IEnumerable(Of GeoPoint)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of DEM.Net.Lib.GeoPoint)
+  name.vb: IEnumerable(Of GeoPoint)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: DEM.Net.Lib.GeoPoint
+    name: GeoPoint
+    nameWithType: GeoPoint
+    fullName: DEM.Net.Lib.GeoPoint
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: DEM.Net.Lib.GeoPoint
+    name: GeoPoint
+    nameWithType: GeoPoint
+    fullName: DEM.Net.Lib.GeoPoint
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IEnumerable{System.Numerics.Vector3}
+  commentId: T:System.Collections.Generic.IEnumerable{System.Numerics.Vector3}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  name: IEnumerable<Vector3>
+  nameWithType: IEnumerable<Vector3>
+  fullName: System.Collections.Generic.IEnumerable<System.Numerics.Vector3>
+  nameWithType.vb: IEnumerable(Of Vector3)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of System.Numerics.Vector3)
+  name.vb: IEnumerable(Of Vector3)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Numerics.Vector3
+    name: Vector3
+    nameWithType: Vector3
+    fullName: System.Numerics.Vector3
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Numerics.Vector3
+    name: Vector3
+    nameWithType: Vector3
+    fullName: System.Numerics.Vector3
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IEnumerable`1
+  commentId: T:System.Collections.Generic.IEnumerable`1
+  isExternal: true
+  name: IEnumerable<T>
+  nameWithType: IEnumerable<T>
+  fullName: System.Collections.Generic.IEnumerable<T>
+  nameWithType.vb: IEnumerable(Of T)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
+  name.vb: IEnumerable(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: DEM.Net.Lib.GeoPoint
+  commentId: T:DEM.Net.Lib.GeoPoint
+  parent: DEM.Net.Lib
+  name: GeoPoint
+  nameWithType: GeoPoint
+  fullName: DEM.Net.Lib.GeoPoint
+- uid: System.Numerics.Vector3
+  commentId: T:System.Numerics.Vector3
+  parent: System.Numerics
+  isExternal: true
+  name: Vector3
+  nameWithType: Vector3
+  fullName: System.Numerics.Vector3
+- uid: System.Numerics
+  commentId: N:System.Numerics
+  isExternal: true
+  name: System.Numerics
+  nameWithType: System.Numerics
+  fullName: System.Numerics
+- uid: DEM.Net.Lib.VectorsExtensions.ToVector4*
+  commentId: Overload:DEM.Net.Lib.VectorsExtensions.ToVector4
+  name: ToVector4
+  nameWithType: VectorsExtensions.ToVector4
+  fullName: DEM.Net.Lib.VectorsExtensions.ToVector4
+- uid: System.Single
+  commentId: T:System.Single
+  parent: System
+  isExternal: true
+  name: Single
+  nameWithType: Single
+  fullName: System.Single
+- uid: System.Numerics.Vector4
+  commentId: T:System.Numerics.Vector4
+  parent: System.Numerics
+  isExternal: true
+  name: Vector4
+  nameWithType: Vector4
+  fullName: System.Numerics.Vector4
+- uid: DEM.Net.Lib.VectorsExtensions.ToQuadPoints*
+  commentId: Overload:DEM.Net.Lib.VectorsExtensions.ToQuadPoints
+  name: ToQuadPoints
+  nameWithType: VectorsExtensions.ToQuadPoints
+  fullName: DEM.Net.Lib.VectorsExtensions.ToQuadPoints
+- uid: DEM.Net.Lib.VectorsExtensions.TriangulateQuadIndices*
+  commentId: Overload:DEM.Net.Lib.VectorsExtensions.TriangulateQuadIndices
+  name: TriangulateQuadIndices
+  nameWithType: VectorsExtensions.TriangulateQuadIndices
+  fullName: DEM.Net.Lib.VectorsExtensions.TriangulateQuadIndices
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: System.Collections.Generic.IEnumerable{System.Int32}
+  commentId: T:System.Collections.Generic.IEnumerable{System.Int32}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  name: IEnumerable<Int32>
+  nameWithType: IEnumerable<Int32>
+  fullName: System.Collections.Generic.IEnumerable<System.Int32>
+  nameWithType.vb: IEnumerable(Of Int32)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of System.Int32)
+  name.vb: IEnumerable(Of Int32)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.VectorsExtensions.GetStats*
+  commentId: Overload:DEM.Net.Lib.VectorsExtensions.GetStats
+  name: GetStats
+  nameWithType: VectorsExtensions.GetStats
+  fullName: DEM.Net.Lib.VectorsExtensions.GetStats

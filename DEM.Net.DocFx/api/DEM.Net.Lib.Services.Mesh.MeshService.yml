@@ -1,0 +1,790 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Services.Mesh.MeshService
+  commentId: T:DEM.Net.Lib.Services.Mesh.MeshService
+  id: MeshService
+  parent: DEM.Net.Lib.Services.Mesh
+  children:
+  - DEM.Net.Lib.Services.Mesh.MeshService.ComputeNormals(DEM.Net.Lib.HeightMap)
+  - DEM.Net.Lib.Services.Mesh.MeshService.ComputeNormals(System.Collections.Generic.List{System.Numerics.Vector3},System.Collections.Generic.List{System.Int32})
+  - DEM.Net.Lib.Services.Mesh.MeshService.TriangulateHeightMap(DEM.Net.Lib.HeightMap,System.Boolean)
+  langs:
+  - csharp
+  - vb
+  name: MeshService
+  nameWithType: MeshService
+  fullName: DEM.Net.Lib.Services.Mesh.MeshService
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Mesh/MeshService.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: MeshService
+    path: ../DEM.Net.Lib/Services/Mesh/MeshService.cs
+    startLine: 9
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Mesh
+  syntax:
+    content: public static class MeshService
+    content.vb: Public Module MeshService
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - static
+  - class
+  modifiers.vb:
+  - Public
+  - Module
+- uid: DEM.Net.Lib.Services.Mesh.MeshService.TriangulateHeightMap(DEM.Net.Lib.HeightMap,System.Boolean)
+  commentId: M:DEM.Net.Lib.Services.Mesh.MeshService.TriangulateHeightMap(DEM.Net.Lib.HeightMap,System.Boolean)
+  id: TriangulateHeightMap(DEM.Net.Lib.HeightMap,System.Boolean)
+  parent: DEM.Net.Lib.Services.Mesh.MeshService
+  langs:
+  - csharp
+  - vb
+  name: TriangulateHeightMap(HeightMap, Boolean)
+  nameWithType: MeshService.TriangulateHeightMap(HeightMap, Boolean)
+  fullName: DEM.Net.Lib.Services.Mesh.MeshService.TriangulateHeightMap(DEM.Net.Lib.HeightMap, System.Boolean)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Mesh/MeshService.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: TriangulateHeightMap
+    path: ../DEM.Net.Lib/Services/Mesh/MeshService.cs
+    startLine: 18
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Mesh
+  summary: "\nTriangulate a regular set of points\n"
+  example: []
+  syntax:
+    content: public static EnumerableWithCount<int> TriangulateHeightMap(HeightMap heightMap, bool regularTriangulation = true)
+    parameters:
+    - id: heightMap
+      type: DEM.Net.Lib.HeightMap
+      description: "Gridded set of points. Corrdinates can differ, \nbut height map should be organized a set of rows and columns"
+    - id: regularTriangulation
+      type: System.Boolean
+      description: (optional) Determines which diagnal is choosen
+    return:
+      type: DEM.Net.Lib.EnumerableWithCount{System.Int32}
+      description: List of indexes (triplets) in height map coordinates, indicating each of the triangles vertices
+    content.vb: Public Shared Function TriangulateHeightMap(heightMap As HeightMap, regularTriangulation As Boolean = True) As EnumerableWithCount(Of Integer)
+  overload: DEM.Net.Lib.Services.Mesh.MeshService.TriangulateHeightMap*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: DEM.Net.Lib.Services.Mesh.MeshService.ComputeNormals(System.Collections.Generic.List{System.Numerics.Vector3},System.Collections.Generic.List{System.Int32})
+  commentId: M:DEM.Net.Lib.Services.Mesh.MeshService.ComputeNormals(System.Collections.Generic.List{System.Numerics.Vector3},System.Collections.Generic.List{System.Int32})
+  id: ComputeNormals(System.Collections.Generic.List{System.Numerics.Vector3},System.Collections.Generic.List{System.Int32})
+  parent: DEM.Net.Lib.Services.Mesh.MeshService
+  langs:
+  - csharp
+  - vb
+  name: ComputeNormals(List<Vector3>, List<Int32>)
+  nameWithType: MeshService.ComputeNormals(List<Vector3>, List<Int32>)
+  fullName: DEM.Net.Lib.Services.Mesh.MeshService.ComputeNormals(System.Collections.Generic.List<System.Numerics.Vector3>, System.Collections.Generic.List<System.Int32>)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Mesh/MeshService.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ComputeNormals
+    path: ../DEM.Net.Lib/Services/Mesh/MeshService.cs
+    startLine: 64
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Mesh
+  syntax:
+    content: public static IEnumerableWithCount<Vector3> ComputeNormals(List<Vector3> positions, List<int> indices)
+    parameters:
+    - id: positions
+      type: System.Collections.Generic.List{System.Numerics.Vector3}
+    - id: indices
+      type: System.Collections.Generic.List{System.Int32}
+    return:
+      type: DEM.Net.Lib.IEnumerableWithCount{System.Numerics.Vector3}
+    content.vb: Public Shared Function ComputeNormals(positions As List(Of Vector3), indices As List(Of Integer)) As IEnumerableWithCount(Of Vector3)
+  overload: DEM.Net.Lib.Services.Mesh.MeshService.ComputeNormals*
+  nameWithType.vb: MeshService.ComputeNormals(List(Of Vector3), List(Of Int32))
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: DEM.Net.Lib.Services.Mesh.MeshService.ComputeNormals(System.Collections.Generic.List(Of System.Numerics.Vector3), System.Collections.Generic.List(Of System.Int32))
+  name.vb: ComputeNormals(List(Of Vector3), List(Of Int32))
+- uid: DEM.Net.Lib.Services.Mesh.MeshService.ComputeNormals(DEM.Net.Lib.HeightMap)
+  commentId: M:DEM.Net.Lib.Services.Mesh.MeshService.ComputeNormals(DEM.Net.Lib.HeightMap)
+  id: ComputeNormals(DEM.Net.Lib.HeightMap)
+  parent: DEM.Net.Lib.Services.Mesh.MeshService
+  langs:
+  - csharp
+  - vb
+  name: ComputeNormals(HeightMap)
+  nameWithType: MeshService.ComputeNormals(HeightMap)
+  fullName: DEM.Net.Lib.Services.Mesh.MeshService.ComputeNormals(DEM.Net.Lib.HeightMap)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Mesh/MeshService.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ComputeNormals
+    path: ../DEM.Net.Lib/Services/Mesh/MeshService.cs
+    startLine: 101
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Mesh
+  summary: "\nCalculate normals for a given height map\n"
+  example: []
+  syntax:
+    content: public static IEnumerableWithCount<Vector3> ComputeNormals(HeightMap heightMap)
+    parameters:
+    - id: heightMap
+      type: DEM.Net.Lib.HeightMap
+      description: Height map (gridded data)
+    return:
+      type: DEM.Net.Lib.IEnumerableWithCount{System.Numerics.Vector3}
+      description: Normals for each point of the height map
+    content.vb: Public Shared Function ComputeNormals(heightMap As HeightMap) As IEnumerableWithCount(Of Vector3)
+  overload: DEM.Net.Lib.Services.Mesh.MeshService.ComputeNormals*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+references:
+- uid: DEM.Net.Lib.Services.Mesh
+  commentId: N:DEM.Net.Lib.Services.Mesh
+  name: DEM.Net.Lib.Services.Mesh
+  nameWithType: DEM.Net.Lib.Services.Mesh
+  fullName: DEM.Net.Lib.Services.Mesh
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.Services.Mesh.MeshService.TriangulateHeightMap*
+  commentId: Overload:DEM.Net.Lib.Services.Mesh.MeshService.TriangulateHeightMap
+  name: TriangulateHeightMap
+  nameWithType: MeshService.TriangulateHeightMap
+  fullName: DEM.Net.Lib.Services.Mesh.MeshService.TriangulateHeightMap
+- uid: DEM.Net.Lib.HeightMap
+  commentId: T:DEM.Net.Lib.HeightMap
+  parent: DEM.Net.Lib
+  name: HeightMap
+  nameWithType: HeightMap
+  fullName: DEM.Net.Lib.HeightMap
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  nameWithType: Boolean
+  fullName: System.Boolean
+- uid: DEM.Net.Lib.EnumerableWithCount{System.Int32}
+  commentId: T:DEM.Net.Lib.EnumerableWithCount{System.Int32}
+  parent: DEM.Net.Lib
+  definition: DEM.Net.Lib.EnumerableWithCount`1
+  name: EnumerableWithCount<Int32>
+  nameWithType: EnumerableWithCount<Int32>
+  fullName: DEM.Net.Lib.EnumerableWithCount<System.Int32>
+  nameWithType.vb: EnumerableWithCount(Of Int32)
+  fullName.vb: DEM.Net.Lib.EnumerableWithCount(Of System.Int32)
+  name.vb: EnumerableWithCount(Of Int32)
+  spec.csharp:
+  - uid: DEM.Net.Lib.EnumerableWithCount`1
+    name: EnumerableWithCount
+    nameWithType: EnumerableWithCount
+    fullName: DEM.Net.Lib.EnumerableWithCount
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: DEM.Net.Lib.EnumerableWithCount`1
+    name: EnumerableWithCount
+    nameWithType: EnumerableWithCount
+    fullName: DEM.Net.Lib.EnumerableWithCount
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib
+  commentId: N:DEM.Net.Lib
+  name: DEM.Net.Lib
+  nameWithType: DEM.Net.Lib
+  fullName: DEM.Net.Lib
+- uid: DEM.Net.Lib.EnumerableWithCount`1
+  commentId: T:DEM.Net.Lib.EnumerableWithCount`1
+  name: EnumerableWithCount<T>
+  nameWithType: EnumerableWithCount<T>
+  fullName: DEM.Net.Lib.EnumerableWithCount<T>
+  nameWithType.vb: EnumerableWithCount(Of T)
+  fullName.vb: DEM.Net.Lib.EnumerableWithCount(Of T)
+  name.vb: EnumerableWithCount(Of T)
+  spec.csharp:
+  - uid: DEM.Net.Lib.EnumerableWithCount`1
+    name: EnumerableWithCount
+    nameWithType: EnumerableWithCount
+    fullName: DEM.Net.Lib.EnumerableWithCount
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: DEM.Net.Lib.EnumerableWithCount`1
+    name: EnumerableWithCount
+    nameWithType: EnumerableWithCount
+    fullName: DEM.Net.Lib.EnumerableWithCount
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Services.Mesh.MeshService.ComputeNormals*
+  commentId: Overload:DEM.Net.Lib.Services.Mesh.MeshService.ComputeNormals
+  name: ComputeNormals
+  nameWithType: MeshService.ComputeNormals
+  fullName: DEM.Net.Lib.Services.Mesh.MeshService.ComputeNormals
+- uid: System.Collections.Generic.List{System.Numerics.Vector3}
+  commentId: T:System.Collections.Generic.List{System.Numerics.Vector3}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<Vector3>
+  nameWithType: List<Vector3>
+  fullName: System.Collections.Generic.List<System.Numerics.Vector3>
+  nameWithType.vb: List(Of Vector3)
+  fullName.vb: System.Collections.Generic.List(Of System.Numerics.Vector3)
+  name.vb: List(Of Vector3)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Numerics.Vector3
+    name: Vector3
+    nameWithType: Vector3
+    fullName: System.Numerics.Vector3
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Numerics.Vector3
+    name: Vector3
+    nameWithType: Vector3
+    fullName: System.Numerics.Vector3
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.List{System.Int32}
+  commentId: T:System.Collections.Generic.List{System.Int32}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<Int32>
+  nameWithType: List<Int32>
+  fullName: System.Collections.Generic.List<System.Int32>
+  nameWithType.vb: List(Of Int32)
+  fullName.vb: System.Collections.Generic.List(Of System.Int32)
+  name.vb: List(Of Int32)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.IEnumerableWithCount{System.Numerics.Vector3}
+  commentId: T:DEM.Net.Lib.IEnumerableWithCount{System.Numerics.Vector3}
+  parent: DEM.Net.Lib
+  definition: DEM.Net.Lib.IEnumerableWithCount`1
+  name: IEnumerableWithCount<Vector3>
+  nameWithType: IEnumerableWithCount<Vector3>
+  fullName: DEM.Net.Lib.IEnumerableWithCount<System.Numerics.Vector3>
+  nameWithType.vb: IEnumerableWithCount(Of Vector3)
+  fullName.vb: DEM.Net.Lib.IEnumerableWithCount(Of System.Numerics.Vector3)
+  name.vb: IEnumerableWithCount(Of Vector3)
+  spec.csharp:
+  - uid: DEM.Net.Lib.IEnumerableWithCount`1
+    name: IEnumerableWithCount
+    nameWithType: IEnumerableWithCount
+    fullName: DEM.Net.Lib.IEnumerableWithCount
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Numerics.Vector3
+    name: Vector3
+    nameWithType: Vector3
+    fullName: System.Numerics.Vector3
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: DEM.Net.Lib.IEnumerableWithCount`1
+    name: IEnumerableWithCount
+    nameWithType: IEnumerableWithCount
+    fullName: DEM.Net.Lib.IEnumerableWithCount
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Numerics.Vector3
+    name: Vector3
+    nameWithType: Vector3
+    fullName: System.Numerics.Vector3
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.List`1
+  commentId: T:System.Collections.Generic.List`1
+  isExternal: true
+  name: List<T>
+  nameWithType: List<T>
+  fullName: System.Collections.Generic.List<T>
+  nameWithType.vb: List(Of T)
+  fullName.vb: System.Collections.Generic.List(Of T)
+  name.vb: List(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: DEM.Net.Lib.IEnumerableWithCount`1
+  commentId: T:DEM.Net.Lib.IEnumerableWithCount`1
+  name: IEnumerableWithCount<T>
+  nameWithType: IEnumerableWithCount<T>
+  fullName: DEM.Net.Lib.IEnumerableWithCount<T>
+  nameWithType.vb: IEnumerableWithCount(Of T)
+  fullName.vb: DEM.Net.Lib.IEnumerableWithCount(Of T)
+  name.vb: IEnumerableWithCount(Of T)
+  spec.csharp:
+  - uid: DEM.Net.Lib.IEnumerableWithCount`1
+    name: IEnumerableWithCount
+    nameWithType: IEnumerableWithCount
+    fullName: DEM.Net.Lib.IEnumerableWithCount
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: DEM.Net.Lib.IEnumerableWithCount`1
+    name: IEnumerableWithCount
+    nameWithType: IEnumerableWithCount
+    fullName: DEM.Net.Lib.IEnumerableWithCount
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )

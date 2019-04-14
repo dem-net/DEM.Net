@@ -1,0 +1,725 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Gpx.GpxRoutePoint
+  commentId: T:DEM.Net.Lib.Gpx.GpxRoutePoint
+  id: GpxRoutePoint
+  parent: DEM.Net.Lib.Gpx
+  children:
+  - DEM.Net.Lib.Gpx.GpxRoutePoint.HasExtensions
+  - DEM.Net.Lib.Gpx.GpxRoutePoint.RoutePoints
+  langs:
+  - csharp
+  - vb
+  name: GpxRoutePoint
+  nameWithType: GpxRoutePoint
+  fullName: DEM.Net.Lib.Gpx.GpxRoutePoint
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GpxRoutePoint
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 360
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: 'public class GpxRoutePoint : GpxPoint'
+    content.vb: >-
+      Public Class GpxRoutePoint
+          Inherits GpxPoint
+  inheritance:
+  - System.Object
+  - DEM.Net.Lib.Gpx.GpxPoint
+  inheritedMembers:
+  - DEM.Net.Lib.Gpx.GpxPoint.Properties_
+  - DEM.Net.Lib.Gpx.GpxPoint.Latitude
+  - DEM.Net.Lib.Gpx.GpxPoint.Longitude
+  - DEM.Net.Lib.Gpx.GpxPoint.Elevation
+  - DEM.Net.Lib.Gpx.GpxPoint.Time
+  - DEM.Net.Lib.Gpx.GpxPoint.MagneticVar
+  - DEM.Net.Lib.Gpx.GpxPoint.GeoidHeight
+  - DEM.Net.Lib.Gpx.GpxPoint.Name
+  - DEM.Net.Lib.Gpx.GpxPoint.Comment
+  - DEM.Net.Lib.Gpx.GpxPoint.Description
+  - DEM.Net.Lib.Gpx.GpxPoint.Source
+  - DEM.Net.Lib.Gpx.GpxPoint.Links
+  - DEM.Net.Lib.Gpx.GpxPoint.Symbol
+  - DEM.Net.Lib.Gpx.GpxPoint.Type
+  - DEM.Net.Lib.Gpx.GpxPoint.FixType
+  - DEM.Net.Lib.Gpx.GpxPoint.Satelites
+  - DEM.Net.Lib.Gpx.GpxPoint.Hdop
+  - DEM.Net.Lib.Gpx.GpxPoint.Vdop
+  - DEM.Net.Lib.Gpx.GpxPoint.Pdop
+  - DEM.Net.Lib.Gpx.GpxPoint.AgeOfData
+  - DEM.Net.Lib.Gpx.GpxPoint.DgpsId
+  - DEM.Net.Lib.Gpx.GpxPoint.HttpLink
+  - DEM.Net.Lib.Gpx.GpxPoint.EmailLink
+  - DEM.Net.Lib.Gpx.GpxPoint.GetDistanceFrom(DEM.Net.Lib.Gpx.GpxPoint)
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.Gpx.GpxRoutePoint.RoutePoints
+  commentId: P:DEM.Net.Lib.Gpx.GpxRoutePoint.RoutePoints
+  id: RoutePoints
+  parent: DEM.Net.Lib.Gpx.GpxRoutePoint
+  langs:
+  - csharp
+  - vb
+  name: RoutePoints
+  nameWithType: GpxRoutePoint.RoutePoints
+  fullName: DEM.Net.Lib.Gpx.GpxRoutePoint.RoutePoints
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: RoutePoints
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 364
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public IList<GpxPoint> RoutePoints { get; }
+    parameters: []
+    return:
+      type: System.Collections.Generic.IList{DEM.Net.Lib.Gpx.GpxPoint}
+    content.vb: Public ReadOnly Property RoutePoints As IList(Of GpxPoint)
+  overload: DEM.Net.Lib.Gpx.GpxRoutePoint.RoutePoints*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Gpx.GpxRoutePoint.HasExtensions
+  commentId: P:DEM.Net.Lib.Gpx.GpxRoutePoint.HasExtensions
+  id: HasExtensions
+  parent: DEM.Net.Lib.Gpx.GpxRoutePoint
+  langs:
+  - csharp
+  - vb
+  name: HasExtensions
+  nameWithType: GpxRoutePoint.HasExtensions
+  fullName: DEM.Net.Lib.Gpx.GpxRoutePoint.HasExtensions
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/Gpx.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: HasExtensions
+    path: ../DEM.Net.Lib/IO/gpx/Gpx.cs
+    startLine: 369
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public bool HasExtensions { get; }
+    parameters: []
+    return:
+      type: System.Boolean
+    content.vb: Public ReadOnly Property HasExtensions As Boolean
+  overload: DEM.Net.Lib.Gpx.GpxRoutePoint.HasExtensions*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+references:
+- uid: DEM.Net.Lib.Gpx
+  commentId: N:DEM.Net.Lib.Gpx
+  name: DEM.Net.Lib.Gpx
+  nameWithType: DEM.Net.Lib.Gpx
+  fullName: DEM.Net.Lib.Gpx
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: DEM.Net.Lib.Gpx.GpxPoint
+  commentId: T:DEM.Net.Lib.Gpx.GpxPoint
+  parent: DEM.Net.Lib.Gpx
+  name: GpxPoint
+  nameWithType: GpxPoint
+  fullName: DEM.Net.Lib.Gpx.GpxPoint
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Properties_
+  commentId: F:DEM.Net.Lib.Gpx.GpxPoint.Properties_
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Properties_
+  nameWithType: GpxPoint.Properties_
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Properties_
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Latitude
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Latitude
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Latitude
+  nameWithType: GpxPoint.Latitude
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Latitude
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Longitude
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Longitude
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Longitude
+  nameWithType: GpxPoint.Longitude
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Longitude
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Elevation
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Elevation
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Elevation
+  nameWithType: GpxPoint.Elevation
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Elevation
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Time
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Time
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Time
+  nameWithType: GpxPoint.Time
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Time
+- uid: DEM.Net.Lib.Gpx.GpxPoint.MagneticVar
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.MagneticVar
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: MagneticVar
+  nameWithType: GpxPoint.MagneticVar
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.MagneticVar
+- uid: DEM.Net.Lib.Gpx.GpxPoint.GeoidHeight
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.GeoidHeight
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: GeoidHeight
+  nameWithType: GpxPoint.GeoidHeight
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.GeoidHeight
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Name
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Name
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Name
+  nameWithType: GpxPoint.Name
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Name
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Comment
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Comment
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Comment
+  nameWithType: GpxPoint.Comment
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Comment
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Description
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Description
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Description
+  nameWithType: GpxPoint.Description
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Description
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Source
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Source
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Source
+  nameWithType: GpxPoint.Source
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Source
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Links
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Links
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Links
+  nameWithType: GpxPoint.Links
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Links
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Symbol
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Symbol
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Symbol
+  nameWithType: GpxPoint.Symbol
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Symbol
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Type
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Type
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Type
+  nameWithType: GpxPoint.Type
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Type
+- uid: DEM.Net.Lib.Gpx.GpxPoint.FixType
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.FixType
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: FixType
+  nameWithType: GpxPoint.FixType
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.FixType
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Satelites
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Satelites
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Satelites
+  nameWithType: GpxPoint.Satelites
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Satelites
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Hdop
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Hdop
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Hdop
+  nameWithType: GpxPoint.Hdop
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Hdop
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Vdop
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Vdop
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Vdop
+  nameWithType: GpxPoint.Vdop
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Vdop
+- uid: DEM.Net.Lib.Gpx.GpxPoint.Pdop
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.Pdop
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: Pdop
+  nameWithType: GpxPoint.Pdop
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.Pdop
+- uid: DEM.Net.Lib.Gpx.GpxPoint.AgeOfData
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.AgeOfData
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: AgeOfData
+  nameWithType: GpxPoint.AgeOfData
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.AgeOfData
+- uid: DEM.Net.Lib.Gpx.GpxPoint.DgpsId
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.DgpsId
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: DgpsId
+  nameWithType: GpxPoint.DgpsId
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.DgpsId
+- uid: DEM.Net.Lib.Gpx.GpxPoint.HttpLink
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.HttpLink
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: HttpLink
+  nameWithType: GpxPoint.HttpLink
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.HttpLink
+- uid: DEM.Net.Lib.Gpx.GpxPoint.EmailLink
+  commentId: P:DEM.Net.Lib.Gpx.GpxPoint.EmailLink
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: EmailLink
+  nameWithType: GpxPoint.EmailLink
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.EmailLink
+- uid: DEM.Net.Lib.Gpx.GpxPoint.GetDistanceFrom(DEM.Net.Lib.Gpx.GpxPoint)
+  commentId: M:DEM.Net.Lib.Gpx.GpxPoint.GetDistanceFrom(DEM.Net.Lib.Gpx.GpxPoint)
+  parent: DEM.Net.Lib.Gpx.GpxPoint
+  name: GetDistanceFrom(GpxPoint)
+  nameWithType: GpxPoint.GetDistanceFrom(GpxPoint)
+  fullName: DEM.Net.Lib.Gpx.GpxPoint.GetDistanceFrom(DEM.Net.Lib.Gpx.GpxPoint)
+  spec.csharp:
+  - uid: DEM.Net.Lib.Gpx.GpxPoint.GetDistanceFrom(DEM.Net.Lib.Gpx.GpxPoint)
+    name: GetDistanceFrom
+    nameWithType: GpxPoint.GetDistanceFrom
+    fullName: DEM.Net.Lib.Gpx.GpxPoint.GetDistanceFrom
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.Gpx.GpxPoint
+    name: GpxPoint
+    nameWithType: GpxPoint
+    fullName: DEM.Net.Lib.Gpx.GpxPoint
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.Gpx.GpxPoint.GetDistanceFrom(DEM.Net.Lib.Gpx.GpxPoint)
+    name: GetDistanceFrom
+    nameWithType: GpxPoint.GetDistanceFrom
+    fullName: DEM.Net.Lib.Gpx.GpxPoint.GetDistanceFrom
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: DEM.Net.Lib.Gpx.GpxPoint
+    name: GpxPoint
+    nameWithType: GpxPoint
+    fullName: DEM.Net.Lib.Gpx.GpxPoint
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.Gpx.GpxRoutePoint.RoutePoints*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxRoutePoint.RoutePoints
+  name: RoutePoints
+  nameWithType: GpxRoutePoint.RoutePoints
+  fullName: DEM.Net.Lib.Gpx.GpxRoutePoint.RoutePoints
+- uid: System.Collections.Generic.IList{DEM.Net.Lib.Gpx.GpxPoint}
+  commentId: T:System.Collections.Generic.IList{DEM.Net.Lib.Gpx.GpxPoint}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IList`1
+  name: IList<GpxPoint>
+  nameWithType: IList<GpxPoint>
+  fullName: System.Collections.Generic.IList<DEM.Net.Lib.Gpx.GpxPoint>
+  nameWithType.vb: IList(Of GpxPoint)
+  fullName.vb: System.Collections.Generic.IList(Of DEM.Net.Lib.Gpx.GpxPoint)
+  name.vb: IList(Of GpxPoint)
+  spec.csharp:
+  - uid: System.Collections.Generic.IList`1
+    name: IList
+    nameWithType: IList
+    fullName: System.Collections.Generic.IList
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: DEM.Net.Lib.Gpx.GpxPoint
+    name: GpxPoint
+    nameWithType: GpxPoint
+    fullName: DEM.Net.Lib.Gpx.GpxPoint
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IList`1
+    name: IList
+    nameWithType: IList
+    fullName: System.Collections.Generic.IList
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: DEM.Net.Lib.Gpx.GpxPoint
+    name: GpxPoint
+    nameWithType: GpxPoint
+    fullName: DEM.Net.Lib.Gpx.GpxPoint
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IList`1
+  commentId: T:System.Collections.Generic.IList`1
+  isExternal: true
+  name: IList<T>
+  nameWithType: IList<T>
+  fullName: System.Collections.Generic.IList<T>
+  nameWithType.vb: IList(Of T)
+  fullName.vb: System.Collections.Generic.IList(Of T)
+  name.vb: IList(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IList`1
+    name: IList
+    nameWithType: IList
+    fullName: System.Collections.Generic.IList
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IList`1
+    name: IList
+    nameWithType: IList
+    fullName: System.Collections.Generic.IList
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: DEM.Net.Lib.Gpx.GpxRoutePoint.HasExtensions*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxRoutePoint.HasExtensions
+  name: HasExtensions
+  nameWithType: GpxRoutePoint.HasExtensions
+  fullName: DEM.Net.Lib.Gpx.GpxRoutePoint.HasExtensions
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  nameWithType: Boolean
+  fullName: System.Boolean

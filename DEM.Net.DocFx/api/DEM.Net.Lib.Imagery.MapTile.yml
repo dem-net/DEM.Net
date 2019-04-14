@@ -1,0 +1,648 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Imagery.MapTile
+  commentId: T:DEM.Net.Lib.Imagery.MapTile
+  id: MapTile
+  parent: DEM.Net.Lib.Imagery
+  children:
+  - DEM.Net.Lib.Imagery.MapTile.#ctor(System.Byte[],System.Int32,System.Uri,DEM.Net.Lib.Imagery.MapTileInfo)
+  - DEM.Net.Lib.Imagery.MapTile.FileExtension
+  - DEM.Net.Lib.Imagery.MapTile.Image
+  - DEM.Net.Lib.Imagery.MapTile.PixelSize
+  - DEM.Net.Lib.Imagery.MapTile.TileInfo
+  - DEM.Net.Lib.Imagery.MapTile.Uri
+  langs:
+  - csharp
+  - vb
+  name: MapTile
+  nameWithType: MapTile
+  fullName: DEM.Net.Lib.Imagery.MapTile
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/MapTile.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: MapTile
+    path: ../DEM.Net.Lib/Imagery/Structs/MapTile.cs
+    startLine: 8
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public class MapTile
+    content.vb: Public Class MapTile
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.Imagery.MapTile.#ctor(System.Byte[],System.Int32,System.Uri,DEM.Net.Lib.Imagery.MapTileInfo)
+  commentId: M:DEM.Net.Lib.Imagery.MapTile.#ctor(System.Byte[],System.Int32,System.Uri,DEM.Net.Lib.Imagery.MapTileInfo)
+  id: '#ctor(System.Byte[],System.Int32,System.Uri,DEM.Net.Lib.Imagery.MapTileInfo)'
+  parent: DEM.Net.Lib.Imagery.MapTile
+  langs:
+  - csharp
+  - vb
+  name: MapTile(Byte[], Int32, Uri, MapTileInfo)
+  nameWithType: MapTile.MapTile(Byte[], Int32, Uri, MapTileInfo)
+  fullName: DEM.Net.Lib.Imagery.MapTile.MapTile(System.Byte[], System.Int32, System.Uri, DEM.Net.Lib.Imagery.MapTileInfo)
+  type: Constructor
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/MapTile.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: .ctor
+    path: ../DEM.Net.Lib/Imagery/Structs/MapTile.cs
+    startLine: 10
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public MapTile(byte[] imgBytes, int tileSize, Uri tileUri, MapTileInfo mapTileInfo)
+    parameters:
+    - id: imgBytes
+      type: System.Byte[]
+    - id: tileSize
+      type: System.Int32
+    - id: tileUri
+      type: System.Uri
+    - id: mapTileInfo
+      type: DEM.Net.Lib.Imagery.MapTileInfo
+    content.vb: Public Sub New(imgBytes As Byte(), tileSize As Integer, tileUri As Uri, mapTileInfo As MapTileInfo)
+  overload: DEM.Net.Lib.Imagery.MapTile.#ctor*
+  nameWithType.vb: MapTile.MapTile(Byte(), Int32, Uri, MapTileInfo)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Imagery.MapTile.MapTile(System.Byte(), System.Int32, System.Uri, DEM.Net.Lib.Imagery.MapTileInfo)
+  name.vb: MapTile(Byte(), Int32, Uri, MapTileInfo)
+- uid: DEM.Net.Lib.Imagery.MapTile.TileInfo
+  commentId: P:DEM.Net.Lib.Imagery.MapTile.TileInfo
+  id: TileInfo
+  parent: DEM.Net.Lib.Imagery.MapTile
+  langs:
+  - csharp
+  - vb
+  name: TileInfo
+  nameWithType: MapTile.TileInfo
+  fullName: DEM.Net.Lib.Imagery.MapTile.TileInfo
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/MapTile.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: TileInfo
+    path: ../DEM.Net.Lib/Imagery/Structs/MapTile.cs
+    startLine: 18
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public MapTileInfo TileInfo { get; set; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Imagery.MapTileInfo
+    content.vb: Public Property TileInfo As MapTileInfo
+  overload: DEM.Net.Lib.Imagery.MapTile.TileInfo*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Imagery.MapTile.FileExtension
+  commentId: P:DEM.Net.Lib.Imagery.MapTile.FileExtension
+  id: FileExtension
+  parent: DEM.Net.Lib.Imagery.MapTile
+  langs:
+  - csharp
+  - vb
+  name: FileExtension
+  nameWithType: MapTile.FileExtension
+  fullName: DEM.Net.Lib.Imagery.MapTile.FileExtension
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/MapTile.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: FileExtension
+    path: ../DEM.Net.Lib/Imagery/Structs/MapTile.cs
+    startLine: 19
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public string FileExtension { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property FileExtension As String
+  overload: DEM.Net.Lib.Imagery.MapTile.FileExtension*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Imagery.MapTile.PixelSize
+  commentId: P:DEM.Net.Lib.Imagery.MapTile.PixelSize
+  id: PixelSize
+  parent: DEM.Net.Lib.Imagery.MapTile
+  langs:
+  - csharp
+  - vb
+  name: PixelSize
+  nameWithType: MapTile.PixelSize
+  fullName: DEM.Net.Lib.Imagery.MapTile.PixelSize
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/MapTile.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: PixelSize
+    path: ../DEM.Net.Lib/Imagery/Structs/MapTile.cs
+    startLine: 20
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public int PixelSize { get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Property PixelSize As Integer
+  overload: DEM.Net.Lib.Imagery.MapTile.PixelSize*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Imagery.MapTile.Uri
+  commentId: P:DEM.Net.Lib.Imagery.MapTile.Uri
+  id: Uri
+  parent: DEM.Net.Lib.Imagery.MapTile
+  langs:
+  - csharp
+  - vb
+  name: Uri
+  nameWithType: MapTile.Uri
+  fullName: DEM.Net.Lib.Imagery.MapTile.Uri
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/MapTile.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Uri
+    path: ../DEM.Net.Lib/Imagery/Structs/MapTile.cs
+    startLine: 21
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public Uri Uri { get; set; }
+    parameters: []
+    return:
+      type: System.Uri
+    content.vb: Public Property Uri As Uri
+  overload: DEM.Net.Lib.Imagery.MapTile.Uri*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Imagery.MapTile.Image
+  commentId: P:DEM.Net.Lib.Imagery.MapTile.Image
+  id: Image
+  parent: DEM.Net.Lib.Imagery.MapTile
+  langs:
+  - csharp
+  - vb
+  name: Image
+  nameWithType: MapTile.Image
+  fullName: DEM.Net.Lib.Imagery.MapTile.Image
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/MapTile.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Image
+    path: ../DEM.Net.Lib/Imagery/Structs/MapTile.cs
+    startLine: 22
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public byte[] Image { get; set; }
+    parameters: []
+    return:
+      type: System.Byte[]
+    content.vb: Public Property Image As Byte()
+  overload: DEM.Net.Lib.Imagery.MapTile.Image*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+references:
+- uid: DEM.Net.Lib.Imagery
+  commentId: N:DEM.Net.Lib.Imagery
+  name: DEM.Net.Lib.Imagery
+  nameWithType: DEM.Net.Lib.Imagery
+  fullName: DEM.Net.Lib.Imagery
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.Imagery.MapTile.#ctor*
+  commentId: Overload:DEM.Net.Lib.Imagery.MapTile.#ctor
+  name: MapTile
+  nameWithType: MapTile.MapTile
+  fullName: DEM.Net.Lib.Imagery.MapTile.MapTile
+- uid: System.Byte[]
+  isExternal: true
+  name: Byte[]
+  nameWithType: Byte[]
+  fullName: System.Byte[]
+  nameWithType.vb: Byte()
+  fullName.vb: System.Byte()
+  name.vb: Byte()
+  spec.csharp:
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: System.Uri
+  commentId: T:System.Uri
+  parent: System
+  isExternal: true
+  name: Uri
+  nameWithType: Uri
+  fullName: System.Uri
+- uid: DEM.Net.Lib.Imagery.MapTileInfo
+  commentId: T:DEM.Net.Lib.Imagery.MapTileInfo
+  parent: DEM.Net.Lib.Imagery
+  name: MapTileInfo
+  nameWithType: MapTileInfo
+  fullName: DEM.Net.Lib.Imagery.MapTileInfo
+- uid: DEM.Net.Lib.Imagery.MapTile.TileInfo*
+  commentId: Overload:DEM.Net.Lib.Imagery.MapTile.TileInfo
+  name: TileInfo
+  nameWithType: MapTile.TileInfo
+  fullName: DEM.Net.Lib.Imagery.MapTile.TileInfo
+- uid: DEM.Net.Lib.Imagery.MapTile.FileExtension*
+  commentId: Overload:DEM.Net.Lib.Imagery.MapTile.FileExtension
+  name: FileExtension
+  nameWithType: MapTile.FileExtension
+  fullName: DEM.Net.Lib.Imagery.MapTile.FileExtension
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: DEM.Net.Lib.Imagery.MapTile.PixelSize*
+  commentId: Overload:DEM.Net.Lib.Imagery.MapTile.PixelSize
+  name: PixelSize
+  nameWithType: MapTile.PixelSize
+  fullName: DEM.Net.Lib.Imagery.MapTile.PixelSize
+- uid: DEM.Net.Lib.Imagery.MapTile.Uri*
+  commentId: Overload:DEM.Net.Lib.Imagery.MapTile.Uri
+  name: Uri
+  nameWithType: MapTile.Uri
+  fullName: DEM.Net.Lib.Imagery.MapTile.Uri
+- uid: DEM.Net.Lib.Imagery.MapTile.Image*
+  commentId: Overload:DEM.Net.Lib.Imagery.MapTile.Image
+  name: Image
+  nameWithType: MapTile.Image
+  fullName: DEM.Net.Lib.Imagery.MapTile.Image

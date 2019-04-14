@@ -1,0 +1,1007 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Imagery.TileUtils
+  commentId: T:DEM.Net.Lib.Imagery.TileUtils
+  id: TileUtils
+  parent: DEM.Net.Lib.Imagery
+  children:
+  - DEM.Net.Lib.Imagery.TileUtils.EARTH_CIRCUMFERENCE
+  - DEM.Net.Lib.Imagery.TileUtils.EARTH_RADIUS
+  - DEM.Net.Lib.Imagery.TileUtils.GroundResolution(System.Double,System.Int32)
+  - DEM.Net.Lib.Imagery.TileUtils.LatLongToPixelXY(System.Double,System.Double,System.Int32)
+  - DEM.Net.Lib.Imagery.TileUtils.MapScale(System.Double,System.Int32,System.Int32)
+  - DEM.Net.Lib.Imagery.TileUtils.MapSize(System.Int32)
+  - DEM.Net.Lib.Imagery.TileUtils.MIN_LATITUDE
+  - DEM.Net.Lib.Imagery.TileUtils.PixelXYToLatLong(System.Int32,System.Int32,System.Int32)
+  - DEM.Net.Lib.Imagery.TileUtils.PixelXYToTileXY(System.Int32,System.Int32)
+  - DEM.Net.Lib.Imagery.TileUtils.QuadKeyToTileXY(System.String,System.Int32@,System.Int32@,System.Int32@)
+  - DEM.Net.Lib.Imagery.TileUtils.TileXYToPixelXY(System.Int32,System.Int32)
+  - DEM.Net.Lib.Imagery.TileUtils.TileXYToQuadKey(System.Int32,System.Int32,System.Int32)
+  - DEM.Net.Lib.Imagery.TileUtils.UsefulDigits(System.Double)
+  langs:
+  - csharp
+  - vb
+  name: TileUtils
+  nameWithType: TileUtils
+  fullName: DEM.Net.Lib.Imagery.TileUtils
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/TileUtils.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: TileUtils
+    path: ../DEM.Net.Lib/Imagery/TileUtils.cs
+    startLine: 11
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  summary: "\nSource : https://docs.microsoft.com/en-us/bingmaps/articles/bing-maps-tile-system\n"
+  example: []
+  syntax:
+    content: public static class TileUtils
+    content.vb: Public Module TileUtils
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - static
+  - class
+  modifiers.vb:
+  - Public
+  - Module
+- uid: DEM.Net.Lib.Imagery.TileUtils.EARTH_RADIUS
+  commentId: F:DEM.Net.Lib.Imagery.TileUtils.EARTH_RADIUS
+  id: EARTH_RADIUS
+  parent: DEM.Net.Lib.Imagery.TileUtils
+  langs:
+  - csharp
+  - vb
+  name: EARTH_RADIUS
+  nameWithType: TileUtils.EARTH_RADIUS
+  fullName: DEM.Net.Lib.Imagery.TileUtils.EARTH_RADIUS
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/TileUtils.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: EARTH_RADIUS
+    path: ../DEM.Net.Lib/Imagery/TileUtils.cs
+    startLine: 13
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public const double EARTH_RADIUS = 6378137
+    return:
+      type: System.Double
+    content.vb: Public Const EARTH_RADIUS As Double = 6378137
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.Imagery.TileUtils.EARTH_CIRCUMFERENCE
+  commentId: F:DEM.Net.Lib.Imagery.TileUtils.EARTH_CIRCUMFERENCE
+  id: EARTH_CIRCUMFERENCE
+  parent: DEM.Net.Lib.Imagery.TileUtils
+  langs:
+  - csharp
+  - vb
+  name: EARTH_CIRCUMFERENCE
+  nameWithType: TileUtils.EARTH_CIRCUMFERENCE
+  fullName: DEM.Net.Lib.Imagery.TileUtils.EARTH_CIRCUMFERENCE
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/TileUtils.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: EARTH_CIRCUMFERENCE
+    path: ../DEM.Net.Lib/Imagery/TileUtils.cs
+    startLine: 14
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public const double EARTH_CIRCUMFERENCE = 40075016.69
+    return:
+      type: System.Double
+    content.vb: Public Const EARTH_CIRCUMFERENCE As Double = 40075016.69
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.Imagery.TileUtils.MIN_LATITUDE
+  commentId: F:DEM.Net.Lib.Imagery.TileUtils.MIN_LATITUDE
+  id: MIN_LATITUDE
+  parent: DEM.Net.Lib.Imagery.TileUtils
+  langs:
+  - csharp
+  - vb
+  name: MIN_LATITUDE
+  nameWithType: TileUtils.MIN_LATITUDE
+  fullName: DEM.Net.Lib.Imagery.TileUtils.MIN_LATITUDE
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/TileUtils.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: MIN_LATITUDE
+    path: ../DEM.Net.Lib/Imagery/TileUtils.cs
+    startLine: 15
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public const double MIN_LATITUDE = -85.05112878
+    return:
+      type: System.Double
+    content.vb: Public Const MIN_LATITUDE As Double = -85.05112878
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.Imagery.TileUtils.UsefulDigits(System.Double)
+  commentId: M:DEM.Net.Lib.Imagery.TileUtils.UsefulDigits(System.Double)
+  id: UsefulDigits(System.Double)
+  parent: DEM.Net.Lib.Imagery.TileUtils
+  langs:
+  - csharp
+  - vb
+  name: UsefulDigits(Double)
+  nameWithType: TileUtils.UsefulDigits(Double)
+  fullName: DEM.Net.Lib.Imagery.TileUtils.UsefulDigits(System.Double)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/TileUtils.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: UsefulDigits
+    path: ../DEM.Net.Lib/Imagery/TileUtils.cs
+    startLine: 21
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public static int UsefulDigits(double resolution)
+    parameters:
+    - id: resolution
+      type: System.Double
+    return:
+      type: System.Int32
+    content.vb: Public Shared Function UsefulDigits(resolution As Double) As Integer
+  overload: DEM.Net.Lib.Imagery.TileUtils.UsefulDigits*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: DEM.Net.Lib.Imagery.TileUtils.MapSize(System.Int32)
+  commentId: M:DEM.Net.Lib.Imagery.TileUtils.MapSize(System.Int32)
+  id: MapSize(System.Int32)
+  parent: DEM.Net.Lib.Imagery.TileUtils
+  langs:
+  - csharp
+  - vb
+  name: MapSize(Int32)
+  nameWithType: TileUtils.MapSize(Int32)
+  fullName: DEM.Net.Lib.Imagery.TileUtils.MapSize(System.Int32)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/TileUtils.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: MapSize
+    path: ../DEM.Net.Lib/Imagery/TileUtils.cs
+    startLine: 47
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  summary: "\nDetermines the map width and height (in pixels) at a specified level\nof detail.\n"
+  example: []
+  syntax:
+    content: public static uint MapSize(int levelOfDetail)
+    parameters:
+    - id: levelOfDetail
+      type: System.Int32
+      description: >-
+        Level of detail, from 1 (lowest detail)
+
+        to 23 (highest detail).
+    return:
+      type: System.UInt32
+      description: The map width and height in pixels.
+    content.vb: Public Shared Function MapSize(levelOfDetail As Integer) As UInteger
+  overload: DEM.Net.Lib.Imagery.TileUtils.MapSize*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: DEM.Net.Lib.Imagery.TileUtils.GroundResolution(System.Double,System.Int32)
+  commentId: M:DEM.Net.Lib.Imagery.TileUtils.GroundResolution(System.Double,System.Int32)
+  id: GroundResolution(System.Double,System.Int32)
+  parent: DEM.Net.Lib.Imagery.TileUtils
+  langs:
+  - csharp
+  - vb
+  name: GroundResolution(Double, Int32)
+  nameWithType: TileUtils.GroundResolution(Double, Int32)
+  fullName: DEM.Net.Lib.Imagery.TileUtils.GroundResolution(System.Double, System.Int32)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/TileUtils.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GroundResolution
+    path: ../DEM.Net.Lib/Imagery/TileUtils.cs
+    startLine: 63
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  summary: "\nDetermines the ground resolution (in meters per pixel) at a specified\nlatitude and level of detail.\n"
+  example: []
+  syntax:
+    content: public static double GroundResolution(double latitude, int levelOfDetail)
+    parameters:
+    - id: latitude
+      type: System.Double
+      description: >-
+        Latitude (in degrees) at which to measure the
+
+        ground resolution.
+    - id: levelOfDetail
+      type: System.Int32
+      description: >-
+        Level of detail, from 1 (lowest detail)
+
+        to 23 (highest detail).
+    return:
+      type: System.Double
+      description: The ground resolution, in meters per pixel.
+    content.vb: Public Shared Function GroundResolution(latitude As Double, levelOfDetail As Integer) As Double
+  overload: DEM.Net.Lib.Imagery.TileUtils.GroundResolution*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: DEM.Net.Lib.Imagery.TileUtils.MapScale(System.Double,System.Int32,System.Int32)
+  commentId: M:DEM.Net.Lib.Imagery.TileUtils.MapScale(System.Double,System.Int32,System.Int32)
+  id: MapScale(System.Double,System.Int32,System.Int32)
+  parent: DEM.Net.Lib.Imagery.TileUtils
+  langs:
+  - csharp
+  - vb
+  name: MapScale(Double, Int32, Int32)
+  nameWithType: TileUtils.MapScale(Double, Int32, Int32)
+  fullName: DEM.Net.Lib.Imagery.TileUtils.MapScale(System.Double, System.Int32, System.Int32)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/TileUtils.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: MapScale
+    path: ../DEM.Net.Lib/Imagery/TileUtils.cs
+    startLine: 81
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  summary: "\nDetermines the map scale at a specified latitude, level of detail,\nand screen resolution.\n"
+  example: []
+  syntax:
+    content: public static double MapScale(double latitude, int levelOfDetail, int screenDpi)
+    parameters:
+    - id: latitude
+      type: System.Double
+      description: >-
+        Latitude (in degrees) at which to measure the
+
+        map scale.
+    - id: levelOfDetail
+      type: System.Int32
+      description: >-
+        Level of detail, from 1 (lowest detail)
+
+        to 23 (highest detail).
+    - id: screenDpi
+      type: System.Int32
+      description: Resolution of the screen, in dots per inch.
+    return:
+      type: System.Double
+      description: 'The map scale, expressed as the denominator N of the ratio 1 : N.'
+    content.vb: Public Shared Function MapScale(latitude As Double, levelOfDetail As Integer, screenDpi As Integer) As Double
+  overload: DEM.Net.Lib.Imagery.TileUtils.MapScale*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: DEM.Net.Lib.Imagery.TileUtils.LatLongToPixelXY(System.Double,System.Double,System.Int32)
+  commentId: M:DEM.Net.Lib.Imagery.TileUtils.LatLongToPixelXY(System.Double,System.Double,System.Int32)
+  id: LatLongToPixelXY(System.Double,System.Double,System.Int32)
+  parent: DEM.Net.Lib.Imagery.TileUtils
+  langs:
+  - csharp
+  - vb
+  name: LatLongToPixelXY(Double, Double, Int32)
+  nameWithType: TileUtils.LatLongToPixelXY(Double, Double, Int32)
+  fullName: DEM.Net.Lib.Imagery.TileUtils.LatLongToPixelXY(System.Double, System.Double, System.Int32)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/TileUtils.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: LatLongToPixelXY
+    path: ../DEM.Net.Lib/Imagery/TileUtils.cs
+    startLine: 98
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  summary: "\nConverts a point from latitude/longitude WGS-84 coordinates (in degrees)\ninto pixel XY coordinates at a specified level of detail.\n"
+  example: []
+  syntax:
+    content: public static PointInt LatLongToPixelXY(double latitude, double longitude, int levelOfDetail)
+    parameters:
+    - id: latitude
+      type: System.Double
+      description: Latitude of the point, in degrees.
+    - id: longitude
+      type: System.Double
+      description: Longitude of the point, in degrees.
+    - id: levelOfDetail
+      type: System.Int32
+      description: >-
+        Level of detail, from 1 (lowest detail)
+
+        to 23 (highest detail).
+    return:
+      type: DEM.Net.Lib.Imagery.PointInt
+    content.vb: Public Shared Function LatLongToPixelXY(latitude As Double, longitude As Double, levelOfDetail As Integer) As PointInt
+  overload: DEM.Net.Lib.Imagery.TileUtils.LatLongToPixelXY*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: DEM.Net.Lib.Imagery.TileUtils.PixelXYToLatLong(System.Int32,System.Int32,System.Int32)
+  commentId: M:DEM.Net.Lib.Imagery.TileUtils.PixelXYToLatLong(System.Int32,System.Int32,System.Int32)
+  id: PixelXYToLatLong(System.Int32,System.Int32,System.Int32)
+  parent: DEM.Net.Lib.Imagery.TileUtils
+  langs:
+  - csharp
+  - vb
+  name: PixelXYToLatLong(Int32, Int32, Int32)
+  nameWithType: TileUtils.PixelXYToLatLong(Int32, Int32, Int32)
+  fullName: DEM.Net.Lib.Imagery.TileUtils.PixelXYToLatLong(System.Int32, System.Int32, System.Int32)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/TileUtils.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: PixelXYToLatLong
+    path: ../DEM.Net.Lib/Imagery/TileUtils.cs
+    startLine: 122
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  summary: "\nConverts a pixel from pixel XY coordinates at a specified level of detail\ninto latitude/longitude WGS-84 coordinates (in degrees).\n"
+  example: []
+  syntax:
+    content: public static LatLong PixelXYToLatLong(int pixelX, int pixelY, int levelOfDetail)
+    parameters:
+    - id: pixelX
+      type: System.Int32
+      description: X coordinate of the point, in pixels.
+    - id: pixelY
+      type: System.Int32
+      description: Y coordinates of the point, in pixels.
+    - id: levelOfDetail
+      type: System.Int32
+      description: >-
+        Level of detail, from 1 (lowest detail)
+
+        to 23 (highest detail).
+    return:
+      type: DEM.Net.Lib.Imagery.LatLong
+    content.vb: Public Shared Function PixelXYToLatLong(pixelX As Integer, pixelY As Integer, levelOfDetail As Integer) As LatLong
+  overload: DEM.Net.Lib.Imagery.TileUtils.PixelXYToLatLong*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: DEM.Net.Lib.Imagery.TileUtils.PixelXYToTileXY(System.Int32,System.Int32)
+  commentId: M:DEM.Net.Lib.Imagery.TileUtils.PixelXYToTileXY(System.Int32,System.Int32)
+  id: PixelXYToTileXY(System.Int32,System.Int32)
+  parent: DEM.Net.Lib.Imagery.TileUtils
+  langs:
+  - csharp
+  - vb
+  name: PixelXYToTileXY(Int32, Int32)
+  nameWithType: TileUtils.PixelXYToTileXY(Int32, Int32)
+  fullName: DEM.Net.Lib.Imagery.TileUtils.PixelXYToTileXY(System.Int32, System.Int32)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/TileUtils.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: PixelXYToTileXY
+    path: ../DEM.Net.Lib/Imagery/TileUtils.cs
+    startLine: 143
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public static PointInt PixelXYToTileXY(int pixelX, int pixelY)
+    parameters:
+    - id: pixelX
+      type: System.Int32
+    - id: pixelY
+      type: System.Int32
+    return:
+      type: DEM.Net.Lib.Imagery.PointInt
+    content.vb: Public Shared Function PixelXYToTileXY(pixelX As Integer, pixelY As Integer) As PointInt
+  overload: DEM.Net.Lib.Imagery.TileUtils.PixelXYToTileXY*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: DEM.Net.Lib.Imagery.TileUtils.TileXYToPixelXY(System.Int32,System.Int32)
+  commentId: M:DEM.Net.Lib.Imagery.TileUtils.TileXYToPixelXY(System.Int32,System.Int32)
+  id: TileXYToPixelXY(System.Int32,System.Int32)
+  parent: DEM.Net.Lib.Imagery.TileUtils
+  langs:
+  - csharp
+  - vb
+  name: TileXYToPixelXY(Int32, Int32)
+  nameWithType: TileUtils.TileXYToPixelXY(Int32, Int32)
+  fullName: DEM.Net.Lib.Imagery.TileUtils.TileXYToPixelXY(System.Int32, System.Int32)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/TileUtils.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: TileXYToPixelXY
+    path: ../DEM.Net.Lib/Imagery/TileUtils.cs
+    startLine: 159
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public static PointInt TileXYToPixelXY(int tileX, int tileY)
+    parameters:
+    - id: tileX
+      type: System.Int32
+    - id: tileY
+      type: System.Int32
+    return:
+      type: DEM.Net.Lib.Imagery.PointInt
+    content.vb: Public Shared Function TileXYToPixelXY(tileX As Integer, tileY As Integer) As PointInt
+  overload: DEM.Net.Lib.Imagery.TileUtils.TileXYToPixelXY*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: DEM.Net.Lib.Imagery.TileUtils.TileXYToQuadKey(System.Int32,System.Int32,System.Int32)
+  commentId: M:DEM.Net.Lib.Imagery.TileUtils.TileXYToQuadKey(System.Int32,System.Int32,System.Int32)
+  id: TileXYToQuadKey(System.Int32,System.Int32,System.Int32)
+  parent: DEM.Net.Lib.Imagery.TileUtils
+  langs:
+  - csharp
+  - vb
+  name: TileXYToQuadKey(Int32, Int32, Int32)
+  nameWithType: TileUtils.TileXYToQuadKey(Int32, Int32, Int32)
+  fullName: DEM.Net.Lib.Imagery.TileUtils.TileXYToQuadKey(System.Int32, System.Int32, System.Int32)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/TileUtils.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: TileXYToQuadKey
+    path: ../DEM.Net.Lib/Imagery/TileUtils.cs
+    startLine: 176
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  summary: "\nConverts tile XY coordinates into a QuadKey at a specified level of detail.\n"
+  example: []
+  syntax:
+    content: public static string TileXYToQuadKey(int tileX, int tileY, int levelOfDetail)
+    parameters:
+    - id: tileX
+      type: System.Int32
+      description: Tile X coordinate.
+    - id: tileY
+      type: System.Int32
+      description: Tile Y coordinate.
+    - id: levelOfDetail
+      type: System.Int32
+      description: >-
+        Level of detail, from 1 (lowest detail)
+
+        to 23 (highest detail).
+    return:
+      type: System.String
+      description: A string containing the QuadKey.
+    content.vb: Public Shared Function TileXYToQuadKey(tileX As Integer, tileY As Integer, levelOfDetail As Integer) As String
+  overload: DEM.Net.Lib.Imagery.TileUtils.TileXYToQuadKey*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: DEM.Net.Lib.Imagery.TileUtils.QuadKeyToTileXY(System.String,System.Int32@,System.Int32@,System.Int32@)
+  commentId: M:DEM.Net.Lib.Imagery.TileUtils.QuadKeyToTileXY(System.String,System.Int32@,System.Int32@,System.Int32@)
+  id: QuadKeyToTileXY(System.String,System.Int32@,System.Int32@,System.Int32@)
+  parent: DEM.Net.Lib.Imagery.TileUtils
+  langs:
+  - csharp
+  - vb
+  name: QuadKeyToTileXY(String, out Int32, out Int32, out Int32)
+  nameWithType: TileUtils.QuadKeyToTileXY(String, out Int32, out Int32, out Int32)
+  fullName: DEM.Net.Lib.Imagery.TileUtils.QuadKeyToTileXY(System.String, out System.Int32, out System.Int32, out System.Int32)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/TileUtils.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: QuadKeyToTileXY
+    path: ../DEM.Net.Lib/Imagery/TileUtils.cs
+    startLine: 206
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  summary: "\nConverts a QuadKey into tile XY coordinates.\n"
+  example: []
+  syntax:
+    content: public static void QuadKeyToTileXY(string quadKey, out int tileX, out int tileY, out int levelOfDetail)
+    parameters:
+    - id: quadKey
+      type: System.String
+      description: QuadKey of the tile.
+    - id: tileX
+      type: System.Int32
+      description: Output parameter receiving the tile X coordinate.
+    - id: tileY
+      type: System.Int32
+      description: Output parameter receiving the tile Y coordinate.
+    - id: levelOfDetail
+      type: System.Int32
+      description: Output parameter receiving the level of detail.
+    content.vb: Public Shared Sub QuadKeyToTileXY(quadKey As String, ByRef tileX As Integer, ByRef tileY As Integer, ByRef levelOfDetail As Integer)
+  overload: DEM.Net.Lib.Imagery.TileUtils.QuadKeyToTileXY*
+  nameWithType.vb: TileUtils.QuadKeyToTileXY(String, ByRef Int32, ByRef Int32, ByRef Int32)
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: DEM.Net.Lib.Imagery.TileUtils.QuadKeyToTileXY(System.String, ByRef System.Int32, ByRef System.Int32, ByRef System.Int32)
+  name.vb: QuadKeyToTileXY(String, ByRef Int32, ByRef Int32, ByRef Int32)
+references:
+- uid: DEM.Net.Lib.Imagery
+  commentId: N:DEM.Net.Lib.Imagery
+  name: DEM.Net.Lib.Imagery
+  nameWithType: DEM.Net.Lib.Imagery
+  fullName: DEM.Net.Lib.Imagery
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: System.Double
+  commentId: T:System.Double
+  parent: System
+  isExternal: true
+  name: Double
+  nameWithType: Double
+  fullName: System.Double
+- uid: DEM.Net.Lib.Imagery.TileUtils.UsefulDigits*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileUtils.UsefulDigits
+  name: UsefulDigits
+  nameWithType: TileUtils.UsefulDigits
+  fullName: DEM.Net.Lib.Imagery.TileUtils.UsefulDigits
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: DEM.Net.Lib.Imagery.TileUtils.MapSize*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileUtils.MapSize
+  name: MapSize
+  nameWithType: TileUtils.MapSize
+  fullName: DEM.Net.Lib.Imagery.TileUtils.MapSize
+- uid: System.UInt32
+  commentId: T:System.UInt32
+  parent: System
+  isExternal: true
+  name: UInt32
+  nameWithType: UInt32
+  fullName: System.UInt32
+- uid: DEM.Net.Lib.Imagery.TileUtils.GroundResolution*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileUtils.GroundResolution
+  name: GroundResolution
+  nameWithType: TileUtils.GroundResolution
+  fullName: DEM.Net.Lib.Imagery.TileUtils.GroundResolution
+- uid: DEM.Net.Lib.Imagery.TileUtils.MapScale*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileUtils.MapScale
+  name: MapScale
+  nameWithType: TileUtils.MapScale
+  fullName: DEM.Net.Lib.Imagery.TileUtils.MapScale
+- uid: DEM.Net.Lib.Imagery.TileUtils.LatLongToPixelXY*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileUtils.LatLongToPixelXY
+  name: LatLongToPixelXY
+  nameWithType: TileUtils.LatLongToPixelXY
+  fullName: DEM.Net.Lib.Imagery.TileUtils.LatLongToPixelXY
+- uid: DEM.Net.Lib.Imagery.PointInt
+  commentId: T:DEM.Net.Lib.Imagery.PointInt
+  parent: DEM.Net.Lib.Imagery
+  name: PointInt
+  nameWithType: PointInt
+  fullName: DEM.Net.Lib.Imagery.PointInt
+- uid: DEM.Net.Lib.Imagery.TileUtils.PixelXYToLatLong*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileUtils.PixelXYToLatLong
+  name: PixelXYToLatLong
+  nameWithType: TileUtils.PixelXYToLatLong
+  fullName: DEM.Net.Lib.Imagery.TileUtils.PixelXYToLatLong
+- uid: DEM.Net.Lib.Imagery.LatLong
+  commentId: T:DEM.Net.Lib.Imagery.LatLong
+  parent: DEM.Net.Lib.Imagery
+  name: LatLong
+  nameWithType: LatLong
+  fullName: DEM.Net.Lib.Imagery.LatLong
+- uid: DEM.Net.Lib.Imagery.TileUtils.PixelXYToTileXY*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileUtils.PixelXYToTileXY
+  name: PixelXYToTileXY
+  nameWithType: TileUtils.PixelXYToTileXY
+  fullName: DEM.Net.Lib.Imagery.TileUtils.PixelXYToTileXY
+- uid: DEM.Net.Lib.Imagery.TileUtils.TileXYToPixelXY*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileUtils.TileXYToPixelXY
+  name: TileXYToPixelXY
+  nameWithType: TileUtils.TileXYToPixelXY
+  fullName: DEM.Net.Lib.Imagery.TileUtils.TileXYToPixelXY
+- uid: DEM.Net.Lib.Imagery.TileUtils.TileXYToQuadKey*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileUtils.TileXYToQuadKey
+  name: TileXYToQuadKey
+  nameWithType: TileUtils.TileXYToQuadKey
+  fullName: DEM.Net.Lib.Imagery.TileUtils.TileXYToQuadKey
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: DEM.Net.Lib.Imagery.TileUtils.QuadKeyToTileXY*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileUtils.QuadKeyToTileXY
+  name: QuadKeyToTileXY
+  nameWithType: TileUtils.QuadKeyToTileXY
+  fullName: DEM.Net.Lib.Imagery.TileUtils.QuadKeyToTileXY

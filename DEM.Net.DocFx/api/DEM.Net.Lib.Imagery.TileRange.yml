@@ -1,0 +1,1194 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Imagery.TileRange
+  commentId: T:DEM.Net.Lib.Imagery.TileRange
+  id: TileRange
+  parent: DEM.Net.Lib.Imagery
+  children:
+  - DEM.Net.Lib.Imagery.TileRange.#ctor(DEM.Net.Lib.Imagery.ImageryProvider)
+  - DEM.Net.Lib.Imagery.TileRange.Add(DEM.Net.Lib.Imagery.MapTile)
+  - DEM.Net.Lib.Imagery.TileRange.AddRange(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Imagery.MapTile})
+  - DEM.Net.Lib.Imagery.TileRange.AreaOfInterest
+  - DEM.Net.Lib.Imagery.TileRange.End
+  - DEM.Net.Lib.Imagery.TileRange.EnumerateRange
+  - DEM.Net.Lib.Imagery.TileRange.GetEnumerator
+  - DEM.Net.Lib.Imagery.TileRange.NumCols
+  - DEM.Net.Lib.Imagery.TileRange.NumRows
+  - DEM.Net.Lib.Imagery.TileRange.Provider
+  - DEM.Net.Lib.Imagery.TileRange.Start
+  - DEM.Net.Lib.Imagery.TileRange.System#Collections#IEnumerable#GetEnumerator
+  langs:
+  - csharp
+  - vb
+  name: TileRange
+  nameWithType: TileRange
+  fullName: DEM.Net.Lib.Imagery.TileRange
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: TileRange
+    path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
+    startLine: 9
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: 'public class TileRange : IEnumerable<MapTile>, IEnumerable'
+    content.vb: >-
+      Public Class TileRange
+          Implements IEnumerable(Of MapTile), IEnumerable
+  inheritance:
+  - System.Object
+  implements:
+  - System.Collections.Generic.IEnumerable{DEM.Net.Lib.Imagery.MapTile}
+  - System.Collections.IEnumerable
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.Imagery.TileRange.#ctor(DEM.Net.Lib.Imagery.ImageryProvider)
+  commentId: M:DEM.Net.Lib.Imagery.TileRange.#ctor(DEM.Net.Lib.Imagery.ImageryProvider)
+  id: '#ctor(DEM.Net.Lib.Imagery.ImageryProvider)'
+  parent: DEM.Net.Lib.Imagery.TileRange
+  langs:
+  - csharp
+  - vb
+  name: TileRange(ImageryProvider)
+  nameWithType: TileRange.TileRange(ImageryProvider)
+  fullName: DEM.Net.Lib.Imagery.TileRange.TileRange(DEM.Net.Lib.Imagery.ImageryProvider)
+  type: Constructor
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: .ctor
+    path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
+    startLine: 13
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public TileRange(ImageryProvider provider)
+    parameters:
+    - id: provider
+      type: DEM.Net.Lib.Imagery.ImageryProvider
+    content.vb: Public Sub New(provider As ImageryProvider)
+  overload: DEM.Net.Lib.Imagery.TileRange.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Imagery.TileRange.Add(DEM.Net.Lib.Imagery.MapTile)
+  commentId: M:DEM.Net.Lib.Imagery.TileRange.Add(DEM.Net.Lib.Imagery.MapTile)
+  id: Add(DEM.Net.Lib.Imagery.MapTile)
+  parent: DEM.Net.Lib.Imagery.TileRange
+  langs:
+  - csharp
+  - vb
+  name: Add(MapTile)
+  nameWithType: TileRange.Add(MapTile)
+  fullName: DEM.Net.Lib.Imagery.TileRange.Add(DEM.Net.Lib.Imagery.MapTile)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Add
+    path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
+    startLine: 19
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public void Add(MapTile tile)
+    parameters:
+    - id: tile
+      type: DEM.Net.Lib.Imagery.MapTile
+    content.vb: Public Sub Add(tile As MapTile)
+  overload: DEM.Net.Lib.Imagery.TileRange.Add*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Imagery.TileRange.AddRange(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Imagery.MapTile})
+  commentId: M:DEM.Net.Lib.Imagery.TileRange.AddRange(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Imagery.MapTile})
+  id: AddRange(System.Collections.Generic.IEnumerable{DEM.Net.Lib.Imagery.MapTile})
+  parent: DEM.Net.Lib.Imagery.TileRange
+  langs:
+  - csharp
+  - vb
+  name: AddRange(IEnumerable<MapTile>)
+  nameWithType: TileRange.AddRange(IEnumerable<MapTile>)
+  fullName: DEM.Net.Lib.Imagery.TileRange.AddRange(System.Collections.Generic.IEnumerable<DEM.Net.Lib.Imagery.MapTile>)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: AddRange
+    path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
+    startLine: 26
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public void AddRange(IEnumerable<MapTile> tiles)
+    parameters:
+    - id: tiles
+      type: System.Collections.Generic.IEnumerable{DEM.Net.Lib.Imagery.MapTile}
+    content.vb: Public Sub AddRange(tiles As IEnumerable(Of MapTile))
+  overload: DEM.Net.Lib.Imagery.TileRange.AddRange*
+  nameWithType.vb: TileRange.AddRange(IEnumerable(Of MapTile))
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Imagery.TileRange.AddRange(System.Collections.Generic.IEnumerable(Of DEM.Net.Lib.Imagery.MapTile))
+  name.vb: AddRange(IEnumerable(Of MapTile))
+- uid: DEM.Net.Lib.Imagery.TileRange.Provider
+  commentId: P:DEM.Net.Lib.Imagery.TileRange.Provider
+  id: Provider
+  parent: DEM.Net.Lib.Imagery.TileRange
+  langs:
+  - csharp
+  - vb
+  name: Provider
+  nameWithType: TileRange.Provider
+  fullName: DEM.Net.Lib.Imagery.TileRange.Provider
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Provider
+    path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
+    startLine: 34
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public ImageryProvider Provider { get; set; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Imagery.ImageryProvider
+    content.vb: Public Property Provider As ImageryProvider
+  overload: DEM.Net.Lib.Imagery.TileRange.Provider*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Imagery.TileRange.Start
+  commentId: P:DEM.Net.Lib.Imagery.TileRange.Start
+  id: Start
+  parent: DEM.Net.Lib.Imagery.TileRange
+  langs:
+  - csharp
+  - vb
+  name: Start
+  nameWithType: TileRange.Start
+  fullName: DEM.Net.Lib.Imagery.TileRange.Start
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Start
+    path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
+    startLine: 35
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public MapTileInfo Start { get; set; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Imagery.MapTileInfo
+    content.vb: Public Property Start As MapTileInfo
+  overload: DEM.Net.Lib.Imagery.TileRange.Start*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Imagery.TileRange.End
+  commentId: P:DEM.Net.Lib.Imagery.TileRange.End
+  id: End
+  parent: DEM.Net.Lib.Imagery.TileRange
+  langs:
+  - csharp
+  - vb
+  name: End
+  nameWithType: TileRange.End
+  fullName: DEM.Net.Lib.Imagery.TileRange.End
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: End
+    path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
+    startLine: 36
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public MapTileInfo End { get; set; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Imagery.MapTileInfo
+    content.vb: Public Property End As MapTileInfo
+  overload: DEM.Net.Lib.Imagery.TileRange.End*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Imagery.TileRange.NumCols
+  commentId: P:DEM.Net.Lib.Imagery.TileRange.NumCols
+  id: NumCols
+  parent: DEM.Net.Lib.Imagery.TileRange
+  langs:
+  - csharp
+  - vb
+  name: NumCols
+  nameWithType: TileRange.NumCols
+  fullName: DEM.Net.Lib.Imagery.TileRange.NumCols
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: NumCols
+    path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
+    startLine: 37
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public int NumCols { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public ReadOnly Property NumCols As Integer
+  overload: DEM.Net.Lib.Imagery.TileRange.NumCols*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Imagery.TileRange.NumRows
+  commentId: P:DEM.Net.Lib.Imagery.TileRange.NumRows
+  id: NumRows
+  parent: DEM.Net.Lib.Imagery.TileRange
+  langs:
+  - csharp
+  - vb
+  name: NumRows
+  nameWithType: TileRange.NumRows
+  fullName: DEM.Net.Lib.Imagery.TileRange.NumRows
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: NumRows
+    path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
+    startLine: 38
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public int NumRows { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public ReadOnly Property NumRows As Integer
+  overload: DEM.Net.Lib.Imagery.TileRange.NumRows*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Imagery.TileRange.AreaOfInterest
+  commentId: P:DEM.Net.Lib.Imagery.TileRange.AreaOfInterest
+  id: AreaOfInterest
+  parent: DEM.Net.Lib.Imagery.TileRange
+  langs:
+  - csharp
+  - vb
+  name: AreaOfInterest
+  nameWithType: TileRange.AreaOfInterest
+  fullName: DEM.Net.Lib.Imagery.TileRange.AreaOfInterest
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: AreaOfInterest
+    path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
+    startLine: 40
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public BoundingBox AreaOfInterest { get; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.BoundingBox
+    content.vb: Public ReadOnly Property AreaOfInterest As BoundingBox
+  overload: DEM.Net.Lib.Imagery.TileRange.AreaOfInterest*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Imagery.TileRange.GetEnumerator
+  commentId: M:DEM.Net.Lib.Imagery.TileRange.GetEnumerator
+  id: GetEnumerator
+  parent: DEM.Net.Lib.Imagery.TileRange
+  langs:
+  - csharp
+  - vb
+  name: GetEnumerator()
+  nameWithType: TileRange.GetEnumerator()
+  fullName: DEM.Net.Lib.Imagery.TileRange.GetEnumerator()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetEnumerator
+    path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
+    startLine: 42
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public IEnumerator<MapTile> GetEnumerator()
+    return:
+      type: System.Collections.Generic.IEnumerator{DEM.Net.Lib.Imagery.MapTile}
+    content.vb: Public Function GetEnumerator As IEnumerator(Of MapTile)
+  overload: DEM.Net.Lib.Imagery.TileRange.GetEnumerator*
+  implements:
+  - System.Collections.Generic.IEnumerable{DEM.Net.Lib.Imagery.MapTile}.GetEnumerator
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Imagery.TileRange.System#Collections#IEnumerable#GetEnumerator
+  commentId: M:DEM.Net.Lib.Imagery.TileRange.System#Collections#IEnumerable#GetEnumerator
+  id: System#Collections#IEnumerable#GetEnumerator
+  isEii: true
+  parent: DEM.Net.Lib.Imagery.TileRange
+  langs:
+  - csharp
+  - vb
+  name: IEnumerable.GetEnumerator()
+  nameWithType: TileRange.IEnumerable.GetEnumerator()
+  fullName: DEM.Net.Lib.Imagery.TileRange.System.Collections.IEnumerable.GetEnumerator()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: System.Collections.IEnumerable.GetEnumerator
+    path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
+    startLine: 50
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: IEnumerator IEnumerable.GetEnumerator()
+    return:
+      type: System.Collections.IEnumerator
+    content.vb: Function System.Collections.IEnumerable.GetEnumerator As IEnumerator Implements IEnumerable.GetEnumerator
+  overload: DEM.Net.Lib.Imagery.TileRange.System#Collections#IEnumerable#GetEnumerator*
+  implements:
+  - System.Collections.IEnumerable.GetEnumerator
+  nameWithType.vb: TileRange.System.Collections.IEnumerable.GetEnumerator()
+  name.vb: System.Collections.IEnumerable.GetEnumerator()
+- uid: DEM.Net.Lib.Imagery.TileRange.EnumerateRange
+  commentId: M:DEM.Net.Lib.Imagery.TileRange.EnumerateRange
+  id: EnumerateRange
+  parent: DEM.Net.Lib.Imagery.TileRange
+  langs:
+  - csharp
+  - vb
+  name: EnumerateRange()
+  nameWithType: TileRange.EnumerateRange()
+  fullName: DEM.Net.Lib.Imagery.TileRange.EnumerateRange()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Imagery/Structs/TileRange.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: EnumerateRange
+    path: ../DEM.Net.Lib/Imagery/Structs/TileRange.cs
+    startLine: 59
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Imagery
+  syntax:
+    content: public IEnumerable<MapTileInfo> EnumerateRange()
+    return:
+      type: System.Collections.Generic.IEnumerable{DEM.Net.Lib.Imagery.MapTileInfo}
+    content.vb: Public Function EnumerateRange As IEnumerable(Of MapTileInfo)
+  overload: DEM.Net.Lib.Imagery.TileRange.EnumerateRange*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: DEM.Net.Lib.Imagery
+  commentId: N:DEM.Net.Lib.Imagery
+  name: DEM.Net.Lib.Imagery
+  nameWithType: DEM.Net.Lib.Imagery
+  fullName: DEM.Net.Lib.Imagery
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Collections.Generic.IEnumerable{DEM.Net.Lib.Imagery.MapTile}
+  commentId: T:System.Collections.Generic.IEnumerable{DEM.Net.Lib.Imagery.MapTile}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  name: IEnumerable<MapTile>
+  nameWithType: IEnumerable<MapTile>
+  fullName: System.Collections.Generic.IEnumerable<DEM.Net.Lib.Imagery.MapTile>
+  nameWithType.vb: IEnumerable(Of MapTile)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of DEM.Net.Lib.Imagery.MapTile)
+  name.vb: IEnumerable(Of MapTile)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: DEM.Net.Lib.Imagery.MapTile
+    name: MapTile
+    nameWithType: MapTile
+    fullName: DEM.Net.Lib.Imagery.MapTile
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: DEM.Net.Lib.Imagery.MapTile
+    name: MapTile
+    nameWithType: MapTile
+    fullName: DEM.Net.Lib.Imagery.MapTile
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.IEnumerable
+  commentId: T:System.Collections.IEnumerable
+  parent: System.Collections
+  isExternal: true
+  name: IEnumerable
+  nameWithType: IEnumerable
+  fullName: System.Collections.IEnumerable
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: System.Collections.Generic.IEnumerable`1
+  commentId: T:System.Collections.Generic.IEnumerable`1
+  isExternal: true
+  name: IEnumerable<T>
+  nameWithType: IEnumerable<T>
+  fullName: System.Collections.Generic.IEnumerable<T>
+  nameWithType.vb: IEnumerable(Of T)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
+  name.vb: IEnumerable(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: System.Collections
+  commentId: N:System.Collections
+  isExternal: true
+  name: System.Collections
+  nameWithType: System.Collections
+  fullName: System.Collections
+- uid: DEM.Net.Lib.Imagery.TileRange.#ctor*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileRange.#ctor
+  name: TileRange
+  nameWithType: TileRange.TileRange
+  fullName: DEM.Net.Lib.Imagery.TileRange.TileRange
+- uid: DEM.Net.Lib.Imagery.ImageryProvider
+  commentId: T:DEM.Net.Lib.Imagery.ImageryProvider
+  parent: DEM.Net.Lib.Imagery
+  name: ImageryProvider
+  nameWithType: ImageryProvider
+  fullName: DEM.Net.Lib.Imagery.ImageryProvider
+- uid: DEM.Net.Lib.Imagery.TileRange.Add*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileRange.Add
+  name: Add
+  nameWithType: TileRange.Add
+  fullName: DEM.Net.Lib.Imagery.TileRange.Add
+- uid: DEM.Net.Lib.Imagery.MapTile
+  commentId: T:DEM.Net.Lib.Imagery.MapTile
+  parent: DEM.Net.Lib.Imagery
+  name: MapTile
+  nameWithType: MapTile
+  fullName: DEM.Net.Lib.Imagery.MapTile
+- uid: DEM.Net.Lib.Imagery.TileRange.AddRange*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileRange.AddRange
+  name: AddRange
+  nameWithType: TileRange.AddRange
+  fullName: DEM.Net.Lib.Imagery.TileRange.AddRange
+- uid: DEM.Net.Lib.Imagery.TileRange.Provider*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileRange.Provider
+  name: Provider
+  nameWithType: TileRange.Provider
+  fullName: DEM.Net.Lib.Imagery.TileRange.Provider
+- uid: DEM.Net.Lib.Imagery.TileRange.Start*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileRange.Start
+  name: Start
+  nameWithType: TileRange.Start
+  fullName: DEM.Net.Lib.Imagery.TileRange.Start
+- uid: DEM.Net.Lib.Imagery.MapTileInfo
+  commentId: T:DEM.Net.Lib.Imagery.MapTileInfo
+  parent: DEM.Net.Lib.Imagery
+  name: MapTileInfo
+  nameWithType: MapTileInfo
+  fullName: DEM.Net.Lib.Imagery.MapTileInfo
+- uid: DEM.Net.Lib.Imagery.TileRange.End*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileRange.End
+  name: End
+  nameWithType: TileRange.End
+  fullName: DEM.Net.Lib.Imagery.TileRange.End
+- uid: DEM.Net.Lib.Imagery.TileRange.NumCols*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileRange.NumCols
+  name: NumCols
+  nameWithType: TileRange.NumCols
+  fullName: DEM.Net.Lib.Imagery.TileRange.NumCols
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: DEM.Net.Lib.Imagery.TileRange.NumRows*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileRange.NumRows
+  name: NumRows
+  nameWithType: TileRange.NumRows
+  fullName: DEM.Net.Lib.Imagery.TileRange.NumRows
+- uid: DEM.Net.Lib.Imagery.TileRange.AreaOfInterest*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileRange.AreaOfInterest
+  name: AreaOfInterest
+  nameWithType: TileRange.AreaOfInterest
+  fullName: DEM.Net.Lib.Imagery.TileRange.AreaOfInterest
+- uid: DEM.Net.Lib.BoundingBox
+  commentId: T:DEM.Net.Lib.BoundingBox
+  parent: DEM.Net.Lib
+  name: BoundingBox
+  nameWithType: BoundingBox
+  fullName: DEM.Net.Lib.BoundingBox
+- uid: DEM.Net.Lib
+  commentId: N:DEM.Net.Lib
+  name: DEM.Net.Lib
+  nameWithType: DEM.Net.Lib
+  fullName: DEM.Net.Lib
+- uid: DEM.Net.Lib.Imagery.TileRange.GetEnumerator*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileRange.GetEnumerator
+  name: GetEnumerator
+  nameWithType: TileRange.GetEnumerator
+  fullName: DEM.Net.Lib.Imagery.TileRange.GetEnumerator
+- uid: System.Collections.Generic.IEnumerable{DEM.Net.Lib.Imagery.MapTile}.GetEnumerator
+  commentId: M:System.Collections.Generic.IEnumerable{DEM.Net.Lib.Imagery.MapTile}.GetEnumerator
+  parent: System.Collections.Generic.IEnumerable{DEM.Net.Lib.Imagery.MapTile}
+  definition: System.Collections.Generic.IEnumerable`1.GetEnumerator
+  name: GetEnumerator()
+  nameWithType: IEnumerable<MapTile>.GetEnumerator()
+  fullName: System.Collections.Generic.IEnumerable<DEM.Net.Lib.Imagery.MapTile>.GetEnumerator()
+  nameWithType.vb: IEnumerable(Of MapTile).GetEnumerator()
+  fullName.vb: System.Collections.Generic.IEnumerable(Of DEM.Net.Lib.Imagery.MapTile).GetEnumerator()
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1.GetEnumerator
+    name: GetEnumerator
+    nameWithType: IEnumerable<MapTile>.GetEnumerator
+    fullName: System.Collections.Generic.IEnumerable<DEM.Net.Lib.Imagery.MapTile>.GetEnumerator
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1.GetEnumerator
+    name: GetEnumerator
+    nameWithType: IEnumerable(Of MapTile).GetEnumerator
+    fullName: System.Collections.Generic.IEnumerable(Of DEM.Net.Lib.Imagery.MapTile).GetEnumerator
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IEnumerator{DEM.Net.Lib.Imagery.MapTile}
+  commentId: T:System.Collections.Generic.IEnumerator{DEM.Net.Lib.Imagery.MapTile}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerator`1
+  name: IEnumerator<MapTile>
+  nameWithType: IEnumerator<MapTile>
+  fullName: System.Collections.Generic.IEnumerator<DEM.Net.Lib.Imagery.MapTile>
+  nameWithType.vb: IEnumerator(Of MapTile)
+  fullName.vb: System.Collections.Generic.IEnumerator(Of DEM.Net.Lib.Imagery.MapTile)
+  name.vb: IEnumerator(Of MapTile)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerator`1
+    name: IEnumerator
+    nameWithType: IEnumerator
+    fullName: System.Collections.Generic.IEnumerator
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: DEM.Net.Lib.Imagery.MapTile
+    name: MapTile
+    nameWithType: MapTile
+    fullName: DEM.Net.Lib.Imagery.MapTile
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerator`1
+    name: IEnumerator
+    nameWithType: IEnumerator
+    fullName: System.Collections.Generic.IEnumerator
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: DEM.Net.Lib.Imagery.MapTile
+    name: MapTile
+    nameWithType: MapTile
+    fullName: DEM.Net.Lib.Imagery.MapTile
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IEnumerable`1.GetEnumerator
+  commentId: M:System.Collections.Generic.IEnumerable`1.GetEnumerator
+  isExternal: true
+  name: GetEnumerator()
+  nameWithType: IEnumerable<T>.GetEnumerator()
+  fullName: System.Collections.Generic.IEnumerable<T>.GetEnumerator()
+  nameWithType.vb: IEnumerable(Of T).GetEnumerator()
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T).GetEnumerator()
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1.GetEnumerator
+    name: GetEnumerator
+    nameWithType: IEnumerable<T>.GetEnumerator
+    fullName: System.Collections.Generic.IEnumerable<T>.GetEnumerator
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1.GetEnumerator
+    name: GetEnumerator
+    nameWithType: IEnumerable(Of T).GetEnumerator
+    fullName: System.Collections.Generic.IEnumerable(Of T).GetEnumerator
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IEnumerator`1
+  commentId: T:System.Collections.Generic.IEnumerator`1
+  isExternal: true
+  name: IEnumerator<T>
+  nameWithType: IEnumerator<T>
+  fullName: System.Collections.Generic.IEnumerator<T>
+  nameWithType.vb: IEnumerator(Of T)
+  fullName.vb: System.Collections.Generic.IEnumerator(Of T)
+  name.vb: IEnumerator(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerator`1
+    name: IEnumerator
+    nameWithType: IEnumerator
+    fullName: System.Collections.Generic.IEnumerator
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerator`1
+    name: IEnumerator
+    nameWithType: IEnumerator
+    fullName: System.Collections.Generic.IEnumerator
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Imagery.TileRange.System#Collections#IEnumerable#GetEnumerator*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileRange.System#Collections#IEnumerable#GetEnumerator
+  name: IEnumerable.GetEnumerator
+  nameWithType: TileRange.IEnumerable.GetEnumerator
+  fullName: DEM.Net.Lib.Imagery.TileRange.System.Collections.IEnumerable.GetEnumerator
+  nameWithType.vb: TileRange.System.Collections.IEnumerable.GetEnumerator
+  name.vb: System.Collections.IEnumerable.GetEnumerator
+- uid: System.Collections.IEnumerable.GetEnumerator
+  commentId: M:System.Collections.IEnumerable.GetEnumerator
+  parent: System.Collections.IEnumerable
+  isExternal: true
+  name: GetEnumerator()
+  nameWithType: IEnumerable.GetEnumerator()
+  fullName: System.Collections.IEnumerable.GetEnumerator()
+  spec.csharp:
+  - uid: System.Collections.IEnumerable.GetEnumerator
+    name: GetEnumerator
+    nameWithType: IEnumerable.GetEnumerator
+    fullName: System.Collections.IEnumerable.GetEnumerator
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Collections.IEnumerable.GetEnumerator
+    name: GetEnumerator
+    nameWithType: IEnumerable.GetEnumerator
+    fullName: System.Collections.IEnumerable.GetEnumerator
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.IEnumerator
+  commentId: T:System.Collections.IEnumerator
+  parent: System.Collections
+  isExternal: true
+  name: IEnumerator
+  nameWithType: IEnumerator
+  fullName: System.Collections.IEnumerator
+- uid: DEM.Net.Lib.Imagery.TileRange.EnumerateRange*
+  commentId: Overload:DEM.Net.Lib.Imagery.TileRange.EnumerateRange
+  name: EnumerateRange
+  nameWithType: TileRange.EnumerateRange
+  fullName: DEM.Net.Lib.Imagery.TileRange.EnumerateRange
+- uid: System.Collections.Generic.IEnumerable{DEM.Net.Lib.Imagery.MapTileInfo}
+  commentId: T:System.Collections.Generic.IEnumerable{DEM.Net.Lib.Imagery.MapTileInfo}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  name: IEnumerable<MapTileInfo>
+  nameWithType: IEnumerable<MapTileInfo>
+  fullName: System.Collections.Generic.IEnumerable<DEM.Net.Lib.Imagery.MapTileInfo>
+  nameWithType.vb: IEnumerable(Of MapTileInfo)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of DEM.Net.Lib.Imagery.MapTileInfo)
+  name.vb: IEnumerable(Of MapTileInfo)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: DEM.Net.Lib.Imagery.MapTileInfo
+    name: MapTileInfo
+    nameWithType: MapTileInfo
+    fullName: DEM.Net.Lib.Imagery.MapTileInfo
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: DEM.Net.Lib.Imagery.MapTileInfo
+    name: MapTileInfo
+    nameWithType: MapTileInfo
+    fullName: DEM.Net.Lib.Imagery.MapTileInfo
+  - name: )
+    nameWithType: )
+    fullName: )

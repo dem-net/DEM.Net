@@ -1,0 +1,145 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.SmoothingMode
+  commentId: T:DEM.Net.Lib.SmoothingMode
+  id: SmoothingMode
+  parent: DEM.Net.Lib
+  children:
+  - DEM.Net.Lib.SmoothingMode.FeedbackSmooth
+  - DEM.Net.Lib.SmoothingMode.None
+  - DEM.Net.Lib.SmoothingMode.WindowSmooth
+  langs:
+  - csharp
+  - vb
+  name: SmoothingMode
+  nameWithType: SmoothingMode
+  fullName: DEM.Net.Lib.SmoothingMode
+  type: Enum
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/SmoothingMode.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: SmoothingMode
+    path: ../DEM.Net.Lib/Model/SmoothingMode.cs
+    startLine: 8
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: public enum SmoothingMode
+    content.vb: Public Enum SmoothingMode
+  modifiers.csharp:
+  - public
+  - enum
+  modifiers.vb:
+  - Public
+  - Enum
+- uid: DEM.Net.Lib.SmoothingMode.None
+  commentId: F:DEM.Net.Lib.SmoothingMode.None
+  id: None
+  parent: DEM.Net.Lib.SmoothingMode
+  langs:
+  - csharp
+  - vb
+  name: None
+  nameWithType: SmoothingMode.None
+  fullName: DEM.Net.Lib.SmoothingMode.None
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/SmoothingMode.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: None
+    path: ../DEM.Net.Lib/Model/SmoothingMode.cs
+    startLine: 10
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: None = 0
+    return:
+      type: DEM.Net.Lib.SmoothingMode
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.SmoothingMode.FeedbackSmooth
+  commentId: F:DEM.Net.Lib.SmoothingMode.FeedbackSmooth
+  id: FeedbackSmooth
+  parent: DEM.Net.Lib.SmoothingMode
+  langs:
+  - csharp
+  - vb
+  name: FeedbackSmooth
+  nameWithType: SmoothingMode.FeedbackSmooth
+  fullName: DEM.Net.Lib.SmoothingMode.FeedbackSmooth
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/SmoothingMode.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: FeedbackSmooth
+    path: ../DEM.Net.Lib/Model/SmoothingMode.cs
+    startLine: 11
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: FeedbackSmooth = 1
+    return:
+      type: DEM.Net.Lib.SmoothingMode
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.SmoothingMode.WindowSmooth
+  commentId: F:DEM.Net.Lib.SmoothingMode.WindowSmooth
+  id: WindowSmooth
+  parent: DEM.Net.Lib.SmoothingMode
+  langs:
+  - csharp
+  - vb
+  name: WindowSmooth
+  nameWithType: SmoothingMode.WindowSmooth
+  fullName: DEM.Net.Lib.SmoothingMode.WindowSmooth
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Model/SmoothingMode.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: WindowSmooth
+    path: ../DEM.Net.Lib/Model/SmoothingMode.cs
+    startLine: 12
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: WindowSmooth = 2
+    return:
+      type: DEM.Net.Lib.SmoothingMode
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+references:
+- uid: DEM.Net.Lib
+  commentId: N:DEM.Net.Lib
+  name: DEM.Net.Lib
+  nameWithType: DEM.Net.Lib
+  fullName: DEM.Net.Lib
+- uid: DEM.Net.Lib.SmoothingMode
+  commentId: T:DEM.Net.Lib.SmoothingMode
+  parent: DEM.Net.Lib
+  name: SmoothingMode
+  nameWithType: SmoothingMode
+  fullName: DEM.Net.Lib.SmoothingMode

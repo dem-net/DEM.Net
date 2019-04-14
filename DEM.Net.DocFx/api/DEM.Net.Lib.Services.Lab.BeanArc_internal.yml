@@ -1,0 +1,1004 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal
+  commentId: T:DEM.Net.Lib.Services.Lab.BeanArc_internal
+  id: BeanArc_internal
+  parent: DEM.Net.Lib.Services.Lab
+  children:
+  - DEM.Net.Lib.Services.Lab.BeanArc_internal.#ctor(DEM.Net.Lib.Services.Lab.BeanPoint_internal,DEM.Net.Lib.Services.Lab.BeanPoint_internal)
+  - DEM.Net.Lib.Services.Lab.BeanArc_internal.#ctor(DEM.Net.Lib.Services.Lab.BeanPoint_internal,DEM.Net.Lib.Services.Lab.BeanPoint_internal,System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal})
+  - DEM.Net.Lib.Services.Lab.BeanArc_internal.getQualifMorphoDeLArc
+  - DEM.Net.Lib.Services.Lab.BeanArc_internal.getSensPenteArc
+  - DEM.Net.Lib.Services.Lab.BeanArc_internal.getValeurPente
+  - DEM.Net.Lib.Services.Lab.BeanArc_internal.p00_idArc
+  - DEM.Net.Lib.Services.Lab.BeanArc_internal.p01_hcodeArc
+  - DEM.Net.Lib.Services.Lab.BeanArc_internal.p11_pointDbt
+  - DEM.Net.Lib.Services.Lab.BeanArc_internal.p12_pointFin
+  - DEM.Net.Lib.Services.Lab.BeanArc_internal.p20_statutArc
+  - DEM.Net.Lib.Services.Lab.BeanArc_internal.p21_facetteGauche
+  - DEM.Net.Lib.Services.Lab.BeanArc_internal.p22_facetteDroite
+  - DEM.Net.Lib.Services.Lab.BeanArc_internal.p31_pointsAssocies
+  langs:
+  - csharp
+  - vb
+  name: BeanArc_internal
+  nameWithType: BeanArc_internal
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: BeanArc_internal
+    path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+    startLine: 8
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public class BeanArc_internal
+    content.vb: Public Class BeanArc_internal
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.p00_idArc
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanArc_internal.p00_idArc
+  id: p00_idArc
+  parent: DEM.Net.Lib.Services.Lab.BeanArc_internal
+  langs:
+  - csharp
+  - vb
+  name: p00_idArc
+  nameWithType: BeanArc_internal.p00_idArc
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.p00_idArc
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p00_idArc
+    path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+    startLine: 12
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public int p00_idArc { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public ReadOnly Property p00_idArc As Integer
+  overload: DEM.Net.Lib.Services.Lab.BeanArc_internal.p00_idArc*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.p01_hcodeArc
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanArc_internal.p01_hcodeArc
+  id: p01_hcodeArc
+  parent: DEM.Net.Lib.Services.Lab.BeanArc_internal
+  langs:
+  - csharp
+  - vb
+  name: p01_hcodeArc
+  nameWithType: BeanArc_internal.p01_hcodeArc
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.p01_hcodeArc
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p01_hcodeArc
+    path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+    startLine: 13
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public string p01_hcodeArc { get; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public ReadOnly Property p01_hcodeArc As String
+  overload: DEM.Net.Lib.Services.Lab.BeanArc_internal.p01_hcodeArc*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.p11_pointDbt
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanArc_internal.p11_pointDbt
+  id: p11_pointDbt
+  parent: DEM.Net.Lib.Services.Lab.BeanArc_internal
+  langs:
+  - csharp
+  - vb
+  name: p11_pointDbt
+  nameWithType: BeanArc_internal.p11_pointDbt
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.p11_pointDbt
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p11_pointDbt
+    path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+    startLine: 15
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public BeanPoint_internal p11_pointDbt { get; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    content.vb: Public ReadOnly Property p11_pointDbt As BeanPoint_internal
+  overload: DEM.Net.Lib.Services.Lab.BeanArc_internal.p11_pointDbt*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.p12_pointFin
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanArc_internal.p12_pointFin
+  id: p12_pointFin
+  parent: DEM.Net.Lib.Services.Lab.BeanArc_internal
+  langs:
+  - csharp
+  - vb
+  name: p12_pointFin
+  nameWithType: BeanArc_internal.p12_pointFin
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.p12_pointFin
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p12_pointFin
+    path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+    startLine: 16
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public BeanPoint_internal p12_pointFin { get; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    content.vb: Public ReadOnly Property p12_pointFin As BeanPoint_internal
+  overload: DEM.Net.Lib.Services.Lab.BeanArc_internal.p12_pointFin*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.p20_statutArc
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanArc_internal.p20_statutArc
+  id: p20_statutArc
+  parent: DEM.Net.Lib.Services.Lab.BeanArc_internal
+  langs:
+  - csharp
+  - vb
+  name: p20_statutArc
+  nameWithType: BeanArc_internal.p20_statutArc
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.p20_statutArc
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p20_statutArc
+    path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+    startLine: 18
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public enumStatutArc p20_statutArc { get; set; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Services.Lab.enumStatutArc
+    content.vb: Public Property p20_statutArc As enumStatutArc
+  overload: DEM.Net.Lib.Services.Lab.BeanArc_internal.p20_statutArc*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.p21_facetteGauche
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanArc_internal.p21_facetteGauche
+  id: p21_facetteGauche
+  parent: DEM.Net.Lib.Services.Lab.BeanArc_internal
+  langs:
+  - csharp
+  - vb
+  name: p21_facetteGauche
+  nameWithType: BeanArc_internal.p21_facetteGauche
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.p21_facetteGauche
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p21_facetteGauche
+    path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+    startLine: 19
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public BeanFacette_internal p21_facetteGauche { get; set; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+    content.vb: Public Property p21_facetteGauche As BeanFacette_internal
+  overload: DEM.Net.Lib.Services.Lab.BeanArc_internal.p21_facetteGauche*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.p22_facetteDroite
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanArc_internal.p22_facetteDroite
+  id: p22_facetteDroite
+  parent: DEM.Net.Lib.Services.Lab.BeanArc_internal
+  langs:
+  - csharp
+  - vb
+  name: p22_facetteDroite
+  nameWithType: BeanArc_internal.p22_facetteDroite
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.p22_facetteDroite
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p22_facetteDroite
+    path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+    startLine: 20
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public BeanFacette_internal p22_facetteDroite { get; set; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+    content.vb: Public Property p22_facetteDroite As BeanFacette_internal
+  overload: DEM.Net.Lib.Services.Lab.BeanArc_internal.p22_facetteDroite*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.p31_pointsAssocies
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanArc_internal.p31_pointsAssocies
+  id: p31_pointsAssocies
+  parent: DEM.Net.Lib.Services.Lab.BeanArc_internal
+  langs:
+  - csharp
+  - vb
+  name: p31_pointsAssocies
+  nameWithType: BeanArc_internal.p31_pointsAssocies
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.p31_pointsAssocies
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p31_pointsAssocies
+    path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+    startLine: 23
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public List<BeanPoint_internal> p31_pointsAssocies { get; set; }
+    parameters: []
+    return:
+      type: System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal}
+    content.vb: Public Property p31_pointsAssocies As List(Of BeanPoint_internal)
+  overload: DEM.Net.Lib.Services.Lab.BeanArc_internal.p31_pointsAssocies*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.getSensPenteArc
+  commentId: M:DEM.Net.Lib.Services.Lab.BeanArc_internal.getSensPenteArc
+  id: getSensPenteArc
+  parent: DEM.Net.Lib.Services.Lab.BeanArc_internal
+  langs:
+  - csharp
+  - vb
+  name: getSensPenteArc()
+  nameWithType: BeanArc_internal.getSensPenteArc()
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.getSensPenteArc()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: getSensPenteArc
+    path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+    startLine: 31
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public enumSensPenteArc getSensPenteArc()
+    return:
+      type: DEM.Net.Lib.Services.Lab.enumSensPenteArc
+    content.vb: Public Function getSensPenteArc As enumSensPenteArc
+  overload: DEM.Net.Lib.Services.Lab.BeanArc_internal.getSensPenteArc*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.getValeurPente
+  commentId: M:DEM.Net.Lib.Services.Lab.BeanArc_internal.getValeurPente
+  id: getValeurPente
+  parent: DEM.Net.Lib.Services.Lab.BeanArc_internal
+  langs:
+  - csharp
+  - vb
+  name: getValeurPente()
+  nameWithType: BeanArc_internal.getValeurPente()
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.getValeurPente()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: getValeurPente
+    path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+    startLine: 53
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public double getValeurPente()
+    return:
+      type: System.Double
+    content.vb: Public Function getValeurPente As Double
+  overload: DEM.Net.Lib.Services.Lab.BeanArc_internal.getValeurPente*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.getQualifMorphoDeLArc
+  commentId: M:DEM.Net.Lib.Services.Lab.BeanArc_internal.getQualifMorphoDeLArc
+  id: getQualifMorphoDeLArc
+  parent: DEM.Net.Lib.Services.Lab.BeanArc_internal
+  langs:
+  - csharp
+  - vb
+  name: getQualifMorphoDeLArc()
+  nameWithType: BeanArc_internal.getQualifMorphoDeLArc()
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.getQualifMorphoDeLArc()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: getQualifMorphoDeLArc
+    path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+    startLine: 61
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public enum_qualificationMorpho_arc getQualifMorphoDeLArc()
+    return:
+      type: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc
+    content.vb: Public Function getQualifMorphoDeLArc As enum_qualificationMorpho_arc
+  overload: DEM.Net.Lib.Services.Lab.BeanArc_internal.getQualifMorphoDeLArc*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.#ctor(DEM.Net.Lib.Services.Lab.BeanPoint_internal,DEM.Net.Lib.Services.Lab.BeanPoint_internal)
+  commentId: M:DEM.Net.Lib.Services.Lab.BeanArc_internal.#ctor(DEM.Net.Lib.Services.Lab.BeanPoint_internal,DEM.Net.Lib.Services.Lab.BeanPoint_internal)
+  id: '#ctor(DEM.Net.Lib.Services.Lab.BeanPoint_internal,DEM.Net.Lib.Services.Lab.BeanPoint_internal)'
+  parent: DEM.Net.Lib.Services.Lab.BeanArc_internal
+  langs:
+  - csharp
+  - vb
+  name: BeanArc_internal(BeanPoint_internal, BeanPoint_internal)
+  nameWithType: BeanArc_internal.BeanArc_internal(BeanPoint_internal, BeanPoint_internal)
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.BeanArc_internal(DEM.Net.Lib.Services.Lab.BeanPoint_internal, DEM.Net.Lib.Services.Lab.BeanPoint_internal)
+  type: Constructor
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: .ctor
+    path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+    startLine: 72
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public BeanArc_internal(BeanPoint_internal p_pointDbt, BeanPoint_internal p_pointFin)
+    parameters:
+    - id: p_pointDbt
+      type: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    - id: p_pointFin
+      type: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    content.vb: Public Sub New(p_pointDbt As BeanPoint_internal, p_pointFin As BeanPoint_internal)
+  overload: DEM.Net.Lib.Services.Lab.BeanArc_internal.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.#ctor(DEM.Net.Lib.Services.Lab.BeanPoint_internal,DEM.Net.Lib.Services.Lab.BeanPoint_internal,System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal})
+  commentId: M:DEM.Net.Lib.Services.Lab.BeanArc_internal.#ctor(DEM.Net.Lib.Services.Lab.BeanPoint_internal,DEM.Net.Lib.Services.Lab.BeanPoint_internal,System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal})
+  id: '#ctor(DEM.Net.Lib.Services.Lab.BeanPoint_internal,DEM.Net.Lib.Services.Lab.BeanPoint_internal,System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal})'
+  parent: DEM.Net.Lib.Services.Lab.BeanArc_internal
+  langs:
+  - csharp
+  - vb
+  name: BeanArc_internal(BeanPoint_internal, BeanPoint_internal, List<BeanPoint_internal>)
+  nameWithType: BeanArc_internal.BeanArc_internal(BeanPoint_internal, BeanPoint_internal, List<BeanPoint_internal>)
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.BeanArc_internal(DEM.Net.Lib.Services.Lab.BeanPoint_internal, DEM.Net.Lib.Services.Lab.BeanPoint_internal, System.Collections.Generic.List<DEM.Net.Lib.Services.Lab.BeanPoint_internal>)
+  type: Constructor
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: .ctor
+    path: ../DEM.Net.Lib/Services/Lab/BeanArc_internal.cs
+    startLine: 86
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public BeanArc_internal(BeanPoint_internal p_pointDbt, BeanPoint_internal p_pointFin, List<BeanPoint_internal> p_pointsAssocies)
+    parameters:
+    - id: p_pointDbt
+      type: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    - id: p_pointFin
+      type: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    - id: p_pointsAssocies
+      type: System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal}
+    content.vb: Public Sub New(p_pointDbt As BeanPoint_internal, p_pointFin As BeanPoint_internal, p_pointsAssocies As List(Of BeanPoint_internal))
+  overload: DEM.Net.Lib.Services.Lab.BeanArc_internal.#ctor*
+  nameWithType.vb: BeanArc_internal.BeanArc_internal(BeanPoint_internal, BeanPoint_internal, List(Of BeanPoint_internal))
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Services.Lab.BeanArc_internal.BeanArc_internal(DEM.Net.Lib.Services.Lab.BeanPoint_internal, DEM.Net.Lib.Services.Lab.BeanPoint_internal, System.Collections.Generic.List(Of DEM.Net.Lib.Services.Lab.BeanPoint_internal))
+  name.vb: BeanArc_internal(BeanPoint_internal, BeanPoint_internal, List(Of BeanPoint_internal))
+references:
+- uid: DEM.Net.Lib.Services.Lab
+  commentId: N:DEM.Net.Lib.Services.Lab
+  name: DEM.Net.Lib.Services.Lab
+  nameWithType: DEM.Net.Lib.Services.Lab
+  fullName: DEM.Net.Lib.Services.Lab
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.p00_idArc*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanArc_internal.p00_idArc
+  name: p00_idArc
+  nameWithType: BeanArc_internal.p00_idArc
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.p00_idArc
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.p01_hcodeArc*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanArc_internal.p01_hcodeArc
+  name: p01_hcodeArc
+  nameWithType: BeanArc_internal.p01_hcodeArc
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.p01_hcodeArc
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.p11_pointDbt*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanArc_internal.p11_pointDbt
+  name: p11_pointDbt
+  nameWithType: BeanArc_internal.p11_pointDbt
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.p11_pointDbt
+- uid: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+  commentId: T:DEM.Net.Lib.Services.Lab.BeanPoint_internal
+  parent: DEM.Net.Lib.Services.Lab
+  name: BeanPoint_internal
+  nameWithType: BeanPoint_internal
+  fullName: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.p12_pointFin*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanArc_internal.p12_pointFin
+  name: p12_pointFin
+  nameWithType: BeanArc_internal.p12_pointFin
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.p12_pointFin
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.p20_statutArc*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanArc_internal.p20_statutArc
+  name: p20_statutArc
+  nameWithType: BeanArc_internal.p20_statutArc
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.p20_statutArc
+- uid: DEM.Net.Lib.Services.Lab.enumStatutArc
+  commentId: T:DEM.Net.Lib.Services.Lab.enumStatutArc
+  parent: DEM.Net.Lib.Services.Lab
+  name: enumStatutArc
+  nameWithType: enumStatutArc
+  fullName: DEM.Net.Lib.Services.Lab.enumStatutArc
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.p21_facetteGauche*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanArc_internal.p21_facetteGauche
+  name: p21_facetteGauche
+  nameWithType: BeanArc_internal.p21_facetteGauche
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.p21_facetteGauche
+- uid: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+  commentId: T:DEM.Net.Lib.Services.Lab.BeanFacette_internal
+  parent: DEM.Net.Lib.Services.Lab
+  name: BeanFacette_internal
+  nameWithType: BeanFacette_internal
+  fullName: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.p22_facetteDroite*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanArc_internal.p22_facetteDroite
+  name: p22_facetteDroite
+  nameWithType: BeanArc_internal.p22_facetteDroite
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.p22_facetteDroite
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.p31_pointsAssocies*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanArc_internal.p31_pointsAssocies
+  name: p31_pointsAssocies
+  nameWithType: BeanArc_internal.p31_pointsAssocies
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.p31_pointsAssocies
+- uid: System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal}
+  commentId: T:System.Collections.Generic.List{DEM.Net.Lib.Services.Lab.BeanPoint_internal}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<BeanPoint_internal>
+  nameWithType: List<BeanPoint_internal>
+  fullName: System.Collections.Generic.List<DEM.Net.Lib.Services.Lab.BeanPoint_internal>
+  nameWithType.vb: List(Of BeanPoint_internal)
+  fullName.vb: System.Collections.Generic.List(Of DEM.Net.Lib.Services.Lab.BeanPoint_internal)
+  name.vb: List(Of BeanPoint_internal)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    name: BeanPoint_internal
+    nameWithType: BeanPoint_internal
+    fullName: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    name: BeanPoint_internal
+    nameWithType: BeanPoint_internal
+    fullName: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.List`1
+  commentId: T:System.Collections.Generic.List`1
+  isExternal: true
+  name: List<T>
+  nameWithType: List<T>
+  fullName: System.Collections.Generic.List<T>
+  nameWithType.vb: List(Of T)
+  fullName.vb: System.Collections.Generic.List(Of T)
+  name.vb: List(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.getSensPenteArc*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanArc_internal.getSensPenteArc
+  name: getSensPenteArc
+  nameWithType: BeanArc_internal.getSensPenteArc
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.getSensPenteArc
+- uid: DEM.Net.Lib.Services.Lab.enumSensPenteArc
+  commentId: T:DEM.Net.Lib.Services.Lab.enumSensPenteArc
+  parent: DEM.Net.Lib.Services.Lab
+  name: enumSensPenteArc
+  nameWithType: enumSensPenteArc
+  fullName: DEM.Net.Lib.Services.Lab.enumSensPenteArc
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.getValeurPente*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanArc_internal.getValeurPente
+  name: getValeurPente
+  nameWithType: BeanArc_internal.getValeurPente
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.getValeurPente
+- uid: System.Double
+  commentId: T:System.Double
+  parent: System
+  isExternal: true
+  name: Double
+  nameWithType: Double
+  fullName: System.Double
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.getQualifMorphoDeLArc*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanArc_internal.getQualifMorphoDeLArc
+  name: getQualifMorphoDeLArc
+  nameWithType: BeanArc_internal.getQualifMorphoDeLArc
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.getQualifMorphoDeLArc
+- uid: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc
+  commentId: T:DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc
+  parent: DEM.Net.Lib.Services.Lab
+  name: enum_qualificationMorpho_arc
+  nameWithType: enum_qualificationMorpho_arc
+  fullName: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc
+- uid: DEM.Net.Lib.Services.Lab.BeanArc_internal.#ctor*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanArc_internal.#ctor
+  name: BeanArc_internal
+  nameWithType: BeanArc_internal.BeanArc_internal
+  fullName: DEM.Net.Lib.Services.Lab.BeanArc_internal.BeanArc_internal

@@ -1,8 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.SqlServer.Types;
 using DEM.Net.Lib;
-using System.Windows.Media.Imaging;
 using System.IO;
 using System.Linq;
 
@@ -64,13 +62,8 @@ namespace DEM.Net.Test
 
         [TestMethod]
         [TestCategory("Dataset")]
-        [DeploymentItem(@"SqlServerTypes\x64\msvcr120.dll", @"SqlServerTypes\x64")]
-        [DeploymentItem(@"SqlServerTypes\x64\SqlServerSpatial140.dll", @"SqlServerTypes\x64")]
-        [DeploymentItem(@"SqlServerTypes\x86\msvcr120.dll", @"SqlServerTypes\x86")]
-        [DeploymentItem(@"SqlServerTypes\x86\SqlServerSpatial140.dll", @"SqlServerTypes\x86")]
         public void DownloadTile_Location()
         {
-            SqlServerTypes.Utilities.LoadNativeAssemblies(".");
 
             double lat = 43.537854;
             double lon = 5.429993;
@@ -87,13 +80,8 @@ namespace DEM.Net.Test
 
         [TestMethod]
         [TestCategory("Dataset")]
-        [DeploymentItem(@"SqlServerTypes\x64\msvcr120.dll", @"SqlServerTypes\x64")]
-        [DeploymentItem(@"SqlServerTypes\x64\SqlServerSpatial140.dll", @"SqlServerTypes\x64")]
-        [DeploymentItem(@"SqlServerTypes\x86\msvcr120.dll", @"SqlServerTypes\x86")]
-        [DeploymentItem(@"SqlServerTypes\x86\SqlServerSpatial140.dll", @"SqlServerTypes\x86")]
         public void DownloadTile_BBox()
         {
-            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
 
             const string WKT_BBOX_AIX_PUYRICARD = "POLYGON ((5.429993 43.537854, 5.459132 43.537854, 5.459132 43.58151, 5.429993 43.58151, 5.429993 43.537854))";
 

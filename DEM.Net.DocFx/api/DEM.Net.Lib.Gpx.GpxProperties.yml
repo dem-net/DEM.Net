@@ -1,0 +1,761 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Gpx.GpxProperties
+  commentId: T:DEM.Net.Lib.Gpx.GpxProperties
+  id: GpxProperties
+  parent: DEM.Net.Lib.Gpx
+  children:
+  - DEM.Net.Lib.Gpx.GpxProperties.GetListProperty``1(System.String)
+  - DEM.Net.Lib.Gpx.GpxProperties.GetObjectProperty``1(System.String)
+  - DEM.Net.Lib.Gpx.GpxProperties.GetValueProperty``1(System.String)
+  - DEM.Net.Lib.Gpx.GpxProperties.SetObjectProperty``1(System.String,``0)
+  - DEM.Net.Lib.Gpx.GpxProperties.SetValueProperty``1(System.String,System.Nullable{``0})
+  langs:
+  - csharp
+  - vb
+  name: GpxProperties
+  nameWithType: GpxProperties
+  fullName: DEM.Net.Lib.Gpx.GpxProperties
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/GpxProperties.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GpxProperties
+    path: ../DEM.Net.Lib/IO/gpx/GpxProperties.cs
+    startLine: 14
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public class GpxProperties
+    content.vb: Public Class GpxProperties
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.Gpx.GpxProperties.GetValueProperty``1(System.String)
+  commentId: M:DEM.Net.Lib.Gpx.GpxProperties.GetValueProperty``1(System.String)
+  id: GetValueProperty``1(System.String)
+  parent: DEM.Net.Lib.Gpx.GpxProperties
+  langs:
+  - csharp
+  - vb
+  name: GetValueProperty<T>(String)
+  nameWithType: GpxProperties.GetValueProperty<T>(String)
+  fullName: DEM.Net.Lib.Gpx.GpxProperties.GetValueProperty<T>(System.String)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/GpxProperties.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetValueProperty
+    path: ../DEM.Net.Lib/IO/gpx/GpxProperties.cs
+    startLine: 126
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: >-
+      public T? GetValueProperty<T>(string name)
+          where T : struct
+    parameters:
+    - id: name
+      type: System.String
+    typeParameters:
+    - id: T
+    return:
+      type: System.Nullable{{T}}
+    content.vb: Public Function GetValueProperty(Of T As Structure)(name As String) As T?
+  overload: DEM.Net.Lib.Gpx.GpxProperties.GetValueProperty*
+  nameWithType.vb: GpxProperties.GetValueProperty(Of T)(String)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Gpx.GpxProperties.GetValueProperty(Of T)(System.String)
+  name.vb: GetValueProperty(Of T)(String)
+- uid: DEM.Net.Lib.Gpx.GpxProperties.GetObjectProperty``1(System.String)
+  commentId: M:DEM.Net.Lib.Gpx.GpxProperties.GetObjectProperty``1(System.String)
+  id: GetObjectProperty``1(System.String)
+  parent: DEM.Net.Lib.Gpx.GpxProperties
+  langs:
+  - csharp
+  - vb
+  name: GetObjectProperty<T>(String)
+  nameWithType: GpxProperties.GetObjectProperty<T>(String)
+  fullName: DEM.Net.Lib.Gpx.GpxProperties.GetObjectProperty<T>(System.String)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/GpxProperties.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetObjectProperty
+    path: ../DEM.Net.Lib/IO/gpx/GpxProperties.cs
+    startLine: 136
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: >-
+      public T GetObjectProperty<T>(string name)
+          where T : class
+    parameters:
+    - id: name
+      type: System.String
+    typeParameters:
+    - id: T
+    return:
+      type: '{T}'
+    content.vb: Public Function GetObjectProperty(Of T As Class)(name As String) As T
+  overload: DEM.Net.Lib.Gpx.GpxProperties.GetObjectProperty*
+  nameWithType.vb: GpxProperties.GetObjectProperty(Of T)(String)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Gpx.GpxProperties.GetObjectProperty(Of T)(System.String)
+  name.vb: GetObjectProperty(Of T)(String)
+- uid: DEM.Net.Lib.Gpx.GpxProperties.GetListProperty``1(System.String)
+  commentId: M:DEM.Net.Lib.Gpx.GpxProperties.GetListProperty``1(System.String)
+  id: GetListProperty``1(System.String)
+  parent: DEM.Net.Lib.Gpx.GpxProperties
+  langs:
+  - csharp
+  - vb
+  name: GetListProperty<T>(String)
+  nameWithType: GpxProperties.GetListProperty<T>(String)
+  fullName: DEM.Net.Lib.Gpx.GpxProperties.GetListProperty<T>(System.String)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/GpxProperties.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetListProperty
+    path: ../DEM.Net.Lib/IO/gpx/GpxProperties.cs
+    startLine: 146
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: public IList<T> GetListProperty<T>(string name)
+    parameters:
+    - id: name
+      type: System.String
+    typeParameters:
+    - id: T
+    return:
+      type: System.Collections.Generic.IList{{T}}
+    content.vb: Public Function GetListProperty(Of T)(name As String) As IList(Of T)
+  overload: DEM.Net.Lib.Gpx.GpxProperties.GetListProperty*
+  nameWithType.vb: GpxProperties.GetListProperty(Of T)(String)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Gpx.GpxProperties.GetListProperty(Of T)(System.String)
+  name.vb: GetListProperty(Of T)(String)
+- uid: DEM.Net.Lib.Gpx.GpxProperties.SetValueProperty``1(System.String,System.Nullable{``0})
+  commentId: M:DEM.Net.Lib.Gpx.GpxProperties.SetValueProperty``1(System.String,System.Nullable{``0})
+  id: SetValueProperty``1(System.String,System.Nullable{``0})
+  parent: DEM.Net.Lib.Gpx.GpxProperties
+  langs:
+  - csharp
+  - vb
+  name: SetValueProperty<T>(String, Nullable<T>)
+  nameWithType: GpxProperties.SetValueProperty<T>(String, Nullable<T>)
+  fullName: DEM.Net.Lib.Gpx.GpxProperties.SetValueProperty<T>(System.String, System.Nullable<T>)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/GpxProperties.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: SetValueProperty
+    path: ../DEM.Net.Lib/IO/gpx/GpxProperties.cs
+    startLine: 151
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: >-
+      public void SetValueProperty<T>(string name, T? value)
+          where T : struct
+    parameters:
+    - id: name
+      type: System.String
+    - id: value
+      type: System.Nullable{{T}}
+    typeParameters:
+    - id: T
+    content.vb: Public Sub SetValueProperty(Of T As Structure)(name As String, value As T?)
+  overload: DEM.Net.Lib.Gpx.GpxProperties.SetValueProperty*
+  nameWithType.vb: GpxProperties.SetValueProperty(Of T)(String, Nullable(Of T))
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Gpx.GpxProperties.SetValueProperty(Of T)(System.String, System.Nullable(Of T))
+  name.vb: SetValueProperty(Of T)(String, Nullable(Of T))
+- uid: DEM.Net.Lib.Gpx.GpxProperties.SetObjectProperty``1(System.String,``0)
+  commentId: M:DEM.Net.Lib.Gpx.GpxProperties.SetObjectProperty``1(System.String,``0)
+  id: SetObjectProperty``1(System.String,``0)
+  parent: DEM.Net.Lib.Gpx.GpxProperties
+  langs:
+  - csharp
+  - vb
+  name: SetObjectProperty<T>(String, T)
+  nameWithType: GpxProperties.SetObjectProperty<T>(String, T)
+  fullName: DEM.Net.Lib.Gpx.GpxProperties.SetObjectProperty<T>(System.String, T)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/gpx/GpxProperties.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: SetObjectProperty
+    path: ../DEM.Net.Lib/IO/gpx/GpxProperties.cs
+    startLine: 164
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Gpx
+  syntax:
+    content: >-
+      public void SetObjectProperty<T>(string name, T value)
+          where T : class
+    parameters:
+    - id: name
+      type: System.String
+    - id: value
+      type: '{T}'
+    typeParameters:
+    - id: T
+    content.vb: Public Sub SetObjectProperty(Of T As Class)(name As String, value As T)
+  overload: DEM.Net.Lib.Gpx.GpxProperties.SetObjectProperty*
+  nameWithType.vb: GpxProperties.SetObjectProperty(Of T)(String, T)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: DEM.Net.Lib.Gpx.GpxProperties.SetObjectProperty(Of T)(System.String, T)
+  name.vb: SetObjectProperty(Of T)(String, T)
+references:
+- uid: DEM.Net.Lib.Gpx
+  commentId: N:DEM.Net.Lib.Gpx
+  name: DEM.Net.Lib.Gpx
+  nameWithType: DEM.Net.Lib.Gpx
+  fullName: DEM.Net.Lib.Gpx
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.Gpx.GpxProperties.GetValueProperty*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxProperties.GetValueProperty
+  name: GetValueProperty
+  nameWithType: GpxProperties.GetValueProperty
+  fullName: DEM.Net.Lib.Gpx.GpxProperties.GetValueProperty
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: System.Nullable{{T}}
+  commentId: T:System.Nullable{``0}
+  parent: System
+  definition: System.Nullable`1
+  name: Nullable<T>
+  nameWithType: Nullable<T>
+  fullName: System.Nullable<T>
+  nameWithType.vb: Nullable(Of T)
+  fullName.vb: System.Nullable(Of T)
+  name.vb: Nullable(Of T)
+  spec.csharp:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Nullable`1
+  commentId: T:System.Nullable`1
+  isExternal: true
+  name: Nullable<T>
+  nameWithType: Nullable<T>
+  fullName: System.Nullable<T>
+  nameWithType.vb: Nullable(Of T)
+  fullName.vb: System.Nullable(Of T)
+  name.vb: Nullable(Of T)
+  spec.csharp:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: DEM.Net.Lib.Gpx.GpxProperties.GetObjectProperty*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxProperties.GetObjectProperty
+  name: GetObjectProperty
+  nameWithType: GpxProperties.GetObjectProperty
+  fullName: DEM.Net.Lib.Gpx.GpxProperties.GetObjectProperty
+- uid: '{T}'
+  commentId: '!:T'
+  definition: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: DEM.Net.Lib.Gpx.GpxProperties.GetListProperty*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxProperties.GetListProperty
+  name: GetListProperty
+  nameWithType: GpxProperties.GetListProperty
+  fullName: DEM.Net.Lib.Gpx.GpxProperties.GetListProperty
+- uid: System.Collections.Generic.IList{{T}}
+  commentId: T:System.Collections.Generic.IList{`0}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IList`1
+  name: IList<T>
+  nameWithType: IList<T>
+  fullName: System.Collections.Generic.IList<T>
+  nameWithType.vb: IList(Of T)
+  fullName.vb: System.Collections.Generic.IList(Of T)
+  name.vb: IList(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IList`1
+    name: IList
+    nameWithType: IList
+    fullName: System.Collections.Generic.IList
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IList`1
+    name: IList
+    nameWithType: IList
+    fullName: System.Collections.Generic.IList
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IList`1
+  commentId: T:System.Collections.Generic.IList`1
+  isExternal: true
+  name: IList<T>
+  nameWithType: IList<T>
+  fullName: System.Collections.Generic.IList<T>
+  nameWithType.vb: IList(Of T)
+  fullName.vb: System.Collections.Generic.IList(Of T)
+  name.vb: IList(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IList`1
+    name: IList
+    nameWithType: IList
+    fullName: System.Collections.Generic.IList
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IList`1
+    name: IList
+    nameWithType: IList
+    fullName: System.Collections.Generic.IList
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: DEM.Net.Lib.Gpx.GpxProperties.SetValueProperty*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxProperties.SetValueProperty
+  name: SetValueProperty
+  nameWithType: GpxProperties.SetValueProperty
+  fullName: DEM.Net.Lib.Gpx.GpxProperties.SetValueProperty
+- uid: DEM.Net.Lib.Gpx.GpxProperties.SetObjectProperty*
+  commentId: Overload:DEM.Net.Lib.Gpx.GpxProperties.SetObjectProperty
+  name: SetObjectProperty
+  nameWithType: GpxProperties.SetObjectProperty
+  fullName: DEM.Net.Lib.Gpx.GpxProperties.SetObjectProperty

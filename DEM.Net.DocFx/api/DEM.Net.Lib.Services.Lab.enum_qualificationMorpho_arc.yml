@@ -1,0 +1,178 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc
+  commentId: T:DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc
+  id: enum_qualificationMorpho_arc
+  parent: DEM.Net.Lib.Services.Lab
+  children:
+  - DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc.autre
+  - DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc.crete
+  - DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc.indetermine
+  - DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc.talweg
+  langs:
+  - csharp
+  - vb
+  name: enum_qualificationMorpho_arc
+  nameWithType: enum_qualificationMorpho_arc
+  fullName: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc
+  type: Enum
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/enumServices.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: enum_qualificationMorpho_arc
+    path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
+    startLine: 53
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public enum enum_qualificationMorpho_arc
+    content.vb: Public Enum enum_qualificationMorpho_arc
+  modifiers.csharp:
+  - public
+  - enum
+  modifiers.vb:
+  - Public
+  - Enum
+- uid: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc.talweg
+  commentId: F:DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc.talweg
+  id: talweg
+  parent: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc
+  langs:
+  - csharp
+  - vb
+  name: talweg
+  nameWithType: enum_qualificationMorpho_arc.talweg
+  fullName: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc.talweg
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/enumServices.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: talweg
+    path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
+    startLine: 55
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: talweg = 0
+    return:
+      type: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc.crete
+  commentId: F:DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc.crete
+  id: crete
+  parent: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc
+  langs:
+  - csharp
+  - vb
+  name: crete
+  nameWithType: enum_qualificationMorpho_arc.crete
+  fullName: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc.crete
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/enumServices.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: crete
+    path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
+    startLine: 56
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: crete = 1
+    return:
+      type: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc.autre
+  commentId: F:DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc.autre
+  id: autre
+  parent: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc
+  langs:
+  - csharp
+  - vb
+  name: autre
+  nameWithType: enum_qualificationMorpho_arc.autre
+  fullName: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc.autre
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/enumServices.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: autre
+    path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
+    startLine: 57
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: autre = 2
+    return:
+      type: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc.indetermine
+  commentId: F:DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc.indetermine
+  id: indetermine
+  parent: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc
+  langs:
+  - csharp
+  - vb
+  name: indetermine
+  nameWithType: enum_qualificationMorpho_arc.indetermine
+  fullName: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc.indetermine
+  type: Field
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/enumServices.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: indetermine
+    path: ../DEM.Net.Lib/Services/Lab/enumServices.cs
+    startLine: 58
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: indetermine = 3
+    return:
+      type: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+references:
+- uid: DEM.Net.Lib.Services.Lab
+  commentId: N:DEM.Net.Lib.Services.Lab
+  name: DEM.Net.Lib.Services.Lab
+  nameWithType: DEM.Net.Lib.Services.Lab
+  fullName: DEM.Net.Lib.Services.Lab
+- uid: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc
+  commentId: T:DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc
+  parent: DEM.Net.Lib.Services.Lab
+  name: enum_qualificationMorpho_arc
+  nameWithType: enum_qualificationMorpho_arc
+  fullName: DEM.Net.Lib.Services.Lab.enum_qualificationMorpho_arc

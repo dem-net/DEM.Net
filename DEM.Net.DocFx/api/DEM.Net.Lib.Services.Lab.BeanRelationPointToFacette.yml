@@ -1,0 +1,634 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette
+  commentId: T:DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette
+  id: BeanRelationPointToFacette
+  parent: DEM.Net.Lib.Services.Lab
+  children:
+  - DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.#ctor(DEM.Net.Lib.Services.Lab.BeanPoint_internal,DEM.Net.Lib.Services.Lab.BeanFacette_internal)
+  - DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p11_pointRef
+  - DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p12_facetteRef
+  - DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p21_qualifPointDansFacette
+  - DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p31_vecteurPenteMaxiSurFacette_sortant
+  - DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p32_vecteurPenteMaxiSurFacette_entrant
+  langs:
+  - csharp
+  - vb
+  name: BeanRelationPointToFacette
+  nameWithType: BeanRelationPointToFacette
+  fullName: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: BeanRelationPointToFacette
+    path: ../DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
+    startLine: 11
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  summary: "\nDécrit un point support de facette dans le cadre spécifique de cette facette\n"
+  example: []
+  syntax:
+    content: public class BeanRelationPointToFacette
+    content.vb: Public Class BeanRelationPointToFacette
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p11_pointRef
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p11_pointRef
+  id: p11_pointRef
+  parent: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette
+  langs:
+  - csharp
+  - vb
+  name: p11_pointRef
+  nameWithType: BeanRelationPointToFacette.p11_pointRef
+  fullName: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p11_pointRef
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p11_pointRef
+    path: ../DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
+    startLine: 14
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public BeanPoint_internal p11_pointRef { get; set; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    content.vb: Public Property p11_pointRef As BeanPoint_internal
+  overload: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p11_pointRef*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p12_facetteRef
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p12_facetteRef
+  id: p12_facetteRef
+  parent: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette
+  langs:
+  - csharp
+  - vb
+  name: p12_facetteRef
+  nameWithType: BeanRelationPointToFacette.p12_facetteRef
+  fullName: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p12_facetteRef
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p12_facetteRef
+    path: ../DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
+    startLine: 16
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public BeanFacette_internal p12_facetteRef { get; set; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+    content.vb: Public Property p12_facetteRef As BeanFacette_internal
+  overload: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p12_facetteRef*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p21_qualifPointDansFacette
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p21_qualifPointDansFacette
+  id: p21_qualifPointDansFacette
+  parent: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette
+  langs:
+  - csharp
+  - vb
+  name: p21_qualifPointDansFacette
+  nameWithType: BeanRelationPointToFacette.p21_qualifPointDansFacette
+  fullName: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p21_qualifPointDansFacette
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p21_qualifPointDansFacette
+    path: ../DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
+    startLine: 20
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public enum_qualificationHydro_pointDeFacette p21_qualifPointDansFacette { get; set; }
+    parameters: []
+    return:
+      type: DEM.Net.Lib.Services.Lab.enum_qualificationHydro_pointDeFacette
+    content.vb: Public Property p21_qualifPointDansFacette As enum_qualificationHydro_pointDeFacette
+  overload: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p21_qualifPointDansFacette*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p31_vecteurPenteMaxiSurFacette_sortant
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p31_vecteurPenteMaxiSurFacette_sortant
+  id: p31_vecteurPenteMaxiSurFacette_sortant
+  parent: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette
+  langs:
+  - csharp
+  - vb
+  name: p31_vecteurPenteMaxiSurFacette_sortant
+  nameWithType: BeanRelationPointToFacette.p31_vecteurPenteMaxiSurFacette_sortant
+  fullName: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p31_vecteurPenteMaxiSurFacette_sortant
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p31_vecteurPenteMaxiSurFacette_sortant
+    path: ../DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
+    startLine: 25
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public double[] p31_vecteurPenteMaxiSurFacette_sortant { get; set; }
+    parameters: []
+    return:
+      type: System.Double[]
+    content.vb: Public Property p31_vecteurPenteMaxiSurFacette_sortant As Double()
+  overload: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p31_vecteurPenteMaxiSurFacette_sortant*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p32_vecteurPenteMaxiSurFacette_entrant
+  commentId: P:DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p32_vecteurPenteMaxiSurFacette_entrant
+  id: p32_vecteurPenteMaxiSurFacette_entrant
+  parent: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette
+  langs:
+  - csharp
+  - vb
+  name: p32_vecteurPenteMaxiSurFacette_entrant
+  nameWithType: BeanRelationPointToFacette.p32_vecteurPenteMaxiSurFacette_entrant
+  fullName: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p32_vecteurPenteMaxiSurFacette_entrant
+  type: Property
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: p32_vecteurPenteMaxiSurFacette_entrant
+    path: ../DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
+    startLine: 26
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public double[] p32_vecteurPenteMaxiSurFacette_entrant { get; set; }
+    parameters: []
+    return:
+      type: System.Double[]
+    content.vb: Public Property p32_vecteurPenteMaxiSurFacette_entrant As Double()
+  overload: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p32_vecteurPenteMaxiSurFacette_entrant*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.#ctor(DEM.Net.Lib.Services.Lab.BeanPoint_internal,DEM.Net.Lib.Services.Lab.BeanFacette_internal)
+  commentId: M:DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.#ctor(DEM.Net.Lib.Services.Lab.BeanPoint_internal,DEM.Net.Lib.Services.Lab.BeanFacette_internal)
+  id: '#ctor(DEM.Net.Lib.Services.Lab.BeanPoint_internal,DEM.Net.Lib.Services.Lab.BeanFacette_internal)'
+  parent: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette
+  langs:
+  - csharp
+  - vb
+  name: BeanRelationPointToFacette(BeanPoint_internal, BeanFacette_internal)
+  nameWithType: BeanRelationPointToFacette.BeanRelationPointToFacette(BeanPoint_internal, BeanFacette_internal)
+  fullName: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.BeanRelationPointToFacette(DEM.Net.Lib.Services.Lab.BeanPoint_internal, DEM.Net.Lib.Services.Lab.BeanFacette_internal)
+  type: Constructor
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: .ctor
+    path: ../DEM.Net.Lib/Services/Lab/BeanRelationPointToFacette.cs
+    startLine: 28
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Services.Lab
+  syntax:
+    content: public BeanRelationPointToFacette(BeanPoint_internal p_pointFacette, BeanFacette_internal p_facette)
+    parameters:
+    - id: p_pointFacette
+      type: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+    - id: p_facette
+      type: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+    content.vb: Public Sub New(p_pointFacette As BeanPoint_internal, p_facette As BeanFacette_internal)
+  overload: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: DEM.Net.Lib.Services.Lab
+  commentId: N:DEM.Net.Lib.Services.Lab
+  name: DEM.Net.Lib.Services.Lab
+  nameWithType: DEM.Net.Lib.Services.Lab
+  fullName: DEM.Net.Lib.Services.Lab
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p11_pointRef*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p11_pointRef
+  name: p11_pointRef
+  nameWithType: BeanRelationPointToFacette.p11_pointRef
+  fullName: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p11_pointRef
+- uid: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+  commentId: T:DEM.Net.Lib.Services.Lab.BeanPoint_internal
+  parent: DEM.Net.Lib.Services.Lab
+  name: BeanPoint_internal
+  nameWithType: BeanPoint_internal
+  fullName: DEM.Net.Lib.Services.Lab.BeanPoint_internal
+- uid: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p12_facetteRef*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p12_facetteRef
+  name: p12_facetteRef
+  nameWithType: BeanRelationPointToFacette.p12_facetteRef
+  fullName: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p12_facetteRef
+- uid: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+  commentId: T:DEM.Net.Lib.Services.Lab.BeanFacette_internal
+  parent: DEM.Net.Lib.Services.Lab
+  name: BeanFacette_internal
+  nameWithType: BeanFacette_internal
+  fullName: DEM.Net.Lib.Services.Lab.BeanFacette_internal
+- uid: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p21_qualifPointDansFacette*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p21_qualifPointDansFacette
+  name: p21_qualifPointDansFacette
+  nameWithType: BeanRelationPointToFacette.p21_qualifPointDansFacette
+  fullName: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p21_qualifPointDansFacette
+- uid: DEM.Net.Lib.Services.Lab.enum_qualificationHydro_pointDeFacette
+  commentId: T:DEM.Net.Lib.Services.Lab.enum_qualificationHydro_pointDeFacette
+  parent: DEM.Net.Lib.Services.Lab
+  name: enum_qualificationHydro_pointDeFacette
+  nameWithType: enum_qualificationHydro_pointDeFacette
+  fullName: DEM.Net.Lib.Services.Lab.enum_qualificationHydro_pointDeFacette
+- uid: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p31_vecteurPenteMaxiSurFacette_sortant*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p31_vecteurPenteMaxiSurFacette_sortant
+  name: p31_vecteurPenteMaxiSurFacette_sortant
+  nameWithType: BeanRelationPointToFacette.p31_vecteurPenteMaxiSurFacette_sortant
+  fullName: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p31_vecteurPenteMaxiSurFacette_sortant
+- uid: System.Double[]
+  isExternal: true
+  name: Double[]
+  nameWithType: Double[]
+  fullName: System.Double[]
+  nameWithType.vb: Double()
+  fullName.vb: System.Double()
+  name.vb: Double()
+  spec.csharp:
+  - uid: System.Double
+    name: Double
+    nameWithType: Double
+    fullName: System.Double
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.Double
+    name: Double
+    nameWithType: Double
+    fullName: System.Double
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p32_vecteurPenteMaxiSurFacette_entrant*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p32_vecteurPenteMaxiSurFacette_entrant
+  name: p32_vecteurPenteMaxiSurFacette_entrant
+  nameWithType: BeanRelationPointToFacette.p32_vecteurPenteMaxiSurFacette_entrant
+  fullName: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.p32_vecteurPenteMaxiSurFacette_entrant
+- uid: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.#ctor*
+  commentId: Overload:DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.#ctor
+  name: BeanRelationPointToFacette
+  nameWithType: BeanRelationPointToFacette.BeanRelationPointToFacette
+  fullName: DEM.Net.Lib.Services.Lab.BeanRelationPointToFacette.BeanRelationPointToFacette

@@ -1,0 +1,22 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Services.Mesh
+  commentId: N:DEM.Net.Lib.Services.Mesh
+  id: DEM.Net.Lib.Services.Mesh
+  children:
+  - DEM.Net.Lib.Services.Mesh.MeshService
+  langs:
+  - csharp
+  - vb
+  name: DEM.Net.Lib.Services.Mesh
+  nameWithType: DEM.Net.Lib.Services.Mesh
+  fullName: DEM.Net.Lib.Services.Mesh
+  type: Namespace
+  assemblies:
+  - DEM.Net.Lib
+references:
+- uid: DEM.Net.Lib.Services.Mesh.MeshService
+  commentId: T:DEM.Net.Lib.Services.Mesh.MeshService
+  name: MeshService
+  nameWithType: MeshService
+  fullName: DEM.Net.Lib.Services.Mesh.MeshService

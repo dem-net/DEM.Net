@@ -1,15 +1,40 @@
-﻿using AssetGenerator;
+﻿//
+// glTFService.cs
+//
+// Author:
+//       Xavier Fischer
+//
+// Copyright (c) 2019 
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+using AssetGenerator;
 using AssetGenerator.Runtime;
-using DEM.Net.Lib;
+using DEM.Net.Core;
+using DEM.Net.Core.Imagery;
+using DEM.Net.Core.Services.Mesh;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DEM.Net.glTF
 {
@@ -19,51 +44,49 @@ namespace DEM.Net.glTF
         {
             try
             {
-                var sw = Stopwatch.StartNew();
+                Stopwatch sw = Stopwatch.StartNew();
 
                 Directory.CreateDirectory(outputFolder);
-                var jsonSerializer = new Newtonsoft.Json.JsonSerializer
+                Newtonsoft.Json.JsonSerializer jsonSerializer = new Newtonsoft.Json.JsonSerializer
                 {
                     Formatting = Newtonsoft.Json.Formatting.Indented,
                     ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
                 };
 
 
-                var filename = $"{modelName}.gltf";
-                var glbFilename = $"{modelName}.glb";
+                string filename = string.Concat(modelName, ".gltf");
+                string glbFilename = string.Concat(modelName, ".glb");
+                string dataFileName = string.Concat(modelName, ".bin");
 
-                using (var data = new Data($"{modelName}.bin"))
+                using (Data data = new Data(dataFileName))
                 {
                     // Passes the desired properties to the runtime layer, which then coverts that data into
                     // a gltf loader object, ready to create the model
-                    var converter = new GLTFConverter { CreateInstanceOverride = model.CreateSchemaInstance };
-                    var gltf = converter.ConvertRuntimeToSchema(model.GLTF, data);
+                    GLTFConverter converter = new GLTFConverter { CreateInstanceOverride = model.CreateSchemaInstance };
+                    glTFLoader.Schema.Gltf gltf = converter.ConvertRuntimeToSchema(model.GLTF, data);
 
                     // Makes last second changes to the model that bypass the runtime layer
                     // in order to add features that don't really exist otherwise
                     model.PostRuntimeChanges(gltf);
 
+                    string assetFile = Path.Combine(outputFolder, filename);
+                    byte[] glbBinChunck = data.ToArray();
+
                     if (exportglTF)
                     {
                         // Creates the .gltf file and writes the model's data to it
-                        var assetFile = Path.Combine(outputFolder, filename);
                         glTFLoader.Interface.SaveModel(gltf, assetFile);
 
-
                         // Creates the .bin file and writes the model's data to it
-                        var dataFile = Path.Combine(outputFolder, data.Name);
-                        File.WriteAllBytes(dataFile, data.ToArray());
+                        string dataFile = Path.Combine(outputFolder, data.Name);
+                        File.WriteAllBytes(dataFile, glbBinChunck);
                     }
 
                     if (exportGLB)
                     {
-                        var glbFile = Path.Combine(outputFolder, glbFilename);
-                        foreach (var buf in gltf.Buffers)
-                        {
-                            buf.Uri = null;
-                        }
-                        // gltf.Buffers = null;
-                        glTFLoader.Interface.SaveBinaryModel(gltf, data.ToArray(), glbFile);
+                        string glbFile = Path.Combine(outputFolder, glbFilename);
+
+                        glTFLoader.Interface.SaveBinaryModelPacked(gltf, glbFile, assetFile, glbBinChunck);
                     }
                 }
 
@@ -168,7 +191,7 @@ namespace DEM.Net.glTF
             mesh.Positions = positions;
             mesh.Colors = positions.Select(n => new Vector4(1, 0, 0, 0));
             mesh.Indices = new int[] { 0, 1, 3, 1, 2, 3 };
-            mesh.Normals = ComputeNormals(positions, mesh.Indices.ToList());
+            mesh.Normals = MeshService.ComputeNormals(positions, mesh.Indices.ToList());
             yield return mesh;
 
             //=====================
@@ -184,7 +207,7 @@ namespace DEM.Net.glTF
             mesh.Positions = positions;
             mesh.Colors = positions.Select(n => new Vector4(0, 1, 0, 0));
             mesh.Indices = new int[] { 0, 1, 3, 1, 2, 3 };
-            mesh.Normals = ComputeNormals(positions, mesh.Indices.ToList());
+            mesh.Normals = MeshService.ComputeNormals(positions, mesh.Indices.ToList());
             yield return mesh;
 
             //=====================
@@ -200,45 +223,9 @@ namespace DEM.Net.glTF
             mesh.Positions = positions;
             mesh.Colors = positions.Select(n => new Vector4(0, 0, 1, 0));
             mesh.Indices = new int[] { 0, 1, 3, 1, 2, 3 };
-            mesh.Normals = ComputeNormals(positions, mesh.Indices.ToList());
+            mesh.Normals = MeshService.ComputeNormals(positions, mesh.Indices.ToList());
             yield return mesh;
 
-        }
-
-        private Vector3[] ComputeNormals(List<Vector3> positions, List<int> indices)
-        {
-
-            //The number of the vertices
-            int nV = positions.Count;
-            //The number of the triangles
-            int nT = indices.Count / 3;
-
-            Vector3[] norm = new Vector3[nV]; //Array for the normals
-                                              //Scan all the triangles. For each triangle add its
-                                              //normal to norm's vectors of triangle's vertices
-            for (int t = 0; t < nT; t++)
-            {
-                //Get indices of the triangle t
-                int i1 = indices[3 * t];
-                int i2 = indices[3 * t + 1];
-                int i3 = indices[3 * t + 2];
-                //Get vertices of the triangle
-                Vector3 v1 = positions[i1];
-                Vector3 v2 = positions[i2];
-                Vector3 v3 = positions[i3];
-                //Compute the triangle's normal
-                Vector3 dir = Vector3.Normalize(Vector3.Cross(v2 - v1, v3 - v1));
-                //Accumulate it to norm array for i1, i2, i3
-                norm[i1] += dir;
-                norm[i2] += dir;
-                norm[i3] += dir;
-            }
-            //Normalize the normal's length
-            for (int i = 0; i < nV; i++)
-            {
-                norm[i] = Vector3.Normalize(norm[i]);
-            }
-            return norm;
         }
 
         private MeshPrimitive CreateEmptyTriangleMesh()
@@ -258,54 +245,34 @@ namespace DEM.Net.glTF
             };
         }
 
-        public MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, IEnumerable<Vector3> colors = null)
+        /// <summary>
+        /// Generate a triangle mesh from supplied height map, triangulating and optionaly mapping UVs
+        /// </summary>
+        /// <param name="heightMap"></param>
+        /// <param name="colors"></param>
+        /// <param name="texture">Texture path relative from the model</param>
+        /// <returns></returns>
+        public MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, IEnumerable<Vector4> colors = null, PBRTexture texture = null)
         {
-            const int TRIANGULATION_MODE = 1;
-            int capacity = ((heightMap.Width - 1) * 6) * (heightMap.Height - 1);
-            List<int> indices = new List<int>(capacity);
-            // Triangulate mesh -- anti clockwise winding
-            for (int y = 0; y < heightMap.Height; y++)
-            {
-                for (int x = 0; x < heightMap.Width; x++)
-                {
-                    //Vector3 pt = ToVector3(heightMap.Coordinates[x + y * heightMap.Width]);
-                    //pt.z -= mindepth;
-                    //cout << x + y * stride << "-> " << pt << endl;
-                    //mesh.addVertex(pt);
+            TriangulationResult triangulation = MeshService.TriangulateHeightMap(heightMap);
+            return GenerateTriangleMesh(triangulation.Positions, triangulation.Indices.ToList(), colors, texture);
+        }
+        /// <summary>
+        /// Generate a triangle mesh from supplied height map, triangulating and optionaly mapping UVs
+        /// and generate sides and bottom (like a box where the top is the triangulated height map)
+        /// </summary>
+        /// <param name="heightMap"></param>
+        /// <param name="colors"></param>
+        /// <param name="texture">Texture path relative from the model</param>
+        /// <returns></returns>
+        public MeshPrimitive GenerateTriangleMesh_Boxed(HeightMap heightMap, IEnumerable<Vector4> colors = null, PBRTexture texture = null, BoxBaseThickness thickness = BoxBaseThickness.FixedElevation, float zValue = 0f)
+        {
+            TriangulationResult triangulation = MeshService.GenerateTriangleMesh_Boxed(heightMap, thickness, zValue);
 
-                    if (x < (heightMap.Width - 1) && y < (heightMap.Height - 1))
-                    {
-                        if (TRIANGULATION_MODE == 1)
-                        {
-                            // Triangulation 1
-                            indices.Add((x + 0) + (y + 0) * heightMap.Width);
-                            indices.Add((x + 0) + (y + 1) * heightMap.Width);
-                            indices.Add((x + 1) + (y + 0) * heightMap.Width);
-
-                            indices.Add((x + 1) + (y + 0) * heightMap.Width);
-                            indices.Add((x + 0) + (y + 1) * heightMap.Width);
-                            indices.Add((x + 1) + (y + 1) * heightMap.Width);
-                        }
-                        else
-                        {
-
-                            // Triangulation 2
-                            indices.Add((x + 0) + (y + 0) * heightMap.Width);
-                            indices.Add((x + 1) + (y + 1) * heightMap.Width);
-                            indices.Add((x + 0) + (y + 1) * heightMap.Width);
-
-                            indices.Add((x + 0) + (y + 0) * heightMap.Width);
-                            indices.Add((x + 1) + (y + 0) * heightMap.Width);
-                            indices.Add((x + 1) + (y + 1) * heightMap.Width);
-                        }
-                    }
-                }
-            }
-
-            return GenerateTriangleMesh(heightMap.Coordinates, indices, colors);
+            return GenerateTriangleMesh(triangulation.Positions, triangulation.Indices.ToList(), colors, texture);
         }
 
-        public MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector3 color, float width)
+        public MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector4 color, float width)
         {
             MeshPrimitive mesh = null;
             try
@@ -321,11 +288,11 @@ namespace DEM.Net.glTF
                         // Basic line strip  declaration
                         mesh = new MeshPrimitive()
                         {
-                            Colors = points.Select(c => color.ToVector4())
+                            Colors = points.Select(c => color)
                             ,
                             ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
                             ,
-                            ColorType = MeshPrimitive.ColorTypeEnum.VEC3
+                            ColorType = MeshPrimitive.ColorTypeEnum.VEC4
                             ,
                             Mode = MeshPrimitive.ModeEnum.LINE_STRIP
                             ,
@@ -338,8 +305,8 @@ namespace DEM.Net.glTF
                     {
                         // https://gist.github.com/gszauer/5718441
                         // Line triangle mesh
-                        var sections = points.Select(pt => pt.ToVector3())
-                            .Distinct() 
+                        List<Vector3> sections = points.Select(pt => pt.ToVector3())
+                            .Distinct()
                             .ToList();
 
                         List<Vector3> vertices = new List<Vector3>(sections.Count * 2);
@@ -372,7 +339,6 @@ namespace DEM.Net.glTF
 
 
                         List<int> indices = new List<int>((sections.Count - 1) * 6);
-                        int j = 0;
                         for (int i = 0; i < sections.Count - 1; i++)
                         {
                             int i0 = i * 2;
@@ -385,11 +351,11 @@ namespace DEM.Net.glTF
                             indices.Add(i0 + 2);
                         }
 
-                        IEnumerable<Vector3> normals = ComputeNormals(vertices, indices);
+                        IEnumerable<Vector3> normals = MeshService.ComputeNormals(vertices, indices);
                         // Basic line strip  declaration
                         mesh = new MeshPrimitive()
                         {
-                            Colors = vertices.Select(v => color.ToVector4())
+                            Colors = vertices.Select(v => color)
                             ,
                             ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
                             ,
@@ -425,14 +391,13 @@ namespace DEM.Net.glTF
             return mesh;
         }
 
-        public MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, IEnumerable<Vector3> colors = null)
+        public MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, IEnumerable<Vector4> colors = null, PBRTexture texture = null)
         {
-            return GenerateTriangleMesh(points.ToVector3(), indices, colors);
+            return GenerateTriangleMesh(points.ToVector3(), indices, colors, texture);
         }
-        public MeshPrimitive GenerateTriangleMesh(IEnumerable<Vector3> points, List<int> indices, IEnumerable<Vector3> colors = null)
+        public MeshPrimitive GenerateTriangleMesh(IEnumerable<Vector3> points, List<int> indices, IEnumerable<Vector4> colors = null, PBRTexture texture = null)
         {
             MeshPrimitive mesh = null;
-            const int TRIANGULATION_MODE = 1; // 2
             try
             {
                 if (points == null || !points.Any())
@@ -441,16 +406,17 @@ namespace DEM.Net.glTF
                 }
                 else
                 {
+
+                    List<Vector3> positions = points.ToList();
                     if (colors == null)
                     {
-                        colors = points.Select(pt => new Vector3(1, 1, 1));
+                        colors = positions.Select(pt => Vector4.One);
                     }
-                    List<Vector3> positions = points.ToList();
 
                     // Basic mesh declaration
                     mesh = new MeshPrimitive()
                     {
-                        Colors = colors.Select(c => c.ToVector4())
+                        Colors = colors
                         ,
                         ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
                         ,
@@ -465,14 +431,16 @@ namespace DEM.Net.glTF
                         Indices = indices
                     };
 
+
                     //The number of the vertices
                     int nV = positions.Count;
                     //The number of the triangles
                     int nT = indices.Count / 3;
-
                     Vector3[] norm = new Vector3[nV]; //Array for the normals
                                                       //Scan all the triangles. For each triangle add its
                                                       //normal to norm's vectors of triangle's vertices
+                    Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+                    Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
                     for (int t = 0; t < nT; t++)
                     {
                         //Get indices of the triangle t
@@ -483,6 +451,7 @@ namespace DEM.Net.glTF
                         Vector3 v1 = positions[i1];
                         Vector3 v2 = positions[i2];
                         Vector3 v3 = positions[i3];
+
                         //Compute the triangle's normal
                         Vector3 dir = Vector3.Normalize(Vector3.Cross(v2 - v1, v3 - v1));
                         //Accumulate it to norm array for i1, i2, i3
@@ -490,12 +459,51 @@ namespace DEM.Net.glTF
                         norm[i2] += dir;
                         norm[i3] += dir;
                     }
-                    //Normalize the normal's length
+
                     for (int i = 0; i < nV; i++)
                     {
+                        //Normalize the normal's length
                         norm[i] = Vector3.Normalize(norm[i]);
+
+                        // Calculate bounds of UV mapping
+                        Vector3 pos = positions[i];
+
+                        // for UV coords
+                        min.X = Math.Min(pos.X, min.X);
+                        min.Y = Math.Min(pos.Y, min.Y);
+                        min.Z = Math.Min(pos.Z, min.Z);
+
+                        max.X = Math.Max(pos.X, max.X);
+                        max.Y = Math.Max(pos.Y, max.Y);
+                        max.Z = Math.Max(pos.Z, max.Z);
                     }
                     mesh.Normals = norm;
+
+                    if (texture != null)
+                    {
+                        mesh.TextureCoordsComponentType = MeshPrimitive.TextureCoordsComponentTypeEnum.FLOAT;
+                        if (texture.TextureCoordSets == null)
+                        {
+                            mesh.TextureCoordSets = Enumerable.Range(0, 1).Select(i => positions.Select(pos => new Vector2(
+                                MathHelper.Map(min.X, max.X, 0, 1, pos.X, true)
+                                , MathHelper.Map(min.Z, max.Z, 0, 1, pos.Z, true)
+                                )));
+                        }
+                        else
+                        {
+                            mesh.TextureCoordSets = Enumerable.Range(0, 1).Select(i => texture.TextureCoordSets);
+                        }
+                        mesh.Material.MetallicRoughnessMaterial = new PbrMetallicRoughness()
+                        {
+                            BaseColorFactor = Vector4.One,
+                            BaseColorTexture = GetTextureFromImage(texture.BaseColorTexture.FilePath),
+                            MetallicFactor = 0,
+                        };
+                        if (texture.NormalTexture != null)
+                        {
+                            mesh.Material.NormalTexture = GetTextureFromImage(texture.NormalTexture.FilePath);
+                        }
+                    }
 
                 }
 
@@ -508,7 +516,29 @@ namespace DEM.Net.glTF
             return mesh;
         }
 
-        public MeshPrimitive GeneratePointMesh(IEnumerable<GeoPoint> points, Vector3 color, float pointSize)
+        private Texture GetTextureFromImage(string texture)
+        {
+            if (!File.Exists(texture))
+            {
+                throw new ArgumentException("Texture file does not exists");
+            }
+
+            glTFLoader.Schema.Image.MimeTypeEnum mimeType = Path.GetExtension(texture.ToLower()).EndsWith("png")
+                                ? glTFLoader.Schema.Image.MimeTypeEnum.image_png
+                                : glTFLoader.Schema.Image.MimeTypeEnum.image_jpeg;
+
+            return new Texture
+            {
+                Source = new Image()
+                {
+                    MimeType = mimeType,
+                    Name = Path.GetFileNameWithoutExtension(texture),
+                    Uri = Path.GetFileName(texture) // relative path
+                }
+            };
+        }
+
+        public MeshPrimitive GeneratePointMesh(IEnumerable<GeoPoint> points, Vector4 color, float pointSize)
         {
             MeshPrimitive mesh = null;
             try
@@ -524,7 +554,7 @@ namespace DEM.Net.glTF
                         // Basic point declaration
                         mesh = new MeshPrimitive()
                         {
-                            Colors = points.Select(c => color.ToVector4())
+                            Colors = points.Select(c => color)
                             ,
                             ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
                             ,
@@ -541,9 +571,9 @@ namespace DEM.Net.glTF
                     {
                         // points interpreted as quads where point is at the quad center
                         // Basic point declaration
-                        var vecs = points.ToVector3().ToList();
-                        var deltaZ = vecs.Max(p => p.Z) - vecs.Min(p => p.Z);
-                        var deltaX = vecs.Max(p => p.X) - vecs.Min(p => p.X);
+                        List<Vector3> vecs = points.ToVector3().ToList();
+                        float deltaZ = vecs.Max(p => p.Z) - vecs.Min(p => p.Z);
+                        float deltaX = vecs.Max(p => p.X) - vecs.Min(p => p.X);
                         pointSize = (deltaX * 0.5f) / (float)Math.Sqrt(vecs.Count);
                         IEnumerable<Vector3> vertices = points.ToVector3().SelectMany(v => v.ToQuadPoints(pointSize));
                         List<int> indices = Enumerable.Range(0, points.Count()).SelectMany(i => VectorsExtensions.TriangulateQuadIndices(i * 4)).ToList();
@@ -564,8 +594,6 @@ namespace DEM.Net.glTF
             return mesh;
         }
         #endregion
-
-
 
 
 

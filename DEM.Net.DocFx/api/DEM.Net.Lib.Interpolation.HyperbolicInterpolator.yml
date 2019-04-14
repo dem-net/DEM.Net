@@ -1,0 +1,538 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.Interpolation.HyperbolicInterpolator
+  commentId: T:DEM.Net.Lib.Interpolation.HyperbolicInterpolator
+  id: HyperbolicInterpolator
+  parent: DEM.Net.Lib.Interpolation
+  children:
+  - DEM.Net.Lib.Interpolation.HyperbolicInterpolator.Interpolate(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)
+  langs:
+  - csharp
+  - vb
+  name: HyperbolicInterpolator
+  nameWithType: HyperbolicInterpolator
+  fullName: DEM.Net.Lib.Interpolation.HyperbolicInterpolator
+  type: Class
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Interpolation/HyperbolicInterpolator.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: HyperbolicInterpolator
+    path: ../DEM.Net.Lib/Services/Interpolation/HyperbolicInterpolator.cs
+    startLine: 14
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Interpolation
+  summary: "\nHyperbolicInterpolator : gives smoother results, but can skip small flat areas\nOther implementation described briefly in article.\n\nSource : http://www.geocomputation.org/1999/082/gc_082.htm\n"
+  example: []
+  syntax:
+    content: 'public class HyperbolicInterpolator : IInterpolator'
+    content.vb: >-
+      Public Class HyperbolicInterpolator
+          Implements IInterpolator
+  inheritance:
+  - System.Object
+  implements:
+  - DEM.Net.Lib.IInterpolator
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: DEM.Net.Lib.Interpolation.HyperbolicInterpolator.Interpolate(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)
+  commentId: M:DEM.Net.Lib.Interpolation.HyperbolicInterpolator.Interpolate(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)
+  id: Interpolate(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)
+  parent: DEM.Net.Lib.Interpolation.HyperbolicInterpolator
+  langs:
+  - csharp
+  - vb
+  name: Interpolate(Single, Single, Single, Single, Single, Single)
+  nameWithType: HyperbolicInterpolator.Interpolate(Single, Single, Single, Single, Single, Single)
+  fullName: DEM.Net.Lib.Interpolation.HyperbolicInterpolator.Interpolate(System.Single, System.Single, System.Single, System.Single, System.Single, System.Single)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/Services/Interpolation/HyperbolicInterpolator.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: Interpolate
+    path: ../DEM.Net.Lib/Services/Interpolation/HyperbolicInterpolator.cs
+    startLine: 16
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib.Interpolation
+  syntax:
+    content: public float Interpolate(float southWestHeight, float southEastHeight, float northWestHeight, float northEastHeight, float x, float y)
+    parameters:
+    - id: southWestHeight
+      type: System.Single
+    - id: southEastHeight
+      type: System.Single
+    - id: northWestHeight
+      type: System.Single
+    - id: northEastHeight
+      type: System.Single
+    - id: x
+      type: System.Single
+    - id: y
+      type: System.Single
+    return:
+      type: System.Single
+    content.vb: Public Function Interpolate(southWestHeight As Single, southEastHeight As Single, northWestHeight As Single, northEastHeight As Single, x As Single, y As Single) As Single
+  overload: DEM.Net.Lib.Interpolation.HyperbolicInterpolator.Interpolate*
+  implements:
+  - DEM.Net.Lib.IInterpolator.Interpolate(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: DEM.Net.Lib.Interpolation
+  commentId: N:DEM.Net.Lib.Interpolation
+  name: DEM.Net.Lib.Interpolation
+  nameWithType: DEM.Net.Lib.Interpolation
+  fullName: DEM.Net.Lib.Interpolation
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: DEM.Net.Lib.IInterpolator
+  commentId: T:DEM.Net.Lib.IInterpolator
+  parent: DEM.Net.Lib
+  name: IInterpolator
+  nameWithType: IInterpolator
+  fullName: DEM.Net.Lib.IInterpolator
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib
+  commentId: N:DEM.Net.Lib
+  name: DEM.Net.Lib
+  nameWithType: DEM.Net.Lib
+  fullName: DEM.Net.Lib
+- uid: DEM.Net.Lib.Interpolation.HyperbolicInterpolator.Interpolate*
+  commentId: Overload:DEM.Net.Lib.Interpolation.HyperbolicInterpolator.Interpolate
+  name: Interpolate
+  nameWithType: HyperbolicInterpolator.Interpolate
+  fullName: DEM.Net.Lib.Interpolation.HyperbolicInterpolator.Interpolate
+- uid: DEM.Net.Lib.IInterpolator.Interpolate(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)
+  commentId: M:DEM.Net.Lib.IInterpolator.Interpolate(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)
+  parent: DEM.Net.Lib.IInterpolator
+  isExternal: true
+  name: Interpolate(Single, Single, Single, Single, Single, Single)
+  nameWithType: IInterpolator.Interpolate(Single, Single, Single, Single, Single, Single)
+  fullName: DEM.Net.Lib.IInterpolator.Interpolate(System.Single, System.Single, System.Single, System.Single, System.Single, System.Single)
+  spec.csharp:
+  - uid: DEM.Net.Lib.IInterpolator.Interpolate(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)
+    name: Interpolate
+    nameWithType: IInterpolator.Interpolate
+    fullName: DEM.Net.Lib.IInterpolator.Interpolate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Single
+    name: Single
+    nameWithType: Single
+    fullName: System.Single
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Single
+    name: Single
+    nameWithType: Single
+    fullName: System.Single
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Single
+    name: Single
+    nameWithType: Single
+    fullName: System.Single
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Single
+    name: Single
+    nameWithType: Single
+    fullName: System.Single
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Single
+    name: Single
+    nameWithType: Single
+    fullName: System.Single
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Single
+    name: Single
+    nameWithType: Single
+    fullName: System.Single
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: DEM.Net.Lib.IInterpolator.Interpolate(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)
+    name: Interpolate
+    nameWithType: IInterpolator.Interpolate
+    fullName: DEM.Net.Lib.IInterpolator.Interpolate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Single
+    name: Single
+    nameWithType: Single
+    fullName: System.Single
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Single
+    name: Single
+    nameWithType: Single
+    fullName: System.Single
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Single
+    name: Single
+    nameWithType: Single
+    fullName: System.Single
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Single
+    name: Single
+    nameWithType: Single
+    fullName: System.Single
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Single
+    name: Single
+    nameWithType: Single
+    fullName: System.Single
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Single
+    name: Single
+    nameWithType: Single
+    fullName: System.Single
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Single
+  commentId: T:System.Single
+  parent: System
+  isExternal: true
+  name: Single
+  nameWithType: Single
+  fullName: System.Single

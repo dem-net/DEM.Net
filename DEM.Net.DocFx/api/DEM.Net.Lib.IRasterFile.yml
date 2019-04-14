@@ -1,0 +1,273 @@
+### YamlMime:ManagedReference
+items:
+- uid: DEM.Net.Lib.IRasterFile
+  commentId: T:DEM.Net.Lib.IRasterFile
+  id: IRasterFile
+  parent: DEM.Net.Lib
+  children:
+  - DEM.Net.Lib.IRasterFile.GetElevationAtPoint(DEM.Net.Lib.FileMetadata,System.Int32,System.Int32)
+  - DEM.Net.Lib.IRasterFile.GetHeightMap(DEM.Net.Lib.FileMetadata)
+  - DEM.Net.Lib.IRasterFile.GetHeightMapInBBox(DEM.Net.Lib.BoundingBox,DEM.Net.Lib.FileMetadata,System.Single)
+  - DEM.Net.Lib.IRasterFile.ParseMetaData
+  langs:
+  - csharp
+  - vb
+  name: IRasterFile
+  nameWithType: IRasterFile
+  fullName: DEM.Net.Lib.IRasterFile
+  type: Interface
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/Raster/IRasterFile.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: IRasterFile
+    path: ../DEM.Net.Lib/IO/Raster/IRasterFile.cs
+    startLine: 8
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: 'public interface IRasterFile : IDisposable'
+    content.vb: >-
+      Public Interface IRasterFile
+          Inherits IDisposable
+  inheritedMembers:
+  - System.IDisposable.Dispose
+  modifiers.csharp:
+  - public
+  - interface
+  modifiers.vb:
+  - Public
+  - Interface
+- uid: DEM.Net.Lib.IRasterFile.GetElevationAtPoint(DEM.Net.Lib.FileMetadata,System.Int32,System.Int32)
+  commentId: M:DEM.Net.Lib.IRasterFile.GetElevationAtPoint(DEM.Net.Lib.FileMetadata,System.Int32,System.Int32)
+  id: GetElevationAtPoint(DEM.Net.Lib.FileMetadata,System.Int32,System.Int32)
+  parent: DEM.Net.Lib.IRasterFile
+  langs:
+  - csharp
+  - vb
+  name: GetElevationAtPoint(FileMetadata, Int32, Int32)
+  nameWithType: IRasterFile.GetElevationAtPoint(FileMetadata, Int32, Int32)
+  fullName: DEM.Net.Lib.IRasterFile.GetElevationAtPoint(DEM.Net.Lib.FileMetadata, System.Int32, System.Int32)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/Raster/IRasterFile.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetElevationAtPoint
+    path: ../DEM.Net.Lib/IO/Raster/IRasterFile.cs
+    startLine: 10
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: float GetElevationAtPoint(FileMetadata metadata, int x, int y)
+    parameters:
+    - id: metadata
+      type: DEM.Net.Lib.FileMetadata
+    - id: x
+      type: System.Int32
+    - id: y
+      type: System.Int32
+    return:
+      type: System.Single
+    content.vb: Function GetElevationAtPoint(metadata As FileMetadata, x As Integer, y As Integer) As Single
+  overload: DEM.Net.Lib.IRasterFile.GetElevationAtPoint*
+- uid: DEM.Net.Lib.IRasterFile.GetHeightMapInBBox(DEM.Net.Lib.BoundingBox,DEM.Net.Lib.FileMetadata,System.Single)
+  commentId: M:DEM.Net.Lib.IRasterFile.GetHeightMapInBBox(DEM.Net.Lib.BoundingBox,DEM.Net.Lib.FileMetadata,System.Single)
+  id: GetHeightMapInBBox(DEM.Net.Lib.BoundingBox,DEM.Net.Lib.FileMetadata,System.Single)
+  parent: DEM.Net.Lib.IRasterFile
+  langs:
+  - csharp
+  - vb
+  name: GetHeightMapInBBox(BoundingBox, FileMetadata, Single)
+  nameWithType: IRasterFile.GetHeightMapInBBox(BoundingBox, FileMetadata, Single)
+  fullName: DEM.Net.Lib.IRasterFile.GetHeightMapInBBox(DEM.Net.Lib.BoundingBox, DEM.Net.Lib.FileMetadata, System.Single)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/Raster/IRasterFile.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetHeightMapInBBox
+    path: ../DEM.Net.Lib/IO/Raster/IRasterFile.cs
+    startLine: 11
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = -3.40282347E+38F)
+    parameters:
+    - id: bbox
+      type: DEM.Net.Lib.BoundingBox
+    - id: metadata
+      type: DEM.Net.Lib.FileMetadata
+    - id: noDataValue
+      type: System.Single
+    return:
+      type: DEM.Net.Lib.HeightMap
+    content.vb: Function GetHeightMapInBBox(bbox As BoundingBox, metadata As FileMetadata, noDataValue As Single = -3.40282347E+38F) As HeightMap
+  overload: DEM.Net.Lib.IRasterFile.GetHeightMapInBBox*
+- uid: DEM.Net.Lib.IRasterFile.GetHeightMap(DEM.Net.Lib.FileMetadata)
+  commentId: M:DEM.Net.Lib.IRasterFile.GetHeightMap(DEM.Net.Lib.FileMetadata)
+  id: GetHeightMap(DEM.Net.Lib.FileMetadata)
+  parent: DEM.Net.Lib.IRasterFile
+  langs:
+  - csharp
+  - vb
+  name: GetHeightMap(FileMetadata)
+  nameWithType: IRasterFile.GetHeightMap(FileMetadata)
+  fullName: DEM.Net.Lib.IRasterFile.GetHeightMap(DEM.Net.Lib.FileMetadata)
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/Raster/IRasterFile.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: GetHeightMap
+    path: ../DEM.Net.Lib/IO/Raster/IRasterFile.cs
+    startLine: 12
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: HeightMap GetHeightMap(FileMetadata metadata)
+    parameters:
+    - id: metadata
+      type: DEM.Net.Lib.FileMetadata
+    return:
+      type: DEM.Net.Lib.HeightMap
+    content.vb: Function GetHeightMap(metadata As FileMetadata) As HeightMap
+  overload: DEM.Net.Lib.IRasterFile.GetHeightMap*
+- uid: DEM.Net.Lib.IRasterFile.ParseMetaData
+  commentId: M:DEM.Net.Lib.IRasterFile.ParseMetaData
+  id: ParseMetaData
+  parent: DEM.Net.Lib.IRasterFile
+  langs:
+  - csharp
+  - vb
+  name: ParseMetaData()
+  nameWithType: IRasterFile.ParseMetaData()
+  fullName: DEM.Net.Lib.IRasterFile.ParseMetaData()
+  type: Method
+  source:
+    remote:
+      path: DEM.Net.Lib/IO/Raster/IRasterFile.cs
+      branch: dev
+      repo: https://github.com/xfischer/DEM.Net.git
+    id: ParseMetaData
+    path: ../DEM.Net.Lib/IO/Raster/IRasterFile.cs
+    startLine: 14
+  assemblies:
+  - DEM.Net.Lib
+  namespace: DEM.Net.Lib
+  syntax:
+    content: FileMetadata ParseMetaData()
+    return:
+      type: DEM.Net.Lib.FileMetadata
+    content.vb: Function ParseMetaData As FileMetadata
+  overload: DEM.Net.Lib.IRasterFile.ParseMetaData*
+references:
+- uid: DEM.Net.Lib
+  commentId: N:DEM.Net.Lib
+  name: DEM.Net.Lib
+  nameWithType: DEM.Net.Lib
+  fullName: DEM.Net.Lib
+- uid: System.IDisposable.Dispose
+  commentId: M:System.IDisposable.Dispose
+  parent: System.IDisposable
+  isExternal: true
+  name: Dispose()
+  nameWithType: IDisposable.Dispose()
+  fullName: System.IDisposable.Dispose()
+  spec.csharp:
+  - uid: System.IDisposable.Dispose
+    name: Dispose
+    nameWithType: IDisposable.Dispose
+    fullName: System.IDisposable.Dispose
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.IDisposable.Dispose
+    name: Dispose
+    nameWithType: IDisposable.Dispose
+    fullName: System.IDisposable.Dispose
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.IDisposable
+  commentId: T:System.IDisposable
+  parent: System
+  isExternal: true
+  name: IDisposable
+  nameWithType: IDisposable
+  fullName: System.IDisposable
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: DEM.Net.Lib.IRasterFile.GetElevationAtPoint*
+  commentId: Overload:DEM.Net.Lib.IRasterFile.GetElevationAtPoint
+  name: GetElevationAtPoint
+  nameWithType: IRasterFile.GetElevationAtPoint
+  fullName: DEM.Net.Lib.IRasterFile.GetElevationAtPoint
+- uid: DEM.Net.Lib.FileMetadata
+  commentId: T:DEM.Net.Lib.FileMetadata
+  parent: DEM.Net.Lib
+  name: FileMetadata
+  nameWithType: FileMetadata
+  fullName: DEM.Net.Lib.FileMetadata
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: System.Single
+  commentId: T:System.Single
+  parent: System
+  isExternal: true
+  name: Single
+  nameWithType: Single
+  fullName: System.Single
+- uid: DEM.Net.Lib.IRasterFile.GetHeightMapInBBox*
+  commentId: Overload:DEM.Net.Lib.IRasterFile.GetHeightMapInBBox
+  name: GetHeightMapInBBox
+  nameWithType: IRasterFile.GetHeightMapInBBox
+  fullName: DEM.Net.Lib.IRasterFile.GetHeightMapInBBox
+- uid: DEM.Net.Lib.BoundingBox
+  commentId: T:DEM.Net.Lib.BoundingBox
+  parent: DEM.Net.Lib
+  name: BoundingBox
+  nameWithType: BoundingBox
+  fullName: DEM.Net.Lib.BoundingBox
+- uid: DEM.Net.Lib.HeightMap
+  commentId: T:DEM.Net.Lib.HeightMap
+  parent: DEM.Net.Lib
+  name: HeightMap
+  nameWithType: HeightMap
+  fullName: DEM.Net.Lib.HeightMap
+- uid: DEM.Net.Lib.IRasterFile.GetHeightMap*
+  commentId: Overload:DEM.Net.Lib.IRasterFile.GetHeightMap
+  name: GetHeightMap
+  nameWithType: IRasterFile.GetHeightMap
+  fullName: DEM.Net.Lib.IRasterFile.GetHeightMap
+- uid: DEM.Net.Lib.IRasterFile.ParseMetaData*
+  commentId: Overload:DEM.Net.Lib.IRasterFile.ParseMetaData
+  name: ParseMetaData
+  nameWithType: IRasterFile.ParseMetaData
+  fullName: DEM.Net.Lib.IRasterFile.ParseMetaData
