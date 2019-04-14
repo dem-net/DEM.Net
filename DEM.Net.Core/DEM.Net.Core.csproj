@@ -8,22 +8,23 @@
     <Copyright>Xavier Fischer, Frédéric Aubin</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
-    <PackageReleaseNotes>First official beta release</PackageReleaseNotes>
+    <PackageReleaseNotes>Added XML documentation</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation</PackageTags>
-    <Title>DEM.Net.Core</Title>
+    <Title>DEM.Net</Title>
     <Description>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Description>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/dem-net/DEM.Net/commit/a5d9d732af6856bf1cdd8b6c810f5a7a4d8398da</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageLicenseFile></PackageLicenseFile>
     <Summary>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Summary>
-    <Version>0.1.0-beta0002</Version>
+    <Version>0.1.0-beta0003</Version>
     <Product>DEM.Net</Product>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <ApplicationIcon />
     <OutputType>Library</OutputType>
     <StartupObject />
     <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
   </PropertyGroup>
 
   <!-- Define NETFULL and NETSTANDARD for all matching targets -->
@@ -32,6 +33,13 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net46'">
     <DefineConstants>NET46;NETFULL</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+    <DocumentationFile>C:\Repos\DEM.Net\DEM.Net.Core\DEM.Net.Core.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net46|AnyCPU'">
+    <DocumentationFile>C:\Repos\DEM.Net\DEM.Net.Core\DEM.Net.Core.xml</DocumentationFile>
   </PropertyGroup>
 
   <!-- Conditionally obtain references for the .NET Framework 4.6 target -->

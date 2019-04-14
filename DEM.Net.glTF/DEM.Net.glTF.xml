@@ -1,0 +1,692 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DEM.Net.glTF</name>
+    </assembly>
+    <members>
+        <member name="M:DEM.Net.glTF.glTFService.GenerateTriangleMesh(DEM.Net.Core.HeightMap,System.Collections.Generic.IEnumerable{System.Numerics.Vector4},DEM.Net.Core.Imagery.PBRTexture)">
+            <summary>
+            Generate a triangle mesh from supplied height map, triangulating and optionaly mapping UVs
+            </summary>
+            <param name="heightMap"></param>
+            <param name="colors"></param>
+            <param name="texture">Texture path relative from the model</param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.glTF.glTFService.GenerateTriangleMesh_Boxed(DEM.Net.Core.HeightMap,System.Collections.Generic.IEnumerable{System.Numerics.Vector4},DEM.Net.Core.Imagery.PBRTexture,DEM.Net.Core.Services.Mesh.BoxBaseThickness,System.Single)">
+            <summary>
+            Generate a triangle mesh from supplied height map, triangulating and optionaly mapping UVs
+            and generate sides and bottom (like a box where the top is the triangulated height map)
+            </summary>
+            <param name="heightMap"></param>
+            <param name="colors"></param>
+            <param name="texture">Texture path relative from the model</param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.glTF.IglTFService.GenerateTriangleMesh_Boxed(DEM.Net.Core.HeightMap,System.Collections.Generic.IEnumerable{System.Numerics.Vector4},DEM.Net.Core.Imagery.PBRTexture,DEM.Net.Core.Services.Mesh.BoxBaseThickness,System.Single)">
+            <summary>
+            Generates the triangle with a base, and sides connecting the base.
+            This is a STL compliant mesh which is water tight
+            </summary>
+            <returns>The triangle mesh boxed.</returns>
+            <param name="heightMap">Height map.</param>
+            <param name="colors">Colors.</param>
+            <param name="texture">Texture.</param>
+        </member>
+        <member name="M:DEM.Net.glTF.IglTFService.GenerateTriangleMesh(DEM.Net.Core.HeightMap,System.Collections.Generic.IEnumerable{System.Numerics.Vector4},DEM.Net.Core.Imagery.PBRTexture)">
+            <summary>
+            Triangulates the height map and build a triangle mesh
+            </summary>
+            <param name="heightMap"></param>
+            <param name="colors">Colors. Pass null to use white as default.</param>
+            <param name="texture">Texture path relative from the model</param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.glTF.IglTFService.GenerateTriangleMesh(System.Collections.Generic.IEnumerable{DEM.Net.Core.GeoPoint},System.Collections.Generic.List{System.Int32},System.Collections.Generic.IEnumerable{System.Numerics.Vector4},DEM.Net.Core.Imagery.PBRTexture)">
+            <summary>
+            Generate triangle mesh with supplied triangulation
+            </summary>
+            <param name="points">Vertices</param>
+            <param name="indices">Triplets of vertex index in points list</param>
+            <param name="color"></param>
+            <param name="texture">Texture path relative from the model</param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.glTF.IglTFService.GenerateLine(System.Collections.Generic.IEnumerable{DEM.Net.Core.GeoPoint},System.Numerics.Vector4,System.Single)">
+            <summary>
+            Build a line mesh from given points
+            </summary>
+            <param name="points"></param>
+            <param name="color">Line color</param>
+            <param name="width">If width > 1 then line will be a mesh of given width</param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.glTF.IglTFService.GenerateTriangleMesh(System.Collections.Generic.IEnumerable{System.Numerics.Vector3},System.Collections.Generic.List{System.Int32},System.Collections.Generic.IEnumerable{System.Numerics.Vector4},DEM.Net.Core.Imagery.PBRTexture)">
+            <summary>
+            Low level method generating triangle mesh using supplied indices.
+            However, normals are stil computed within this method
+            </summary>
+            <param name="points"></param>
+            <param name="indices"></param>
+            <param name="colors"></param>
+            <param name="texture">Texture path relative from the model</param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.glTF.IglTFService.GeneratePointMesh(System.Collections.Generic.IEnumerable{DEM.Net.Core.GeoPoint},System.Numerics.Vector4,System.Single)">
+            <summary>
+            Build a line mesh from given points
+            </summary>
+            <param name="points"></param>
+            <param name="color">Line color</param>
+            <param name="pointSize">If >0 quads of specified size will be generated (and the ouput mesh will be TRIANGLES)</param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.glTF.IglTFService.GenerateModel(AssetGenerator.Runtime.MeshPrimitive,System.String)">
+            <summary>
+            Generate a full glTF model from a mesh
+            </summary>
+            <param name="meshPrimitive"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.glTF.IglTFService.GenerateModel(System.Collections.Generic.IEnumerable{AssetGenerator.Runtime.MeshPrimitive},System.String)">
+            <summary>
+            Generate a full glTF model from a mesh
+            </summary>
+            <param name="meshPrimitive"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.glTF.IglTFService.Export(AssetGenerator.Model,System.String,System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Export model to disk
+            </summary>
+            <param name="model"></param>
+            <param name="directoryName"></param>
+            <param name="modelName"></param>
+            <param name="exportglTF">If true then glTF file and all associated .bin will be exported.</param>
+            <param name="exportGLB">If true then a single packed GLB file will be exported.</param>
+        </member>
+        <member name="T:AssetGenerator.Runtime.Asset">
+            <summary>
+            Abstraction for asset in glTF
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Asset.Generator">
+            <summary>
+            Tool that generated this glTF model.  Useful for debugging
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Asset.Version">
+            <summary>
+            The glTF version that this asset targets
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Asset.Extras">
+            <summary>
+            Extra attribute data
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Asset.Copyright">
+            <summary>
+            A copyright message suitable for display to credit the content creator
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Asset.MinVersion">
+            <summary>
+            The minimum glTF version that this asset targets
+            </summary>
+        </member>
+        <member name="M:AssetGenerator.Runtime.Asset.ConvertToSchema">
+            <summary>
+            Converts asset to schema
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AssetGenerator.Runtime.ExtensionMethods.ImageExtensionMethods.ImagesEqual(glTFLoader.Schema.Image,glTFLoader.Schema.Image)">
+            <summary>
+            Function which determines if two Image objects have equal values
+            </summary>
+            <param name="i1"></param>
+            <param name="i2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AssetGenerator.Runtime.ExtensionMethods.SamplerExtensionMethods.SamplersEqual(glTFLoader.Schema.Sampler,glTFLoader.Schema.Sampler)">
+            <summary>
+            Function which determines if two Sampler objects have equal values
+            </summary>
+            <param name="s1"></param>
+            <param name="s2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AssetGenerator.Runtime.ExtensionMethods.TextureExtensionMethods.TexturesEqual(glTFLoader.Schema.Texture,glTFLoader.Schema.Texture)">
+            <summary>
+            Function which determines if two Textures objects have equal values
+            </summary>
+            <param name="t1"></param>
+            <param name="t2"></param>
+            <returns></returns>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Extensions.Extension.Name">
+            <summary>
+            The name of the extension
+            </summary>
+        </member>
+        <member name="T:AssetGenerator.Runtime.Extensions.FAKE_materials_quantumRendering">
+            <summary>
+            This is a fake extension. We've created it to verify the behavior of clients attempting
+            to load a model which contains an extension that they do not support. By creating an
+            extension which does not exist, we guarantee consistent results regardless of which
+            client attempts to load a model requiring this extension.
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Extensions.FAKE_materials_quantumRendering.Name">
+            <summary>
+            The name of the extension
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Extensions.FAKE_materials_quantumRendering.PlanckFactor">
+            <summary>
+            The reflected diffuse factor of the material
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Extensions.FAKE_materials_quantumRendering.CopenhagenTexture">
+            <summary>
+            The diffuse texture
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Extensions.FAKE_materials_quantumRendering.EntanglementFactor">
+            <summary>
+            The specular RGB color of the material
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Extensions.FAKE_materials_quantumRendering.ProbabilisticFactor">
+            <summary>
+            The glossiness or smoothness of the material
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Extensions.FAKE_materials_quantumRendering.SuperpositionCollapseTexture">
+            <summary>
+            The specular-glossiness texture
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Extensions.KHR_materials_pbrSpecularGlossiness.Name">
+            <summary>
+            The name of the extension
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Extensions.KHR_materials_pbrSpecularGlossiness.DiffuseFactor">
+            <summary>
+            The reflected diffuse factor of the material
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Extensions.KHR_materials_pbrSpecularGlossiness.DiffuseTexture">
+            <summary>
+            The diffuse texture
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Extensions.KHR_materials_pbrSpecularGlossiness.SpecularFactor">
+            <summary>
+            The specular RGB color of the material
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Extensions.KHR_materials_pbrSpecularGlossiness.GlossinessFactor">
+            <summary>
+            The glossiness or smoothness of the material
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Extensions.KHR_materials_pbrSpecularGlossiness.SpecularGlossinessTexture">
+            <summary>
+            The specular-glossiness texture
+            </summary>
+        </member>
+        <member name="T:AssetGenerator.Runtime.GLTF">
+            <summary>
+            Wrapper class for abstracting the glTF Loader API
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.GLTF.Scenes">
+            <summary>
+            List of scenes in the gltf wrapper
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.GLTF.Scene">
+            <summary>
+            index of the main scene
+            </summary>
+        </member>
+        <member name="M:AssetGenerator.Runtime.GLTF.#ctor">
+            <summary>
+            Initializes the gltf wrapper
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.GLTF.Asset">
+            <summary>
+            Holds the Asset data
+            </summary>
+        </member>
+        <member name="T:AssetGenerator.Runtime.GLTFConverter">
+            <summary>
+            Convert Runtime Abstraction to Schema.
+            </summary>
+        </member>
+        <member name="F:AssetGenerator.Runtime.GLTFConverter.CreateInstanceOverride">
+            <summary>
+            Set this property to allow creating custom types.
+            </summary>
+        </member>
+        <member name="T:AssetGenerator.Runtime.GLTFConverter.TextureIndices">
+            <summary>
+            Utility struct for holding sampler, image and texture coord indices
+            </summary>
+        </member>
+        <member name="M:AssetGenerator.Runtime.GLTFConverter.ConvertRuntimeToSchema(AssetGenerator.Runtime.GLTF,AssetGenerator.Data)">
+            <summary>
+            Converts Runtime GLTF to Schema GLTF object.
+            </summary>
+        </member>
+        <member name="M:AssetGenerator.Runtime.GLTFConverter.ConvertImageToSchema(AssetGenerator.Runtime.Image)">
+            <summary>
+            converts the Runtime image to a glTF Image
+            </summary>
+            <returns>Returns a gltf Image object</returns>
+        </member>
+        <member name="M:AssetGenerator.Runtime.GLTFConverter.AddTexture(AssetGenerator.Runtime.Texture)">
+            <summary>
+            Adds a texture to the property components of the GLTFWrapper.
+            </summary>
+            <returns>Returns the indicies of the texture and the texture coordinate as an array of two integers if created.  Can also return null if the index is not defined. (</returns>
+        </member>
+        <member name="M:AssetGenerator.Runtime.GLTFConverter.Align(AssetGenerator.Data,System.Int32,System.Int32)">
+            <summary>
+            Pads a value to ensure it is a multiple of size
+            </summary>
+        </member>
+        <member name="M:AssetGenerator.Runtime.GLTFConverter.CreateBufferView(System.Int32,System.String,System.Int32,System.Int32,System.Nullable{System.Int32})">
+            <summary>
+            Creates a bufferview schema object
+            </summary>
+        </member>
+        <member name="M:AssetGenerator.Runtime.GLTFConverter.CreateAccessor(System.Int32,System.Nullable{System.Int32},System.Nullable{glTFLoader.Schema.Accessor.ComponentTypeEnum},System.Nullable{System.Int32},System.String,System.Single[],System.Single[],System.Nullable{glTFLoader.Schema.Accessor.TypeEnum},System.Nullable{System.Boolean})">
+            <summary>
+            Creates an accessor schema object
+            </summary>
+        </member>
+        <member name="M:AssetGenerator.Runtime.GLTFConverter.ConvertAssetToSchema(AssetGenerator.Runtime.Asset)">
+            <summary>
+            Converts runtime asset to Schema.
+            </summary>
+        </member>
+        <member name="M:AssetGenerator.Runtime.GLTFConverter.ConvertNodeToSchema(AssetGenerator.Runtime.Node,AssetGenerator.Runtime.GLTF,glTFLoader.Schema.Buffer,AssetGenerator.Data,System.Int32)">
+            <summary>
+            Converts runtime node to schema.
+            </summary>
+        </member>
+        <member name="M:AssetGenerator.Runtime.GLTFConverter.GetMeshPrimitiveMorphTargets(AssetGenerator.Runtime.MeshPrimitive,System.Collections.Generic.List{System.Single},glTFLoader.Schema.Buffer,AssetGenerator.Data,System.Int32)">
+            <summary>
+            Converts the morph target list of dictionaries into Morph Target
+            </summary>
+        </member>
+        <member name="M:AssetGenerator.Runtime.GLTFConverter.ConvertMeshToSchema(AssetGenerator.Runtime.Node,AssetGenerator.Runtime.GLTF,glTFLoader.Schema.Buffer,AssetGenerator.Data,System.Int32)">
+            <summary>
+            Converts runtime mesh to schema.
+            </summary>
+        </member>
+        <member name="M:AssetGenerator.Runtime.GLTFConverter.ConvertMaterialToSchema(AssetGenerator.Runtime.Material,AssetGenerator.Runtime.GLTF)">
+            <summary>
+            Converts runtime material to schema.
+            </summary>
+        </member>
+        <member name="M:AssetGenerator.Runtime.GLTFConverter.InterleaveMeshPrimitiveAttributes(AssetGenerator.Runtime.MeshPrimitive,AssetGenerator.Data,System.Int32)">
+            <summary>
+            Interleaves the primitive attributes to a single bufferview
+            </summary>
+        </member>
+        <member name="M:AssetGenerator.Runtime.GLTFConverter.ConvertAnimationToSchema(AssetGenerator.Runtime.Animation,AssetGenerator.Runtime.GLTF,AssetGenerator.Data,System.Int32)">
+            <summary>
+            Converts runtime animation to schema.
+            </summary>
+        </member>
+        <member name="M:AssetGenerator.Runtime.GLTFConverter.ConvertMeshPrimitiveToSchema(AssetGenerator.Runtime.Node,AssetGenerator.Runtime.MeshPrimitive,AssetGenerator.Runtime.GLTF,glTFLoader.Schema.Buffer,AssetGenerator.Data,System.Int32)">
+            <summary>
+            Converts runtime mesh primitive to schema.
+            </summary>
+        </member>
+        <member name="M:AssetGenerator.Runtime.GLTFConverter.GetMinMaxPositions(AssetGenerator.Runtime.MeshPrimitive)">
+            <summary>
+            Computes and returns the minimum and maximum positions for the mesh primitive.
+            </summary>
+            <returns>Returns the result as an array of two vectors, minimum and maximum respectively</returns>
+        </member>
+        <member name="T:AssetGenerator.Runtime.Image">
+            <summary>
+            Wrapper for Image class
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Image.Uri">
+            <summary>
+            The location of the image file, or a data uri containing texture data as an encoded string
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Image.Name">
+            <summary>
+            The user-defined name of the image
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Image.MimeType">
+            <summary>
+            The image's mimetype
+            </summary>
+        </member>
+        <member name="T:AssetGenerator.Runtime.Material">
+            <summary>
+            Wrapper for glTF loader's Material
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Material.Name">
+            <summary>
+            The user-defined name of this object
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Material.MetallicRoughnessMaterial">
+            <summary>
+            A set of parameter values that are used to define the metallic-roughness material model from Physically-Based Rendering methodology
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Material.NormalTexture">
+            <summary>
+            Texture that contains tangent-space normal information
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Material.NormalScale">
+            <summary>
+            Scaling factor for the normal texture
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Material.OcclusionTexture">
+            <summary>
+            Texture that defines areas of the surface that are occluded from light, and thus rendered darker.  This information is contained in the "red" channel.
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Material.OcclusionStrength">
+            <summary>
+            Scaling factor for the occlusion texture
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Material.EmissiveTexture">
+            <summary>
+            Texture that may be used to illuminate parts of the object surface. It defines the color of the light that is emitted from the surface
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Material.EmissiveFactor">
+            <summary>
+            Contains scaling factors for the "red", "green" and "blue" components of the emissive texture
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Material.DoubleSided">
+            <summary>
+            Specifies whether the material is float sided
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Material.AlphaMode">
+            <summary>
+            The alpha rendering mode of the material
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Material.AlphaCutoff">
+            <summary>
+            The alpha cutoff value of the material
+            </summary>
+        </member>
+        <member name="T:AssetGenerator.Runtime.Mesh">
+            <summary>
+            Wrapper for glTF loader's Mesh
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Mesh.Name">
+            <summary>
+            The user-defined name of this mesh.
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Mesh.MeshPrimitives">
+            <summary>
+            List of mesh primitives in the mesh
+            </summary>
+        </member>
+        <member name="T:AssetGenerator.Runtime.MeshPrimitive">
+            <summary>
+            Runtime abstraction for glTF Mesh Primitive
+            </summary>
+        </member>
+        <member name="T:AssetGenerator.Runtime.MeshPrimitive.ColorComponentTypeEnum">
+            <summary>
+            Specifies which component type to use when defining the color accessor 
+            </summary>
+        </member>
+        <member name="T:AssetGenerator.Runtime.MeshPrimitive.ColorTypeEnum">
+            <summary>
+            Specifies which data type to use when defining the color accessor
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.MeshPrimitive.ColorComponentType">
+            <summary>
+            Specifies which color component type to use for the mesh primitive instance
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.MeshPrimitive.ColorType">
+            <summary>
+            Specifies which color data type to use for the mesh primitive instance
+            </summary>
+        </member>
+        <member name="T:AssetGenerator.Runtime.MeshPrimitive.TextureCoordsComponentTypeEnum">
+            <summary>
+            Specifies which component type to use when defining the texture coordinates accessor 
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.MeshPrimitive.TextureCoordsComponentType">
+            <summary>
+            Specifies which texture coords component type to use for the mesh primitive instance
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.MeshPrimitive.Material">
+            <summary>
+            Material for the mesh primitive
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.MeshPrimitive.Positions">
+            <summary>
+            List of Position/Vertices for the mesh primitive
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.MeshPrimitive.Normals">
+            <summary>
+            List of normals for the mesh primitive
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.MeshPrimitive.Tangents">
+            <summary>
+            List of tangents for the mesh primitive
+            </summary>
+        </member>
+        <member name="T:AssetGenerator.Runtime.MeshPrimitive.IndexComponentTypeEnum">
+            <summary>
+            Available component types to use when defining the indices accessor
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.MeshPrimitive.IndexComponentType">
+            <summary>
+            Specifices which component type to use when defining the indices accessor
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.MeshPrimitive.Indices">
+            <summary>
+            List of indices for the mesh primitive
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.MeshPrimitive.Colors">
+            <summary>
+            List of colors for the mesh primitive
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.MeshPrimitive.TextureCoordSets">
+            <summary>
+            List of texture coordinate sets (as lists of Vector2) 
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.MeshPrimitive.MorphTargets">
+            <summary>
+            List of morph targets
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.MeshPrimitive.MorphTargetWeight">
+            <summary>
+            morph target weight (when the mesh primitive is used as a morph target)
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.MeshPrimitive.Mode">
+            <summary>
+            Sets the mode of the primitive to render.
+            </summary>
+        </member>
+        <member name="T:AssetGenerator.Runtime.Node">
+            <summary>
+            A node in a node hierarchy.  
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Node.Matrix">
+            <summary>
+            A floating-point 4x4 transformation matrix stored in column-major order.
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Node.Mesh">
+            <summary>
+            The mesh in this node.
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Node.Rotation">
+            <summary>
+            The node's unit quaternion rotation in the order (x, y, z, w), where w is the scalar.
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Node.Scale">
+            <summary>
+            The node's non-uniform scale
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Node.Translation">
+            <summary>
+            The node's translation
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Node.Children">
+            <summary>
+            children of this node.
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Node.Name">
+            <summary>
+            Name of the node
+            </summary>
+        </member>
+        <member name="T:AssetGenerator.Runtime.PbrMetallicRoughness">
+            <summary>
+            GLTF Wrapper for glTF loader's MetallicRoughness
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.PbrMetallicRoughness.BaseColorTexture">
+            <summary>
+            The main texture that will be applied to the object.
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.PbrMetallicRoughness.BaseColorFactor">
+            <summary>
+            The scaling factors for the red, green, blue and alpha components of the color.
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.PbrMetallicRoughness.MetallicRoughnessTexture">
+            <summary>
+            Texture containing the metalness value in the "blue" color channel, and the roughness value in the "green" color channel.
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.PbrMetallicRoughness.MetallicFactor">
+            <summary>
+            Scaling factor for the metalness component
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.PbrMetallicRoughness.RoughnessFactor">
+            <summary>
+            Scaling factor for the roughness component
+            </summary>
+        </member>
+        <member name="T:AssetGenerator.Runtime.Sampler">
+            <summary>
+            Wrapper for glTF loader's Sampler.  The sampler descibe the wrapping and scaling of textures.
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Sampler.MagFilter">
+            <summary>
+            Magnification filter
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Sampler.MinFilter">
+            <summary>
+            Minification filter
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Sampler.WrapS">
+            <summary>
+            S wrapping mode
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Sampler.WrapT">
+            <summary>
+            T wrapping mode
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Sampler.Name">
+            <summary>
+            User-defined name of the sampler
+            </summary>
+        </member>
+        <member name="T:AssetGenerator.Runtime.Scene">
+            <summary>
+            Wrapper for glTF loader's Scene
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Scene.Nodes">
+            <summary>
+            List of nodes in the scene
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Scene.Name">
+            <summary>
+            The user-defined name of the scene
+            </summary>
+        </member>
+        <member name="T:AssetGenerator.Runtime.Texture">
+            <summary>
+            Wrapper for glTF loader's Texture
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Texture.Source">
+            <summary>
+            Image source for the texture
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Texture.TexCoordIndex">
+            <summary>
+            Texture coordinate index used for this texture
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Texture.Sampler">
+            <summary>
+            Sampler for this texture.
+            </summary>
+        </member>
+        <member name="P:AssetGenerator.Runtime.Texture.Name">
+            <summary>
+            User defined name
+            </summary>
+        </member>
+    </members>
+</doc>
