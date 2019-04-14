@@ -1,7 +1,8 @@
 # DEM.Net license
 ## Disclaimer
 
-Do what you want but try to share the process you went through along with all the awesome stuff you'll make !
+We hope you'll do great things with DEM.Net
+Please try to share the process you went through along with all the awesome stuff you'll make !
 Let others know and learn from your work, give them the hope and belief they can do as good as anyone with good resources and work !
 Be the person you would have loved to meet when you started.
 
