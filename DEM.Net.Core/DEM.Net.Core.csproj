@@ -20,7 +20,6 @@
     <RepositoryType>GitHub</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <OutputType>Library</OutputType>
-    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
     <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
   </PropertyGroup>
 
