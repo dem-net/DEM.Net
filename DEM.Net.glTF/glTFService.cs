@@ -261,15 +261,15 @@ namespace DEM.Net.glTF
         /// Generate a triangle mesh from supplied height map, triangulating and optionaly mapping UVs
         /// and generate sides and bottom (like a box where the top is the triangulated height map)
         /// </summary>
-        /// <param name="heightMap"></param>
-        /// <param name="colors"></param>
-        /// <param name="texture">Texture path relative from the model</param>
+        /// <param name="heightMap">Height map.</param>
+        /// <param name="thickness">Determines how box height will be calculated</param>
+        /// <param name="zValue">Z value to apply for box calculation</param>
         /// <returns></returns>
-        public MeshPrimitive GenerateTriangleMesh_Boxed(HeightMap heightMap, IEnumerable<Vector4> colors = null, PBRTexture texture = null, BoxBaseThickness thickness = BoxBaseThickness.FixedElevation, float zValue = 0f)
+        public MeshPrimitive GenerateTriangleMesh_Boxed(HeightMap heightMap, BoxBaseThickness thickness = BoxBaseThickness.FixedElevation, float zValue = 0f)
         {
             TriangulationResult triangulation = MeshService.GenerateTriangleMesh_Boxed(heightMap, thickness, zValue);
 
-            return GenerateTriangleMesh(triangulation.Positions, triangulation.Indices.ToList(), colors, texture);
+            return GenerateTriangleMesh(triangulation.Positions, triangulation.Indices.ToList());
         }
 
         public MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector4 color, float width)

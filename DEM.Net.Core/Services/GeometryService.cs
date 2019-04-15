@@ -34,6 +34,9 @@ using NetTopologySuite.IO;
 
 namespace DEM.Net.Core
 {
+    /// <summary>
+    /// Geometry related services 
+    /// </summary>
 	public static class GeometryService
 	{
 		private const int WGS84_SRID = 4326;
@@ -47,17 +50,33 @@ namespace DEM.Net.Core
             _wktReader = new WKTReader(GeometryFactory.Default);
         }
 
-        public static IGeometry ParseWKTAsGeometry(string geomWKT)
+        /// <summary>
+        /// Translates a geometry WKT string to a NetTopology geometry
+        /// </summary>
+        /// <param name="geomWKT">Geometry Well Known Text</param>
+        /// <param name="srid">SRID of geomtery (defaults to 4326)</param>
+        /// <returns>NetTopology IGeometry instance</returns>
+        public static IGeometry ParseWKTAsGeometry(string geomWKT, int srid = WGS84_SRID)
         {
             IGeometry geometry = _wktReader.Read(geomWKT);
-            geometry.SRID = WGS84_SRID;
+            geometry.SRID = srid;
             return geometry;
         }
+        /// <summary>
+        /// Gets the bounding box (envelope) of a given geometry
+        /// </summary>
+        /// <param name="geomWKT">Geometry Well Known Text</param>
+        /// <returns><see cref="BoundingBox"/></returns>
         public static BoundingBox GetBoundingBox(string geomWKT)
         {
             IGeometry geom = ParseWKTAsGeometry(geomWKT);
             return geom.GetBoundingBox();
         }
+        /// <summary>
+        /// Extension method. Returns the bounding box for a geometry instance
+        /// </summary>
+        /// <param name="geom">NetTopology IGeometry instance</param>
+        /// <returns></returns>
         public static BoundingBox GetBoundingBox(this IGeometry geom)
         {
             Envelope envelope = geom.EnvelopeInternal;
@@ -65,6 +84,43 @@ namespace DEM.Net.Core
             return new BoundingBox(envelope.MinX, envelope.MaxX, envelope.MinY, envelope.MaxY);
         }
 
+
+        /// <summary>
+        /// Returns the bounding box of a set of points
+        /// </summary>
+        /// <param name="points"></param>
+        /// <returns></returns>
+        public static BoundingBox GetBoundingBox(this IEnumerable<GeoPoint> points)
+        {
+            BoundingBox bbox = new BoundingBox(double.MaxValue, double.MinValue, double.MaxValue, double.MinValue);
+
+            foreach (var pt in points)
+            {
+                bbox.xMin = Math.Min(bbox.xMin, pt.Longitude);
+                bbox.xMax = Math.Max(bbox.xMax, pt.Longitude);
+
+                bbox.yMin = Math.Min(bbox.yMin, pt.Latitude);
+                bbox.yMax = Math.Max(bbox.yMax, pt.Latitude);
+            }
+            return bbox;
+        }
+        /// <summary>
+        /// Returns the bouding box of a segment
+        /// </summary>
+        /// <param name="segment"></param>
+        /// <returns></returns>
+        public static BoundingBox GetBoundingBox(this GeoSegment segment)
+        {
+            BoundingBox bbox = new BoundingBox(double.MaxValue, double.MinValue, double.MaxValue, double.MinValue);
+
+            bbox.xMin = Math.Min(segment.Start.Longitude, segment.End.Longitude);
+            bbox.xMax = Math.Max(segment.Start.Longitude, segment.End.Longitude);
+
+            bbox.yMin = Math.Min(segment.Start.Latitude, segment.End.Latitude);
+            bbox.yMax = Math.Max(segment.Start.Latitude, segment.End.Latitude);
+
+            return bbox;
+        }
 
         /// <summary>
         /// Problem here : self intersecting lines are not supported. Not ideal for GPS tracks...
@@ -77,9 +133,16 @@ namespace DEM.Net.Core
 		}
 
 
-		//Check if the lines are interescting in 2d space
-		//Alternative version from http://thirdpartyninjas.com/blog/2008/10/07/line-segment-intersection/
-		public static bool LineLineIntersection(out GeoPoint intersection, GeoSegment line1, GeoSegment line2)
+        //Check if the lines are interescting in 2d space
+        //Alternative version from http://thirdpartyninjas.com/blog/2008/10/07/line-segment-intersection/
+        /// <summary>
+        /// Check if two lines intersects
+        /// </summary>
+        /// <param name="intersection">Ouputs the lines intersection point if they intersect, otherwise null</param>
+        /// <param name="line1">Any segment of the first line</param>
+        /// <param name="line2">Any segment of the second line</param>
+        /// <returns>True if lines intersects</returns>
+        public static bool LineLineIntersection(out GeoPoint intersection, GeoSegment line1, GeoSegment line2)
 		{
 			bool isIntersecting = false;
 			intersection = GeoPoint.Zero;
@@ -114,6 +177,11 @@ namespace DEM.Net.Core
 			return isIntersecting;
 		}
 
+        /// <summary>
+        /// Return simple statistics from a list of points, <see cref="ElevationMetrics"/>
+        /// </summary>
+        /// <param name="points">Input list of points</param>
+        /// <returns><see cref="ElevationMetrics"/> object</returns>
 		public static ElevationMetrics ComputeMetrics(List<GeoPoint> points)
 		{
 			ElevationMetrics metrics = new ElevationMetrics();
@@ -159,11 +227,22 @@ namespace DEM.Net.Core
 			return metrics;
 		}
 
+        /// <summary>
+        /// Returns total length of line
+        /// </summary>
+        /// <param name="lineWKT">LIne as geometry WKT</param>
+        /// <returns></returns>
 		public static double GetLength(string lineWKT)
 		{
             return ParseWKTAsGeometry(lineWKT).Segments().Sum(seg => seg.Start.DistanceTo(seg.End));
 		}
 
+        /// <summary>
+        /// Computes spherical distance between to locations
+        /// </summary>
+        /// <param name="pt1">First location</param>
+        /// <param name="pt2">Second location</param>
+        /// <returns>Distance in meters</returns>
 		public static double DistanceTo(this GeoPoint pt1, GeoPoint pt2)
 		{
 			if ((pt1 == null) || (pt2 == null))
@@ -197,6 +276,11 @@ namespace DEM.Net.Core
 			}
 		}
 
+        /// <summary>
+        /// Computes the total length of a line
+        /// </summary>
+        /// <param name="points">Points where first is line start, and last is line end</param>
+        /// <returns>Line length in meters</returns>
 		public static double GetLineLength_Meters(List<GeoPoint> points)
 		{
 			double total = 0;
@@ -221,6 +305,11 @@ namespace DEM.Net.Core
 
         #region Enumerators
 
+        /// <summary>
+        /// Enumerates through a geometry sub parts
+        /// </summary>
+        /// <param name="geom"></param>
+        /// <returns></returns>
         public static IEnumerable<IGeometry> Geometries(this IGeometry geom)
         {
             for (int i = 0; i < geom.NumGeometries; i++)
@@ -229,6 +318,12 @@ namespace DEM.Net.Core
             }
         }
 
+        /// <summary>
+        /// Enumerates through a line geometry segments
+        /// </summary>
+        /// <param name="lineGeom"></param>
+        /// <returns></returns>
+        /// <remarks>Only iterates if geometry is a line string</remarks>
         public static IEnumerable<GeoSegment> Segments(this IGeometry lineGeom)
         {
 
@@ -257,6 +352,11 @@ namespace DEM.Net.Core
 
         #endregion
 
+        /// <summary>
+        /// Transform a NTS coordinate to a DEM.Net geopoint
+        /// </summary>
+        /// <param name="coord"></param>
+        /// <returns></returns>
         public static GeoPoint ToGeoPoint(this Coordinate coord)
         {
 
@@ -267,32 +367,7 @@ namespace DEM.Net.Core
 
             return new GeoPoint(coord.Y, coord.X);
         }
-        public static BoundingBox GetBoundingBox(this IEnumerable<GeoPoint> points)
-        {
-            BoundingBox bbox = new BoundingBox(double.MaxValue, double.MinValue, double.MaxValue, double.MinValue);
 
-            foreach (var pt in points)
-            {
-                bbox.xMin = Math.Min(bbox.xMin, pt.Longitude);
-                bbox.xMax = Math.Max(bbox.xMax, pt.Longitude);
-
-                bbox.yMin = Math.Min(bbox.yMin, pt.Latitude);
-                bbox.yMax = Math.Max(bbox.yMax, pt.Latitude);
-            }
-            return bbox;
-        }
-        public static BoundingBox GetBoundingBox(this GeoSegment segment)
-        {
-            BoundingBox bbox = new BoundingBox(double.MaxValue, double.MinValue, double.MaxValue, double.MinValue);
-
-            bbox.xMin = Math.Min(segment.Start.Longitude, segment.End.Longitude);
-            bbox.xMax = Math.Max(segment.Start.Longitude, segment.End.Longitude);
-
-            bbox.yMin = Math.Min(segment.Start.Latitude, segment.End.Latitude);
-            bbox.yMax = Math.Max(segment.Start.Latitude, segment.End.Latitude);
-
-            return bbox;
-        }
 
 
     }
