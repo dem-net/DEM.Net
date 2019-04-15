@@ -46,9 +46,9 @@ namespace DEM.Net.glTF
         /// </summary>
         /// <returns>The triangle mesh boxed.</returns>
         /// <param name="heightMap">Height map.</param>
-        /// <param name="colors">Colors.</param>
-        /// <param name="texture">Texture.</param>
-        MeshPrimitive GenerateTriangleMesh_Boxed(HeightMap heightMap, IEnumerable<Vector4> colors = null, PBRTexture texture = null
+        /// <param name="thickness">Determines how box height will be calculated</param>
+        /// <param name="zValue">Z value to apply for box calculation</param>
+        MeshPrimitive GenerateTriangleMesh_Boxed(HeightMap heightMap
             , BoxBaseThickness thickness = BoxBaseThickness.FixedElevation, float zValue = 0f);
 
         /// <summary>

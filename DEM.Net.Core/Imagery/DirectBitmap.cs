@@ -5,6 +5,8 @@ using System.Text;
 namespace DEM.Net.Core.Imagery
 {
 
+#pragma warning disable CS1591 // Commentaire XML manquant pour le type ou le membre visible publiquement
+
 #if NETFULL
     using System.Drawing;
     using System.Drawing.Imaging;
@@ -63,4 +65,6 @@ namespace DEM.Net.Core.Imagery
         }
     }
 #endif
+
+#pragma warning restore CS1591 // Commentaire XML manquant pour le type ou le membre visible publiquement
 }

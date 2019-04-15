@@ -3,19 +3,22 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
     <PackOnBuild>true</PackOnBuild>
-    <Version>0.1.0-beta0003</Version>
+    <PackageId>DEM.Net.glTF</PackageId>
+    <Version>0.1.0-beta0005</Version>
     <Authors>Xavier Fischer</Authors>
     <Copyright>Xavier Fischer</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net.glTF</PackageProjectUrl>
-    <PackageReleaseNotes>Added XML documentation</PackageReleaseNotes>
+    <PackageReleaseNotes>Added more XML documentation</PackageReleaseNotes>
+    <PackageTags>DEM, Terrain, Elevation, Mesh, 3D, glTF, Map, STL</PackageTags>
+    <Title>DEM.Net</Title>
     <Product>DEM.Net</Product>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Description>glTF3D and STL exporters for DEM.Net</Description>
+    <Summary>glTF3D and STL exporters for DEM.Net</Summary>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/dem-net/DEM.Net.glTF</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <PackageTags>DEM, Terrain, Elevation, Mesh, 3D, glTF, Map, STL</PackageTags>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <OutputType>Library</OutputType>
     <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
   </PropertyGroup>

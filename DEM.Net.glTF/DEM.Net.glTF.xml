@@ -13,25 +13,25 @@
             <param name="texture">Texture path relative from the model</param>
             <returns></returns>
         </member>
-        <member name="M:DEM.Net.glTF.glTFService.GenerateTriangleMesh_Boxed(DEM.Net.Core.HeightMap,System.Collections.Generic.IEnumerable{System.Numerics.Vector4},DEM.Net.Core.Imagery.PBRTexture,DEM.Net.Core.Services.Mesh.BoxBaseThickness,System.Single)">
+        <member name="M:DEM.Net.glTF.glTFService.GenerateTriangleMesh_Boxed(DEM.Net.Core.HeightMap,DEM.Net.Core.Services.Mesh.BoxBaseThickness,System.Single)">
             <summary>
             Generate a triangle mesh from supplied height map, triangulating and optionaly mapping UVs
             and generate sides and bottom (like a box where the top is the triangulated height map)
             </summary>
-            <param name="heightMap"></param>
-            <param name="colors"></param>
-            <param name="texture">Texture path relative from the model</param>
+            <param name="heightMap">Height map.</param>
+            <param name="thickness">Determines how box height will be calculated</param>
+            <param name="zValue">Z value to apply for box calculation</param>
             <returns></returns>
         </member>
-        <member name="M:DEM.Net.glTF.IglTFService.GenerateTriangleMesh_Boxed(DEM.Net.Core.HeightMap,System.Collections.Generic.IEnumerable{System.Numerics.Vector4},DEM.Net.Core.Imagery.PBRTexture,DEM.Net.Core.Services.Mesh.BoxBaseThickness,System.Single)">
+        <member name="M:DEM.Net.glTF.IglTFService.GenerateTriangleMesh_Boxed(DEM.Net.Core.HeightMap,DEM.Net.Core.Services.Mesh.BoxBaseThickness,System.Single)">
             <summary>
             Generates the triangle with a base, and sides connecting the base.
             This is a STL compliant mesh which is water tight
             </summary>
             <returns>The triangle mesh boxed.</returns>
             <param name="heightMap">Height map.</param>
-            <param name="colors">Colors.</param>
-            <param name="texture">Texture.</param>
+            <param name="thickness">Determines how box height will be calculated</param>
+            <param name="zValue">Z value to apply for box calculation</param>
         </member>
         <member name="M:DEM.Net.glTF.IglTFService.GenerateTriangleMesh(DEM.Net.Core.HeightMap,System.Collections.Generic.IEnumerable{System.Numerics.Vector4},DEM.Net.Core.Imagery.PBRTexture)">
             <summary>

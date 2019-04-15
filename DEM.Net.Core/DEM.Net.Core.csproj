@@ -4,25 +4,22 @@
     <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
     <PackOnBuild>true</PackOnBuild>
     <PackageId>DEM.Net.Core</PackageId>
+    <Version>0.1.0-beta0005</Version>
     <Authors>Xavier Fischer, Frédéric Aubin</Authors>
     <Copyright>Xavier Fischer, Frédéric Aubin</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
-    <PackageReleaseNotes>Added XML documentation</PackageReleaseNotes>
+    <PackageReleaseNotes>Added more XML documentation</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation</PackageTags>
     <Title>DEM.Net</Title>
+    <Product>DEM.Net</Product>
     <Description>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Description>
+    <Summary>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Summary>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/dem-net/DEM.Net/commit/a5d9d732af6856bf1cdd8b6c810f5a7a4d8398da</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <PackageLicenseFile></PackageLicenseFile>
-    <Summary>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Summary>
-    <Version>0.1.0-beta0003</Version>
-    <Product>DEM.Net</Product>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <ApplicationIcon />
     <OutputType>Library</OutputType>
-    <StartupObject />
     <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
     <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
   </PropertyGroup>

@@ -4,11 +4,134 @@
         <name>DEM.Net.Core</name>
     </assembly>
     <members>
+        <member name="T:DEM.Net.Core.HeightMapExtensions">
+            <summary>
+            Various extensions methods for height maps
+            </summary>
+        </member>
+        <member name="M:DEM.Net.Core.HeightMapExtensions.CenterOnOrigin(DEM.Net.Core.HeightMap)">
+            <summary>
+            Centers height map on origin
+            </summary>
+            <param name="heightMap"></param>
+            <returns></returns>
+            <remarks>This can be used in an height map processing pipeline, as coordinates are changed only on enumeration</remarks>
+        </member>
+        <member name="M:DEM.Net.Core.HeightMapExtensions.CenterOnOrigin(System.Collections.Generic.IEnumerable{DEM.Net.Core.GeoPoint})">
+            <summary>
+            Centers a set of points on origin, when their bbox is not known
+            </summary>
+            <param name="points"></param>
+            <returns></returns>
+            <remarks>Warning : The bounding box will be computed (points will be enumerated). Prefer the <see cref="M:DEM.Net.Core.HeightMapExtensions.CenterOnOrigin(System.Collections.Generic.IEnumerable{DEM.Net.Core.GeoPoint},DEM.Net.Core.BoundingBox)"/> method when the bbox is known
+            </remarks>
+        </member>
+        <member name="M:DEM.Net.Core.HeightMapExtensions.CenterOnOrigin(System.Collections.Generic.IEnumerable{DEM.Net.Core.GeoPoint},DEM.Net.Core.BoundingBox)">
+            <summary>
+            Centers a set of points on origin, when their bbox is known
+            </summary>
+            <param name="points"></param>
+            <param name="bbox"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.Core.HeightMapExtensions.Translate(System.Collections.Generic.IEnumerable{DEM.Net.Core.GeoPoint},System.Double,System.Double,System.Double)">
+            <summary>
+            Translate points
+            </summary>
+            <param name="points"></param>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="z"></param>
+            <returns></returns>
+        </member>
         <member name="M:DEM.Net.Core.HeightMapExtensions.BakeCoordinates(DEM.Net.Core.HeightMap)">
             <summary>
             Helper to get an in memory coordinate list
             useful to generate normal maps and let the same height map follow the pipeline (reproj, center, ...)
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.Core.HeightMapExtensions.ZScale(DEM.Net.Core.HeightMap,System.Single)">
+            <summary>
+            Scale height map verticaly for relief exageration
+            </summary>
+            <param name="heightMap"></param>
+            <param name="zFactor"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.Core.HeightMapExtensions.Scale(DEM.Net.Core.HeightMap,System.Single,System.Single,System.Single)">
+            <summary>
+            Scale height map
+            </summary>
+            <param name="heightMap"></param>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="z"></param>
+            <returns></returns>
+            <remarks>Bounding box will be updated accordingly</remarks>
+        </member>
+        <member name="M:DEM.Net.Core.HeightMapExtensions.FitInto(DEM.Net.Core.HeightMap,System.Single)">
+            <summary>
+            Rescale the height map in order that it fits into the specified size
+            </summary>
+            <param name="heightMap"></param>
+            <param name="maxSize"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.Core.HeightMapExtensions.ZScale(System.Collections.Generic.IEnumerable{DEM.Net.Core.GeoPoint},System.Single)">
+            <summary>
+            Scales elevation of give points
+            </summary>
+            <param name="points"></param>
+            <param name="zFactor"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.Core.HeightMapExtensions.Scale(System.Collections.Generic.IEnumerable{DEM.Net.Core.GeoPoint},System.Single,System.Single,System.Single)">
+            <summary>
+            Scale given points
+            </summary>
+            <param name="points"></param>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="z"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.Core.HeightMapExtensions.ZTranslate(DEM.Net.Core.HeightMap,System.Single)">
+            <summary>
+            Verticaly translates a height map
+            </summary>
+            <param name="heightMap"></param>
+            <param name="distance"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.Core.HeightMapExtensions.ZTranslate(System.Collections.Generic.IEnumerable{DEM.Net.Core.GeoPoint},System.Single)">
+            <summary>
+            Verticaly translates points
+            </summary>
+            <param name="points"></param>
+            <param name="distance"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.Core.HeightMapExtensions.Sort(DEM.Net.Core.HeightMap)">
+            <summary>
+            Sort height map coordinates (lat descending, then lon)
+            </summary>
+            <param name="heightMap"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.Core.HeightMapExtensions.Sort(System.Collections.Generic.IEnumerable{DEM.Net.Core.GeoPoint})">
+            <summary>
+            Sort coordinates (lat descending, then lon)
+            </summary>
+            <param name="coords"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.Core.HeightMapExtensions.Downsample(DEM.Net.Core.HeightMap,System.Int32)">
+            <summary>
+            Downsample a given height map
+            </summary>
+            <param name="heightMap"></param>
+            <param name="step">Must be a factor of two</param>
             <returns></returns>
         </member>
         <member name="M:DEM.Net.Core.NetworkHelper.IsNetworkAvailable">
@@ -376,11 +499,112 @@
             <param name="lineElevationData"></param>
             <returns></returns>
         </member>
+        <member name="T:DEM.Net.Core.GeometryService">
+            <summary>
+            Geometry related services 
+            </summary>
+        </member>
+        <member name="M:DEM.Net.Core.GeometryService.ParseWKTAsGeometry(System.String,System.Int32)">
+            <summary>
+            Translates a geometry WKT string to a NetTopology geometry
+            </summary>
+            <param name="geomWKT">Geometry Well Known Text</param>
+            <param name="srid">SRID of geomtery (defaults to 4326)</param>
+            <returns>NetTopology IGeometry instance</returns>
+        </member>
+        <member name="M:DEM.Net.Core.GeometryService.GetBoundingBox(System.String)">
+            <summary>
+            Gets the bounding box (envelope) of a given geometry
+            </summary>
+            <param name="geomWKT">Geometry Well Known Text</param>
+            <returns><see cref="T:DEM.Net.Core.BoundingBox"/></returns>
+        </member>
+        <member name="M:DEM.Net.Core.GeometryService.GetBoundingBox(GeoAPI.Geometries.IGeometry)">
+            <summary>
+            Extension method. Returns the bounding box for a geometry instance
+            </summary>
+            <param name="geom">NetTopology IGeometry instance</param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.Core.GeometryService.GetBoundingBox(System.Collections.Generic.IEnumerable{DEM.Net.Core.GeoPoint})">
+            <summary>
+            Returns the bounding box of a set of points
+            </summary>
+            <param name="points"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.Core.GeometryService.GetBoundingBox(DEM.Net.Core.GeoSegment)">
+            <summary>
+            Returns the bouding box of a segment
+            </summary>
+            <param name="segment"></param>
+            <returns></returns>
+        </member>
         <member name="M:DEM.Net.Core.GeometryService.ParseGeoPointAsGeometryLine(System.Collections.Generic.IEnumerable{DEM.Net.Core.GeoPoint})">
             <summary>
             Problem here : self intersecting lines are not supported. Not ideal for GPS tracks...
             </summary>
             <param name="points"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.Core.GeometryService.LineLineIntersection(DEM.Net.Core.GeoPoint@,DEM.Net.Core.GeoSegment,DEM.Net.Core.GeoSegment)">
+            <summary>
+            Check if two lines intersects
+            </summary>
+            <param name="intersection">Ouputs the lines intersection point if they intersect, otherwise null</param>
+            <param name="line1">Any segment of the first line</param>
+            <param name="line2">Any segment of the second line</param>
+            <returns>True if lines intersects</returns>
+        </member>
+        <member name="M:DEM.Net.Core.GeometryService.ComputeMetrics(System.Collections.Generic.List{DEM.Net.Core.GeoPoint})">
+            <summary>
+            Return simple statistics from a list of points, <see cref="T:DEM.Net.Core.ElevationMetrics"/>
+            </summary>
+            <param name="points">Input list of points</param>
+            <returns><see cref="T:DEM.Net.Core.ElevationMetrics"/> object</returns>
+        </member>
+        <member name="M:DEM.Net.Core.GeometryService.GetLength(System.String)">
+            <summary>
+            Returns total length of line
+            </summary>
+            <param name="lineWKT">LIne as geometry WKT</param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.Core.GeometryService.DistanceTo(DEM.Net.Core.GeoPoint,DEM.Net.Core.GeoPoint)">
+            <summary>
+            Computes spherical distance between to locations
+            </summary>
+            <param name="pt1">First location</param>
+            <param name="pt2">Second location</param>
+            <returns>Distance in meters</returns>
+        </member>
+        <member name="M:DEM.Net.Core.GeometryService.GetLineLength_Meters(System.Collections.Generic.List{DEM.Net.Core.GeoPoint})">
+            <summary>
+            Computes the total length of a line
+            </summary>
+            <param name="points">Points where first is line start, and last is line end</param>
+            <returns>Line length in meters</returns>
+        </member>
+        <member name="M:DEM.Net.Core.GeometryService.Geometries(GeoAPI.Geometries.IGeometry)">
+            <summary>
+            Enumerates through a geometry sub parts
+            </summary>
+            <param name="geom"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.Core.GeometryService.Segments(GeoAPI.Geometries.IGeometry)">
+            <summary>
+            Enumerates through a line geometry segments
+            </summary>
+            <param name="lineGeom"></param>
+            <returns></returns>
+            <remarks>Only iterates if geometry is a line string</remarks>
+        </member>
+        <member name="M:DEM.Net.Core.GeometryService.ToGeoPoint(GeoAPI.Geometries.Coordinate)">
+            <summary>
+            Transform a NTS coordinate to a DEM.Net geopoint
+            </summary>
+            <param name="coord"></param>
             <returns></returns>
         </member>
         <member name="T:DEM.Net.Core.Interpolation.BilinearInterpolator">
