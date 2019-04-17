@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-    <PackOnBuild>true</PackOnBuild>
     <PackageId>DEM.Net.Core</PackageId>
     <Version>0.1.0-beta0006</Version>
     <Authors>Xavier Fischer, Frédéric Aubin</Authors>
@@ -15,7 +14,6 @@
     <Product>DEM.Net</Product>
     <Description>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Description>
     <Summary>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Summary>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/dem-net/DEM.Net/commit/a5d9d732af6856bf1cdd8b6c810f5a7a4d8398da</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -33,7 +31,16 @@
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
     <DocumentationFile>C:\Repos\DEM.Net\DEM.Net.Core\DEM.Net.Core.xml</DocumentationFile>
   </PropertyGroup>
-
+  <!-- Generate NuGet package only on release builds -->
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <PackOnBuild>true</PackOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <PackOnBuild>false</PackOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+  
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net461|AnyCPU'">
     <DocumentationFile>C:\Repos\DEM.Net\DEM.Net.Core\DEM.Net.Core.xml</DocumentationFile>
   </PropertyGroup>
@@ -58,6 +65,7 @@
     <PackageReference Include="DotSpatial.Projections" Version="1.9.0" />
     <PackageReference Include="GeoAPI.CoordinateSystems" Version="1.7.5" />
     <PackageReference Include="GeoAPI.Core" Version="1.7.5" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
     <PackageReference Include="NetTopologySuite" Version="1.15.2" />
     <PackageReference Include="NetTopologySuite.Diagnostics.Tracing" Version="0.0.3" />

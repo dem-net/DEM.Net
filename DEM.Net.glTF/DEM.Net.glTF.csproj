@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-    <PackOnBuild>true</PackOnBuild>
     <PackageId>DEM.Net.glTF</PackageId>
     <Version>0.1.0-beta0006</Version>
     <Authors>Xavier Fischer</Authors>
@@ -15,7 +14,6 @@
     <Product>DEM.Net</Product>
     <Description>glTF3D and STL exporters for DEM.Net</Description>
     <Summary>glTF3D and STL exporters for DEM.Net</Summary>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/dem-net/DEM.Net.glTF</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -25,6 +23,17 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
     <DocumentationFile>C:\Repos\DEM.Net\DEM.Net.glTF\DEM.Net.glTF.xml</DocumentationFile>
+  </PropertyGroup>
+
+
+  <!-- Generate NuGet package only on release builds -->
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <PackOnBuild>true</PackOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <PackOnBuild>false</PackOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
