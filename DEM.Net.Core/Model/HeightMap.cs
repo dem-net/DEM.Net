@@ -50,7 +50,7 @@ namespace DEM.Net.Core
             {
                 if (_bbox == null)
                 {
-                    Logger.Info("Computing bbox...");
+                    //Logger.Info("Computing bbox...");
                     _bbox = new BoundingBox(Coordinates.Min(c => c.Longitude)
                         , Coordinates.Max(c => c.Longitude)
                         , Coordinates.Min(c => c.Latitude)

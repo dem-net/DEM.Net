@@ -29,6 +29,7 @@ using AssetGenerator.Runtime;
 using DEM.Net.Core;
 using DEM.Net.Core.Imagery;
 using DEM.Net.Core.Services.Mesh;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -40,6 +41,14 @@ namespace DEM.Net.glTF
 {
     public class glTFService : IglTFService
     {
+        private readonly ILogger<glTFService> _logger;
+        private IMeshService _meshService;
+
+        public glTFService(ILogger<glTFService> logger, IMeshService meshService)
+        {
+            _logger = logger;
+            _meshService = meshService;
+        }
         public void Export(Model model, string outputFolder, string modelName, bool exportglTF = true, bool exportGLB = true)
         {
             try
@@ -95,7 +104,7 @@ namespace DEM.Net.glTF
             }
             catch (Exception ex)
             {
-                Logger.Error(ex.Message);
+                _logger.LogError(ex, ex.Message);
                 throw;
             }
         }
@@ -191,7 +200,7 @@ namespace DEM.Net.glTF
             mesh.Positions = positions;
             mesh.Colors = positions.Select(n => new Vector4(1, 0, 0, 0));
             mesh.Indices = new int[] { 0, 1, 3, 1, 2, 3 };
-            mesh.Normals = MeshService.ComputeNormals(positions, mesh.Indices.ToList());
+            mesh.Normals = _meshService.ComputeNormals(positions, mesh.Indices.ToList());
             yield return mesh;
 
             //=====================
@@ -207,7 +216,7 @@ namespace DEM.Net.glTF
             mesh.Positions = positions;
             mesh.Colors = positions.Select(n => new Vector4(0, 1, 0, 0));
             mesh.Indices = new int[] { 0, 1, 3, 1, 2, 3 };
-            mesh.Normals = MeshService.ComputeNormals(positions, mesh.Indices.ToList());
+            mesh.Normals = _meshService.ComputeNormals(positions, mesh.Indices.ToList());
             yield return mesh;
 
             //=====================
@@ -223,7 +232,7 @@ namespace DEM.Net.glTF
             mesh.Positions = positions;
             mesh.Colors = positions.Select(n => new Vector4(0, 0, 1, 0));
             mesh.Indices = new int[] { 0, 1, 3, 1, 2, 3 };
-            mesh.Normals = MeshService.ComputeNormals(positions, mesh.Indices.ToList());
+            mesh.Normals = _meshService.ComputeNormals(positions, mesh.Indices.ToList());
             yield return mesh;
 
         }
@@ -254,7 +263,7 @@ namespace DEM.Net.glTF
         /// <returns></returns>
         public MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, IEnumerable<Vector4> colors = null, PBRTexture texture = null)
         {
-            TriangulationResult triangulation = MeshService.TriangulateHeightMap(heightMap);
+            TriangulationResult triangulation = _meshService.TriangulateHeightMap(heightMap);
             return GenerateTriangleMesh(triangulation.Positions, triangulation.Indices.ToList(), colors, texture);
         }
         /// <summary>
@@ -267,7 +276,7 @@ namespace DEM.Net.glTF
         /// <returns></returns>
         public MeshPrimitive GenerateTriangleMesh_Boxed(HeightMap heightMap, BoxBaseThickness thickness = BoxBaseThickness.FixedElevation, float zValue = 0f)
         {
-            TriangulationResult triangulation = MeshService.GenerateTriangleMesh_Boxed(heightMap, thickness, zValue);
+            TriangulationResult triangulation = _meshService.GenerateTriangleMesh_Boxed(heightMap, thickness, zValue);
 
             return GenerateTriangleMesh(triangulation.Positions, triangulation.Indices.ToList());
         }
@@ -279,7 +288,7 @@ namespace DEM.Net.glTF
             {
                 if (points == null)
                 {
-                    Logger.Warning("Points are empty.");
+                    _logger.LogWarning("Points are empty.");
                 }
                 else
                 {
@@ -351,7 +360,7 @@ namespace DEM.Net.glTF
                             indices.Add(i0 + 2);
                         }
 
-                        IEnumerable<Vector3> normals = MeshService.ComputeNormals(vertices, indices);
+                        IEnumerable<Vector3> normals = _meshService.ComputeNormals(vertices, indices);
                         // Basic line strip  declaration
                         mesh = new MeshPrimitive()
                         {
@@ -385,7 +394,7 @@ namespace DEM.Net.glTF
             }
             catch (Exception ex)
             {
-                Logger.Error(ex.ToString());
+                _logger.LogError(ex, ex.ToString());
                 throw;
             }
             return mesh;
@@ -402,7 +411,7 @@ namespace DEM.Net.glTF
             {
                 if (points == null || !points.Any())
                 {
-                    Logger.Warning("Vertex list is empty.");
+                    _logger.LogWarning("Vertex list is empty.");
                 }
                 else
                 {
@@ -510,7 +519,7 @@ namespace DEM.Net.glTF
             }
             catch (Exception ex)
             {
-                Logger.Error(ex.ToString());
+                _logger.LogError(ex, ex.ToString());
                 throw;
             }
             return mesh;
@@ -545,7 +554,7 @@ namespace DEM.Net.glTF
             {
                 if (points == null)
                 {
-                    Logger.Warning("Points are empty.");
+                    _logger.LogWarning("Points are empty.");
                 }
                 else
                 {
@@ -588,7 +597,7 @@ namespace DEM.Net.glTF
             }
             catch (Exception ex)
             {
-                Logger.Error(ex.ToString());
+                _logger.LogError(ex, ex.ToString());
                 throw;
             }
             return mesh;

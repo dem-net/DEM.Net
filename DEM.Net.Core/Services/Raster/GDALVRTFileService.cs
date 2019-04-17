@@ -23,6 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -41,11 +42,11 @@ namespace DEM.Net.Core
     /// Remote GDAL VRT file handling
     /// Downloads and enumerates through tiles referenced in VRT file
     /// </summary>
-    public class GDALVRTFileService
+    public class GDALVRTFileService : IGDALVRTFileService
     {
         private bool _useMemCache = false;
         Dictionary<string, List<GDALSource>> _cacheByDemName;
-        private readonly string localDirectory;
+        private readonly string _localDirectory;
         private string _vrtFileName;
         private Uri _remoteVrtUri;
         private Uri _localVrtUri;
@@ -56,8 +57,8 @@ namespace DEM.Net.Core
 
         public GDALVRTFileService(string localDirectory, DEMDataSet dataSet)
         {
-            this.localDirectory = localDirectory;
-            this._dataSet = dataSet;
+            _localDirectory = localDirectory;
+            _dataSet = dataSet;
         }
 
         /// <summary>
@@ -74,12 +75,12 @@ namespace DEM.Net.Core
 
                 Trace.TraceInformation($"Setup for {_dataSet.Name} dataset.");
 
-                if (!Directory.Exists(localDirectory))
+                if (!Directory.Exists(_localDirectory))
                 {
-                    Directory.CreateDirectory(localDirectory);
+                    Directory.CreateDirectory(_localDirectory);
                 }
 
-                _vrtFileName = Path.Combine(localDirectory, UrlHelper.GetFileNameFromUrl(_dataSet.VRTFileUrl));
+                _vrtFileName = Path.Combine(_localDirectory, UrlHelper.GetFileNameFromUrl(_dataSet.VRTFileUrl));
                 _localVrtUri = new Uri(Path.GetFullPath(_vrtFileName), UriKind.Absolute);
                 _remoteVrtUri = new Uri(_dataSet.VRTFileUrl, UriKind.Absolute);
 

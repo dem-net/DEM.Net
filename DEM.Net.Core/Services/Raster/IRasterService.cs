@@ -23,7 +23,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using BitMiracle.LibTiff.Classic;
 using System.Collections.Generic;
 
 namespace DEM.Net.Core
@@ -34,6 +33,13 @@ namespace DEM.Net.Core
         FileMetadata ParseMetadata(string fileName, DEMFileFormat fileFormat, bool makeRelativePath = true);
         List<FileMetadata> LoadManifestMetadata(DEMDataSet dataSet, bool force);
 
+        /// <summary>
+        /// Open specified file
+        /// </summary>
+        /// <param name="filePath">If path is rooted (full file name), the specified file will be openened,
+        /// otherwise the file path will be relative to <see cref="LocalDirectory"/></param>
+        /// <param name="fileFormat"></param>
+        /// <returns></returns>
         IRasterFile OpenFile(string filePath, DEMFileFormat fileFormat);
 
         string LocalDirectory { get; }
@@ -45,10 +51,9 @@ namespace DEM.Net.Core
         /// Generate metadata files for fast in-memory indexing
         /// </summary>
         /// <param name="dataSet"></param>
-        /// <param name="generateBitmaps">If true, bitmaps with height map will be generated (heavy memory usage and waaaay slower)</param>
         /// <param name="force">If true, force regeneration of all files. If false, only missing files will be generated.</param>
         /// <param name="deleteOnError">If true, files where error are encountered will be deleted</param>
-        void GenerateDirectoryMetadata(DEMDataSet dataSet, bool generateBitmaps, bool force, bool deleteOnError = false);
+        void GenerateDirectoryMetadata(DEMDataSet dataSet, bool force, bool deleteOnError = false);
 
 
         /// <summary>
@@ -62,6 +67,6 @@ namespace DEM.Net.Core
         string GenerateReportAsString();
 
 
-        void GenerateFileMetadata(string rasterFileName, DEMFileFormat fileFormat, bool generateBitmap, bool force);
+        void GenerateFileMetadata(string rasterFileName, DEMFileFormat fileFormat, bool force);
     }
 }

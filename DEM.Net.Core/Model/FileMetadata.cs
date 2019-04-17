@@ -23,6 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -157,13 +158,13 @@ namespace DEM.Net.Core
 
     }
 
-    public static class FileMetadataMigrations
+    internal static class FileMetadataMigrations
     {
-        public static FileMetadata Migrate(FileMetadata oldMetadata, string dataRootDirectory, DEMDataSet dataSet)
+        public static FileMetadata Migrate(ILogger logger, FileMetadata oldMetadata, string dataRootDirectory, DEMDataSet dataSet)
         {
             if (oldMetadata != null)
             {
-                Logger.Info($"Migration metadata file {oldMetadata.Filename} from {oldMetadata.Version} to {FileMetadata.FILEMETADATA_VERSION}");
+                logger.LogInformation($"Migration metadata file {oldMetadata.Filename} from {oldMetadata.Version} to {FileMetadata.FILEMETADATA_VERSION}");
 
                 switch (oldMetadata.Version)
                 {

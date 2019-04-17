@@ -23,6 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -41,19 +42,19 @@ namespace DEM.Net.Core
         const string MANIFEST_DIR = "manifest";
         const int EARTH_CIRCUMFERENCE_METERS = 40075017;
         GDALVRTFileService _gdalService;
+        private readonly ILogger<RasterService> _logger;
 
-
-        private static string _localDirectory;
-        private static Dictionary<string, List<FileMetadata>> _metadataCatalogCache = null;
+        private readonly string _localDirectory;
+        private Dictionary<string, List<FileMetadata>> _metadataCatalogCache = new Dictionary<string, List<FileMetadata>>();
 
         public string LocalDirectory
         {
             get { return _localDirectory; }
         }
 
-        static RasterService()
+        public RasterService(ILogger<RasterService> logger)
         {
-
+            _logger = logger;
             _localDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), APP_NAME);
             if (!Directory.Exists(_localDirectory))
                 Directory.CreateDirectory(_localDirectory);
@@ -61,16 +62,28 @@ namespace DEM.Net.Core
             _metadataCatalogCache = new Dictionary<string, List<FileMetadata>>();
         }
 
-
+        /// <summary>
+        /// Open specified file
+        /// </summary>
+        /// <param name="filePath">If path is rooted (full file name), the specified file will be openened,
+        /// otherwise the file path will be relative to <see cref="LocalDirectory"/></param>
+        /// <param name="fileFormat"></param>
+        /// <returns></returns>
         public IRasterFile OpenFile(string filePath, DEMFileFormat fileFormat)
         {
+            
+            if (!Path.IsPathRooted(filePath))
+            {
+                filePath = Path.Combine(_localDirectory, filePath);
+            }
+
             if (fileFormat.Name == DEMFileFormat.GEOTIFF.Name)
             {
-                return new GeoTiff(Path.Combine(_localDirectory, filePath));
+                return new GeoTiff(filePath);
             }
             else if (fileFormat.Name == DEMFileFormat.SRTM_HGT.Name)
             {
-                return new HGTFile(Path.Combine(_localDirectory, filePath));
+                return new HGTFile(filePath);
             }
             else
                 throw new NotImplementedException($"{fileFormat} file format not implemented.");
@@ -133,7 +146,7 @@ namespace DEM.Net.Core
                         FileMetadata metadata = JsonConvert.DeserializeObject<FileMetadata>(jsonContent);
                         if (metadata.Version != FileMetadata.FILEMETADATA_VERSION)
                         {
-                            metadata = FileMetadataMigrations.Migrate(metadata, _localDirectory, dataset);
+                            metadata = FileMetadataMigrations.Migrate(_logger, metadata, _localDirectory, dataset);
                             File.WriteAllText(file, JsonConvert.SerializeObject(metadata, Formatting.Indented));
                         }
                         metaList.Add(metadata);
@@ -157,43 +170,38 @@ namespace DEM.Net.Core
         /// Generate metadata files for fast in-memory indexing
         /// </summary>
         /// <param name="directoryPath">Raster files directory</param>
-        /// <param name="generateBitmaps">If true, bitmaps with height map will be generated (heavy memory usage and waaaay slower)</param>
         /// <param name="force">If true, force regeneration of all files. If false, only missing files will be generated.</param>
-        public void GenerateDirectoryMetadata(DEMDataSet dataset, bool generateBitmaps, bool force, bool deleteOnError = false)
+        public void GenerateDirectoryMetadata(DEMDataSet dataset, bool force, bool deleteOnError = false)
         {
             string directoryPath = GetLocalDEMPath(dataset);
             var files = Directory.EnumerateFiles(directoryPath, "*" + dataset.FileFormat.FileExtension, SearchOption.AllDirectories);
             ParallelOptions options = new ParallelOptions();
-            if (generateBitmaps)
-            {
-                options.MaxDegreeOfParallelism = 2; // heavy memory usage, so let's do in parallel, but not too much
-            }
             Parallel.ForEach(files, options, file =>
-            {
-                try
-                {
-                    GenerateFileMetadata(file, dataset.FileFormat, generateBitmaps, force);
-                }
-                catch (Exception exFile)
-                {
-                    Logger.Error($"Error while generating metadata for file {file} : {exFile.Message}");
-                    try
-                    {
-                        if (deleteOnError)
-                        {
-                            var jsonFile = GetMetadataFileName(file, GetManifestDirectory(file), ".json");
-                            File.Delete(jsonFile);
-                            File.Delete(file);
-                        }
-                    }
-                    catch (Exception)
-                    {
+             {
+                 try
+                 {
+                     GenerateFileMetadata(file, dataset.FileFormat, force);
+                 }
+                 catch (Exception exFile)
+                 {
+                     _logger.LogError(exFile, $"Error while generating metadata for file {file} : {exFile.Message}");
+                     try
+                     {
+                         if (deleteOnError)
+                         {
+                             var jsonFile = GetMetadataFileName(file, GetManifestDirectory(file), ".json");
+                             File.Delete(jsonFile);
+                             File.Delete(file);
+                         }
+                     }
+                     catch (Exception)
+                     {
 
-                        throw;
-                    }
-                }
+                         throw;
+                     }
+                 }
 
-            });
+             });
         }
 
         private string GetMetadataFileName(string rasterFileName, string outDirPath, string extension = ".json")
@@ -212,7 +220,7 @@ namespace DEM.Net.Core
         }
 
 
-        public void GenerateFileMetadata(string rasterFileName, DEMFileFormat fileFormat, bool generateBitmap, bool force)
+        public void GenerateFileMetadata(string rasterFileName, DEMFileFormat fileFormat, bool force)
         {
             if (!File.Exists(rasterFileName))
                 throw new FileNotFoundException($"File {rasterFileName} does not exists !");
@@ -250,17 +258,6 @@ namespace DEM.Net.Core
                 Trace.TraceInformation($"Manifest generated for file {rasterFileName}.");
             }
 
-            // Debug bitmap
-            if (File.Exists(bmpPath) == false && generateBitmap)
-            {
-                Trace.TraceInformation($"Generating bitmap for file {rasterFileName}.");
-                FileMetadata metadata = this.ParseMetadata(rasterFileName, fileFormat);
-                HeightMap heightMap = GetHeightMap(rasterFileName, metadata);
-                DiagnosticUtils.OutputDebugBitmap(heightMap, bmpPath);
-
-                Trace.TraceInformation($"Bitmap generated for file {rasterFileName}.");
-            }
-
         }
 
         private HeightMap GetHeightMap(string fileName, FileMetadata metadata)
@@ -296,7 +293,7 @@ namespace DEM.Net.Core
             }
             return sb.ToString();
         }
-       
+
 
         public bool BoundingBoxIntersects(BoundingBox bbox1, BoundingBox bbox2)
         {

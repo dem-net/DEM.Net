@@ -44,7 +44,7 @@ namespace DEM.Net.Core
         /// <remarks>This can be used in an height map processing pipeline, as coordinates are changed only on enumeration</remarks>
         public static HeightMap CenterOnOrigin(this HeightMap heightMap)
         {
-            Logger.Info("CenterOnOrigin...");
+            //Logger.Info("CenterOnOrigin...");
             var bbox = heightMap.BoundingBox;
 
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
@@ -65,7 +65,7 @@ namespace DEM.Net.Core
         /// </remarks>
         public static IEnumerable<GeoPoint> CenterOnOrigin(this IEnumerable<GeoPoint> points)
         {
-            Logger.Info("CenterOnOrigin...");
+            //Logger.Info("CenterOnOrigin...");
             var bbox = points.GetBoundingBox();
 
             return points.CenterOnOrigin(bbox);
@@ -79,7 +79,7 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public static IEnumerable<GeoPoint> CenterOnOrigin(this IEnumerable<GeoPoint> points, BoundingBox bbox)
         {
-            Logger.Info("CenterOnOrigin...");
+            //Logger.Info("CenterOnOrigin...");
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
             points = points.Translate(-xOriginOffset, -yOriginOffset, 0);
@@ -96,7 +96,7 @@ namespace DEM.Net.Core
         /// <returns></returns>
         private static IEnumerable<GeoPoint> Translate(this IEnumerable<GeoPoint> points, double x, double y, double z = 0)
         {
-            Logger.Info("Translate...");
+            //Logger.Info("Translate...");
             foreach (var pt in points)
             {
                 var p = pt.Clone();
@@ -105,7 +105,7 @@ namespace DEM.Net.Core
                 p.Elevation += z;
                 yield return p;
             }
-            Logger.Info("Translate done...");
+            //Logger.Info("Translate done...");
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public static IEnumerable<GeoPoint> Scale(this IEnumerable<GeoPoint> points, float x = 1f, float y = 1f, float z = 1f)
         {
-            Logger.Info("Scale...");
+            //Logger.Info("Scale...");
             foreach (var pt in points)
             {
                 var pout = pt.Clone();
@@ -203,7 +203,7 @@ namespace DEM.Net.Core
                 pout.Elevation *= z;
                 yield return pout;
             }
-            Logger.Info("Scale done...");
+            //Logger.Info("Scale done...");
 
         }
 
@@ -230,14 +230,14 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public static IEnumerable<GeoPoint> ZTranslate(this IEnumerable<GeoPoint> points, float distance)
         {
-            Logger.Info("ZTranslate...");
+            //Logger.Info("ZTranslate...");
             foreach (var pt in points)
             {
                 var pout = pt.Clone();
                 pout.Elevation += distance;
                 yield return pout;
             }
-            Logger.Info("ZTranslate done...");
+            //Logger.Info("ZTranslate done...");
 
         }
 

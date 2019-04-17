@@ -22,19 +22,15 @@ namespace DEM.Net.Core
                         {
                             case GpxObjectType.Metadata:
                                 GpxMetadata metadata = reader.Metadata;
-                                Logger.Info("Metadata");
                                 break;
                             case GpxObjectType.WayPoint:
                                 GpxWayPoint waypoint = reader.WayPoint;
-                                Logger.Info("WayPoint");
                                 break;
                             case GpxObjectType.Route:
                                 GpxRoute route = reader.Route;
-                                Logger.Info("Route");
                                 break;
                             case GpxObjectType.Track:
                                 GpxTrack track = reader.Track;
-                                Logger.Info("Track");
                                 break;
                         }
                     }
@@ -56,7 +52,6 @@ namespace DEM.Net.Core
                             case GpxObjectType.Track:
                                 GpxTrack track = reader.Track;
                                 segments = ConvertTrack(track);
-                                Logger.Info("Track");
                                 break;
                         }
                     }
