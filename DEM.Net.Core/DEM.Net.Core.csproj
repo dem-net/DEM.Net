@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <PackOnBuild>true</PackOnBuild>
     <PackageId>DEM.Net.Core</PackageId>
-    <Version>0.1.0-beta0005</Version>
+    <Version>0.1.0-beta0006</Version>
     <Authors>Xavier Fischer, Frédéric Aubin</Authors>
     <Copyright>Xavier Fischer, Frédéric Aubin</Copyright>
     <Owners>Xavier Fischer</Owners>
@@ -27,19 +27,19 @@
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
     <DefineConstants>NETCORE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net46'">
-    <DefineConstants>NET46;NETFULL</DefineConstants>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net461'">
+    <DefineConstants>NET461;NETFULL</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
     <DocumentationFile>C:\Repos\DEM.Net\DEM.Net.Core\DEM.Net.Core.xml</DocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net46|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net461|AnyCPU'">
     <DocumentationFile>C:\Repos\DEM.Net\DEM.Net.Core\DEM.Net.Core.xml</DocumentationFile>
   </PropertyGroup>
 
-  <!-- Conditionally obtain references for the .NET Framework 4.6 target -->
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
+  <!-- Conditionally obtain references for the .NET Framework 4.6.1 target -->
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Configuration" />
@@ -58,6 +58,7 @@
     <PackageReference Include="DotSpatial.Projections" Version="1.9.0" />
     <PackageReference Include="GeoAPI.CoordinateSystems" Version="1.7.5" />
     <PackageReference Include="GeoAPI.Core" Version="1.7.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
     <PackageReference Include="NetTopologySuite" Version="1.15.2" />
     <PackageReference Include="NetTopologySuite.Diagnostics.Tracing" Version="0.0.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
