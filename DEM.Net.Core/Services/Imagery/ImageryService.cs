@@ -108,7 +108,7 @@ namespace DEM.Net.Core.Imagery
 
             // downdload tiles
             Stopwatch swDownload = Stopwatch.StartNew();
-            _logger.LogTrace("Starting images download");
+            _logger?.LogTrace("Starting images download");
 
 
             // 2 max download threads
@@ -120,7 +120,7 @@ namespace DEM.Net.Core.Imagery
                     using (HttpClient client = new HttpClient())
                     {
                         Uri tileUri = BuildUri(provider, tileInfo.X, tileInfo.Y, tileInfo.Zoom);
-                        _logger.LogInformation($"Downloading {tileUri}");
+                        _logger?.LogInformation($"Downloading {tileUri}");
 
                         var contentbytes = client.GetByteArrayAsync(tileUri).Result;
                         tiles.Add(new MapTile(contentbytes, provider.TileSize, tileUri, tileInfo));
@@ -131,7 +131,7 @@ namespace DEM.Net.Core.Imagery
                 );
 
             swDownload.Stop();
-            _logger.LogTrace($"DownloadImages done in : {swDownload.Elapsed:g}");
+            _logger?.LogTrace($"DownloadImages done in : {swDownload.Elapsed:g}");
            
 
             return tiles;
@@ -258,7 +258,7 @@ namespace DEM.Net.Core.Imagery
                 var token = ConfigurationManager.AppSettings[provider.TokenAppSettingsKey];
                 if (String.IsNullOrWhiteSpace(token))
                 {
-                    _logger.LogError($"There is no token found for {provider.Name} provider. Make sure an App.SECRETS.config file is present in running directory with a {provider.TokenAppSettingsKey} key / value.");
+                    _logger?.LogError($"There is no token found for {provider.Name} provider. Make sure an App.SECRETS.config file is present in running directory with a {provider.TokenAppSettingsKey} key / value.");
                 }
 #else
 
@@ -266,7 +266,7 @@ namespace DEM.Net.Core.Imagery
                 var token = configurationSection.Value;
                 if (String.IsNullOrWhiteSpace(token))
                 {
-                    _logger.LogError($"There is no token found for {provider.Name} provider. Make sure a config/tokens.json file is present in running directory with a {provider.TokenAppSettingsKey} key / value.");
+                    _logger?.LogError($"There is no token found for {provider.Name} provider. Make sure a config/tokens.json file is present in running directory with a {provider.TokenAppSettingsKey} key / value.");
                 }
 #endif
                 url = url.Replace("{t}", token);

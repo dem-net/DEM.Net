@@ -84,7 +84,7 @@ namespace DEM.Net.glTF.Export
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while exporting STL model");
+                _logger?.LogError(ex, "Error while exporting STL model");
                 throw;
             }
             

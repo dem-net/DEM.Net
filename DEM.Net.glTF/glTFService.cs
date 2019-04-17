@@ -104,7 +104,7 @@ namespace DEM.Net.glTF
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                _logger?.LogError(ex, ex.Message);
                 throw;
             }
         }
@@ -288,7 +288,7 @@ namespace DEM.Net.glTF
             {
                 if (points == null)
                 {
-                    _logger.LogWarning("Points are empty.");
+                    _logger?.LogWarning("Points are empty.");
                 }
                 else
                 {
@@ -394,7 +394,7 @@ namespace DEM.Net.glTF
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.ToString());
+                _logger?.LogError(ex, ex.ToString());
                 throw;
             }
             return mesh;
@@ -411,7 +411,7 @@ namespace DEM.Net.glTF
             {
                 if (points == null || !points.Any())
                 {
-                    _logger.LogWarning("Vertex list is empty.");
+                    _logger?.LogWarning("Vertex list is empty.");
                 }
                 else
                 {
@@ -519,7 +519,7 @@ namespace DEM.Net.glTF
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.ToString());
+                _logger?.LogError(ex, ex.ToString());
                 throw;
             }
             return mesh;
@@ -554,7 +554,7 @@ namespace DEM.Net.glTF
             {
                 if (points == null)
                 {
-                    _logger.LogWarning("Points are empty.");
+                    _logger?.LogWarning("Points are empty.");
                 }
                 else
                 {
@@ -597,7 +597,7 @@ namespace DEM.Net.glTF
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.ToString());
+                _logger?.LogError(ex, ex.ToString());
                 throw;
             }
             return mesh;

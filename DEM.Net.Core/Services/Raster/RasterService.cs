@@ -184,7 +184,7 @@ namespace DEM.Net.Core
                  }
                  catch (Exception exFile)
                  {
-                     _logger.LogError(exFile, $"Error while generating metadata for file {file} : {exFile.Message}");
+                     _logger?.LogError(exFile, $"Error while generating metadata for file {file} : {exFile.Message}");
                      try
                      {
                          if (deleteOnError)
