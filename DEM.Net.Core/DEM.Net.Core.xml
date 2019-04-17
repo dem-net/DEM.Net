@@ -826,6 +826,15 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:DEM.Net.Core.IRasterService.OpenFile(System.String,DEM.Net.Core.DEMFileFormat)">
+            <summary>
+            Open specified file
+            </summary>
+            <param name="filePath">If path is rooted (full file name), the specified file will be openened,
+            otherwise the file path will be relative to <see cref="P:DEM.Net.Core.IRasterService.LocalDirectory"/></param>
+            <param name="fileFormat"></param>
+            <returns></returns>
+        </member>
         <member name="M:DEM.Net.Core.IRasterService.GenerateDirectoryMetadata(DEM.Net.Core.DEMDataSet,System.Boolean,System.Boolean)">
             <summary>
             Generate metadata files for fast in-memory indexing
@@ -840,6 +849,15 @@
             </summary>
             <param name="dataSet">DEM dataset information</param>
             <param name="bbox">Bbox for filtering</param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.Core.RasterService.OpenFile(System.String,DEM.Net.Core.DEMFileFormat)">
+            <summary>
+            Open specified file
+            </summary>
+            <param name="filePath">If path is rooted (full file name), the specified file will be openened,
+            otherwise the file path will be relative to <see cref="P:DEM.Net.Core.RasterService.LocalDirectory"/></param>
+            <param name="fileFormat"></param>
             <returns></returns>
         </member>
         <member name="M:DEM.Net.Core.RasterService.GenerateDirectoryMetadata(DEM.Net.Core.DEMDataSet,System.Boolean,System.Boolean)">
