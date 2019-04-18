@@ -52,10 +52,11 @@ namespace DEM.Net.Core
             get { return _localDirectory; }
         }
 
-        public RasterService(ILogger<RasterService> logger)
+        public RasterService(ILogger<RasterService> logger = null)
         {
             _logger = logger;
-            _localDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), APP_NAME);
+            //_localDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), APP_NAME);
+            _localDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), APP_NAME);
             if (!Directory.Exists(_localDirectory))
                 Directory.CreateDirectory(_localDirectory);
 
