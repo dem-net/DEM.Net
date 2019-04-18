@@ -15,8 +15,8 @@ namespace DEM.Net.TestWinForm
             List<BeanPoint_internal> v_pointsToTest = new List<BeanPoint_internal>();
             try
             {
-                IRasterService v_rasterService = new RasterService();
-                IElevationService v_elevationService = new ElevationService(v_rasterService);
+                IRasterService v_rasterService = new RasterService(null);
+                IElevationService v_elevationService = new ElevationService(v_rasterService, null);
                 BoundingBox v_bbox = GeometryService.GetBoundingBox(p_bbox);
                 v_elevationService.DownloadMissingFiles(dataset, v_bbox);
                 //

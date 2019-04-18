@@ -28,7 +28,6 @@ using AssetGenerator;
 using AssetGenerator.Runtime;
 using DEM.Net.Core;
 using DEM.Net.Core.Imagery;
-using DEM.Net.Core.Services.Mesh;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -44,7 +43,7 @@ namespace DEM.Net.glTF
         private readonly ILogger<glTFService> _logger;
         private IMeshService _meshService;
 
-        public glTFService(ILogger<glTFService> logger, IMeshService meshService)
+        public glTFService(IMeshService meshService, ILogger<glTFService> logger = null)
         {
             _logger = logger;
             _meshService = meshService;

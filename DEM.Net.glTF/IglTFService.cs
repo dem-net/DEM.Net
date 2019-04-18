@@ -28,7 +28,6 @@ using AssetGenerator;
 using AssetGenerator.Runtime;
 using DEM.Net.Core;
 using DEM.Net.Core.Imagery;
-using DEM.Net.Core.Services.Mesh;
 using System;
 using System.Collections.Generic;
 using System.Linq;

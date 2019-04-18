@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
 
-namespace DEM.Net.Core.Services.Mesh
+namespace DEM.Net.Core
 {
     public interface IMeshService
     {

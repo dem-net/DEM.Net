@@ -44,7 +44,7 @@ namespace DEM.Net.Core
         private readonly IRasterService _IRasterService;
         private readonly ILogger<ElevationService> _logger;
 
-        public ElevationService(IRasterService rasterService, ILogger<ElevationService> logger)
+        public ElevationService(IRasterService rasterService, ILogger<ElevationService> logger = null)
         {
             _IRasterService = rasterService;
             _logger = logger;

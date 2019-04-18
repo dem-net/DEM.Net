@@ -23,7 +23,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using DEM.Net.Core.Services.Mesh;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -61,7 +60,7 @@ namespace DEM.Net.Core.Imagery
 #if NETSTANDARD
         private readonly IConfigurationRoot _config;
 
-        public ImageryService(IMeshService meshService, ILogger<ImageryService> logger)
+        public ImageryService(IMeshService meshService, ILogger<ImageryService> logger = null)
         {
             _logger = logger;
             _meshService = meshService;

@@ -42,7 +42,7 @@ namespace DEM.Net.glTF.Export
     {
         private readonly ILogger<STLExportService> _logger;
 
-        public STLExportService(ILogger<STLExportService> logger)
+        public STLExportService(ILogger<STLExportService> logger = null)
         {
             _logger = logger;
         }
