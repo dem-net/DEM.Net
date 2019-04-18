@@ -8,16 +8,17 @@
     <Copyright>Xavier Fischer, Frédéric Aubin</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
-    <PackageReleaseNotes>Added more XML documentation</PackageReleaseNotes>
+    <PackageReleaseNotes>Support for dependency injection and logging</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation</PackageTags>
     <Title>DEM.Net</Title>
     <Product>DEM.Net</Product>
     <Description>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Description>
     <Summary>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Summary>
-    <RepositoryUrl>https://github.com/dem-net/DEM.Net/commit/a5d9d732af6856bf1cdd8b6c810f5a7a4d8398da</RepositoryUrl>
+    <RepositoryUrl>https://github.com/dem-net/DEM.Net</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <OutputType>Library</OutputType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
   </PropertyGroup>
 
@@ -27,22 +28,6 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net461'">
     <DefineConstants>NET461;NETFULL</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
-    <DocumentationFile>C:\Repos\DEM.Net\DEM.Net.Core\DEM.Net.Core.xml</DocumentationFile>
-  </PropertyGroup>
-  <!-- Generate NuGet package only on release builds -->
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <PackOnBuild>true</PackOnBuild>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <PackOnBuild>false</PackOnBuild>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net461|AnyCPU'">
-    <DocumentationFile>C:\Repos\DEM.Net\DEM.Net.Core\DEM.Net.Core.xml</DocumentationFile>
   </PropertyGroup>
 
   <!-- Conditionally obtain references for the .NET Framework 4.6.1 target -->
@@ -71,7 +56,6 @@
     <PackageReference Include="NetTopologySuite.Diagnostics.Tracing" Version="0.0.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.0" />
   </ItemGroup>
 
   <ItemGroup>
