@@ -23,7 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-namespace DEM.Net.Core.Services.Mesh
+namespace DEM.Net.Core
 {
     public enum BoxBaseThickness
     {

@@ -1,5 +1,5 @@
-﻿using DEM.Net.Core.Imagery;
-using DEM.Net.Core.Services.Mesh;
+﻿using DEM.Net.Core;
+using DEM.Net.Core.Imagery;
 using DEM.Net.glTF.Export;
 using Microsoft.Extensions.DependencyInjection;
 using System;

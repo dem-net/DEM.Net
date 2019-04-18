@@ -59,6 +59,7 @@ namespace DEM.Net.Core
         {
             _localDirectory = localDirectory;
             _dataSet = dataSet;
+            _cacheByDemName = new Dictionary<string, List<GDALSource>>();
         }
 
         /// <summary>

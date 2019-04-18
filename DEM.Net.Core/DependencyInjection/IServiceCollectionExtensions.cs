@@ -1,5 +1,4 @@
 ﻿using DEM.Net.Core.Imagery;
-using DEM.Net.Core.Services.Mesh;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;

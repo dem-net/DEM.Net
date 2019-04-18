@@ -31,13 +31,13 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Core.Services.Mesh
+namespace DEM.Net.Core
 {
     public class MeshService : IMeshService
     {
         private readonly ILogger<MeshService> _logger;
 
-        public MeshService(ILogger<MeshService> logger)
+        public MeshService(ILogger<MeshService> logger = null)
         {
             _logger = logger;
         }
