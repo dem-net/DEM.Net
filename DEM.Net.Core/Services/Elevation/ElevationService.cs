@@ -25,9 +25,9 @@
 
 using DEM.Net.Core.Interpolation;
 using GeoAPI.Geometries;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -42,9 +42,12 @@ namespace DEM.Net.Core
     {
         public const float NO_DATA_OUT = 0;
         private readonly IRasterService _IRasterService;
-        public ElevationService(IRasterService rasterService)
+        private readonly ILogger<ElevationService> _logger;
+
+        public ElevationService(IRasterService rasterService, ILogger<ElevationService> logger)
         {
             _IRasterService = rasterService;
+            _logger = logger;
         }
 
 
@@ -80,17 +83,17 @@ namespace DEM.Net.Core
             // Generate metadata files if missing
             foreach (var file in report.Where(kvp => kvp.Value.IsMetadataGenerated == false && kvp.Value.IsExistingLocally == true).Select(kvp => kvp.Value))
             {
-                _IRasterService.GenerateFileMetadata(file.LocalName, dataSet.FileFormat, false, false);
+                _IRasterService.GenerateFileMetadata(file.LocalName, dataSet.FileFormat, false);
             }
             List<DemFileReport> filesToDownload = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
 
             if (filesToDownload.Count == 0)
             {
-                Trace.TraceInformation("No missing file(s).");
+                _logger?.LogInformation("No missing file(s).");
             }
             else
             {
-                Trace.TraceInformation($"Downloading {filesToDownload.Count} missing file(s).");
+                _logger?.LogInformation($"Downloading {filesToDownload.Count} missing file(s).");
 
                 try
                 {
@@ -109,7 +112,7 @@ namespace DEM.Net.Core
                 }
                 catch (AggregateException ex)
                 {
-                    Trace.TraceError($"Error downloading missing files. Check internet connection or retry later. {ex.GetInnerMostException().Message}");
+                    _logger?.LogError(ex, $"Error downloading missing files. Check internet connection or retry later. {ex.GetInnerMostException().Message}");
                 }
 
 
@@ -123,7 +126,7 @@ namespace DEM.Net.Core
             // Create directories if not existing
             new FileInfo(localFileName).Directory.Create();
 
-            Trace.TraceInformation($"Downloading file {url}...");
+            _logger?.LogInformation($"Downloading file {url}...");
 
             using (HttpClient client = new HttpClient())
             {
@@ -149,11 +152,11 @@ namespace DEM.Net.Core
 
             }
 
-            _IRasterService.GenerateFileMetadata(localFileName, fileFormat, false, false);
+            _IRasterService.GenerateFileMetadata(localFileName, fileFormat, false);
 
 
         }
-    
+
         /// <summary>
         /// Extract elevation data along line path
         /// </summary>
@@ -165,7 +168,7 @@ namespace DEM.Net.Core
 
             if (geom.OgcGeometryType == OgcGeometryType.MultiLineString)
             {
-                Trace.TraceWarning("Geometry is a multi line string. Only the longest segment will be processed.");
+                _logger?.LogWarning("Geometry is a multi line string. Only the longest segment will be processed.");
                 geom = geom.Geometries().OrderByDescending(g => g.NumPoints).First();
             }
             return GetLineGeometryElevation(geom, dataSet, interpolationMode);
@@ -252,7 +255,7 @@ namespace DEM.Net.Core
             }
             catch (Exception e)
             {
-                Trace.TraceError($"Error while getting elevation data : {e.Message}{Environment.NewLine}{e.ToString()}");
+                _logger?.LogError(e, $"Error while getting elevation data : {e.Message}{Environment.NewLine}{e.ToString()}");
             }
             return heightValue;
         }
@@ -314,7 +317,7 @@ namespace DEM.Net.Core
             }
             catch (Exception e)
             {
-                Trace.TraceError($"Error while getting elevation data : {e.Message}{Environment.NewLine}{e.ToString()}");
+                _logger?.LogError(e, $"Error while getting elevation data : {e.Message}{Environment.NewLine}{e.ToString()}");
             }
             return heightValue;
         }
@@ -383,7 +386,7 @@ namespace DEM.Net.Core
             }
             catch (Exception e)
             {
-                Trace.TraceError($"Error while getting elevation data : {e.Message}{Environment.NewLine}{e.ToString()}");
+                _logger?.LogError(e, $"Error while getting elevation data : {e.Message}{Environment.NewLine}{e.ToString()}");
             }
             return heightValue;
         }
@@ -492,7 +495,7 @@ namespace DEM.Net.Core
             heightMap.Minimum = tilesHeightMap.Min(hmap => hmap.Minimum);
             heightMap.Maximum = tilesHeightMap.Max(hmap => hmap.Maximum);
 
-            Debug.Assert(heightMap.Count == tilesHeightMap.Sum(h => h.Count));
+            System.Diagnostics.Debug.Assert(heightMap.Count == tilesHeightMap.Sum(h => h.Count));
 
 
             return heightMap;
@@ -768,7 +771,7 @@ namespace DEM.Net.Core
 
             if (bboxMetadata.Count == 0)
             {
-                Trace.TraceWarning($"No coverage found matching provided bounding box { bbox}.");
+                _logger?.LogWarning($"No coverage found matching provided bounding box { bbox}.");
                 //throw new Exception($"No coverage found matching provided bounding box {bbox}.");
             }
 
@@ -787,7 +790,7 @@ namespace DEM.Net.Core
 
             if (bboxMetadata.Count == 0)
             {
-                Trace.TraceWarning($"No coverage found matching provided point {geoPoint}.");
+                _logger?.LogWarning($"No coverage found matching provided point {geoPoint}.");
                 //throw new Exception($"No coverage found matching provided bounding box {bbox}.");
             }
 
@@ -888,7 +891,7 @@ namespace DEM.Net.Core
             }
             catch (Exception e)
             {
-                Trace.TraceError($"Error while getting elevation data : {e.Message}{Environment.NewLine}{e.ToString()}");
+                _logger?.LogError(e, $"Error while getting elevation data : {e.Message}{Environment.NewLine}{e.ToString()}");
             }
             return heightValue;
         }

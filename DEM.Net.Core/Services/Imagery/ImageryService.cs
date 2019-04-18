@@ -25,18 +25,17 @@
 
 using DEM.Net.Core.Services.Mesh;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Numerics;
-using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 #if NETFULL
+using System.Configuration;
 using System.Drawing;
 using System.Drawing.Imaging;
 #elif NETSTANDARD
@@ -51,25 +50,30 @@ using SixLabors.Primitives;
 
 namespace DEM.Net.Core.Imagery
 {
-    public class ImageryService
+    public class ImageryService : IImageryService
     {
         #region Tiled imagery
 
         private int _serverCycle = 0;
+        private readonly ILogger<ImageryService> _logger;
+        private readonly IMeshService _meshService;
+
 #if NETSTANDARD
         private readonly IConfigurationRoot _config;
 
-        public ImageryService()
+        public ImageryService(IMeshService meshService, ILogger<ImageryService> logger)
         {
+            _logger = logger;
+            _meshService = meshService;
             _config = new ConfigurationBuilder()
                  .SetBasePath(Directory.GetCurrentDirectory())
                  .AddJsonFile(Path.Combine("Config", "tokens.json"), optional: true, reloadOnChange: true)
                  .Build();
         }
 #elif NETFULL
-        public ImageryService()
+        public ImageryService(ILogger<ImageryService> logger)
         {
-
+            _logger = logger;
         }
 #endif
 
@@ -103,7 +107,9 @@ namespace DEM.Net.Core.Imagery
             tiles.AreaOfInterest = mapBbox;
 
             // downdload tiles
-            Logger.StartPerf("downloadImages");
+            Stopwatch swDownload = Stopwatch.StartNew();
+            _logger?.LogTrace("Starting images download");
+
 
             // 2 max download threads
             var options = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism };
@@ -114,7 +120,7 @@ namespace DEM.Net.Core.Imagery
                     using (HttpClient client = new HttpClient())
                     {
                         Uri tileUri = BuildUri(provider, tileInfo.X, tileInfo.Y, tileInfo.Zoom);
-                        Logger.Info($"Downloading {tileUri}");
+                        _logger?.LogInformation($"Downloading {tileUri}");
 
                         var contentbytes = client.GetByteArrayAsync(tileUri).Result;
                         tiles.Add(new MapTile(contentbytes, provider.TileSize, tileUri, tileInfo));
@@ -124,9 +130,9 @@ namespace DEM.Net.Core.Imagery
                 }
                 );
 
-            Logger.StopPerf("downloadImages");
-
-
+            swDownload.Stop();
+            _logger?.LogTrace($"DownloadImages done in : {swDownload.Elapsed:g}");
+           
 
             return tiles;
         }
@@ -252,16 +258,16 @@ namespace DEM.Net.Core.Imagery
                 var token = ConfigurationManager.AppSettings[provider.TokenAppSettingsKey];
                 if (String.IsNullOrWhiteSpace(token))
                 {
-                    Logger.Error($"There is no token found for {provider.Name} provider. Make sure an App.SECRETS.config file is present in running directory with a {provider.TokenAppSettingsKey} key / value.");
+                    _logger?.LogError($"There is no token found for {provider.Name} provider. Make sure an App.SECRETS.config file is present in running directory with a {provider.TokenAppSettingsKey} key / value.");
                 }
 #else
-                
+
                 IConfigurationSection configurationSection = _config.GetSection("Tokens").GetSection(provider.TokenAppSettingsKey);
                 var token = configurationSection.Value;
                 if (String.IsNullOrWhiteSpace(token))
                 {
-                    Logger.Error($"There is no token found for {provider.Name} provider. Make sure a config/tokens.json file is present in running directory with a {provider.TokenAppSettingsKey} key / value.");
-                }                
+                    _logger?.LogError($"There is no token found for {provider.Name} provider. Make sure a config/tokens.json file is present in running directory with a {provider.TokenAppSettingsKey} key / value.");
+                }
 #endif
                 url = url.Replace("{t}", token);
             }
@@ -282,7 +288,7 @@ namespace DEM.Net.Core.Imagery
         /// <returns></returns>
         public TextureInfo GenerateNormalMap(HeightMap heightMap, string outputDirectory)
         {
-            List<Vector3> normals = MeshService.ComputeNormals(heightMap).ToList();
+            List<Vector3> normals = _meshService.ComputeNormals(heightMap).ToList();
 
 #if NETSTANDARD
             using (Image<Bgra32> outputImage = new Image<Bgra32>(heightMap.Width, heightMap.Height))
@@ -329,7 +335,7 @@ namespace DEM.Net.Core.Imagery
             return new Bgra32(height, height, height);
         }
 
-        public Bgra32 FromVec3NormalToColor(Vector3 normal)
+        private Bgra32 FromVec3NormalToColor(Vector3 normal)
         {
             return new Bgra32((byte)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.X, true), 0),
                 (byte)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.Y, true), 0),
@@ -342,7 +348,7 @@ namespace DEM.Net.Core.Imagery
             return Color.FromArgb(height, height, height);
         }
 
-        public Color FromVec3NormalToColor(Vector3 normal)
+        private Color FromVec3NormalToColor(Vector3 normal)
         {
             return Color.FromArgb((int)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.X, true), 0),
                 (int)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.Y, true), 0),
@@ -350,9 +356,9 @@ namespace DEM.Net.Core.Imagery
         }
 #endif
 
-#endregion
+        #endregion
 
-#region UV mapping
+        #region UV mapping
 
         public List<Vector2> ComputeUVMap(HeightMap heightMap, TextureInfo textureInfo)
         {
@@ -383,7 +389,7 @@ namespace DEM.Net.Core.Imagery
             return uvs;
         }
 
-#endregion
+        #endregion
 
 
     }

@@ -23,6 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,8 +33,14 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core.Services.Mesh
 {
-    public static class MeshService
+    public class MeshService : IMeshService
     {
+        private readonly ILogger<MeshService> _logger;
+
+        public MeshService(ILogger<MeshService> logger)
+        {
+            _logger = logger;
+        }
         /// <summary>
         /// Triangulate a regular set of points
         /// </summary>
@@ -41,7 +48,7 @@ namespace DEM.Net.Core.Services.Mesh
         /// but height map should be organized a set of rows and columns</param>
         /// <param name="regularTriangulation">(optional) Determines which diagnal is choosen</param>
         /// <returns>List of indexes (triplets) in height map coordinates, indicating each of the triangles vertices</returns>
-        public static TriangulationResult TriangulateHeightMap(HeightMap heightMap, bool regularTriangulation = true)
+        public TriangulationResult TriangulateHeightMap(HeightMap heightMap, bool regularTriangulation = true)
         {
 
             int capacity = ((heightMap.Width - 1) * 6) * (heightMap.Height - 1);
@@ -54,7 +61,7 @@ namespace DEM.Net.Core.Services.Mesh
 
             return triangulationResult;
         }
-        private static IEnumerable<int> TriangulateHeightMap_Internal(HeightMap heightMap, bool regularTriangulation = true)
+        private IEnumerable<int> TriangulateHeightMap_Internal(HeightMap heightMap, bool regularTriangulation = true)
         {
             for (int y = 0; y < heightMap.Height; y++)
             {
@@ -96,7 +103,7 @@ namespace DEM.Net.Core.Services.Mesh
         /// <param name="heightMap">Gridded set of points. Corrdinates can differ, 
         /// but height map should be organized a set of rows and columns</param>
         /// <returns>TriangulationResult</returns>
-        public static TriangulationResult GenerateTriangleMesh_Boxed(HeightMap heightMap
+        public TriangulationResult GenerateTriangleMesh_Boxed(HeightMap heightMap
                     , BoxBaseThickness thickness, float zValue)
         {
 
@@ -117,7 +124,7 @@ namespace DEM.Net.Core.Services.Mesh
             return triangulationResult;
         }
 
-        private static void AddHeightMapBase(TriangulationResult triangulation, HeightMap heightMap, BoxBaseThickness thickness, float zValue)
+        private void AddHeightMapBase(TriangulationResult triangulation, HeightMap heightMap, BoxBaseThickness thickness, float zValue)
         {
             // bake coordinates to avoid executing the coords transfrom pipeline
             var coords = heightMap.Coordinates.ToList();
@@ -126,7 +133,7 @@ namespace DEM.Net.Core.Services.Mesh
             var baseIndexes = new List<int>(capacity);
 
             float baseElevation = 0;
-            switch(thickness)
+            switch (thickness)
             {
                 case BoxBaseThickness.FromMinimumPoint:
                     baseElevation = (float)coords.Min(p => p.Elevation).GetValueOrDefault(0) - zValue;
@@ -243,7 +250,7 @@ namespace DEM.Net.Core.Services.Mesh
 
         }
 
-        public static IEnumerableWithCount<Vector3> ComputeNormals(List<Vector3> positions, List<int> indices)
+        public IEnumerableWithCount<Vector3> ComputeNormals(List<Vector3> positions, List<int> indices)
         {
             //The number of the vertices
             int nV = positions.Count;
@@ -280,7 +287,7 @@ namespace DEM.Net.Core.Services.Mesh
         /// </summary>
         /// <param name="heightMap">Height map (gridded data)</param>
         /// <returns>Normals for each point of the height map</returns>
-        public static IEnumerableWithCount<Vector3> ComputeNormals(HeightMap heightMap)
+        public IEnumerableWithCount<Vector3> ComputeNormals(HeightMap heightMap)
         {
             var triangulation = TriangulateHeightMap(heightMap);
             var normals = ComputeNormals(

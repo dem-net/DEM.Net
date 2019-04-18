@@ -1,18 +1,20 @@
 ﻿using System;
 using DEM.Net.Core;
 using Xunit;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DEM.Net.Test
 {
-    public class ElevationTests
+    public class ElevationTests : IClassFixture<DemNetFixture>
     {
         IRasterService _rasterService;
         IElevationService _elevationService;
 
-        public ElevationTests()
+        public ElevationTests(DemNetFixture fixture)
         {
-            _rasterService = new RasterService();
-            _elevationService = new ElevationService(_rasterService);
+
+            _rasterService = fixture.ServiceProvider.GetService<IRasterService>();
+            _elevationService = fixture.ServiceProvider.GetService<IElevationService>();
         }
 
         [Fact]

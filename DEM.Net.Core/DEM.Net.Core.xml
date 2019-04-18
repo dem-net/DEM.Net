@@ -158,14 +158,50 @@
             Dictionary with IDisposable values than can be used in a using block
             </summary>
         </member>
-        <member name="M:DEM.Net.Core.Imagery.ImageryService.GenerateNormalMap(DEM.Net.Core.HeightMap,System.String)">
+        <member name="T:DEM.Net.Core.HGTFile">
             <summary>
-            Generate normal texture from height map.
-            Note : heightMap should be in projected coordinates (see ReprojectToCartesian())
+            SRTM height file
+            https://wiki.openstreetmap.org/wiki/SRTM
+            
+            Official documentation : https://dds.cr.usgs.gov/srtm/version2_1/Documentation/SRTM_Topo.pdf
             </summary>
-            <param name="heightMap">heightMap in projected coordinates</param>
-            <param name="outputDirectory"></param>
-            <returns></returns>
+        </member>
+        <member name="P:DEM.Net.Core.DEMDataSet.VRTFileUrl">
+            <summary>
+            GDAL Virtual 
+            </summary>
+        </member>
+        <member name="P:DEM.Net.Core.DEMDataSet.SRTM_GL3">
+            <summary>
+            Shuttle Radar Topography Mission (SRTM GL3) Global 90m
+            </summary>
+        </member>
+        <member name="P:DEM.Net.Core.DEMDataSet.SRTM_GL1">
+            <summary>
+            Shuttle Radar Topography Mission (SRTM GL1) Global 30m
+            </summary>
+        </member>
+        <member name="P:DEM.Net.Core.DEMDataSet.AW3D30">
+            <summary>
+            ALOS World 3D - 30m
+            </summary>
+        </member>
+        <member name="T:DEM.Net.Core.FileMetadata">
+            <summary>
+            Metadata file generated on the fly.
+            Extracts necessary data in order to index files for querying without actually open them (which is costly)
+            </summary>
+        </member>
+        <member name="P:DEM.Net.Core.GeoPoint.DistanceFromOriginMeters">
+            <summary>
+            When this point is part of a List and ComputePointsDistances is called, this field
+            stores the distance from this point to origin point in meters.
+            </summary>
+        </member>
+        <member name="P:DEM.Net.Core.HeightMap.Count">
+            <summary>
+            Coordinate count
+            </summary>
         </member>
         <member name="T:DEM.Net.Core.Imagery.PBRTexture">
             <summary>
@@ -269,50 +305,14 @@
             <param name="tileY">Output parameter receiving the tile Y coordinate.</param>
             <param name="levelOfDetail">Output parameter receiving the level of detail.</param>
         </member>
-        <member name="T:DEM.Net.Core.HGTFile">
+        <member name="M:DEM.Net.Core.Imagery.ImageryService.GenerateNormalMap(DEM.Net.Core.HeightMap,System.String)">
             <summary>
-            SRTM height file
-            https://wiki.openstreetmap.org/wiki/SRTM
-            
-            Official documentation : https://dds.cr.usgs.gov/srtm/version2_1/Documentation/SRTM_Topo.pdf
+            Generate normal texture from height map.
+            Note : heightMap should be in projected coordinates (see ReprojectToCartesian())
             </summary>
-        </member>
-        <member name="P:DEM.Net.Core.DEMDataSet.VRTFileUrl">
-            <summary>
-            GDAL Virtual 
-            </summary>
-        </member>
-        <member name="P:DEM.Net.Core.DEMDataSet.SRTM_GL3">
-            <summary>
-            Shuttle Radar Topography Mission (SRTM GL3) Global 90m
-            </summary>
-        </member>
-        <member name="P:DEM.Net.Core.DEMDataSet.SRTM_GL1">
-            <summary>
-            Shuttle Radar Topography Mission (SRTM GL1) Global 30m
-            </summary>
-        </member>
-        <member name="P:DEM.Net.Core.DEMDataSet.AW3D30">
-            <summary>
-            ALOS World 3D - 30m
-            </summary>
-        </member>
-        <member name="T:DEM.Net.Core.FileMetadata">
-            <summary>
-            Metadata file generated on the fly.
-            Extracts necessary data in order to index files for querying without actually open them (which is costly)
-            </summary>
-        </member>
-        <member name="P:DEM.Net.Core.GeoPoint.DistanceFromOriginMeters">
-            <summary>
-            When this point is part of a List and ComputePointsDistances is called, this field
-            stores the distance from this point to origin point in meters.
-            </summary>
-        </member>
-        <member name="P:DEM.Net.Core.HeightMap.Count">
-            <summary>
-            Coordinate count
-            </summary>
+            <param name="heightMap">heightMap in projected coordinates</param>
+            <param name="outputDirectory"></param>
+            <returns></returns>
         </member>
         <member name="M:DEM.Net.Core.DouglasPeucker.DouglasPeuckerReduction(System.Collections.Generic.List{DEM.Net.Core.GeoPoint},System.Double)">
             <summary>
@@ -826,12 +826,20 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:DEM.Net.Core.IRasterService.GenerateDirectoryMetadata(DEM.Net.Core.DEMDataSet,System.Boolean,System.Boolean,System.Boolean)">
+        <member name="M:DEM.Net.Core.IRasterService.OpenFile(System.String,DEM.Net.Core.DEMFileFormat)">
+            <summary>
+            Open specified file
+            </summary>
+            <param name="filePath">If path is rooted (full file name), the specified file will be openened,
+            otherwise the file path will be relative to <see cref="P:DEM.Net.Core.IRasterService.LocalDirectory"/></param>
+            <param name="fileFormat"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.Core.IRasterService.GenerateDirectoryMetadata(DEM.Net.Core.DEMDataSet,System.Boolean,System.Boolean)">
             <summary>
             Generate metadata files for fast in-memory indexing
             </summary>
             <param name="dataSet"></param>
-            <param name="generateBitmaps">If true, bitmaps with height map will be generated (heavy memory usage and waaaay slower)</param>
             <param name="force">If true, force regeneration of all files. If false, only missing files will be generated.</param>
             <param name="deleteOnError">If true, files where error are encountered will be deleted</param>
         </member>
@@ -843,12 +851,20 @@
             <param name="bbox">Bbox for filtering</param>
             <returns></returns>
         </member>
-        <member name="M:DEM.Net.Core.RasterService.GenerateDirectoryMetadata(DEM.Net.Core.DEMDataSet,System.Boolean,System.Boolean,System.Boolean)">
+        <member name="M:DEM.Net.Core.RasterService.OpenFile(System.String,DEM.Net.Core.DEMFileFormat)">
+            <summary>
+            Open specified file
+            </summary>
+            <param name="filePath">If path is rooted (full file name), the specified file will be openened,
+            otherwise the file path will be relative to <see cref="P:DEM.Net.Core.RasterService.LocalDirectory"/></param>
+            <param name="fileFormat"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DEM.Net.Core.RasterService.GenerateDirectoryMetadata(DEM.Net.Core.DEMDataSet,System.Boolean,System.Boolean)">
             <summary>
             Generate metadata files for fast in-memory indexing
             </summary>
             <param name="directoryPath">Raster files directory</param>
-            <param name="generateBitmaps">If true, bitmaps with height map will be generated (heavy memory usage and waaaay slower)</param>
             <param name="force">If true, force regeneration of all files. If false, only missing files will be generated.</param>
         </member>
         <member name="M:DEM.Net.Core.Smoothing.WindowSmooth(System.Collections.Generic.List{DEM.Net.Core.GeoPoint},System.Double[])">
