@@ -3,12 +3,12 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <PackageId>DEM.Net.Core</PackageId>
-    <Version>0.1.0-beta0007</Version>
+    <Version>0.1.0-beta0008</Version>
     <Authors>Xavier Fischer, Frédéric Aubin</Authors>
     <Copyright>Xavier Fischer, Frédéric Aubin</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
-    <PackageReleaseNotes>Support for dependency injection and logging</PackageReleaseNotes>
+    <PackageReleaseNotes>ElevationMetrics supports string formatting</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation</PackageTags>
     <Title>DEM.Net</Title>
     <Product>DEM.Net</Product>
