@@ -131,6 +131,10 @@ namespace DEM.Net.Core
 		{
             return new LineString(points.Select(pt => new Coordinate(pt.Longitude, pt.Latitude)).ToArray()) { SRID = WGS84_SRID };
 		}
+        public static IGeometry ParseGeoPointAsGeometryLine(params GeoPoint[] points)
+        {
+            return new LineString(points.Select(pt => new Coordinate(pt.Longitude, pt.Latitude)).ToArray()) { SRID = WGS84_SRID };
+        }
 
 
         //Check if the lines are interescting in 2d space
