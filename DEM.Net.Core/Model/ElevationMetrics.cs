@@ -23,6 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System.Globalization;
+
 namespace DEM.Net.Core
 {
 	public class ElevationMetrics
@@ -36,7 +38,12 @@ namespace DEM.Net.Core
 
         public override string ToString()
         {
-            return $"Min/Max: {MinElevation} / {MaxElevation}, Distance: {Distance} m, Climb/Descent: {Climb} / {Descent}";
+            return ToString("F2");
+        }
+
+        public string ToString(string numberFormat = "F2")
+        {
+            return $"Min/Max: {MinElevation.ToString(numberFormat, CultureInfo.InvariantCulture)} / {MaxElevation.ToString(numberFormat, CultureInfo.InvariantCulture)}, Distance: {Distance.ToString(numberFormat, CultureInfo.InvariantCulture)} m, Climb/Descent: {Climb.ToString(numberFormat, CultureInfo.InvariantCulture)} / {Descent.ToString(numberFormat, CultureInfo.InvariantCulture)}";
         }
     }
 }
