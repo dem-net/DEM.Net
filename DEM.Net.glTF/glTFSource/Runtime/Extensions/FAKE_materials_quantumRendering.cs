@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 
+
 namespace AssetGenerator.Runtime.Extensions
 {
     /// <summary>

@@ -8,36 +8,45 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core
 {
+    /// <summary>
+    /// GpxImport is a thin wrapper above px by dlg.krakow.pl
+    /// allowing conversion from gpx to DEM.Net types (GeoPoints)
+    /// </summary>
     public static class GpxImport
     {
-        public static void ReadGPX(string fileName)
-        {
-            using (FileStream fs = new FileStream(fileName, FileMode.Open))
-            {
-                using (GpxReader reader = new GpxReader(fs))
-                {
-                    while (reader.Read())
-                    {
-                        switch (reader.ObjectType)
-                        {
-                            case GpxObjectType.Metadata:
-                                GpxMetadata metadata = reader.Metadata;
-                                break;
-                            case GpxObjectType.WayPoint:
-                                GpxWayPoint waypoint = reader.WayPoint;
-                                break;
-                            case GpxObjectType.Route:
-                                GpxRoute route = reader.Route;
-                                break;
-                            case GpxObjectType.Track:
-                                GpxTrack track = reader.Track;
-                                break;
-                        }
-                    }
-                }
-            }
-        }
+        //public static void ReadGPX(string fileName)
+        //{
+        //    using (FileStream fs = new FileStream(fileName, FileMode.Open))
+        //    {
+        //        using (GpxReader reader = new GpxReader(fs))
+        //        {
+        //            while (reader.Read())
+        //            {
+        //                switch (reader.ObjectType)
+        //                {
+        //                    case GpxObjectType.Metadata:
+        //                        GpxMetadata metadata = reader.Metadata;
+        //                        break;
+        //                    case GpxObjectType.WayPoint:
+        //                        GpxWayPoint waypoint = reader.WayPoint;
+        //                        break;
+        //                    case GpxObjectType.Route:
+        //                        GpxRoute route = reader.Route;
+        //                        break;
+        //                    case GpxObjectType.Track:
+        //                        GpxTrack track = reader.Track;
+        //                        break;
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
+        /// <summary>
+        /// Read gpx file segments as enumerable GeoPoints
+        /// </summary>
+        /// <param name="fileName">Path to GPX file</param>
+        /// <returns></returns>
         public static IEnumerable<IEnumerable<GeoPoint>> ReadGPX_Segments(string fileName)
         {
             IEnumerable<IEnumerable<GeoPoint>> segments = null;

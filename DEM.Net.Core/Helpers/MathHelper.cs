@@ -31,11 +31,35 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core
 {
+    /// <summary>
+    /// Various math extensions
+    /// </summary>
     public static class MathHelper
     {
+        /// <summary>
+        /// Linear interpolation between two values
+        /// </summary>
+        /// <param name="value1">First input value</param>
+        /// <param name="value2">Second input value</param>
+        /// <param name="amount">Amount of interpolation between 0 and 1.
+        /// For any other value, this function maps then range 0->1 to value1->value2</param>
+        /// <example>If 0 then <paramref name="value1"/> will be returned, if 1 then <paramref name="value2"/>will be returned.</example>
+        /// <returns>Value in the units of value1 and value2 interpolated</returns>
         public static float Lerp(float value1, float value2, float amount)
         { return value1 + (value2 - value1) * amount; }
 
+        /// <summary>
+        /// Maps two ranges of values and interpolates.
+        /// </summary>
+        /// <param name="inputMin">Input minimum range</param>
+        /// <param name="inputMax">Input maximum range</param>
+        /// <param name="outputMin">Output range min value (ie: whats the destination minimal value)</param>
+        /// <param name="outputMax">Output range max value (ie: whats the destination maximal value)</param>
+        /// <param name="value">Interpolation amout in the units of <paramref name="inputMin"/> and <paramref name="inputMax"/>
+        /// if <paramref name="inputMin"/>, then output will be <paramref name="outputMin"/>
+        /// if <paramref name="inputMax"/>, then output will be <paramref name="outputMax"/></param>
+        /// <param name="clamp"></param>
+        /// <returns></returns>
         public static float Map(float inputMin, float inputMax, float outputMin, float outputMax, float value, bool clamp)
         {
 
@@ -56,13 +80,23 @@ namespace DEM.Net.Core
 
         }
 
-        internal static double ToRadians(double angle)
+        /// <summary>
+        /// Degrees to radians conversion
+        /// </summary>
+        /// <param name="angleInDegrees"></param>
+        /// <returns></returns>
+        internal static double ToRadians(double angleInDegrees)
         {
-            return angle * Math.PI / 180d;
+            return angleInDegrees * Math.PI / 180d;
         }
-        internal static double ToDegrees(double angle)
+        /// <summary>
+        /// Radians to degree conversion
+        /// </summary>
+        /// <param name="angleinRadians"></param>
+        /// <returns></returns>
+        internal static double ToDegrees(double angleinRadians)
         {
-            return angle * 180d / Math.PI;
+            return angleinRadians * 180d / Math.PI;
         }
 
 
@@ -74,129 +108,7 @@ namespace DEM.Net.Core
 
         }
 
-        #region Max/Min/Average
 
-        #region Max
-
-        public static double Max(params double[] args)
-        {
-            return args.Max();
-        }
-        public static decimal Max(params decimal[] args)
-        {
-            return args.Max();
-        }
-        public static float Max(params float[] args)
-        {
-            return args.Max();
-        }
-        public static long Max(params long[] args)
-        {
-            return args.Max();
-        }
-        public static int Max(params int[] args)
-        {
-            return args.Max();
-        }
-        public static double? Max(params double?[] args)
-        {
-            return args.Max();
-        }
-        public static decimal? Max(params decimal?[] args)
-        {
-            return args.Max();
-        }
-        public static float? Max(params float?[] args)
-        {
-            return args.Max();
-        }
-        public static long? Max(params long?[] args)
-        {
-            return args.Max();
-        }
-        public static int? Max(params int?[] args)
-        {
-            return args.Max();
-        }
-
-        #endregion
-
-        #region Min
-
-        public static double Min(params double[] args)
-        {
-            return args.Min();
-        }
-        public static decimal Min(params decimal[] args)
-        {
-            return args.Min();
-        }
-        public static float Min(params float[] args)
-        {
-            return args.Min();
-        }
-        public static long Min(params long[] args)
-        {
-            return args.Min();
-        }
-        public static int Min(params int[] args)
-        {
-            return args.Min();
-        }
-        public static double? Min(params double?[] args)
-        {
-            return args.Min();
-        }
-        public static decimal? Min(params decimal?[] args)
-        {
-            return args.Min();
-        }
-        public static float? Min(params float?[] args)
-        {
-            return args.Min();
-        }
-        public static long? Min(params long?[] args)
-        {
-            return args.Min();
-        }
-        public static int? Min(params int?[] args)
-        {
-            return args.Min();
-        }
-
-        #endregion
-
-        #region Average
-
-        public static double Average(params double[] args)
-        {
-            return args.Average();
-        }
-        public static decimal Average(params decimal[] args)
-        {
-            return args.Average();
-        }
-        public static float Average(params float[] args)
-        {
-            return args.Average();
-        }
-        public static double? Average(params double?[] args)
-        {
-            return args.Average();
-        }
-        public static decimal? Average(params decimal?[] args)
-        {
-            return args.Average();
-        }
-        public static float? Average(params float?[] args)
-        {
-            return args.Average();
-        }
-
-
-        #endregion
-
-        #endregion
 
     }
 }
