@@ -106,7 +106,7 @@ namespace DEM.Net.Core
         {
             return $"Lat/Lon: {Latitude} / {Longitude} "
                 + (Elevation.HasValue ? $", Elevation: {Elevation.Value}" : "")
-                + $", DistanceFromOrigin: {DistanceFromOriginMeters}";
+                + (DistanceFromOriginMeters != default(double) ? $", DistanceFromOrigin: {DistanceFromOriginMeters}" : "");
         }
     }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
 
+#pragma warning disable 1591
 namespace AssetGenerator
 {
     public class Data : IDisposable
@@ -123,3 +124,5 @@ namespace AssetGenerator
         }
     }
 }
+
+#pragma warning restore 1591

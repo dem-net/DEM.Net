@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#pragma warning disable 1591
+using System.Collections.Generic;
 
 namespace AssetGenerator.Runtime
 {
@@ -7,3 +8,5 @@ namespace AssetGenerator.Runtime
         public IEnumerable<SkinJoint> SkinJoints = null;
     }
 }
+
+#pragma warning restore 1591

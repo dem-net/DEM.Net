@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
+#pragma warning disable 1591
 
 namespace AssetGenerator.Runtime
 {
@@ -112,3 +113,4 @@ namespace AssetGenerator.Runtime
 
     }
 }
+#pragma warning restore 1591

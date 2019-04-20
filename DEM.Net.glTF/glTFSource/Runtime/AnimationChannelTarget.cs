@@ -1,4 +1,5 @@
-﻿namespace AssetGenerator.Runtime
+﻿#pragma warning disable 1591
+namespace AssetGenerator.Runtime
 {
     public class AnimationChannelTarget
     {
@@ -9,3 +10,5 @@
         public PathEnum Path { get; set; }
     }
 }
+
+#pragma warning restore 1591

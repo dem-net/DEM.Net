@@ -6,6 +6,8 @@
 // in accordance with the terms of the license agreement accompanying it.
 // ==========================================================================
 
+#pragma warning disable 1591
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -675,3 +677,5 @@ namespace DEM.Net.Core.Gpx
         Transparent = 0x00ffffff
     }
 }
+
+#pragma warning restore 1591

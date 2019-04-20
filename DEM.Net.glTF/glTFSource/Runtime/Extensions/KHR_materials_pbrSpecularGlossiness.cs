@@ -2,6 +2,9 @@
 
 namespace AssetGenerator.Runtime.Extensions
 {
+    /// <summary>
+    /// KHR_materials_pbrSpecularGlossiness
+    /// </summary>
     public class KHR_materials_pbrSpecularGlossiness : Extension
     {
         /// <summary>

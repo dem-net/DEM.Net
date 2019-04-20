@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-
+#pragma warning disable 1591
 namespace AssetGenerator.Runtime
 {
     public abstract class AnimationSampler
@@ -60,3 +60,5 @@ namespace AssetGenerator.Runtime
         }
     }
 }
+
+#pragma warning restore 1591

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+#pragma warning disable 1591
 
 namespace AssetGenerator.Runtime.ExtensionMethods
 {
@@ -41,3 +42,4 @@ namespace AssetGenerator.Runtime.ExtensionMethods
         }
     }
 }
+#pragma warning restore 1591
