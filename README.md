@@ -8,6 +8,8 @@ The goal is to provide on the fly DEM querying from GeoJSON or WKT geometries :
 - No big RAM cache
 - Fast and optimized data retrieval as precise as possible
 
+See samples [here](https://github.com/dem-net/Samples)
+
  ![3D model](valgo.jpg?raw=true "3D model")
 
 # Supported formats and datasets
