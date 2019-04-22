@@ -1,12 +1,13 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/github/xfischer/DEM.Net)](https://ci.appveyor.com/project/xfischer/dem-net)
 # DEM.Net 
-Digital Elevation Model library in C#. Raster (GeoTiff, HGT) file parsing and DEM querying.
-The goal is to provide on the fly DEM querying from GeoJSON or WKT geometries :
+Digital Elevation Model library in C#
+- Elevation queries (point, polylines, heightmap, GPX)
+- 3D export (glTF, STL)
+- Imagery (MapBox, OSM, Stamen) : textured 3D models and normal maps
 - No setup
-- Automatic DEM file download
-- No big RAM cache
-- Fast and optimized data retrieval as precise as possible
+- Automatic DEM file download from openTopography.org
+- Fast and optimized queries
 
  ![3D model](valgo.jpg?raw=true "3D model")
 
