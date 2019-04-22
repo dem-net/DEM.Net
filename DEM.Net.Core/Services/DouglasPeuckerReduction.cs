@@ -42,10 +42,10 @@ namespace DEM.Net.Core
 		/// <param name="Points">The points.</param>
 		/// <param name="Tolerance">The tolerance.</param>
 		/// <returns></returns>
-		public static List<GeoPoint> DouglasPeuckerReduction(List<GeoPoint> Points, double Tolerance)
+		public static List<GeoPoint> DouglasPeuckerReduction(IReadOnlyList<GeoPoint> Points, double Tolerance)
 		{
 			if (Points == null || Points.Count < 3)
-				return Points;
+				return Points.ToList();
 
 			int firstPoint = 0;
 			int lastPoint = Points.Count - 1;
@@ -81,7 +81,7 @@ namespace DEM.Net.Core
 		/// <param name="lastPoint">The last point.</param>
 		/// <param name="tolerance">The tolerance.</param>
 		/// <param name="pointIndexsToKeep">The point indexs to keep.</param>
-		private static void DouglasPeuckerReduction(List<GeoPoint> points, int firstPoint, int lastPoint, double tolerance, ref List<int> pointIndexsToKeep)
+		private static void DouglasPeuckerReduction(IReadOnlyList<GeoPoint> points, int firstPoint, int lastPoint, double tolerance, ref List<int> pointIndexsToKeep)
 		{
 			double maxDistance = 0;
 			int indexFarthest = 0;
