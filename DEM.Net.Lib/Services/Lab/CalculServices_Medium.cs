@@ -101,16 +101,12 @@ namespace DEM.Net.Lib.Services.Lab
                 //4-On injecte dans le bean topologie
                 v_topologieFacette = new BeanTopologieFacettes(p_points);
               
-                //v_topologieFacette.p11_pointsFacettesByIdPoint = v_pointsFrontieres.ToDictionary(c => c.p00_id, c => c);
-                //v_topologieFacette.p11_pointsFacettesByIdPoint.Add(v_meilleurPoint.p00_id, v_meilleurPoint);
                 v_topologieFacette.PointsFacAjouter(v_pointsFrontieres);
                 v_topologieFacette.PointFacAjouter(v_meilleurPoint);
                 //
                 List<BeanArc_internal> v_arcsFacette = v_facettesInitiales.SelectMany(c => c.p02_arcs).Distinct().ToList();
-                //v_topologieFacette.p12_arcsByCode = v_arcsFacette.ToDictionary(c => c.p01_hcodeArc, c => c);
                 v_topologieFacette.ArcsAjouter(v_arcsFacette);
 
-                //v_topologieFacette.p13_facettesById = v_facettesInitiales.ToDictionary(c => c.p00_idFacette, c => c);
                 v_topologieFacette.FacettesAjouter(v_facettesInitiales);
             }
             catch (Exception)
@@ -166,7 +162,6 @@ namespace DEM.Net.Lib.Services.Lab
                     TraitementDeLaFacetteMaxiByRef(ref p_topologieFacette, p_topologieFacette.p21_facetteAvecEcartAbsoluMax, p_parametresDuTin);
                 }
                 while (p_topologieFacette.p21_facetteAvecEcartAbsoluMax!=null);
-                //while (p_topologieFacette.p21_facetteAvecEcartAbsoluMax.p24_facetteEcartInf != null) ;
                 //Pour contrôle:
                 //List<BeanFacette_internal> v_facPb= p_topologieFacette.p13_facettesById.Values.Where(c => c.p21_plusGrandEcartAbsolu > p_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum).ToList();
             }
@@ -452,29 +447,60 @@ namespace DEM.Net.Lib.Services.Lab
             {
                 //On traite la "première facette" (c'est à dire celle avec l'écart maxi)
                 //A l'intérieur du tétraèdre les modifications ne sont pas possibles (tous les couples de facettes sont concaves)
-                //Maintenant...on doit tester le contact de chaque facette du tétraèdre avec les facettes extérieures, si elles existent.
-                //Cela doit se faire autour des arètes extérieures
-                //Certains couples seront modifiés, d'autres pas (mais ils auront été qd même contrôlés et validés).
-                //Lorsqu'il y a modif du couple (bascule des triangles du quadrilatère), les couples périphériques deviennent, eux-mêmes, candidats à la bascule.
-
                 BeanResultatConversions_internal v_rapportResultTetraedre;
                 v_rapportResultTetraedre = GetTetraedreByFacette(ref p_topologieFacette, p_facetteATraiter.p00_idFacette, p_facetteATraiter.p22_pointPlusGrandEcart);
                 List<int> v_idNouvellesFacettesBrutes = new List<int>(v_rapportResultTetraedre.p02_newFacettes.Select(c => c.p00_idFacette));
 
-                //Y-a-t-il des facettes 'plates' ET possédant un arc 'frontiere'?
-                if(v_rapportResultTetraedre.p02_newFacettes.Where(c=>c.p03_estVerticale_vf).Count()>0)
+
+                //1-On teste si le tétraèdre contient des facettes 'plates' (=ayant moins de 2 dimensions dans le plan xy)
+                //En pratique, il en contient, au plus, une si le triangle original n'était pas lui-même 'plat'.
+                //On considère seulement les cas pour lesquels de telles 'facettes ' possédent un arc 'frontiere' (extérieur!) ?
+                //=>On peut/doit les supprimer toutes de suite.
+                //(Les éventuelles 'plates non frontières' seront traités systématiquement à l'étape suivante.
+                if (v_rapportResultTetraedre.p02_newFacettes.Where(c => c.p03_estVerticale_vf).Count() > 0)
                 {
                     BeanFacette_internal v_facettePlate;
-                    v_facettePlate=v_rapportResultTetraedre.p02_newFacettes.Where(c => c.p03_estVerticale_vf).First();
-                    //(Il peut y avoir, au plus, 1 facette plate si la facette d'origine n'est pas elle-même plate
-                    //dans la mesure le 'point central' n'est pas associé à un des points de facettes (et donc les 
-                    //A TERMINER
+                    v_facettePlate = v_rapportResultTetraedre.p02_newFacettes.Where(c => c.p03_estVerticale_vf).First();
+                    //
+                    if (v_facettePlate.p02_arcs.Where(c => c.p20_statutArc == enumStatutArc.arcExterne).Count() > 0)
+                    {
+                        List<BeanArc_internal> v_arcsNonExternes = v_facettePlate.p02_arcs.Where(c => c.p20_statutArc != enumStatutArc.arcExterne).ToList();
+                        v_arcsNonExternes[0].p20_statutArc = enumStatutArc.arcExterne;
+                        if (v_arcsNonExternes[0].p21_facetteGauche.p00_idFacette == v_facettePlate.p00_idFacette)
+                        {
+                            v_arcsNonExternes[0].p21_facetteGauche = null;
+                        }
+                        else
+                        {
+                            v_arcsNonExternes[0].p22_facetteDroite = null;
+                        }
+                        //
+                        v_arcsNonExternes[1].p20_statutArc = enumStatutArc.arcExterne;
+                        if (v_arcsNonExternes[1].p21_facetteGauche.p00_idFacette == v_facettePlate.p00_idFacette)
+                        {
+                            v_arcsNonExternes[1].p21_facetteGauche = null;
+                        }
+                        else
+                        {
+                            v_arcsNonExternes[1].p22_facetteDroite = null;
+                        }
+                        //
+                        BeanArc_internal v_arcASupprimer = v_facettePlate.p02_arcs.Where(c => c.p20_statutArc == enumStatutArc.arcExterne).ToList().First();
+                        p_topologieFacette.ArcSupprimer(v_arcASupprimer);
+                        p_topologieFacette.FacetteSupprimer(v_facettePlate);
+                    }
                 }
 
 
+                //Maintenant...on doit tester le contact de chaque facette du tétraèdre avec les facettes extérieures, si elles existent.
+                //Cela doit se faire autour des arètes extérieures
+                //Certains couples seront modifiés, d'autres pas (mais ils auront été qd même contrôlés et validés).
+                //Lorsqu'il y a modif du couple (bascule des triangles du quadrilatère), 
+                //les couples périphériques deviennent, eux-mêmes, candidats à la bascule.
                 //On remonte les arcs du bord du tétraèdre et non situés sur la bordure extérieure
                 List<string> v_hcodeArcsATester = v_rapportResultTetraedre.p03_arcsCandidatsOut.Select(c => c.p01_hcodeArc).ToList();
                 HashSet<string> v_HSCodesArcsATester = new HashSet<string>(v_hcodeArcsATester);
+
                 //=>Pour chacun de ces arcs, on effectue le contrôle de Delaunay ET s'il y a lieu, on effectue la bascule
                 BeanResultatConversions_internal v_rapportResultBascule;
                 string v_codeArcCandidat;
@@ -488,11 +514,16 @@ namespace DEM.Net.Lib.Services.Lab
                         {
                             foreach (BeanArc_internal v_newArcCandidat in v_rapportResultBascule.p03_arcsCandidatsOut)
                             {
-                                if (!v_HSCodesArcsATester.Contains(v_codeArcCandidat))
+                                //FAU correction 22/04/2019
+                                if(v_newArcCandidat.p20_statutArc!=enumStatutArc.arcExterne)
                                 {
-                                    v_HSCodesArcsATester.Add(v_codeArcCandidat);
-                                    v_hcodeArcsATester.Add(v_codeArcCandidat);
-                                }
+                                    v_codeArcCandidat = v_newArcCandidat.p01_hcodeArc;
+                                    if (!v_HSCodesArcsATester.Contains(v_codeArcCandidat))
+                                    {
+                                        v_HSCodesArcsATester.Add(v_codeArcCandidat);
+                                        v_hcodeArcsATester.Add(v_codeArcCandidat);
+                                    }
+                                }                            
                             }
                             v_idNouvellesFacettesBrutes.AddRange(v_rapportResultBascule.p02_newFacettes.Select(c => c.p00_idFacette));
                         }
@@ -577,6 +608,7 @@ namespace DEM.Net.Lib.Services.Lab
                 BeanArc_internal v_arcMontant;
                 BeanArc_internal v_arcBase;
                 List<BeanArc_internal> v_arcCandidatBase;
+                List<BeanFacette_internal> v_facettesNonPlates = new List<BeanFacette_internal>();
                 for (int i = 0; i < 3; i++)
                 {
                     v_point2 = v_pointsFacetteSource[v_indicesPoints[i]];
@@ -633,13 +665,38 @@ namespace DEM.Net.Lib.Services.Lab
                     v_facette.p03_estVerticale_vf= IsTriangleEstPlatDansLePlanXY(v_point2, v_point3, p_pointCentral);
                     //SI la facette est 'verticale' (cas courant lorsque la grille est régulière), la facette n'est pas exploitable.
                     //=>Elle devra subir un traitement spécifique dans le cadre des 'bascules'
+                    if(!v_facette.p03_estVerticale_vf)
+                    {
+                        v_facettesNonPlates.Add(v_facette);
+                    }
 
-                    //Récupération des points inclus:
-                    RattachePointsToFacette(ref v_pointsInclus, ref v_facette);
+                    ////Récupération des points inclus:
+                    //RattachePointsToFacette(ref v_pointsInclus, ref v_facette);
                     //
                     p_topologieCible.FacetteAjouter(v_facette);
 
                     v_beanRapportOut.p02_newFacettes.Add(v_facette);
+                }
+                //On réaffecte les points sur les facettes 'non plates'
+                int v_nbreFacettesNonPlates = v_facettesNonPlates.Count;
+                if (v_nbreFacettesNonPlates != 2 && v_nbreFacettesNonPlates != 3)
+                {
+                    throw new Exception("Nbre de facettes 'non plates' (" + v_nbreFacettesNonPlates + " incorrect.");
+                }
+                if (v_nbreFacettesNonPlates == 2)
+                {
+                    BeanFacette_internal v_fac1 = v_facettesNonPlates[0];
+                    BeanFacette_internal v_fac2 = v_facettesNonPlates[1];
+                    RattachePointsToCoupleDeFacettes(ref v_pointsInclus, ref v_fac1, ref v_fac2);
+                }
+                if (v_nbreFacettesNonPlates == 3)
+                {
+                    BeanFacette_internal v_facT;
+                    foreach (BeanFacette_internal v_fac in v_facettesNonPlates)
+                    {
+                        v_facT = v_fac;
+                        RattachePointsToFacette(ref v_pointsInclus, ref v_facT);
+                    }
                 }
 
                 //On supprime la facette d'origine
@@ -810,7 +867,7 @@ namespace DEM.Net.Lib.Services.Lab
                 v_newFacetteHaute.p02_arcs.Add(v_arcMontant);
                 v_beanRapportOut.p03_arcsCandidatsOut.Add(v_arcMontant);
 
-                //L'arc 'decendant' est censé partir du  pt de début de l''arc à tester' et redescende sur le point droit du nouvel arc
+                //L'arc 'descendant' est censé partir du  pt de début de l''arc à tester' et redescende sur le point droit du nouvel arc
                 //Toutefois:
                 //-cet arc existe déjà (il appartient à la facette droite)
                 //-son sens peut être inverse
@@ -1243,6 +1300,8 @@ namespace DEM.Net.Lib.Services.Lab
                 BeanFacette_internal v_facette;
                 BeanArc_internal v_arcDescendant;
                 BeanArc_internal v_arcMontant;
+                List<BeanFacette_internal> v_facettesNonPlates = new List<BeanFacette_internal>();
+                List<BeanFacette_internal> v_facettesPlates = new List<BeanFacette_internal>();
                 for (int v_indiceArcBase = 0; v_indiceArcBase < v_arcsBases.Count; v_indiceArcBase++)
                 {
                     v_facette = new BeanFacette_internal();
@@ -1269,12 +1328,60 @@ namespace DEM.Net.Lib.Services.Lab
                     v_facette.p02_arcs.Add(v_arcsBases[v_indiceArcBase]);
                     v_facette.p02_arcs.Add(v_arcMontant);
 
+                    //On teste si la facette est 'verticale' (en fait si les points sont alignés dans le plan XY)
+                    v_facette.p03_estVerticale_vf = IsTriangleEstPlatDansLePlanXY(v_facette.p01_pointsDeFacette[0], v_facette.p01_pointsDeFacette[1], v_facette.p01_pointsDeFacette[2]);
+                    //SI la facette est 'verticale' (cas courant lorsque la grille est régulière), la facette n'est pas exploitable.
+                    //=>Elle devra subir un traitement spécifique dans le cadre des 'bascules'
+                    if (!v_facette.p03_estVerticale_vf)
+                    {
+                        v_facettesNonPlates.Add(v_facette);
+                        v_facettesOut.Add(v_facette);
+                    }
+                    else
+                    {
+                
+                        List<BeanArc_internal> v_arcsNonExternes = v_facette.p02_arcs.Where(c => c.p20_statutArc != enumStatutArc.arcExterne).ToList();
+                        v_arcsNonExternes[0].p20_statutArc = enumStatutArc.arcExterne;
+                        if (v_arcsNonExternes[0].p21_facetteGauche.p00_idFacette == v_facette.p00_idFacette)
+                        {
+                            v_arcsNonExternes[0].p21_facetteGauche = null;
+                        }
+                        else
+                        {
+                            v_arcsNonExternes[0].p22_facetteDroite = null;
+                        }
+                        //
+                        v_arcsNonExternes[1].p20_statutArc = enumStatutArc.arcExterne;
+                        if (v_arcsNonExternes[1].p21_facetteGauche.p00_idFacette == v_facette.p00_idFacette)
+                        {
+                            v_arcsNonExternes[1].p21_facetteGauche = null;
+                        }
+                        else
+                        {
+                            v_arcsNonExternes[1].p22_facetteDroite = null;
+                        }
+                        //
+                        BeanArc_internal v_arcASupprimer = v_facette.p02_arcs.Where(c => c.p20_statutArc == enumStatutArc.arcExterne).ToList().First();
+
+                    }
+
                     //Récupération des points inclus:
-                    RattachePointsToFacette(ref p_tousPointsInclus, ref v_facette);
+                    //RattachePointsToFacette(ref p_tousPointsInclus, ref v_facette);
 
                     //Injection de la facette dans la liste en retour
-                    v_facettesOut.Add(v_facette);
+                    //v_facettesOut.Add(v_facette);
                 }
+                //On réaffecte les points sur les facettes 'non plates'
+                int v_nbreFacettesNonPlates = v_facettesNonPlates.Count;
+               
+                    BeanFacette_internal v_facT;
+                    foreach (BeanFacette_internal v_fac in v_facettesNonPlates)
+                    {
+                        v_facT = v_fac;
+                        RattachePointsToFacette(ref p_tousPointsInclus, ref v_facT);
+                    }
+            
+
                 //On supprime l'arc supplémentaire rajouté
                 v_arcsRayonnants.RemoveAt(v_arcsRayonnants.Count - 1);
 
@@ -1332,8 +1439,6 @@ namespace DEM.Net.Lib.Services.Lab
                     return;
                 }
                     
-
-
                 v_idPointsUtiles = new HashSet<int>(v_coordRef.Where(c => c.Value[0] > 0 && c.Value[1] >= 0).Select(c => c.Key).ToList());
                 v_pointsToTest = v_pointsToTest.Where(c => v_idPointsUtiles.Contains(c.p00_id)).ToList();
                 //Puis...
@@ -1362,6 +1467,107 @@ namespace DEM.Net.Lib.Services.Lab
                 throw;
             }
         }
+
+        private void RattachePointsToCoupleDeFacettes(ref List<BeanPoint_internal> p_tousPoints, ref BeanFacette_internal p_facette1, ref BeanFacette_internal p_facette2)
+        {
+            try
+            {
+                Dictionary<int, double[]> v_coordPointsInclus = p_tousPoints.ToDictionary(c => c.p00_id, c => c.p10_coord);
+                //
+                BeanArc_internal v_arcInterfacade = GetArcCommunEntreFacettes(p_facette1, p_facette2);
+                //On identifie le 3ème point de la première façade...
+                HashSet<string> v_pointsDeLArc = new HashSet<string>();
+                v_pointsDeLArc.Add(v_arcInterfacade.p11_pointDbt.p01_hCodeGeog);
+                v_pointsDeLArc.Add(v_arcInterfacade.p12_pointFin.p01_hCodeGeog);
+                BeanPoint_internal v_3emePointFacette1 = p_facette1.p01_pointsDeFacette.Where(c => !v_pointsDeLArc.Contains(c.p01_hCodeGeog)).First();
+                BeanPoint_internal v_3emePointFacette2 = p_facette2.p01_pointsDeFacette.Where(c => !v_pointsDeLArc.Contains(c.p01_hCodeGeog)).First();
+               
+                //...Et on va l'inclure dans la liste des points 
+                //Son positionnement (au-dessus ou au-dessous) par rapport à l'arc va permettre de savoir où affecter les pts 'au-dessus' et 'ceux au-dessous'
+                int v_pseudoId3emePoint = -1;
+                if (v_coordPointsInclus.ContainsKey(-1))
+                {
+                    v_pseudoId3emePoint = v_coordPointsInclus.Min(c => c.Key) - 1;
+                }
+                v_coordPointsInclus.Add(v_pseudoId3emePoint, v_3emePointFacette1.p10_coord);
+
+                //On calcule les coord des points par rapport à l'arc:
+                Dictionary<int, double[]> v_coordPointsInclusParRapportAuNouvelArc;
+                v_coordPointsInclusParRapportAuNouvelArc = GetCoordonneesDansNewReferentiel2D(v_coordPointsInclus, v_arcInterfacade.p11_pointDbt.p10_coord, v_arcInterfacade.p12_pointFin.p10_coord);
+               
+                //On identifie les id des points 'au-dessus'
+                List<int> v_idPointsAuDessus;
+                v_idPointsAuDessus=v_coordPointsInclusParRapportAuNouvelArc.Where(c => c.Value[1] >= 0 && c.Key != v_pseudoId3emePoint).Select(c => c.Key).ToList();
+                HashSet<int> v_hsIdPointAuDessus = new HashSet<int>(v_idPointsAuDessus);
+
+                //On partitionne en 2 listes
+                List<BeanPoint_internal> v_listeDessus = new List<BeanPoint_internal>();
+                List<BeanPoint_internal> v_listeDessous = new List<BeanPoint_internal>();
+                //
+                BeanPoint_internal v_ptModif;
+                HashSet<string> v_pointsFacettes = new HashSet<string>();
+                v_pointsFacettes.Add(v_arcInterfacade.p11_pointDbt.p01_hCodeGeog);
+                v_pointsFacettes.Add(v_arcInterfacade.p12_pointFin.p01_hCodeGeog);
+                v_pointsFacettes.Add(v_3emePointFacette1.p01_hCodeGeog);
+                v_pointsFacettes.Add(v_3emePointFacette2.p01_hCodeGeog);
+
+                foreach (BeanPoint_internal v_point in p_tousPoints)
+                {
+                    if(v_pointsFacettes.Contains(v_point.p01_hCodeGeog))
+                   {
+                        continue;
+                    }
+                    v_ptModif = v_point;
+                    v_ptModif.p22_estPointInclus_vf = true;
+                    if(v_hsIdPointAuDessus.Contains(v_ptModif.p00_id))
+                    {
+                        v_listeDessus.Add(v_ptModif);
+                    }
+                    else
+                    {
+                        v_listeDessous.Add(v_ptModif);
+                    }
+                }
+                //=>On affecte l'une et l'autre liste
+                if(v_coordPointsInclusParRapportAuNouvelArc[v_pseudoId3emePoint][1]>=0)
+                {
+                    p_facette1.p10_pointsInclus = v_listeDessus;
+                    p_facette2.p10_pointsInclus = v_listeDessous;
+                }
+                else
+                {
+                    p_facette1.p10_pointsInclus = v_listeDessous;
+                    p_facette2.p10_pointsInclus = v_listeDessus;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        private BeanArc_internal GetArcCommunEntreFacettes(BeanFacette_internal p_facette1, BeanFacette_internal p_facette2)
+        {
+            BeanArc_internal v_arcOut = null;
+            try
+            {
+                HashSet<string> v_arcsFacettes2 = new HashSet<string>(p_facette2.p02_arcs.Select(c => c.p01_hcodeArc).ToList());
+                foreach(BeanArc_internal v_arc in p_facette1.p02_arcs)
+                {
+                    if(v_arcsFacettes2.Contains(v_arc.p01_hcodeArc))
+                    {
+                        v_arcOut = v_arc;
+                        break;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return v_arcOut;
+        }
+
 
         private List<BeanPoint_internal> GetPointsInclusDansLeQuadrantDroitHautXY(IEnumerable<BeanPoint_internal> p_pointsAReferencer, double[] p_coordPointOrigine, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord,bool p_strictementAuDessus_vf, bool p_strictementADroite_vf)
         {
@@ -1512,7 +1718,33 @@ namespace DEM.Net.Lib.Services.Lab
             }
             catch (Exception)
             {
-
+                throw;
+            }
+            return v_coords;
+        }
+        public Dictionary<int, double[]> GetCoordonneesDansNewReferentiel2D(Dictionary<int,double[]> p_coordPointsAReferencer, double[] p_coordPointOrigine, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord_orthoSiNull = null)
+        {
+            Dictionary<int, double[]> v_coords = new Dictionary<int, double[]>();
+            try
+            {
+                ICalculServices_Low v_calcul = new CalculServices_Low();
+                bool v_normaliser_vf = true;
+                double[,] v_matriceDeConversion;
+                v_matriceDeConversion = v_calcul.GetMatriceChangementDeRepereXY(p_coordPointOrigine, p_coordPoint2Abs, p_coordPoint3Ord_orthoSiNull, v_normaliser_vf);
+                //
+                if (v_matriceDeConversion == null)
+                {
+                    return null;
+                }
+                double[] v_coord;
+                foreach (KeyValuePair<int, double[]> v_point in p_coordPointsAReferencer)
+                {
+                    v_coord = v_calcul.GetCoordDansNewRepereXY(v_matriceDeConversion, p_coordPointOrigine, v_point.Value);
+                    v_coords.Add(v_point.Key, v_coord);
+                }
+            }
+            catch (Exception)
+            {
                 throw;
             }
             return v_coords;

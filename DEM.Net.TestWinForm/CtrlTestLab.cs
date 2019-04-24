@@ -176,7 +176,7 @@ namespace DEM.Net.TestWinForm
             //
             _topolFacettes = FLabServices.createCalculMedium().GetInitialisationTin(_dataPointsTests, _paramTin);
             FLabServices.createCalculMedium().AugmenteDetailsTinByRef(ref _topolFacettes, _paramTin);
-
+            //
             bool v_visuSpatialTrace_vf = false;
             if (v_visuSpatialTrace_vf)
             {
@@ -195,14 +195,30 @@ namespace DEM.Net.TestWinForm
 
         private void btn_genererPointsReels_Click(object sender, EventArgs e)
         {
-            string v_bbox;
-            //string v_sainteVictoire= "POLYGON((5.523314005345696 43.576096090257955, 5.722441202611321 43.576096090257955, 5.722441202611321 43.46456490270913, 5.523314005345696 43.46456490270913, 5.523314005345696 43.576096090257955))";
-            //string v_eyger= "Polygon((8.12951188622090193 46.634254667789655, 7.8854960299327308 46.63327193616965616, 7.89909222133881617 46.4319282954101098, 8.13595218741325965 46.43143509785498679, 8.12951188622090193 46.634254667789655))";
-            //string v_gorges="Polygon ((6.14901771150602894 43.8582708438193265, 6.30590241369230409 43.8575166880815317, 6.32080646040000005 43.74636314919661828, 6.14561854295865828 43.74579647280887684, 6.14901771150602894 43.8582708438193265))";
-            v_bbox = tb_wkt.Text;
-            //v_bbox = v_gorges;
+            string v_bbox="";
+            string v_sainteVictoire= "POLYGON((5.523314005345696 43.576096090257955, 5.722441202611321 43.576096090257955, 5.722441202611321 43.46456490270913, 5.523314005345696 43.46456490270913, 5.523314005345696 43.576096090257955))";
+            string v_eyger= "Polygon((8.12951188622090193 46.634254667789655, 7.8854960299327308 46.63327193616965616, 7.89909222133881617 46.4319282954101098, 8.13595218741325965 46.43143509785498679, 8.12951188622090193 46.634254667789655))";
+            string v_gorges="Polygon ((6.14901771150602894 43.8582708438193265, 6.30590241369230409 43.8575166880815317, 6.32080646040000005 43.74636314919661828, 6.14561854295865828 43.74579647280887684, 6.14901771150602894 43.8582708438193265))";
+           
+            if(rb_example_SteVictoire.Checked)
+            {
+                v_bbox = v_sainteVictoire;
+            }
+            if (rb_example_eyger.Checked)
+            {
+                v_bbox = v_eyger;
+            }
+            if (rb_example_Verdon.Checked)
+            {
+                v_bbox = v_gorges;
+            }
+            if (rb_example_WKT.Checked)
+            {
+                v_bbox = tb_wkt.Text;
+            }
 
-             DEMDataSet dataSet = null;
+
+            DEMDataSet dataSet = null;
             if (rdSRTMGL3.Checked)
             {
                 dataSet = DEMDataSet.SRTM_GL3;

@@ -18,7 +18,7 @@ namespace DEM.Net.Lib.Services.Lab
         
         
         //Services ajout suppression: 
-        //!!ATTENTION: tous les services de propagation et de contrôle ne sont pas impplémentés!!
+        //!!ATTENTION: tous les services de propagation et de contrôle ne sont pas implémentés!!
         public void ArcsAjouter(IEnumerable<BeanArc_internal> p_arcsAAjouter)
         {
             foreach(BeanArc_internal v_arc in p_arcsAAjouter)
