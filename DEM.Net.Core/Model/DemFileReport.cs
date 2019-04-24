@@ -31,15 +31,51 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core
 {
+    /// <summary>
+    /// Contains information about a DEM dataset file
+    /// </summary>
     public class DemFileReport
     {
-        bool isZipped { get; set; }
-        public string URL { get; set; }
-        public string LocalName { get; set; }
-        public string LocalZipName { get; set; }
 
-        public bool IsExistingLocally { get; set; }
+        /// <summary>
+        /// Gets the remote URL of the file
+        /// </summary>
+        /// <value>
+        /// Full URL as specified in the VRT file
+        /// </value>
+        public string URL { get; internal set; }
+
+
+        /// <summary>
+        /// Gets the local path of the file after download
+        /// </summary>
+        /// <value>
+        /// The name of the local.
+        /// </value>
+        public string LocalName { get; internal set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this file is existing locally.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is existing locally; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsExistingLocally { get; internal set; }
+
+        /// <summary>
+        /// Gets the source in VRT file corresponding to this file 
+        /// </summary>
+        /// <value>
+        /// <see cref="GDALSource"/> object
+        /// </value>
         public GDALSource Source { get; internal set; }
-		public bool IsMetadataGenerated { get; internal set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this file has metadata generated.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this file has metadata generated; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsMetadataGenerated { get; internal set; }
 	}
 }
