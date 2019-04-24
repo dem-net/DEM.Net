@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace DEM.Net.Core
 {
     /// <summary>
-    /// GpxImport is a thin wrapper above px by dlg.krakow.pl
+    /// GpxImport is a thin wrapper above gpx by dlg.krakow.pl
     /// allowing conversion from gpx to DEM.Net types (GeoPoints)
     /// </summary>
     public static class GpxImport
