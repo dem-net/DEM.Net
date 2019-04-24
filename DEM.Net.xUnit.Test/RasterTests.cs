@@ -1,21 +1,21 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
-using DEM.Net.Lib;
+using DEM.Net.Core;
 using Xunit;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DEM.Net.Test
 {
-    public class RasterTests
+    public class RasterTests : IClassFixture<DemNetFixture>
     {
         IRasterService _rasterService;
         IElevationService _elevationService;
 
-        public RasterTests()
+        public RasterTests(DemNetFixture fixture)
         {
-            _rasterService = new RasterService("."); // local dir
-            _elevationService = new ElevationService(_rasterService);
-
+            _rasterService = fixture.ServiceProvider.GetService<IRasterService>();
+            _elevationService = fixture.ServiceProvider.GetService<IElevationService>();
         }
 
         [Fact]
@@ -35,7 +35,8 @@ namespace DEM.Net.Test
 
             Assert.True(File.Exists(fileName), "Unzip failed.");
 
-
+            // Pass the full file name
+            fileName = Path.GetFullPath(fileName);
             using (IRasterFile raster = _rasterService.OpenFile(fileName, DEMFileFormat.GEOTIFF))
             {
                 FileMetadata metaData = raster.ParseMetaData();
@@ -66,7 +67,8 @@ namespace DEM.Net.Test
 
             Assert.True(File.Exists(fileName), "Unzip failed.");
 
-
+            // Pass the full file name
+            fileName = Path.GetFullPath(fileName);
             using (IRasterFile raster = _rasterService.OpenFile(fileName, DEMFileFormat.SRTM_HGT))
             {
                 FileMetadata metaData = raster.ParseMetaData();
@@ -96,7 +98,8 @@ namespace DEM.Net.Test
 
             Assert.True(File.Exists(fileName), "Unzip failed.");
 
-
+            // Pass the full file name
+            fileName = Path.GetFullPath(fileName);
             using (IRasterFile raster = _rasterService.OpenFile(fileName, DEMFileFormat.SRTM_HGT))
             {
                 FileMetadata metaData = raster.ParseMetaData();

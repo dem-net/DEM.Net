@@ -1,4 +1,5 @@
-﻿namespace AssetGenerator.Runtime
+﻿#pragma warning disable 1591
+namespace AssetGenerator.Runtime
 {
     public class JointWeight
     {
@@ -6,3 +7,5 @@
         public float Weight = 0.0f;
     }
 }
+
+#pragma warning restore 1591

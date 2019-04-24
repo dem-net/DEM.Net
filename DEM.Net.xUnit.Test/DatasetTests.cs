@@ -1,30 +1,30 @@
-﻿using DEM.Net.Lib;
+﻿using DEM.Net.Core;
 using DEM.Net.xUnit.Test;
 using System;
 using System.IO;
 using System.Linq;
 using Xunit;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DEM.Net.Test
 {
-    public class DatasetTests
+    public class DatasetTests : IClassFixture<DemNetFixture>
     {
-        IRasterService _rasterService;
-        IElevationService _elevationService;
+        readonly IRasterService _rasterService;
+        readonly IElevationService _elevationService;
 
-        
-        public DatasetTests()
+
+        public DatasetTests(DemNetFixture fixture)
         {
-            _rasterService = new RasterService(".");
-            _elevationService = new ElevationService(_rasterService);
-
+            _rasterService = fixture.ServiceProvider.GetService<IRasterService>();
+            _elevationService = fixture.ServiceProvider.GetService<IElevationService>();
         }
 
 
         [Fact, TestPriority(1)]
         public void DatasetTest_SRTM_GL1()
         {
-           
+
             DEMDataSet dataset = DEMDataSet.SRTM_GL1;
             GDALVRTFileService vrtService = new GDALVRTFileService(_rasterService.GetLocalDEMPath(dataset), dataset);
             vrtService.Setup(false);
@@ -69,8 +69,7 @@ namespace DEM.Net.Test
             var report = _rasterService.GenerateReportForLocation(dataset, lat, lon);
 
             Assert.NotNull(report);
-            Assert.True(report.Count > 0);
-            Assert.True(report.Values.First().IsExistingLocally);
+            Assert.True(report.IsExistingLocally);
         }
 
         [Fact]
@@ -107,10 +106,8 @@ namespace DEM.Net.Test
 
             Assert.NotNull(report_SRTM_GL3);
             Assert.NotNull(report_AW3D30);
-            Assert.True(report_SRTM_GL3.Count == 1);
-            Assert.True(report_AW3D30.Count == 1);
-            Assert.NotEqual(report_SRTM_GL3.Values.First().LocalName
-                                , report_AW3D30.Values.First().LocalName);
+            Assert.NotEqual(report_SRTM_GL3.LocalName
+                                , report_AW3D30.LocalName);
         }
 
 

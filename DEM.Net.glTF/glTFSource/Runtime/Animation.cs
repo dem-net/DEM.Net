@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+#pragma warning disable 1591
 
 namespace AssetGenerator.Runtime
 {
@@ -9,3 +10,5 @@ namespace AssetGenerator.Runtime
         public IEnumerable<AnimationChannel> Channels { get; set; }
     }
 }
+
+#pragma warning restore 1591

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using DEM.Net.Lib.Services.Lab;
+using DEM.Net.Core.Services.Lab;
 
 namespace DEM.Net.TestWinForm
 {

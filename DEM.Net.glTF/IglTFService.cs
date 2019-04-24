@@ -1,7 +1,33 @@
-﻿using AssetGenerator;
+﻿//
+// IglTFService.cs
+//
+// Author:
+//       Xavier Fischer
+//
+// Copyright (c) 2019 
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+using AssetGenerator;
 using AssetGenerator.Runtime;
-using DEM.Net.Lib;
-using DEM.Net.Lib.Imagery;
+using DEM.Net.Core;
+using DEM.Net.Core.Imagery;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +39,17 @@ namespace DEM.Net.glTF
 {
     public interface IglTFService
     {
+        /// <summary>
+        /// Generates the triangle with a base, and sides connecting the base.
+        /// This is a STL compliant mesh which is water tight
+        /// </summary>
+        /// <returns>The triangle mesh boxed.</returns>
+        /// <param name="heightMap">Height map.</param>
+        /// <param name="thickness">Determines how box height will be calculated</param>
+        /// <param name="zValue">Z value to apply for box calculation</param>
+        MeshPrimitive GenerateTriangleMesh_Boxed(HeightMap heightMap
+            , BoxBaseThickness thickness = BoxBaseThickness.FixedElevation, float zValue = 0f);
+
         /// <summary>
         /// Triangulates the height map and build a triangle mesh
         /// </summary>
