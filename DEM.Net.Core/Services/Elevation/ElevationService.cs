@@ -60,14 +60,14 @@ namespace DEM.Net.Core
         {
             var report = _IRasterService.GenerateReport(dataSet, bbox);
 
-            DownloadMissingFiles_FromReport(report, dataSet);
+            DownloadMissingFiles_FromReport(report.Values, dataSet);
 
         }
         public void DownloadMissingFiles(DEMDataSet dataSet, double lat, double lon)
         {
             var report = _IRasterService.GenerateReportForLocation(dataSet, lat, lon);
 
-            DownloadMissingFiles_FromReport(report, dataSet);
+            DownloadMissingFiles_FromReport(Enumerable.Repeat(report,1), dataSet);
 
         }
 
@@ -78,14 +78,14 @@ namespace DEM.Net.Core
 
             DownloadMissingFiles(dataSet, geoPoint.Latitude, geoPoint.Longitude);
         }
-        private void DownloadMissingFiles_FromReport(Dictionary<string, DemFileReport> report, DEMDataSet dataSet)
+        private void DownloadMissingFiles_FromReport(IEnumerable<DemFileReport> report, DEMDataSet dataSet)
         {
             // Generate metadata files if missing
-            foreach (var file in report.Where(kvp => kvp.Value.IsMetadataGenerated == false && kvp.Value.IsExistingLocally == true).Select(kvp => kvp.Value))
+            foreach (var file in report.Where(r => r.IsMetadataGenerated == false && r.IsExistingLocally == true))
             {
                 _IRasterService.GenerateFileMetadata(file.LocalName, dataSet.FileFormat, false);
             }
-            List<DemFileReport> filesToDownload = new List<DemFileReport>(report.Where(kvp => kvp.Value.IsExistingLocally == false).Select(kvp => kvp.Value));
+            List<DemFileReport> filesToDownload = new List<DemFileReport>(report.Where(kvp => kvp.IsExistingLocally == false));
 
             if (filesToDownload.Count == 0)
             {
@@ -193,7 +193,6 @@ namespace DEM.Net.Core
             // Init interpolator
             IInterpolator interpolator = GetInterpolator(interpolationMode);
 
-            int numPoints = lineStringGeometry.NumPoints;
             var ptStart = lineStringGeometry.Coordinates[0];
             var ptEnd = lineStringGeometry.Coordinates.Last();
             GeoPoint start = new GeoPoint(ptStart.Y, ptStart.X);
@@ -221,7 +220,7 @@ namespace DEM.Net.Core
                         , true);
 
                     // Get elevation for each point
-                    intersections = this.GetElevationData(intersections, dataSet, adjacentRasters, segTiles, interpolator);
+                    intersections = this.GetElevationData(intersections, adjacentRasters, segTiles, interpolator);
 
                     // Add to output list
                     geoPoints.AddRange(intersections);
@@ -398,8 +397,6 @@ namespace DEM.Net.Core
             // Init interpolator
             IInterpolator interpolator = GetInterpolator(interpolationMode);
 
-            List<GeoPoint> geoPoints = new List<GeoPoint>();
-
             using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
             {
                 PopulateRasterFileDictionary(adjacentRasters, tiles.First(), _IRasterService, tiles);
@@ -428,7 +425,7 @@ namespace DEM.Net.Core
             {
 
                 // Get elevation for each point
-                pointsWithElevation = this.GetElevationData(points, dataSet, adjacentRasters, tiles, interpolator);
+                pointsWithElevation = this.GetElevationData(points, adjacentRasters, tiles, interpolator);
 
                 //Debug.WriteLine(adjacentRasters.Count);
             }  // Ensures all rasters are properly closed
@@ -453,7 +450,6 @@ namespace DEM.Net.Core
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("Lon\tLat\tDistance (meters)\tZ");
-            GeoPoint refPoint = lineElevationData.First();
             foreach (GeoPoint pt in lineElevationData)
             {
                 sb.AppendLine($"{pt.Longitude.ToString(CultureInfo.InvariantCulture)}\t{pt.Latitude.ToString(CultureInfo.InvariantCulture)}\t{pt.DistanceFromOriginMeters.ToString("F2")}\t{pt.Elevation}");
@@ -526,8 +522,10 @@ namespace DEM.Net.Core
         /// Fill altitudes for each GeoPoint provided, opening as few rasters as possible
         /// </summary>
         /// <param name="intersections"></param>
+        /// <param name="adjacentRasters"></param>
         /// <param name="segTiles"></param>
-        public IEnumerable<GeoPoint> GetElevationData(IEnumerable<GeoPoint> intersections, DEMDataSet dataSet, RasterFileDictionary adjacentRasters, List<FileMetadata> segTiles, IInterpolator interpolator)
+        /// <param name="interpolator"></param>
+        public IEnumerable<GeoPoint> GetElevationData(IEnumerable<GeoPoint> intersections, RasterFileDictionary adjacentRasters, List<FileMetadata> segTiles, IInterpolator interpolator)
         {
             // Group by raster file for sequential and faster access
             var pointsByTileQuery = from point in intersections
@@ -630,8 +628,7 @@ namespace DEM.Net.Core
 
                 foreach (GeoSegment demSegment in this.GetDEMNorthSouthLines(segTiles, westernSegPoint, easternSegPoint))
                 {
-                    GeoPoint intersectionPoint = null;
-                    if (GeometryService.LineLineIntersection(out intersectionPoint, inputSegment, demSegment))
+                    if (GeometryService.LineLineIntersection(out GeoPoint intersectionPoint, inputSegment, demSegment))
                     {
                         segmentPointsWithDEMPoints.Add(intersectionPoint);
                     }
@@ -644,8 +641,7 @@ namespace DEM.Net.Core
                 inputSegment = new GeoSegment(northernSegPoint, southernSegPoint);
                 foreach (GeoSegment demSegment in this.GetDEMWestEastLines(segTiles, northernSegPoint, southernSegPoint))
                 {
-                    GeoPoint intersectionPoint = null;
-                    if (GeometryService.LineLineIntersection(out intersectionPoint, inputSegment, demSegment))
+                    if (GeometryService.LineLineIntersection(out GeoPoint intersectionPoint, inputSegment, demSegment))
                     {
                         segmentPointsWithDEMPoints.Add(intersectionPoint);
                     }
@@ -898,8 +894,7 @@ namespace DEM.Net.Core
 
         private float GetElevationAtPoint(FileMetadata mainTile, RasterFileDictionary tiles, int x, int y, float nullValue)
         {
-            int xRemap, yRemap;
-            FileMetadata goodTile = FindTile(mainTile, tiles, x, y, out xRemap, out yRemap);
+            FileMetadata goodTile = FindTile(mainTile, tiles, x, y, out int xRemap, out int yRemap);
             if (goodTile == null)
             {
                 return nullValue;

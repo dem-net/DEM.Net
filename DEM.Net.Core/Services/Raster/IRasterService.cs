@@ -63,10 +63,29 @@ namespace DEM.Net.Core
         /// <param name="bbox">Bbox for filtering</param>
         /// <returns></returns>
         Dictionary<string, DemFileReport> GenerateReport(DEMDataSet dataSet, BoundingBox bbox = null);
-        Dictionary<string, DemFileReport> GenerateReportForLocation(DEMDataSet dataSet, double lat, double lon);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dataSet"></param>
+        /// <param name="lat"></param>
+        /// <param name="lon"></param>
+        /// <returns></returns>
+        DemFileReport GenerateReportForLocation(DEMDataSet dataSet, double lat, double lon);
+
+        /// <summary>
+        /// Generates a full report of all datasets to check size and number of downloaded tiles
+        /// </summary>
+        /// <returns>A string containing the report</returns>
         string GenerateReportAsString();
 
-
+        /// <summary>
+        /// Generates a <see cref="FileMetadata"/> as JSON file containing raster file information.
+        /// This metadata is used for fast indexing, preventing to open every raster file when performing spatial queries
+        /// </summary>
+        /// <param name="rasterFileName">Local file name</param>
+        /// <param name="fileFormat">File format, see <see cref="DEMFileFormat"/></param>
+        /// <param name="force">If true, metadata will be replaced, if false the metadata will be generated only if the JSON file does not exists</param>
         void GenerateFileMetadata(string rasterFileName, DEMFileFormat fileFormat, bool force);
     }
 }
