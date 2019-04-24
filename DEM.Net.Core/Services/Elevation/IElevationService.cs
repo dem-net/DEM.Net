@@ -119,7 +119,7 @@ namespace DEM.Net.Core
         /// <summary>
         /// High level method that retrieves elevation for each given point
         /// </summary>
-        /// <param name="points">List of points</param
+        /// <param name="points">List of points</param>
         /// <param name="dataSet">DEM dataset to use</param>
         /// <param name="interpolationMode">Interpolation mode</param>
         /// <returns></returns>
