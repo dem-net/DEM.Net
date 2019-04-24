@@ -11,7 +11,7 @@ namespace DEM.Net.Core
         public static IServiceCollection AddDemNetCore(this IServiceCollection services)
         {
             services
-                    .AddScoped<IRasterService, RasterService>()
+                    .AddSingleton<IRasterService, RasterService>()
                     .AddTransient<IElevationService, ElevationService>()
                     .AddTransient<IMeshService, MeshService>()
                     .AddTransient<IImageryService, ImageryService>();

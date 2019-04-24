@@ -17,7 +17,6 @@ using DEM.Net.Core;
 using DEM.Net.Core.Services.VisualisationServices;
 using NetTopologySuite.Diagnostics.Tracing;
 using GeoAPI.Geometries;
-using DEM.Net.Core.Services.Mesh;
 using Microsoft.Extensions.Logging;
 
 namespace DEM.Net.TestWinForm
@@ -259,7 +258,7 @@ namespace DEM.Net.TestWinForm
                 }
             }
             //
-            IglTFService glTFService = new glTFService(null, new MeshService(null));
+            IglTFService glTFService = new glTFService(null);
             MeshPrimitive v_trianglesMesh = glTFService.GenerateTriangleMesh(v_beanToVisu3d.p00_geoPoint, v_beanToVisu3d.p01_listeIndexPointsfacettes.SelectMany(c => c).ToList());
 
             Model model = glTFService.GenerateModel(v_trianglesMesh, "Test Triangles");

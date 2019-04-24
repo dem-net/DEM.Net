@@ -68,11 +68,11 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="filePath">If path is rooted (full file name), the specified file will be openened,
         /// otherwise the file path will be relative to <see cref="LocalDirectory"/></param>
-        /// <param name="fileFormat"></param>
-        /// <returns></returns>
+        /// <param name="fileFormat"><see cref="DEMFileFormat"/> enumeration indicating the file type</param>
+        /// <returns><see cref="IRasterFile"/> interface for accessing file contents</returns>
         public IRasterFile OpenFile(string filePath, DEMFileFormat fileFormat)
         {
-            
+
             if (!Path.IsPathRooted(filePath))
             {
                 filePath = Path.Combine(_localDirectory, filePath);
@@ -133,7 +133,6 @@ namespace DEM.Net.Core
             }
             if (_metadataCatalogCache.ContainsKey(localPath) == false)
             {
-                string manifestDir = Path.Combine(localPath, MANIFEST_DIR);
                 var manifestDirectories = Directory.EnumerateDirectories(localPath, MANIFEST_DIR, SearchOption.AllDirectories);
 
                 List<FileMetadata> metaList = new List<FileMetadata>(32000);
@@ -261,17 +260,6 @@ namespace DEM.Net.Core
 
         }
 
-        private HeightMap GetHeightMap(string fileName, FileMetadata metadata)
-        {
-            fileName = Path.GetFullPath(fileName);
-
-            HeightMap heightMap = null;
-            using (IRasterFile raster = OpenFile(fileName, metadata.fileFormat))
-            {
-                heightMap = raster.GetHeightMap(metadata);
-            }
-            return heightMap;
-        }
         public string GenerateReportAsString()
         {
             StringBuilder sb = new StringBuilder();
@@ -337,9 +325,8 @@ namespace DEM.Net.Core
             return statusByFile;
         }
 
-        public Dictionary<string, DemFileReport> GenerateReportForLocation(DEMDataSet dataSet, double lat, double lon)
+        public DemFileReport GenerateReportForLocation(DEMDataSet dataSet, double lat, double lon)
         {
-            Dictionary<string, DemFileReport> statusByFile = new Dictionary<string, DemFileReport>();
             if (_gdalService == null || _gdalService.Dataset.Name != dataSet.Name)
             {
                 _gdalService = new GDALVRTFileService(GetLocalDEMPath(dataSet), dataSet);
@@ -352,24 +339,24 @@ namespace DEM.Net.Core
                 if (BoundingBoxIntersects(source.BBox, lat, lon))
                 {
 
-                    statusByFile.Add(source.SourceFileNameAbsolute, new DemFileReport()
+                    return new DemFileReport()
                     {
                         IsExistingLocally = File.Exists(source.LocalFileName),
                         IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),
                         LocalName = source.LocalFileName,
                         URL = source.SourceFileNameAbsolute,
                         Source = source
-                    });
+                    };
 
                 }
                 //Trace.TraceInformation($"Source {source.SourceFileName}");
             }
 
 
-            return statusByFile;
+            return null;
         }
 
-
+      
     }
 
 

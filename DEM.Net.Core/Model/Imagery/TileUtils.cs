@@ -165,7 +165,7 @@ namespace DEM.Net.Core.Imagery
         /// </summary>
         /// <param name="pixelX">Pixel X coordinate.</param>
         /// <param name="pixelY">Pixel Y coordinate.</param>
-        /// <returns>PointInt receiving the tile X and Y coordinates.</param>
+        /// <returns>PointInt receiving the tile X and Y coordinates.</returns>
         public static PointInt PixelXYToTileXY(int pixelX, int pixelY)
         {
             int tileX = pixelX / 256;
@@ -181,7 +181,7 @@ namespace DEM.Net.Core.Imagery
         /// </summary>
         /// <param name="tileX">Tile X coordinate.</param>
         /// <param name="tileY">Tile Y coordinate.</param>
-        /// <returns>PointInt receiving the pixel X and Y coordinates.</param>
+        /// <returns>PointInt receiving the pixel X and Y coordinates.</returns>
         public static PointInt TileXYToPixelXY(int tileX, int tileY)
         {
             int pixelX = tileX * 256;
