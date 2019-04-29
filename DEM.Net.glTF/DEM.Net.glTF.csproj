@@ -8,7 +8,8 @@
     <Copyright>Xavier Fischer</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net.glTF</PackageProjectUrl>
-    <PackageReleaseNotes>Support for dependency injection and logging</PackageReleaseNotes>
+    <PackageReleaseNotes>Dataset reports return a simpler list
+TIN fixed when border points were local summits</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation, Mesh, 3D, glTF, Map, STL</PackageTags>
     <Title>DEM.Net</Title>
     <Product>DEM.Net</Product>

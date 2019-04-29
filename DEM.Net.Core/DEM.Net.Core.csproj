@@ -8,7 +8,8 @@
     <Copyright>Xavier Fischer, Frédéric Aubin</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
-    <PackageReleaseNotes>Dataset reports return a simpler list</PackageReleaseNotes>
+    <PackageReleaseNotes>Dataset reports return a simpler list
+TIN fixed when border points were local summits</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation</PackageTags>
     <Title>DEM.Net</Title>
     <Product>DEM.Net</Product>
