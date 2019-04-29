@@ -60,7 +60,7 @@ namespace DEM.Net.Core
         {
             var report = _IRasterService.GenerateReport(dataSet, bbox);
 
-            DownloadMissingFiles_FromReport(report.Values, dataSet);
+            DownloadMissingFiles_FromReport(report, dataSet);
 
         }
         public void DownloadMissingFiles(DEMDataSet dataSet, double lat, double lon)
@@ -89,7 +89,7 @@ namespace DEM.Net.Core
 
             if (filesToDownload.Count == 0)
             {
-                _logger?.LogInformation("No missing file(s).");
+                _logger?.LogTrace("No missing file(s).");
             }
             else
             {
