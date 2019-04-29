@@ -3,14 +3,12 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <PackageId>DEM.Net.Core</PackageId>
-    <Version>0.1.0-beta0009</Version>
+    <Version>0.1.0-beta0010</Version>
     <Authors>Xavier Fischer, Frédéric Aubin</Authors>
     <Copyright>Xavier Fischer, Frédéric Aubin</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
-    <PackageReleaseNotes>DouglasPeucker enhanced
-GenerateReportForLocation returns a single or no element
-RasterService is a Singleton in DI registration</PackageReleaseNotes>
+    <PackageReleaseNotes>Dataset reports return a simpler list</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation</PackageTags>
     <Title>DEM.Net</Title>
     <Product>DEM.Net</Product>
@@ -18,10 +16,20 @@ RasterService is a Singleton in DI registration</PackageReleaseNotes>
     <Summary>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Summary>
     <RepositoryUrl>https://github.com/dem-net/DEM.Net</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
+  </PropertyGroup>
+
+  <!-- Build package only in Release -->
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <!-- Build package only in Release -->
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug'">
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 
   <!-- Define NETFULL and NETSTANDARD for all matching targets -->
