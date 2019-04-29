@@ -166,11 +166,13 @@ namespace DEM.Net.TestWinForm
         {
 
             _paramTin = FLabServices.createCalculMedium().GetParametresDuTinParDefaut();
+           // _paramTin.p11_initialisation_determinationFrontieres = enumModeDelimitationFrontiere.pointsProchesDuMbo;
             _paramTin.p11_initialisation_determinationFrontieres = enumModeDelimitationFrontiere.pointsProchesDuMbo;
-            _paramTin.p12_extensionSupplementaireMboEnM = 1000;
+            //_paramTin.p12_extensionSupplementaireMboEnM = 1000;
+            _paramTin.p12_extensionSupplementaireMboEnM = 0;
             _paramTin.p13_modeCalculZParDefaut = enumModeCalculZ.alti_0;
             _paramTin.p14_altitudeParDefaut = -200;
-            _paramTin.p15_nbrePointsSupplMultiples4 = 4;
+            _paramTin.p15_nbrePointsSupplMultiples4 = 0;
             _paramTin.p16_initialisation_modeChoixDuPointCentral.p01_excentrationMinimum = 0;
             _paramTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum = Convert.ToDouble(tb_precisionEnM.Text);
 

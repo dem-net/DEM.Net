@@ -177,16 +177,19 @@ namespace DEM.Net.Core.Services.Lab
                     }
                     v_facettesTriees[v_indice].p24_facetteEcartInf = v_facettesTriees[v_indice + 1];
                 }
-                v_facettesTriees[v_indice].p23_facetteEcartSup = v_facettesTriees[v_indice - 1];
-                //=>+ Référencement de la première cellule
-                p_topologieFacette.p21_facetteAvecEcartAbsoluMax = v_facettesTriees.First();
-
-                //On parcourt la liste chaînée:
-                do
+                if (v_indice > 0)
                 {
-                    TraitementDeLaFacetteMaxiByRef(ref p_topologieFacette, p_topologieFacette.p21_facetteAvecEcartAbsoluMax, p_parametresDuTin);
+                    v_facettesTriees[v_indice].p23_facetteEcartSup = v_facettesTriees[v_indice - 1];
+                    //=>+ Référencement de la première cellule
+                    p_topologieFacette.p21_facetteAvecEcartAbsoluMax = v_facettesTriees.First();
+
+                    //On parcourt la liste chaînée:
+                    do
+                    {
+                        TraitementDeLaFacetteMaxiByRef(ref p_topologieFacette, p_topologieFacette.p21_facetteAvecEcartAbsoluMax, p_parametresDuTin);
+                    }
+                    while (p_topologieFacette.p21_facetteAvecEcartAbsoluMax != null);
                 }
-                while (p_topologieFacette.p21_facetteAvecEcartAbsoluMax!=null);
                 //Pour contrôle:
                 //List<BeanFacette_internal> v_facPb= p_topologieFacette.p13_facettesById.Values.Where(c => c.p21_plusGrandEcartAbsolu > p_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum).ToList();
             }
@@ -421,6 +424,7 @@ namespace DEM.Net.Core.Services.Lab
                 }
                 //A REVOIR
                 v_pointsOut = GetOrdonnancementPointsFacette(v_pointsOut, false, true);
+                //(On rajoute le point initial afin de décrire une surface fermée.
                 v_pointsOut.Add(v_pointsOut.First());
             }
             catch (Exception)
@@ -1364,7 +1368,7 @@ namespace DEM.Net.Core.Services.Lab
                     }
                     else
                     {
-                
+                        //v_facettesPlates.Add(v_facette);
                         List<BeanArc_internal> v_arcsNonExternes = v_facette.p02_arcs.Where(c => c.p20_statutArc != enumStatutArc.arcExterne).ToList();
                         v_arcsNonExternes[0].p20_statutArc = enumStatutArc.arcExterne;
                         if (v_arcsNonExternes[0].p21_facetteGauche.p00_idFacette == v_facette.p00_idFacette)
@@ -1387,25 +1391,20 @@ namespace DEM.Net.Core.Services.Lab
                         }
                         //
                         BeanArc_internal v_arcASupprimer = v_facette.p02_arcs.Where(c => c.p20_statutArc == enumStatutArc.arcExterne).ToList().First();
-
                     }
-
-                    //Récupération des points inclus:
-                    //RattachePointsToFacette(ref p_tousPointsInclus, ref v_facette);
-
-                    //Injection de la facette dans la liste en retour
-                    //v_facettesOut.Add(v_facette);
                 }
                 //On réaffecte les points sur les facettes 'non plates'
                 int v_nbreFacettesNonPlates = v_facettesNonPlates.Count;
-               
-                    BeanFacette_internal v_facT;
-                    foreach (BeanFacette_internal v_fac in v_facettesNonPlates)
-                    {
-                        v_facT = v_fac;
-                        RattachePointsToFacette(ref p_tousPointsInclus, ref v_facT);
-                    }
-            
+
+                BeanFacette_internal v_facT;
+                foreach (BeanFacette_internal v_fac in v_facettesNonPlates)
+                {
+                    v_facT = v_fac;
+                    RattachePointsToFacette(ref p_tousPointsInclus, ref v_facT);
+                }
+                //POUR DEBUG
+                List<BeanPoint_internal> v_pointsNonInclus=p_tousPointsInclus.Where(c => c.p22_estPointInclus_vf == false).ToList();
+                //FIN POUR DEBUG
 
                 //On supprime l'arc supplémentaire rajouté
                 v_arcsRayonnants.RemoveAt(v_arcsRayonnants.Count - 1);
