@@ -3,12 +3,13 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <PackageId>DEM.Net.glTF</PackageId>
-    <Version>0.1.0-beta0009</Version>
+    <Version>0.1.0-beta0010</Version>
     <Authors>Xavier Fischer</Authors>
     <Copyright>Xavier Fischer</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net.glTF</PackageProjectUrl>
-    <PackageReleaseNotes>Support for dependency injection and logging</PackageReleaseNotes>
+    <PackageReleaseNotes>Dataset reports return a simpler list
+TIN fixed when border points were local summits</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation, Mesh, 3D, glTF, Map, STL</PackageTags>
     <Title>DEM.Net</Title>
     <Product>DEM.Net</Product>
@@ -16,12 +17,22 @@
     <Summary>glTF3D and STL exporters for DEM.Net</Summary>
     <RepositoryUrl>https://github.com/dem-net/DEM.Net.glTF</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
   </PropertyGroup>
 
+  <!-- Build package only in Release -->
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <!-- Build package only in Release -->
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug'">
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="glTF2Loader" Version="1.1.3-alpha" />
     <PackageReference Include="IxMilia.Stl" Version="0.1.1" />

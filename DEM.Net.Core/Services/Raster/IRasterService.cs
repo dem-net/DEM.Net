@@ -62,7 +62,7 @@ namespace DEM.Net.Core
         /// <param name="dataSet">DEM dataset information</param>
         /// <param name="bbox">Bbox for filtering</param>
         /// <returns></returns>
-        Dictionary<string, DemFileReport> GenerateReport(DEMDataSet dataSet, BoundingBox bbox = null);
+        List<DemFileReport> GenerateReport(DEMDataSet dataSet, BoundingBox bbox = null);
 
         /// <summary>
         /// 
