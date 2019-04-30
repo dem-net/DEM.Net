@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <PackageId>DEM.Net.glTF</PackageId>
-    <Version>0.1.0-beta0010</Version>
+    <Version>0.1.0-alpha0011</Version>
     <Authors>Xavier Fischer</Authors>
     <Copyright>Xavier Fischer</Copyright>
     <Owners>Xavier Fischer</Owners>
