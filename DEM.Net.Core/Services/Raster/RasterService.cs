@@ -36,11 +36,10 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core
 {
-    public class RasterService : IRasterService
+     public class RasterService : IRasterService
     {
         const string APP_NAME = "DEM.Net";
         const string MANIFEST_DIR = "manifest";
-        const int EARTH_CIRCUMFERENCE_METERS = 40075017;
         GDALVRTFileService _gdalService;
         private readonly ILogger<RasterService> _logger;
 
@@ -159,13 +158,6 @@ namespace DEM.Net.Core
             return _metadataCatalogCache[localPath];
         }
 
-
-        public static int GetResolutionMeters(FileMetadata metadata)
-        {
-            double preciseRes = metadata.pixelSizeX * EARTH_CIRCUMFERENCE_METERS / 360d;
-            return (int)Math.Floor(preciseRes);
-        }
-
         /// <summary>
         /// Generate metadata files for fast in-memory indexing
         /// </summary>
@@ -260,17 +252,23 @@ namespace DEM.Net.Core
 
         }
 
+        /// <summary>
+        /// Generates a full report of all datasets to check size and number of downloaded tiles
+        /// </summary>
+        /// <returns>
+        /// A string containing the report
+        /// </returns>
         public string GenerateReportAsString()
         {
             StringBuilder sb = new StringBuilder();
             // Get report for downloaded files
             foreach (DEMDataSet dataset in DEMDataSet.RegisteredDatasets)
             {
-                Dictionary<string, DemFileReport> report = GenerateReport(dataset);
+                List<DemFileReport> report = GenerateReport(dataset);
                 int totalFiles = report.Count;
-                int downloadedCount = report.Count(kvp => kvp.Value.IsExistingLocally);
-                int isMetadataGeneratedCount = report.Count(kvp => kvp.Value.IsMetadataGenerated);
-                int isnotMetadataGeneratedCount = report.Count(kvp => !kvp.Value.IsMetadataGenerated);
+                int downloadedCount = report.Count(rpt => rpt.IsExistingLocally);
+                int isMetadataGeneratedCount = report.Count(rpt => rpt.IsMetadataGenerated);
+                int isnotMetadataGeneratedCount = report.Count(rpt => !rpt.IsMetadataGenerated);
 
                 var fileSizeBytes = FileSystem.GetDirectorySize(GetLocalDEMPath(dataset));
                 var fileSizeMB = fileSizeBytes / 1024f / 1024f;
@@ -284,18 +282,24 @@ namespace DEM.Net.Core
         }
 
 
-        public bool BoundingBoxIntersects(BoundingBox bbox1, BoundingBox bbox2)
+        bool BoundingBoxIntersects(BoundingBox bbox1, BoundingBox bbox2)
         {
             return (bbox1.xMax >= bbox2.xMin && bbox1.xMin <= bbox2.xMax) && (bbox1.yMax >= bbox2.yMin && bbox1.yMin <= bbox2.yMax);
         }
-        public bool BoundingBoxIntersects(BoundingBox bbox1, double lat, double lon)
+        bool BoundingBoxIntersects(BoundingBox bbox1, double lat, double lon)
         {
             return (bbox1.xMax >= lon && bbox1.xMin <= lon) && (bbox1.yMax >= lat && bbox1.yMin <= lat);
         }
 
-        public Dictionary<string, DemFileReport> GenerateReport(DEMDataSet dataSet, BoundingBox bbox = null)
+        /// <summary>
+        /// Compare LST file and local directory and generates dictionary with key : remoteFile and value = true if file is present and false if it is not downloaded
+        /// </summary>
+        /// <param name="dataSet">DEM dataset information</param>
+        /// <param name="bbox">Bbox for filtering</param>
+        /// <returns>A Dictionnary</returns>
+        public List<DemFileReport> GenerateReport(DEMDataSet dataSet, BoundingBox bbox = null)
         {
-            Dictionary<string, DemFileReport> statusByFile = new Dictionary<string, DemFileReport>();
+            List<DemFileReport> statusByFile = new List<DemFileReport>();
             if (_gdalService == null || _gdalService.Dataset.Name != dataSet.Name)
             {
                 _gdalService = new GDALVRTFileService(GetLocalDEMPath(dataSet), dataSet);
@@ -308,7 +312,7 @@ namespace DEM.Net.Core
                 if (bbox == null || BoundingBoxIntersects(source.BBox, bbox))
                 {
 
-                    statusByFile.Add(source.SourceFileNameAbsolute, new DemFileReport()
+                    statusByFile.Add(new DemFileReport()
                     {
                         IsExistingLocally = File.Exists(source.LocalFileName),
                         IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),

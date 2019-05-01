@@ -86,8 +86,8 @@ namespace DEM.Net.Test
 
             Assert.NotNull(report);
             Assert.True(report.Count > 0);
-            Assert.True(report.Values.First().IsExistingLocally);
-            Assert.Equal("N43E005.hgt", Path.GetFileName(report.Values.First().LocalName));
+            Assert.True(report.First().IsExistingLocally);
+            Assert.Equal("N43E005.hgt", Path.GetFileName(report.First().LocalName));
 
         }
 

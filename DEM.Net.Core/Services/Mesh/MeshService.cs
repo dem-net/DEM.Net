@@ -48,12 +48,12 @@ namespace DEM.Net.Core
         /// but height map should be organized a set of rows and columns</param>
         /// <param name="regularTriangulation">(optional) Determines which diagnal is choosen</param>
         /// <returns>List of indexes (triplets) in height map coordinates, indicating each of the triangles vertices</returns>
-        public TriangulationResult TriangulateHeightMap(HeightMap heightMap, bool regularTriangulation = true)
+        public Triangulation TriangulateHeightMap(HeightMap heightMap, bool regularTriangulation = true)
         {
 
             int capacity = ((heightMap.Width - 1) * 6) * (heightMap.Height - 1);
 
-            TriangulationResult triangulationResult = new TriangulationResult();
+            Triangulation triangulationResult = new Triangulation();
             triangulationResult.NumIndices = capacity;
             triangulationResult.Indices = TriangulateHeightMap_Internal(heightMap, regularTriangulation);
             triangulationResult.Positions = heightMap.Coordinates;
@@ -103,11 +103,11 @@ namespace DEM.Net.Core
         /// <param name="heightMap">Gridded set of points. Corrdinates can differ, 
         /// but height map should be organized a set of rows and columns</param>
         /// <returns>TriangulationResult</returns>
-        public TriangulationResult GenerateTriangleMesh_Boxed(HeightMap heightMap
+        public Triangulation GenerateTriangleMesh_Boxed(HeightMap heightMap
                     , BoxBaseThickness thickness, float zValue)
         {
 
-            TriangulationResult triangulationResult = new TriangulationResult();
+            Triangulation triangulationResult = new Triangulation();
 
             triangulationResult.NumIndices = ((heightMap.Width - 1) * 6) * (heightMap.Height - 1); // height map plane
             triangulationResult.NumIndices += ((heightMap.Width - 1) * 6) * 2; // two sides 
@@ -124,7 +124,7 @@ namespace DEM.Net.Core
             return triangulationResult;
         }
 
-        private void AddHeightMapBase(TriangulationResult triangulation, HeightMap heightMap, BoxBaseThickness thickness, float zValue)
+        private void AddHeightMapBase(Triangulation triangulation, HeightMap heightMap, BoxBaseThickness thickness, float zValue)
         {
             // bake coordinates to avoid executing the coords transfrom pipeline
             var coords = heightMap.Coordinates.ToList();
