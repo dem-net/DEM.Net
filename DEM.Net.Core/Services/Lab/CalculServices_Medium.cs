@@ -113,7 +113,7 @@ namespace DEM.Net.Core.Services.Lab
                 {
                     case enumMethodeChoixDuPointCentral.pointLePlusExcentre:
                         double v_MaxAbs = Math.Max(p_points.Select(c => c.p10_coord[2]).Max(), Math.Abs(p_points.Select(c => c.p10_coord[2]).Min()));
-                        v_meilleurPoint = p_points.Where(c => Math.Abs(c.p10_coord[2]) == v_MaxAbs).First();
+                        v_meilleurPoint = p_points.Where(c => Math.Abs(c.p10_coord[2]) == v_MaxAbs).First();                  
                         break;
                     default:
                         throw new Exception("Méthode " + p_parametresDuTin.p16_initialisation_modeChoixDuPointCentral.p00_methodeChoixDuPointCentral + "non implémentée.");
@@ -190,8 +190,6 @@ namespace DEM.Net.Core.Services.Lab
                     }
                     while (p_topologieFacette.p21_facetteAvecEcartAbsoluMax != null);
                 }
-                //Pour contrôle:
-                //List<BeanFacette_internal> v_facPb= p_topologieFacette.p13_facettesById.Values.Where(c => c.p21_plusGrandEcartAbsolu > p_parametresDuTin.p21_enrichissement_modeChoixDuPointCentral.p01_excentrationMinimum).ToList();
             }
             catch (Exception)
             {
@@ -724,7 +722,7 @@ namespace DEM.Net.Core.Services.Lab
                     foreach (BeanFacette_internal v_fac in v_facettesNonPlates)
                     {
                         v_facT = v_fac;
-                        RattachePointsToFacette(ref v_pointsInclus, ref v_facT);
+                        RattachePointsToFacetteInTetraedre(ref v_pointsInclus, ref v_facT);
                     }
                 }
 
@@ -1368,43 +1366,79 @@ namespace DEM.Net.Core.Services.Lab
                     }
                     else
                     {
-                        //v_facettesPlates.Add(v_facette);
-                        List<BeanArc_internal> v_arcsNonExternes = v_facette.p02_arcs.Where(c => c.p20_statutArc != enumStatutArc.arcExterne).ToList();
-                        v_arcsNonExternes[0].p20_statutArc = enumStatutArc.arcExterne;
-                        if (v_arcsNonExternes[0].p21_facetteGauche.p00_idFacette == v_facette.p00_idFacette)
-                        {
-                            v_arcsNonExternes[0].p21_facetteGauche = null;
-                        }
-                        else
-                        {
-                            v_arcsNonExternes[0].p22_facetteDroite = null;
-                        }
-                        //
-                        v_arcsNonExternes[1].p20_statutArc = enumStatutArc.arcExterne;
-                        if (v_arcsNonExternes[1].p21_facetteGauche.p00_idFacette == v_facette.p00_idFacette)
-                        {
-                            v_arcsNonExternes[1].p21_facetteGauche = null;
-                        }
-                        else
-                        {
-                            v_arcsNonExternes[1].p22_facetteDroite = null;
-                        }
-                        //
-                        BeanArc_internal v_arcASupprimer = v_facette.p02_arcs.Where(c => c.p20_statutArc == enumStatutArc.arcExterne).ToList().First();
+                        v_facettesPlates.Add(v_facette);
                     }
                 }
                 //On réaffecte les points sur les facettes 'non plates'
-                int v_nbreFacettesNonPlates = v_facettesNonPlates.Count;
-
                 BeanFacette_internal v_facT;
                 foreach (BeanFacette_internal v_fac in v_facettesNonPlates)
                 {
                     v_facT = v_fac;
-                    RattachePointsToFacette(ref p_tousPointsInclus, ref v_facT);
+                    RattachePointsToFacetteInTetraedre(ref p_tousPointsInclus, ref v_facT);
                 }
-                //POUR DEBUG
-                List<BeanPoint_internal> v_pointsNonInclus=p_tousPointsInclus.Where(c => c.p22_estPointInclus_vf == false).ToList();
-                //FIN POUR DEBUG
+
+                //On traite les 'facettes plates'
+                //?Le double traitement sur les points inclus?
+                //Lorsque une facette est 'plate' (ou 'verticale'), les points qui sont colinéaires à son arc externe
+                //ne sont pas remontés par la méthode ni affectés aux facettes bordières qui seraient également candidates à les accueillir.
+                //=>Du coup, on rattache les points  à la 'facette plate', non plus par inclusion dans le polygone 
+                //mais par appartenance au segment décrivant cette 'facette' du coup à 1 seule dimension dans XY.
+                //Le pb potentiel dans ce cas est qu'un même point pourrait candidater à 2 facettes.
+                //On aurait pu proposer une attribution aléatoire mais on préfère proposer d'abord l'approche générique PUIS traiter le résidu.
+                //On en profite également pour supprimer la facette plate (désactiver l'arc externe -normalement 1 seul sauf cas où le maxi est sur un point d'appui-
+                //et transformer les arcs internes en arcs externes)
+                List<BeanPoint_internal> v_pointsNonInclus;
+                v_pointsNonInclus = p_tousPointsInclus.Where(c => c.p22_estPointInclus_vf == false).ToList();
+                if (v_facettesPlates.Count>0)
+                {
+                    if (v_pointsNonInclus.Count > 0)
+                    {
+                        BeanFacette_internal v_facetteToModif;
+                        double p_toleranceEnM = 0.01;
+                        BeanFacette_internal v_facettePourCompletagePoints;
+                        List<BeanPoint_internal> v_ptsTouchantLaFacettePlate;
+                        List<BeanPoint_internal> v_pointsUtiles;
+                        foreach (BeanFacette_internal v_facettePlate in v_facettesPlates)
+                        {
+                            v_facetteToModif = v_facettePlate;
+                            RattachePointsTouchantFacettePlate(ref v_pointsNonInclus, ref v_facetteToModif, p_toleranceEnM);
+                            //
+                            v_ptsTouchantLaFacettePlate=v_facetteToModif.p10_pointsInclus.ToList();
+                            //=>Désaffectation (bof!)
+                            foreach(BeanPoint_internal v_pt in v_ptsTouchantLaFacettePlate)
+                            {
+                                v_pt.p22_estPointInclus_vf = false;
+                            }
+
+                            List<BeanArc_internal> v_arcsNonExternes = v_facettePlate.p02_arcs.Where(c => c.p20_statutArc != enumStatutArc.arcExterne).ToList();
+                            v_pointsUtiles = v_ptsTouchantLaFacettePlate;
+                            foreach (BeanArc_internal v_arcNonExterne in v_arcsNonExternes)
+                            {
+                                v_arcNonExterne.p20_statutArc= enumStatutArc.arcExterne;
+                                if (v_arcNonExterne.p21_facetteGauche.p00_idFacette == v_facettePlate.p00_idFacette)
+                                {
+                                    v_arcNonExterne.p21_facetteGauche = null;
+                                    v_facettePourCompletagePoints = v_arcNonExterne.p22_facetteDroite;
+                                }
+                                else
+                                {
+                                    v_arcNonExterne.p22_facetteDroite = null;
+                                    v_facettePourCompletagePoints = v_arcNonExterne.p21_facetteGauche;
+                                } 
+                                RattachePointsInclusOuTouchantFacette(ref v_pointsUtiles, ref v_facettePourCompletagePoints);
+                                //
+                                v_pointsUtiles = v_ptsTouchantLaFacettePlate.Where(c => c.p22_estPointInclus_vf == false).ToList();
+                            }
+
+                           // BeanArc_internal v_arcASupprimer = v_facettePlate.p02_arcs.Where(c => c.p20_statutArc == enumStatutArc.arcExterne).ToList().First();
+                            //
+                            v_pointsNonInclus = p_tousPointsInclus.Where(c => c.p22_estPointInclus_vf == false).ToList();
+                        }
+                    }
+                }
+               
+
+
 
                 //On supprime l'arc supplémentaire rajouté
                 v_arcsRayonnants.RemoveAt(v_arcsRayonnants.Count - 1);
@@ -1442,7 +1476,7 @@ namespace DEM.Net.Core.Services.Lab
         /// </summary>
         /// <param name="p_pointsInclus"></param>
         /// <param name="p_facette"></param>
-        private void RattachePointsToFacette(ref List<BeanPoint_internal> p_pointsInclus, ref BeanFacette_internal p_facette)
+        private void RattachePointsToFacetteInTetraedre(ref List<BeanPoint_internal> p_pointsInclus, ref BeanFacette_internal p_facette)
         {
             try
             {
@@ -1491,7 +1525,53 @@ namespace DEM.Net.Core.Services.Lab
                 throw;
             }
         }
+        private void RattachePointsInclusOuTouchantFacette(ref List<BeanPoint_internal> p_pointsInclus, ref BeanFacette_internal p_facette)
+        {
+            try
+            {
+                //Récup des points dispo:
+                List<BeanPoint_internal> v_pointsToTest = p_pointsInclus
+                    .Where(c => !c.p21_estPointFacette_vf)
+                    .Where(c => !c.p22_estPointInclus_vf).ToList();
+                if (v_pointsToTest.Count == 0)
+                {
+                    return;
+                }
 
+                Dictionary<int, double[]> v_coordRef;
+                HashSet<int> v_idPointsUtiles;
+                //Je commence par le 'point haut'
+                //'x'>0 et 'y'>=0 ('arc droit'=>abscisses, 'arc gauche'=>ordonnées)
+                v_coordRef = GetCoordonneesDansNewReferentiel2D(v_pointsToTest, p_facette.p01_pointsDeFacette[0].p10_coord, p_facette.p01_pointsDeFacette[1].p10_coord, p_facette.p01_pointsDeFacette[2].p10_coord);
+
+                if (v_coordRef == null) //SI la facette est 'plate' (possible à ce stade)=>Les points ne peuvent pas être "contenus". 
+                                        //On risque par contre de perdre des points eux-mêmes strictement alignés sur l'alignement précédent
+                {
+                    p_facette.p10_pointsInclus = new List<BeanPoint_internal>();
+                    return;
+                }
+
+                v_idPointsUtiles = new HashSet<int>(v_coordRef.Where(c => c.Value[0] >= 0 && c.Value[1] >= 0).Select(c => c.Key).ToList());
+                v_pointsToTest = v_pointsToTest.Where(c => v_idPointsUtiles.Contains(c.p00_id)).ToList();
+                //Puis...
+                v_coordRef = GetCoordonneesDansNewReferentiel2D(v_pointsToTest, p_facette.p01_pointsDeFacette[1].p10_coord, p_facette.p01_pointsDeFacette[0].p10_coord, p_facette.p01_pointsDeFacette[2].p10_coord);
+                //'x'>=0 et 'y'>=0 ('arc gauche'=>abscisses, 'arc base'=>ordonnées)
+                v_idPointsUtiles = new HashSet<int>(v_coordRef.Where(c => c.Value[0] >= 0 && c.Value[1] >= 0).Select(c => c.Key).ToList());
+                v_pointsToTest = v_pointsToTest.Where(c => v_idPointsUtiles.Contains(c.p00_id)).ToList();
+                BeanPoint_internal v_point;
+                for (int v_indicePoint = 0; v_indicePoint < v_pointsToTest.Count; v_indicePoint++)
+                {
+                    v_point = v_pointsToTest[v_indicePoint];
+                    v_point.p22_estPointInclus_vf = true;
+                }
+                p_facette.p10_pointsInclus.AddRange(v_pointsToTest);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
         private void RattachePointsToCoupleDeFacettes(ref List<BeanPoint_internal> p_tousPoints, ref BeanFacette_internal p_facette1, ref BeanFacette_internal p_facette2)
         {
             try
@@ -1570,6 +1650,50 @@ namespace DEM.Net.Core.Services.Lab
                 throw;
             }
         }
+        private void RattachePointsTouchantFacettePlate(ref List<BeanPoint_internal> p_pointsInclus, ref BeanFacette_internal p_facettePlate, double p_toleranceEnUnitesDeReference)
+        {
+            try
+            {
+                if(!IsTriangleEstPlatDansLePlanXY(p_facettePlate.p01_pointsDeFacette[0], p_facettePlate.p01_pointsDeFacette[1], p_facettePlate.p01_pointsDeFacette[2]))
+                {
+                    throw new Exception("La facette a une surface dans le plan XY=>non conforme à l'attendu.");
+                }
+                //Récup des points dispo:
+                List<BeanPoint_internal> v_pointsToTest = p_pointsInclus
+                    .Where(c => !c.p21_estPointFacette_vf)
+                    .Where(c => !c.p22_estPointInclus_vf).ToList();
+                if(v_pointsToTest.Count==0)
+                {
+                    return;
+                }
+                //Récup du plus grand arc et de sa longueur
+                double v_longueurPlusGrandArc = p_facettePlate.p02_arcs.Max(c => c.p32_longueurArcDansPlanXy);
+                BeanArc_internal v_plusGrandArc = p_facettePlate.p02_arcs.Where(c => c.p32_longueurArcDansPlanXy == v_longueurPlusGrandArc).First();
+                
+                //Calcul des coordonnées des points dans un repère orthon de base 'plus grand arc'
+                Dictionary<int,double[]> v_coordRef = GetCoordonneesDansNewReferentiel2D(v_pointsToTest, v_plusGrandArc.p11_pointDbt.p10_coord, v_plusGrandArc.p12_pointFin.p10_coord, null);
+
+                //On retient les points de coord y 'APPROXIMATIVEMENT' =0 (donc présumés sur l'axe des abscisses) 
+                //ET de norme comprise entre 0 et 1, non inclus (donc présumés strictement inclus dans le segment)
+
+                HashSet<int>  v_idPointsUtiles = new HashSet<int>(v_coordRef.Where(c =>  c.Value[1] <= p_toleranceEnUnitesDeReference && c.Value[1] >=(-1)* p_toleranceEnUnitesDeReference && c.Value[0] > 0 && c.Value[0] < v_longueurPlusGrandArc).Select(c => c.Key).ToList());
+                v_pointsToTest = v_pointsToTest.Where(c => v_idPointsUtiles.Contains(c.p00_id)).ToList();
+                BeanPoint_internal v_point;
+                for (int v_indicePoint = 0; v_indicePoint < v_pointsToTest.Count; v_indicePoint++)
+                {
+                    v_point = v_pointsToTest[v_indicePoint];
+                    v_point.p22_estPointInclus_vf = true;
+                }
+                //
+                p_facettePlate.p10_pointsInclus.AddRange(v_pointsToTest);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         private BeanArc_internal GetArcCommunEntreFacettes(BeanFacette_internal p_facette1, BeanFacette_internal p_facette2)
         {
             BeanArc_internal v_arcOut = null;
@@ -1591,7 +1715,11 @@ namespace DEM.Net.Core.Services.Lab
             }
             return v_arcOut;
         }
-
+        private double getDistanceXyCarreeEntrePoints(BeanPoint_internal p_pt1, BeanPoint_internal p_pt2)
+        {
+            return ((p_pt2.p10_coord[1] - p_pt1.p10_coord[1]) * (p_pt2.p10_coord[1] - p_pt1.p10_coord[1])) +
+                ((p_pt2.p10_coord[0] - p_pt1.p10_coord[0]) * (p_pt2.p10_coord[0] - p_pt1.p10_coord[0]));
+        }
 
         private List<BeanPoint_internal> GetPointsInclusDansLeQuadrantDroitHautXY(IEnumerable<BeanPoint_internal> p_pointsAReferencer, double[] p_coordPointOrigine, double[] p_coordPoint2Abs, double[] p_coordPoint3Ord,bool p_strictementAuDessus_vf, bool p_strictementADroite_vf)
         {
