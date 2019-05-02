@@ -14,13 +14,19 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
-steps:
+steps
 - task: NuGetToolInstaller@0
 
 - task: NuGetCommand@2
   inputs:
     restoreSolution: '$(solution)'
 
+- task: DotNetCoreInstaller@0
+    displayName: Installing .net core sdk 2.1.602
+    inputs:
+      version: '2.1.602'
+      packageType: sdk
+        
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
