@@ -1,4 +1,4 @@
-﻿// TriangulationResult.cs
+﻿// Triangulation.cs
 //
 // Author:
 //       Xavier Fischer
@@ -32,10 +32,20 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core
 {
-    public class TriangulationResult
+    public class Triangulation
     {
         public IEnumerable<GeoPoint> Positions { get; internal set; }
         public IEnumerable<int> Indices { get; internal set; }
+
+        public Triangulation()
+        {
+
+        }
+        public Triangulation(IEnumerable<GeoPoint> positions, IEnumerable<int> indices)
+        {
+            Positions = positions;
+            Indices = indices;
+        }
 
         public int NumPositions { get; internal set; }
         public int NumTriangles => NumIndices / 3;
