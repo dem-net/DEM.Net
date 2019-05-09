@@ -3,13 +3,14 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <PackageId>DEM.Net.Core</PackageId>
-    <Version>0.1.0-beta0010</Version>
+    <Version>0.1.0-beta0011</Version>
     <Authors>Xavier Fischer, Frédéric Aubin</Authors>
     <Copyright>Xavier Fischer, Frédéric Aubin</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
     <PackageReleaseNotes>Dataset reports return a simpler list
-TIN fixed when border points were local summits</PackageReleaseNotes>
+TIN fixed when border points were local summits
+GPX track can be drawn on 3D model's texture</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation</PackageTags>
     <Title>DEM.Net</Title>
     <Product>DEM.Net</Product>
