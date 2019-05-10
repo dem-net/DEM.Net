@@ -47,7 +47,43 @@ namespace DEM.Net.Core.Services.Lab
 
         //(Pour la construction des TINs)
         public List<BeanPoint_internal> p31_pointsAssocies { get; set; }
+        private double[] _vector;
+        public double[] p32_vector
+        {
+            get
+            {
+               if(_vector==null)
+                {
+                    _vector=FLabServices.createCalculLow().GetVectorBrutFromTwoPoints(p11_pointDbt.p10_coord, p12_pointFin.p10_coord);
+                }
+                return _vector;
+            }   
+        }
 
+        private double _longueurArcDansPlanXy;
+        public double p32_longueurArcDansPlanXy
+        {
+            get
+            {
+                if (_longueurArcDansPlanXy < 0)
+                {
+                    _longueurArcDansPlanXy = FLabServices.createCalculLow().GetNormeVecteurXY(p32_vector);
+                }
+                return _longueurArcDansPlanXy;
+            }
+        }
+        private double _longueurArcDansPlanXyz;
+        public double p33_longueurArcDansPlanXyz
+        {
+            get
+            {
+                if (_longueurArcDansPlanXyz < 0)
+                {
+                    _longueurArcDansPlanXyz = FLabServices.createCalculLow().GetNormeVecteurXYZ(p32_vector);
+                }
+                return _longueurArcDansPlanXyz;
+            }
+        }
         //(Pour les services hydro/morpho
         //[Attention: le sens est défini par référence pt début -> pt fin de l'arc
         private enumSensPenteArc p41_sensPenteDeLArc;
@@ -102,7 +138,9 @@ namespace DEM.Net.Core.Services.Lab
             p12_pointFin = p_pointFin;
             //
             p01_hcodeArc = FLabServices.createUtilitaires().GethCodeGeogSegment(p11_pointDbt.p10_coord, p12_pointFin.p10_coord);
-
+            //
+            _longueurArcDansPlanXy = -1;
+            _longueurArcDansPlanXyz = -1;
             //
             p41_sensPenteDeLArc = enumSensPenteArc.indetermine;
             p42_valeurPente = null;

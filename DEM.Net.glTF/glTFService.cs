@@ -88,6 +88,8 @@ namespace DEM.Net.glTF
                         // Creates the .bin file and writes the model's data to it
                         string dataFile = Path.Combine(outputFolder, data.Name);
                         File.WriteAllBytes(dataFile, glbBinChunck);
+
+                        _logger.LogInformation($"Model exported as GTLF file {Path.GetFullPath(assetFile)}.");
                     }
 
                     if (exportGLB)
@@ -95,6 +97,8 @@ namespace DEM.Net.glTF
                         string glbFile = Path.Combine(outputFolder, glbFilename);
 
                         glTFLoader.Interface.SaveBinaryModelPacked(gltf, glbFile, assetFile, glbBinChunck);
+
+                        _logger.LogInformation($"Model exported as GLB file {Path.GetFullPath(glbFile)}.");
                     }
                 }
 
@@ -262,8 +266,8 @@ namespace DEM.Net.glTF
         /// <returns></returns>
         public MeshPrimitive GenerateTriangleMesh(HeightMap heightMap, IEnumerable<Vector4> colors = null, PBRTexture texture = null)
         {
-            TriangulationResult triangulation = _meshService.TriangulateHeightMap(heightMap);
-            return GenerateTriangleMesh(triangulation.Positions, triangulation.Indices.ToList(), colors, texture);
+            Triangulation triangulation = _meshService.TriangulateHeightMap(heightMap);
+            return GenerateTriangleMesh(triangulation, colors, texture);
         }
         /// <summary>
         /// Generate a triangle mesh from supplied height map, triangulating and optionaly mapping UVs
@@ -275,9 +279,9 @@ namespace DEM.Net.glTF
         /// <returns></returns>
         public MeshPrimitive GenerateTriangleMesh_Boxed(HeightMap heightMap, BoxBaseThickness thickness = BoxBaseThickness.FixedElevation, float zValue = 0f)
         {
-            TriangulationResult triangulation = _meshService.GenerateTriangleMesh_Boxed(heightMap, thickness, zValue);
+            Triangulation triangulation = _meshService.GenerateTriangleMesh_Boxed(heightMap, thickness, zValue);
 
-            return GenerateTriangleMesh(triangulation.Positions, triangulation.Indices.ToList());
+            return GenerateTriangleMesh(triangulation);
         }
 
         public MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector4 color, float width)
@@ -401,21 +405,40 @@ namespace DEM.Net.glTF
 
         public MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, IEnumerable<Vector4> colors = null, PBRTexture texture = null)
         {
-            return GenerateTriangleMesh(points.ToVector3(), indices, colors, texture);
+            Stopwatch sw = null;
+            if ((_logger?.IsEnabled(LogLevel.Trace)).GetValueOrDefault(false))
+            {
+                 sw = Stopwatch.StartNew();
+                _logger.LogTrace("Baking points...");
+            }
+
+            var pointsList = points.ToVector3().ToList();
+            MeshPrimitive mesh = GenerateTriangleMesh(pointsList, indices, colors, texture);
+
+            if ((_logger?.IsEnabled(LogLevel.Trace)).GetValueOrDefault(false))
+            {
+                sw.Stop();
+                _logger.LogTrace($"Baking points done in {sw.Elapsed:g}");
+            }
+
+            return mesh;
         }
-        public MeshPrimitive GenerateTriangleMesh(IEnumerable<Vector3> points, List<int> indices, IEnumerable<Vector4> colors = null, PBRTexture texture = null)
+        public MeshPrimitive GenerateTriangleMesh(Triangulation triangulation, IEnumerable<Vector4> colors = null, PBRTexture texture = null)
+        {
+            return GenerateTriangleMesh(triangulation.Positions, triangulation.Indices.ToList(), colors, texture);
+        }
+        public MeshPrimitive GenerateTriangleMesh(List<Vector3> positions, List<int> indices, IEnumerable<Vector4> colors = null, PBRTexture texture = null)
         {
             MeshPrimitive mesh = null;
             try
             {
-                if (points == null || !points.Any())
+                if (positions == null || !positions.Any())
                 {
                     _logger?.LogWarning("Vertex list is empty.");
                 }
                 else
                 {
 
-                    List<Vector3> positions = points.ToList();
                     if (colors == null)
                     {
                         colors = positions.Select(pt => Vector4.One);
@@ -523,6 +546,7 @@ namespace DEM.Net.glTF
             }
             return mesh;
         }
+      
 
         private Texture GetTextureFromImage(string texture)
         {
@@ -546,61 +570,6 @@ namespace DEM.Net.glTF
             };
         }
 
-        public MeshPrimitive GeneratePointMesh(IEnumerable<GeoPoint> points, Vector4 color, float pointSize)
-        {
-            MeshPrimitive mesh = null;
-            try
-            {
-                if (points == null)
-                {
-                    _logger?.LogWarning("Points are empty.");
-                }
-                else
-                {
-                    if (pointSize == 0)
-                    {
-                        // Basic point declaration
-                        mesh = new MeshPrimitive()
-                        {
-                            Colors = points.Select(c => color)
-                            ,
-                            ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
-                            ,
-                            ColorType = MeshPrimitive.ColorTypeEnum.VEC3
-                            ,
-                            Mode = MeshPrimitive.ModeEnum.POINTS
-                            ,
-                            Positions = points.Select(pt => pt.ToVector3())
-                            ,
-                            Material = new Material()
-                        };
-                    }
-                    else
-                    {
-                        // points interpreted as quads where point is at the quad center
-                        // Basic point declaration
-                        List<Vector3> vecs = points.ToVector3().ToList();
-                        float deltaZ = vecs.Max(p => p.Z) - vecs.Min(p => p.Z);
-                        float deltaX = vecs.Max(p => p.X) - vecs.Min(p => p.X);
-                        pointSize = (deltaX * 0.5f) / (float)Math.Sqrt(vecs.Count);
-                        IEnumerable<Vector3> vertices = points.ToVector3().SelectMany(v => v.ToQuadPoints(pointSize));
-                        List<int> indices = Enumerable.Range(0, points.Count()).SelectMany(i => VectorsExtensions.TriangulateQuadIndices(i * 4)).ToList();
-                        mesh = GenerateTriangleMesh(vertices, indices, null);
-                    }
-
-
-
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                _logger?.LogError(ex, ex.ToString());
-                throw;
-            }
-            return mesh;
-        }
         #endregion
 
 

@@ -131,7 +131,7 @@ namespace DEM.Net.Core.Imagery
 
             swDownload.Stop();
             _logger?.LogTrace($"DownloadImages done in : {swDownload.Elapsed:g}");
-           
+
 
             return tiles;
         }
@@ -205,10 +205,85 @@ namespace DEM.Net.Core.Imagery
                         outputImage.Mutate(o => o
                             .DrawImage(tileImg, new Point(x, y), 1f)
                             );
-
                     }
                 }
 
+                // with encoder
+                //IImageEncoder encoder = ConvertFormat(mimeType);
+                //outputImage.Save(fileName, encoder);
+
+                outputImage.Save(fileName);
+            }
+#endif
+            return new TextureInfo(fileName, mimeType, (int)projectedBbox.Width, (int)projectedBbox.Height, zoomLevel, projectedBbox);
+            //return new TextureInfo(fileName, format, (int)tilesBbox.Width, (int)tilesBbox.Height);
+
+        }
+
+        public TextureInfo ConstructTextureWithGpxTrack(TileRange tiles, BoundingBox bbox, string fileName, TextureImageFormat mimeType, IEnumerable<GeoPoint> gpxPoints)
+        {
+
+            // where is the bbox in the final image ?
+
+            // get pixel in full map
+            int zoomLevel = tiles.First().TileInfo.Zoom;
+            var projectedBbox = ConvertWorldToMap(bbox, zoomLevel);
+            var tilesBbox = GetTilesBoundingBox(tiles);
+            int xOffset = (int)(tilesBbox.xMin - projectedBbox.xMin);
+            int yOffset = (int)(tilesBbox.yMin - projectedBbox.yMin);
+
+
+            //DrawDebugBmpBbox(tiles, localBbox, tilesBbox, fileName, mimeType);
+            int tileSize = tiles.Provider.TileSize;
+
+            var pointsOnTexture = gpxPoints.Select(pt => TileUtils.LatLongToPixelXY(pt.Latitude, pt.Longitude, zoomLevel))
+                     .Select(pt => new PointF(pt.X - (int)projectedBbox.xMin, pt.Y - (int)projectedBbox.yMin));
+
+#if NETFULL
+            ImageFormat format = mimeType == TextureImageFormat.image_jpeg ?
+                 ImageFormat.Jpeg
+                 : ImageFormat.Png;
+
+            using (Bitmap bmp = new Bitmap((int)projectedBbox.Width, (int)projectedBbox.Height))
+            {
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    foreach (var tile in tiles)
+                    {
+                        using (MemoryStream stream = new MemoryStream(tile.Image))
+                        {
+                            using (Image tileImg = Image.FromStream(stream))
+                            {
+                                int x = (tile.TileInfo.X - tiles.Start.X) * tileSize + xOffset;
+                                int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize + yOffset;
+                                g.DrawImage(tileImg, x, y);
+                            }
+                        }
+                    }
+                }
+                bmp.Save(fileName, format);
+            }
+            throw new NotImplementedException("GPX drawing not implemented yet in .Net Full");
+#else
+            using (Image<Rgba32> outputImage = new Image<Rgba32>((int)projectedBbox.Width, (int)projectedBbox.Height))
+            {
+                
+                foreach (var tile in tiles)
+                {
+                    using (Image<Rgba32> tileImg = Image.Load(tile.Image))
+                    {
+                        int x = (tile.TileInfo.X - tiles.Start.X) * tileSize + xOffset;
+                        int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize + yOffset;
+
+                        outputImage.Mutate(o => o
+                            .DrawImage(tileImg, new Point(x, y), 1f)
+                            );
+                    }
+                }
+
+                outputImage.Mutate(o => o
+                             .DrawLines(new Rgba32(1,0,0,1f), 5f, pointsOnTexture.ToArray())
+                             );
                 // with encoder
                 //IImageEncoder encoder = ConvertFormat(mimeType);
                 //outputImage.Save(fileName, encoder);

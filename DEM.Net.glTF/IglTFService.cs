@@ -68,6 +68,14 @@ namespace DEM.Net.glTF
         /// <param name="texture">Texture path relative from the model</param>
         /// <returns></returns>
         MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, IEnumerable<Vector4> colors = null, PBRTexture texture = null);
+        /// <summary>
+        /// Generate triangle mesh with supplied triangulation
+        /// </summary>
+        /// <param name="triangulation"><see cref="Triangulation"/> class containing the positions and indexes (Triplets of vertex index in points list)</param>
+        /// <param name="colors">Colors for each vertex. Pass null to use white for all vertices.</param>
+        /// <param name="texture">Texture path relative from the model. Pass null for untextured model.</param>
+        /// <returns></returns>
+        MeshPrimitive GenerateTriangleMesh(Triangulation triangulation, IEnumerable<Vector4> colors = null, PBRTexture texture = null);
 
         /// <summary>
         /// Build a line mesh from given points
@@ -87,17 +95,9 @@ namespace DEM.Net.glTF
         /// <param name="colors"></param>
         /// <param name="texture">Texture path relative from the model</param>
         /// <returns></returns>
-        MeshPrimitive GenerateTriangleMesh(IEnumerable<Vector3> points, List<int> indices, IEnumerable<Vector4> colors = null, PBRTexture texture = null);
+        MeshPrimitive GenerateTriangleMesh(List<Vector3> points, List<int> indices, IEnumerable<Vector4> colors = null, PBRTexture texture = null);
 
-        /// <summary>
-        /// Build a line mesh from given points
-        /// </summary>
-        /// <param name="points"></param>
-        /// <param name="color">Line color</param>
-        /// <param name="pointSize">If >0 quads of specified size will be generated (and the ouput mesh will be TRIANGLES)</param>
-        /// <returns></returns>
-        MeshPrimitive GeneratePointMesh(IEnumerable<GeoPoint> points, Vector4 color, float pointSize);
-
+       
         /// <summary>
         /// Generate a full glTF model from a mesh
         /// </summary>
