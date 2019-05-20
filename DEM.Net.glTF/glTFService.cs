@@ -88,6 +88,8 @@ namespace DEM.Net.glTF
                         // Creates the .bin file and writes the model's data to it
                         string dataFile = Path.Combine(outputFolder, data.Name);
                         File.WriteAllBytes(dataFile, glbBinChunck);
+
+                        _logger.LogInformation($"Model exported as GTLF file {Path.GetFullPath(assetFile)}.");
                     }
 
                     if (exportGLB)
@@ -95,6 +97,8 @@ namespace DEM.Net.glTF
                         string glbFile = Path.Combine(outputFolder, glbFilename);
 
                         glTFLoader.Interface.SaveBinaryModelPacked(gltf, glbFile, assetFile, glbBinChunck);
+
+                        _logger.LogInformation($"Model exported as GLB file {Path.GetFullPath(glbFile)}.");
                     }
                 }
 
