@@ -49,6 +49,10 @@ namespace DEM.Net.Core.Services.Lab
         {
             return new GeomorphoServices();
         }
+        public static ICalculServicesVoronoi createVoronoiServices()
+        {
+            return new CalculServicesVoronoi();
+        }
        
     }
 }

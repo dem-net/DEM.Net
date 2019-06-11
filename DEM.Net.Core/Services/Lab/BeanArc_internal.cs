@@ -35,11 +35,11 @@ namespace DEM.Net.Core.Services.Lab
     {
         private static int _dernierIdArc = 0;
         //
-        public int p00_idArc { get; }
+        public int p00_idArc { get; set; }
         public string p01_hcodeArc { get; }
         //
-        public BeanPoint_internal p11_pointDbt { get; }
-        public BeanPoint_internal p12_pointFin { get; }
+        public BeanPoint_internal p11_pointDbt { get; set; }
+        public BeanPoint_internal p12_pointFin { get; set; }
         //
         public enumStatutArc p20_statutArc { get; set; }
         public BeanFacette_internal p21_facetteGauche { get; set; }

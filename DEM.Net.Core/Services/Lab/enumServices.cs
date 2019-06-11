@@ -83,4 +83,10 @@ namespace DEM.Net.Core.Services.Lab
         autre,
         indetermine
     }
+    public enum enumEtatDesTraitementsBords
+    {
+        indetermine,
+        unCote,
+        deuxCotes
+    }
 }

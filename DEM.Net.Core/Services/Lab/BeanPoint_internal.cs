@@ -42,13 +42,13 @@ namespace DEM.Net.Core.Services.Lab
         {
             set
             {
-                p01_hCodeGeogP=FLabServices.createUtilitaires().GethCodeGeogPoint(p10_coord);
+                p01_hCodeGeogP=FLabServices.createUtilitaires().GetHCodeGeogPoint(p10_coord);
             }
             get
             {
                 if(p01_hCodeGeogP=="")
                 {
-                    p01_hCodeGeogP = FLabServices.createUtilitaires().GethCodeGeogPoint(p10_coord);
+                    p01_hCodeGeogP = FLabServices.createUtilitaires().GetHCodeGeogPoint(p10_coord);
                 }
                 return p01_hCodeGeogP;
             }
@@ -76,7 +76,7 @@ namespace DEM.Net.Core.Services.Lab
         {
             p00_id = _dernierId++;
             p10_coord=new double[3] { p_x, p_y, p_z };
-            p01_hCodeGeog = FLabServices.createUtilitaires().GethCodeGeogPoint(p10_coord);
+            p01_hCodeGeog = FLabServices.createUtilitaires().GetHCodeGeogPoint(p10_coord);
             p11_srid = p_srid;
             p41_arcsAssocies = new Dictionary<string, BeanArc_internal>();
             p42_ordonnancementHorairesArcs = new List<string>();
