@@ -49,7 +49,7 @@ namespace DEM.Net.Core
         private readonly ILogger<GDALVRTFileService> _logger;
         private ConcurrentDictionary<string, List<GDALSource>> _cacheByDemName;
 
-        public GDALVRTFileService(ILogger<GDALVRTFileService> logger)
+        public GDALVRTFileService(ILogger<GDALVRTFileService> logger = null)
         {
             _logger = logger;
             _cacheByDemName = new ConcurrentDictionary<string, List<GDALSource>>();
@@ -69,7 +69,7 @@ namespace DEM.Net.Core
                 if (_cacheByDemName.ContainsKey(dataSet.Name))
                     return;
 
-                _logger.LogInformation($"Setup for {dataSet.Name} dataset.");
+                _logger?.LogInformation($"Setup for {dataSet.Name} dataset.");
 
                 if (!Directory.Exists(dataSetLocalDir))
                 {
@@ -86,11 +86,11 @@ namespace DEM.Net.Core
                     // Download if too old file
                     if ((DateTime.Now - File.GetLastWriteTime(vrtFileName)).TotalDays > MAX_AGE_DAYS)
                     {
-                        _logger.LogInformation("VRT file is too old.");
+                        _logger?.LogInformation("VRT file is too old.");
                     }
                     else if (IsCorrupted(vrtFileName))
                     {
-                        _logger.LogInformation("VRT file is corrupted.");
+                        _logger?.LogInformation("VRT file is corrupted.");
                     }
                     else
                     {
@@ -100,7 +100,7 @@ namespace DEM.Net.Core
 
                 if (download)
                 {
-                    _logger.LogInformation($"Downloading index file from {dataSet.VRTFileUrl}... This file will be downloaded once and stored locally.");
+                    _logger?.LogInformation($"Downloading index file from {dataSet.VRTFileUrl}... This file will be downloaded once and stored locally.");
                     using (HttpClient client = new HttpClient())
                     {
                         using (HttpResponseMessage response = client.GetAsync(dataSet.VRTFileUrl).Result)
@@ -133,8 +133,8 @@ namespace DEM.Net.Core
             }
             catch (Exception ex)
             {
-                _logger.LogError("Unhandled exception: " + ex.Message);
-                _logger.LogInformation(ex.ToString());
+                _logger?.LogError("Unhandled exception: " + ex.Message);
+                _logger?.LogInformation(ex.ToString());
                 throw;
             }
         }
@@ -314,7 +314,7 @@ namespace DEM.Net.Core
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error parsing GDAL source: {ex.Message}");
+                _logger?.LogError($"Error parsing GDAL source: {ex.Message}");
             }
 
             return source;
