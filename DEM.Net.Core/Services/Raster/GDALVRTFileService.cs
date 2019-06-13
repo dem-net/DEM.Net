@@ -77,8 +77,7 @@ namespace DEM.Net.Core
                 }
 
                 string vrtFileName = Path.Combine(dataSetLocalDir, UrlHelper.GetFileNameFromUrl(dataSet.VRTFileUrl));
-                Uri localVrtUri = new Uri(Path.GetFullPath(vrtFileName), UriKind.Absolute);
-                Uri remoteVrtUri = new Uri(dataSet.VRTFileUrl, UriKind.Absolute);
+
 
                 bool download = true;
                 if (File.Exists(vrtFileName))
@@ -88,7 +87,7 @@ namespace DEM.Net.Core
                     {
                         _logger?.LogInformation("VRT file is too old.");
                     }
-                    else if (IsCorrupted(vrtFileName))
+                    else if (IsCorrupted(dataSet, vrtFileName))
                     {
                         _logger?.LogInformation("VRT file is corrupted.");
                     }
@@ -126,7 +125,7 @@ namespace DEM.Net.Core
                 }
                 if (_cacheByDemName.ContainsKey(vrtFileName) == false)
                 {
-                    _cacheByDemName[dataSet.Name] = this.GetSources(vrtFileName, localVrtUri, remoteVrtUri).ToList();
+                    _cacheByDemName[dataSet.Name] = this.GetSources(dataSet, vrtFileName).ToList();
                 }
 
 
@@ -139,9 +138,19 @@ namespace DEM.Net.Core
             }
         }
 
-        private bool IsCorrupted(string vrtFileName)
+        private bool IsCorrupted(DEMDataSet dataSet, string vrtFileName)
         {
-            return false;
+            bool ok = false;
+            try
+            {
+                ok = !this.GetSources(dataSet, vrtFileName).Any();
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogWarning(ex, $"VRT file corrupted: {ex.Message}");
+                ok = true;
+            }
+            return ok;
         }
 
         private double[] _geoTransform;
@@ -167,8 +176,10 @@ namespace DEM.Net.Core
 
         }
 
-        private IEnumerable<GDALSource> GetSources(string vrtFileName, Uri localUri, Uri remoteUri)
+        private IEnumerable<GDALSource> GetSources(DEMDataSet dataSet, string vrtFileName)
         {
+            Uri localVrtUri = new Uri(Path.GetFullPath(vrtFileName), UriKind.Absolute);
+            Uri remoteVrtUri = new Uri(dataSet.VRTFileUrl, UriKind.Absolute);
 
             // Create an XmlReader
             using (FileStream fileStream = new FileStream(vrtFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -204,8 +215,8 @@ namespace DEM.Net.Core
                         GDALSource source = ParseGDALSource(reader);
 
                         // SetLocalFileName
-                        source.SourceFileNameAbsolute = new Uri(remoteUri, source.SourceFileName).ToString();
-                        source.LocalFileName = new Uri(localUri, source.SourceFileName).LocalPath;
+                        source.SourceFileNameAbsolute = new Uri(remoteVrtUri, source.SourceFileName).ToString();
+                        source.LocalFileName = new Uri(localVrtUri, source.SourceFileName).LocalPath;
 
                         // Transform origin
                         // Xp = padfTransform[0] + P * padfTransform[1] + L * padfTransform[2];
