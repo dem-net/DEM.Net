@@ -56,9 +56,6 @@ using System.Threading.Tasks;
  */
 
 
-using System;
-using System.Collections.Generic;
-
 namespace FruitiereMapsLib.Services.Data
 {
     public class Point

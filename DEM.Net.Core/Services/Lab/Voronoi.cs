@@ -69,8 +69,6 @@ using System.Threading.Tasks;
  * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
  */
  
-using System;
-using System.Collections.Generic;
 
 namespace FruitiereMapsLib.Services.Data
 {
