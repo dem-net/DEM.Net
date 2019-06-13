@@ -11,6 +11,7 @@ namespace DEM.Net.Core
         public static IServiceCollection AddDemNetCore(this IServiceCollection services)
         {
             services
+                    .AddSingleton<IGDALVRTFileService,GDALVRTFileService>()
                     .AddSingleton<IRasterService, RasterService>()
                     .AddTransient<IElevationService, ElevationService>()
                     .AddTransient<IMeshService, MeshService>()

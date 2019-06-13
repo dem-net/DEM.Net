@@ -25,8 +25,8 @@
 
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -44,54 +44,53 @@ namespace DEM.Net.Core
     /// </summary>
     public class GDALVRTFileService : IGDALVRTFileService
     {
-        private bool _useMemCache = false;
-        Dictionary<string, List<GDALSource>> _cacheByDemName;
-        private readonly string _localDirectory;
-        private string _vrtFileName;
-        private Uri _remoteVrtUri;
-        private Uri _localVrtUri;
-        private DEMDataSet _dataSet;
         private const int MAX_AGE_DAYS = 30;
 
-        public DEMDataSet Dataset { get { return _dataSet; } }
+        private readonly ILogger<GDALVRTFileService> _logger;
+        private ConcurrentDictionary<string, List<GDALSource>> _cacheByDemName;
 
-        public GDALVRTFileService(string localDirectory, DEMDataSet dataSet)
+        public GDALVRTFileService(ILogger<GDALVRTFileService> logger)
         {
-            _localDirectory = localDirectory;
-            _dataSet = dataSet;
-            _cacheByDemName = new Dictionary<string, List<GDALSource>>();
+            _logger = logger;
+            _cacheByDemName = new ConcurrentDictionary<string, List<GDALSource>>();
         }
 
         /// <summary>
         /// Ensures local directories are created and download VRT file if needed
         /// </summary>
-        public void Setup(bool useMemoryCache)
+        public void Setup(DEMDataSet dataSet, string dataSetLocalDir)
         {
             try
             {
-                _useMemCache = useMemoryCache;
 
-                if (_dataSet == null)
+                if (dataSet == null)
                     throw new ArgumentNullException("Dataset is null.");
 
-                Trace.TraceInformation($"Setup for {_dataSet.Name} dataset.");
+                if (_cacheByDemName.ContainsKey(dataSet.Name))
+                    return;
 
-                if (!Directory.Exists(_localDirectory))
+                _logger.LogInformation($"Setup for {dataSet.Name} dataset.");
+
+                if (!Directory.Exists(dataSetLocalDir))
                 {
-                    Directory.CreateDirectory(_localDirectory);
+                    Directory.CreateDirectory(dataSetLocalDir);
                 }
 
-                _vrtFileName = Path.Combine(_localDirectory, UrlHelper.GetFileNameFromUrl(_dataSet.VRTFileUrl));
-                _localVrtUri = new Uri(Path.GetFullPath(_vrtFileName), UriKind.Absolute);
-                _remoteVrtUri = new Uri(_dataSet.VRTFileUrl, UriKind.Absolute);
+                string vrtFileName = Path.Combine(dataSetLocalDir, UrlHelper.GetFileNameFromUrl(dataSet.VRTFileUrl));
+                Uri localVrtUri = new Uri(Path.GetFullPath(vrtFileName), UriKind.Absolute);
+                Uri remoteVrtUri = new Uri(dataSet.VRTFileUrl, UriKind.Absolute);
 
                 bool download = true;
-                if (File.Exists(_vrtFileName))
+                if (File.Exists(vrtFileName))
                 {
                     // Download if too old file
-                    if ((DateTime.Now - File.GetLastWriteTime(_vrtFileName)).TotalDays > MAX_AGE_DAYS)
+                    if ((DateTime.Now - File.GetLastWriteTime(vrtFileName)).TotalDays > MAX_AGE_DAYS)
                     {
-                        Trace.TraceInformation("VRT file is too old.");
+                        _logger.LogInformation("VRT file is too old.");
+                    }
+                    else if (IsCorrupted(vrtFileName))
+                    {
+                        _logger.LogInformation("VRT file is corrupted.");
                     }
                     else
                     {
@@ -101,14 +100,14 @@ namespace DEM.Net.Core
 
                 if (download)
                 {
-                    Trace.TraceInformation($"Downloading file from {_dataSet.VRTFileUrl}...");
+                    _logger.LogInformation($"Downloading index file from {dataSet.VRTFileUrl}... This file will be downloaded once and stored locally.");
                     using (HttpClient client = new HttpClient())
                     {
-                        using (HttpResponseMessage response = client.GetAsync(_dataSet.VRTFileUrl).Result)
+                        using (HttpResponseMessage response = client.GetAsync(dataSet.VRTFileUrl).Result)
                         {
-                            using (FileStream fs = new FileStream(_vrtFileName, FileMode.Create, FileAccess.Write))
+                            using (FileStream fs = new FileStream(vrtFileName, FileMode.Create, FileAccess.Write))
                             {
-                                var contentbytes = client.GetByteArrayAsync(_dataSet.VRTFileUrl).Result;
+                                var contentbytes = client.GetByteArrayAsync(dataSet.VRTFileUrl).Result;
                                 fs.Write(contentbytes, 0, contentbytes.Length);
                             }
                         }
@@ -120,26 +119,29 @@ namespace DEM.Net.Core
                 }
 
                 // Cache
-                if (_useMemCache)
-                {
-                    if (_cacheByDemName == null)
-                    {
-                        _cacheByDemName = new Dictionary<string, List<GDALSource>>();
-                    }
-                    if (_cacheByDemName.ContainsKey(_vrtFileName) == false)
-                    {
-                        _cacheByDemName[_vrtFileName] = this.Sources().ToList();
-                    }
 
+                if (_cacheByDemName == null)
+                {
+                    _cacheByDemName = new ConcurrentDictionary<string, List<GDALSource>>();
                 }
+                if (_cacheByDemName.ContainsKey(vrtFileName) == false)
+                {
+                    _cacheByDemName[dataSet.Name] = this.GetSources(vrtFileName, localVrtUri, remoteVrtUri).ToList();
+                }
+
 
             }
             catch (Exception ex)
             {
-                Trace.TraceError("Unhandled exception: " + ex.Message);
-                Trace.TraceInformation(ex.ToString());
+                _logger.LogError("Unhandled exception: " + ex.Message);
+                _logger.LogInformation(ex.ToString());
                 throw;
             }
+        }
+
+        private bool IsCorrupted(string vrtFileName)
+        {
+            return false;
         }
 
         private double[] _geoTransform;
@@ -149,69 +151,77 @@ namespace DEM.Net.Core
         /// Supports only VRTRasterBand with ComplexSource or SimpleSource
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<GDALSource> Sources()
+        public IEnumerable<GDALSource> Sources(DEMDataSet dataSet)
         {
-            if (_useMemCache && _cacheByDemName.ContainsKey(_vrtFileName))
+            if (_cacheByDemName.ContainsKey(dataSet.Name))
             {
-                foreach (var item in _cacheByDemName[_vrtFileName])
+                foreach (var item in _cacheByDemName[dataSet.Name])
                 {
                     yield return item;
                 }
             }
             else
             {
-                // Create an XmlReader
-                using (FileStream fileStream = new FileStream(_vrtFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                using (XmlReader reader = XmlReader.Create(fileStream))
+                throw new Exception("Must call Init(dataSet) first !");
+            }
+
+        }
+
+        private IEnumerable<GDALSource> GetSources(string vrtFileName, Uri localUri, Uri remoteUri)
+        {
+
+            // Create an XmlReader
+            using (FileStream fileStream = new FileStream(vrtFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (XmlReader reader = XmlReader.Create(fileStream))
+            {
+                if (reader.ReadToFollowing("GeoTransform"))
                 {
-                    if (reader.ReadToFollowing("GeoTransform"))
-                    {
-                        _geoTransform = ParseGeoTransform(reader.ReadElementContentAsString());
-                    }
-                    else
-                        throw new Exception("GeoTransform element not found!");
+                    _geoTransform = ParseGeoTransform(reader.ReadElementContentAsString());
+                }
+                else
+                    throw new Exception("GeoTransform element not found!");
 
-                    string sourceName = "";
-                    if (reader.ReadToFollowing("VRTRasterBand"))
+                string sourceName = "";
+                if (reader.ReadToFollowing("VRTRasterBand"))
+                {
+                    _properties = new Dictionary<string, string>();
+                    while (reader.Read())
                     {
-                        _properties = new Dictionary<string, string>();
-                        while (reader.Read())
+                        if (reader.NodeType == XmlNodeType.Element)
                         {
-                            if (reader.NodeType == XmlNodeType.Element)
+                            if (reader.Name == "ComplexSource" || reader.Name == "SimpleSource")
                             {
-                                if (reader.Name == "ComplexSource" || reader.Name == "SimpleSource")
-                                {
-                                    sourceName = reader.Name;
-                                    break;
-                                }
-                                _properties[reader.Name] = reader.ReadElementContentAsString();
+                                sourceName = reader.Name;
+                                break;
                             }
+                            _properties[reader.Name] = reader.ReadElementContentAsString();
                         }
+                    }
 
-                        bool isOnFirstSource = true;
-                        while (isOnFirstSource || reader.ReadToFollowing(sourceName))
-                        {
-                            GDALSource source = ParseGDALSource(reader);
+                    bool isOnFirstSource = true;
+                    while (isOnFirstSource || reader.ReadToFollowing(sourceName))
+                    {
+                        GDALSource source = ParseGDALSource(reader);
 
-                            // SetLocalFileName
-                            source.SourceFileNameAbsolute = new Uri(_remoteVrtUri, source.SourceFileName).ToString();
-                            source.LocalFileName = new Uri(_localVrtUri, source.SourceFileName).LocalPath;
+                        // SetLocalFileName
+                        source.SourceFileNameAbsolute = new Uri(remoteUri, source.SourceFileName).ToString();
+                        source.LocalFileName = new Uri(localUri, source.SourceFileName).LocalPath;
 
-                            // Transform origin
-                            // Xp = padfTransform[0] + P * padfTransform[1] + L * padfTransform[2];
-                            // Yp = padfTransform[3] + P * padfTransform[4] + L * padfTransform[5];
-                            source.OriginLon = _geoTransform[0] + source.DstxOff * _geoTransform[1] + source.DstyOff * _geoTransform[2];
-                            source.OriginLat = _geoTransform[3] + source.DstxOff * _geoTransform[4] + source.DstyOff * _geoTransform[5];
-                            source.DestLon = _geoTransform[0] + (source.DstxOff + source.DstxSize) * _geoTransform[1] + (source.DstyOff + source.DstySize) * _geoTransform[2];
-                            source.DestLat = _geoTransform[3] + (source.DstxOff + source.DstxSize) * _geoTransform[4] + (source.DstyOff + source.DstySize) * _geoTransform[5];
-                            source.BBox = new BoundingBox(source.OriginLon, source.DestLon, source.DestLat, source.OriginLat);
-                            isOnFirstSource = false;
+                        // Transform origin
+                        // Xp = padfTransform[0] + P * padfTransform[1] + L * padfTransform[2];
+                        // Yp = padfTransform[3] + P * padfTransform[4] + L * padfTransform[5];
+                        source.OriginLon = _geoTransform[0] + source.DstxOff * _geoTransform[1] + source.DstyOff * _geoTransform[2];
+                        source.OriginLat = _geoTransform[3] + source.DstxOff * _geoTransform[4] + source.DstyOff * _geoTransform[5];
+                        source.DestLon = _geoTransform[0] + (source.DstxOff + source.DstxSize) * _geoTransform[1] + (source.DstyOff + source.DstySize) * _geoTransform[2];
+                        source.DestLat = _geoTransform[3] + (source.DstxOff + source.DstxSize) * _geoTransform[4] + (source.DstyOff + source.DstySize) * _geoTransform[5];
+                        source.BBox = new BoundingBox(source.OriginLon, source.DestLon, source.DestLat, source.OriginLat);
+                        isOnFirstSource = false;
 
-                            yield return source;
-                        }
+                        yield return source;
                     }
                 }
             }
+
 
         }
 
@@ -304,7 +314,7 @@ namespace DEM.Net.Core
             }
             catch (Exception ex)
             {
-                Trace.TraceError($"Error parsing GDAL source: {ex.Message}");
+                _logger.LogError($"Error parsing GDAL source: {ex.Message}");
             }
 
             return source;
