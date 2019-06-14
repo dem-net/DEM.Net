@@ -4,8 +4,8 @@ namespace DEM.Net.Core
 {
     public interface IGDALVRTFileService
     {
-        DEMDataSet Dataset { get; }
-        void Setup(bool useMemoryCache);
-        IEnumerable<GDALSource> Sources();
+        void Setup(DEMDataSet dataset, string dataSetLocalDir);
+
+        IEnumerable<GDALSource> Sources(DEMDataSet dataset);
     }
 }

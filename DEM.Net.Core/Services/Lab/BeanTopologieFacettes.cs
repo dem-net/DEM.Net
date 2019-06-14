@@ -38,7 +38,7 @@ namespace DEM.Net.Core.Services.Lab
         public Dictionary<int, BeanPoint_internal> p11_pointsFacettesByIdPoint { get; set; }
         public Dictionary<string, BeanArc_internal> p12_arcsByCode { get; set; }
         public Dictionary<int, BeanFacette_internal> p13_facettesById { get; set; }
-        //
+          //
         public BeanFacette_internal p21_facetteAvecEcartAbsoluMax { get; set; }
         
         

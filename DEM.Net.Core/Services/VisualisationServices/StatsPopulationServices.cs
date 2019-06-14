@@ -210,6 +210,7 @@ namespace DEM.Net.Core.Services.VisualisationServices
             }
             return v_classes;
         }
+        //
         public Dictionary<int, double> GetSeuilBasClasses_memeEspaceInterclasse(int p_nbreClasses, double p_valeurMin, double p_valeurMax)
         {
             Dictionary<int, double> v_seuilsBas = new Dictionary<int, double>();
@@ -231,8 +232,7 @@ namespace DEM.Net.Core.Services.VisualisationServices
                 throw;
             }
             return v_seuilsBas;
-        }
-      
+        } 
         public Dictionary<int, double> GetSeuilBasClasses_parIsoQuantite(Dictionary<int, double> p_valeurParObjet, int p_nbreClasses)
         {
             Dictionary<int, double> v_seuilsBas = new Dictionary<int, double>();

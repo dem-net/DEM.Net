@@ -34,7 +34,7 @@ namespace DEM.Net.Core
 	//
 	// Code from https://gist.github.com/oliverheilig/7777382
 	//
-	public static class DouglasPeucker
+	internal static class DouglasPeucker
 	{
 		/// <summary>
 		/// Uses the Douglas Peucker algorithim to reduce the number of points.

@@ -186,7 +186,7 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="points">Input list of points</param>
         /// <returns><see cref="ElevationMetrics"/> object</returns>
-		public static ElevationMetrics ComputeMetrics(List<GeoPoint> points)
+		internal static ElevationMetrics ComputeMetrics(IList<GeoPoint> points)
 		{
 			ElevationMetrics metrics = new ElevationMetrics();
 			double total = 0;

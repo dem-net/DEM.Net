@@ -36,11 +36,11 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core
 {
-     public class RasterService : IRasterService
+    public class RasterService : IRasterService
     {
         const string APP_NAME = "DEM.Net";
         const string MANIFEST_DIR = "manifest";
-        GDALVRTFileService _gdalService;
+        private readonly IGDALVRTFileService _gdalVrtService;
         private readonly ILogger<RasterService> _logger;
 
         private readonly string _localDirectory;
@@ -51,9 +51,10 @@ namespace DEM.Net.Core
             get { return _localDirectory; }
         }
 
-        public RasterService(ILogger<RasterService> logger = null)
+        public RasterService(IGDALVRTFileService gdalVrtService, ILogger<RasterService> logger = null)
         {
             _logger = logger;
+            _gdalVrtService = gdalVrtService;
             //_localDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), APP_NAME);
             _localDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), APP_NAME);
             if (!Directory.Exists(_localDirectory))
@@ -300,13 +301,10 @@ namespace DEM.Net.Core
         public List<DemFileReport> GenerateReport(DEMDataSet dataSet, BoundingBox bbox = null)
         {
             List<DemFileReport> statusByFile = new List<DemFileReport>();
-            if (_gdalService == null || _gdalService.Dataset.Name != dataSet.Name)
-            {
-                _gdalService = new GDALVRTFileService(GetLocalDEMPath(dataSet), dataSet);
-                _gdalService.Setup(true);
-            }
 
-            foreach (GDALSource source in _gdalService.Sources())
+            _gdalVrtService.Setup(dataSet, GetLocalDEMPath(dataSet));
+
+            foreach (GDALSource source in _gdalVrtService.Sources(dataSet))
             {
 
                 if (bbox == null || BoundingBoxIntersects(source.BBox, bbox))
@@ -331,13 +329,9 @@ namespace DEM.Net.Core
 
         public DemFileReport GenerateReportForLocation(DEMDataSet dataSet, double lat, double lon)
         {
-            if (_gdalService == null || _gdalService.Dataset.Name != dataSet.Name)
-            {
-                _gdalService = new GDALVRTFileService(GetLocalDEMPath(dataSet), dataSet);
-                _gdalService.Setup(true);
-            }
+            _gdalVrtService.Setup(dataSet, GetLocalDEMPath(dataSet));
 
-            foreach (GDALSource source in _gdalService.Sources())
+            foreach (GDALSource source in _gdalVrtService.Sources(dataSet))
             {
 
                 if (BoundingBoxIntersects(source.BBox, lat, lon))
@@ -360,7 +354,7 @@ namespace DEM.Net.Core
             return null;
         }
 
-      
+
     }
 
 

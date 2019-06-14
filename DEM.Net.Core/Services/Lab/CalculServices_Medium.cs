@@ -1979,7 +1979,210 @@ namespace DEM.Net.Core.Services.Lab
             return v_codeArcsOrdonnes;
         }
 
+        public void RecalculFacettes(ref BeanTopologieFacettes p_topol)
+        {
+            try
+            {
+                List<BeanFacette_internal> v_facettes = new List<BeanFacette_internal>();
+                //
+                BeanArc_internal v_arcInitial = p_topol.p12_arcsByCode.Values.First();
+                Dictionary<string, int> v_nbreBordsTraites;
+                v_nbreBordsTraites = p_topol.p12_arcsByCode.ToDictionary(c => c.Key, c => 0);
+                //
+                BeanFacette_internal v_facette;
+                BeanArc_internal v_arcATester;
+                int v_avct;
+                foreach (string v_codeArc in v_nbreBordsTraites.Keys)
+                {
+                    v_avct = v_nbreBordsTraites[v_codeArc];
+                    if (v_avct == 2)
+                    {
+                        continue;
+                    }
+                    v_arcATester = p_topol.p12_arcsByCode[v_codeArc];
+                    if (v_avct == 0)
+                    {
+                        v_facette = ConstruitFacette(v_arcATester, ref p_topol, ref v_nbreBordsTraites, true);
+                        v_facettes.Add(v_facette);
+                        v_facette = ConstruitFacette(v_arcATester, ref p_topol, ref v_nbreBordsTraites, false);
+                        v_facettes.Add(v_facette);
+                        v_avct = 2;
+                    }
+                    if (v_avct == 1)
+                    {
+                        if(v_arcATester.p21_facetteGauche!=null)
+                        {
+                            v_facette = ConstruitFacette(v_arcATester, ref p_topol, ref v_nbreBordsTraites, true);
+                        }
+                        else
+                        {
+                            v_facette = ConstruitFacette(v_arcATester, ref p_topol, ref v_nbreBordsTraites, false);
+                        }
+                    }
+                }
+                p_topol.p13_facettesById = v_facettes.ToDictionary(c => c.p00_idFacette, c => c);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
+        private BeanFacette_internal ConstruitFacette(BeanArc_internal p_arcATesterDebut,ref BeanTopologieFacettes p_topol, ref Dictionary<string, int> p_nbreBordsTraitesParArc, bool p_aDroite_sinonAGauche)
+        {
+            BeanFacette_internal v_facette = new BeanFacette_internal();
+            try
+            {
+                v_facette.p02_arcs = new List<BeanArc_internal>();
+                v_facette.p01_pointsDeFacette = new List<BeanPoint_internal>();
+                //
+                if(p_aDroite_sinonAGauche)
+                {
+                    p_arcATesterDebut.p22_facetteDroite = v_facette;
+                }
+                else
+                {
+                    p_arcATesterDebut.p21_facetteGauche = v_facette;
+                }
+                p_nbreBordsTraitesParArc[p_arcATesterDebut.p01_hcodeArc]++;
+                //
+                v_facette.p02_arcs.Add(p_arcATesterDebut);
+                v_facette.p01_pointsDeFacette.Add(p_arcATesterDebut.p11_pointDbt);
+                //
+               BeanArc_internal v_arcSuivant;
+                v_arcSuivant = GetArcSuivant(p_arcATesterDebut, ref p_topol, p_aDroite_sinonAGauche);
+                while (v_arcSuivant.p01_hcodeArc!= p_arcATesterDebut.p01_hcodeArc)
+                {
+                    v_facette.p02_arcs.Add(v_arcSuivant);
+                    v_facette.p01_pointsDeFacette.Add(v_arcSuivant.p11_pointDbt);
+                    //
+                    if (p_aDroite_sinonAGauche)
+                    {
+                        v_arcSuivant.p22_facetteDroite = v_facette;
+                    }
+                    else
+                    {
+                        v_arcSuivant.p21_facetteGauche = v_facette;
+                    }
+                    p_nbreBordsTraitesParArc[v_arcSuivant.p01_hcodeArc]++;
+                }
+            }
+            catch (Exception)
+            {
 
+                throw;
+            }
+            return v_facette;
+        }
+        private BeanArc_internal GetArcSuivant(BeanArc_internal p_arcCourant,ref BeanTopologieFacettes p_topol, bool p_aDroite_sinonAGauche)
+        {
+            BeanArc_internal v_arcRetour = null;
+            try
+            {
+                BeanPoint_internal v_pointFin = p_arcCourant.p12_pointFin;
+                List<string> v_arcsSuivantsOrdonnes = v_pointFin.p42_ordonnancementHorairesArcs;
+              
+                for (int v_index = 0; v_index < v_arcsSuivantsOrdonnes.Count; v_index++)
+                {
+                    if (v_arcsSuivantsOrdonnes[v_index] == p_arcCourant.p01_hcodeArc)
+                    {
+                        if(!p_aDroite_sinonAGauche)//A gauche
+                        {
+                            if (v_index > 0)
+                            {
+                                v_arcRetour = p_topol.p12_arcsByCode[v_arcsSuivantsOrdonnes[v_index - 1]];
+                            }
+                            else
+                            {
+                                v_arcRetour = p_topol.p12_arcsByCode[v_arcsSuivantsOrdonnes.Last()];
+                            }
+                        }
+                        /////
+                        ///  if(p_aDroite_sinonAGauche) //A droite
+                        {
+                            if (v_index < v_arcsSuivantsOrdonnes.Count - 1)
+                            {
+                                v_arcRetour = p_topol.p12_arcsByCode[v_arcsSuivantsOrdonnes[v_index + 1]];
+                            }
+                            else
+                            {
+                                v_arcRetour = p_topol.p12_arcsByCode[v_arcsSuivantsOrdonnes.First()];
+                            }
+                        }
+                        break;
+                    }
+                }//FIN FOR
+                ReorienteArcSiBesoin(ref v_arcRetour, ref p_topol, v_pointFin);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return v_arcRetour;
+        }
+        public bool ReorienteArcSiBesoin(ref BeanArc_internal p_arc, ref BeanTopologieFacettes p_topol,BeanPoint_internal p_ptDebut)
+        {
+            if (p_arc.p12_pointFin == p_ptDebut)
+            {
+                InverserArc(ref p_arc, ref p_topol);
+                return true;
+            }
+          if (p_arc.p11_pointDbt== p_ptDebut)
+            {
+                return false;
+            }
+            throw new Exception("Le point " + p_ptDebut.p00_id + " n'est pas un point de l'arc " + p_arc.p00_idArc);
+        }
+        public void InverserArc(ref BeanArc_internal p_arc, ref BeanTopologieFacettes p_topol)
+        {
+            BeanPoint_internal p_ptDebut = p_arc.p11_pointDbt;
+            BeanPoint_internal p_ptFin = p_arc.p12_pointFin;
+            BeanFacette_internal p_facG = p_arc.p21_facetteGauche;
+            BeanFacette_internal p_facD = p_arc.p22_facetteDroite;
+            //
+            p_arc.p12_pointFin = p_ptDebut;
+            p_arc.p11_pointDbt = p_ptFin;
+            p_arc.p21_facetteGauche = p_facD;
+            p_arc.p22_facetteDroite = p_facG;
+        }
+        public bool SupprimerUneFacette(ref BeanTopologieFacettes p_topologieFacette,ref BeanFacette_internal p_facetteASupprimer,bool p_seulementSiFacetteExterne_vf)
+        {
+            bool v_parcelleSupprimee_vf=false;
+            try
+            {
+                if (p_seulementSiFacetteExterne_vf && p_facetteASupprimer.p02_arcs.Where(c => c.p20_statutArc == enumStatutArc.arcExterne).Count()==0)
+                {
+                    return false;
+                }
+                List<BeanArc_internal> v_arcsSupprimer = p_facetteASupprimer.p02_arcs.Where(c => c.p20_statutArc == enumStatutArc.arcExterne).ToList();
+               
+                List<BeanArc_internal> v_arcsNonExternes = p_facetteASupprimer.p02_arcs.Where(c => c.p20_statutArc != enumStatutArc.arcExterne).ToList();
+                foreach(BeanArc_internal v_arcNonExterne in v_arcsNonExternes)
+                {
+                    v_arcNonExterne.p20_statutArc = enumStatutArc.arcExterne;
+                    if (v_arcNonExterne.p21_facetteGauche.p00_idFacette == p_facetteASupprimer.p00_idFacette)
+                    {
+                        v_arcNonExterne.p21_facetteGauche = null;
+                    }
+                    else
+                    {
+                        v_arcNonExterne.p22_facetteDroite = null;
+                    }
+                }
+                p_topologieFacette.FacetteSupprimer(p_facetteASupprimer);
+                List<string> v_hcodesASupprimer=v_arcsSupprimer.Select(c => c.p01_hcodeArc).ToList();
+                BeanArc_internal v_arcASupprimer;
+                foreach (string v_codeArcASupprimer in v_hcodesASupprimer)
+                {
+                    v_arcASupprimer = p_topologieFacette.p12_arcsByCode[v_codeArcASupprimer];
+                    p_topologieFacette.ArcSupprimer(v_arcASupprimer);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return v_parcelleSupprimee_vf;
+        }
     }
 }
