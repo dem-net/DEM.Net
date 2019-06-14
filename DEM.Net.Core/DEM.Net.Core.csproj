@@ -8,7 +8,11 @@
     <Copyright>Xavier Fischer, Frédéric Aubin</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
-    <PackageReleaseNotes>Symbols package generated alongside</PackageReleaseNotes>
+    <PackageReleaseNotes>Symbols package generated alongside
+Check for VRT file corruption
+Updated tests for gdal singleton service
+GDALVRTFileService is now a singleton with its own cache
+Point list extensions</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation</PackageTags>
     <Title>DEM.Net</Title>
     <Product>DEM.Net</Product>
