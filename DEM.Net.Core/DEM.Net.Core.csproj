@@ -60,6 +60,22 @@ Point list extensions</PackageReleaseNotes>
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0006" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Services\Voronoi\BeanTopologie\**" />
+    <EmbeddedResource Remove="Services\Voronoi\BeanTopologie\**" />
+    <None Remove="Services\Voronoi\BeanTopologie\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologie.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologieArc.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologieArcComposant.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologieArcComposite.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologieIlot.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologieVertex.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\enumTopologie.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\ITopologieService.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\TopologieService.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="BitMiracle.LibTiff.NET" Version="2.4.633" />
@@ -81,7 +97,7 @@ Point list extensions</PackageReleaseNotes>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\FortuneVoronoi\" />
+    <Folder Include="Services\Voronoi\FortuneVoronoi\" />
   </ItemGroup>
 
   <ProjectExtensions>
