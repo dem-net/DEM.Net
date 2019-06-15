@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace DEM.Net.Core.FortuneVoronoi
+namespace DEM.Net.Core.Voronoi
 {
 	public interface IVoronoiServices
 	{

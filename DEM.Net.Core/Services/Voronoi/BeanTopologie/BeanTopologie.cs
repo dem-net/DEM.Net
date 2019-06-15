@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DEM.Net.Core.FortuneVoronoi
+namespace DEM.Net.Core.Voronoi
 {
 	public class BeanTopologie: ICloneable
 	{

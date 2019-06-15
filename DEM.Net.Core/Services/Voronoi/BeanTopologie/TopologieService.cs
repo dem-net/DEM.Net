@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using GeoAPI.Geometries;
 
-namespace DEM.Net.Core.FortuneVoronoi
+namespace DEM.Net.Core.Voronoi
 {
     public class TopologieService : ITopologieService
     {

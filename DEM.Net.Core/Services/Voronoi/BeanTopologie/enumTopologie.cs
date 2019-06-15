@@ -1,5 +1,5 @@
 ﻿
-namespace DEM.Net.Core.FortuneVoronoi
+namespace DEM.Net.Core.Voronoi
 {
 	public enum enumTopologieArcAmontAval
 	{

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using GeoAPI.Geometries;
 
-namespace DEM.Net.Core.FortuneVoronoi
+namespace DEM.Net.Core.Voronoi
 {
 	/// <summary>
 	/// Arc géométriquement composé de l'assemblage de plusieurs arcs transmis

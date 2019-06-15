@@ -1,5 +1,5 @@
 ﻿
-namespace DEM.Net.Core.FortuneVoronoi
+namespace DEM.Net.Core.Voronoi
 {
 	/// <summary>
 	/// Objet décrivant un arc utilisé pour construire un ARC COMPOSITE

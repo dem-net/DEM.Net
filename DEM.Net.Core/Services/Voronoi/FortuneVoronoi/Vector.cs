@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace DEM.Net.Core.FortuneVoronoi
+namespace DEM.Net.Core.Voronoi
 {
 	/// <summary>
 	/// A vector class, implementing all interesting features of vectors

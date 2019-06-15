@@ -4,7 +4,7 @@ using System.Linq;
 using GeoAPI.Geometries;
 using GeoAPI.Geometries;
 
-namespace DEM.Net.Core.FortuneVoronoi
+namespace DEM.Net.Core.Voronoi
 {
 	public class BeanTopologieArc : ICloneable
 	{
