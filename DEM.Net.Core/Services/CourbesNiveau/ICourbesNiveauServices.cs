@@ -1,7 +1,7 @@
 ﻿using DEM.Net.Core.Services.Lab;
 using System.Collections.Generic;
 
-namespace Spir.Commun.Service.Technical.Cartographie.Service.CourbesNiveau
+namespace DEM.Net.Core.CourbesNiveau
 {
 	public interface ICourbesNiveauServices
 	{

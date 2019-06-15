@@ -80,6 +80,10 @@ Point list extensions</PackageReleaseNotes>
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\FortuneVoronoi\" />
+  </ItemGroup>
+
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>

@@ -33,11 +33,12 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core.Services.Lab
 {
+
     public class UtilitairesServices : IUtilitairesServices
     {
-        public Point ConstructPoint(double x, double y, int srid)
+        public NetTopologySuite.Geometries.Point ConstructPoint(double x, double y, int srid)
         {
-            return new Point(x, y) { SRID = srid };
+            return new NetTopologySuite.Geometries.Point(x, y) { SRID = srid };
         }
         
 

@@ -56,7 +56,7 @@ using System.Threading.Tasks;
  */
 
 
-namespace FruitiereMapsLib.Services.Data
+namespace DEM.Net.Core.Services.Lab
 {
     public class Point
     {
