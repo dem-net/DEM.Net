@@ -28,8 +28,6 @@ using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DEM.Net.Core.Services.Lab
 {
@@ -94,6 +92,28 @@ namespace DEM.Net.Core.Services.Lab
             }
             return v_code;
         }
+
+        public Dictionary<string, List<BeanPoint_internal>> GetPointsRegroupesParHCode(List<BeanPoint_internal> p_dataPointsTests)
+        {
+            Dictionary<string, List<BeanPoint_internal>> v_pourDeduplication = new Dictionary<string, List<BeanPoint_internal>>();
+            try
+            {
+                foreach (BeanPoint_internal v_point in p_dataPointsTests)
+                {
+                    if (!v_pourDeduplication.ContainsKey(v_point.p01_hCodeGeog))
+                    {
+                        v_pourDeduplication.Add(v_point.p01_hCodeGeog, new List<BeanPoint_internal>());
+                    }
+                    v_pourDeduplication[v_point.p01_hCodeGeog].Add(v_point);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return v_pourDeduplication;
+        }
+
         //
         public IGeometry GetGeometryArc(BeanArc_internal p_arc, bool ifPt1AndPt2IqualReturnPointElseNull)
         {
