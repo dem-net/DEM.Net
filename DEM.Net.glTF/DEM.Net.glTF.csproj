@@ -3,12 +3,12 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <PackageId>DEM.Net.glTF</PackageId>
-    <Version>0.1.0-beta0011</Version>
+    <Version>0.1.0-beta0012</Version>
     <Authors>Xavier Fischer</Authors>
     <Copyright>Xavier Fischer</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net.glTF</PackageProjectUrl>
-    <PackageReleaseNotes>Updated to DEM.Net.Core 0.1.0-beta0011</PackageReleaseNotes>
+    <PackageReleaseNotes>Symbols package generated alongside</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation, Mesh, 3D, glTF, Map, STL</PackageTags>
     <Title>DEM.Net</Title>
     <Product>DEM.Net</Product>
@@ -22,6 +22,8 @@
 
   <!-- Build package only in Release -->
   <PropertyGroup Condition=" '$(Configuration)' == 'Release'">
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>

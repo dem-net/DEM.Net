@@ -29,8 +29,10 @@ using System.Collections.Generic;
 
 namespace DEM.Net.Core.Services.Lab
 {
+
     public interface IUtilitairesServices
     {
+
         //string GethCodeGeogPoint(double[] p_coord, int p_nbreDecimalesMoins1SiToutes=2, char p_separateur = '_');
         string GetHCodeGeogPoint(double[] p_coordPoint, int p_nbreCaractSignifiants = 10, char p_separateur = '_');
         string GetHCodeGeogPoint(List<double[]> p_points, int p_nbreCaractSignifiants = 10, char p_separateur = '_');
@@ -40,6 +42,6 @@ namespace DEM.Net.Core.Services.Lab
         IGeometry GetGeometryArc(BeanArc_internal p_arc, bool ifPt1AndPt2IqualReturnPointElseNull);
         IGeometry GetGeometryLine(double[] p_coordPoint1, double[] p_coordPoint2, int p_srid, bool ifPt1AndPt2IqualReturnPointElseNull);
         IGeometry GetGeometryPolygon(List<double[]> p_coordPointsDuContour, int p_srid);
-        Point ConstructPoint(double x, double y, int srid);
+        NetTopologySuite.Geometries.Point ConstructPoint(double x, double y, int srid);
     }
 }

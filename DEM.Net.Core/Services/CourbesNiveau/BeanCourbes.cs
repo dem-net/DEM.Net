@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Spir.Commun.Service.Technical.Cartographie.Service.CourbesNiveau
+namespace DEM.Net.Core.CourbesNiveau
 {
 	public class BeanCourbes
 	{

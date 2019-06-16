@@ -54,7 +54,7 @@ namespace DEM.Net.Test
             Assert.NotNull(geoPoints);
             Assert.Equal(expectedPointCount, geoPoints.Count);
 
-            var metrics = GeometryService.ComputeMetrics(geoPoints);
+            var metrics = geoPoints.ComputeMetrics();
             Assert.NotNull(metrics);
             Assert.Equal(expectedClimb, metrics.Climb);
             Assert.Equal(expectedDescent, metrics.Descent);
