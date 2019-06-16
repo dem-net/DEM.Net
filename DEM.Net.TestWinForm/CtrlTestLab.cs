@@ -340,9 +340,11 @@ namespace DEM.Net.TestWinForm
             v_pourDeduplication=FLabServices.createUtilitaires().GetPointsRegroupesParHCode(_dataPointsTests);
             List<BeanPoint_internal> v_pointsDedupliques = v_pourDeduplication.SelectMany(c => c.Value).ToList();
             //
-            double param_ecartMiniEntreSiteEnM = 0.00000001;
             BeanTopologieFacettes v_topolFacettes;
-            v_topolFacettes=FLabServices.createVoronoiServices().GetTopologieVoronoi(v_pointsDedupliques, param_srid, param_ecartMiniEntreSiteEnM);
+            v_topolFacettes=FLabServices.createVoronoiServices().GetTopologieVoronoi(v_pointsDedupliques, param_srid);
+            FServicesApplicatifs.createVisuSpatialTrace().GetVisuArcsTopologie(v_topolFacettes, Color.Red, "Vor");
+            FServicesApplicatifs.createVisuSpatialTrace().GetVisuIlots(v_topolFacettes, Color.Cyan, "Ilot V");
+            FServicesApplicatifs.createVisuSpatialTrace().GetVisuPoints(v_pointsDedupliques, Color.Green, 3, "Pt");
         }
     }
 }

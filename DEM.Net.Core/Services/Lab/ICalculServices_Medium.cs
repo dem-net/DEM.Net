@@ -23,6 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using GeoAPI.Geometries;
 using System.Collections.Generic;
 
 namespace DEM.Net.Core.Services.Lab
@@ -50,6 +51,6 @@ namespace DEM.Net.Core.Services.Lab
         List<string> GetOrdonnancementArcsAutourPointFacette(BeanPoint_internal p_pointFacette, int p_idPremierArc, bool p_sensHoraireSinonAntihoraire_vf);
         void RecalculFacettes(ref BeanTopologieFacettes p_topol);
         bool SupprimerUneFacette(ref BeanTopologieFacettes p_topologieFacette, ref BeanFacette_internal p_facetteASupprimer, bool p_seulementSiFacetteExterne_vf);
-
+        IGeometry GetGeometryPolygoneFacette(BeanFacette_internal p_facette, ref BeanTopologieFacettes p_topologieFacette);
     }
 }

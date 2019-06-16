@@ -1,108 +1,66 @@
+using DEM.Net.Core.Services.Lab;
 using GeoAPI.Geometries;
+using NetTopologySuite.Diagnostics.Tracing;
+using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
+using System.Linq;
 
 namespace DEM.Net.Core.Voronoi
 {
     public class VoronoiServices : IVoronoiServices
     {
-        public BeanTopologie GetTopologieVoronoiByDicoPointsEtMbo(Dictionary<int, IGeometry> p_dicoPointsAvecId, double[] p_coodMinMaxXy)
+        public BeanTopologieFacettes GetTopologieVoronoiByDicoPointsEtMbo(Dictionary<int, Point> p_dicoPointsAvecId, double[] p_coodMinMaxXy, int p_srid)
         {
-            BeanTopologie v_topologieVoronoi = new BeanTopologie();
+            BeanTopologieFacettes v_topol = new BeanTopologieFacettes();
             try
             {
-                BeanAlimentationVoronoi v_BeanDAlimentation = GetBeanAlimentationVoronoiByDicoPointsEtMbo(p_dicoPointsAvecId, p_coodMinMaxXy);
+                BeanAlimentationVoronoi v_BeanDAlimentation = GetBeanAlimentationVoronoiByDicoPointsEtMbo(p_dicoPointsAvecId, p_coodMinMaxXy, p_srid);
 
-                if (!v_BeanDAlimentation.contientObjetsInvalidesVf)
+                if (!v_BeanDAlimentation.p22_contientObjetsInvalidesVf)
                 {
                     VoronoiGraph v_voronoiGraph = GetVoronoiGraph(v_BeanDAlimentation);
-                    v_topologieVoronoi = GetBeanTopologieByVoronoiGraph(v_voronoiGraph, v_BeanDAlimentation);
+                    v_topol = GetBeanTopologieByVoronoiGraph(v_voronoiGraph, v_BeanDAlimentation);
                 }
             }
             catch (Exception v_ex)
             {
                 throw;
             }
-            return v_topologieVoronoi;
+            return v_topol;
         }
-        public BeanTopologie GetTopologieVoronoiByDicoPointsEtRegroupementDesPointsEtMbo(Dictionary<int, IGeometry> p_dicoPointsDesSurfaces, Dictionary<int, List<int>> p_dicoDesPointsParSurfaces, double[] p_coodMinMaxXy)
+    
+        public BeanTopologieFacettes GetTopologieVoronoiByDicoPoints(Dictionary<int, Point> p_dicoPointsAvecId, int p_srid, enumVoronoiStrategiePointsDupliques p_strategieSiDuplication = enumVoronoiStrategiePointsDupliques.arretTraitement)
         {
-            BeanTopologie v_topologieFusion = new BeanTopologie();
+            BeanTopologieFacettes v_topol = new BeanTopologieFacettes();
             try
             {
-                BeanTopologie v_topologieVoronoi = GetTopologieVoronoiByDicoPointsEtMbo(p_dicoPointsDesSurfaces, p_coodMinMaxXy);
-
-                //#if DEBUG
-                //				visuIlotsDansDico(v_topologieVoronoi.BT_ListeIlots, "Vor");
-                //#endif
-
-                ITopologieService v_topologieService = new TopologieService();
-                //Contrôle topologie
-                bool v_test = v_topologieService.IsTopologieIlotsOk_vf(v_topologieVoronoi);
-                //Contrôle adéquation du p_dicoPointsDesSurfaces
-                v_topologieFusion = v_topologieService.GetTopologieDIlotsFusionnes(v_topologieVoronoi, p_dicoDesPointsParSurfaces);
-
-                //#if DEBUG
-                //				visuIlotsDansDico(v_topologieFusion.BT_ListeIlots, "Fusion");
-                //#endif
-
-                //#if DEBUG
-                //				List<IGeometry> v_frequencesTailleSegments = v_topologieService.GetCourbeFrequencesCumuleesByPasDesLongueursDeSegments(v_topologieVoronoi.BT_ListeArcs, 30);
-                //#endif
-            }
-            catch (Exception v_ex)
-            {
-                throw v_ex;
-            }
-            return v_topologieFusion;
-        }
-
-        public BeanTopologie GetTopologieVoronoiByDicoPoints(Dictionary<int, IGeometry> p_dicoPointsAvecId, enumVoronoiStrategiePointsDupliques p_strategieSiDuplication = enumVoronoiStrategiePointsDupliques.arretTraitement)
-        {
-            BeanTopologie v_topologieVoronoi = new BeanTopologie();
-            try
-            {
-                BeanAlimentationVoronoi v_BeanDAlimentation = GetBeanAlimentationVoronoiByDicoPoints(p_dicoPointsAvecId);
-                v_BeanDAlimentation.parametrage.gestionPointsDupliques = p_strategieSiDuplication;
-                if (!v_BeanDAlimentation.contientObjetsInvalidesVf)
+                BeanAlimentationVoronoi v_BeanDAlimentation = GetBeanAlimentationVoronoiByDicoPoints(p_dicoPointsAvecId, p_srid);
+                v_BeanDAlimentation.p12_parametrage.gestionPointsDupliques = p_strategieSiDuplication;
+                if (!v_BeanDAlimentation.p22_contientObjetsInvalidesVf)
                 {
                     VoronoiGraph v_voronoiGraph = GetVoronoiGraph(v_BeanDAlimentation);
-                    v_topologieVoronoi = GetBeanTopologieByVoronoiGraph(v_voronoiGraph, v_BeanDAlimentation);
+                    v_topol = GetBeanTopologieByVoronoiGraph(v_voronoiGraph, v_BeanDAlimentation);
                 }
             }
             catch (Exception v_ex)
             {
                 throw v_ex;
             }
-            return v_topologieVoronoi;
+            return v_topol;
         }
-        public BeanTopologie GetTopologieVoronoiByDicoPointsEtRegroupementDesPoints(Dictionary<int, IGeometry> p_dicoPointsDesSurfaces, Dictionary<int, List<int>> p_dicoDesPointsParSurfaces)
-        {
-            BeanTopologie v_topologieFusion = new BeanTopologie();
-            try
-            {
-                BeanTopologie v_topologieVoronoi = GetTopologieVoronoiByDicoPoints(p_dicoPointsDesSurfaces);
-                ITopologieService v_topologieService = new TopologieService();
-                v_topologieFusion = v_topologieService.GetTopologieDIlotsFusionnes(v_topologieVoronoi, p_dicoDesPointsParSurfaces);
-            }
-            catch (Exception v_ex)
-            {
-                throw v_ex;
-            }
-            return v_topologieFusion;
-        }
+       
         //
-        public BeanTriangulationDelaunay GetTriangulationDeDelaunayByDicoPoints(Dictionary<int, IGeometry> p_dicoPointsAvecId)
+        public BeanTriangulationDelaunay GetTriangulationDeDelaunayByDicoPoints(Dictionary<int, Point> p_dicoPointsAvecId, int p_srid)
         {
             BeanTriangulationDelaunay v_trOut = null;
             try
             {
-                BeanAlimentationVoronoi v_BeanDAlimentation = GetBeanAlimentationVoronoiByDicoPoints(p_dicoPointsAvecId);
-                v_BeanDAlimentation.parametrage.gestionPointsDupliques = enumVoronoiStrategiePointsDupliques.deduplicationAleatoire;
+                BeanAlimentationVoronoi v_BeanDAlimentation = GetBeanAlimentationVoronoiByDicoPoints(p_dicoPointsAvecId,p_srid);
+                v_BeanDAlimentation.p12_parametrage.gestionPointsDupliques = enumVoronoiStrategiePointsDupliques.deduplicationAleatoire;
 
-                if (!v_BeanDAlimentation.contientObjetsInvalidesVf)
+                if (!v_BeanDAlimentation.p22_contientObjetsInvalidesVf)
                 {
                     VoronoiGraph v_voronoiGraph = GetVoronoiGraph(v_BeanDAlimentation);
                     v_trOut = GetTriangulationDelaunayByVoronoiGraph(v_voronoiGraph, v_BeanDAlimentation);
@@ -139,7 +97,7 @@ namespace DEM.Net.Core.Voronoi
 
 
 
-        public BeanAlimentationVoronoi GetBeanAlimentationVoronoiByDicoPoints(Dictionary<int, IGeometry> p_DicoPoints)
+        public BeanAlimentationVoronoi GetBeanAlimentationVoronoiByDicoPoints(Dictionary<int, Point> p_DicoPoints, int p_srid)
         {
             BeanAlimentationVoronoi v_BeanAlimentationVoronoi = new BeanAlimentationVoronoi();
             try
@@ -151,7 +109,7 @@ namespace DEM.Net.Core.Voronoi
                 v_pseudoCoordonneesMinMax[3] = -1000000000;
 
                 //
-                v_BeanAlimentationVoronoi = GetBeanAlimentationVoronoiByDicoPointsEtMbo(p_DicoPoints, v_pseudoCoordonneesMinMax);
+                v_BeanAlimentationVoronoi = GetBeanAlimentationVoronoiByDicoPointsEtMbo(p_DicoPoints, v_pseudoCoordonneesMinMax, p_srid);
             }
             catch (Exception v_ex)
             {
@@ -159,50 +117,49 @@ namespace DEM.Net.Core.Voronoi
             }
             return v_BeanAlimentationVoronoi;
         }
-        public BeanAlimentationVoronoi GetBeanAlimentationVoronoiByDicoPointsEtMbo(Dictionary<int, IGeometry> p_DicoPoints, double[] p_coodMinMaxXy)
+        public BeanAlimentationVoronoi GetBeanAlimentationVoronoiByDicoPointsEtMbo(Dictionary<int, Point> p_DicoPoints, double[] p_coodMinMaxXy,int p_srid)
         {
             BeanAlimentationVoronoi v_BeanAlimentationVoronoi = new BeanAlimentationVoronoi();
             try
             {
-                v_BeanAlimentationVoronoi.contientObjetsInvalidesVf = false;
-                v_BeanAlimentationVoronoi.contientObjetsSuperposesVf = false;
-                v_BeanAlimentationVoronoi.territoireSuperieurA200kmVf = false;
 
-                //v_BeanAlimentationVoronoi.xMin = 1000000000;
-                //v_BeanAlimentationVoronoi.yMin = 1000000000;
-                //v_BeanAlimentationVoronoi.xMax = -1000000000;
-                //v_BeanAlimentationVoronoi.yMax = -1000000000;
+                v_BeanAlimentationVoronoi.p11_srid = p_srid;
+                v_BeanAlimentationVoronoi.p22_contientObjetsInvalidesVf = false;
+                v_BeanAlimentationVoronoi.p23_contientObjetsSuperposesVf = false;
+                v_BeanAlimentationVoronoi.p21_territoireSuperieurA200kmVf = false;
 
-                v_BeanAlimentationVoronoi.xMin = p_coodMinMaxXy[0];
-                v_BeanAlimentationVoronoi.yMin = p_coodMinMaxXy[1];
-                v_BeanAlimentationVoronoi.xMax = p_coodMinMaxXy[2];
-                v_BeanAlimentationVoronoi.yMax = p_coodMinMaxXy[3];
+                v_BeanAlimentationVoronoi.p51_xMin = p_coodMinMaxXy[0];
+                v_BeanAlimentationVoronoi.p52_yMin = p_coodMinMaxXy[1];
+                v_BeanAlimentationVoronoi.p53_xMax = p_coodMinMaxXy[2];
+                v_BeanAlimentationVoronoi.p54_yMax = p_coodMinMaxXy[3];
 
                 List<Double[]> v_ListeDoublePourVectors = new List<Double[]>();
                 string v_codeXYPoint;
                 double[] v_DoublePourVector;
                 int v_keyDoublon;
 
-                foreach (KeyValuePair<int, IGeometry> v_point in p_DicoPoints)
+                foreach (KeyValuePair<int, Point> v_point in p_DicoPoints)
                 {
-                    v_BeanAlimentationVoronoi.dicoDesPointsSources.Add(v_point.Key, v_point.Value);
+                    v_BeanAlimentationVoronoi.p10_dicoDesPointsSources.Add(v_point.Key, v_point.Value);
                     if (v_point.Value.OgcGeometryType == OgcGeometryType.Point)
                     {
-                        //Je génère le code à partir des coordonnees
-                        v_codeXYPoint = GetCodeXY((double)v_point.Value.Coordinate.X, (double)v_point.Value.Coordinate.Y);
-                        if (v_BeanAlimentationVoronoi.dicoLienCodeXyKeySource.ContainsKey(v_codeXYPoint))
+                        //On génère le code à partir des coordonnees
+                        //v_codeXYPoint = GetCodeXY((double)v_point.Value.Coordinate.X, (double)v_point.Value.Coordinate.Y);
+                        v_codeXYPoint=FLabServices.createUtilitaires().GetHCodeGeogPoint(new double[2] { (double)v_point.Value.Coordinate.X, (double)v_point.Value.Coordinate.Y });
+
+                        if (v_BeanAlimentationVoronoi.p31_correspondanceHCodePointvsIdPoint.ContainsKey(v_codeXYPoint))
                         {
                             //j'ajoute dans la liste des doublons l'id du point en cours 
-                            v_BeanAlimentationVoronoi.pointsSuperposes.Add(v_point.Key);
-                            v_BeanAlimentationVoronoi.contientObjetsSuperposesVf = true;
+                            v_BeanAlimentationVoronoi.p25_pointsSuperposes.Add(v_point.Key);
+                            v_BeanAlimentationVoronoi.p23_contientObjetsSuperposesVf = true;
                             //+ celui déjà listé s'il n'existe pas déjà
-                            v_BeanAlimentationVoronoi.dicoLienCodeXyKeySource.TryGetValue(v_codeXYPoint, out v_keyDoublon);
-                            if (!v_BeanAlimentationVoronoi.pointsSuperposes.Contains(v_keyDoublon)) { v_BeanAlimentationVoronoi.pointsSuperposes.Add(v_keyDoublon); }
+                            v_BeanAlimentationVoronoi.p31_correspondanceHCodePointvsIdPoint.TryGetValue(v_codeXYPoint, out v_keyDoublon);
+                            if (!v_BeanAlimentationVoronoi.p25_pointsSuperposes.Contains(v_keyDoublon)) { v_BeanAlimentationVoronoi.p25_pointsSuperposes.Add(v_keyDoublon); }
                         }
                         else  //Si l'objet est OK à ce stade...
                         {
                             //J'injecte dans la liste des correspondances
-                            v_BeanAlimentationVoronoi.dicoLienCodeXyKeySource.Add(v_codeXYPoint, v_point.Key);
+                            v_BeanAlimentationVoronoi.p31_correspondanceHCodePointvsIdPoint.Add(v_codeXYPoint, v_point.Key);
                             //
                             v_DoublePourVector = new double[2];
                             v_DoublePourVector[0] = (double)v_point.Value.Coordinate.X;
@@ -212,75 +169,68 @@ namespace DEM.Net.Core.Voronoi
                             v_ListeDoublePourVectors.Add(v_DoublePourVector);
 
                             //récupération des points extrêmes
-                            if (v_BeanAlimentationVoronoi.xMin > (double)v_point.Value.Coordinate.X) { v_BeanAlimentationVoronoi.xMin = (double)v_point.Value.Coordinate.X; }
-                            if (v_BeanAlimentationVoronoi.yMin > (double)v_point.Value.Coordinate.Y) { v_BeanAlimentationVoronoi.yMin = (double)v_point.Value.Coordinate.Y; }
-                            if (v_BeanAlimentationVoronoi.xMax < (double)v_point.Value.Coordinate.X) { v_BeanAlimentationVoronoi.xMax = (double)v_point.Value.Coordinate.X; }
-                            if (v_BeanAlimentationVoronoi.yMax < (double)v_point.Value.Coordinate.Y) { v_BeanAlimentationVoronoi.yMax = (double)v_point.Value.Coordinate.Y; }
+                            if (v_BeanAlimentationVoronoi.p51_xMin > (double)v_point.Value.Coordinate.X) { v_BeanAlimentationVoronoi.p51_xMin = (double)v_point.Value.Coordinate.X; }
+                            if (v_BeanAlimentationVoronoi.p52_yMin > (double)v_point.Value.Coordinate.Y) { v_BeanAlimentationVoronoi.p52_yMin = (double)v_point.Value.Coordinate.Y; }
+                            if (v_BeanAlimentationVoronoi.p53_xMax < (double)v_point.Value.Coordinate.X) { v_BeanAlimentationVoronoi.p53_xMax = (double)v_point.Value.Coordinate.X; }
+                            if (v_BeanAlimentationVoronoi.p54_yMax < (double)v_point.Value.Coordinate.Y) { v_BeanAlimentationVoronoi.p54_yMax = (double)v_point.Value.Coordinate.Y; }
                         }
                     }//Si le IGeometry n'est pas un point (FIN if (v_point.Value.STGeometryType() == OpenGisGeographyType.Point.ToString())
                     else
                     {
-                        v_BeanAlimentationVoronoi.pointsInvalidesSaufSuperposes.Add(v_point.Key);
-                        v_BeanAlimentationVoronoi.contientObjetsInvalidesVf = true;
+                        v_BeanAlimentationVoronoi.p24_pointsInvalidesSaufSuperposes.Add(v_point.Key);
+                        v_BeanAlimentationVoronoi.p22_contientObjetsInvalidesVf = true;
                     }
                 }//FIN foreach
 
                 //Création des points périphériques artificiels
                 Dictionary<int, Double[]> v_dicoPointscadres = GetPointsCadresVoronoi(v_BeanAlimentationVoronoi);
 
-                ////POUR DEBUG
-                //ITopologieService v_topologieServices = new TopologieService();
-                //IGeometry v_geom;
-                //foreach(Double[] v_coordPoint in v_dicoPointscadres.Values)
-                //{
-                //	v_geom = v_topologieServices.GetUnPointIGeometryByCoordonneesXy(v_coordPoint[0], v_coordPoint[1]);
-                //	v_topologieServices.visuGeometry(v_geom, "POINTS CADRES");
-                //}
-                ////FIN DEBUG
-
-
+           
                 //Injection dans les listes
                 Dictionary<int, IGeometry> v_newListePoint = new Dictionary<int, IGeometry>();
 
                 ITopologieService v_topologieService = new TopologieService();
                 foreach (KeyValuePair<int, Double[]> v_pointSup in v_dicoPointscadres)
                 {
-                    v_codeXYPoint = GetCodeXY(v_pointSup.Value[0], v_pointSup.Value[1]);
+                    //v_codeXYPoint = GetCodeXY(v_pointSup.Value[0], v_pointSup.Value[1]);
+                    v_codeXYPoint = FLabServices.createUtilitaires().GetHCodeGeogPoint(new double[2] { v_pointSup.Value[0], v_pointSup.Value[1] });
                     //PUSTULE FAU
-                    if (v_BeanAlimentationVoronoi.dicoLienCodeXyKeySource.ContainsKey(v_codeXYPoint))
+                    if (v_BeanAlimentationVoronoi.p31_correspondanceHCodePointvsIdPoint.ContainsKey(v_codeXYPoint))
                     {
                         continue;
                     }
-                    v_BeanAlimentationVoronoi.dicoLienCodeXyKeySource.Add(v_codeXYPoint, v_pointSup.Key);
-                    v_BeanAlimentationVoronoi.dicoDesPointsSources.Add(v_pointSup.Key, v_topologieService.GetUnPointIGeometryByCoordonneesXy((float)v_pointSup.Value[0], (float)v_pointSup.Value[1]));
+                    v_BeanAlimentationVoronoi.p31_correspondanceHCodePointvsIdPoint.Add(v_codeXYPoint, v_pointSup.Key);
+                    v_BeanAlimentationVoronoi.p10_dicoDesPointsSources.Add(v_pointSup.Key, FLabServices.createUtilitaires().ConstructPoint(v_pointSup.Value[0], v_pointSup.Value[1], p_srid));
+                        
+                   
                     v_ListeDoublePourVectors.Add(v_pointSup.Value);
                 }
 
                 //Changement d'origine des coordonnées
                 //(Indispensable pour pouvoir gérer les calculs sur les coord L93 (>10 puissance 5)) 
-                v_BeanAlimentationVoronoi.origineXCorrigee = (int)(Math.Round(v_BeanAlimentationVoronoi.xMin) - 1);
-                v_BeanAlimentationVoronoi.origineYCorrigee = (int)(Math.Round(v_BeanAlimentationVoronoi.yMin) - 1);
-                if (v_BeanAlimentationVoronoi.parametrage.reductionCoordonneesVf)
+                v_BeanAlimentationVoronoi.p55_origineXCorrigee = (int)(Math.Round(v_BeanAlimentationVoronoi.p51_xMin) - 1);
+                v_BeanAlimentationVoronoi.p56_origineYCorrigee = (int)(Math.Round(v_BeanAlimentationVoronoi.p52_yMin) - 1);
+                if (v_BeanAlimentationVoronoi.p12_parametrage.reductionCoordonneesVf)
                 {
-                    v_BeanAlimentationVoronoi.xMin = v_BeanAlimentationVoronoi.xMin - v_BeanAlimentationVoronoi.origineXCorrigee;
-                    v_BeanAlimentationVoronoi.xMax = v_BeanAlimentationVoronoi.xMax - v_BeanAlimentationVoronoi.origineXCorrigee;
-                    v_BeanAlimentationVoronoi.yMin = v_BeanAlimentationVoronoi.yMin - v_BeanAlimentationVoronoi.origineYCorrigee;
-                    v_BeanAlimentationVoronoi.yMax = v_BeanAlimentationVoronoi.yMax - v_BeanAlimentationVoronoi.origineYCorrigee;
+                    v_BeanAlimentationVoronoi.p51_xMin = v_BeanAlimentationVoronoi.p51_xMin - v_BeanAlimentationVoronoi.p55_origineXCorrigee;
+                    v_BeanAlimentationVoronoi.p53_xMax = v_BeanAlimentationVoronoi.p53_xMax - v_BeanAlimentationVoronoi.p55_origineXCorrigee;
+                    v_BeanAlimentationVoronoi.p52_yMin = v_BeanAlimentationVoronoi.p52_yMin - v_BeanAlimentationVoronoi.p56_origineYCorrigee;
+                    v_BeanAlimentationVoronoi.p54_yMax = v_BeanAlimentationVoronoi.p54_yMax - v_BeanAlimentationVoronoi.p56_origineYCorrigee;
                 }
 
                 foreach (Double[] v_DoubleVectorPourCorrection in v_ListeDoublePourVectors)
                 {
-                    if (v_BeanAlimentationVoronoi.parametrage.reductionCoordonneesVf)
+                    if (v_BeanAlimentationVoronoi.p12_parametrage.reductionCoordonneesVf)
                     {
-                        v_DoubleVectorPourCorrection[0] = v_DoubleVectorPourCorrection[0] - v_BeanAlimentationVoronoi.origineXCorrigee;
-                        v_DoubleVectorPourCorrection[1] = v_DoubleVectorPourCorrection[1] - v_BeanAlimentationVoronoi.origineYCorrigee;
+                        v_DoubleVectorPourCorrection[0] = v_DoubleVectorPourCorrection[0] - v_BeanAlimentationVoronoi.p55_origineXCorrigee;
+                        v_DoubleVectorPourCorrection[1] = v_DoubleVectorPourCorrection[1] - v_BeanAlimentationVoronoi.p56_origineYCorrigee;
                     }
-                    v_BeanAlimentationVoronoi.pointsFormatesPourInsertion.Add(new Vector(v_DoubleVectorPourCorrection));
+                    v_BeanAlimentationVoronoi.p50_pointsFormatesPourInsertion.Add(new Vector(v_DoubleVectorPourCorrection));
                 }
                 //
-                if (((v_BeanAlimentationVoronoi.xMax - v_BeanAlimentationVoronoi.xMin) > 200000) || ((v_BeanAlimentationVoronoi.yMax - v_BeanAlimentationVoronoi.yMin) > 200000))
+                if (((v_BeanAlimentationVoronoi.p53_xMax - v_BeanAlimentationVoronoi.p51_xMin) > 200000) || ((v_BeanAlimentationVoronoi.p54_yMax - v_BeanAlimentationVoronoi.p52_yMin) > 200000))
                 {
-                    v_BeanAlimentationVoronoi.territoireSuperieurA200kmVf = true;
+                    v_BeanAlimentationVoronoi.p21_territoireSuperieurA200kmVf = true;
                 }
                 //Ajout des points périphériques	
                 //AjoutPointsFrontiere(ref v_BeanAlimentationVoronoi);		
@@ -297,9 +247,9 @@ namespace DEM.Net.Core.Voronoi
 
             try
             {
-                if (p_beanAlimentationVoronoi.contientObjetsInvalidesVf)
+                if (p_beanAlimentationVoronoi.p22_contientObjetsInvalidesVf)
                 {
-                    switch (p_beanAlimentationVoronoi.parametrage.gestionObjetsInvalides)
+                    switch (p_beanAlimentationVoronoi.p12_parametrage.gestionObjetsInvalides)
                     {
                         case enumVoronoiStrategieObjetsInvalides.arretTraitement:
                             throw new Exception("GetVoronoiGraph en erreur: des objets ne sont pas des points", new Exception());
@@ -307,9 +257,9 @@ namespace DEM.Net.Core.Voronoi
                             break;
                     }
                 }
-                if (p_beanAlimentationVoronoi.contientObjetsSuperposesVf)
+                if (p_beanAlimentationVoronoi.p23_contientObjetsSuperposesVf)
                 {
-                    switch (p_beanAlimentationVoronoi.parametrage.gestionPointsDupliques)
+                    switch (p_beanAlimentationVoronoi.p12_parametrage.gestionPointsDupliques)
                     {
                         case enumVoronoiStrategiePointsDupliques.arretTraitement:
                             throw new Exception("GetVoronoiGraph en erreur: des points sont superposés.", new Exception());
@@ -319,9 +269,9 @@ namespace DEM.Net.Core.Voronoi
                 }
 
 
-                if (p_beanAlimentationVoronoi.territoireSuperieurA200kmVf)
+                if (p_beanAlimentationVoronoi.p21_territoireSuperieurA200kmVf)
                 {
-                    switch (p_beanAlimentationVoronoi.parametrage.gestionDepassementTerritoire)
+                    switch (p_beanAlimentationVoronoi.p12_parametrage.gestionDepassementTerritoire)
                     {
                         case enumVoronoiStrategieDistanceTropGrande.arretTraitement:
                             throw new Exception("GetVoronoiGraph en erreur: le territoire total de traitement ne peut pas dépasser 200 000 x 200 000 unités de longueur ");
@@ -330,7 +280,7 @@ namespace DEM.Net.Core.Voronoi
                     }
                 }
 
-                v_voronoiGraph = Fortune.ComputeVoronoiGraph(p_beanAlimentationVoronoi.pointsFormatesPourInsertion);
+                v_voronoiGraph = Fortune.ComputeVoronoiGraph(p_beanAlimentationVoronoi.p50_pointsFormatesPourInsertion);
 
 
             }
@@ -340,18 +290,23 @@ namespace DEM.Net.Core.Voronoi
             }
             return v_voronoiGraph;
         }
-        public BeanTopologie GetBeanTopologieByVoronoiGraph(VoronoiGraph p_voronoiGraph, BeanAlimentationVoronoi p_beanAlimentationVoronoi)
+
+        public BeanTopologieFacettes GetBeanTopologieByVoronoiGraph(VoronoiGraph p_voronoiGraph, BeanAlimentationVoronoi p_beanAlimentationVoronoi)
         {
-            BeanTopologie v_topologieVoronoi = new BeanTopologie();
+            BeanTopologieFacettes v_topologie = new BeanTopologieFacettes();
             try
             {
-                Dictionary<int, IGeometry> v_DicoLignes = new Dictionary<int, IGeometry>();
+                List<BeanArc_internal> v_arcsVoronoi = new List<BeanArc_internal>();
+                Dictionary<string, BeanArc_internal> v_arcsParHCode = new Dictionary<string, BeanArc_internal>();
+                int v_srid = p_beanAlimentationVoronoi.p11_srid;
+                //
+                Dictionary<string, BeanPoint_internal> v_pointsDesArcsByCode = new Dictionary<string, BeanPoint_internal>();
+                Dictionary<int, BeanArc_internal> v_arcs = new Dictionary<int, BeanArc_internal>();
                 Dictionary<int, int> v_DicoPointSourceGaucheParArc = new Dictionary<int, int>();
                 Dictionary<int, int> v_DicoPointSourceDroitParArc = new Dictionary<int, int>();
+                //
 
                 //Création du réseau
-                BeanTopologie v_topologieLignes = new BeanTopologie();
-
                 double v_vorX_Left;
                 double v_vorY_Left;
                 double v_vorX_Right;
@@ -364,107 +319,280 @@ namespace DEM.Net.Core.Voronoi
                 double v_CorrectionY = 0;
 
                 ITopologieService v_topologieService = new TopologieService();
-                IGeometry v_line;
-                String v_CodeXYPointGauche;
-                String v_CodeXYPointDroit;
-                int v_KeyPointGauche;
-                int v_KeyPointDroit;
                 int v_KeyArc = 0;
                 HashSet<string> v_testDoublesLignes = new HashSet<string>();
-                string v_codeLigne;
-
-                if (p_beanAlimentationVoronoi.parametrage.reductionCoordonneesVf)
+               
+                if (p_beanAlimentationVoronoi.p12_parametrage.reductionCoordonneesVf)
                 {
-                    v_CorrectionX = (double)p_beanAlimentationVoronoi.origineXCorrigee;
-                    v_CorrectionY = (double)p_beanAlimentationVoronoi.origineYCorrigee;
+                    v_CorrectionX = (double)p_beanAlimentationVoronoi.p55_origineXCorrigee;
+                    v_CorrectionY = (double)p_beanAlimentationVoronoi.p56_origineYCorrigee;
                 }
 
+                BeanPoint_internal v_pt1;
+                BeanPoint_internal v_pt2;
+                BeanArc_internal v_arc;
 
+                //On créé une facette/ilot pour chaque point;
+                BeanFacette_internal v_facette;
+                Dictionary<int, BeanFacette_internal> v_toutesFacettes;
+
+                v_toutesFacettes = p_beanAlimentationVoronoi.p10_dicoDesPointsSources.ToDictionary(c => c.Key, c => new BeanFacette_internal());
+                   //[ATTENTION! On doit mettre à jour l'id 
+                foreach (KeyValuePair<int, BeanFacette_internal> v_fac in v_toutesFacettes)
+                {
+                    v_fac.Value.p00_idFacette = v_fac.Key;
+                }
+
+                //On parcourt les arcs:
+                string v_hcodePt1;
+                string v_hcodePt2;
+                string v_hcodeGraineVoronoiAGauche;
+                string v_hcodeGraineVoronoiADroite;
+                int v_idIlotAGauche;
+                int v_idIlotADroite;
                 foreach (VoronoiEdge v_Edges in p_voronoiGraph.Edges)
                 {
                     if (!v_Edges.IsInfinite && !v_Edges.IsPartlyInfinite)
                     {
                         v_KeyArc++;
-                        //Je créé des variables intermédiaires car modifierLaGeometrie directement le vecteur pose graves pb
+                       
+                        //L'arc voronoi
                         v_vorX_Left = v_Edges.VVertexA[0] + v_CorrectionX;
                         v_vorY_Left = v_Edges.VVertexA[1] + v_CorrectionY;
                         v_vorX_Right = v_Edges.VVertexB[0] + v_CorrectionX;
                         v_vorY_Right = v_Edges.VVertexB[1] + v_CorrectionY;
+                        //
+                        v_hcodePt1 = FLabServices.createUtilitaires().GetHCodeGeogPoint(new double[2] { v_vorX_Left, v_vorY_Left });
+                        if(v_pointsDesArcsByCode.ContainsKey(v_hcodePt1))
+                        {
+                            v_pt1 = v_pointsDesArcsByCode[v_hcodePt1];
+                        }
+                        else
+                        {
+                            v_pt1 = new BeanPoint_internal(v_vorX_Left, v_vorY_Left, 0, v_srid);
+                            v_pointsDesArcsByCode.Add(v_hcodePt1, v_pt1);
+                        }
+                        //
+                        v_hcodePt2 = FLabServices.createUtilitaires().GetHCodeGeogPoint(new double[2] { v_vorX_Right, v_vorY_Right });
+                        if (v_pointsDesArcsByCode.ContainsKey(v_hcodePt2))
+                        {
+                            v_pt2 = v_pointsDesArcsByCode[v_hcodePt2];
+                        }
+                        else
+                        {
+                            v_pt2 = new BeanPoint_internal(v_vorX_Right, v_vorY_Right, 0, v_srid);
+                            v_pointsDesArcsByCode.Add(v_hcodePt2, v_pt2);
+                        }
+                      
+                        //
+                        v_arc = new BeanArc_internal(v_pt1, v_pt2);
+                        //
+                        if(!v_arcsParHCode.ContainsKey(v_arc.p01_hcodeArc))
+                        {
+                            v_arcsParHCode.Add(v_arc.p01_hcodeArc, v_arc);
+                        }
+
+                        //On référence les points 'graines' voronoi à droite et à gauche 
                         v_OrigX_Left = v_Edges.LeftData[0] + v_CorrectionX;
                         v_OrigY_Left = v_Edges.LeftData[1] + v_CorrectionY;
                         v_OrigX_Right = v_Edges.RightData[0] + v_CorrectionX;
                         v_OrigY_Right = v_Edges.RightData[1] + v_CorrectionY;
                         //
-
-                        v_line = v_topologieService.GetLineStringByCoord(v_vorX_Left, v_vorY_Left, v_vorX_Right, v_vorY_Right);
-
-                        if (v_line.Length > 0)
+                        v_hcodeGraineVoronoiAGauche = FLabServices.createUtilitaires().GetHCodeGeogPoint(new double[2] { v_OrigX_Left, v_OrigY_Left });
+                        v_hcodeGraineVoronoiADroite = FLabServices.createUtilitaires().GetHCodeGeogPoint(new double[2] { v_OrigX_Right, v_OrigY_Right });
+                        //
+                        v_facette = null;
+                        if (p_beanAlimentationVoronoi.p31_correspondanceHCodePointvsIdPoint.ContainsKey(v_hcodeGraineVoronoiAGauche))
                         {
-                            v_CodeXYPointGauche = GetCodeXY(v_OrigX_Left, v_OrigY_Left);
-                            v_CodeXYPointDroit = GetCodeXY(v_OrigX_Right, v_OrigY_Right);
-                            //J'ai rencontré des duplications de lignes (dans un sens et dans l'autre)
-                            //Ces cas provoquent des boucles sans fin dans la fermeture d'îlots
-                            // Je mets un patch : A réintégrer DANS TOPOLOGIE SERVICE  	
-                            if (v_OrigX_Left < v_OrigX_Right)
-                            {
-                                v_codeLigne = v_CodeXYPointGauche + "_" + v_CodeXYPointDroit;
-                            }
-                            else
-                            {
-                                if (v_OrigX_Left == v_OrigX_Right)
-                                {
-                                    if (v_OrigY_Left < v_OrigY_Right)
-                                    {
-                                        v_codeLigne = v_CodeXYPointGauche + "_" + v_CodeXYPointDroit;
-                                    }
-                                    else
-                                    { v_codeLigne = v_CodeXYPointDroit + "_" + v_CodeXYPointGauche; }
-                                }
-                                else
-                                { v_codeLigne = v_CodeXYPointDroit + "_" + v_CodeXYPointGauche; }
-                            }
-                            //Si la ligne est déjà contenue, je ne l'introduis pas
-                            if (v_testDoublesLignes.Contains(v_codeLigne)) { break; }
-
-                            //
-                            v_DicoLignes.Add(v_KeyArc, v_line);
-
-                            v_KeyPointGauche = -1;
-                            if (p_beanAlimentationVoronoi.dicoLienCodeXyKeySource.ContainsKey(v_CodeXYPointGauche))
-                            {
-                                p_beanAlimentationVoronoi.dicoLienCodeXyKeySource.TryGetValue(v_CodeXYPointGauche, out v_KeyPointGauche);
-                            }
-                            v_DicoPointSourceGaucheParArc.Add(v_KeyArc, v_KeyPointGauche);
-                            v_KeyPointDroit = -1;
-                            if (p_beanAlimentationVoronoi.dicoLienCodeXyKeySource.ContainsKey(v_CodeXYPointGauche))
-                            {
-                                p_beanAlimentationVoronoi.dicoLienCodeXyKeySource.TryGetValue(v_CodeXYPointDroit, out v_KeyPointDroit);
-                            }
-                            v_DicoPointSourceDroitParArc.Add(v_KeyArc, v_KeyPointDroit);
+                            v_idIlotAGauche = p_beanAlimentationVoronoi.p31_correspondanceHCodePointvsIdPoint[v_hcodeGraineVoronoiAGauche];
+                            v_facette = v_toutesFacettes[v_idIlotAGauche];
+                            v_facette.p02_arcs.Add(v_arc);
+                            v_arc.p21_facetteGauche = v_facette;
                         }
+                        else
+                        {
+                            v_arc.p20_statutArc = enumStatutArc.arcExterne;
+                        }
+                        v_facette = null;
+                        if (p_beanAlimentationVoronoi.p31_correspondanceHCodePointvsIdPoint.ContainsKey(v_hcodeGraineVoronoiADroite))
+                        {
+                            v_idIlotADroite = p_beanAlimentationVoronoi.p31_correspondanceHCodePointvsIdPoint[v_hcodeGraineVoronoiADroite];
+                            v_facette = v_toutesFacettes[v_idIlotADroite];
+                            v_facette.p02_arcs.Add(v_arc);
+                            v_arc.p21_facetteGauche = v_facette;
+                        }
+                        else
+                        {
+                            v_arc.p20_statutArc = enumStatutArc.arcExterne;
+                        }
+
                     }//Fin if (!v_Edges.IsInfinite && !v_Edges.IsPartlyInfinite)
                 }//Fin foreach
                  //Création de la topologie
+                v_arcsVoronoi = v_arcsParHCode.Values.OrderBy(c => c.p01_hcodeArc).ToList();
 
-                v_topologieLignes = v_topologieService.GetTopologie(v_DicoLignes);
-                v_topologieVoronoi = v_topologieService.GetTopologieSansImpassesEnrichiesDesIlots(v_topologieLignes);
-                v_topologieService.MiseAJourDesIndicateursDeControleTopologieIlot(v_topologieVoronoi);
+                //On actualise les points des facettes:
+                foreach(KeyValuePair<int, BeanFacette_internal> v_fac in v_toutesFacettes)
+                {
+                    List<BeanPoint_internal> v_points = v_fac.Value.p02_arcs.Select(c => c.p11_pointDbt).ToList();
+                    v_points.AddRange(v_fac.Value.p02_arcs.Select(c => c.p12_pointFin).ToList());
+                    HashSet<string> v_pointsDeja = new HashSet<string>();
+                    foreach(BeanPoint_internal v_pt in v_points)
+                    {
+                        if(!v_pointsDeja.Contains(v_pt.p01_hCodeGeog))
+                        {
+                            v_fac.Value.p01_pointsDeFacette.Add(v_pt);
+                            v_pointsDeja.Add(v_pt.p01_hCodeGeog);
+                        }
+                    }
+                }
+          
+                //
+                v_topologie = new BeanTopologieFacettes(v_arcsVoronoi);
+                v_topologie.p13_facettesById = v_toutesFacettes;
 
-                ////TO DEBUG
-                //visuArcsDansTopologie(v_topologieVoronoi, "Test arcs");
-                //visuPointsDeDico(p_beanAlimentationVoronoi.dicoDesPointsSources, "points", 10);
-                ////FIN TO DEBUG
-
-                //Renumérotation des îlots
-                //p_beanAlimentationVoronoi.correspondance_IdIlot_IdPoint = v_topologieService.GetListeRenumerotationDesIlotsByCotesArc(v_topologieVoronoi, v_DicoPointSourceDroitParArc, v_DicoPointSourceGaucheParArc);
-                v_topologieService.UpdateIdIlotsByCotesArcs(v_topologieVoronoi, v_DicoPointSourceDroitParArc, v_DicoPointSourceGaucheParArc);
+                //Géométrie:
+                List<int> v_idFacettes = v_topologie.p13_facettesById.Keys.ToList();
+                IGeometry v_geomFacette;
+                BeanFacette_internal v_facettePourGeom;
+                foreach(int v_idFac in v_idFacettes)
+                {
+                    v_facettePourGeom = v_topologie.p13_facettesById[v_idFac];
+                    v_geomFacette = FLabServices.createCalculMedium().GetGeometryPolygoneFacette(v_facettePourGeom, ref v_topologie);
+                    v_facettePourGeom.p04_geomFacette = v_geomFacette;
+                }
             }
             catch (Exception v_ex)
             {
                 throw v_ex;
             }
-            return v_topologieVoronoi;
+            return v_topologie;
         }
+
+
+
+
+        //public BeanTopologie GetBeanTopologieByVoronoiGraph(VoronoiGraph p_voronoiGraph, BeanAlimentationVoronoi p_beanAlimentationVoronoi)
+        //{
+        //    BeanTopologie v_topologieVoronoi = new BeanTopologie();
+        //    try
+        //    {
+        //        Dictionary<int, BeanArc_internal> v_arcs = new Dictionary<int, BeanArc_internal>();
+        //        Dictionary<int, int> v_DicoPointSourceGaucheParArc = new Dictionary<int, int>();
+        //        Dictionary<int, int> v_DicoPointSourceDroitParArc = new Dictionary<int, int>();
+
+        //        //Création du réseau
+        //        BeanTopologie v_topologieLignes = new BeanTopologie();
+
+        //        double v_vorX_Left;
+        //        double v_vorY_Left;
+        //        double v_vorX_Right;
+        //        double v_vorY_Right;
+        //        double v_OrigX_Left;
+        //        double v_OrigY_Left;
+        //        double v_OrigX_Right;
+        //        double v_OrigY_Right;
+        //        double v_CorrectionX = 0;
+        //        double v_CorrectionY = 0;
+
+        //        ITopologieService v_topologieService = new TopologieService();
+        //        IGeometry v_line;
+        //        String v_CodeXYPointGauche;
+        //        String v_CodeXYPointDroit;
+        //        int v_KeyPointGauche;
+        //        int v_KeyPointDroit;
+        //        int v_KeyArc = 0;
+        //        HashSet<string> v_testDoublesLignes = new HashSet<string>();
+        //        string v_codeLigne;
+
+        //        if (p_beanAlimentationVoronoi.parametrage.reductionCoordonneesVf)
+        //        {
+        //            v_CorrectionX = (double)p_beanAlimentationVoronoi.origineXCorrigee;
+        //            v_CorrectionY = (double)p_beanAlimentationVoronoi.origineYCorrigee;
+        //        }
+
+
+        //        foreach (VoronoiEdge v_Edges in p_voronoiGraph.Edges)
+        //        {
+        //            if (!v_Edges.IsInfinite && !v_Edges.IsPartlyInfinite)
+        //            {
+        //                v_KeyArc++;
+        //                //Je créé des variables intermédiaires car modifierLaGeometrie directement le vecteur pose graves pb
+        //                v_vorX_Left = v_Edges.VVertexA[0] + v_CorrectionX;
+        //                v_vorY_Left = v_Edges.VVertexA[1] + v_CorrectionY;
+        //                v_vorX_Right = v_Edges.VVertexB[0] + v_CorrectionX;
+        //                v_vorY_Right = v_Edges.VVertexB[1] + v_CorrectionY;
+        //                v_OrigX_Left = v_Edges.LeftData[0] + v_CorrectionX;
+        //                v_OrigY_Left = v_Edges.LeftData[1] + v_CorrectionY;
+        //                v_OrigX_Right = v_Edges.RightData[0] + v_CorrectionX;
+        //                v_OrigY_Right = v_Edges.RightData[1] + v_CorrectionY;
+        //                //
+
+        //                v_line = v_topologieService.GetLineStringByCoord(v_vorX_Left, v_vorY_Left, v_vorX_Right, v_vorY_Right);
+
+        //                if (v_line.Length > 0)
+        //                {
+        //                    v_CodeXYPointGauche = GetCodeXY(v_OrigX_Left, v_OrigY_Left);
+        //                    v_CodeXYPointDroit = GetCodeXY(v_OrigX_Right, v_OrigY_Right);
+        //                    //J'ai rencontré des duplications de lignes (dans un sens et dans l'autre)
+        //                    //Ces cas provoquent des boucles sans fin dans la fermeture d'îlots
+        //                    // Je mets un patch : A réintégrer DANS TOPOLOGIE SERVICE  	
+        //                    if (v_OrigX_Left < v_OrigX_Right)
+        //                    {
+        //                        v_codeLigne = v_CodeXYPointGauche + "_" + v_CodeXYPointDroit;
+        //                    }
+        //                    else
+        //                    {
+        //                        if (v_OrigX_Left == v_OrigX_Right)
+        //                        {
+        //                            if (v_OrigY_Left < v_OrigY_Right)
+        //                            {
+        //                                v_codeLigne = v_CodeXYPointGauche + "_" + v_CodeXYPointDroit;
+        //                            }
+        //                            else
+        //                            { v_codeLigne = v_CodeXYPointDroit + "_" + v_CodeXYPointGauche; }
+        //                        }
+        //                        else
+        //                        { v_codeLigne = v_CodeXYPointDroit + "_" + v_CodeXYPointGauche; }
+        //                    }
+        //                    //Si la ligne est déjà contenue, je ne l'introduis pas
+        //                    if (v_testDoublesLignes.Contains(v_codeLigne)) { break; }
+
+        //                    //
+        //                    v_arcs.Add(v_KeyArc, v_line);
+
+        //                    v_KeyPointGauche = -1;
+        //                    if (p_beanAlimentationVoronoi.dicoLienCodeXyKeySource.ContainsKey(v_CodeXYPointGauche))
+        //                    {
+        //                        p_beanAlimentationVoronoi.dicoLienCodeXyKeySource.TryGetValue(v_CodeXYPointGauche, out v_KeyPointGauche);
+        //                    }
+        //                    v_DicoPointSourceGaucheParArc.Add(v_KeyArc, v_KeyPointGauche);
+        //                    v_KeyPointDroit = -1;
+        //                    if (p_beanAlimentationVoronoi.dicoLienCodeXyKeySource.ContainsKey(v_CodeXYPointGauche))
+        //                    {
+        //                        p_beanAlimentationVoronoi.dicoLienCodeXyKeySource.TryGetValue(v_CodeXYPointDroit, out v_KeyPointDroit);
+        //                    }
+        //                    v_DicoPointSourceDroitParArc.Add(v_KeyArc, v_KeyPointDroit);
+        //                }
+        //            }//Fin if (!v_Edges.IsInfinite && !v_Edges.IsPartlyInfinite)
+        //        }//Fin foreach
+        //         //Création de la topologie
+
+        //        v_topologieLignes = v_topologieService.GetTopologie(v_arcs);
+
+        //        ////STRUCTURATION en ILOTS:
+        //        //v_topologieVoronoi = v_topologieService.GetTopologieSansImpassesEnrichiesDesIlots(v_topologieLignes);
+        //        //v_topologieService.MiseAJourDesIndicateursDeControleTopologieIlot(v_topologieVoronoi);
+        //        ////Renumérotation des îlots
+        //        //v_topologieService.UpdateIdIlotsByCotesArcs(v_topologieVoronoi, v_DicoPointSourceDroitParArc, v_DicoPointSourceGaucheParArc);
+        //        ////FIN STRUCTURATION en ILOTS:
+        //    }
+        //    catch (Exception v_ex)
+        //    {
+        //        throw v_ex;
+        //    }
+        //    return v_topologieVoronoi;
+        //}
 
         public BeanTriangulationDelaunay GetTriangulationDelaunayByVoronoiGraph(VoronoiGraph p_voronoiGraph, BeanAlimentationVoronoi p_beanAlimentationVoronoi)
         {
@@ -472,7 +600,7 @@ namespace DEM.Net.Core.Voronoi
             try
             {
                 //[Je filtre les id négatifs: correspondent au Mbo de construction
-                foreach (KeyValuePair<int, IGeometry> v_pointsOriginels in p_beanAlimentationVoronoi.dicoDesPointsSources)
+                foreach (KeyValuePair<int, Point> v_pointsOriginels in p_beanAlimentationVoronoi.p10_dicoDesPointsSources)
                 {
                     if (v_pointsOriginels.Key >= 0)
                     {
@@ -487,10 +615,10 @@ namespace DEM.Net.Core.Voronoi
                 double v_CorrectionX = 0;
                 double v_CorrectionY = 0;
                 //
-                if (p_beanAlimentationVoronoi.parametrage.reductionCoordonneesVf)
+                if (p_beanAlimentationVoronoi.p12_parametrage.reductionCoordonneesVf)
                 {
-                    v_CorrectionX = (double)p_beanAlimentationVoronoi.origineXCorrigee;
-                    v_CorrectionY = (double)p_beanAlimentationVoronoi.origineYCorrigee;
+                    v_CorrectionX = (double)p_beanAlimentationVoronoi.p55_origineXCorrigee;
+                    v_CorrectionY = (double)p_beanAlimentationVoronoi.p56_origineYCorrigee;
                 }
 
                 BeanArcDelaunay v_arcDelaunay;
@@ -510,13 +638,15 @@ namespace DEM.Net.Core.Voronoi
                         v_OrigX_Right = v_Edges.RightData[0] + v_CorrectionX;
                         v_OrigY_Right = v_Edges.RightData[1] + v_CorrectionY;
                         //
-                        v_CodeXYPointGauche = GetCodeXY(v_OrigX_Left, v_OrigY_Left);
-                        v_CodeXYPointDroit = GetCodeXY(v_OrigX_Right, v_OrigY_Right);
+                        //v_CodeXYPointGauche = GetCodeXY(v_OrigX_Left, v_OrigY_Left);
+                        v_CodeXYPointGauche = FLabServices.createUtilitaires().GetHCodeGeogPoint(new double[2] { v_OrigX_Left, v_OrigY_Left });
+                        //v_CodeXYPointDroit = GetCodeXY(v_OrigX_Right, v_OrigY_Right);
+                        v_CodeXYPointDroit = FLabServices.createUtilitaires().GetHCodeGeogPoint(new double[2] { v_OrigX_Right, v_OrigY_Right });
                         //
-                        if (p_beanAlimentationVoronoi.dicoLienCodeXyKeySource.ContainsKey(v_CodeXYPointGauche) && p_beanAlimentationVoronoi.dicoLienCodeXyKeySource.ContainsKey(v_CodeXYPointDroit))
+                        if (p_beanAlimentationVoronoi.p31_correspondanceHCodePointvsIdPoint.ContainsKey(v_CodeXYPointGauche) && p_beanAlimentationVoronoi.p31_correspondanceHCodePointvsIdPoint.ContainsKey(v_CodeXYPointDroit))
                         {
-                            v_cleGauche = p_beanAlimentationVoronoi.dicoLienCodeXyKeySource[v_CodeXYPointGauche];
-                            v_cleDroite = p_beanAlimentationVoronoi.dicoLienCodeXyKeySource[v_CodeXYPointDroit];
+                            v_cleGauche = p_beanAlimentationVoronoi.p31_correspondanceHCodePointvsIdPoint[v_CodeXYPointGauche];
+                            v_cleDroite = p_beanAlimentationVoronoi.p31_correspondanceHCodePointvsIdPoint[v_CodeXYPointDroit];
                             if (v_cleDroite >= 0 && v_cleGauche >= 0)
                             {
                                 v_arcDelaunay = new BeanArcDelaunay();
@@ -591,14 +721,14 @@ namespace DEM.Net.Core.Voronoi
             {
                 //Récup des paramètres de calcul primaire
 
-                double p_TxReductionMargeX = p_BeanAlimentationVoronoi.parametrage.txReductionMargeEnX;
-                double p_TxReductionMargeY = p_BeanAlimentationVoronoi.parametrage.txReductionMargeEnY;
-                int p_nbPointsLargeur = p_BeanAlimentationVoronoi.parametrage.nbPointsLargeur;
-                int p_nbPointsHauteur = p_BeanAlimentationVoronoi.parametrage.nbPointsHauteur;
+                double p_TxReductionMargeX = p_BeanAlimentationVoronoi.p12_parametrage.txReductionMargeEnX;
+                double p_TxReductionMargeY = p_BeanAlimentationVoronoi.p12_parametrage.txReductionMargeEnY;
+                int p_nbPointsLargeur = p_BeanAlimentationVoronoi.p12_parametrage.nbPointsLargeur;
+                int p_nbPointsHauteur = p_BeanAlimentationVoronoi.p12_parametrage.nbPointsHauteur;
 
                 //Calcul des paramètres secondaires
-                double v_encombrementX = (double)p_BeanAlimentationVoronoi.xMax - (double)p_BeanAlimentationVoronoi.xMin;
-                double v_encombrementY = (double)p_BeanAlimentationVoronoi.yMax - (double)p_BeanAlimentationVoronoi.yMin;
+                double v_encombrementX = (double)p_BeanAlimentationVoronoi.p53_xMax - (double)p_BeanAlimentationVoronoi.p51_xMin;
+                double v_encombrementY = (double)p_BeanAlimentationVoronoi.p54_yMax - (double)p_BeanAlimentationVoronoi.p52_yMin;
 
                 //FAU 2018/04/17  PUSTULE: =>Dans certains cas (ex commune très large avec deux petites ug 'calées' dans un coin. ex 30117)
                 //une partie de la commune peut ne pas être couverte=>j'étends l'encombrement.
@@ -606,8 +736,8 @@ namespace DEM.Net.Core.Voronoi
                 v_encombrementY = v_encombrementY * 3;
                 //FIN PUSTULE
 
-                double v_XOrigine = (p_BeanAlimentationVoronoi.xMin - (v_encombrementX / p_TxReductionMargeX));
-                double v_YOrigine = (p_BeanAlimentationVoronoi.yMin - (v_encombrementY / p_TxReductionMargeY));
+                double v_XOrigine = (p_BeanAlimentationVoronoi.p51_xMin - (v_encombrementX / p_TxReductionMargeX));
+                double v_YOrigine = (p_BeanAlimentationVoronoi.p52_yMin - (v_encombrementY / p_TxReductionMargeY));
 
                 double v_encombrementXCorrige = v_encombrementX + (2 * v_encombrementX / p_TxReductionMargeX);
                 double v_encombrementYCorrige = v_encombrementY + (2 * v_encombrementY / p_TxReductionMargeY);
@@ -616,7 +746,7 @@ namespace DEM.Net.Core.Voronoi
                 double v_pasY = v_encombrementYCorrige / (p_nbPointsHauteur - 1);
                 //
                 int v_cleMin = 0;
-                foreach (int v_key in p_BeanAlimentationVoronoi.dicoDesPointsSources.Keys)
+                foreach (int v_key in p_BeanAlimentationVoronoi.p10_dicoDesPointsSources.Keys)
                 {
                     if (v_key < v_cleMin) { v_cleMin = v_key; }
                 }
@@ -702,11 +832,11 @@ namespace DEM.Net.Core.Voronoi
         {
             try
             {
-                double v_encombrementX = (double)p_BeanAlimentationVoronoi.xMax - (double)p_BeanAlimentationVoronoi.xMin;
-                double v_encombrementY = (double)p_BeanAlimentationVoronoi.yMax - (double)p_BeanAlimentationVoronoi.yMin;
+                double v_encombrementX = (double)p_BeanAlimentationVoronoi.p53_xMax - (double)p_BeanAlimentationVoronoi.p51_xMin;
+                double v_encombrementY = (double)p_BeanAlimentationVoronoi.p54_yMax - (double)p_BeanAlimentationVoronoi.p52_yMin;
 
-                double v_XOrigine = (p_BeanAlimentationVoronoi.xMin - (v_encombrementX / p_TxReductionMargeX));
-                double v_YOrigine = (p_BeanAlimentationVoronoi.yMin - (v_encombrementY / p_TxReductionMargeY));
+                double v_XOrigine = (p_BeanAlimentationVoronoi.p51_xMin - (v_encombrementX / p_TxReductionMargeX));
+                double v_YOrigine = (p_BeanAlimentationVoronoi.p52_yMin - (v_encombrementY / p_TxReductionMargeY));
 
                 double v_encombrementXCorrige = v_encombrementX + (2 * v_encombrementX / p_TxReductionMargeX);
                 double v_encombrementYCorrige = v_encombrementY + (2 * v_encombrementY / p_TxReductionMargeY);
@@ -721,12 +851,12 @@ namespace DEM.Net.Core.Voronoi
                     v_CoordPourVector = new double[2];
                     v_CoordPourVector[0] = v_XOrigine + (i * v_pasX);
                     v_CoordPourVector[1] = v_YOrigine;
-                    p_BeanAlimentationVoronoi.pointsFormatesPourInsertion.Add(new Vector(v_CoordPourVector));
+                    p_BeanAlimentationVoronoi.p50_pointsFormatesPourInsertion.Add(new Vector(v_CoordPourVector));
 
                     v_CoordPourVector = new double[2];
                     v_CoordPourVector[0] = v_XOrigine + (i * v_pasX);
                     v_CoordPourVector[1] = v_YOrigine + ((p_nbPointsHauteur - 1) * v_pasY);
-                    p_BeanAlimentationVoronoi.pointsFormatesPourInsertion.Add(new Vector(v_CoordPourVector));
+                    p_BeanAlimentationVoronoi.p50_pointsFormatesPourInsertion.Add(new Vector(v_CoordPourVector));
                 }
                 if (p_nbPointsHauteur > 2)
                 {
@@ -735,22 +865,22 @@ namespace DEM.Net.Core.Voronoi
                         v_CoordPourVector = new double[2];
                         v_CoordPourVector[0] = v_XOrigine;
                         v_CoordPourVector[1] = v_YOrigine + +(i * v_pasY);
-                        p_BeanAlimentationVoronoi.pointsFormatesPourInsertion.Add(new Vector(v_CoordPourVector));
+                        p_BeanAlimentationVoronoi.p50_pointsFormatesPourInsertion.Add(new Vector(v_CoordPourVector));
 
                         v_CoordPourVector = new double[2];
                         v_CoordPourVector[0] = v_XOrigine + ((p_nbPointsLargeur - 1) * v_pasX);
                         v_CoordPourVector[1] = v_YOrigine + (i * v_pasY);
-                        p_BeanAlimentationVoronoi.pointsFormatesPourInsertion.Add(new Vector(v_CoordPourVector));
+                        p_BeanAlimentationVoronoi.p50_pointsFormatesPourInsertion.Add(new Vector(v_CoordPourVector));
                     }
                 }
 
                 //
                 if (p_MajEncombrement)
                 {
-                    p_BeanAlimentationVoronoi.xMin = v_XOrigine;
-                    p_BeanAlimentationVoronoi.yMin = v_YOrigine;
-                    p_BeanAlimentationVoronoi.xMax = v_XOrigine + ((p_nbPointsLargeur - 1) * v_pasX);
-                    p_BeanAlimentationVoronoi.yMax = v_YOrigine + ((p_nbPointsHauteur - 1) * v_pasY);
+                    p_BeanAlimentationVoronoi.p51_xMin = v_XOrigine;
+                    p_BeanAlimentationVoronoi.p52_yMin = v_YOrigine;
+                    p_BeanAlimentationVoronoi.p53_xMax = v_XOrigine + ((p_nbPointsLargeur - 1) * v_pasX);
+                    p_BeanAlimentationVoronoi.p54_yMax = v_YOrigine + ((p_nbPointsHauteur - 1) * v_pasY);
                 }
             }
             catch (Exception v_ex)
@@ -773,80 +903,6 @@ namespace DEM.Net.Core.Voronoi
             return v_code;
         }
 
-        //public IGeometry GetLineStringByVectors(Vector p_point1, Vector p_point2, int p_SRid = 2154)
-        //{
-        //    IGeometry v_Ligne = new IGeometry();
-        //    try
-        //    {
-        //        ITopologieService v_topologieService = new TopologieService();
-        //        v_Ligne = v_topologieService.GetLineStringByCoord(p_point1[0], p_point1[1], p_point2[0], p_point2[1], p_SRid);
-        //    }
-        //    catch (Exception v_ex)
-        //    {
-        //        throw v_ex;
-        //    }
-        //    return v_Ligne;
-        //}
-
-        ////POUR DEBUG : A SUPP
-        //public void visuArcsDansTopologie(BeanTopologie p_beanTopologie, string p_commentaire)
-        //{
-        //    SpatialTrace.Enable();
-
-        //    SpatialTrace.TraceText(p_commentaire);
-        //    foreach (KeyValuePair<int, BeanTopologieArc> v_topologieArc in p_beanTopologie.BT_ListeArcs)
-        //    {
-        //        SpatialTrace.TraceGeometry(v_topologieArc.Value.Arc_geometry, "Arc: " + v_topologieArc.Value.Arc_id, "Arc: " + v_topologieArc.Value.Arc_id);
-        //    }
-
-        //    //
-        //    SpatialTrace.Disable();
-        //}
-        //public void visuIlotsDansDico(Dictionary<int, BeanTopologieIlot> p_dicoBeanIlot, string p_commentaire)
-        //{
-        //    SpatialTrace.Enable();
-
-        //    SpatialTrace.TraceText(p_commentaire);
-        //    foreach (KeyValuePair<int, BeanTopologieIlot> v_ilot in p_dicoBeanIlot)
-        //    {
-        //        if (v_ilot.Value.IlotQualificationContours != enumQualiteContoursIlot.IlotAnneau)
-        //        {
-        //            SpatialTrace.TraceGeometry(v_ilot.Value.IlotGeometry, "Ilot no: " + v_ilot.Value.IlotId);
-        //        }
-        //    }
-        //    SpatialTrace.Disable();
-        //}
-        //public void visuPointsDeDico(Dictionary<int, IGeometry> p_DicoPoints, string p_commentaire, int p_taillePoints)
-        //{
-        //    SpatialTrace.Enable();
-
-        //    SpatialTrace.TraceText(p_commentaire);
-        //    foreach (KeyValuePair<int, IGeometry> v_point in p_DicoPoints)
-        //    {
-        //        SpatialTrace.TraceGeometry(v_point.Value.STBuffer(p_taillePoints), "Point: " + v_point.Key);
-        //    }
-
-        //    //
-        //    SpatialTrace.Disable();
-        //}
-
-        //public void visuTriangulationDelaunay(BeanTriangulationDelaunay v_triangulationDelaunay)
-        //{
-        //    ITopologieService v_topologieService = new TopologieService();
-        //    Color v_couleur;
-        //    //Points originels
-        //    v_couleur = Color.FromArgb(200, 200, 0, 0);
-        //    foreach (KeyValuePair<int, IGeometry> v_geom in v_triangulationDelaunay.p00_PointIGeometrySources)
-        //    {
-
-        //        v_topologieService.visuGeometry(v_geom.Value, "POINTS SOURCES", "ptSourc: " + v_geom.Key, v_couleur, 10);
-        //    }
-        //    //Arcs
-        //    v_couleur = Color.FromArgb(200, 0, 0, 150);
-        //    foreach (BeanArcDelaunay v_arc in v_triangulationDelaunay.p01_arcsDelaunay)
-        //    {
-        //        v_topologieService.visuGeometry(v_arc.p30_arcDelaunay, "ARCS:", "arc: " + v_arc.p11_idPoint1 + " vers " + v_arc.p12_idPoint2, v_couleur);
-        //    }
-        //}
+     
     }
 }

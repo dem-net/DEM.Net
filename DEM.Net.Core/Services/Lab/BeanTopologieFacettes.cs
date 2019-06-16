@@ -36,6 +36,8 @@ namespace DEM.Net.Core.Services.Lab
         public List<BeanPoint_internal> p00_pointsSources { get; set; }
         //
         public Dictionary<int, BeanPoint_internal> p11_pointsFacettesByIdPoint { get; set; }
+        public Dictionary<string, BeanPoint_internal> p11_pointsFacettesByCode { get; set; }
+
         public Dictionary<string, BeanArc_internal> p12_arcsByCode { get; set; }
         public Dictionary<int, BeanFacette_internal> p13_facettesById { get; set; }
           //
@@ -53,13 +55,18 @@ namespace DEM.Net.Core.Services.Lab
         }
         public void ArcAjouter(BeanArc_internal p_arcAAjouter)
         {
-            if(!p11_pointsFacettesByIdPoint.ContainsKey(p_arcAAjouter.p11_pointDbt.p00_id))
+            if (!p11_pointsFacettesByCode.ContainsKey(p_arcAAjouter.p11_pointDbt.p01_hCodeGeog))
+            //if(!p11_pointsFacettesByIdPoint.ContainsKey(p_arcAAjouter.p11_pointDbt.p00_id))
             {
                 p11_pointsFacettesByIdPoint.Add(p_arcAAjouter.p11_pointDbt.p00_id, p_arcAAjouter.p11_pointDbt);
+                p11_pointsFacettesByCode.Add(p_arcAAjouter.p11_pointDbt.p01_hCodeGeog, p_arcAAjouter.p11_pointDbt);
             }
-            if (!p11_pointsFacettesByIdPoint.ContainsKey(p_arcAAjouter.p12_pointFin.p00_id))
+
+            if (!p11_pointsFacettesByCode.ContainsKey(p_arcAAjouter.p12_pointFin.p01_hCodeGeog))
+            //if (!p11_pointsFacettesByIdPoint.ContainsKey(p_arcAAjouter.p12_pointFin.p00_id))
             {
                 p11_pointsFacettesByIdPoint.Add(p_arcAAjouter.p12_pointFin.p00_id, p_arcAAjouter.p12_pointFin);
+                p11_pointsFacettesByCode.Add(p_arcAAjouter.p12_pointFin.p01_hCodeGeog, p_arcAAjouter.p11_pointDbt);
             }
             //
             p_arcAAjouter.p11_pointDbt.p41_arcsAssocies.Add(p_arcAAjouter.p01_hcodeArc, p_arcAAjouter);
@@ -154,13 +161,22 @@ namespace DEM.Net.Core.Services.Lab
         public BeanTopologieFacettes()
         {
             p11_pointsFacettesByIdPoint = new Dictionary<int, BeanPoint_internal>();
+            p11_pointsFacettesByCode = new Dictionary<string, BeanPoint_internal>();
             p12_arcsByCode = new Dictionary<string, BeanArc_internal>();
             p13_facettesById = new Dictionary<int, BeanFacette_internal>();
             p21_facetteAvecEcartAbsoluMax = null;
         }
-        public BeanTopologieFacettes(List<BeanPoint_internal> v_pointsSources):this()
+        public BeanTopologieFacettes(List<BeanPoint_internal> p_pointsSources):this()
         {
-            p00_pointsSources = v_pointsSources;
+            p00_pointsSources = p_pointsSources;
+        }
+        public BeanTopologieFacettes(List<BeanArc_internal> p_arcs):this()
+        {
+            foreach(BeanArc_internal v_arc in p_arcs)
+            {
+                this.ArcAjouter(v_arc);
+            }
+           
         }
 
     }

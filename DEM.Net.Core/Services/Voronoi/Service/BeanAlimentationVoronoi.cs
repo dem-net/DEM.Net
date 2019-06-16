@@ -1,4 +1,5 @@
 ﻿using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,28 +9,29 @@ namespace DEM.Net.Core.Voronoi
 {
 	public class BeanAlimentationVoronoi
 	{
-		public Dictionary<int, IGeometry> dicoDesPointsSources {get; set;}
+		public Dictionary<int, Point> p10_dicoDesPointsSources {get; set;}
+        public int p11_srid { get; set; }
 
-		public BeanVoronoiParametres parametrage { get; set; }
+        public BeanVoronoiParametres p12_parametrage { get; set; }
 
 		//Résultats de tests
-		public bool territoireSuperieurA200kmVf { get; set; }  
-		public bool contientObjetsInvalidesVf { get; set; }
-		public bool contientObjetsSuperposesVf { get; set; }
-		public List<int> pointsInvalidesSaufSuperposes { get; set; }
-		public List<int> pointsSuperposes { get; set; }
+		public bool p21_territoireSuperieurA200kmVf { get; set; }  
+		public bool p22_contientObjetsInvalidesVf { get; set; }
+		public bool p23_contientObjetsSuperposesVf { get; set; }
+		public List<int> p24_pointsInvalidesSaufSuperposes { get; set; }
+		public List<int> p25_pointsSuperposes { get; set; }
 
 		//data pour exploitation
-		public Dictionary<string, int> dicoLienCodeXyKeySource { get; set; }
-		public HashSet<Vector> pointsFormatesPourInsertion { get; set; }
+		public Dictionary<string, int> p31_correspondanceHCodePointvsIdPoint { get; set; }
+		public HashSet<Vector> p50_pointsFormatesPourInsertion { get; set; }
 
-		public double xMin { get; set; }
-		public double yMin { get; set; }
-		public double xMax { get; set; }
-		public double yMax { get; set; }
+		public double p51_xMin { get; set; }
+		public double p52_yMin { get; set; }
+		public double p53_xMax { get; set; }
+		public double p54_yMax { get; set; }
 
-		public int origineXCorrigee { get; set; }
-		public int origineYCorrigee { get; set; }
+		public int p55_origineXCorrigee { get; set; }
+		public int p56_origineYCorrigee { get; set; }
 
 		//PROV
 		public Dictionary<int, int> correspondance_IdIlot_IdPoint { get; set; }
@@ -37,13 +39,13 @@ namespace DEM.Net.Core.Voronoi
 		//Constructeur
 		public BeanAlimentationVoronoi()
 		{
-			dicoDesPointsSources = new Dictionary<int, IGeometry>();
-			pointsInvalidesSaufSuperposes = new List<int>();
-			pointsSuperposes = new List<int>();
-			dicoLienCodeXyKeySource = new Dictionary<string, int>();
-			pointsFormatesPourInsertion = new HashSet<Vector>();
+			p10_dicoDesPointsSources = new Dictionary<int, Point>();
+			p24_pointsInvalidesSaufSuperposes = new List<int>();
+			p25_pointsSuperposes = new List<int>();
+			p31_correspondanceHCodePointvsIdPoint = new Dictionary<string, int>();
+			p50_pointsFormatesPourInsertion = new HashSet<Vector>();
 
-			parametrage = new VoronoiParametrage().GetParametresStandardVoronoi();
+			p12_parametrage = new VoronoiParametrage().GetParametresStandardVoronoi();
 			//PROV
 			correspondance_IdIlot_IdPoint = new Dictionary<int, int>();
 		}
