@@ -5,6 +5,7 @@ using System.Linq;
 using GeoAPI.Geometries;
 using DEM.Net.Core.Voronoi;
 using NetTopologySuite.Geometries;
+using Point = NetTopologySuite.Geometries.Point;
 
 namespace DEM.Net.Core.Services.Lab
 {

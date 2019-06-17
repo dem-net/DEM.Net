@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Point = NetTopologySuite.Geometries.Point;
 
 namespace DEM.Net.Core.Voronoi
 {
@@ -450,6 +451,16 @@ namespace DEM.Net.Core.Voronoi
                 //
                 v_topologie = new BeanTopologieFacettes(v_arcsVoronoi);
                 v_topologie.p13_facettesById = v_toutesFacettes;
+                //On supprime les éventuelles facettes sans dimension
+                List<int> v_idFacettesASupprimer;
+                v_idFacettesASupprimer = v_toutesFacettes.Where(c => c.Value.p02_arcs.Count < 3).Select(c=>c.Key).ToList();
+                BeanFacette_internal v_facetteASupprimer;
+                foreach(int v_idFacASuppr in v_idFacettesASupprimer)
+                {
+                    v_facetteASupprimer = v_topologie.p13_facettesById[v_idFacASuppr];
+                    v_topologie.FacetteSupprimer(v_facetteASupprimer);
+                }
+              
 
                 //Géométrie:
                 List<int> v_idFacettes = v_topologie.p13_facettesById.Keys.ToList();

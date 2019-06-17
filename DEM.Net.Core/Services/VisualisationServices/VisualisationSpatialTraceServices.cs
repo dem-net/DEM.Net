@@ -446,14 +446,36 @@ namespace DEM.Net.Core.Services.VisualisationServices
         {
             SpatialTrace.Enable();
             SpatialTrace.SetFillColor(p_couleur);
+            SpatialTrace.SetLineColor(Color.Blue);
+            SpatialTrace.SetLineWidth(1);
+
             string v_label;
             foreach(KeyValuePair<int,BeanFacette_internal> v_facette in p_topologie.p13_facettesById)
             {
                 if (v_facette.Value.p04_geomFacette!=null)
                 {
-                    v_label = "Fac " + v_facette.Key;
+                    v_label = p_prefixeLabel+ " Fac " + v_facette.Key;
                     SpatialTrace.TraceGeometry(v_facette.Value.p04_geomFacette, v_label, v_label);
                 }
+                else
+                {
+                    if(v_facette.Value.p02_arcs!=null && v_facette.Value.p02_arcs.Count>0)
+                    {
+                        SpatialTrace.SetLineColor(Color.Red);
+                        SpatialTrace.SetLineWidth(3);
+                        IGeometry v_arcGeom;
+                        foreach (BeanArc_internal v_arcPolyg in v_facette.Value.p02_arcs)
+                        {
+                            v_label = "PB FAC "+ v_facette.Key +"_"+ p_prefixeLabel + "=> Arc: " + v_arcPolyg.p00_idArc + "\\" + v_arcPolyg.p01_hcodeArc;
+                            int v_srid = v_arcPolyg.p11_pointDbt.p11_srid;
+                            v_arcGeom = FLabServices.createUtilitaires().GetGeometryLine(v_arcPolyg.p11_pointDbt.p10_coord, v_arcPolyg.p12_pointFin.p10_coord, v_srid, false);
+                            SpatialTrace.TraceGeometry(v_arcGeom, v_label, v_label);
+                        }
+                        SpatialTrace.SetLineWidth(1);
+                        SpatialTrace.SetLineColor(Color.Blue);
+                    }
+                }
+              
             }
             SpatialTrace.Disable();
         }
