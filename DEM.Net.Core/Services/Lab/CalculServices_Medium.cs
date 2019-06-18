@@ -2029,7 +2029,7 @@ namespace DEM.Net.Core.Services.Lab
             }
         }
 
-        public IGeometry GetGeometryPolygoneFacette(BeanFacette_internal p_facette, ref BeanTopologieFacettes p_topologieFacette)
+        public IGeometry GetGeometryPolygoneFacetteEtOrdonnePointsFacette(ref BeanFacette_internal p_facette, ref BeanTopologieFacettes p_topologieFacette)
         {
             IGeometry v_geom = null;
             try
@@ -2129,7 +2129,8 @@ namespace DEM.Net.Core.Services.Lab
                 //
                 int v_srid = v_pointsDuPolygone.Values.First().p11_srid;
                 //
-                v_geom=FLabServices.createUtilitaires().GetGeometryPolygon(v_coordPoints, v_srid);
+                p_facette.p01_pointsDeFacette = v_pointsDuPolygone.Values.ToList();
+                v_geom =FLabServices.createUtilitaires().GetGeometryPolygon(v_coordPoints, v_srid);
             }
             catch (Exception)
             {

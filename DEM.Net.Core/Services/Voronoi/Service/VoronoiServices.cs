@@ -469,7 +469,7 @@ namespace DEM.Net.Core.Voronoi
                 foreach(int v_idFac in v_idFacettes)
                 {
                     v_facettePourGeom = v_topologie.p13_facettesById[v_idFac];
-                    v_geomFacette = FLabServices.createCalculMedium().GetGeometryPolygoneFacette(v_facettePourGeom, ref v_topologie);
+                    v_geomFacette = FLabServices.createCalculMedium().GetGeometryPolygoneFacetteEtOrdonnePointsFacette(ref v_facettePourGeom, ref v_topologie);
                     v_facettePourGeom.p04_geomFacette = v_geomFacette;
                 }
             }
