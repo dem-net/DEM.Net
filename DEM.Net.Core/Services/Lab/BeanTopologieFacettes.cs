@@ -69,12 +69,21 @@ namespace DEM.Net.Core.Services.Lab
                 p11_pointsFacettesByCode.Add(p_arcAAjouter.p12_pointFin.p01_hCodeGeog, p_arcAAjouter.p11_pointDbt);
             }
             //
-            p_arcAAjouter.p11_pointDbt.p41_arcsAssocies.Add(p_arcAAjouter.p01_hcodeArc, p_arcAAjouter);
+            if(!p_arcAAjouter.p11_pointDbt.p41_arcsAssocies.ContainsKey(p_arcAAjouter.p01_hcodeArc))
+            {
+                p_arcAAjouter.p11_pointDbt.p41_arcsAssocies.Add(p_arcAAjouter.p01_hcodeArc, p_arcAAjouter);
+            }
             p_arcAAjouter.p11_pointDbt.p43_ordonnancementOK_vf = false;
-            p_arcAAjouter.p12_pointFin.p41_arcsAssocies.Add(p_arcAAjouter.p01_hcodeArc, p_arcAAjouter);
+            if (!p_arcAAjouter.p12_pointFin.p41_arcsAssocies.ContainsKey(p_arcAAjouter.p01_hcodeArc))
+            {
+                p_arcAAjouter.p12_pointFin.p41_arcsAssocies.Add(p_arcAAjouter.p01_hcodeArc, p_arcAAjouter);
+            }
             p_arcAAjouter.p12_pointFin.p43_ordonnancementOK_vf = false;
             //
-            p12_arcsByCode.Add(p_arcAAjouter.p01_hcodeArc, p_arcAAjouter);
+            if(!p12_arcsByCode.ContainsKey(p_arcAAjouter.p01_hcodeArc))
+            {
+                p12_arcsByCode.Add(p_arcAAjouter.p01_hcodeArc, p_arcAAjouter);
+            }
         }
         public void ArcSupprimer(BeanArc_internal p_arcASupprimer)
         {

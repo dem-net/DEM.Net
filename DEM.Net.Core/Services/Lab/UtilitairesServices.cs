@@ -38,23 +38,69 @@ namespace DEM.Net.Core.Services.Lab
         {
             return new NetTopologySuite.Geometries.Point(x, y) { SRID = srid };
         }
-        
 
-        public string GetHCodeGeogPoint(double[] p_coordPoint, int p_nbreCaractSignifiants = 10, char p_separateur = '_')
+
+        //public string GetHCodeGeogPoint(double[] p_coordPoint, int p_nbreCaractSignifiants, char p_separateur)
+        //{
+        //    string v_composante1 = p_coordPoint[0].ToString();
+        //    if (v_composante1.Length > p_nbreCaractSignifiants)
+        //    {
+        //        v_composante1 = v_composante1.ToString().Substring(0, p_nbreCaractSignifiants);
+        //    }
+        //    string v_composante2 = p_coordPoint[1].ToString();
+        //    if (v_composante2.Length > p_nbreCaractSignifiants)
+        //    {
+        //        v_composante2 = v_composante2.ToString().Substring(0, p_nbreCaractSignifiants);
+        //    }
+        //    return v_composante1 + p_separateur + v_composante2;
+        //}
+        //public string GetHCodeGeogPoint(List<double[]> p_points, int p_nbreCaractSignifiants, char p_separateur)
+        //{
+        //    string v_code = "";
+        //    try
+        //    {
+        //        List<double[]> p_pointsOrd = p_points.OrderBy(c => c[0]).ThenBy(c => c[1]).ToList();
+
+        //        foreach (double[] v_point in p_pointsOrd)
+        //        {
+        //            v_code += GetHCodeGeogPoint(v_point, p_nbreCaractSignifiants, p_separateur);
+        //            v_code += p_separateur;
+        //        }
+        //        v_code = v_code.Substring(0, v_code.Length - 1);
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
+        //    return v_code;
+        //}
+        //public string GethCodeGeogSegment(double[] p_coord1, double[] p_coord2, int p_nbreCaractSignifiants, char p_separateur)
+        //{
+        //    string v_code = "";
+        //    try
+        //    {
+        //        List<double[]> p_points = new List<double[]>();
+        //        p_points.Add(p_coord1);
+        //        p_points.Add(p_coord2);
+        //        //
+        //        v_code = GetHCodeGeogPoint(p_points, p_nbreCaractSignifiants, p_separateur);
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
+        //    return v_code;
+        //}
+
+        public string GetHCodeGeogPoint(double[] p_coordPoint, int p_nbreDecimales, char p_separateur)
         {
-            string v_composante1 = p_coordPoint[0].ToString();
-            if (v_composante1.Length > p_nbreCaractSignifiants)
-            {
-                v_composante1 = v_composante1.ToString().Substring(0, p_nbreCaractSignifiants);
-            }
-            string v_composante2 = p_coordPoint[1].ToString();
-            if (v_composante2.Length > p_nbreCaractSignifiants)
-            {
-                v_composante2 = v_composante2.ToString().Substring(0, p_nbreCaractSignifiants);
-            }
+            string v_composante1 = Math.Round(p_coordPoint[0], p_nbreDecimales).ToString();
+            string v_composante2 = Math.Round(p_coordPoint[1], p_nbreDecimales).ToString();
             return v_composante1 + p_separateur + v_composante2;
         }
-        public string GetHCodeGeogPoint(List<double[]> p_points, int p_nbreCaractSignifiants = 10, char p_separateur = '_')
+        public string GetHCodeGeogPoint(List<double[]> p_points, int p_nbreDecimales, char p_separateur)
         {
             string v_code = "";
             try
@@ -63,7 +109,7 @@ namespace DEM.Net.Core.Services.Lab
 
                 foreach (double[] v_point in p_pointsOrd)
                 {
-                    v_code += GetHCodeGeogPoint(v_point, p_nbreCaractSignifiants, p_separateur);
+                    v_code += GetHCodeGeogPoint(v_point, p_nbreDecimales, p_separateur);
                     v_code += p_separateur;
                 }
                 v_code = v_code.Substring(0, v_code.Length - 1);
@@ -75,7 +121,7 @@ namespace DEM.Net.Core.Services.Lab
             }
             return v_code;
         }
-        public string GethCodeGeogSegment(double[] p_coord1, double[] p_coord2, int p_nbreCaractSignifiants = 10, char p_separateur = '_')
+        public string GethCodeGeogSegment(double[] p_coord1, double[] p_coord2, int p_nbreDecimales, char p_separateur)
         {
             string v_code = "";
             try
@@ -84,7 +130,7 @@ namespace DEM.Net.Core.Services.Lab
                 p_points.Add(p_coord1);
                 p_points.Add(p_coord2);
                 //
-                v_code = GetHCodeGeogPoint(p_points, p_nbreCaractSignifiants, p_separateur);
+                v_code = GetHCodeGeogPoint(p_points, p_nbreDecimales, p_separateur);
             }
             catch (Exception)
             {
@@ -93,7 +139,6 @@ namespace DEM.Net.Core.Services.Lab
             }
             return v_code;
         }
-
         public Dictionary<string, List<BeanPoint_internal>> GetPointsRegroupesParHCode(List<BeanPoint_internal> p_dataPointsTests)
         {
             Dictionary<string, List<BeanPoint_internal>> v_pourDeduplication = new Dictionary<string, List<BeanPoint_internal>>();
