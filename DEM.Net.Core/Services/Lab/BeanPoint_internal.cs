@@ -35,7 +35,7 @@ namespace DEM.Net.Core.Services.Lab
     {
         private static int _dernierId = 0;
 
-        public int p00_id { get; }
+        public int p00_id { get; set; }
         //
         private string p01_hCodeGeogP;
         public string p01_hCodeGeog

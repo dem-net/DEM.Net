@@ -73,6 +73,12 @@
             this.label14 = new System.Windows.Forms.Label();
             this.tb_pasSeparationEntrePoints = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btn_testVoronoi = new System.Windows.Forms.Button();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.rb_example_WKT = new System.Windows.Forms.RadioButton();
+            this.rb_example_SteVictoire = new System.Windows.Forms.RadioButton();
+            this.rb_example_Verdon = new System.Windows.Forms.RadioButton();
+            this.rb_example_eyger = new System.Windows.Forms.RadioButton();
             this.label24 = new System.Windows.Forms.Label();
             this.txtSRID = new System.Windows.Forms.TextBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
@@ -93,17 +99,12 @@
             this.btn_testCH = new System.Windows.Forms.Button();
             this.btn_testsDivers = new System.Windows.Forms.Button();
             this.btn_visualisationSpatialTrace = new System.Windows.Forms.Button();
-            this.rb_example_SteVictoire = new System.Windows.Forms.RadioButton();
-            this.rb_example_eyger = new System.Windows.Forms.RadioButton();
-            this.rb_example_Verdon = new System.Windows.Forms.RadioButton();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.rb_example_WKT = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.groupBox5.SuspendLayout();
             this.groupBox6.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // btn_genererPoints
@@ -514,6 +515,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.btn_testVoronoi);
             this.groupBox3.Controls.Add(this.groupBox6);
             this.groupBox3.Controls.Add(this.label24);
             this.groupBox3.Controls.Add(this.txtSRID);
@@ -542,6 +544,71 @@
             this.groupBox3.TabIndex = 28;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Génération points tests:";
+            // 
+            // btn_testVoronoi
+            // 
+            this.btn_testVoronoi.Location = new System.Drawing.Point(648, 269);
+            this.btn_testVoronoi.Name = "btn_testVoronoi";
+            this.btn_testVoronoi.Size = new System.Drawing.Size(118, 21);
+            this.btn_testVoronoi.TabIndex = 48;
+            this.btn_testVoronoi.Text = "Tests Voronoi";
+            this.btn_testVoronoi.UseVisualStyleBackColor = true;
+            this.btn_testVoronoi.Click += new System.EventHandler(this.btn_testVoronoi_Click);
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.rb_example_WKT);
+            this.groupBox6.Controls.Add(this.rb_example_SteVictoire);
+            this.groupBox6.Controls.Add(this.rb_example_Verdon);
+            this.groupBox6.Controls.Add(this.rb_example_eyger);
+            this.groupBox6.Location = new System.Drawing.Point(23, 244);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(98, 110);
+            this.groupBox6.TabIndex = 47;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Exemples";
+            // 
+            // rb_example_WKT
+            // 
+            this.rb_example_WKT.AutoSize = true;
+            this.rb_example_WKT.Location = new System.Drawing.Point(12, 86);
+            this.rb_example_WKT.Name = "rb_example_WKT";
+            this.rb_example_WKT.Size = new System.Drawing.Size(50, 17);
+            this.rb_example_WKT.TabIndex = 47;
+            this.rb_example_WKT.Text = "WKT";
+            this.rb_example_WKT.UseVisualStyleBackColor = true;
+            // 
+            // rb_example_SteVictoire
+            // 
+            this.rb_example_SteVictoire.AutoSize = true;
+            this.rb_example_SteVictoire.Checked = true;
+            this.rb_example_SteVictoire.Location = new System.Drawing.Point(12, 19);
+            this.rb_example_SteVictoire.Name = "rb_example_SteVictoire";
+            this.rb_example_SteVictoire.Size = new System.Drawing.Size(79, 17);
+            this.rb_example_SteVictoire.TabIndex = 44;
+            this.rb_example_SteVictoire.TabStop = true;
+            this.rb_example_SteVictoire.Text = "Ste Victoire";
+            this.rb_example_SteVictoire.UseVisualStyleBackColor = true;
+            // 
+            // rb_example_Verdon
+            // 
+            this.rb_example_Verdon.AutoSize = true;
+            this.rb_example_Verdon.Location = new System.Drawing.Point(12, 65);
+            this.rb_example_Verdon.Name = "rb_example_Verdon";
+            this.rb_example_Verdon.Size = new System.Drawing.Size(59, 17);
+            this.rb_example_Verdon.TabIndex = 46;
+            this.rb_example_Verdon.Text = "Verdon";
+            this.rb_example_Verdon.UseVisualStyleBackColor = true;
+            // 
+            // rb_example_eyger
+            // 
+            this.rb_example_eyger.AutoSize = true;
+            this.rb_example_eyger.Location = new System.Drawing.Point(12, 42);
+            this.rb_example_eyger.Name = "rb_example_eyger";
+            this.rb_example_eyger.Size = new System.Drawing.Size(52, 17);
+            this.rb_example_eyger.TabIndex = 45;
+            this.rb_example_eyger.Text = "Eyger";
+            this.rb_example_eyger.UseVisualStyleBackColor = true;
             // 
             // label24
             // 
@@ -741,60 +808,6 @@
             this.btn_visualisationSpatialTrace.UseVisualStyleBackColor = true;
             this.btn_visualisationSpatialTrace.Click += new System.EventHandler(this.btn_visualisationSpatialTrace_Click);
             // 
-            // rb_example_SteVictoire
-            // 
-            this.rb_example_SteVictoire.AutoSize = true;
-            this.rb_example_SteVictoire.Checked = true;
-            this.rb_example_SteVictoire.Location = new System.Drawing.Point(12, 19);
-            this.rb_example_SteVictoire.Name = "rb_example_SteVictoire";
-            this.rb_example_SteVictoire.Size = new System.Drawing.Size(79, 17);
-            this.rb_example_SteVictoire.TabIndex = 44;
-            this.rb_example_SteVictoire.Text = "Ste Victoire";
-            this.rb_example_SteVictoire.UseVisualStyleBackColor = true;
-            // 
-            // rb_example_eyger
-            // 
-            this.rb_example_eyger.AutoSize = true;
-            this.rb_example_eyger.Location = new System.Drawing.Point(12, 42);
-            this.rb_example_eyger.Name = "rb_example_eyger";
-            this.rb_example_eyger.Size = new System.Drawing.Size(52, 17);
-            this.rb_example_eyger.TabIndex = 45;
-            this.rb_example_eyger.Text = "Eyger";
-            this.rb_example_eyger.UseVisualStyleBackColor = true;
-            // 
-            // rb_example_Verdon
-            // 
-            this.rb_example_Verdon.AutoSize = true;
-            this.rb_example_Verdon.Location = new System.Drawing.Point(12, 65);
-            this.rb_example_Verdon.Name = "rb_example_Verdon";
-            this.rb_example_Verdon.Size = new System.Drawing.Size(59, 17);
-            this.rb_example_Verdon.TabIndex = 46;
-            this.rb_example_Verdon.Text = "Verdon";
-            this.rb_example_Verdon.UseVisualStyleBackColor = true;
-            // 
-            // groupBox6
-            // 
-            this.groupBox6.Controls.Add(this.rb_example_WKT);
-            this.groupBox6.Controls.Add(this.rb_example_SteVictoire);
-            this.groupBox6.Controls.Add(this.rb_example_Verdon);
-            this.groupBox6.Controls.Add(this.rb_example_eyger);
-            this.groupBox6.Location = new System.Drawing.Point(23, 244);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(98, 110);
-            this.groupBox6.TabIndex = 47;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Exemples";
-            // 
-            // rb_example_WKT
-            // 
-            this.rb_example_WKT.AutoSize = true;
-            this.rb_example_WKT.Location = new System.Drawing.Point(12, 86);
-            this.rb_example_WKT.Name = "rb_example_WKT";
-            this.rb_example_WKT.Size = new System.Drawing.Size(50, 17);
-            this.rb_example_WKT.TabIndex = 47;
-            this.rb_example_WKT.Text = "WKT";
-            this.rb_example_WKT.UseVisualStyleBackColor = true;
-            // 
             // CtrlTestLab
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -810,10 +823,10 @@
             this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -889,5 +902,6 @@
         private System.Windows.Forms.RadioButton rb_example_SteVictoire;
         private System.Windows.Forms.RadioButton rb_example_Verdon;
         private System.Windows.Forms.RadioButton rb_example_eyger;
+        private System.Windows.Forms.Button btn_testVoronoi;
     }
 }

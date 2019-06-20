@@ -3,16 +3,12 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <PackageId>DEM.Net.Core</PackageId>
-    <Version>0.1.0-beta0012</Version>
+    <Version>0.1.0-beta0013</Version>
     <Authors>Xavier Fischer, Frédéric Aubin</Authors>
     <Copyright>Xavier Fischer, Frédéric Aubin</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
-    <PackageReleaseNotes>Symbols package generated alongside
-Check for VRT file corruption
-Updated tests for gdal singleton service
-GDALVRTFileService is now a singleton with its own cache
-Point list extensions</PackageReleaseNotes>
+    <PackageReleaseNotes>Voronoi and iso lines</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation</PackageTags>
     <Title>DEM.Net</Title>
     <Product>DEM.Net</Product>
@@ -60,6 +56,22 @@ Point list extensions</PackageReleaseNotes>
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0006" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Services\Voronoi\BeanTopologie\**" />
+    <EmbeddedResource Remove="Services\Voronoi\BeanTopologie\**" />
+    <None Remove="Services\Voronoi\BeanTopologie\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologie.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologieArc.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologieArcComposant.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologieArcComposite.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologieIlot.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologieVertex.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\enumTopologie.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\ITopologieService.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\TopologieService.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="BitMiracle.LibTiff.NET" Version="2.4.633" />
@@ -78,6 +90,10 @@ Point list extensions</PackageReleaseNotes>
     <None Update="Config\tokens.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\Voronoi\FortuneVoronoi\" />
   </ItemGroup>
 
   <ProjectExtensions>

@@ -57,6 +57,10 @@ namespace DEM.Net.Core.Services.VisualisationServices
         //
         void GetVisuPentesFacettes(BeanTopologieFacettes p_topologieFacettes, int p_nbreClasses);
         //
+        void GetVisuPoints(List<BeanPoint_internal> p_points, Color p_couleur, int p_taillePoint, string p_prefixeLabel);
+        void GetVisuArcsTopologie(BeanTopologieFacettes p_topologie, Color p_couleur, string p_prefixeLabel);
+        void GetVisuIlots(BeanTopologieFacettes p_topologie, Color p_couleur, string p_prefixeLabel);
+        //
         void AfficheVisu();
         void ClearSpatialTrace();
     }

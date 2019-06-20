@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 
 using DEM.Net.Core.Services.VisualisationServices;
+using GeoAPI.Geometries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -2028,6 +2029,115 @@ namespace DEM.Net.Core.Services.Lab
             }
         }
 
+        public IGeometry GetGeometryPolygoneFacetteEtOrdonnePointsFacette(ref BeanFacette_internal p_facette, ref BeanTopologieFacettes p_topologieFacette)
+        {
+            IGeometry v_geom = null;
+            try
+            {
+                if(p_facette.p02_arcs==null || p_facette.p02_arcs.Count<3)
+                {
+                    return null;
+                }
+                Dictionary<string, BeanPoint_internal> v_pointsDuPolygone = new Dictionary<string, BeanPoint_internal>();
+                BeanArc_internal v_arcInitial;
+                BeanArc_internal v_arcToTest;
+                BeanArc_internal v_arcCourant;
+                
+                Dictionary<string, BeanArc_internal> v_arcsParcelle = p_facette.p02_arcs.ToDictionary(c => c.p01_hcodeArc, c => c);
+                Dictionary<string, bool> v_avanctTraittArcs = p_facette.p02_arcs.ToDictionary(c => c.p01_hcodeArc, c => false);
+                //
+                bool v_estClos_vf = false;
+                v_arcInitial = v_arcsParcelle.First().Value;
+                v_pointsDuPolygone.Add(v_arcInitial.p11_pointDbt.p01_hCodeGeog, v_arcInitial.p11_pointDbt);
+                v_pointsDuPolygone.Add(v_arcInitial.p12_pointFin.p01_hCodeGeog, v_arcInitial.p12_pointFin);
+                int v_nbreArcsATraiter = v_avanctTraittArcs.Count;
+                int v_nbreArcsTraites = 1;
+                //
+                v_arcCourant = v_arcInitial;
+                v_avanctTraittArcs[v_arcCourant.p01_hcodeArc] = true;
+                //
+                List<BeanArc_internal> v_pseudoListeArcSuivant;
+                while(v_nbreArcsTraites<= v_nbreArcsATraiter+1)
+                {
+                    v_pseudoListeArcSuivant=v_arcCourant.p12_pointFin.p41_arcsAssocies
+                    .Where(c => v_arcsParcelle.ContainsKey(c.Key) && c.Key != v_arcCourant.p01_hcodeArc)
+                    .Select(c => c.Value)
+                    .ToList();
+                  
+                    if(v_pseudoListeArcSuivant.Count!=1)
+                    {
+                        break;
+                    }
+                    v_arcToTest= v_pseudoListeArcSuivant.First();
+                    if(v_nbreArcsTraites== v_nbreArcsATraiter && v_arcToTest.p01_hcodeArc==v_arcInitial.p01_hcodeArc)
+                    {
+                        v_estClos_vf = true;
+                        break;
+                    }
+                  
+                    if(v_avanctTraittArcs[v_arcToTest.p01_hcodeArc]==false)
+                    {
+                        v_arcCourant = v_arcToTest;
+                    }
+                    else
+                    {
+                        v_pseudoListeArcSuivant = v_arcCourant.p11_pointDbt.p41_arcsAssocies
+                   .Where(c => v_arcsParcelle.ContainsKey(c.Key) && c.Key != v_arcCourant.p01_hcodeArc)
+                   .Select(c => c.Value)
+                   .ToList();
+
+                        if (v_pseudoListeArcSuivant.Count != 1)
+                        {
+                            break;
+                        }
+                        v_arcToTest = v_pseudoListeArcSuivant.First();
+                        if (v_nbreArcsTraites == v_nbreArcsATraiter && v_arcToTest.p01_hcodeArc == v_arcInitial.p01_hcodeArc)
+                        {
+                            v_estClos_vf = true;
+                            break;
+                        }
+                        if (v_avanctTraittArcs[v_arcToTest.p01_hcodeArc] == false)
+                        {
+                            v_arcCourant = v_arcToTest;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                 
+                    if(!v_pointsDuPolygone.ContainsKey(v_arcCourant.p11_pointDbt.p01_hCodeGeog))
+                    {
+                        v_pointsDuPolygone.Add(v_arcCourant.p11_pointDbt.p01_hCodeGeog, v_arcCourant.p11_pointDbt);
+                    }
+                    if (!v_pointsDuPolygone.ContainsKey(v_arcCourant.p12_pointFin.p01_hCodeGeog))
+                    {
+                        v_pointsDuPolygone.Add(v_arcCourant.p12_pointFin.p01_hCodeGeog, v_arcCourant.p12_pointFin);
+                    }
+                    v_nbreArcsTraites++;
+                    v_avanctTraittArcs[v_arcCourant.p01_hcodeArc] = true;
+                }
+                //
+                if (v_estClos_vf != true )
+                {
+                    return null;
+                }
+                //
+                List<double[]> v_coordPoints;
+                v_coordPoints = v_pointsDuPolygone.Values.Select(c => c.p10_coord).ToList();
+                v_coordPoints.Add(v_coordPoints.First());
+                //
+                int v_srid = v_pointsDuPolygone.Values.First().p11_srid;
+                //
+                p_facette.p01_pointsDeFacette = v_pointsDuPolygone.Values.ToList();
+                v_geom =FLabServices.createUtilitaires().GetGeometryPolygon(v_coordPoints, v_srid);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return v_geom;
+        }
         private BeanFacette_internal ConstruitFacette(BeanArc_internal p_arcATesterDebut,ref BeanTopologieFacettes p_topol, ref Dictionary<string, int> p_nbreBordsTraitesParArc, bool p_aDroite_sinonAGauche)
         {
             BeanFacette_internal v_facette = new BeanFacette_internal();

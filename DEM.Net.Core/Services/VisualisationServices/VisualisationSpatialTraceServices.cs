@@ -366,14 +366,14 @@ namespace DEM.Net.Core.Services.VisualisationServices
         {
             bool param_sensCouleursCroissant = true;
             bool param_visupointsInclus_vf = false;
-            bool param_afficherMemeSiInvalide_vf=false;
+            bool param_afficherMemeSiInvalide_vf = false;
             Dictionary<int, double> v_penteDesfacettes = p_topologieFacettes.p13_facettesById.ToDictionary(c => c.Key, c => c.Value.getPente());
             Dictionary<string, List<int>> v_facettesParClasse;
 
             //v_facettesParClasse = FVisualisationServices.createSeuillageServices().GetIdParClassesOrdonnees_parIsoQuantite(v_penteDesfacettes, p_nbreClasses);
 
             //Pentes suspectes?
-            double param_seuilMaxi = (Math.PI/2)-0.01;
+            double param_seuilMaxi = (Math.PI / 2) - 0.01;
 
             double v_min = v_penteDesfacettes.Values.Min();
             double v_max = v_penteDesfacettes.Values.Max();
@@ -385,23 +385,23 @@ namespace DEM.Net.Core.Services.VisualisationServices
             //v_seuilsBas=FVisualisationServices.createSeuillageServices().GetSeuilBasClasses_memeEspaceInterclasse(p_nbreClasses, v_minRecale, v_maxRecale);
             v_seuilsBas = FVisualisationServices.createSeuillageServices().GetSeuilBasClasses_parIsoQuantite(v_penteDesfacettes, p_nbreClasses);
             //On identifie les éventuels cas à PB
-            if (v_min<0)
+            if (v_min < 0)
             {
                 v_seuilsBas.Add(0, v_min);
             }
-            if(v_max> param_seuilMaxi)
+            if (v_max > param_seuilMaxi)
             {
-                v_seuilsBas.Add(p_nbreClasses+1, v_maxRecale);
+                v_seuilsBas.Add(p_nbreClasses + 1, v_maxRecale);
             }
             v_seuilsBas = v_seuilsBas.OrderBy(c => c.Key).ToDictionary(c => c.Key, c => c.Value);
             //
-          
-            v_facettesParClasse = FVisualisationServices.createSeuillageServices().GetClassesOrdonnees_parSeuilsDeValeur(v_penteDesfacettes, v_seuilsBas);            Dictionary<string, Color> v_tableCouleurs;
+
+            v_facettesParClasse = FVisualisationServices.createSeuillageServices().GetClassesOrdonnees_parSeuilsDeValeur(v_penteDesfacettes, v_seuilsBas); Dictionary<string, Color> v_tableCouleurs;
             v_tableCouleurs = GetTableCouleursDegradees(v_facettesParClasse.Keys.ToList(), enumProgressionCouleurs.greenVersRed, param_alpha, param_sensCouleursCroissant);
 
             if (v_min < 0)
             {
-                v_tableCouleurs[v_tableCouleurs.First().Key]= Color.Yellow;
+                v_tableCouleurs[v_tableCouleurs.First().Key] = Color.Yellow;
             }
             if (v_max > param_seuilMaxi)
             {
@@ -410,18 +410,95 @@ namespace DEM.Net.Core.Services.VisualisationServices
 
             Color v_couleur;
             string v_label;
-            double v_convertToDegree = 180/Math.PI;
+            double v_convertToDegree = 180 / Math.PI;
             foreach (KeyValuePair<string, List<int>> v_classe in v_facettesParClasse)
             {
                 v_couleur = v_tableCouleurs[v_classe.Key];
                 foreach (int v_idFacette in v_classe.Value)
                 {
-                  v_label = v_classe.Key + " (" + Math.Round(v_penteDesfacettes[v_idFacette]* v_convertToDegree, 3)+" deg)";
-                  GetVisuFacette(p_topologieFacettes.p13_facettesById[v_idFacette], v_label, v_couleur, param_visupointsInclus_vf, param_afficherMemeSiInvalide_vf);
-                } 
+                    v_label = v_classe.Key + " (" + Math.Round(v_penteDesfacettes[v_idFacette] * v_convertToDegree, 3) + " deg)";
+                    GetVisuFacette(p_topologieFacettes.p13_facettesById[v_idFacette], v_label, v_couleur, param_visupointsInclus_vf, param_afficherMemeSiInvalide_vf);
+                }
             }
         }
 
+   
+        public void GetVisuArcsTopologie(BeanTopologieFacettes p_topologie, Color p_couleur, string p_prefixeLabel)
+        {
+            if(p_topologie.p12_arcsByCode==null || p_topologie.p12_arcsByCode.Count==0)
+            {
+                return;
+            }
+            IGeometry v_arcGeom;
+            string v_label;
+            int v_srid=p_topologie.p11_pointsFacettesByIdPoint.First().Value.p11_srid;
+            SpatialTrace.Enable();
+            SpatialTrace.SetLineColor(p_couleur);
+            foreach (KeyValuePair<string, BeanArc_internal> v_arc in p_topologie.p12_arcsByCode)
+            {
+                v_label = p_prefixeLabel + " " + v_arc.Value.p00_idArc + "\\" + v_arc.Value.p01_hcodeArc;
+                v_arcGeom =FLabServices.createUtilitaires().GetGeometryLine(v_arc.Value.p11_pointDbt.p10_coord, v_arc.Value.p12_pointFin.p10_coord, v_srid, false);
+                SpatialTrace.TraceGeometry(v_arcGeom, v_label, v_label);
+            }
+            SpatialTrace.Disable();
+        }
+        public void GetVisuIlots(BeanTopologieFacettes p_topologie, Color p_couleur, string p_prefixeLabel)
+        {
+            SpatialTrace.Enable();
+            SpatialTrace.SetFillColor(p_couleur);
+            SpatialTrace.SetLineColor(Color.Blue);
+            SpatialTrace.SetLineWidth(1);
+
+            string v_label;
+            foreach(KeyValuePair<int,BeanFacette_internal> v_facette in p_topologie.p13_facettesById)
+            {
+                if (v_facette.Value.p04_geomFacette!=null)
+                {
+                    v_label = p_prefixeLabel+ " Fac " + v_facette.Key;
+                    SpatialTrace.TraceGeometry(v_facette.Value.p04_geomFacette, v_label, v_label);
+                }
+                else
+                {
+                    if(v_facette.Value.p02_arcs!=null && v_facette.Value.p02_arcs.Count>0)
+                    {
+                        SpatialTrace.SetLineColor(Color.Red);
+                        SpatialTrace.SetLineWidth(3);
+                        IGeometry v_arcGeom;
+                        foreach (BeanArc_internal v_arcPolyg in v_facette.Value.p02_arcs)
+                        {
+                            v_label = "PB FAC "+ v_facette.Key +"_"+ p_prefixeLabel + "=> Arc: " + v_arcPolyg.p00_idArc + "\\" + v_arcPolyg.p01_hcodeArc;
+                            int v_srid = v_arcPolyg.p11_pointDbt.p11_srid;
+                            v_arcGeom = FLabServices.createUtilitaires().GetGeometryLine(v_arcPolyg.p11_pointDbt.p10_coord, v_arcPolyg.p12_pointFin.p10_coord, v_srid, false);
+                            SpatialTrace.TraceGeometry(v_arcGeom, v_label, v_label);
+                        }
+                        SpatialTrace.SetLineWidth(1);
+                        SpatialTrace.SetLineColor(Color.Blue);
+                    }
+                }
+              
+            }
+            SpatialTrace.Disable();
+        }
+
+        public void GetVisuPoints(List<BeanPoint_internal> p_points, Color p_couleur,int p_taillePoint, string p_prefixeLabel)
+        {
+            if(p_points==null  && p_points.Count==0)
+            {
+                return;
+            }
+            IGeometry v_pointGeom;
+            string v_label;
+            int v_srid = p_points.First().p11_srid;
+            SpatialTrace.Enable();
+            SpatialTrace.SetLineColor(p_couleur);
+            foreach (BeanPoint_internal v_point in p_points)
+            {
+                v_label = p_prefixeLabel + " " + v_point.p00_id + "\\" + v_point.p00_id;
+                v_pointGeom = FLabServices.createUtilitaires().ConstructPoint(v_point.p10_coord[0], v_point.p10_coord[1], v_srid);
+                SpatialTrace.TraceGeometry(v_pointGeom, v_label, v_label);
+            }
+            SpatialTrace.Disable();
+        }
 
         public void GetVisuFacette(BeanFacette_internal p_facette,string p_label, Color p_couleurCourante, bool p_visualiserPointsInclus_vf, bool p_afficherMemeSiInvalide_vf)
         {
@@ -455,8 +532,6 @@ namespace DEM.Net.Core.Services.VisualisationServices
             SpatialTrace.Disable();
         }
 
-
-       
         public void GetVisuCreteEtTalweg(BeanTopologieFacettes p_topologieFacettes, HashSet<enum_qualificationMorpho_arc> p_nePasAfficher = null)
         {
             Color v_couleur;

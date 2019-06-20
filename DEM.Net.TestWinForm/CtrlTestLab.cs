@@ -325,5 +325,26 @@ namespace DEM.Net.TestWinForm
             FServicesApplicatifs.createVisuSpatialTrace().AfficheVisu();
             MessageBox.Show("Traitement terminé.");
         }
+
+        private void btn_testVoronoi_Click(object sender, EventArgs e)
+        {
+            //
+            int param_srid = 2154;
+            if (_dataPointsTests == null || _dataPointsTests.Count == 0)
+            {
+                MessageBox.Show("Générez d'abord les points.");
+                return;
+            }
+            //Il est impératif que tous les points soient distincts:
+            Dictionary<string, List<BeanPoint_internal>> v_pourDeduplication;
+            v_pourDeduplication=FLabServices.createUtilitaires().GetPointsRegroupesParHCode(_dataPointsTests);
+            List<BeanPoint_internal> v_pointsDedupliques = v_pourDeduplication.SelectMany(c => c.Value).ToList();
+            //
+            BeanTopologieFacettes v_topolFacettes;
+            v_topolFacettes=FLabServices.createVoronoiServices().GetTopologieVoronoi(v_pointsDedupliques, param_srid);
+            FServicesApplicatifs.createVisuSpatialTrace().GetVisuArcsTopologie(v_topolFacettes, Color.Red, "Vor");
+            FServicesApplicatifs.createVisuSpatialTrace().GetVisuIlots(v_topolFacettes, Color.Cyan, "Ilot V");
+            FServicesApplicatifs.createVisuSpatialTrace().GetVisuPoints(v_pointsDedupliques, Color.Green, 3, "Pt");
+        }
     }
 }
