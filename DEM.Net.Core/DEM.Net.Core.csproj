@@ -3,16 +3,12 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <PackageId>DEM.Net.Core</PackageId>
-    <Version>0.1.0-beta0012</Version>
+    <Version>0.1.0-beta0013</Version>
     <Authors>Xavier Fischer, Frédéric Aubin</Authors>
     <Copyright>Xavier Fischer, Frédéric Aubin</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
-    <PackageReleaseNotes>Symbols package generated alongside
-Check for VRT file corruption
-Updated tests for gdal singleton service
-GDALVRTFileService is now a singleton with its own cache
-Point list extensions</PackageReleaseNotes>
+    <PackageReleaseNotes>Voronoi and iso lines</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation</PackageTags>
     <Title>DEM.Net</Title>
     <Product>DEM.Net</Product>
