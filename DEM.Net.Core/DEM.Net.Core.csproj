@@ -94,6 +94,7 @@
 
   <ItemGroup>
     <Folder Include="Services\Voronoi\FortuneVoronoi\" />
+    <Folder Include="Model\Enums\" />
   </ItemGroup>
 
   <ProjectExtensions>
