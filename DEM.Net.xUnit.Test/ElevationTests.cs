@@ -19,6 +19,26 @@ namespace DEM.Net.Test
             _elevationService = fixture.ServiceProvider.GetService<IElevationService>();
         }
 
+        [Fact(DisplayName ="Not covered elevation check")]
+        public void TestElevationWithNoCoverage()
+        {
+            DEMDataSet dataSet = DEMDataSet.SRTM_GL3;
+
+            var point = _elevationService.GetPointElevation(31, -27, dataSet);
+            Assert.True((point.Status ?? DEMAnomaly.OK) == DEMAnomaly.NotCovered);
+
+        }
+
+        [Fact(DisplayName = "Not covered download check")]
+        public void TestDownloadWithNoCoverage()
+        {
+            DEMDataSet dataSet = DEMDataSet.SRTM_GL3;
+
+
+            _elevationService.DownloadMissingFiles(dataSet, 31, -27);
+
+        }
+
         [Theory()]
         [InlineData("SRTM_GL3", 45.179337, 5.721421, 216.57283020019531)]
         [InlineData("SRTM_GL1", 45.179337, 5.721421, 216.71719360351562)]

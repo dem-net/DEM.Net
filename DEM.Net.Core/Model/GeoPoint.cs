@@ -32,15 +32,12 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core
 {
-    [Serializable]
     public class GeoPoint
     {
-        public virtual double Latitude { get; set; }
-        public virtual double Longitude { get; set; }
-        public virtual int? XIndex { get; set; }
-        public virtual int? YIndex { get; set; }
-        public virtual double? Elevation { get; set; }
-        public virtual string TileId { get; set; }
+        public DEMAnomaly? Status { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public double? Elevation { get; set; }
 
         /// <summary>
         /// When this point is part of a List and ComputePointsDistances is called, this field
@@ -48,13 +45,11 @@ namespace DEM.Net.Core
         /// </summary>
         public virtual double DistanceFromOriginMeters { get; set; }
 
-        public GeoPoint(double latitude, double longitude, double? altitude, int? indexX, int? indexY)
+        public GeoPoint(double latitude, double longitude, double? altitude)
         {
-            Latitude = latitude;
+            this.Latitude = latitude;
             Longitude = longitude;
             Elevation = altitude;
-            XIndex = indexX;
-            YIndex = indexY;
         }
 
         public GeoPoint(double latitude, double longitude)
@@ -62,8 +57,6 @@ namespace DEM.Net.Core
             Latitude = latitude;
             Longitude = longitude;
             Elevation = null;
-            XIndex = null;
-            YIndex = null;
         }
         public GeoPoint()
         {
@@ -81,12 +74,6 @@ namespace DEM.Net.Core
                 Latitude = this.Latitude
                 ,
                 Longitude = this.Longitude
-                ,
-                TileId = this.TileId
-                ,
-                XIndex = this.XIndex
-                ,
-                YIndex = this.YIndex
             };
 
         }
@@ -106,7 +93,7 @@ namespace DEM.Net.Core
         {
             return $"Lat/Lon: {Latitude} / {Longitude} "
                 + (Elevation.HasValue ? $", Elevation: {Elevation.Value}" : "")
-                + (DistanceFromOriginMeters != default(double) ? $", DistanceFromOrigin: {DistanceFromOriginMeters}" : "");
+                + (DistanceFromOriginMeters > 0 ? $", DistanceFromOrigin: {DistanceFromOriginMeters}" : "");
         }
     }
 

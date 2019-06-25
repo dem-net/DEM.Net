@@ -33,9 +33,9 @@ namespace DEM.Net.Core
 {
 	public class DEMFileFormat
 	{
-		public virtual string Name { get; set; }
+		public string Name { get; set; }
 
-		public virtual string FileExtension { get; set; }
+		public string FileExtension { get; set; }
 
 		public static readonly DEMFileFormat SRTM_HGT = new DEMFileFormat("Shuttle Radar Topography Mission (SRTM) Data file.", ".hgt");
 		public static readonly DEMFileFormat GEOTIFF = new DEMFileFormat("GeoTIFF file", ".tif");

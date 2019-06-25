@@ -128,11 +128,11 @@ namespace DEM.Net.Core
         private static GeoPoint ReprojectPoint(GeoPoint sourcePoint, ProjectionInfo sourceProj, ProjectionInfo destProj)
         {
 
-            double[] coords = new double[] { sourcePoint.Longitude, sourcePoint.Latitude };
+            double[] coords = { sourcePoint.Longitude, sourcePoint.Latitude };
             // Calls the reproject function that will transform the input location to the output locaiton
             Reproject.ReprojectPoints(coords, new double[] { sourcePoint.Elevation.GetValueOrDefault(0) }, sourceProj, destProj, 0, 1);
 
-            return new GeoPoint(coords[1], coords[0], sourcePoint.Elevation, sourcePoint.XIndex.GetValueOrDefault(), sourcePoint.YIndex.GetValueOrDefault());
+            return new GeoPoint(coords[1], coords[0], sourcePoint.Elevation);
         }
 
 

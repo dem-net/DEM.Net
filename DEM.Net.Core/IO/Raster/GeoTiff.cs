@@ -255,7 +255,7 @@ namespace DEM.Net.Core
                     {
                         heightValue = (float)noDataValue;
                     }
-                    coords.Add(new GeoPoint(latitude, longitude, heightValue, x, y));
+                    coords.Add(new GeoPoint(latitude, longitude, heightValue));
 
                 }
             }
@@ -310,7 +310,7 @@ namespace DEM.Net.Core
                     {
                         heightValue = 0;
                     }
-                    coords.Add(new GeoPoint(latitude, longitude, heightValue, x, y));
+                    coords.Add(new GeoPoint(latitude, longitude, heightValue));
 
                 }
             }
