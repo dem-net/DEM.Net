@@ -34,7 +34,6 @@ namespace DEM.Net.Core
 {
     public class GeoPoint
     {
-        public DEMAnomaly? Status { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public double? Elevation { get; set; }

@@ -61,7 +61,10 @@ namespace DEM.Net.Core
             var report = _IRasterService.GenerateReport(dataSet, bbox);
 
             if (report == null)
+            {
+                _logger?.LogWarning($"No coverage for bbox {bbox} in {dataSet.Name} dataset.");
                 return;
+            }
 
             DownloadMissingFiles_FromReport(report, dataSet);
 
@@ -71,7 +74,10 @@ namespace DEM.Net.Core
             var report = _IRasterService.GenerateReportForLocation(dataSet, lat, lon);
 
             if (report == null)
+            {
+                _logger?.LogWarning($"No coverage for lat/lon {lat}/{lon} in {dataSet.Name} dataset.");
                 return;
+            }
 
             DownloadMissingFiles_FromReport(Enumerable.Repeat(report,1), dataSet);
 
@@ -402,7 +408,8 @@ namespace DEM.Net.Core
 
             if (tiles.Count == 0)
             {
-                geoPoint.Status = DEMAnomaly.NotCovered;
+                _logger?.LogWarning($"No coverage found matching provided point {geoPoint} for dataset {dataSet.Name}");
+                return null;
             }
             else
             {
@@ -433,11 +440,7 @@ namespace DEM.Net.Core
 
             if (tiles.Count == 0)
             {
-                pointsWithElevation = points.Select(p => {
-                    var outP = p.Clone();
-                    outP.Status = DEMAnomaly.NotCovered;
-                    return outP;
-                });
+                return null;
             }
             else
             {

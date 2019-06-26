@@ -25,7 +25,7 @@ namespace DEM.Net.Test
             DEMDataSet dataSet = DEMDataSet.SRTM_GL3;
 
             var point = _elevationService.GetPointElevation(31, -27, dataSet);
-            Assert.True((point.Status ?? DEMAnomaly.OK) == DEMAnomaly.NotCovered);
+            Assert.Null(point);
 
         }
 
@@ -34,7 +34,8 @@ namespace DEM.Net.Test
         {
             DEMDataSet dataSet = DEMDataSet.SRTM_GL3;
 
-
+            // This one should run without error, but generating a warning,
+            // as location is not covererd by dataset
             _elevationService.DownloadMissingFiles(dataSet, 31, -27);
 
         }
