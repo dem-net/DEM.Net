@@ -479,7 +479,7 @@ namespace DEM.Net.Core
             sb.AppendLine("Lon\tLat\tDistance (meters)\tZ");
             foreach (GeoPoint pt in lineElevationData)
             {
-                sb.AppendLine($"{pt.Longitude.ToString(CultureInfo.InvariantCulture)}\t{pt.Latitude.ToString(CultureInfo.InvariantCulture)}\t{pt.DistanceFromOriginMeters.ToString("F2")}\t{pt.Elevation}");
+                sb.AppendLine($"{pt.Longitude.ToString(CultureInfo.InvariantCulture)}\t{pt.Latitude.ToString(CultureInfo.InvariantCulture)}\t{(pt.DistanceFromOriginMeters ?? 0d).ToString("F2")}\t{pt.Elevation}");
             }
             return sb.ToString();
         }

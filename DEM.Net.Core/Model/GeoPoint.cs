@@ -42,25 +42,18 @@ namespace DEM.Net.Core
         /// When this point is part of a List and ComputePointsDistances is called, this field
         /// stores the distance from this point to origin point in meters.
         /// </summary>
-        public virtual double DistanceFromOriginMeters { get; set; }
+        public double? DistanceFromOriginMeters { get; set; }
 
         public GeoPoint(double latitude, double longitude, double? altitude)
         {
             this.Latitude = latitude;
-            Longitude = longitude;
-            Elevation = altitude;
+            this.Longitude = longitude;
+            this.Elevation = altitude;
+            this.DistanceFromOriginMeters = null;
         }
 
-        public GeoPoint(double latitude, double longitude)
-        {
-            Latitude = latitude;
-            Longitude = longitude;
-            Elevation = null;
-        }
-        public GeoPoint()
-        {
-
-        }
+        public GeoPoint(double latitude, double longitude) : this(latitude, longitude, null) { }
+        public GeoPoint() : this(0,0) { }
 
         public GeoPoint Clone()
         {
@@ -92,7 +85,7 @@ namespace DEM.Net.Core
         {
             return $"Lat/Lon: {Latitude} / {Longitude} "
                 + (Elevation.HasValue ? $", Elevation: {Elevation.Value}" : "")
-                + (DistanceFromOriginMeters > 0 ? $", DistanceFromOrigin: {DistanceFromOriginMeters}" : "");
+                + ((DistanceFromOriginMeters ?? 0) > 0 ? $", DistanceFromOrigin: {DistanceFromOriginMeters}" : "");
         }
     }
 
