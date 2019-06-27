@@ -33,18 +33,21 @@ namespace DEM.Net.Core
 {
     public class DEMDataSet
     {
-        public virtual string Name { get; set; }
+        public string Name { get; set; }
 
-        public virtual string Description { get; set; }
-        public virtual string PublicUrl { get; set; }
-        public virtual int ResolutionMeters { get; set; }
+        public string Description { get; set; }
+        public string PublicUrl { get; set; }
+        public int ResolutionMeters { get; set; }
 
-        public virtual DEMFileFormat FileFormat { get; set; }
+        public DEMFileFormat FileFormat { get; set; }
+
+        public Attribution Attribution { get; set; }
+        
 
         /// <summary>
         /// GDAL Virtual 
         /// </summary>
-        public virtual string VRTFileUrl { get; set; }
+        public string VRTFileUrl { get; set; }
 
         public DEMDataSet()
         {
@@ -67,7 +70,19 @@ namespace DEM.Net.Core
                     PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTSRTM.042013.4326.1",
                     VRTFileUrl = "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL3/SRTM_GL3_srtm.vrt",
                     FileFormat = DEMFileFormat.SRTM_HGT,
-                    ResolutionMeters = 90
+                    ResolutionMeters = 90,
+                    Attribution = new Attribution("OpenTopography", "https://opentopography.org/"
+                    , @"Citing LP DAVV and Data Products: https://lpdaac.usgs.gov/about/citing_lp_daac_and_data
+
+If you wish to cite the SRTM products in a report or publication please use: 
+Farr, T. G., and M. Kobrick, 2000, Shuttle Radar Topography Mission produces a wealth of data. Eos Trans. AGU, 81:583-583.
+
+Farr, T. G. et al., 2007, The Shuttle Radar Topography Mission, Rev. Geophys., 45, RG2004, doi:10.1029/2005RG000183. (Also available online at http://www2.jpl.nasa.gov/srtm/SRTM_paper.pdf)
+
+Kobrick, M., 2006, On the toes of giants--How SRTM was born, Photogramm. Eng. Remote Sens., 72:206-210.
+
+Rosen, P. A. et al., 2000, Synthetic aperture radar interferometry, Proc. IEEE, 88:333-382.
+https://doi.org/10.5069/G9445JDF")
                 };
             }
         }
@@ -85,7 +100,8 @@ namespace DEM.Net.Core
                     PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTSRTM.082015.4326.1",
                     VRTFileUrl = "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL1/SRTM_GL1_srtm.vrt",
                     FileFormat = DEMFileFormat.SRTM_HGT,
-                    ResolutionMeters = 30
+                    ResolutionMeters = 30,
+                    Attribution = new Attribution("OpenTopography", "https://opentopography.org/", "http://www2.jpl.nasa.gov/srtm/srtmBibliography.html, https://doi.org/10.5069/G9445JDF")
                 };
             }
         }
@@ -103,7 +119,13 @@ namespace DEM.Net.Core
                     PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTALOS.112016.4326.2",
                     VRTFileUrl = "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/AW3D30/AW3D30_alos.vrt",
                     FileFormat = DEMFileFormat.GEOTIFF,
-                    ResolutionMeters = 30
+                    ResolutionMeters = 30,
+                    Attribution = new Attribution("OpenTopography", "https://opentopography.org/"
+                    , @"J. Takaku, T. Tadono, K. Tsutsui : Generation of High Resolution Global DSM from ALOS PRISM, The International Archives of the Photogrammetry, Remote Sensing and Spatial Information Sciences, pp.243-248, Vol. XL-4, ISPRS TC IV Symposium, Suzhou, China, 2014. [http://www.int-arch-photogramm-remote-sens-spatial-inf-sci.net/XL-4/243/2014/isprsarchives-XL-4-243-2014.pdf]
+
+T.Tadono, H.Ishida, F.Oda, S.Naito, K.Minakawa, H.Iwamoto : Precise Global DEM Generation By ALOS PRISM, ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences, pp.71 - 76, Vol.II - 4, 2014. [http://www.isprs-ann-photogramm-remote-sens-spatial-inf-sci.net/II-4/71/2014/isprsannals-II-4-71-2014.pdf]
+https://doi.org/10.5069/G94M92HB
+")
                 };
             }
         }
