@@ -29,18 +29,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Core.Imagery
+namespace DEM.Net.Core
 {
     // Source : Brutile
     public class Attribution
     {
-        public Attribution(string text = null, string url = null)
+        public Attribution(string text = null, string url = null, string acknowledgement = null)
         {
-            Text = text ?? "";
-            Url = url ?? "";
+            this.Text = text;
+            this.Url = url;
+            this.Acknowledgement = acknowledgement;
+
         }
 
         public string Text { get; }
         public string Url { get; }
+        public string Acknowledgement {get; }
     }
 }
