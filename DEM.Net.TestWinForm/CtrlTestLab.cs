@@ -106,7 +106,7 @@ namespace DEM.Net.TestWinForm
 
         private IEnumerable<GeoPoint> FromBeanPoint_internalToGeoPoint(List<BeanPoint_internal> dataPointsTests)
         {
-            return dataPointsTests.Select(ptIn => new GeoPoint(ptIn.p10_coord[1], ptIn.p10_coord[0], (float)ptIn.p10_coord[2], 0, 0));
+            return dataPointsTests.Select(ptIn => new GeoPoint(ptIn.p10_coord[1], ptIn.p10_coord[0], (float)ptIn.p10_coord[2]));
             //foreach (BeanPoint_internal ptIn in dataPointsTests)
             //{
             //    yield return new GeoPoint(ptIn.p10_coord[1], ptIn.p10_coord[0], (float)ptIn.p10_coord[2], 0, 0);
@@ -252,7 +252,7 @@ namespace DEM.Net.TestWinForm
 
             foreach (BeanPoint_internal v_point in _topolFacettes.p11_pointsFacettesByIdPoint.Values)
             {
-                v_geoPoint = new GeoPoint(v_point.p10_coord[1], v_point.p10_coord[0], (float)v_point.p10_coord[2], 0, 0);
+                v_geoPoint = new GeoPoint(v_point.p10_coord[1], v_point.p10_coord[0], (float)v_point.p10_coord[2]);
                 v_beanToVisu3d.p00_geoPoint.Add(v_geoPoint);
                 v_indiceParIdPoint.Add(v_point.p00_id, v_indice);
                 v_indice++;
