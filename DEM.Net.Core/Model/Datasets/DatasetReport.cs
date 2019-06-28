@@ -59,7 +59,7 @@ namespace DEM.Net.Core.Model
             var sb = new StringBuilder();
             sb.AppendLine($"Dataset : {this.DatasetName} report :");
             sb.AppendLine($"> {this.TotalFiles} file(s) in dataset.");
-            sb.AppendLine($"> {this.DownloadedFiles} file(s) dowloaded ({this.DownloadedSize:F2} MB total).");
+            sb.AppendLine($"> {this.DownloadedFiles} file(s) dowloaded ({this.DownloadedSizeMB:F2} MB total).");
             sb.AppendLine($"> {this.FilesWithMetadata} file(s) with DEM.Net metadata.");
 
             return sb.ToString();

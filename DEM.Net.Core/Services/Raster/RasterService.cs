@@ -313,7 +313,7 @@ namespace DEM.Net.Core
                 ,
                 DownloadedFiles = downloadedCount
                 ,
-                DownloadedSize = fileSizeMB
+                DownloadedSizeMB = fileSizeMB
                 ,
                 FilesWithMetadata = isMetadataGeneratedCount
             };
