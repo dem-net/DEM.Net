@@ -38,6 +38,7 @@ namespace DEM.Net.Core
         public string Description { get; set; }
         public string PublicUrl { get; set; }
         public int ResolutionMeters { get; set; }
+        public int NoDataValue { get; set; }
 
         public DEMFileFormat FileFormat { get; set; }
 
@@ -120,6 +121,7 @@ https://doi.org/10.5069/G9445JDF")
                     VRTFileUrl = "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/AW3D30/AW3D30_alos.vrt",
                     FileFormat = DEMFileFormat.GEOTIFF,
                     ResolutionMeters = 30,
+                    NoDataValue = -9999,
                     Attribution = new Attribution("OpenTopography", "https://opentopography.org/"
                     , @"J. Takaku, T. Tadono, K. Tsutsui : Generation of High Resolution Global DSM from ALOS PRISM, The International Archives of the Photogrammetry, Remote Sensing and Spatial Information Sciences, pp.243-248, Vol. XL-4, ISPRS TC IV Symposium, Suzhou, China, 2014. [http://www.int-arch-photogramm-remote-sens-spatial-inf-sci.net/XL-4/243/2014/isprsarchives-XL-4-243-2014.pdf]
 
