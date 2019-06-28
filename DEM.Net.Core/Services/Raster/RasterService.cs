@@ -23,6 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using DEM.Net.Core.Model;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -262,24 +263,62 @@ namespace DEM.Net.Core
         public string GenerateReportAsString()
         {
             StringBuilder sb = new StringBuilder();
+            var reports = GenerateReportAsync().GetAwaiter().GetResult();
+
+            // Get report for downloaded files
+            foreach (var report in reports)
+            {
+                sb.AppendLine(report.ToString());
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Generates a full report of all datasets to check size and number of downloaded tiles
+        /// </summary>
+        /// <returns>
+        /// A string containing the report
+        /// </returns>
+        public async Task<List<DatasetReport>> GenerateReportAsync()
+        {
+            StringBuilder sb = new StringBuilder();
+            var tasks = new List<Task<DatasetReport>>();
+
             // Get report for downloaded files
             foreach (DEMDataSet dataset in DEMDataSet.RegisteredDatasets)
             {
-                List<DemFileReport> report = GenerateReport(dataset);
-                int totalFiles = report.Count;
-                int downloadedCount = report.Count(rpt => rpt.IsExistingLocally);
-                int isMetadataGeneratedCount = report.Count(rpt => rpt.IsMetadataGenerated);
-                int isnotMetadataGeneratedCount = report.Count(rpt => !rpt.IsMetadataGenerated);
-
-                var fileSizeBytes = FileSystem.GetDirectorySize(GetLocalDEMPath(dataset));
-                var fileSizeMB = fileSizeBytes / 1024f / 1024f;
-
-                sb.AppendLine($"Dataset : {dataset.Name} report :");
-                sb.AppendLine($"> {totalFiles} file(s) in dataset.");
-                sb.AppendLine($"> {downloadedCount} file(s) dowloaded ({fileSizeMB:F2} MB total).");
-                sb.AppendLine($"> {isMetadataGeneratedCount} file(s) with DEM.Net metadata.");
+                tasks.Add(Task.Run(() => GenerateReportSummary(dataset)));
             }
-            return sb.ToString();
+
+            var reports = await Task.WhenAll(tasks.ToArray());
+
+            return reports.ToList();
+        }
+        private DatasetReport GenerateReportSummary(DEMDataSet dataset)
+        {
+            List<DemFileReport> report = GenerateReport(dataset);
+            int totalFiles = report.Count;
+            int downloadedCount = report.Count(rpt => rpt.IsExistingLocally);
+            int isMetadataGeneratedCount = report.Count(rpt => rpt.IsMetadataGenerated);
+            int isnotMetadataGeneratedCount = report.Count(rpt => !rpt.IsMetadataGenerated);
+
+            var fileSizeBytes = FileSystem.GetDirectorySize(GetLocalDEMPath(dataset));
+            var fileSizeMB = Math.Round(fileSizeBytes / 1024f / 1024f, 2);
+
+            DatasetReport reportSummary = new DatasetReport()
+            {
+                DatasetName = dataset.Name
+                ,
+                TotalFiles = totalFiles
+                ,
+                DownloadedFiles = downloadedCount
+                ,
+                DownloadedSize = fileSizeMB
+                ,
+                FilesWithMetadata = isMetadataGeneratedCount
+            };
+
+            return reportSummary;
         }
 
 
