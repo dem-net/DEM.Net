@@ -60,12 +60,24 @@ namespace DEM.Net.Core
         {
             var report = _IRasterService.GenerateReport(dataSet, bbox);
 
+            if (report == null)
+            {
+                _logger?.LogWarning($"No coverage for bbox {bbox} in {dataSet.Name} dataset.");
+                return;
+            }
+
             DownloadMissingFiles_FromReport(report, dataSet);
 
         }
         public void DownloadMissingFiles(DEMDataSet dataSet, double lat, double lon)
         {
             var report = _IRasterService.GenerateReportForLocation(dataSet, lat, lon);
+
+            if (report == null)
+            {
+                _logger?.LogWarning($"No coverage for lat/lon {lat}/{lon} in {dataSet.Name} dataset.");
+                return;
+            }
 
             DownloadMissingFiles_FromReport(Enumerable.Repeat(report,1), dataSet);
 
@@ -235,7 +247,7 @@ namespace DEM.Net.Core
         public List<GeoPoint> GetLineGeometryElevation(IEnumerable<GeoPoint> lineGeoPoints, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
             if (lineGeoPoints == null)
-                throw new ArgumentNullException("lineGeoPoints", "Point list is null");
+                throw new ArgumentNullException(nameof(lineGeoPoints), "Point list is null");
 
             IGeometry geometry = GeometryService.ParseGeoPointAsGeometryLine(lineGeoPoints);
 
@@ -277,8 +289,8 @@ namespace DEM.Net.Core
                 float xInterpolationAmount = (float)xpos % 1;
                 float yInterpolationAmount = (float)ypos % 1;
 
-                bool xOnGrid = xInterpolationAmount == 0;
-                bool yOnGrid = yInterpolationAmount == 0;
+                bool xOnGrid = Math.Abs(xInterpolationAmount) < float.Epsilon;
+                bool yOnGrid = Math.Abs(yInterpolationAmount) < float.Epsilon;
 
                 // If xOnGrid and yOnGrid, we are on a grid intersection, and that's all
                 if (xOnGrid && yOnGrid)
@@ -304,10 +316,10 @@ namespace DEM.Net.Core
 
                     float avgHeight = GetAverageExceptForNoDataValue(noData, NO_DATA_OUT, southWest, southEast, northWest, northEast);
 
-                    if (northWest == noData) northWest = avgHeight;
-                    if (northEast == noData) northEast = avgHeight;
-                    if (southWest == noData) southWest = avgHeight;
-                    if (southEast == noData) southEast = avgHeight;
+                    if (Math.Abs(northWest - noData) < float.Epsilon) northWest = avgHeight;
+                    if (Math.Abs(northEast - noData) < float.Epsilon) northEast = avgHeight;
+                    if (Math.Abs(southWest - noData) < float.Epsilon) southWest = avgHeight;
+                    if (Math.Abs(southEast - noData) < float.Epsilon) southEast = avgHeight;
 
                     heightValue = interpolator.Interpolate(southWest, southEast, northWest, northEast, xInterpolationAmount, yInterpolationAmount);
                 }
@@ -344,8 +356,8 @@ namespace DEM.Net.Core
                         float xInterpolationAmount = (float)xpos % 1;
                         float yInterpolationAmount = (float)ypos % 1;
 
-                        bool xOnGrid = xInterpolationAmount == 0;
-                        bool yOnGrid = yInterpolationAmount == 0;
+                        bool xOnGrid = Math.Abs(xInterpolationAmount) < float.Epsilon;
+                        bool yOnGrid = Math.Abs(yInterpolationAmount) < float.Epsilon;
 
                         // If xOnGrid and yOnGrid, we are on a grid intersection, and that's all
                         if (xOnGrid && yOnGrid)
@@ -371,10 +383,10 @@ namespace DEM.Net.Core
 
                             float avgHeight = GetAverageExceptForNoDataValue(noData, NO_DATA_OUT, southWest, southEast, northWest, northEast);
 
-                            if (northWest == noData) northWest = avgHeight;
-                            if (northEast == noData) northEast = avgHeight;
-                            if (southWest == noData) southWest = avgHeight;
-                            if (southEast == noData) southEast = avgHeight;
+                            if (Math.Abs(northWest - noData) < float.Epsilon) northWest = avgHeight;
+                            if (Math.Abs(northEast - noData) < float.Epsilon) northEast = avgHeight;
+                            if (Math.Abs(southWest - noData) < float.Epsilon) southWest = avgHeight;
+                            if (Math.Abs(southEast - noData) < float.Epsilon) southEast = avgHeight;
 
                             heightValue = interpolator.Interpolate(southWest, southEast, northWest, northEast, xInterpolationAmount, yInterpolationAmount);
                         }
@@ -394,18 +406,26 @@ namespace DEM.Net.Core
             GeoPoint geoPoint = new GeoPoint(lat, lon);
             List<FileMetadata> tiles = this.GetCoveringFiles(lat, lon, dataSet);
 
-            // Init interpolator
-            IInterpolator interpolator = GetInterpolator(interpolationMode);
-
-            using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
+            if (tiles.Count == 0)
             {
-                PopulateRasterFileDictionary(adjacentRasters, tiles.First(), _IRasterService, tiles);
+                _logger?.LogWarning($"No coverage found matching provided point {geoPoint} for dataset {dataSet.Name}");
+                return null;
+            }
+            else
+            {
+                // Init interpolator
+                IInterpolator interpolator = GetInterpolator(interpolationMode);
 
-                geoPoint.Elevation = GetElevationAtPoint(adjacentRasters, tiles.First(), lat, lon, 0, interpolator);
+                using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
+                {
+                    PopulateRasterFileDictionary(adjacentRasters, tiles.First(), _IRasterService, tiles);
+
+                    geoPoint.Elevation = GetElevationAtPoint(adjacentRasters, tiles.First(), lat, lon, 0, interpolator);
 
 
-                //Debug.WriteLine(adjacentRasters.Count);
-            }  // Ensures all geotifs are properly closed
+                    //Debug.WriteLine(adjacentRasters.Count);
+                }  // Ensures all geotifs are properly closed
+            }
 
             return geoPoint;
         }
@@ -418,17 +438,24 @@ namespace DEM.Net.Core
             DownloadMissingFiles(dataSet, bbox);
             List<FileMetadata> tiles = this.GetCoveringFiles(bbox, dataSet);
 
-            // Init interpolator
-            IInterpolator interpolator = GetInterpolator(interpolationMode);
-
-            using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
+            if (tiles.Count == 0)
             {
+                return null;
+            }
+            else
+            {
+                // Init interpolator
+                IInterpolator interpolator = GetInterpolator(interpolationMode);
 
-                // Get elevation for each point
-                pointsWithElevation = this.GetElevationData(points, adjacentRasters, tiles, interpolator);
+                using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
+                {
 
-                //Debug.WriteLine(adjacentRasters.Count);
-            }  // Ensures all rasters are properly closed
+                    // Get elevation for each point
+                    pointsWithElevation = this.GetElevationData(points, adjacentRasters, tiles, interpolator);
+
+                    //Debug.WriteLine(adjacentRasters.Count);
+                }  // Ensures all rasters are properly closed
+            }
 
             return pointsWithElevation;
         }
@@ -452,7 +479,7 @@ namespace DEM.Net.Core
             sb.AppendLine("Lon\tLat\tDistance (meters)\tZ");
             foreach (GeoPoint pt in lineElevationData)
             {
-                sb.AppendLine($"{pt.Longitude.ToString(CultureInfo.InvariantCulture)}\t{pt.Latitude.ToString(CultureInfo.InvariantCulture)}\t{pt.DistanceFromOriginMeters.ToString("F2")}\t{pt.Elevation}");
+                sb.AppendLine($"{pt.Longitude.ToString(CultureInfo.InvariantCulture)}\t{pt.Latitude.ToString(CultureInfo.InvariantCulture)}\t{(pt.DistanceFromOriginMeters ?? 0d).ToString("F2")}\t{pt.Elevation}");
             }
             return sb.ToString();
         }
@@ -600,7 +627,7 @@ namespace DEM.Net.Core
         /// <param name="startLat">Segment start latitude</param>
         /// <param name="endLon">Segment end longitude</param>
         /// <param name="endLat">Segment end latitude</param>
-        /// <param name="segTiles">Metadata files <see cref="RasterService.GetCoveringFiles"/> to see how to get them relative to segment geometry</param>
+        /// <param name="segTiles">Metadata files <see cref="IElevationService.GetCoveringFiles"/> to see how to get them relative to segment geometry</param>
         /// <param name="returnStartPoint">If true, the segment starting point will be returned. Useful when processing a line segment by segment.</param>
         /// <param name="returnEndPoind">If true, the segment end point will be returned. Useful when processing a line segment by segment.</param>
         /// <returns></returns>
@@ -768,7 +795,7 @@ namespace DEM.Net.Core
             if (bboxMetadata.Count == 0)
             {
                 _logger?.LogWarning($"No coverage found matching provided bounding box { bbox}.");
-                //throw new Exception($"No coverage found matching provided bounding box {bbox}.");
+                //throw new NoCoverageException(dataSet, bbox, $"No coverage found matching provided bounding box {bbox}.");
             }
 
             return bboxMetadata;
@@ -787,7 +814,7 @@ namespace DEM.Net.Core
             if (bboxMetadata.Count == 0)
             {
                 _logger?.LogWarning($"No coverage found matching provided point {geoPoint}.");
-                //throw new Exception($"No coverage found matching provided bounding box {bbox}.");
+                //throw new NoCoverageException(dataSet, lat, lon, $"No coverage found matching provided point {geoPoint}.");
             }
 
             return bboxMetadata;
@@ -844,8 +871,8 @@ namespace DEM.Net.Core
                 float xInterpolationAmount = (float)xpos % 1;
                 float yInterpolationAmount = (float)ypos % 1;
 
-                bool xOnGrid = xInterpolationAmount == 0;
-                bool yOnGrid = yInterpolationAmount == 0;
+                bool xOnGrid = Math.Abs(xInterpolationAmount) < float.Epsilon;
+                bool yOnGrid = Math.Abs(yInterpolationAmount) < float.Epsilon;
 
                 // If xOnGrid and yOnGrid, we are on a grid intersection, and that's all
                 if (xOnGrid && yOnGrid)
@@ -926,8 +953,9 @@ namespace DEM.Net.Core
             {
                 int yScale = Math.Sign(mainTile.pixelSizeY);
                 FileMetadata tile = tiles.Keys.FirstOrDefault(
-                    t => t.OriginLatitude == mainTile.OriginLatitude + yScale * yTileOffset
-                    && t.OriginLongitude == mainTile.OriginLongitude + xTileOffset);
+                    t => Math.Abs(t.OriginLatitude - mainTile.OriginLatitude + yScale * yTileOffset) < float.Epsilon
+                    && Math.Abs(t.OriginLongitude - mainTile.OriginLongitude + xTileOffset) < float.Epsilon);
+
                 newX = xTileOffset > 0 ? x % mainTile.Width : (mainTile.Width + x) % mainTile.Width;
                 newY = yTileOffset < 0 ? (mainTile.Height + y) % mainTile.Height : y % mainTile.Height;
                 return tile;
@@ -939,7 +967,7 @@ namespace DEM.Net.Core
 
         private float GetAverageExceptForNoDataValue(float noData, float valueIfAllBad, params float[] values)
         {
-            var withValues = values.Where(v => v != noData);
+            var withValues = values.Where(v => Math.Abs(v - noData) > float.Epsilon);
             if (withValues.Any())
             {
                 return withValues.Average();

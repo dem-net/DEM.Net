@@ -24,6 +24,8 @@
 // THE SOFTWARE.
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using DEM.Net.Core.Model;
 
 namespace DEM.Net.Core
 {
@@ -77,6 +79,7 @@ namespace DEM.Net.Core
         /// Generates a full report of all datasets to check size and number of downloaded tiles
         /// </summary>
         /// <returns>A string containing the report</returns>
+        Task<List<DatasetReport>> GenerateReportAsync();
         string GenerateReportAsString();
 
         /// <summary>

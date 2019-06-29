@@ -3,12 +3,13 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <PackageId>DEM.Net.Core</PackageId>
-    <Version>0.1.0-beta0013</Version>
+    <Version>0.1.0</Version>
     <Authors>Xavier Fischer, Frédéric Aubin</Authors>
     <Copyright>Xavier Fischer, Frédéric Aubin</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
-    <PackageReleaseNotes>Voronoi and iso lines</PackageReleaseNotes>
+    <PackageReleaseNotes>Attributions in DataSets
+Code cleanup</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation</PackageTags>
     <Title>DEM.Net</Title>
     <Product>DEM.Net</Product>
@@ -94,6 +95,8 @@
 
   <ItemGroup>
     <Folder Include="Services\Voronoi\FortuneVoronoi\" />
+    <Folder Include="Model\Enums\" />
+    <Folder Include="Model\Datasets\" />
   </ItemGroup>
 
   <ProjectExtensions>

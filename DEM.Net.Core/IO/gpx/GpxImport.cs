@@ -91,7 +91,7 @@ namespace DEM.Net.Core
 
         private static GeoPoint ConvertGpsPoint(GpxTrackPoint pt)
         {
-            return new GeoPoint(pt.Latitude, pt.Longitude, pt.Elevation, 0, 0);
+            return new GeoPoint(pt.Latitude, pt.Longitude, pt.Elevation);
         }
     }
 }

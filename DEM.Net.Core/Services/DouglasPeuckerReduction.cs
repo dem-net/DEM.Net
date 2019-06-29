@@ -119,9 +119,15 @@ namespace DEM.Net.Core
 			//Base = √((x1-x2)²+(x1-x2)²)                               *Base of Triangle*
 			//Area = .5*Base*H                                          *Solve for height
 			//Height = Area/.5/Base
-
-			double area = Math.Abs(.5 * (Point1.DistanceFromOriginMeters * Point2.Elevation.GetValueOrDefault(0) + Point2.DistanceFromOriginMeters * Point.Elevation.GetValueOrDefault(0) + Point.DistanceFromOriginMeters * Point1.Elevation.GetValueOrDefault(0) - Point2.DistanceFromOriginMeters * Point1.Elevation.GetValueOrDefault(0) - Point.DistanceFromOriginMeters * Point2.Elevation.GetValueOrDefault(0) - Point1.DistanceFromOriginMeters * Point.Elevation.GetValueOrDefault(0)));
-			double bottom = Math.Sqrt(Math.Pow(Point1.DistanceFromOriginMeters - Point2.DistanceFromOriginMeters, 2) + Math.Pow(Point1.Elevation.GetValueOrDefault(0) - Point2.Elevation.GetValueOrDefault(0), 2));
+            
+			double area = Math.Abs(.5 * (Point1.DistanceFromOriginMeters ?? 0d * Point2.Elevation.GetValueOrDefault(0)
+                + Point2.DistanceFromOriginMeters ?? 0d * Point.Elevation.GetValueOrDefault(0)
+                + Point.DistanceFromOriginMeters ?? 0d * Point1.Elevation.GetValueOrDefault(0)
+                - Point2.DistanceFromOriginMeters ?? 0d * Point1.Elevation.GetValueOrDefault(0)
+                - Point.DistanceFromOriginMeters ?? 0d * Point2.Elevation.GetValueOrDefault(0)
+                - Point1.DistanceFromOriginMeters ?? 0d * Point.Elevation.GetValueOrDefault(0)));
+			double bottom = Math.Sqrt(Math.Pow(Point1.DistanceFromOriginMeters ?? 0d - Point2.DistanceFromOriginMeters ?? 0d, 2)
+                + Math.Pow(Point1.Elevation.GetValueOrDefault(0) - Point2.Elevation.GetValueOrDefault(0), 2));
 			double height = area / bottom * 2;
 
 			return height;
