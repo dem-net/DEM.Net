@@ -3,13 +3,12 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <PackageId>DEM.Net.Core</PackageId>
-    <Version>0.1.1</Version>
+    <Version>0.1.2</Version>
     <Authors>Xavier Fischer, Frédéric Aubin</Authors>
     <Copyright>Xavier Fischer, Frédéric Aubin</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
-    <PackageReleaseNotes>Attributions in DataSets
-Code cleanup</PackageReleaseNotes>
+    <PackageReleaseNotes>DouglasPeucker is now public</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation</PackageTags>
     <Title>DEM.Net</Title>
     <Product>DEM.Net</Product>
@@ -19,8 +18,8 @@ Code cleanup</PackageReleaseNotes>
     <RepositoryType>GitHub</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
-    <AssemblyVersion>0.1.1.0</AssemblyVersion>
-    <FileVersion>0.1.1.0</FileVersion>
+    <AssemblyVersion>0.1.2.0</AssemblyVersion>
+    <FileVersion>0.1.2.0</FileVersion>
   </PropertyGroup>
 
   <!-- Build package only in Release -->
