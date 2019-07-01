@@ -349,6 +349,22 @@ namespace DEM.Net.Core.Imagery
             return new Uri(url, UriKind.Absolute);
         }
 
+
+        public Dictionary<string, string> GetConfiguredTokens()
+        {
+#if NETFULL
+            Dictionary<string, string> tokens = new Dictionary<string, string>();
+            foreach (var key in ConfigurationManager.AppSettings.AllKeys)
+            {
+                tokens[key] = ConfigurationManager.AppSettings[key];
+            }
+            return tokens;
+#else
+
+            return _config.GetSection("Tokens").GetChildren().ToDictionary(c => c.Key, c => c.Value);
+#endif
+        }
+
         #endregion
 
         #region Normal map generation
@@ -432,7 +448,6 @@ namespace DEM.Net.Core.Imagery
 
         #endregion
 
-        #region UV mapping
 
         public List<Vector2> ComputeUVMap(HeightMap heightMap, TextureInfo textureInfo)
         {
@@ -463,7 +478,6 @@ namespace DEM.Net.Core.Imagery
             return uvs;
         }
 
-        #endregion
 
 
     }
