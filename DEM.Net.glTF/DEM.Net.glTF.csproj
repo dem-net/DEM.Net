@@ -3,12 +3,12 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <PackageId>DEM.Net.glTF</PackageId>
-    <Version>0.1.2</Version>
+    <Version>0.1.4</Version>
     <Authors>Xavier Fischer</Authors>
     <Copyright>Xavier Fischer</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net.glTF</PackageProjectUrl>
-    <PackageReleaseNotes>DouglasPeucker is now public</PackageReleaseNotes>
+    <PackageReleaseNotes>Get config tokens</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation, Mesh, 3D, glTF, Map, STL</PackageTags>
     <Title>DEM.Net</Title>
     <Product>DEM.Net</Product>
@@ -18,7 +18,7 @@
     <RepositoryType>GitHub</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
-    <AssemblyVersion>0.1.2.0</AssemblyVersion>
+    <AssemblyVersion>0.1.4.0</AssemblyVersion>
   </PropertyGroup>
 
   <!-- Build package only in Release -->
