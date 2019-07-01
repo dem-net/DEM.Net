@@ -1,5 +1,6 @@
+#### DEM.Net.Core [![NuGet Version](http://img.shields.io/nuget/v/DEM.Net.Core.svg?style=flat)](https://www.nuget.org/packages/DEM.Net.Core/)
+#### DEM.Net.glTF [![NuGet Version](http://img.shields.io/nuget/v/DEM.Net.glTF.svg?style=flat)](https://www.nuget.org/packages/DEM.Net.glTF/)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/github/xfischer/DEM.Net)](https://ci.appveyor.com/project/xfischer/dem-net)
 # DEM.Net 
 Digital Elevation Model library in C#
 - Elevation queries (point, polylines, heightmap, GPX)
@@ -8,6 +9,8 @@ Digital Elevation Model library in C#
 - No setup
 - Automatic DEM file download from openTopography.org
 - Fast and optimized queries
+
+See samples [here](https://github.com/dem-net/Samples)
 
  ![3D model](valgo.jpg?raw=true "3D model")
 
