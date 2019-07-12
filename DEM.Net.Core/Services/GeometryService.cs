@@ -196,7 +196,10 @@ namespace DEM.Net.Core
 			double totalDescent = 0;
 			if (points.Count > 1)
 			{
-				double lastElevation = points[0].Elevation.GetValueOrDefault(0);
+                var firstPoint = points[0];
+                firstPoint.DistanceFromOriginMeters = 0; // force at 0. If null, ignored in json responses
+                double lastElevation = firstPoint.Elevation.GetValueOrDefault(0);
+
 				for (int i = 1; i < points.Count; i++)
 				{
 					GeoPoint curPoint = points[i];
