@@ -52,21 +52,33 @@ namespace DEM.Net.Core
             IEnumerable<IEnumerable<GeoPoint>> segments = null;
             using (FileStream fs = new FileStream(fileName, FileMode.Open))
             {
-                using (GpxReader reader = new GpxReader(fs))
+                segments = ReadGPX_Segments(fs);
+            }
+
+            return segments;
+        }
+
+        /// <summary>
+        /// Read gpx file segments as enumerable GeoPoints
+        /// </summary>
+        /// <param name="gpxFileStream">GPX file stream</param>
+        /// <returns></returns>
+        public static IEnumerable<IEnumerable<GeoPoint>> ReadGPX_Segments(Stream gpxFileStream)
+        {
+            IEnumerable<IEnumerable<GeoPoint>> segments = null;
+            using (GpxReader reader = new GpxReader(gpxFileStream))
+            {
+                while (reader.Read())
                 {
-                    while (reader.Read())
+                    switch (reader.ObjectType)
                     {
-                        switch (reader.ObjectType)
-                        {
-                            case GpxObjectType.Track:
-                                GpxTrack track = reader.Track;
-                                segments = ConvertTrack(track);
-                                break;
-                        }
+                        case GpxObjectType.Track:
+                            GpxTrack track = reader.Track;
+                            segments = ConvertTrack(track);
+                            break;
                     }
                 }
             }
-
             return segments;
         }
 
