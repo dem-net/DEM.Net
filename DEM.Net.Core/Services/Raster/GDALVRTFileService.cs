@@ -44,7 +44,7 @@ namespace DEM.Net.Core
     /// </summary>
     public class GDALVRTFileService : IGDALVRTFileService
     {
-        private const int MAX_AGE_DAYS = 30;
+        private const int MAX_AGE_DAYS = 100;
 
         private readonly ILogger<GDALVRTFileService> _logger;
         private ConcurrentDictionary<string, List<GDALSource>> _cacheByDemName;
