@@ -153,8 +153,7 @@ namespace DEM.Net.Core
             return ok;
         }
 
-        private double[] _geoTransform;
-        private Dictionary<string, string> _properties;
+        
         /// <summary>
         /// Enumerates throught all the sources
         /// Supports only VRTRasterBand with ComplexSource or SimpleSource
@@ -180,6 +179,8 @@ namespace DEM.Net.Core
         {
             Uri localVrtUri = new Uri(Path.GetFullPath(vrtFileName), UriKind.Absolute);
             Uri remoteVrtUri = new Uri(dataSet.VRTFileUrl, UriKind.Absolute);
+            double[] geoTransform;
+            Dictionary<string, string> properties;
 
             // Create an XmlReader
             using (FileStream fileStream = new FileStream(vrtFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -187,7 +188,7 @@ namespace DEM.Net.Core
             {
                 if (reader.ReadToFollowing("GeoTransform"))
                 {
-                    _geoTransform = ParseGeoTransform(reader.ReadElementContentAsString());
+                    geoTransform = ParseGeoTransform(reader.ReadElementContentAsString());
                 }
                 else
                     throw new Exception("GeoTransform element not found!");
@@ -195,7 +196,7 @@ namespace DEM.Net.Core
                 string sourceName = "";
                 if (reader.ReadToFollowing("VRTRasterBand"))
                 {
-                    _properties = new Dictionary<string, string>();
+                    properties = new Dictionary<string, string>();
                     while (reader.Read())
                     {
                         if (reader.NodeType == XmlNodeType.Element)
@@ -205,9 +206,10 @@ namespace DEM.Net.Core
                                 sourceName = reader.Name;
                                 break;
                             }
-                            _properties[reader.Name] = reader.ReadElementContentAsString();
+                            properties[reader.Name] = reader.ReadElementContentAsString();
                         }
                     }
+
 
                     bool isOnFirstSource = true;
                     while (isOnFirstSource || reader.ReadToFollowing(sourceName))
@@ -221,10 +223,10 @@ namespace DEM.Net.Core
                         // Transform origin
                         // Xp = padfTransform[0] + P * padfTransform[1] + L * padfTransform[2];
                         // Yp = padfTransform[3] + P * padfTransform[4] + L * padfTransform[5];
-                        source.OriginLon = _geoTransform[0] + source.DstxOff * _geoTransform[1] + source.DstyOff * _geoTransform[2];
-                        source.OriginLat = _geoTransform[3] + source.DstxOff * _geoTransform[4] + source.DstyOff * _geoTransform[5];
-                        source.DestLon = _geoTransform[0] + (source.DstxOff + source.DstxSize) * _geoTransform[1] + (source.DstyOff + source.DstySize) * _geoTransform[2];
-                        source.DestLat = _geoTransform[3] + (source.DstxOff + source.DstxSize) * _geoTransform[4] + (source.DstyOff + source.DstySize) * _geoTransform[5];
+                        source.OriginLon = geoTransform[0] + source.DstxOff * geoTransform[1] + source.DstyOff * geoTransform[2];
+                        source.OriginLat = geoTransform[3] + source.DstxOff * geoTransform[4] + source.DstyOff * geoTransform[5];
+                        source.DestLon = geoTransform[0] + (source.DstxOff + source.DstxSize) * geoTransform[1] + (source.DstyOff + source.DstySize) * geoTransform[2];
+                        source.DestLat = geoTransform[3] + (source.DstxOff + source.DstxSize) * geoTransform[4] + (source.DstyOff + source.DstySize) * geoTransform[5];
                         source.BBox = new BoundingBox(source.OriginLon, source.DestLon, source.DestLat, source.OriginLat);
                         isOnFirstSource = false;
 
