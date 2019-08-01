@@ -33,8 +33,8 @@ namespace DEM.Net.Core.Imagery
 {
     public class LatLong
     {
-        double Lat;
-        double Long;
+        public double Lat { get; set; }
+        public double Long { get; set; }
 
         public LatLong(double lat, double lon)
         {
@@ -42,7 +42,7 @@ namespace DEM.Net.Core.Imagery
             Long = lon;
         }
 
-        public LatLong() : this(0,0)
+        public LatLong() : this(0, 0)
         {
 
         }
