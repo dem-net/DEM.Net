@@ -152,9 +152,9 @@ namespace DEM.Net.Core
                         }
                         metaList.Add(metadata);
                     }
-
-                    _metadataCatalogCache[localPath] = metaList;
+                    
                 }
+                _metadataCatalogCache[localPath] = metaList;
 
             }
             return _metadataCatalogCache[localPath];
@@ -372,11 +372,10 @@ namespace DEM.Net.Core
 
             foreach (GDALSource source in _gdalVrtService.Sources(dataSet))
             {
-
                 if (BoundingBoxIntersects(source.BBox, lat, lon))
                 {
 
-                    return new DemFileReport()
+                        return new DemFileReport()
                     {
                         IsExistingLocally = File.Exists(source.LocalFileName),
                         IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),
