@@ -100,6 +100,15 @@ namespace DEM.Net.Core
         {
             return new BoundingBox(xMin - Width * scaleX, xMax + Width * scaleX, yMax - Height * scaleY, yMin + Height * scaleY);
         }
+        /// <summary>
+        /// Add padding around bbox (bbox must be projected to cartesian first)
+        /// </summary>
+        /// <param name="paddingMeters"></param>
+        /// <returns></returns>
+        public BoundingBox Pad(double paddingMeters)
+        {
+            return new BoundingBox(xMin - paddingMeters, xMax + paddingMeters, yMax + paddingMeters, yMin - paddingMeters);
+        }
         public BoundingBox ScaleAbsolute(double scaleX, double scaleY)
         {
             return new BoundingBox(xMin * scaleX, xMax * scaleX, yMin * scaleY, yMax * scaleY);
