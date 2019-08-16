@@ -17,5 +17,7 @@ namespace DEM.Net.Core.Imagery
 
         Dictionary<string, string> GetConfiguredTokens();
 
+        List<ImageryProvider> GetRegisteredProviders();
+
     }
 }

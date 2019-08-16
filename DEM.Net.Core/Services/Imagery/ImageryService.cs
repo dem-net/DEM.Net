@@ -32,6 +32,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using System.Reflection;
 
 #if NETFULL
 using System.Configuration;
@@ -478,7 +479,24 @@ namespace DEM.Net.Core.Imagery
             return uvs;
         }
 
+        /// <summary>
+        /// Get lists of all registered providers.
+        /// </summary>
+        /// <remarks>Uses reflection so use with care</remarks>
+        /// <returns></returns>
+        public List<ImageryProvider> GetRegisteredProviders()
+        {
+            Type t = typeof(ImageryProvider);
+            string providerTypeName = t.FullName;
+            var fields = t.GetRuntimeFields().Where(f => f.FieldType.FullName == providerTypeName).ToList();
 
+            List<ImageryProvider> providers = new List<ImageryProvider>(fields.Count);
 
+            foreach (var f in fields)
+            {
+                providers.Add(f.GetValue(this) as ImageryProvider);
+            }
+            return providers;
+        }
     }
 }

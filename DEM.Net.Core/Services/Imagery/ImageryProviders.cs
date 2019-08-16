@@ -38,7 +38,7 @@ namespace DEM.Net.Core.Imagery
         public Attribution Attribution { get; set; }
         public string TokenAppSettingsKey { get; set; }
         public int TileSize { get; set; } = 256;
-        public int MaxDegreeOfParallelism { get; set; } = 2;
+        public int MaxDegreeOfParallelism { get; set; } = 4;
         public int MaxZoom { get; set; } = 19;
 
         public override string ToString()
@@ -100,5 +100,23 @@ namespace DEM.Net.Core.Imagery
             UrlModel = new UrlModel("http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg", new[] { "a", "b", "c", "d" }),
             MaxZoom = 14
         };
+        public static ImageryProvider OpenTopoMap = new ImageryProvider()
+        {
+            Name = "OpenTopoMap",
+            Attribution = new Attribution("Map data: OpenStreetMap and contributors, viewfinderpanoramas.org, SRTM. Map style: OpenTopoMap under CC-BY-SA.",
+                                            "Map data: &copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors, <a href=\"http://viewfinderpanoramas.org\"> SRTM</a> | Map style: &copy; <a href=\"https://opentopomap.org\" > OpenTopoMap</a> (<a href=\"https://creativecommons.org/licenses/by-sa/3.0/\" > CC-BY-SA</a>)"),
+            UrlModel = new UrlModel("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", new[] { "a", "b", "c" }),
+            MaxZoom = 17
+        };
+        public static ImageryProvider EsriWorldImagery = new ImageryProvider()
+        {
+            Name = "Esri.WorldImagery",
+            Attribution = new Attribution("Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
+                                            "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"),
+            UrlModel = new UrlModel("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", null),
+            MaxZoom = 18
+        };
+        
+
     }
 }
