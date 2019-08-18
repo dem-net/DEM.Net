@@ -190,12 +190,12 @@ namespace DEM.Net.Core.Gpx
             throw new FormatException();
         }
 
-        private static bool IsValidLatitude(double latitude)
+        public static bool IsValidLatitude(double latitude)
         {
             return latitude >= MIN_LATITUDE && latitude <= MAX_LATITUDE;
         }
 
-        private static bool IsValidLongitude(double longitude)
+        public static bool IsValidLongitude(double longitude)
         {
             return longitude >= MIN_LONGITUDE && longitude <= MAX_LONGITUDE;
         }

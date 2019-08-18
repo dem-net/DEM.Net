@@ -28,6 +28,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DEM.Net.Core.Gpx;
 
 namespace DEM.Net.Core
 {
@@ -83,6 +84,26 @@ namespace DEM.Net.Core
             _xMax = xmax;
             _yMin = ymin;
             _yMax = ymax;
+        }
+
+        public bool IsValid()
+        {
+            if (_xMin >= _xMax)
+            {
+                double temp = _xMax;
+                _xMax = _xMin;
+                _xMin = temp;
+            }
+            if (_yMin >= _yMax)
+            {
+                double temp = _yMax;
+                _yMax = _yMin;
+                _yMin = temp;
+            }
+            return GpsLocation.IsValidLongitude(_xMin)
+                    && GpsLocation.IsValidLongitude(_xMax)
+                    && GpsLocation.IsValidLatitude(_yMin)
+                    && GpsLocation.IsValidLatitude(_yMax);
         }
 
         public override bool Equals(object obj)
