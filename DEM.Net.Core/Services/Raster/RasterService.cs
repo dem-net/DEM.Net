@@ -302,8 +302,13 @@ namespace DEM.Net.Core
             int isMetadataGeneratedCount = report.Count(rpt => rpt.IsMetadataGenerated);
             int isnotMetadataGeneratedCount = report.Count(rpt => !rpt.IsMetadataGenerated);
 
-            var fileSizeBytes = FileSystem.GetDirectorySize(GetLocalDEMPath(dataset));
+            var fileSizeBytes = FileSystem.GetDirectorySize(GetLocalDEMPath(dataset), "*" + dataset.FileFormat.FileExtension);
             var fileSizeMB = Math.Round(fileSizeBytes / 1024f / 1024f, 2);
+
+            // rule of 3 to evaluate total size
+
+            var totalfileSizeGB = Math.Round((totalFiles * fileSizeMB / downloadedCount) / 1024f, 2);
+            var remainingfileSizeGB = Math.Round(totalfileSizeGB - fileSizeMB / 1024f, 2);
 
             DatasetReport reportSummary = new DatasetReport()
             {
@@ -316,6 +321,12 @@ namespace DEM.Net.Core
                 DownloadedSizeMB = fileSizeMB
                 ,
                 FilesWithMetadata = isMetadataGeneratedCount
+                ,
+                RemainingSizeGB = remainingfileSizeGB
+                ,
+                TotalSizeGB = totalfileSizeGB
+                ,
+                DowloadedPercent = Math.Round(downloadedCount*100d/totalFiles, 2)
             };
 
             return reportSummary;
