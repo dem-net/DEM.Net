@@ -193,7 +193,13 @@ namespace DEM.Net.Core
         {
             return !(a == b);
         }
-
+        public double Area
+        {
+            get
+            {
+                return (xMax - xMin) * (yMax - yMin);
+            }
+        }
         public string WKT
         {
             get
