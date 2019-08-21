@@ -72,6 +72,7 @@ namespace DEM.Net.Core
                     VRTFileUrl = "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL3/SRTM_GL3_srtm.vrt",
                     FileFormat = DEMFileFormat.SRTM_HGT,
                     ResolutionMeters = 90,
+                    PointsPerDegree = 1200,
                     Attribution = new Attribution("OpenTopography", "https://opentopography.org/"
                     , @"Citing LP DAVV and Data Products: https://lpdaac.usgs.gov/about/citing_lp_daac_and_data
 
@@ -102,6 +103,7 @@ https://doi.org/10.5069/G9445JDF")
                     VRTFileUrl = "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL1/SRTM_GL1_srtm.vrt",
                     FileFormat = DEMFileFormat.SRTM_HGT,
                     ResolutionMeters = 30,
+                    PointsPerDegree = 3600,
                     Attribution = new Attribution("OpenTopography", "https://opentopography.org/", "http://www2.jpl.nasa.gov/srtm/srtmBibliography.html, https://doi.org/10.5069/G9445JDF")
                 };
             }
@@ -121,6 +123,7 @@ https://doi.org/10.5069/G9445JDF")
                     VRTFileUrl = "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/AW3D30/AW3D30_alos.vrt",
                     FileFormat = DEMFileFormat.GEOTIFF,
                     ResolutionMeters = 30,
+                    PointsPerDegree = 3600,
                     NoDataValue = -9999,
                     Attribution = new Attribution("OpenTopography", "https://opentopography.org/"
                     , @"J. Takaku, T. Tadono, K. Tsutsui : Generation of High Resolution Global DSM from ALOS PRISM, The International Archives of the Photogrammetry, Remote Sensing and Spatial Information Sciences, pp.243-248, Vol. XL-4, ISPRS TC IV Symposium, Suzhou, China, 2014. [http://www.int-arch-photogramm-remote-sens-spatial-inf-sci.net/XL-4/243/2014/isprsarchives-XL-4-243-2014.pdf]
@@ -145,6 +148,8 @@ https://doi.org/10.5069/G94M92HB
             }
 
         }
+
+        public int PointsPerDegree { get; private set; }
 
         public override string ToString()
         {
