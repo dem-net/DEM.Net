@@ -40,6 +40,7 @@ namespace DEM.Net.Test
                 ZipFile.ExtractToDirectory(sourceFile, ".", true);
             }
 
+
             Assert.True(File.Exists(fileName), "Unzip failed.");
 
             // Pass the full file name
@@ -56,11 +57,37 @@ namespace DEM.Net.Test
 
                 MeshPrimitive meshPrimitive = _gltfService.GenerateTriangleMesh(heightMap);
                 Model model = _gltfService.GenerateModel(meshPrimitive, str2);
-                _gltfService.Export(model, @"c:\geotiff_gltf\", str2, false, true);
+                _gltfService.Export(model, ".", str2, false, true);
             }
 
             
             
+        }
+
+        [Theory()]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void Test_GLB_Export_Bbox(bool exportAsBinary)
+        {
+
+            DEMDataSet dataset = DEMDataSet.SRTM_GL3;
+            var modelName = $"SteVictoireLatLon";
+
+            // You can get your boox from https://geojson.net/ (save as WKT)
+            string bboxWKT = "POLYGON((5.54888 43.519525, 5.61209 43.519525, 5.61209 43.565225, 5.54888 43.565225, 5.54888 43.519525))";
+            var bbox = GeometryService.GetBoundingBox(bboxWKT);
+            var heightMap = _elevationService.GetHeightMap(bbox, dataset);
+                    
+
+            // Triangulate height map
+            var mesh = _gltfService.GenerateTriangleMesh(heightMap);
+            var model = _gltfService.GenerateModel(mesh, modelName);
+
+            // Export Binary model file
+            _gltfService.Export(model, Directory.GetCurrentDirectory(), modelName, exportglTF: !exportAsBinary, exportGLB: exportAsBinary);
+
+
+
         }
 
 
