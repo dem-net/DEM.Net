@@ -377,7 +377,7 @@ namespace DEM.Net.Core.Imagery
         /// <param name="heightMap">heightMap in projected coordinates</param>
         /// <param name="outputDirectory"></param>
         /// <returns></returns>
-        public TextureInfo GenerateNormalMap(HeightMap heightMap, string outputDirectory)
+        public TextureInfo GenerateNormalMap(HeightMap heightMap, string outputDirectory, string fileName)
         {
             List<Vector3> normals = _meshService.ComputeNormals(heightMap).ToList();
 
@@ -395,7 +395,7 @@ namespace DEM.Net.Core.Imagery
                         outputImage[i, j] = color;
                     }
 
-                outputImage.Save(Path.Combine(outputDirectory, "normalmap.jpg"), new JpegEncoder());
+                outputImage.Save(Path.Combine(outputDirectory, fileName), new JpegEncoder());
             }
 #elif NETFULL
             using (var dbm = new DirectBitmap(heightMap.Width, heightMap.Height))
@@ -415,7 +415,7 @@ namespace DEM.Net.Core.Imagery
 #endif
 
 
-            TextureInfo normal = new TextureInfo(Path.Combine(outputDirectory, "normalmap.jpg"), TextureImageFormat.image_jpeg, heightMap.Width, heightMap.Height);
+            TextureInfo normal = new TextureInfo(Path.Combine(outputDirectory, fileName), TextureImageFormat.image_jpeg, heightMap.Width, heightMap.Height);
             return normal;
         }
 
