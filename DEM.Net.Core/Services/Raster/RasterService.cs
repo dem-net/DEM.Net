@@ -94,7 +94,9 @@ namespace DEM.Net.Core
 
         public string GetLocalDEMPath(DEMDataSet dataset)
         {
-            return Path.Combine(_localDirectory, dataset.Name);
+            return dataset.DataSource.IsGlobalFile ?
+                        Path.GetDirectoryName(dataset.DataSource.IndexFilePath)
+                        : Path.Combine(_localDirectory, dataset.Name);
         }
         public string GetLocalDEMFilePath(DEMDataSet dataset, string fileTitle)
         {
@@ -352,53 +354,77 @@ namespace DEM.Net.Core
         {
             List<DemFileReport> statusByFile = new List<DemFileReport>();
 
-            _gdalVrtService.Setup(dataSet, GetLocalDEMPath(dataSet));
-
-            foreach (GDALSource source in _gdalVrtService.Sources(dataSet))
+            if (dataSet.DataSource.IsGlobalFile)
             {
+                statusByFile.Add(new DemFileReport()
+                {
+                    IsExistingLocally = File.Exists(dataSet.DataSource.IndexFilePath),
+                    IsMetadataGenerated = File.Exists(GetMetadataFileName(dataSet.DataSource.IndexFilePath, ".json")),
+                    LocalName = dataSet.DataSource.IndexFilePath,
+                    URL = dataSet.DataSource.IndexFilePath
+                });
+            }
+            else
+            {
+                _gdalVrtService.Setup(dataSet, GetLocalDEMPath(dataSet));
 
-                if (bbox == null || BoundingBoxIntersects(source.BBox, bbox))
+                foreach (GDALSource source in _gdalVrtService.Sources(dataSet))
                 {
 
-                    statusByFile.Add(new DemFileReport()
+                    if (bbox == null || BoundingBoxIntersects(source.BBox, bbox))
                     {
-                        IsExistingLocally = File.Exists(source.LocalFileName),
-                        IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),
-                        LocalName = source.LocalFileName,
-                        URL = source.SourceFileNameAbsolute,
-                        Source = source
-                    });
 
+                        statusByFile.Add(new DemFileReport()
+                        {
+                            IsExistingLocally = File.Exists(source.LocalFileName),
+                            IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),
+                            LocalName = source.LocalFileName,
+                            URL = source.SourceFileNameAbsolute,
+                            Source = source
+                        });
+
+                    }
+                    //Trace.TraceInformation($"Source {source.SourceFileName}");
                 }
-                //Trace.TraceInformation($"Source {source.SourceFileName}");
             }
-
 
             return statusByFile;
         }
 
         public DemFileReport GenerateReportForLocation(DEMDataSet dataSet, double lat, double lon)
         {
-            _gdalVrtService.Setup(dataSet, GetLocalDEMPath(dataSet));
-
-            foreach (GDALSource source in _gdalVrtService.Sources(dataSet))
+            if (dataSet.DataSource.IsGlobalFile)
             {
-                if (BoundingBoxIntersects(source.BBox, lat, lon))
+                return new DemFileReport()
                 {
+                    IsExistingLocally = File.Exists(dataSet.DataSource.IndexFilePath),
+                    IsMetadataGenerated = File.Exists(GetMetadataFileName(dataSet.DataSource.IndexFilePath, ".json")),
+                    LocalName = dataSet.DataSource.IndexFilePath,
+                    URL = dataSet.DataSource.IndexFilePath
+                };
+            }
+            else
+            {
+                _gdalVrtService.Setup(dataSet, GetLocalDEMPath(dataSet));
+
+                foreach (GDALSource source in _gdalVrtService.Sources(dataSet))
+                {
+                    if (BoundingBoxIntersects(source.BBox, lat, lon))
+                    {
 
                         return new DemFileReport()
-                    {
-                        IsExistingLocally = File.Exists(source.LocalFileName),
-                        IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),
-                        LocalName = source.LocalFileName,
-                        URL = source.SourceFileNameAbsolute,
-                        Source = source
-                    };
+                        {
+                            IsExistingLocally = File.Exists(source.LocalFileName),
+                            IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),
+                            LocalName = source.LocalFileName,
+                            URL = source.SourceFileNameAbsolute,
+                            Source = source
+                        };
 
+                    }
+                    //Trace.TraceInformation($"Source {source.SourceFileName}");
                 }
-                //Trace.TraceInformation($"Source {source.SourceFileName}");
             }
-
 
             return null;
         }

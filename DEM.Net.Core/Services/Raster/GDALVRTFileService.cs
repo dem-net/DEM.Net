@@ -64,7 +64,7 @@ namespace DEM.Net.Core
             {
 
                 if (dataSet == null)
-                    throw new ArgumentNullException("Dataset is null.");
+                    throw new ArgumentNullException(nameof(dataSet), "Dataset is null.");
 
                 if (_cacheByDemName.ContainsKey(dataSet.Name))
                     return;
@@ -76,7 +76,7 @@ namespace DEM.Net.Core
                     Directory.CreateDirectory(dataSetLocalDir);
                 }
 
-                string vrtFileName = Path.Combine(dataSetLocalDir, UrlHelper.GetFileNameFromUrl(dataSet.VRTFileUrl));
+                string vrtFileName = Path.Combine(dataSetLocalDir, UrlHelper.GetFileNameFromUrl(dataSet.DataSource.IndexFilePath));
 
 
                 bool download = true;
@@ -99,14 +99,14 @@ namespace DEM.Net.Core
 
                 if (download)
                 {
-                    _logger?.LogInformation($"Downloading index file from {dataSet.VRTFileUrl}... This file will be downloaded once and stored locally.");
+                    _logger?.LogInformation($"Downloading index file from {dataSet.DataSource.IndexFilePath}... This file will be downloaded once and stored locally.");
                     using (HttpClient client = new HttpClient())
                     {
-                        using (HttpResponseMessage response = client.GetAsync(dataSet.VRTFileUrl).Result)
+                        using (HttpResponseMessage response = client.GetAsync(dataSet.DataSource.IndexFilePath).Result)
                         {
                             using (FileStream fs = new FileStream(vrtFileName, FileMode.Create, FileAccess.Write))
                             {
-                                var contentbytes = client.GetByteArrayAsync(dataSet.VRTFileUrl).Result;
+                                var contentbytes = client.GetByteArrayAsync(dataSet.DataSource.IndexFilePath).Result;
                                 fs.Write(contentbytes, 0, contentbytes.Length);
                             }
                         }
@@ -178,7 +178,7 @@ namespace DEM.Net.Core
         private IEnumerable<GDALSource> GetSources(DEMDataSet dataSet, string vrtFileName)
         {
             Uri localVrtUri = new Uri(Path.GetFullPath(vrtFileName), UriKind.Absolute);
-            Uri remoteVrtUri = new Uri(dataSet.VRTFileUrl, UriKind.Absolute);
+            Uri remoteVrtUri = new Uri(dataSet.DataSource.IndexFilePath, UriKind.Absolute);
             double[] geoTransform;
             Dictionary<string, string> properties;
 

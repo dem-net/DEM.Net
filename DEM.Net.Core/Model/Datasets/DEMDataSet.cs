@@ -25,9 +25,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DEM.Net.Core.Datasets;
 
 namespace DEM.Net.Core
 {
@@ -43,16 +45,8 @@ namespace DEM.Net.Core
         public DEMFileFormat FileFormat { get; set; }
 
         public Attribution Attribution { get; set; }
-        
 
-        /// <summary>
-        /// GDAL Virtual 
-        /// </summary>
-        public string VRTFileUrl { get; set; }
-
-        public DEMDataSet()
-        {
-        }
+        public IDEMDataSource DataSource { get; set; }
 
         // Examples datasets
         // Add any new dataset
@@ -69,7 +63,7 @@ namespace DEM.Net.Core
                     Name = "SRTM_GL3",
                     Description = "Shuttle Radar Topography Mission (SRTM GL3) Global 90m",
                     PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTSRTM.042013.4326.1",
-                    VRTFileUrl = "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL3/SRTM_GL3_srtm.vrt",
+                    DataSource = new VRTDataSource("https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL3/SRTM_GL3_srtm.vrt"),
                     FileFormat = DEMFileFormat.SRTM_HGT,
                     ResolutionMeters = 90,
                     PointsPerDegree = 1200,
@@ -100,7 +94,7 @@ https://doi.org/10.5069/G9445JDF")
                     Name = "SRTM_GL1",
                     Description = "Shuttle Radar Topography Mission (SRTM GL1) Global 30m",
                     PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTSRTM.082015.4326.1",
-                    VRTFileUrl = "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL1/SRTM_GL1_srtm.vrt",
+                    DataSource = new VRTDataSource("https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL1/SRTM_GL1_srtm.vrt"),
                     FileFormat = DEMFileFormat.SRTM_HGT,
                     ResolutionMeters = 30,
                     PointsPerDegree = 3600,
@@ -120,7 +114,7 @@ https://doi.org/10.5069/G9445JDF")
                     Name = "AW3D30",
                     Description = "ALOS World 3D - 30m",
                     PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTALOS.112016.4326.2",
-                    VRTFileUrl = "https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/AW3D30/AW3D30_alos.vrt",
+                    DataSource = new VRTDataSource("https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/AW3D30/AW3D30_alos.vrt"),
                     FileFormat = DEMFileFormat.GEOTIFF,
                     ResolutionMeters = 30,
                     PointsPerDegree = 3600,
@@ -135,10 +129,32 @@ https://doi.org/10.5069/G94M92HB
             }
         }
 
+        public static DEMDataSet ETOPO1
+        {
+            get
+            {
+                return new DEMDataSet()
+                {
+                    Name = "ETOPO1",
+                    Description = "Global low res coverage with bathymetry (1km resolution)",
+                    PublicUrl = "https://www.ngdc.noaa.gov/mgg/global/",
+                    DataSource = new  SingleFileDataSource(Path.Combine("Data", "ETOPO1", "ETOPO1_Ice_g_geotiff.tif")),
+                    FileFormat = DEMFileFormat.GEOTIFF,
+                    ResolutionMeters = 1800,
+                    PointsPerDegree = 60,
+                    NoDataValue = -9999,
+                    Attribution = new Attribution("NOAA", "https://www.ngdc.noaa.gov/mgg/global/"
+                    , "Amante, C. and B.W. Eakins, 2009. ETOPO1 1 Arc-Minute Global Relief Model: Procedures, Data Sources and Analysis. NOAA Technical Memorandum NESDIS NGDC-24. National Geophysical Data Center, NOAA. doi:10.7289/V5C8276M")
+                };
+            }
+            
+        }
+
         public static IEnumerable<DEMDataSet> RegisteredDatasets
         {
             get
             {
+                yield return DEMDataSet.ETOPO1;
                 yield return DEMDataSet.SRTM_GL3;
                 yield return DEMDataSet.SRTM_GL1;
                 yield return DEMDataSet.AW3D30;

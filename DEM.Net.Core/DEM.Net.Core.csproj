@@ -98,6 +98,7 @@
     <Folder Include="Services\Voronoi\FortuneVoronoi\" />
     <Folder Include="Model\Enums\" />
     <Folder Include="Model\Datasets\" />
+    <Folder Include="Model\Datasets\DataSources\" />
   </ItemGroup>
 
   <ProjectExtensions>
