@@ -377,7 +377,7 @@ namespace DEM.Net.glTF
                             ,
                             Positions = vertices
                             ,
-                            Material = new Material() { DoubleSided = true }
+                            Material = new Material() { DoubleSided = false  }
                             ,
                             Indices = indices
                             ,
@@ -457,7 +457,7 @@ namespace DEM.Net.glTF
                         ,
                         Positions = positions
                         ,
-                        Material = new Material() { DoubleSided = true }
+                        Material = new Material() { DoubleSided = false }
                         ,
                         Indices = indices
                     };
@@ -529,6 +529,7 @@ namespace DEM.Net.glTF
                             BaseColorFactor = Vector4.One,
                             BaseColorTexture = GetTextureFromImage(texture.BaseColorTexture.FilePath),
                             MetallicFactor = 0,
+                            RoughnessFactor = 1
                         };
                         if (texture.NormalTexture != null)
                         {
