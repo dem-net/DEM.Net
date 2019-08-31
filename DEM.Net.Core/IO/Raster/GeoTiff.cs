@@ -30,6 +30,7 @@ using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 namespace DEM.Net.Core
 {
@@ -54,9 +55,15 @@ namespace DEM.Net.Core
 
         public GeoTiff(string tiffPath)
         {
+            if (!File.Exists(tiffPath))
+                throw new Exception($"File {tiffPath} does not exists !");
+
             _tiffPath = tiffPath;
             Tiff.SetErrorHandler(_errorHandler);
             _tiff = Tiff.Open(tiffPath, "r");
+
+            if (_tiff == null)
+                throw new Exception($"File {tiffPath} cannot be opened !");
         }
 
         protected virtual void Dispose(bool disposing)
