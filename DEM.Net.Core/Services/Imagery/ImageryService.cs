@@ -57,6 +57,7 @@ namespace DEM.Net.Core.Imagery
         private int _serverCycle = 0;
         private readonly ILogger<ImageryService> _logger;
         private readonly IMeshService _meshService;
+        private static HttpClient _httpClient = new HttpClient();
 
 #if NETSTANDARD
         private readonly IConfigurationRoot _config;
@@ -117,16 +118,13 @@ namespace DEM.Net.Core.Imagery
             Console.WriteLine($"Downloading {range.Count} tiles...");
             Parallel.ForEach(range, options, tileInfo =>
                 {
-                    using (HttpClient client = new HttpClient())
-                    {
+                    
                         Uri tileUri = BuildUri(provider, tileInfo.X, tileInfo.Y, tileInfo.Zoom);
                         _logger?.LogInformation($"Downloading {tileUri}");
 
-                        var contentbytes = client.GetByteArrayAsync(tileUri).Result;
+                        var contentbytes = _httpClient.GetByteArrayAsync(tileUri).Result;
                         tiles.Add(new MapTile(contentbytes, provider.TileSize, tileUri, tileInfo));
-
-
-                    }
+                    
                 }
                 );
 
