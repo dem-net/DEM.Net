@@ -78,6 +78,70 @@ namespace DEM.Net.Core.Imagery
         }
 #endif
 
+
+        public TileRange ComputeBoundingBoxTileRange(BoundingBox bbox, ImageryProvider provider, int minTilesPerImage = 4)
+        {
+            TileRange tiles = new TileRange(provider);
+            BoundingBox mapBbox;
+            PointInt topLeft;
+            PointInt bottomRight;
+
+            // optimal zoom calculation (maybe there's a direct way)
+            // calculate the size of the full bbox at increasing zoom levels
+            // until the full image would be greater than a tile
+            int zoom = 0;
+            do
+            {
+                zoom++;
+
+                // coords are pixels in global map image (see TileUtils.MapSize(zoom))
+                topLeft = TileUtils.LatLongToPixelXY(bbox.yMax, bbox.xMin, zoom);
+                bottomRight = TileUtils.LatLongToPixelXY(bbox.yMin, bbox.xMax, zoom);
+                mapBbox = new BoundingBox(topLeft.X, bottomRight.X, topLeft.Y, bottomRight.Y);
+            }
+            while (zoom < provider.MaxZoom
+                    && (mapBbox.Width < provider.TileSize * minTilesPerImage && mapBbox.Height < provider.TileSize * minTilesPerImage));
+
+            // now we have the minimum zoom without image
+            // we can know which tiles are needed
+            tiles.Start = new MapTileInfo(TileUtils.PixelXYToTileXY(topLeft.X, topLeft.Y), zoom);
+            tiles.End = new MapTileInfo(TileUtils.PixelXYToTileXY(bottomRight.X, bottomRight.Y), zoom);
+            tiles.AreaOfInterest = mapBbox;
+
+            return tiles;
+        }
+
+        public TileRange DownloadTiles(TileRange tiles, ImageryProvider provider)
+        {
+            
+            // downdload tiles
+            Stopwatch swDownload = Stopwatch.StartNew();
+            _logger?.LogTrace("Starting images download");
+
+
+            // 2 max download threads
+            var options = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism };
+            var range = tiles.EnumerateRange().ToList();
+            _logger?.LogInformation($"Downloading {range.Count} tiles...");
+            Parallel.ForEach(range, options, tileInfo =>
+            {
+
+                Uri tileUri = BuildUri(provider, tileInfo.X, tileInfo.Y, tileInfo.Zoom);
+                _logger?.LogInformation($"Downloading {tileUri}");
+
+                var contentbytes = _httpClient.GetByteArrayAsync(tileUri).Result;
+                tiles.Add(new MapTile(contentbytes, provider.TileSize, tileUri, tileInfo));
+
+            }
+                );
+
+            swDownload.Stop();
+            _logger?.LogTrace($"DownloadImages done in : {swDownload.Elapsed:g}");
+
+
+            return tiles;
+        }
+
         public TileRange DownloadTiles(BoundingBox bbox, ImageryProvider provider, int minTilesPerImage = 4)
         {
             TileRange tiles = new TileRange(provider);
@@ -115,7 +179,7 @@ namespace DEM.Net.Core.Imagery
             // 2 max download threads
             var options = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism };
             var range = tiles.EnumerateRange().ToList();
-            Console.WriteLine($"Downloading {range.Count} tiles...");
+            _logger.LogInformation($"Downloading {range.Count} tiles...");
             Parallel.ForEach(range, options, tileInfo =>
                 {
                     

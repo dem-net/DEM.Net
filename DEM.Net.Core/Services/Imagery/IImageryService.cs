@@ -12,12 +12,24 @@ namespace DEM.Net.Core.Imagery
         TextureInfo ConstructTexture(TileRange tiles, BoundingBox bbox, string fileName, TextureImageFormat mimeType);
 
         TextureInfo ConstructTextureWithGpxTrack(TileRange tiles, BoundingBox bbox, string fileName, TextureImageFormat mimeType, IEnumerable<GeoPoint> gpxPoints);
-        TileRange DownloadTiles(BoundingBox bbox, ImageryProvider provider, int minTilesPerImage = 4);
+        
         TextureInfo GenerateNormalMap(HeightMap heightMap, string outputDirectory, string fileName = "normalmap.jpg");
 
         Dictionary<string, string> GetConfiguredTokens();
 
         List<ImageryProvider> GetRegisteredProviders();
+
+        TileRange ComputeBoundingBoxTileRange(BoundingBox bbox, ImageryProvider provider, int minTilesPerImage = 4);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tiles">Tile calculated from ComputeBoundingBoxTileRange</param>
+        /// <param name="provider"></param>
+        /// <returns></returns>
+        TileRange DownloadTiles(TileRange tiles, ImageryProvider provider);
+
+        TileRange DownloadTiles(BoundingBox bbox, ImageryProvider provider, int minTilesPerImage = 4);
 
     }
 }
