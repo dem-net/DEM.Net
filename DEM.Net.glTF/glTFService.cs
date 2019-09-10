@@ -102,8 +102,8 @@ namespace DEM.Net.glTF
                     }
                 }
 
-                Console.WriteLine("Model Creation Complete!");
-                Console.WriteLine("Completed in : " + sw.Elapsed.ToString());
+                _logger.LogInformation("Model Creation Complete!");
+                _logger.LogInformation("Completed in : " + sw.Elapsed.ToString());
             }
             catch (Exception ex)
             {
