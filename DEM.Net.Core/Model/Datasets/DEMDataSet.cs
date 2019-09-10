@@ -112,7 +112,7 @@ https://doi.org/10.5069/G9445JDF")
                 return new DEMDataSet()
                 {
                     Name = "AW3D30",
-                    Description = "ALOS World 3D - 30m",
+                    Description = "ALOS World 3D - 30m (nicest but contain void areas)",
                     PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTALOS.112016.4326.2",
                     DataSource = new VRTDataSource("https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/AW3D30/AW3D30_alos.vrt"),
                     FileFormat = DEMFileFormat.GEOTIFF,
