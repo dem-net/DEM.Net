@@ -52,7 +52,7 @@ namespace DEM.Net.Core.Imagery
             Attribution = new Attribution("© OpenStreetMap contributors", "https://www.openstreetmap.org/copyright"),
             UrlModel = new UrlModel("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", new[] { "a", "b", "c" }),
             MaxZoom = 16,
-            MaxDegreeOfParallelism = 2
+            MaxDegreeOfParallelism = 1
         };
 
         public static ImageryProvider MapBoxSatellite = new ImageryProvider()
