@@ -12,7 +12,7 @@ Digital Elevation Model library in C#
 
 See samples [here](https://github.com/dem-net/Samples)
 
- ![3D model](valgo.jpg?raw=true "3D model")
+ ![3D model](https://raw.githubusercontent.com/dem-net/Resources/master/videos/GPX_3D_big.gif)
 
 # Supported formats and datasets
 ## Input
