@@ -54,6 +54,10 @@ namespace DEM.Net.Core
             _logger = logger;
             _cacheByDemName = new ConcurrentDictionary<string, List<GDALSource>>();
         }
+        public void Reset()
+        {
+            _cacheByDemName = new ConcurrentDictionary<string, List<GDALSource>>();
+        }
 
         /// <summary>
         /// Ensures local directories are created and download VRT file if needed

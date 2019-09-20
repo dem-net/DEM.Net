@@ -27,6 +27,7 @@ using DEM.Net.Core.Model;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -44,7 +45,7 @@ namespace DEM.Net.Core
         private readonly IGDALVRTFileService _gdalVrtService;
         private readonly ILogger<RasterService> _logger;
 
-        private readonly string _localDirectory;
+        private string _localDirectory;
         private Dictionary<string, List<FileMetadata>> _metadataCatalogCache = new Dictionary<string, List<FileMetadata>>();
 
         public string LocalDirectory
@@ -62,6 +63,16 @@ namespace DEM.Net.Core
                 Directory.CreateDirectory(_localDirectory);
 
             _metadataCatalogCache = new Dictionary<string, List<FileMetadata>>();
+        }
+
+        public void SetLocalDirectory(string localDirectory)
+        {
+            _localDirectory = Path.Combine(localDirectory, APP_NAME);
+            if (!Directory.Exists(_localDirectory))
+                Directory.CreateDirectory(_localDirectory);
+
+            _metadataCatalogCache = new Dictionary<string, List<FileMetadata>>();
+            _gdalVrtService.Reset();
         }
 
         /// <summary>
@@ -134,16 +145,19 @@ namespace DEM.Net.Core
             {
                 _metadataCatalogCache.Remove(localPath);
             }
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
             if (_metadataCatalogCache.ContainsKey(localPath) == false)
             {
                 var manifestDirectories = Directory.EnumerateDirectories(localPath, MANIFEST_DIR, SearchOption.AllDirectories);
 
-                List<FileMetadata> metaList = new List<FileMetadata>(32000);
+                ConcurrentBag<FileMetadata> metaList = new ConcurrentBag<FileMetadata>();
                 foreach (var manifestDirectory in manifestDirectories)
                 {
                     var manifestFiles = Directory.EnumerateFiles(manifestDirectory, "*.json");
 
-                    foreach (var file in manifestFiles)
+                    //foreach (var file in manifestFiles)
+                    Parallel.ForEach(manifestFiles, file =>
                     {
                         string jsonContent = File.ReadAllText(file);
                         FileMetadata metadata = JsonConvert.DeserializeObject<FileMetadata>(jsonContent);
@@ -154,11 +168,15 @@ namespace DEM.Net.Core
                         }
                         metaList.Add(metadata);
                     }
+                    );
                     
                 }
-                _metadataCatalogCache[localPath] = metaList;
+                _metadataCatalogCache[localPath] = metaList.ToList();
 
             }
+
+            _logger.LogWarning($"{dataset.Name} metadata loaded in {stopwatch.ElapsedMilliseconds} ms");
+
             return _metadataCatalogCache[localPath];
         }
 
@@ -384,7 +402,6 @@ namespace DEM.Net.Core
                         });
 
                     }
-                    //Trace.TraceInformation($"Source {source.SourceFileName}");
                 }
             }
 

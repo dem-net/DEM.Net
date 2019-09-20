@@ -45,6 +45,13 @@ namespace DEM.Net.Core
         IRasterFile OpenFile(string filePath, DEMFileFormat fileFormat);
 
         string LocalDirectory { get; }
+
+        /// <summary>
+        /// Change directory to user specified directory. Causes local caches to reset.
+        /// Directory will be created if not existing
+        /// </summary>
+        /// <param name="localDirectory"></param>
+        void SetLocalDirectory(string localDirectory);
         string GetLocalDEMPath(DEMDataSet dataset);
         string GetLocalDEMFilePath(DEMDataSet dataset, string fileTitle);
 
