@@ -48,11 +48,11 @@ namespace DEM.Net.Core.Imagery
 
         public static ImageryProvider Osm = new ImageryProvider()
         {
-            Name = "OpenStreetMap",
-            Attribution = new Attribution("© OpenStreetMap contributors", "https://www.openstreetmap.org/copyright"),
-            UrlModel = new UrlModel("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", new[] { "a", "b", "c" }),
-            MaxZoom = 16,
-            MaxDegreeOfParallelism = 1
+            Name = "OpenMapSurfer.Roads",
+            Attribution = new Attribution("Imagery from <a href=\"http://giscience.uni-hd.de/\">GIScience Research Group @ University of Heidelberg</a> | Map data &copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"),
+            UrlModel = new UrlModel("https://maps.heigit.org/openmapsurfer/tiles/roads/webmercator/{z}/{x}/{y}.png", null),
+            MaxZoom = 19,
+            MaxDegreeOfParallelism = 2
         };
 
         public static ImageryProvider MapBoxSatellite = new ImageryProvider()
