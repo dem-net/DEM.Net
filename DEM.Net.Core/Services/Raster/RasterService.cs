@@ -137,7 +137,7 @@ namespace DEM.Net.Core
             return metadata;
         }
 
-        public List<FileMetadata> LoadManifestMetadata(DEMDataSet dataset, bool force)
+        public List<FileMetadata> LoadManifestMetadata(DEMDataSet dataset, bool force, bool logTimeSpent = false)
         {
             string localPath = GetLocalDEMPath(dataset);
 
@@ -169,13 +169,14 @@ namespace DEM.Net.Core
                         metaList.Add(metadata);
                     }
                     );
-                    
+
                 }
                 _metadataCatalogCache[localPath] = metaList.ToList();
 
             }
 
-            _logger.LogWarning($"{dataset.Name} metadata loaded in {stopwatch.ElapsedMilliseconds} ms");
+            if (logTimeSpent) // we avoid logging each time the data is requested, only needed on preload
+                _logger.LogWarning($"{dataset.Name} metadata loaded in {stopwatch.ElapsedMilliseconds} ms");
 
             return _metadataCatalogCache[localPath];
         }
@@ -346,7 +347,7 @@ namespace DEM.Net.Core
                 ,
                 TotalSizeGB = totalfileSizeGB
                 ,
-                DowloadedPercent = Math.Round(downloadedCount*100d/totalFiles, 2)
+                DowloadedPercent = Math.Round(downloadedCount * 100d / totalFiles, 2)
             };
 
             return reportSummary;

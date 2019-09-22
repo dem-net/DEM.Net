@@ -33,7 +33,7 @@ namespace DEM.Net.Core
     {
         FileMetadata ParseMetadata(IRasterFile rasterFile, bool makeRelativePath = false);
         FileMetadata ParseMetadata(string fileName, DEMFileFormat fileFormat, bool makeRelativePath = true);
-        List<FileMetadata> LoadManifestMetadata(DEMDataSet dataSet, bool force);
+        List<FileMetadata> LoadManifestMetadata(DEMDataSet dataSet, bool force, bool logTimeSpent = false);
 
         /// <summary>
         /// Open specified file
