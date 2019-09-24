@@ -33,6 +33,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading;
 
 #if NETFULL
 using System.Configuration;
@@ -113,7 +114,7 @@ namespace DEM.Net.Core.Imagery
 
         public TileRange DownloadTiles(TileRange tiles, ImageryProvider provider)
         {
-            
+
             // downdload tiles
             Stopwatch swDownload = Stopwatch.StartNew();
             _logger?.LogTrace("Starting images download");
@@ -127,16 +128,18 @@ namespace DEM.Net.Core.Imagery
             {
 
                 Uri tileUri = BuildUri(provider, tileInfo.X, tileInfo.Y, tileInfo.Zoom);
-                _logger?.LogInformation($"Downloading {tileUri}");
 
                 var contentbytes = _httpClient.GetByteArrayAsync(tileUri).Result;
                 tiles.Add(new MapTile(contentbytes, provider.TileSize, tileUri, tileInfo));
+
+                //Interlocked.Increment(ref i);
+                //_logger?.LogInformation($"Downloading {tileUri}");
 
             }
                 );
 
             swDownload.Stop();
-            _logger?.LogTrace($"DownloadImages done in : {swDownload.Elapsed:g}");
+            _logger?.LogInformation($"DownloadImages done in : {swDownload.Elapsed:g}");
 
 
             return tiles;
@@ -180,20 +183,21 @@ namespace DEM.Net.Core.Imagery
             var options = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism };
             var range = tiles.EnumerateRange().ToList();
             _logger.LogInformation($"Downloading {range.Count} tiles...");
+
             Parallel.ForEach(range, options, tileInfo =>
                 {
-                    
-                        Uri tileUri = BuildUri(provider, tileInfo.X, tileInfo.Y, tileInfo.Zoom);
-                        _logger?.LogInformation($"Downloading {tileUri}");
 
-                        var contentbytes = _httpClient.GetByteArrayAsync(tileUri).Result;
-                        tiles.Add(new MapTile(contentbytes, provider.TileSize, tileUri, tileInfo));
-                    
+                    Uri tileUri = BuildUri(provider, tileInfo.X, tileInfo.Y, tileInfo.Zoom);
+                    _logger?.LogInformation($"Downloading {tileUri}");
+
+                    var contentbytes = _httpClient.GetByteArrayAsync(tileUri).Result;
+                    tiles.Add(new MapTile(contentbytes, provider.TileSize, tileUri, tileInfo));
+
                 }
                 );
 
             swDownload.Stop();
-            _logger?.LogTrace($"DownloadImages done in : {swDownload.Elapsed:g}");
+            _logger?.LogInformation($"DownloadImages done in : {swDownload.Elapsed:g}");
 
 
             return tiles;
@@ -330,7 +334,7 @@ namespace DEM.Net.Core.Imagery
 #else
             using (Image<Rgba32> outputImage = new Image<Rgba32>((int)projectedBbox.Width, (int)projectedBbox.Height))
             {
-                
+
                 foreach (var tile in tiles)
                 {
                     using (Image<Rgba32> tileImg = Image.Load(tile.Image))
@@ -345,7 +349,7 @@ namespace DEM.Net.Core.Imagery
                 }
 
                 outputImage.Mutate(o => o
-                             .DrawLines(new Rgba32(1,0,0,1f), 5f, pointsOnTexture.ToArray())
+                             .DrawLines(new Rgba32(1, 0, 0, 1f), 5f, pointsOnTexture.ToArray())
                              );
                 // with encoder
                 //IImageEncoder encoder = ConvertFormat(mimeType);
