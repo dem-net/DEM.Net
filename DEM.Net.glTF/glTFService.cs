@@ -117,43 +117,12 @@ namespace DEM.Net.glTF
             glTFLoader.Schema.Gltf gltf = glTFLoader.Interface.LoadModel(path);
             return gltf;
         }
-        public Model GenerateModel(MeshPrimitive meshPrimitive, string name)
+        public Model GenerateModel(MeshPrimitive meshPrimitive, string name, IEnumerable<Attribution> attributions = null)
         {
-            // Create the gltf object
-            Model model = new Model
-            {
-                GLTF = new GLTF
-                {
-                    Asset = new Asset
-                    {
-                        Generator = "glTF Asset Generator",
-                        Version = "2.0",
-                    },
-                    Scenes = new List<Scene>
-                    {
-                        new Scene {
-                        Nodes = new List<Node>
-                        {
-                            new Node
-                            {
-                                Mesh = new Mesh
-                                {
-                                    MeshPrimitives = new List<MeshPrimitive>
-                                    {
-                                        meshPrimitive
-                                    }
-                                },
-                            },
-                        },
-                        }
-                    }
-                }
-            };
-
-            return model;
+            return GenerateModel(new List<MeshPrimitive> { meshPrimitive }, name, attributions);
         }
 
-        public Model GenerateModel(IEnumerable<MeshPrimitive> meshPrimitives, string name)
+        public Model GenerateModel(IEnumerable<MeshPrimitive> meshPrimitives, string name, IEnumerable<Attribution> attributions = null)
         {
             // Create the gltf object
             Model model = new Model
@@ -162,7 +131,9 @@ namespace DEM.Net.glTF
                 {
                     Asset = new Asset
                     {
-                        Generator = "glTF Asset Generator",
+                        Generator = "DEM-Net Elevation API",
+                        Copyright = GetAttributionText(attributions),
+                        Extras =  new Extras() { Attributes = GetAttributionExtraText(attributions) },
                         Version = "2.0",
                     },
                     Scenes = new List<Scene>
@@ -184,6 +155,27 @@ namespace DEM.Net.glTF
             };
 
             return model;
+        }
+
+        private string GetAttributionText(IEnumerable<Attribution> attributions)
+        {
+            string text = "DEM-Net Elevation API";
+            if (attributions != null && attributions.Any())
+            {
+                var attributionsText = string.Join(", ", attributions.Select(a => a.Text));
+                text = string.Concat(text, ", ", attributionsText);
+            }
+            return text;
+        }
+        private string GetAttributionExtraText(IEnumerable<Attribution> attributions)
+        {
+            string text = "https://elevationapi.com";
+            if (attributions != null && attributions.Any())
+            {
+                var attributionsText = string.Join(Environment.NewLine, attributions.Select(a => $"{a.Text}: {a.Acknowledgement} / {a.Url}"));
+                text = string.Concat(text, ", ", attributionsText);
+            }
+            return text;
         }
 
 

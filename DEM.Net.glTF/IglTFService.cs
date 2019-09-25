@@ -104,7 +104,7 @@ namespace DEM.Net.glTF
         /// <param name="meshPrimitive"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        Model GenerateModel(MeshPrimitive meshPrimitive, string name);
+        Model GenerateModel(MeshPrimitive meshPrimitive, string name, IEnumerable<Attribution> attributions = null);
 
         /// <summary>
         /// Generate a full glTF model from a mesh
@@ -112,7 +112,7 @@ namespace DEM.Net.glTF
         /// <param name="meshPrimitive"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        Model GenerateModel(IEnumerable<MeshPrimitive> meshPrimitives, string name);
+        Model GenerateModel(IEnumerable<MeshPrimitive> meshPrimitives, string name, IEnumerable<Attribution> attributions = null);
 
 
         /// <summary>
