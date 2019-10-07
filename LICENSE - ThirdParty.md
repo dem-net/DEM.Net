@@ -390,7 +390,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *template below*
 
 ---
-# SuperLib
+# Template __LibraryName__
 - Repo : https://github.com/superuser/superlib
 - License : MIT Copyright (c) 2016 Stefan Gordon
 - Usage : GeoTIFF header tags parsing
