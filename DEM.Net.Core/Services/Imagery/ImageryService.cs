@@ -486,7 +486,7 @@ namespace DEM.Net.Core.Imagery
         }
 
         /// <summary>
-        /// Generate height map texture from height map, as a 16 bit grayscale PNG image where the pixel luminance is the height in meters
+        /// Generate height map texture from height map, as a 16 bit grayscale PNG image. Grayscale is mapped from local min (black) to local highest point (white)
         /// Note : heightMap should be in projected coordinates (see ReprojectToCartesian())
         /// </summary>
         /// <param name="heightMap">heightMap in projected coordinates</param>
