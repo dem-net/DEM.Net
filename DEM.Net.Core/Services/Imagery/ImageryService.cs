@@ -485,6 +485,53 @@ namespace DEM.Net.Core.Imagery
             return normal;
         }
 
+        /// <summary>
+        /// Generate height map texture from height map, as a 16 bit grayscale PNG image where the pixel luminance is the height in meters
+        /// Note : heightMap should be in projected coordinates (see ReprojectToCartesian())
+        /// </summary>
+        /// <param name="heightMap">heightMap in projected coordinates</param>
+        /// <param name="outputDirectory"></param>
+        /// <returns></returns>
+        public TextureInfo GenerateHeightMap(HeightMap heightMap, string outputDirectory, string fileName = "heightmap.png")
+        {
+
+#if NETSTANDARD
+            using (Image<Gray16> outputImage = new Image<Gray16>(heightMap.Width, heightMap.Height))
+            {
+                // Slow way: bake coordinates to list
+                var coords = heightMap.Coordinates.ToList();
+                for (int j = 0; j < heightMap.Height; j++)
+                    for (int i = 0; i < heightMap.Width; i++)
+                    {
+                        int index = i + (j * heightMap.Width);
+                        GeoPoint point = coords[index];
+                        Gray16 color = FromGeoPointToHeightMapColor(point, heightMap.Minimum, heightMap.Maximum);
+
+                        outputImage[i, j] = color;
+                    }
+
+                outputImage.Save(Path.Combine(outputDirectory, fileName));
+            }
+#elif NETFULL
+            throw new NotImplementedException();
+#endif
+
+
+            TextureInfo normal = new TextureInfo(Path.Combine(outputDirectory, fileName), TextureImageFormat.image_png, heightMap.Width, heightMap.Height);
+            return normal;
+        }
+
+#if NETSTANDARD
+        private Gray16 FromGeoPointToHeightMapColor(GeoPoint point, float min, float max)
+        {
+            float gray = MathHelper.Map(min, max, 0, (float)ushort.MaxValue, (float)(point.Elevation ?? 0f), true);
+            ushort height = (ushort)Math.Round(gray,0);
+            return new Gray16(height);
+        }
+#endif
+
+
+
 #if NETSTANDARD
         private Bgra32 FromVec3ToHeightColor(Vector3 vector3, float maxHeight)
         {
