@@ -369,7 +369,7 @@ namespace DEM.Net.glTF
                             ,
                             Positions = vertices
                             ,
-                            Material = new Material() { DoubleSided = false  }
+                            Material = new Material() { DoubleSided = true  }
                             ,
                             Indices = indices
                             ,
@@ -449,7 +449,7 @@ namespace DEM.Net.glTF
                         ,
                         Positions = positions
                         ,
-                        Material = new Material() { DoubleSided = false }
+                        Material = new Material() { DoubleSided = true }
                         ,
                         Indices = indices
                     };
