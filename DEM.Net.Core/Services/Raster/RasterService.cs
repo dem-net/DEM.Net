@@ -67,12 +67,16 @@ namespace DEM.Net.Core
 
         public void SetLocalDirectory(string localDirectory)
         {
-            _localDirectory = Path.Combine(localDirectory, APP_NAME);
-            if (!Directory.Exists(_localDirectory))
-                Directory.CreateDirectory(_localDirectory);
+            localDirectory = Path.Combine(localDirectory, APP_NAME);
+            if (_localDirectory != null && _localDirectory != localDirectory)
+            {
+                _localDirectory = localDirectory;
+                if (!Directory.Exists(_localDirectory))
+                    Directory.CreateDirectory(_localDirectory);
 
-            _metadataCatalogCache = new Dictionary<string, List<FileMetadata>>();
-            _gdalVrtService.Reset();
+                _metadataCatalogCache = new Dictionary<string, List<FileMetadata>>();
+                _gdalVrtService.Reset();
+            }
         }
 
         /// <summary>
