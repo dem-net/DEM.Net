@@ -82,9 +82,9 @@
     <PackageReference Include="GeoAPI.Core" Version="1.7.5" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
-    <PackageReference Include="NetTopologySuite" Version="1.15.2" />
+    <PackageReference Include="NetTopologySuite" Version="1.15.3" />
     <PackageReference Include="NetTopologySuite.Diagnostics.Tracing" Version="0.0.3" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
   </ItemGroup>
 
@@ -98,6 +98,7 @@
     <Folder Include="Services\Voronoi\FortuneVoronoi\" />
     <Folder Include="Model\Enums\" />
     <Folder Include="Model\Datasets\" />
+    <Folder Include="Model\Datasets\DataSources\" />
   </ItemGroup>
 
   <ProjectExtensions>

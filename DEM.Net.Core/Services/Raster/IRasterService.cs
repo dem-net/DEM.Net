@@ -33,7 +33,7 @@ namespace DEM.Net.Core
     {
         FileMetadata ParseMetadata(IRasterFile rasterFile, bool makeRelativePath = false);
         FileMetadata ParseMetadata(string fileName, DEMFileFormat fileFormat, bool makeRelativePath = true);
-        List<FileMetadata> LoadManifestMetadata(DEMDataSet dataSet, bool force);
+        List<FileMetadata> LoadManifestMetadata(DEMDataSet dataSet, bool force, bool logTimeSpent = false);
 
         /// <summary>
         /// Open specified file
@@ -45,6 +45,13 @@ namespace DEM.Net.Core
         IRasterFile OpenFile(string filePath, DEMFileFormat fileFormat);
 
         string LocalDirectory { get; }
+
+        /// <summary>
+        /// Change directory to user specified directory. Causes local caches to reset.
+        /// Directory will be created if not existing
+        /// </summary>
+        /// <param name="localDirectory"></param>
+        void SetLocalDirectory(string localDirectory);
         string GetLocalDEMPath(DEMDataSet dataset);
         string GetLocalDEMFilePath(DEMDataSet dataset, string fileTitle);
 

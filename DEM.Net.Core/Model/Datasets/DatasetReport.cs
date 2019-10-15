@@ -54,6 +54,21 @@ namespace DEM.Net.Core.Model
         /// </summary>
         public int FilesWithMetadata { get; internal set; }
 
+        /// <summary>
+        /// Size remaining to download
+        /// </summary>
+        public double RemainingSizeGB { get; internal set; }
+
+        /// <summary>
+        /// Total dataset size if downloaded
+        /// </summary>
+        public double TotalSizeGB { get; internal set; }
+
+        /// <summary>
+        /// Percentage of downloaded files (100%) means everything has been downloaded
+        /// </summary>
+        public double DowloadedPercent { get; internal set; }
+
         public override string ToString()
         {
             var sb = new StringBuilder();

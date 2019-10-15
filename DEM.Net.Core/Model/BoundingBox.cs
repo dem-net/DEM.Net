@@ -28,6 +28,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DEM.Net.Core.Gpx;
 
 namespace DEM.Net.Core
 {
@@ -85,6 +86,26 @@ namespace DEM.Net.Core
             _yMax = ymax;
         }
 
+        public bool IsValid()
+        {
+            if (_xMin >= _xMax)
+            {
+                double temp = _xMax;
+                _xMax = _xMin;
+                _xMin = temp;
+            }
+            if (_yMin >= _yMax)
+            {
+                double temp = _yMax;
+                _yMax = _yMin;
+                _yMin = temp;
+            }
+            return GpsLocation.IsValidLongitude(_xMin)
+                    && GpsLocation.IsValidLongitude(_xMax)
+                    && GpsLocation.IsValidLatitude(_yMin)
+                    && GpsLocation.IsValidLatitude(_yMax);
+        }
+
         public override bool Equals(object obj)
         {
             BoundingBox objTyped = obj as BoundingBox;
@@ -99,6 +120,15 @@ namespace DEM.Net.Core
         public BoundingBox Scale(double scaleX, double scaleY)
         {
             return new BoundingBox(xMin - Width * scaleX, xMax + Width * scaleX, yMax - Height * scaleY, yMin + Height * scaleY);
+        }
+        /// <summary>
+        /// Add padding around bbox (bbox must be projected to cartesian first)
+        /// </summary>
+        /// <param name="paddingMeters"></param>
+        /// <returns></returns>
+        public BoundingBox Pad(double paddingMeters)
+        {
+            return new BoundingBox(xMin - paddingMeters, xMax + paddingMeters, yMax + paddingMeters, yMin - paddingMeters);
         }
         public BoundingBox ScaleAbsolute(double scaleX, double scaleY)
         {
@@ -163,7 +193,13 @@ namespace DEM.Net.Core
         {
             return !(a == b);
         }
-
+        public double Area
+        {
+            get
+            {
+                return (xMax - xMin) * (yMax - yMin);
+            }
+        }
         public string WKT
         {
             get

@@ -7,5 +7,7 @@ namespace DEM.Net.Core
         void Setup(DEMDataSet dataset, string dataSetLocalDir);
 
         IEnumerable<GDALSource> Sources(DEMDataSet dataset);
+
+        void Reset();
     }
 }

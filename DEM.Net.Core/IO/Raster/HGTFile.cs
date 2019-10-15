@@ -75,7 +75,7 @@ namespace DEM.Net.Core
             double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
 
             float heightValue = 0;
-            byte[] heightBytes = new byte[bytesPerSample]; ;
+            byte[] heightBytes = new byte[bytesPerSample];
             if (BitConverter.IsLittleEndian)
             {
                 // reverse bytes
