@@ -42,7 +42,7 @@ namespace DEM.Net.Core
     {
         const string APP_NAME = "DEM.Net";
         const string MANIFEST_DIR = "manifest";
-        private readonly IGDALVRTFileService _gdalVrtService;
+        private readonly RasterIndexServiceResolver _rasterIndexServiceResolver;
         private readonly ILogger<RasterService> _logger;
 
         private string _localDirectory;
@@ -53,10 +53,10 @@ namespace DEM.Net.Core
             get { return _localDirectory; }
         }
 
-        public RasterService(IGDALVRTFileService gdalVrtService, ILogger<RasterService> logger = null)
+        public RasterService(RasterIndexServiceResolver rasterResolver, ILogger<RasterService> logger = null)
         {
-            _logger = logger;
-            _gdalVrtService = gdalVrtService;
+            this._logger = logger;
+            this._rasterIndexServiceResolver = rasterResolver;
             //_localDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), APP_NAME);
             _localDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), APP_NAME);
             if (!Directory.Exists(_localDirectory))
@@ -75,7 +75,11 @@ namespace DEM.Net.Core
                     Directory.CreateDirectory(_localDirectory);
 
                 _metadataCatalogCache = new Dictionary<string, List<FileMetadata>>();
-                _gdalVrtService.Reset();
+                foreach (var value in Enum.GetValues(typeof(Datasets.DEMDataSourceType)))
+                {
+                    _rasterIndexServiceResolver((Datasets.DEMDataSourceType)value).Reset();
+                }
+
             }
         }
 
@@ -357,16 +361,6 @@ namespace DEM.Net.Core
             return reportSummary;
         }
 
-
-        bool BoundingBoxIntersects(BoundingBox bbox1, BoundingBox bbox2)
-        {
-            return (bbox1.xMax >= bbox2.xMin && bbox1.xMin <= bbox2.xMax) && (bbox1.yMax >= bbox2.yMin && bbox1.yMin <= bbox2.yMax);
-        }
-        bool BoundingBoxIntersects(BoundingBox bbox1, double lat, double lon)
-        {
-            return (bbox1.xMax >= lon && bbox1.xMin <= lon) && (bbox1.yMax >= lat && bbox1.yMin <= lat);
-        }
-
         /// <summary>
         /// Compare LST file and local directory and generates dictionary with key : remoteFile and value = true if file is present and false if it is not downloaded
         /// </summary>
@@ -389,12 +383,13 @@ namespace DEM.Net.Core
             }
             else
             {
-                _gdalVrtService.Setup(dataSet, GetLocalDEMPath(dataSet));
+                var indexService =  this._rasterIndexServiceResolver(dataSet.DataSource.DataSourceType);
+                indexService.Setup(dataSet, GetLocalDEMPath(dataSet));
 
-                foreach (GDALSource source in _gdalVrtService.Sources(dataSet))
+                foreach (DEMFileSource source in indexService.GetFileSources(dataSet))
                 {
 
-                    if (bbox == null || BoundingBoxIntersects(source.BBox, bbox))
+                    if (bbox == null || source.BBox.Intersects(bbox))
                     {
 
                         statusByFile.Add(new DemFileReport()
@@ -427,11 +422,12 @@ namespace DEM.Net.Core
             }
             else
             {
-                _gdalVrtService.Setup(dataSet, GetLocalDEMPath(dataSet));
+                var indexService = this._rasterIndexServiceResolver(dataSet.DataSource.DataSourceType);
+                indexService.Setup(dataSet, GetLocalDEMPath(dataSet));
 
-                foreach (GDALSource source in _gdalVrtService.Sources(dataSet))
+                foreach (DEMFileSource source in indexService.GetFileSources(dataSet))
                 {
-                    if (BoundingBoxIntersects(source.BBox, lat, lon))
+                    if (source.BBox.Intersects(lat, lon))
                     {
 
                         return new DemFileReport()

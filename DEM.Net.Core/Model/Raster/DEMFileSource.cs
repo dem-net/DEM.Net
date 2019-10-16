@@ -31,10 +31,10 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core
 {
-    public class GDALSource
+    public class DEMFileSource
     {
 
-        public bool RelativeToVRT { get; set; }
+        public bool IsPathRelative { get; set; }
         public string SourceFileName { get; set; }
         public string Type { get; internal set; }
         public Dictionary<string,string> Properties { get; set; }
@@ -51,7 +51,7 @@ namespace DEM.Net.Core
         public double DestLat { get; internal set; }
         public BoundingBox BBox { get; internal set; }
 
-        public GDALSource()
+        public DEMFileSource()
         {
             Properties = new Dictionary<string, string>();
         }
