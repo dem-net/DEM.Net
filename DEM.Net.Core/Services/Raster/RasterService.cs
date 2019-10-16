@@ -383,15 +383,14 @@ namespace DEM.Net.Core
             }
             else
             {
-                var indexService =  this._rasterIndexServiceResolver(dataSet.DataSource.DataSourceType);
+                var indexService = this._rasterIndexServiceResolver(dataSet.DataSource.DataSourceType);
                 indexService.Setup(dataSet, GetLocalDEMPath(dataSet));
 
-                foreach (DEMFileSource source in indexService.GetFileSources(dataSet))
+                if (bbox == null)
                 {
-
-                    if (bbox == null || source.BBox.Intersects(bbox))
+                    // All sources
+                    foreach (DEMFileSource source in indexService.GetFileSources(dataSet))
                     {
-
                         statusByFile.Add(new DemFileReport()
                         {
                             IsExistingLocally = File.Exists(source.LocalFileName),
@@ -403,6 +402,23 @@ namespace DEM.Net.Core
 
                     }
                 }
+                else
+                {
+                    // only sources intersecting bbox
+                    foreach (DEMFileSource source in indexService.GetCoveredFileSources(dataSet, bbox))
+                    {
+                        statusByFile.Add(new DemFileReport()
+                        {
+                            IsExistingLocally = File.Exists(source.LocalFileName),
+                            IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),
+                            LocalName = source.LocalFileName,
+                            URL = source.SourceFileNameAbsolute,
+                            Source = source
+                        });
+
+                    }
+                }
+
             }
 
             return statusByFile;

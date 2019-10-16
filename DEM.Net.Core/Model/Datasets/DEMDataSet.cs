@@ -150,6 +150,10 @@ https://doi.org/10.5069/G94M92HB
             
         }
 
+        /// <summary>
+        /// ASTER GDEM V3 https://cmr.earthdata.nasa.gov/search/concepts/C1575726572-LPDAAC_ECS/11
+        /// API: https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html
+        /// </summary>
         public static DEMDataSet ASTER_GDEMV3
         {
             get

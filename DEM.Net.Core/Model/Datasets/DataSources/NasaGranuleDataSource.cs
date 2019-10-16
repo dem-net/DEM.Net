@@ -11,7 +11,7 @@ namespace DEM.Net.Core.Datasets
 
         public bool IsGlobalFile { get; } = false;
 
-        public DEMDataSourceType DataSourceType => DEMDataSourceType.GDALVrt;
+        public DEMDataSourceType DataSourceType => DEMDataSourceType.NASA;
 
         public NasaGranuleDataSource(string vrtFileUrl)
         {
