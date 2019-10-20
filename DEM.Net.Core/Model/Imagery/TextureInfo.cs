@@ -35,7 +35,7 @@ namespace DEM.Net.Core.Imagery
     public class TextureInfo
     {
 
-        public string FilePath { get; }
+        public string FilePath { get; set; }
         public string FileName { get; }
         public TextureImageFormat ImageFormat { get; }
         public int Width { get; }
