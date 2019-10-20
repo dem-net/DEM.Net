@@ -150,6 +150,31 @@ https://doi.org/10.5069/G94M92HB
             
         }
 
+        /// <summary>
+        /// ASTER GDEM V3 https://cmr.earthdata.nasa.gov/search/concepts/C1575726572-LPDAAC_ECS/11
+        /// API: https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html
+        /// </summary>
+        public static DEMDataSet ASTER_GDEMV3
+        {
+            get
+            {
+                return new DEMDataSet()
+                {
+                    Name = "ASTER_GDEMV3",
+                    Description = "ASTER Global Digital Elevation Model 1 arc second (30m)",
+                    PublicUrl = "https://lpdaac.usgs.gov/products/astgtmv003",
+                    DataSource = new NasaGranuleDataSource("https://e4ftl01.cr.usgs.gov/ASTT/ASTGTM.003/2000.03.01/"),
+                    FileFormat = DEMFileFormat.GEOTIFF,
+                    ResolutionMeters = 30,
+                    PointsPerDegree = 3600,
+                    NoDataValue = -9999,
+                    Attribution = new Attribution("NASA/METI/AIST/Japan Spacesystems, and U.S./Japan ASTER Science Team", "https://lpdaac.usgs.gov/products/astgtmv003"
+                    , "NASA/METI/AIST/Japan Spacesystems, and U.S./Japan ASTER Science Team. ASTER Global Digital Elevation Model V003. 2019, distributed by NASA EOSDIS Land Processes DAAC, https://doi.org/10.5067/ASTER/ASTGTM.003. Accessed 2019-10-15. DOI: 10.5067/ASTER/ASTGTM.003")
+                };
+            }
+
+        }
+
         public static IEnumerable<DEMDataSet> RegisteredDatasets
         {
             get
@@ -158,6 +183,7 @@ https://doi.org/10.5069/G94M92HB
                 yield return DEMDataSet.SRTM_GL3;
                 yield return DEMDataSet.SRTM_GL1;
                 yield return DEMDataSet.AW3D30;
+                //yield return DEMDataSet.ASTER_GDEMV3;
                 // 
                 // add any new dataset here
                 // yield return DEMDataSet.<newdataset>

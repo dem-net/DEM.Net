@@ -10,8 +10,25 @@ namespace DEM.Net.Core
     {
         public static IServiceCollection AddDemNetCore(this IServiceCollection services)
         {
+            services.AddSingleton<GDALVRTFileService>();
+            services.AddTransient<NasaGranuleFileService>();
+
+            services.AddTransient<RasterIndexServiceResolver>(serviceProvider => dataSourceType =>
+            {
+                switch (dataSourceType)
+                {
+                    case Datasets.DEMDataSourceType.GDALVrt:
+                    case Datasets.DEMDataSourceType.LocalFile:
+                        return serviceProvider.GetService<GDALVRTFileService>();
+                    case Datasets.DEMDataSourceType.NASA:
+                        return serviceProvider.GetService<NasaGranuleFileService>();
+                    default:
+                        throw new KeyNotFoundException(); // or maybe return null, up to you
+                }
+            });
+
             services
-                    .AddSingleton<IGDALVRTFileService,GDALVRTFileService>()
+                    .AddSingleton<IDEMDataSetIndex,GDALVRTFileService>()
                     .AddSingleton<IRasterService, RasterService>()
                     .AddTransient<IElevationService, ElevationService>()
                     .AddTransient<IMeshService, MeshService>()

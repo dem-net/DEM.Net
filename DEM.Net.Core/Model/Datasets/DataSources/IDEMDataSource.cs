@@ -30,5 +30,7 @@ namespace DEM.Net.Core.Datasets
 		string IndexFilePath { get; }
 
         bool IsGlobalFile { get; }
-	}
+
+        DEMDataSourceType DataSourceType { get; }
+    }
 }

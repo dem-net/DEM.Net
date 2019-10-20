@@ -42,21 +42,21 @@ namespace DEM.Net.Core
     /// Remote GDAL VRT file handling
     /// Downloads and enumerates through tiles referenced in VRT file
     /// </summary>
-    public class GDALVRTFileService : IGDALVRTFileService
+    public class GDALVRTFileService : IDEMDataSetIndex
     {
         private const int MAX_AGE_DAYS = 100;
 
         private readonly ILogger<GDALVRTFileService> _logger;
-        private ConcurrentDictionary<string, List<GDALSource>> _cacheByDemName;
+        private ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName;
 
         public GDALVRTFileService(ILogger<GDALVRTFileService> logger = null)
         {
             _logger = logger;
-            _cacheByDemName = new ConcurrentDictionary<string, List<GDALSource>>();
+            _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
         }
         public void Reset()
         {
-            _cacheByDemName = new ConcurrentDictionary<string, List<GDALSource>>();
+            _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace DEM.Net.Core
 
                 if (_cacheByDemName == null)
                 {
-                    _cacheByDemName = new ConcurrentDictionary<string, List<GDALSource>>();
+                    _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
                 }
                 if (_cacheByDemName.ContainsKey(vrtFileName) == false)
                 {
@@ -157,13 +157,13 @@ namespace DEM.Net.Core
             return ok;
         }
 
-        
+
         /// <summary>
         /// Enumerates throught all the sources
         /// Supports only VRTRasterBand with ComplexSource or SimpleSource
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<GDALSource> Sources(DEMDataSet dataSet)
+        public IEnumerable<DEMFileSource> GetFileSources(DEMDataSet dataSet)
         {
             if (_cacheByDemName.ContainsKey(dataSet.Name))
             {
@@ -179,7 +179,24 @@ namespace DEM.Net.Core
 
         }
 
-        private IEnumerable<GDALSource> GetSources(DEMDataSet dataSet, string vrtFileName)
+        /// <summary>
+        /// Enumerates through all sources and find the ones intersecting with the provider BBox
+        /// </summary>
+        /// <param name="dataset"></param>
+        /// <param name="bbox"></param>
+        /// <returns></returns>
+        public IEnumerable<DEMFileSource> GetCoveredFileSources(DEMDataSet dataset, BoundingBox bbox)
+        {
+            foreach (DEMFileSource source in this.GetFileSources(dataset))
+            {
+                if (bbox == null || source.BBox.Intersects(bbox))
+                {
+                    yield return source;
+                }
+            }
+        }
+
+        private IEnumerable<DEMFileSource> GetSources(DEMDataSet dataSet, string vrtFileName)
         {
             Uri localVrtUri = new Uri(Path.GetFullPath(vrtFileName), UriKind.Absolute);
             Uri remoteVrtUri = new Uri(dataSet.DataSource.IndexFilePath, UriKind.Absolute);
@@ -218,7 +235,7 @@ namespace DEM.Net.Core
                     bool isOnFirstSource = true;
                     while (isOnFirstSource || reader.ReadToFollowing(sourceName))
                     {
-                        GDALSource source = ParseGDALSource(reader);
+                        DEMFileSource source = ParseGDALSource(reader);
 
                         // SetLocalFileName
                         source.SourceFileNameAbsolute = new Uri(remoteVrtUri, source.SourceFileName).ToString();
@@ -242,9 +259,9 @@ namespace DEM.Net.Core
 
         }
 
-        private GDALSource ParseGDALSource(XmlReader reader)
+        private DEMFileSource ParseGDALSource(XmlReader reader)
         {
-            GDALSource source = new GDALSource();
+            DEMFileSource source = new DEMFileSource();
             try
             {
                 source.Type = reader.Name;
@@ -275,7 +292,7 @@ namespace DEM.Net.Core
                                         {
                                             case "relativeToVRT":
                                                 reader.ReadAttributeValue();
-                                                source.RelativeToVRT = reader.Value == "1";
+                                                source.IsPathRelative = reader.Value == "1";
                                                 break;
                                         }
                                     }
@@ -348,5 +365,7 @@ namespace DEM.Net.Core
 
             return geoTransformArray;
         }
+
+
     }
 }

@@ -31,6 +31,8 @@ namespace DEM.Net.Core.Datasets
 
         public bool IsGlobalFile { get; } = true;
 
+        public DEMDataSourceType DataSourceType => DEMDataSourceType.LocalFile;
+
         public SingleFileDataSource(string fullFileName)
         {
             this.IndexFilePath = fullFileName;

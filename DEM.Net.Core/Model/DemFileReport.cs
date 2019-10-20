@@ -66,9 +66,9 @@ namespace DEM.Net.Core
         /// Gets the source in VRT file corresponding to this file 
         /// </summary>
         /// <value>
-        /// <see cref="GDALSource"/> object
+        /// <see cref="DEMFileSource"/> object
         /// </value>
-        public GDALSource Source { get; internal set; }
+        public DEMFileSource Source { get; internal set; }
 
         /// <summary>
         /// Gets a value indicating whether this file has metadata generated.
