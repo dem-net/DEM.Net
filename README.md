@@ -1,3 +1,4 @@
+[![Board Status](https://dev.azure.com/dem-net/fb0d4f55-28ad-4931-91c1-3be40dc42d96/97ece37c-c459-4aa0-a394-99b37b2af215/_apis/work/boardbadge/5f246f28-ee97-4849-bc40-654c06ec1bc1)](https://dev.azure.com/dem-net/fb0d4f55-28ad-4931-91c1-3be40dc42d96/_boards/board/t/97ece37c-c459-4aa0-a394-99b37b2af215/Microsoft.RequirementCategory)
 #### DEM.Net.Core [![NuGet Version](http://img.shields.io/nuget/v/DEM.Net.Core.svg?style=flat)](https://www.nuget.org/packages/DEM.Net.Core/)
 #### DEM.Net.glTF [![NuGet Version](http://img.shields.io/nuget/v/DEM.Net.glTF.svg?style=flat)](https://www.nuget.org/packages/DEM.Net.glTF/)
 

@@ -12,14 +12,14 @@ namespace DEM.Net.Test
     {
         readonly IRasterService _rasterService;
         readonly IElevationService _elevationService;
-        readonly IGDALVRTFileService _gdalService;
+        readonly IDEMDataSetIndex _gdalService;
 
 
         public DatasetTests(DemNetFixture fixture)
         {
             _rasterService = fixture.ServiceProvider.GetService<IRasterService>();
             _elevationService = fixture.ServiceProvider.GetService<IElevationService>();
-            _gdalService =  fixture.ServiceProvider.GetService<IGDALVRTFileService>();
+            _gdalService =  fixture.ServiceProvider.GetService<IDEMDataSetIndex>();
         }
 
 
@@ -30,7 +30,7 @@ namespace DEM.Net.Test
             DEMDataSet dataset = DEMDataSet.SRTM_GL1;
             _gdalService.Setup(dataset, _rasterService.GetLocalDEMPath(dataset));
 
-            Assert.True(_gdalService.Sources(dataset).Any());
+            Assert.True(_gdalService.GetFileSources(dataset).Any());
         }
 
         [Fact, TestPriority(1)]
@@ -39,7 +39,7 @@ namespace DEM.Net.Test
             DEMDataSet dataset = DEMDataSet.SRTM_GL3;
             _gdalService.Setup(dataset, _rasterService.GetLocalDEMPath(dataset));
 
-            Assert.True(_gdalService.Sources(dataset).Any());
+            Assert.True(_gdalService.GetFileSources(dataset).Any());
 
         }
 
@@ -49,7 +49,7 @@ namespace DEM.Net.Test
             DEMDataSet dataset = DEMDataSet.AW3D30;
             _gdalService.Setup(dataset, _rasterService.GetLocalDEMPath(dataset));
 
-            Assert.True(_gdalService.Sources(dataset).Any());
+            Assert.True(_gdalService.GetFileSources(dataset).Any());
 
         }
 
