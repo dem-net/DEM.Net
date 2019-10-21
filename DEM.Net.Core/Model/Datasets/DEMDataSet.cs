@@ -183,7 +183,7 @@ https://doi.org/10.5069/G94M92HB
                 yield return DEMDataSet.SRTM_GL3;
                 yield return DEMDataSet.SRTM_GL1;
                 yield return DEMDataSet.AW3D30;
-                yield return DEMDataSet.ASTER_GDEMV3;
+                //yield return DEMDataSet.ASTER_GDEMV3;
                 // 
                 // add any new dataset here
                 // yield return DEMDataSet.<newdataset>
