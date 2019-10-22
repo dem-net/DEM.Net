@@ -69,6 +69,7 @@ namespace DEM.Net.Core
             DownloadMissingFiles_FromReport(report, dataSet);
 
         }
+
         public void DownloadMissingFiles(DEMDataSet dataSet, double lat, double lon)
         {
             var report = _IRasterService.GenerateReportForLocation(dataSet, lat, lon);
@@ -492,6 +493,13 @@ namespace DEM.Net.Core
             // Find files matching coords
             List<FileMetadata> bboxMetadata = GetCoveringFiles(bbox, dataSet);
 
+            // Check if bounding box is fully covered (will result in invalid models without any error being thrown)
+            bool covered = this.IsBoundingBoxCovered(bbox, bboxMetadata.Select(m => m.BoundingBox));
+            if (!covered)
+            {
+                throw new Exception("Bounding box is partially covered by DEM dataset. Heightmap in its current state supports only full data tiles.");
+            }
+
             // get height map for each file at bbox
             List<HeightMap> tilesHeightMap = new List<HeightMap>(bboxMetadata.Count);
             foreach (FileMetadata metadata in bboxMetadata)
@@ -523,6 +531,20 @@ namespace DEM.Net.Core
 
             return heightMap;
         }
+
+        /// <summary>
+        /// Check if a bounding box is fully covered by a set of tiles
+        /// Detects when a tile is missing and thus involving a "data hole" in the future heightmap
+        /// </summary>
+        /// <param name="bbox"></param>
+        /// <param name="bboxTiles"></param>
+        /// <returns></returns>
+        private bool IsBoundingBoxCovered(BoundingBox bbox, IEnumerable<BoundingBox> bboxTiles)
+        {
+            // TODO: Union all the bboxTiles geometries (call it G) to see if G Union Bbox (or exclusive diff)
+            return true;
+        }
+
         public HeightMap GetHeightMap(BoundingBox bbox, string rasterFilePath, DEMFileFormat format)
         {
             HeightMap heightMap = null;
