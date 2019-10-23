@@ -557,11 +557,7 @@ namespace DEM.Net.Core
         {
             if (bboxTiles == null || !bboxTiles.Any())
                 return false;
-
-            var factory = new GeometryFactory(new PrecisionModel(PrecisionModels.Floating));
-
             
-
             try
             {
                 IGeometry bboxPoly = bbox.ToPolygon();
