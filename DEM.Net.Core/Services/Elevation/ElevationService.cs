@@ -35,6 +35,7 @@ using DEM.Net.Core.Interpolation;
 using GeoAPI.Geometries;
 using Microsoft.Extensions.Logging;
 using NetTopologySuite.Geometries;
+using NetTopologySuite.Operation.Union;
 
 namespace DEM.Net.Core
 {
@@ -557,7 +558,7 @@ namespace DEM.Net.Core
             if (bboxTiles == null || !bboxTiles.Any())
                 return false;
 
-            var factory = new GeometryFactory(new PrecisionModel(PrecisionModels.FloatingSingle));
+            var factory = new GeometryFactory(new PrecisionModel(PrecisionModels.Floating));
 
             ILinearRing bboxToLinearRing(BoundingBox boundingBox)
             {
@@ -568,17 +569,19 @@ namespace DEM.Net.Core
                         new Coordinate(boundingBox.xMin, boundingBox.yMin),
                         new Coordinate(boundingBox.xMin, boundingBox.yMax)});
             }
+
             try
             {
                 ILinearRing shell = bboxToLinearRing(bbox);
                 ILinearRing[] tiles = bboxTiles.Select(bboxToLinearRing).ToArray();
                 var polygon = factory.CreatePolygon(shell, tiles);
-                return shell.Difference(NetTopologySuite.Operation.Union.UnaryUnionOp.Union(tiles)).IsEmpty;
+                return shell.Difference(UnaryUnionOp.Union(tiles)).IsEmpty;
             }
             catch(Exception e)
             {
                 _logger.LogCritical(e, "error during linear creation");
             }
+
             return false;
         }
 
