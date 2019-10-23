@@ -84,7 +84,7 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
-        [InlineData("SRTM_GL3", -25.1, -25.9, 37.1, 37.9, true)] // fully covered
+        [InlineData("SRTM_GL3", -25, -26, 37, 38, true)] // fully covered
         [InlineData("SRTM_GL3", -26.659806263787523, -25.729350373606543, 37.73596920859053, 38.39764411353181, false)] // 1 tile missing
         [InlineData("SRTM_GL3", -37.43596931765545, -37.13861749268079, 50.33844888725473, 50.51342652633956, false)] // not covered at all
         public void TestBboxCoverage(string dataSetName, double xmin, double xmax, double ymin, double ymax, bool isExpectedCovered)

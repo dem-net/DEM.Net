@@ -23,18 +23,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using DEM.Net.Core.Interpolation;
-using GeoAPI.Geometries;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using DEM.Net.Core.Interpolation;
+using GeoAPI.Geometries;
+using Microsoft.Extensions.Logging;
+using NetTopologySuite.Geometries;
 
 namespace DEM.Net.Core
 {
@@ -557,8 +557,29 @@ namespace DEM.Net.Core
             if (bboxTiles == null || !bboxTiles.Any())
                 return false;
 
-            // TODO: Union all the bboxTiles geometries (call it G) to see if G Union Bbox (or exclusive diff)
-            return true;
+            var factory = new GeometryFactory(new PrecisionModel(PrecisionModels.FloatingSingle));
+
+            ILinearRing bboxToLinearRing(BoundingBox boundingBox)
+            {
+                return factory.CreateLinearRing(new Coordinate[] {
+                        new Coordinate(boundingBox.xMin, boundingBox.yMax),
+                        new Coordinate(boundingBox.xMax, boundingBox.yMax),
+                        new Coordinate(boundingBox.xMax, boundingBox.yMin),
+                        new Coordinate(boundingBox.xMin, boundingBox.yMin),
+                        new Coordinate(boundingBox.xMin, boundingBox.yMax)});
+            }
+            try
+            {
+                ILinearRing shell = bboxToLinearRing(bbox);
+                ILinearRing[] tiles = bboxTiles.Select(bboxToLinearRing).ToArray();
+                var polygon = factory.CreatePolygon(shell, tiles);
+                return shell.Difference(NetTopologySuite.Operation.Union.UnaryUnionOp.Union(tiles)).IsEmpty;
+            }
+            catch(Exception e)
+            {
+                _logger.LogCritical(e, "error during linear creation");
+            }
+            return false;
         }
 
         public HeightMap GetHeightMap(BoundingBox bbox, string rasterFilePath, DEMFileFormat format)
