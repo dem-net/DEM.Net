@@ -493,7 +493,7 @@ namespace DEM.Net.Core
             List<FileMetadata> bboxMetadata = GetCoveringFiles(bbox, dataSet);
             if (bboxMetadata.Count == 0)
             {
-                const string errorMessage = "No covering files for provider bounding box.";
+                string errorMessage = $"Dataset {dataSet.Name} has no coverage for provided bounding box.";
                 this._logger.LogWarning(errorMessage);
                 throw new Exception(errorMessage);
             }
