@@ -19,7 +19,7 @@ namespace DEM.Net.Test
             _elevationService = fixture.ServiceProvider.GetService<IElevationService>();
         }
 
-        [Fact(DisplayName ="Not covered elevation check")]
+        [Fact(DisplayName = "Not covered elevation check")]
         public void TestElevationWithNoCoverage()
         {
             DEMDataSet dataSet = DEMDataSet.SRTM_GL3;
@@ -81,6 +81,28 @@ namespace DEM.Net.Test
             Assert.Equal(expectedDescent, metrics.Descent);
             Assert.Equal(expectedMin, metrics.MinElevation);
             Assert.Equal(expectedMax, metrics.MaxElevation);
+        }
+
+        [Theory()]
+        [InlineData("SRTM_GL3", -25, -26, 37, 38, true)] // fully covered
+        [InlineData("SRTM_GL3", -26.659806263787523, -25.729350373606543, 37.73596920859053, 38.39764411353181, false)] // 1 tile missing
+        [InlineData("SRTM_GL3", -37.43596931765545, -37.13861749268079, 50.33844888725473, 50.51342652633956, false)] // not covered at all
+        [InlineData("SRTM_GL3", 1.5, 2.5, 44.5, 45.5, true)] // fully covered by 4 tiles
+        [InlineData("SRTM_GL3", 1.5, 1.6, 44.5, 44.6, true)] // fully inside 1 tile
+        [InlineData("SRTM_GL3", 3.5, 4.5, 42.5, 42.6, false)] // half inside 1 tile, half with no tile
+        public void TestBboxCoverage(string dataSetName, double xmin, double xmax, double ymin, double ymax, bool isExpectedCovered)
+        {
+            BoundingBox bbox = new BoundingBox(xmin, xmax, ymin, ymax);
+            Assert.True(bbox.IsValid(), "Bbox is not valid");
+
+            DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+            Assert.NotNull(dataSet);
+
+            _elevationService.DownloadMissingFiles(dataSet, bbox);
+            List<FileMetadata> bboxMetadata = _elevationService.GetCoveringFiles(bbox, dataSet);
+            bool covered = _elevationService.IsBoundingBoxCovered(bbox, bboxMetadata.Select(m => m.BoundingBox));
+            Assert.Equal(isExpectedCovered, covered);
+
         }
     }
 }

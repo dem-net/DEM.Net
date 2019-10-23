@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using GeoAPI.Geometries;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
+using NetTopologySuite.Operation.Union;
 
 namespace DEM.Net.Core
 {
@@ -44,10 +45,12 @@ namespace DEM.Net.Core
 		private const double RADIAN = Math.PI / 180;
 
         private static WKTReader _wktReader;
+        private static IGeometryFactory _factory;
 
         static GeometryService()
         {
-            _wktReader = new WKTReader(GeometryFactory.Default);
+            _factory = GeometryFactory.Default;
+            _wktReader = new WKTReader(_factory);
         }
 
         /// <summary>
@@ -375,6 +378,31 @@ namespace DEM.Net.Core
             return new GeoPoint(coord.Y, coord.X);
         }
 
+        public static IGeometry ToPolygon(this BoundingBox boundingBox)
+        {
+            if (boundingBox == null)
+                throw new ArgumentNullException(nameof(boundingBox));
+
+            var ring = _factory.CreateLinearRing(new Coordinate[] {
+                        new Coordinate(boundingBox.xMin, boundingBox.yMax),
+                        new Coordinate(boundingBox.xMax, boundingBox.yMax),
+                        new Coordinate(boundingBox.xMax, boundingBox.yMin),
+                        new Coordinate(boundingBox.xMin, boundingBox.yMin),
+                        new Coordinate(boundingBox.xMin, boundingBox.yMax)});
+            return new Polygon(ring, _factory);
+        }
+
+        public static bool IsCovered(this BoundingBox bbox, IEnumerable<BoundingBox> bboxTiles)
+        {
+            if (bboxTiles == null || !bboxTiles.Any())
+                return false;
+
+            IGeometry bboxPoly = bbox.ToPolygon();
+            IGeometry tilesPolygon = UnaryUnionOp.Union(bboxTiles.Select(GeometryService.ToPolygon).ToList());
+
+            var inside = tilesPolygon.Contains(bboxPoly);
+            return inside;
+        }
 
 
     }
