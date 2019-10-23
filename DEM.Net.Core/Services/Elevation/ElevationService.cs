@@ -560,24 +560,17 @@ namespace DEM.Net.Core
 
             var factory = new GeometryFactory(new PrecisionModel(PrecisionModels.Floating));
 
-            ILinearRing bboxToLinearRing(BoundingBox boundingBox)
-            {
-                return factory.CreateLinearRing(new Coordinate[] {
-                        new Coordinate(boundingBox.xMin, boundingBox.yMax),
-                        new Coordinate(boundingBox.xMax, boundingBox.yMax),
-                        new Coordinate(boundingBox.xMax, boundingBox.yMin),
-                        new Coordinate(boundingBox.xMin, boundingBox.yMin),
-                        new Coordinate(boundingBox.xMin, boundingBox.yMax)});
-            }
+            
 
             try
             {
-                ILinearRing shell = bboxToLinearRing(bbox);
-                ILinearRing[] tiles = bboxTiles.Select(bboxToLinearRing).ToArray();
-                var polygon = factory.CreatePolygon(shell, tiles);
-                return shell.Difference(UnaryUnionOp.Union(tiles)).IsEmpty;
+                IGeometry bboxPoly = bbox.ToPolygon();
+                IGeometry tilesPolygon = UnaryUnionOp.Union(bboxTiles.Select(GeometryService.ToPolygon).ToList());
+
+                var inside = tilesPolygon.Contains(bboxPoly);
+                return inside;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _logger.LogCritical(e, "error during linear creation");
             }
