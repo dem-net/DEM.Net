@@ -23,18 +23,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using DEM.Net.Core.Interpolation;
-using GeoAPI.Geometries;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using DEM.Net.Core.Interpolation;
+using GeoAPI.Geometries;
+using Microsoft.Extensions.Logging;
+using NetTopologySuite.Geometries;
+using NetTopologySuite.Operation.Union;
 
 namespace DEM.Net.Core
 {
@@ -556,9 +557,21 @@ namespace DEM.Net.Core
         {
             if (bboxTiles == null || !bboxTiles.Any())
                 return false;
+            
+            try
+            {
+                IGeometry bboxPoly = bbox.ToPolygon();
+                IGeometry tilesPolygon = UnaryUnionOp.Union(bboxTiles.Select(GeometryService.ToPolygon).ToList());
 
-            // TODO: Union all the bboxTiles geometries (call it G) to see if G Union Bbox (or exclusive diff)
-            return true;
+                var inside = tilesPolygon.Contains(bboxPoly);
+                return inside;
+            }
+            catch (Exception e)
+            {
+                _logger.LogCritical(e, "error during linear creation");
+            }
+
+            return false;
         }
 
         public HeightMap GetHeightMap(BoundingBox bbox, string rasterFilePath, DEMFileFormat format)

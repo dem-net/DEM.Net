@@ -44,10 +44,12 @@ namespace DEM.Net.Core
 		private const double RADIAN = Math.PI / 180;
 
         private static WKTReader _wktReader;
+        private static IGeometryFactory _factory;
 
         static GeometryService()
         {
-            _wktReader = new WKTReader(GeometryFactory.Default);
+            _factory = GeometryFactory.Default;
+            _wktReader = new WKTReader(_factory);
         }
 
         /// <summary>
@@ -373,6 +375,20 @@ namespace DEM.Net.Core
             }
 
             return new GeoPoint(coord.Y, coord.X);
+        }
+
+        public static IGeometry ToPolygon(this BoundingBox boundingBox)
+        {
+            if (boundingBox == null)
+                throw new ArgumentNullException(nameof(boundingBox));
+
+            var ring = _factory.CreateLinearRing(new Coordinate[] {
+                        new Coordinate(boundingBox.xMin, boundingBox.yMax),
+                        new Coordinate(boundingBox.xMax, boundingBox.yMax),
+                        new Coordinate(boundingBox.xMax, boundingBox.yMin),
+                        new Coordinate(boundingBox.xMin, boundingBox.yMin),
+                        new Coordinate(boundingBox.xMin, boundingBox.yMax)});
+            return new Polygon(ring, _factory);
         }
 
 
