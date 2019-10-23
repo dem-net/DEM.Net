@@ -554,6 +554,9 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public bool IsBoundingBoxCovered(BoundingBox bbox, IEnumerable<BoundingBox> bboxTiles)
         {
+            if (bboxTiles == null || !bboxTiles.Any())
+                return false;
+
             // TODO: Union all the bboxTiles geometries (call it G) to see if G Union Bbox (or exclusive diff)
             return true;
         }
