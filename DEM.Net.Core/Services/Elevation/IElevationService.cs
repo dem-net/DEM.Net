@@ -161,7 +161,14 @@ namespace DEM.Net.Core
         List<FileMetadata> GetCoveringFiles(double lat, double lon, DEMDataSet dataSet, List<FileMetadata> subSet = null);
         string GetDEMLocalPath(DEMDataSet dataSet);
 
-
+        /// <summary>
+        /// Check if a bounding box is fully covered by a set of tiles
+        /// Detects when a tile is missing and thus involving a "data hole" in the future heightmap
+        /// </summary>
+        /// <param name="bbox"></param>
+        /// <param name="bboxTiles"></param>
+        /// <returns></returns>
+        bool IsBoundingBoxCovered(BoundingBox bbox, IEnumerable<BoundingBox> bboxTiles);
 
         /// <summary>
         /// Generate a tab separated list of points and elevations
