@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using GeoAPI.Geometries;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
+using NetTopologySuite.Operation.Union;
 
 namespace DEM.Net.Core
 {
@@ -391,6 +392,17 @@ namespace DEM.Net.Core
             return new Polygon(ring, _factory);
         }
 
+        public static bool IsCovered(this BoundingBox bbox, IEnumerable<BoundingBox> bboxTiles)
+        {
+            if (bboxTiles == null || !bboxTiles.Any())
+                return false;
+
+            IGeometry bboxPoly = bbox.ToPolygon();
+            IGeometry tilesPolygon = UnaryUnionOp.Union(bboxTiles.Select(GeometryService.ToPolygon).ToList());
+
+            var inside = tilesPolygon.Contains(bboxPoly);
+            return inside;
+        }
 
 
     }

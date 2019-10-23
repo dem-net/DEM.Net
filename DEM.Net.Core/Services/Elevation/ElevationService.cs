@@ -34,8 +34,6 @@ using System.Threading.Tasks;
 using DEM.Net.Core.Interpolation;
 using GeoAPI.Geometries;
 using Microsoft.Extensions.Logging;
-using NetTopologySuite.Geometries;
-using NetTopologySuite.Operation.Union;
 
 namespace DEM.Net.Core
 {
@@ -555,23 +553,7 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public bool IsBoundingBoxCovered(BoundingBox bbox, IEnumerable<BoundingBox> bboxTiles)
         {
-            if (bboxTiles == null || !bboxTiles.Any())
-                return false;
-            
-            try
-            {
-                IGeometry bboxPoly = bbox.ToPolygon();
-                IGeometry tilesPolygon = UnaryUnionOp.Union(bboxTiles.Select(GeometryService.ToPolygon).ToList());
-
-                var inside = tilesPolygon.Contains(bboxPoly);
-                return inside;
-            }
-            catch (Exception e)
-            {
-                _logger.LogCritical(e, "error during linear creation");
-            }
-
-            return false;
+            return GeometryService.IsCovered(bbox, bboxTiles);
         }
 
         public HeightMap GetHeightMap(BoundingBox bbox, string rasterFilePath, DEMFileFormat format)
