@@ -80,7 +80,7 @@ namespace DEM.Net.Core
                 return;
             }
 
-            DownloadMissingFiles_FromReport(Enumerable.Repeat(report,1), dataSet);
+            DownloadMissingFiles_FromReport(Enumerable.Repeat(report, 1), dataSet);
 
         }
 
@@ -492,44 +492,57 @@ namespace DEM.Net.Core
             // Locate which files are needed
             // Find files matching coords
             List<FileMetadata> bboxMetadata = GetCoveringFiles(bbox, dataSet);
-
-            // Check if bounding box is fully covered (will result in invalid models without any error being thrown)
-            bool covered = this.IsBoundingBoxCovered(bbox, bboxMetadata.Select(m => m.BoundingBox));
-            if (!covered)
+            if (bboxMetadata.Count == 0)
             {
-                throw new Exception("Bounding box is partially covered by DEM dataset. Heightmap in its current state supports only full data tiles.");
+                const string errorMessage = "No covering files for provider bounding box.";
+                this._logger.LogWarning(errorMessage);
+                throw new Exception(errorMessage);
             }
-
-            // get height map for each file at bbox
-            List<HeightMap> tilesHeightMap = new List<HeightMap>(bboxMetadata.Count);
-            foreach (FileMetadata metadata in bboxMetadata)
+            else
             {
-                using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, dataSet.FileFormat))
+                // Check if bounding box is fully covered (will result in invalid models without any error being thrown)
+                bool covered = this.IsBoundingBoxCovered(bbox, bboxMetadata.Select(m => m.BoundingBox));
+                if (!covered)
                 {
-                    tilesHeightMap.Add(raster.GetHeightMapInBBox(bbox, metadata, NO_DATA_OUT));
+                    const string errorMessage = "Bounding box is partially covered by DEM dataset. Heightmap in its current state supports only full data tiles.";
+                    this._logger.LogWarning(errorMessage);
+                    throw new Exception(errorMessage);
+                }
+                else
+                {
+
+                    // get height map for each file at bbox
+                    List<HeightMap> tilesHeightMap = new List<HeightMap>(bboxMetadata.Count);
+                    foreach (FileMetadata metadata in bboxMetadata)
+                    {
+                        using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, dataSet.FileFormat))
+                        {
+                            tilesHeightMap.Add(raster.GetHeightMapInBBox(bbox, metadata, NO_DATA_OUT));
+                        }
+                    }
+
+
+                    // Merge height maps
+                    int totalHeight = tilesHeightMap.GroupBy(h => h.BoundingBox.xMin).Select(g => g.Sum(v => v.Height)).First();
+                    int totalWidth = tilesHeightMap.GroupBy(h => h.BoundingBox.yMin).Select(g => g.Sum(v => v.Width)).First();
+
+                    HeightMap heightMap = new HeightMap(totalWidth, totalHeight);
+                    heightMap.BoundingBox = new BoundingBox(xmin: tilesHeightMap.Min(h => h.BoundingBox.xMin)
+                                                            , xmax: tilesHeightMap.Max(h => h.BoundingBox.xMax)
+                                                            , ymin: tilesHeightMap.Min(h => h.BoundingBox.yMin)
+                                                            , ymax: tilesHeightMap.Max(h => h.BoundingBox.yMax));
+                    heightMap.Coordinates = tilesHeightMap.SelectMany(hmap => hmap.Coordinates).Sort();
+                    heightMap.Count = totalWidth * totalHeight;
+                    heightMap.Minimum = tilesHeightMap.Min(hmap => hmap.Minimum);
+                    heightMap.Maximum = tilesHeightMap.Max(hmap => hmap.Maximum);
+
+                    System.Diagnostics.Debug.Assert(heightMap.Count == tilesHeightMap.Sum(h => h.Count));
+
+
+                    return heightMap;
                 }
             }
 
-
-
-            // Merge height maps
-            int totalHeight = tilesHeightMap.GroupBy(h => h.BoundingBox.xMin).Select(g => g.Sum(v => v.Height)).First();
-            int totalWidth = tilesHeightMap.GroupBy(h => h.BoundingBox.yMin).Select(g => g.Sum(v => v.Width)).First();
-
-            HeightMap heightMap = new HeightMap(totalWidth, totalHeight);
-            heightMap.BoundingBox = new BoundingBox(xmin: tilesHeightMap.Min(h => h.BoundingBox.xMin)
-                                                    , xmax: tilesHeightMap.Max(h => h.BoundingBox.xMax)
-                                                    , ymin: tilesHeightMap.Min(h => h.BoundingBox.yMin)
-                                                    , ymax: tilesHeightMap.Max(h => h.BoundingBox.yMax));
-            heightMap.Coordinates = tilesHeightMap.SelectMany(hmap => hmap.Coordinates).Sort();
-            heightMap.Count = totalWidth * totalHeight;
-            heightMap.Minimum = tilesHeightMap.Min(hmap => hmap.Minimum);
-            heightMap.Maximum = tilesHeightMap.Max(hmap => hmap.Maximum);
-
-            System.Diagnostics.Debug.Assert(heightMap.Count == tilesHeightMap.Sum(h => h.Count));
-
-
-            return heightMap;
         }
 
         /// <summary>
@@ -539,8 +552,11 @@ namespace DEM.Net.Core
         /// <param name="bbox"></param>
         /// <param name="bboxTiles"></param>
         /// <returns></returns>
-        private bool IsBoundingBoxCovered(BoundingBox bbox, IEnumerable<BoundingBox> bboxTiles)
+        public bool IsBoundingBoxCovered(BoundingBox bbox, IEnumerable<BoundingBox> bboxTiles)
         {
+            if (bboxTiles == null || !bboxTiles.Any())
+                return false;
+
             // TODO: Union all the bboxTiles geometries (call it G) to see if G Union Bbox (or exclusive diff)
             return true;
         }

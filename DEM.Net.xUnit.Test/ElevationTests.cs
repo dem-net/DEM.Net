@@ -19,7 +19,7 @@ namespace DEM.Net.Test
             _elevationService = fixture.ServiceProvider.GetService<IElevationService>();
         }
 
-        [Fact(DisplayName ="Not covered elevation check")]
+        [Fact(DisplayName = "Not covered elevation check")]
         public void TestElevationWithNoCoverage()
         {
             DEMDataSet dataSet = DEMDataSet.SRTM_GL3;
@@ -81,6 +81,26 @@ namespace DEM.Net.Test
             Assert.Equal(expectedDescent, metrics.Descent);
             Assert.Equal(expectedMin, metrics.MinElevation);
             Assert.Equal(expectedMax, metrics.MaxElevation);
+        }
+
+        [Theory()]
+        [InlineData("SRTM_GL3", 5.625944137573243, 5.884809494018555, 43.43210447118538, 43.57734413377741, true)] // fully covered
+        [InlineData("SRTM_GL3", -26.659806263787523, -25.729350373606543, 37.73596920859053, 38.39764411353181, false)] // 1 tile missing
+        [InlineData("SRTM_GL3", -37.43596931765545, -37.13861749268079, 50.33844888725473, 50.51342652633956, false)] // not covered at all
+        public void TestBboxCoverage(string dataSetName, double xmin, double xmax, double ymin, double ymax, bool isExpectedCovered)
+        {
+            BoundingBox bbox = new BoundingBox(xmin, xmax, ymin, ymax);
+            Assert.True(bbox.IsValid(), "Bbox is not valid");
+
+            DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+            Assert.NotNull(dataSet);
+
+            _elevationService.DownloadMissingFiles(dataSet, bbox);
+            List<FileMetadata> bboxMetadata = _elevationService.GetCoveringFiles(bbox, dataSet);
+           
+            bool covered = _elevationService.IsBoundingBoxCovered(bbox, bboxMetadata.Select(m => m.BoundingBox));
+            Assert.Equal(isExpectedCovered, covered);
+
         }
     }
 }
