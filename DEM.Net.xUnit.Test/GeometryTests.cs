@@ -79,5 +79,24 @@ namespace DEM.Net.Test
             Assert.Equal(bbox.IsValid(), isExpectedValid);
         }
 
+
+        [Theory(DisplayName = "BoundingBox reorder checks")]
+        [InlineData(0, 10, 0, 10, true)]
+        // out of bounds coords
+        [InlineData(-182, 0, 0, 10, false)]
+        [InlineData(0, 182, 0, 10, false)]
+        [InlineData(0, 10, -95, 10, false)]
+        [InlineData(0, 10, 0, 95, false)]
+        // inverted order
+        [InlineData(10, 0, 0, 10, true)]
+        [InlineData(0, 10, 10, 0, true)]
+        [InlineData(10, 0, 10, 0, true)]
+        // both
+        [InlineData(10, 0, -95, 0, false)]
+        public void BoundingBoxReorderTest(double xmin, double xmax, double ymin, double ymax, bool isExpectedValid)
+        {
+            BoundingBox bbox = new BoundingBox(xmin, xmax, ymin, ymax);
+            Assert.Equal(bbox.ReorderMinMax().IsValid(), isExpectedValid);
+        }
     }
 }
