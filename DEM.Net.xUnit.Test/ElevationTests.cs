@@ -84,7 +84,8 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
-        [InlineData("SRTM_GL3", -25, -26, 37, 38, true)] // fully covered
+        [InlineData("SRTM_GL3", 17.5,19.5,40.5,42.5 , false)] // spans on 3x3 tiles with a hole in the center
+        [InlineData("SRTM_GL3", -26, -25, 37, 38, true)] // fully covered
         [InlineData("SRTM_GL3", -26.659806263787523, -25.729350373606543, 37.73596920859053, 38.39764411353181, false)] // 1 tile missing
         [InlineData("SRTM_GL3", -37.43596931765545, -37.13861749268079, 50.33844888725473, 50.51342652633956, false)] // not covered at all
         [InlineData("SRTM_GL3", 1.5, 2.5, 44.5, 45.5, true)] // fully covered by 4 tiles
