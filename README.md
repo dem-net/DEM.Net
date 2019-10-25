@@ -24,7 +24,7 @@ See samples [here](https://github.com/dem-net/Samples)
 - glTF
 
 # Current dev status
-- All incoming features are listed in the project board here : https://github.com/xfischer/DEM.Net/projects/1.
+- All incoming features are listed in the project board here : https://dev.azure.com/dem-net/elevationapi/_workitems/recentlyupdated/.
 - Feel free to suggest any idea you'd like to see covered here in the issues : https://github.com/xfischer/DEM.Net/issues.
 
 # SampleApp 
