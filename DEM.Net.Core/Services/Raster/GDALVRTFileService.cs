@@ -45,7 +45,7 @@ namespace DEM.Net.Core
     public class GDALVRTFileService : IDEMDataSetIndex
     {
         private const int MAX_AGE_DAYS = 100;
-
+        private static readonly object DOWNLOAD_LOCKER = new object();
         private readonly ILogger<GDALVRTFileService> _logger;
         private ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName;
 
@@ -62,7 +62,7 @@ namespace DEM.Net.Core
         /// <summary>
         /// Ensures local directories are created and download VRT file if needed
         /// </summary>
-        public void Setup(DEMDataSet dataSet, string dataSetLocalDir)
+        void IDEMDataSetIndex.Setup(DEMDataSet dataSet, string dataSetLocalDir)
         {
             try
             {
@@ -103,22 +103,22 @@ namespace DEM.Net.Core
 
                 if (download)
                 {
-                    _logger?.LogInformation($"Downloading index file from {dataSet.DataSource.IndexFilePath}... This file will be downloaded once and stored locally.");
-                    using (HttpClient client = new HttpClient())
+                    lock (DOWNLOAD_LOCKER)
                     {
-                        using (HttpResponseMessage response = client.GetAsync(dataSet.DataSource.IndexFilePath).Result)
+                        if (download)
                         {
+                            _logger?.LogInformation($"Downloading index file from {dataSet.DataSource.IndexFilePath}... This file will be downloaded once and stored locally.");
+
+                            using (HttpClient client = new HttpClient())
+                            using (HttpResponseMessage response = client.GetAsync(dataSet.DataSource.IndexFilePath).Result)
                             using (FileStream fs = new FileStream(vrtFileName, FileMode.Create, FileAccess.Write))
-                            {
+                            { 
                                 var contentbytes = client.GetByteArrayAsync(dataSet.DataSource.IndexFilePath).Result;
                                 fs.Write(contentbytes, 0, contentbytes.Length);
                             }
+                            download = false;
                         }
                     }
-                    //using (WebClient webClient = new WebClient())
-                    //{
-                    //    webClient.DownloadFile(_dataSet.VRTFileUrl, _vrtFileName);
-                    //}
                 }
 
                 // Cache
