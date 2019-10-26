@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DEM.Net.Core
+namespace DEM.Net.Core.EarthData
 {
     public class NasaGranuleFileService : IDEMDataSetIndex
     {
