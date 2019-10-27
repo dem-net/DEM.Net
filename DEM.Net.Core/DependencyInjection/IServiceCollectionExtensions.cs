@@ -1,4 +1,5 @@
-﻿using DEM.Net.Core.Imagery;
+﻿using DEM.Net.Core.EarthData;
+using DEM.Net.Core.Imagery;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
