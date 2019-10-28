@@ -50,7 +50,7 @@ namespace DEM.Net.Core
 
         private static readonly Lazy<Dictionary<string, DEMDataSet>> Datasets = new Lazy<Dictionary<string, DEMDataSet>>(GetRegisteredDatasets, true);
 
-        public static List<DEMDataSet> RegisteredDatasets => DEMDataSet.Datasets.Value.Values.ToList();
+        public static IEnumerable<DEMDataSet> RegisteredDatasets => DEMDataSet.Datasets.Value.Values;
 
         private static Dictionary<string, DEMDataSet> GetRegisteredDatasets()
         {
@@ -118,7 +118,7 @@ namespace DEM.Net.Core
                 Name = "ASTER_GDEMV3",
                 Description = "ASTER Global Digital Elevation Model 1 arc second (30m)",
                 PublicUrl = "https://lpdaac.usgs.gov/products/astgtmv003",
-                DataSource = new NasaGranuleDataSource("ASTGTM.003.json"),
+                DataSource = new NasaGranuleDataSource(indexFilePath: "ASTGTM.003.json", collectionId: "C1575726572-LPDAAC_ECS"),
                 FileFormat = DEMFileFormat.GEOTIFF,
                 ResolutionMeters = 30,
                 PointsPerDegree = 3600,

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using DEM.Net.Core.Datasets;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace DEM.Net.Core.EarthData
     {
         private readonly ILogger<NasaGranuleFileService> logger;
         private ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName;
+        private static HttpClient _httpClient = new HttpClient();
 
         public NasaGranuleFileService(ILogger<NasaGranuleFileService> logger)
         {
@@ -25,6 +27,10 @@ namespace DEM.Net.Core.EarthData
                 if (dataSet == null)
                     throw new ArgumentNullException(nameof(dataSet), "Dataset is null.");
 
+                NasaGranuleDataSource dataSource = dataSet.DataSource as NasaGranuleDataSource;
+                if (dataSource is null)
+                    throw new ArgumentException(nameof(dataSet), $"Dataset source is {dataSet.DataSource.DataSourceType}, only {nameof(DEMDataSourceType.NASA)} sources are supported by {nameof(NasaGranuleFileService)} null.");
+
                 this.logger?.LogInformation($"Setup for {dataSet.Name} dataset.");
 
                 if (!Directory.Exists(dataSetLocalDir))
@@ -32,43 +38,49 @@ namespace DEM.Net.Core.EarthData
                     Directory.CreateDirectory(dataSetLocalDir);
                 }
 
-                string indexFileName = Path.Combine(dataSetLocalDir, UrlHelper.GetFileNameFromUrl(dataSet.DataSource.IndexFilePath));
-
+                string indexFileName = Path.Combine(dataSetLocalDir, UrlHelper.GetFileNameFromUrl(dataSource.IndexFilePath));
 
                 bool download = !File.Exists(indexFileName);
 
                 if (download)
                 {
 
-                    this.logger.LogInformation($"Downloading index file from {dataSet.DataSource.IndexFilePath}... This file will be downloaded once and stored locally.");
-
-                    using (HttpClient client = new HttpClient())
-                    using (HttpResponseMessage response = client.GetStringAsync(dataSet.DataSource.IndexFilePath).Result)
-                    using (FileStream fs = new FileStream(vrtFileName, FileMode.Create, FileAccess.Write))
+                    this.logger.LogInformation($"Fetching granules from collection {dataSource.CollectionId} to disk... This will be done once.");
+                    bool hasData = true;
+                    int pageIndex = 0;
+                    int PAGE_SIZE = 1000;
+                    do
                     {
-                        var contentbytes = client.GetByteArrayAsync(dataSet.DataSource.IndexFilePath).Result;
-                        fs.Write(contentbytes, 0, contentbytes.Length);
+                        pageIndex++;
+                        var url = dataSource.GetUrl(PAGE_SIZE, pageIndex);
+                        var json = _httpClient.GetStringAsync(url).GetAwaiter().GetResult();
+                        hasData = !string.IsNullOrWhiteSpace(json);
+                        if (hasData)
+                        {
+                           var result = NasaCmrGranuleResult.FromJson(json);
+                        }
                     }
-
+                    while (hasData);
                 }
+
 
                 // Cache
 
-                if (_cacheByDemName == null)
-                {
-                    _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
-                }
-                if (_cacheByDemName.ContainsKey(vrtFileName) == false)
-                {
-                    _cacheByDemName[dataSet.Name] = this.GetSources(dataSet, vrtFileName).ToList();
-                }
+                //if (_cacheByDemName == null)
+                //{
+                //    _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
+                //}
+                //if (_cacheByDemName.ContainsKey(vrtFileName) == false)
+                //{
+                //    _cacheByDemName[dataSet.Name] = this.GetSources(dataSet, vrtFileName).ToList();
+                //}
 
 
             }
             catch (Exception ex)
             {
-                _logger?.LogError("Unhandled exception: " + ex.Message);
-                _logger?.LogInformation(ex.ToString());
+                this.logger?.LogError("Unhandled exception: " + ex.Message);
+                this.logger?.LogInformation(ex.ToString());
                 throw;
             }
         }
