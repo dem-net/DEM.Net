@@ -1,4 +1,5 @@
 [![Board Status](https://dev.azure.com/dem-net/fb0d4f55-28ad-4931-91c1-3be40dc42d96/97ece37c-c459-4aa0-a394-99b37b2af215/_apis/work/boardbadge/5f246f28-ee97-4849-bc40-654c06ec1bc1)](https://dev.azure.com/dem-net/fb0d4f55-28ad-4931-91c1-3be40dc42d96/_boards/board/t/97ece37c-c459-4aa0-a394-99b37b2af215/Microsoft.RequirementCategory)
+[![Build Status](https://dev.azure.com/dem-net/elevationapi/_apis/build/status/DEM.Net%20Core?branchName=master)](https://dev.azure.com/dem-net/elevationapi/_build/latest?definitionId=4&branchName=master)
 #### DEM.Net.Core [![NuGet Version](http://img.shields.io/nuget/v/DEM.Net.Core.svg?style=flat)](https://www.nuget.org/packages/DEM.Net.Core/)
 #### DEM.Net.glTF [![NuGet Version](http://img.shields.io/nuget/v/DEM.Net.glTF.svg?style=flat)](https://www.nuget.org/packages/DEM.Net.glTF/)
 
@@ -23,7 +24,7 @@ See samples [here](https://github.com/dem-net/Samples)
 - glTF
 
 # Current dev status
-- All incoming features are listed in the project board here : https://github.com/xfischer/DEM.Net/projects/1.
+- All incoming features are listed in the project board here : https://dev.azure.com/dem-net/elevationapi/_workitems/recentlyupdated/.
 - Feel free to suggest any idea you'd like to see covered here in the issues : https://github.com/xfischer/DEM.Net/issues.
 
 # SampleApp 
