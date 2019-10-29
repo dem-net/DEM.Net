@@ -1,11 +1,16 @@
 ﻿using DEM.Net.Core.Datasets;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DEM.Net.Core.EarthData
 {
@@ -42,39 +47,52 @@ namespace DEM.Net.Core.EarthData
 
                 bool download = !File.Exists(indexFileName);
 
+
+                List<NasaDemFile> links = null;
                 if (download)
                 {
-
+                    // Fetch Earth data collection page by page until we have no result left
+                    //
                     this.logger.LogInformation($"Fetching granules from collection {dataSource.CollectionId} to disk... This will be done once.");
                     bool hasData = true;
                     int pageIndex = 0;
-                    int PAGE_SIZE = 1000;
+                    int PAGE_SIZE = 2000;
+                    links = new List<NasaDemFile>(30000);
                     do
                     {
                         pageIndex++;
+                        logger.LogInformation($"Getting entries on page {pageIndex} with page size of {PAGE_SIZE} ({(pageIndex - 1) * PAGE_SIZE} entries so far)...");
                         var url = dataSource.GetUrl(PAGE_SIZE, pageIndex);
                         var json = _httpClient.GetStringAsync(url).GetAwaiter().GetResult();
                         hasData = !string.IsNullOrWhiteSpace(json);
                         if (hasData)
                         {
-                           var result = NasaCmrGranuleResult.FromJson(json);
+                            var result = NasaCmrGranuleResult.FromJson(json);
+                            hasData = result.Feed.Entry.Any();
+                            if (hasData)
+                            {
+                                // Only retrieve bbox and dem file link (zip file)
+                                links.AddRange(result.Feed.Entry.Select(GetNasaDemFile));
+                            }
                         }
                     }
                     while (hasData);
+
+                    var jsonResult = JsonConvert.SerializeObject(links);
+                    File.WriteAllText(indexFileName, JsonConvert.SerializeObject(links));
+                    logger.LogInformation($"{links.Count} entries written to index file {indexFileName}");
                 }
 
 
                 // Cache
-
-                //if (_cacheByDemName == null)
-                //{
-                //    _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
-                //}
-                //if (_cacheByDemName.ContainsKey(vrtFileName) == false)
-                //{
-                //    _cacheByDemName[dataSet.Name] = this.GetSources(dataSet, vrtFileName).ToList();
-                //}
-
+                if (_cacheByDemName == null)
+                {
+                    _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
+                }
+                if (_cacheByDemName.ContainsKey(indexFileName) == false)
+                {
+                    _cacheByDemName[dataSet.Name] = this.GetSources(dataSet, indexFileName);
+                }
 
             }
             catch (Exception ex)
@@ -84,21 +102,100 @@ namespace DEM.Net.Core.EarthData
                 throw;
             }
         }
-        public IEnumerable<DEMFileSource> GetCoveredFileSources(DEMDataSet dataset, BoundingBox bbox)
+
+
+
+        private NasaDemFile GetNasaDemFile(Entry entry)
         {
-            throw new NotImplementedException(nameof(NasaGranuleFileService));
+            if (entry == null)
+                throw new ArgumentNullException(nameof(entry), "Entry is mandatory.");
+            if (entry.Boxes == null || entry.Boxes.Count == 0)
+                throw new ArgumentNullException(nameof(entry.Boxes), "Boxes should contain at least an element.");
+            if (entry.Links == null || entry.Links.Count == 0)
+                throw new ArgumentNullException(nameof(entry.Links), "Links should contain at least an element.");
+
+            var link = entry.Links.FirstOrDefault(l => l.Type == TypeEnum.ApplicationZip);
+            if (link == null)
+                throw new ArgumentNullException(nameof(link), "ApplicationZip Link is mandatory.");
+
+            return new NasaDemFile(entry.ProducerGranuleId, entry.Boxes.First(), link.Href.AbsoluteUri);
         }
 
-        public IEnumerable<DEMFileSource> GetFileSources(DEMDataSet dataset)
+        private List<DEMFileSource> GetSources(DEMDataSet dataSet, string indexFileName)
         {
-            throw new NotImplementedException(nameof(NasaGranuleFileService));
-            // S83 to N82 => -83 < lat < 83
-            // W180 to E179 => -180 < lon < 180
-            // 
-            // example with N00E006
-            // 6 < lon < 7
-            // 0 < lat < 1
+            List<NasaDemFile> nasaDemFiles = JsonConvert.DeserializeObject<List<NasaDemFile>>(File.ReadAllText(indexFileName));
+            var dataSetLocalDir = Path.GetDirectoryName(indexFileName);
 
+            BoundingBox GetBBox(string box) {
+                // box is ymin xmin ymax xmax
+                var coords = box.Split(' ').Select(s => float.Parse(s, CultureInfo.InvariantCulture)).ToArray();
+
+                return  new BoundingBox(coords[1], coords[0], coords[3], coords[2]);
+            };
+           
+            return nasaDemFiles.Select(file => new DEMFileSource()
+            {
+                BBox = GetBBox(file.Box),
+                SourceFileName = file.GranuleId,
+                SourceFileNameAbsolute = file.ZipFileLink,
+                LocalFileName = Path.Combine(dataSetLocalDir, "Granules", file.GranuleId)
+            }).ToList();
+        }
+        private DEMFileSource GetDemFileSource(Entry entry, DEMDataSet dataSet, string dataSetLocalDir)
+        {
+            if (entry == null)
+                throw new ArgumentNullException(nameof(entry), "Entry is mandatory.");
+            if (entry.Boxes == null || entry.Boxes.Count == 0)
+                throw new ArgumentNullException(nameof(entry.Boxes), "Boxes should contain at least an element.");
+            if (entry.Links == null || entry.Links.Count == 0)
+                throw new ArgumentNullException(nameof(entry.Links), "Links should contain at least an element.");
+
+            var link = entry.Links.FirstOrDefault(l => l.Type == TypeEnum.ApplicationZip);
+            if (link == null)
+                throw new ArgumentNullException(nameof(link), "ApplicationZip Link is mandatory.");
+
+            // box is ymin xmin ymax xmax
+            var coords = entry.Boxes.First().Split(' ').Select(s => float.Parse(s, CultureInfo.InvariantCulture)).ToArray();
+
+            var bbox = new BoundingBox(coords[1], coords[0], coords[3], coords[2]);
+
+            DEMFileSource source = new DEMFileSource()
+            {
+                BBox = bbox,
+                SourceFileName = entry.ProducerGranuleId,
+                SourceFileNameAbsolute = link.Href.AbsoluteUri,
+                LocalFileName = Path.Combine(dataSetLocalDir, "Granules", entry.ProducerGranuleId)
+            };
+
+            return source;
+
+
+        }
+
+        public IEnumerable<DEMFileSource> GetCoveredFileSources(DEMDataSet dataset, BoundingBox bbox)
+        {
+            foreach (DEMFileSource source in this.GetFileSources(dataset))
+            {
+                if (bbox == null || source.BBox.Intersects(bbox))
+                {
+                    yield return source;
+                }
+            }
+        }
+
+        public IEnumerable<DEMFileSource> GetFileSources(DEMDataSet dataSet)
+        {
+            if (_cacheByDemName.ContainsKey(dataSet.Name))
+            {
+                foreach (var item in _cacheByDemName[dataSet.Name])
+                {
+                    yield return item;
+                }
+            }
+            else
+            {
+                throw new Exception("Must call Init(dataSet) first !");
+            }
 
         }
 
