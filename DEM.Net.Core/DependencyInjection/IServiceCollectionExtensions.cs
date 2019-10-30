@@ -1,4 +1,5 @@
-﻿using DEM.Net.Core.EarthData;
+﻿using DEM.Net.Core.Datasets;
+using DEM.Net.Core.EarthData;
 using DEM.Net.Core.Imagery;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -7,6 +8,8 @@ using System.Text;
 
 namespace DEM.Net.Core
 {
+    public delegate IDEMDataSetIndex RasterIndexServiceResolver(DEMDataSourceType dataSourceType);
+
     public static class IServiceCollectionExtension
     {
         public static IServiceCollection AddDemNetCore(this IServiceCollection services)

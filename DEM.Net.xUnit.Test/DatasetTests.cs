@@ -61,13 +61,21 @@ namespace DEM.Net.Test
             Assert.True(report.IsExistingLocally);
         }
 
-        [Fact]
-        public void DownloadTile_BBox()
+        [Theory()]
+        [InlineData(nameof(DEMDataSet.SRTM_GL1))]
+        [InlineData(nameof(DEMDataSet.SRTM_GL3))]
+        [InlineData(nameof(DEMDataSet.AW3D30))]
+        [InlineData(nameof(DEMDataSet.ASTER_GDEMV3))]
+        public void DownloadTile_BBox(string datasetName)
         {
+            var datasets = DEMDataSet.RegisteredDatasets;
+            Assert.True(datasets.Any(), "No datasets found");
+
+            DEMDataSet dataset = datasets.FirstOrDefault(d => d.Name == datasetName);
+            Assert.NotNull(dataset);
 
             const string WKT_BBOX_AIX_PUYRICARD = "POLYGON ((5.429993 43.537854, 5.459132 43.537854, 5.459132 43.58151, 5.429993 43.58151, 5.429993 43.537854))";
 
-            DEMDataSet dataset = DEMDataSet.SRTM_GL3;
             BoundingBox bbox = GeometryService.GetBoundingBox(WKT_BBOX_AIX_PUYRICARD);
 
             _elevationService.DownloadMissingFiles(dataset, bbox);
@@ -76,7 +84,6 @@ namespace DEM.Net.Test
             Assert.NotNull(report);
             Assert.True(report.Count > 0);
             Assert.True(report.First().IsExistingLocally);
-            Assert.Equal("N43E005.hgt", Path.GetFileName(report.First().LocalName));
 
         }
 

@@ -33,6 +33,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -464,6 +465,23 @@ namespace DEM.Net.Core
         }
 
 
+        /// <summary>
+        /// Downloads a raster file using downloader configured for the dataset
+        /// </summary>
+        /// <param name="report">Report item return by GenerateReport methods</param>
+        /// <param name="dataset"></param>
+        public void DownloadRasterFile(DemFileReport report, DEMDataSet dataset)
+        {
+            var downloader = _rasterIndexServiceResolver(dataset.DataSource.DataSourceType);
+            
+            _logger?.LogInformation($"Downloading file {report.URL}...");
+
+            downloader.DownloadRasterFile(report, dataset);
+
+            this.GenerateFileMetadata(report.LocalName, dataset.FileFormat, false);
+
+
+        }
     }
 
 

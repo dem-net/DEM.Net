@@ -19,6 +19,7 @@ namespace DEM.Net.Core.EarthData
         private readonly ILogger<NasaGranuleFileService> logger;
         private ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName;
         private static HttpClient _httpClient = new HttpClient();
+        private EarthdataLoginConnector rasterDownloader = new EarthdataLoginConnector();
 
         public NasaGranuleFileService(ILogger<NasaGranuleFileService> logger)
         {
@@ -130,7 +131,7 @@ namespace DEM.Net.Core.EarthData
                 // box is ymin xmin ymax xmax
                 var coords = box.Split(' ').Select(s => float.Parse(s, CultureInfo.InvariantCulture)).ToArray();
 
-                return  new BoundingBox(coords[1], coords[0], coords[3], coords[2]);
+                return  new BoundingBox(coords[1], coords[3], coords[0], coords[2]);
             };
            
             return nasaDemFiles.Select(file => new DEMFileSource()
@@ -140,36 +141,6 @@ namespace DEM.Net.Core.EarthData
                 SourceFileNameAbsolute = file.ZipFileLink,
                 LocalFileName = Path.Combine(dataSetLocalDir, "Granules", file.GranuleId)
             }).ToList();
-        }
-        private DEMFileSource GetDemFileSource(Entry entry, DEMDataSet dataSet, string dataSetLocalDir)
-        {
-            if (entry == null)
-                throw new ArgumentNullException(nameof(entry), "Entry is mandatory.");
-            if (entry.Boxes == null || entry.Boxes.Count == 0)
-                throw new ArgumentNullException(nameof(entry.Boxes), "Boxes should contain at least an element.");
-            if (entry.Links == null || entry.Links.Count == 0)
-                throw new ArgumentNullException(nameof(entry.Links), "Links should contain at least an element.");
-
-            var link = entry.Links.FirstOrDefault(l => l.Type == TypeEnum.ApplicationZip);
-            if (link == null)
-                throw new ArgumentNullException(nameof(link), "ApplicationZip Link is mandatory.");
-
-            // box is ymin xmin ymax xmax
-            var coords = entry.Boxes.First().Split(' ').Select(s => float.Parse(s, CultureInfo.InvariantCulture)).ToArray();
-
-            var bbox = new BoundingBox(coords[1], coords[0], coords[3], coords[2]);
-
-            DEMFileSource source = new DEMFileSource()
-            {
-                BBox = bbox,
-                SourceFileName = entry.ProducerGranuleId,
-                SourceFileNameAbsolute = link.Href.AbsoluteUri,
-                LocalFileName = Path.Combine(dataSetLocalDir, "Granules", entry.ProducerGranuleId)
-            };
-
-            return source;
-
-
         }
 
         public IEnumerable<DEMFileSource> GetCoveredFileSources(DEMDataSet dataset, BoundingBox bbox)
@@ -203,6 +174,9 @@ namespace DEM.Net.Core.EarthData
         {
         }
 
-
+        public void DownloadRasterFile(DemFileReport report, DEMDataSet dataset)
+        {
+            rasterDownloader.Download(report.URL, report.LocalName);
+        }
     }
 }
