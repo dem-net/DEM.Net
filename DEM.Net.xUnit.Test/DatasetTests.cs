@@ -12,48 +12,38 @@ namespace DEM.Net.Test
     {
         readonly IRasterService _rasterService;
         readonly IElevationService _elevationService;
-        readonly IDEMDataSetIndex _gdalService;
+        readonly RasterIndexServiceResolver _indexServiceResolver;
 
 
         public DatasetTests(DemNetFixture fixture)
         {
             _rasterService = fixture.ServiceProvider.GetService<IRasterService>();
             _elevationService = fixture.ServiceProvider.GetService<IElevationService>();
-            _gdalService =  fixture.ServiceProvider.GetService<IDEMDataSetIndex>();
+            _indexServiceResolver = fixture.ServiceProvider.GetService<RasterIndexServiceResolver>();
         }
 
 
-        [Fact, TestPriority(1)]
-        public void DatasetTest_SRTM_GL1()
+        [Theory(), TestPriority(1)]
+        [InlineData(nameof(DEMDataSet.SRTM_GL1))]
+        [InlineData(nameof(DEMDataSet.SRTM_GL3))]
+        [InlineData(nameof(DEMDataSet.AW3D30))]
+        [InlineData(nameof(DEMDataSet.ASTER_GDEMV3))]
+        public void DatasetTest(string datasetName)
         {
+            var datasets = DEMDataSet.RegisteredDatasets;
 
-            DEMDataSet dataset = DEMDataSet.SRTM_GL1;
-            _gdalService.Setup(dataset, _rasterService.GetLocalDEMPath(dataset));
+            Assert.True(datasets.Any(), "No datasets found");
 
-            Assert.True(_gdalService.GetFileSources(dataset).Any());
+
+            DEMDataSet dataset = datasets.FirstOrDefault(d => d.Name == datasetName);
+            Assert.NotNull(dataset);
+
+            var indexService = this._indexServiceResolver(dataset.DataSource.DataSourceType);
+            Assert.NotNull(indexService);
+            indexService.Setup(dataset, _rasterService.GetLocalDEMPath(dataset));
+
+            Assert.True(indexService.GetFileSources(dataset).Any());
         }
-
-        [Fact, TestPriority(1)]
-        public void DatasetTest_SRTM_GL3()
-        {
-            DEMDataSet dataset = DEMDataSet.SRTM_GL3;
-            _gdalService.Setup(dataset, _rasterService.GetLocalDEMPath(dataset));
-
-            Assert.True(_gdalService.GetFileSources(dataset).Any());
-
-        }
-
-        [Fact, TestPriority(1)]
-        public void DatasetTest_AW3D()
-        {
-            DEMDataSet dataset = DEMDataSet.AW3D30;
-            _gdalService.Setup(dataset, _rasterService.GetLocalDEMPath(dataset));
-
-            Assert.True(_gdalService.GetFileSources(dataset).Any());
-
-        }
-
-
 
         [Fact]
         public void DownloadTile_Location()
