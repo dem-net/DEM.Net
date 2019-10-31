@@ -96,7 +96,7 @@ namespace DEM.Net.Core
                 int bytesPerSample = metadata.BitsPerSample / 8;
                 byte[] byteScanline = new byte[metadata.ScanlineSize];
 
-                Test(TiffFile);
+                Test(TiffFile); 
                 TiffFile.ReadScanline(byteScanline, y);
 
                 heightValue = GetElevationAtPoint(metadata, x, byteScanline);
@@ -112,28 +112,35 @@ namespace DEM.Net.Core
         public void Test(Tiff image)
         {
 
-            FieldValue[] value = image.GetField(TiffTag.IMAGELENGTH);
+            byte[] buf = new byte[image.TileSize()];
+            for (int tile = 0; tile < image.NumberOfTiles(); tile++)
+                image.ReadEncodedTile(tile, buf, 0, -1);
+
+            int count = buf.Count(b => b > 0);
+
+
+
+
+
+            FieldValue[] value = image.GetField(TiffTag.IMAGEWIDTH);
+            int imageWidth = value[0].ToInt();
+
+            value = image.GetField(TiffTag.IMAGELENGTH);
             int imageLength = value[0].ToInt();
 
-            value = image.GetField(TiffTag.PLANARCONFIG);
-            PlanarConfig config = (PlanarConfig)value[0].ToInt();
+            value = image.GetField(TiffTag.TILEWIDTH);
+            int tileWidth = value[0].ToInt();
 
-            byte[] buf = new byte[image.ScanlineSize()];
+            value = image.GetField(TiffTag.TILELENGTH);
+            int tileLength = value[0].ToInt();
 
-            if (config == PlanarConfig.CONTIG)
+            buf = new byte[image.TileSize()];
+            for (int y = 0; y < imageLength; y += tileLength)
             {
-                for (int row = 0; row < imageLength; row++)
-                    image.ReadScanline(buf, row);
-            }
-            else if (config == PlanarConfig.SEPARATE)
-            {
-                value = image.GetField(TiffTag.SAMPLESPERPIXEL);
-                short spp = value[0].ToShort();
-
-                for (short s = 0; s < spp; s++)
+                for (int x = 0; x < imageWidth; x += tileWidth)
                 {
-                    for (int row = 0; row < imageLength; row++)
-                        image.ReadScanline(buf, row, s);
+                    image.ReadTile(buf, 0, x, y, 0, 0);
+                    count = buf.Count(b => b > 0);
                 }
             }
         }
