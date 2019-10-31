@@ -59,7 +59,7 @@ namespace DEM.Net.Core
                 throw new Exception($"File {tiffPath} does not exists !");
 
             _tiffPath = tiffPath;
-            Tiff.SetErrorHandler(_errorHandler);
+            Tiff.SetErrorHandler(new ConsoleLogTiffErrorHandler());
             _tiff = Tiff.Open(tiffPath, "r");
 
             if (_tiff == null)
@@ -96,6 +96,7 @@ namespace DEM.Net.Core
                 int bytesPerSample = metadata.BitsPerSample / 8;
                 byte[] byteScanline = new byte[metadata.ScanlineSize];
 
+                Test(TiffFile);
                 TiffFile.ReadScanline(byteScanline, y);
 
                 heightValue = GetElevationAtPoint(metadata, x, byteScanline);
@@ -106,6 +107,37 @@ namespace DEM.Net.Core
             }
             return heightValue;
         }
+
+
+        public void Test(Tiff image)
+        {
+
+            FieldValue[] value = image.GetField(TiffTag.IMAGELENGTH);
+            int imageLength = value[0].ToInt();
+
+            value = image.GetField(TiffTag.PLANARCONFIG);
+            PlanarConfig config = (PlanarConfig)value[0].ToInt();
+
+            byte[] buf = new byte[image.ScanlineSize()];
+
+            if (config == PlanarConfig.CONTIG)
+            {
+                for (int row = 0; row < imageLength; row++)
+                    image.ReadScanline(buf, row);
+            }
+            else if (config == PlanarConfig.SEPARATE)
+            {
+                value = image.GetField(TiffTag.SAMPLESPERPIXEL);
+                short spp = value[0].ToShort();
+
+                for (short s = 0; s < spp; s++)
+                {
+                    for (int row = 0; row < imageLength; row++)
+                        image.ReadScanline(buf, row, s);
+                }
+            }
+        }
+
 
         public float GetElevationAtPoint(FileMetadata metadata, int x, byte[] byteScanline)
         {
@@ -172,7 +204,7 @@ namespace DEM.Net.Core
 
             var scanline = new byte[TiffFile.ScanlineSize()];
             metadata.ScanlineSize = TiffFile.ScanlineSize();
-            
+
             // Grab some raster metadata
             metadata.BitsPerSample = TiffFile.GetField(TiffTag.BITSPERSAMPLE)[0].ToInt();
             var sampleFormat = TiffFile.GetField(TiffTag.SAMPLEFORMAT);
@@ -257,7 +289,7 @@ namespace DEM.Net.Core
                         heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
                         heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
                     }
-                     
+
                     else
                     {
                         heightValue = (float)noDataValue;

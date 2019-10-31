@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
@@ -19,11 +20,12 @@ namespace DEM.Net.Core.EarthData
         private readonly ILogger<NasaGranuleFileService> logger;
         private ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName;
         private static HttpClient _httpClient = new HttpClient();
-        private EarthdataLoginConnector rasterDownloader = new EarthdataLoginConnector();
+        private readonly EarthdataLoginConnector rasterDownloader;
 
-        public NasaGranuleFileService(ILogger<NasaGranuleFileService> logger)
+        public NasaGranuleFileService(ILogger<NasaGranuleFileService> logger, EarthdataLoginConnector rasterDownloader)
         {
             this.logger = logger;
+            this.rasterDownloader = rasterDownloader;
         }
         public void Setup(DEMDataSet dataSet, string dataSetLocalDir)
         {
@@ -127,19 +129,20 @@ namespace DEM.Net.Core.EarthData
             List<NasaDemFile> nasaDemFiles = JsonConvert.DeserializeObject<List<NasaDemFile>>(File.ReadAllText(indexFileName));
             var dataSetLocalDir = Path.GetDirectoryName(indexFileName);
 
-            BoundingBox GetBBox(string box) {
+            BoundingBox GetBBox(string box)
+            {
                 // box is ymin xmin ymax xmax
                 var coords = box.Split(' ').Select(s => float.Parse(s, CultureInfo.InvariantCulture)).ToArray();
 
-                return  new BoundingBox(coords[1], coords[3], coords[0], coords[2]);
+                return new BoundingBox(coords[1], coords[3], coords[0], coords[2]);
             };
-           
+
             return nasaDemFiles.Select(file => new DEMFileSource()
             {
                 BBox = GetBBox(file.Box),
                 SourceFileName = file.GranuleId,
                 SourceFileNameAbsolute = file.ZipFileLink,
-                LocalFileName = Path.Combine(dataSetLocalDir, "Granules", file.GranuleId)
+                LocalFileName = Path.Combine(dataSetLocalDir, "Granules", this.FileNameFromGranuleId(file.GranuleId))
             }).ToList();
         }
 
@@ -176,7 +179,44 @@ namespace DEM.Net.Core.EarthData
 
         public void DownloadRasterFile(DemFileReport report, DEMDataSet dataset)
         {
-            rasterDownloader.Download(report.URL, report.LocalName);
+            try
+            {
+                // Download file
+                var zipFileName = Path.Combine(Path.GetDirectoryName(report.LocalName), report.Source.SourceFileName);
+                rasterDownloader.Download(report.URL, zipFileName);
+
+                // Post action
+                // - Unzip file 
+                // - Keep only _dem.tif file
+                // - rename it as .tif
+                // - suppress other files
+                
+                using (var archive = ZipFile.Open(zipFileName, ZipArchiveMode.Read))
+                {
+                    var geoTiffFile = archive.Entries.FirstOrDefault(e => e.Name.ToLower().EndsWith("_dem.tif"));
+                    if (geoTiffFile == null)
+                    {
+                        this.logger.LogError($"Cannot find geoTiff file into archive {report.LocalName}");
+                    }
+                    else
+                    {
+                        geoTiffFile.ExtractToFile(report.LocalName, true);
+                    }
+                }
+                File.Delete(zipFileName);
+
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, $"Error while downloading raster {report.URL}: {ex.Message}");
+            }
+
+        }
+
+        private string FileNameFromGranuleId(string granuleId)
+        {
+            var fileName = string.Concat(Path.GetFileNameWithoutExtension(granuleId), "_dem.tif");
+            return fileName;
         }
     }
 }

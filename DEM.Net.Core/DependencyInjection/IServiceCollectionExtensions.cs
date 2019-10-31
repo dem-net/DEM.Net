@@ -16,6 +16,7 @@ namespace DEM.Net.Core
         {
             services.AddSingleton<GDALVRTFileService>();
             services.AddTransient<NasaGranuleFileService>();
+            services.AddTransient<EarthdataLoginConnector>();
 
             services.AddTransient<RasterIndexServiceResolver>(serviceProvider => dataSourceType =>
             {

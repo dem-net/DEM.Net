@@ -26,6 +26,7 @@
 using BitMiracle.LibTiff.Classic;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -51,4 +52,26 @@ namespace DEM.Net.Core.IO
 			//base.WarningHandlerExt(tif, clientData, method, format, args);
 		}
 	}
+    internal class ConsoleLogTiffErrorHandler : TiffErrorHandler
+    {
+        public override void ErrorHandler(Tiff tif, string method, string format, params object[] args)
+        {
+            Debug.WriteLine(method + " " + string.Format(format,args));
+        }
+        public override void ErrorHandlerExt(Tiff tif, object clientData, string method, string format, params object[] args)
+        {
+
+            Debug.WriteLine(method + " " + string.Format(format, args));
+        }
+        public override void WarningHandler(Tiff tif, string method, string format, params object[] args)
+        {
+
+            Debug.WriteLine(method + " " + string.Format(format, args));
+        }
+        public override void WarningHandlerExt(Tiff tif, object clientData, string method, string format, params object[] args)
+        {
+
+            Debug.WriteLine(method + " " + string.Format(format, args));
+        }
+    }
 }

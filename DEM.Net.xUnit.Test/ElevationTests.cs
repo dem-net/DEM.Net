@@ -41,9 +41,10 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
-        [InlineData("SRTM_GL3", 45.179337, 5.721421, 216.57283020019531)]
-        [InlineData("SRTM_GL1", 45.179337, 5.721421, 216.71719360351562)]
-        [InlineData("AW3D30", 45.179337, 5.721421, 220.99562072753906)]
+        [InlineData(nameof(DEMDataSet.ASTER_GDEMV3), 45.179337, 5.721421, 220.99562072753906)]
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.179337, 5.721421, 216.57283020019531)]
+        [InlineData(nameof(DEMDataSet.SRTM_GL1), 45.179337, 5.721421, 216.71719360351562)]
+        [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 220.99562072753906)]
         public void TestElevationSinglePoint(string dataSetName, double lat, double lon, double expectedElevation)
         {
             DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);

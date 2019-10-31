@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -12,15 +13,22 @@ namespace DEM.Net.Core.EarthData
     public class EarthdataLoginConnector
     {
         // Ideally the cookie container will be persisted to/from file
-        CookieContainer cookieContainer = new CookieContainer();
-        CredentialCache credentialCache = new CredentialCache();
+        private CookieContainer cookieContainer = new CookieContainer();
+        private CredentialCache credentialCache = new CredentialCache();
         bool isInitialized = false;
+        private readonly ILogger<EarthdataLoginConnector> logger;
 
+        public EarthdataLoginConnector(ILogger<EarthdataLoginConnector> logger)
+        {
+            this.logger = logger;
+        }
         public void Setup()
         {
+            logger.LogInformation($"Setup {nameof(EarthdataLoginConnector)}");
+
             string urs = "https://urs.earthdata.nasa.gov";
-            string username = "<URS user ID>";
-            string password = "<URS user password>";
+            string username = "elevationapi";
+            string password = "EBPp-zf!uzw5Jd8";
 
             // Create a credential cache for authenticating when redirected to Earthdata Login
             credentialCache = new CredentialCache();
@@ -33,6 +41,7 @@ namespace DEM.Net.Core.EarthData
         {
             try
             {
+                logger.LogInformation($"Downloading {url}...");
 
                 if (!isInitialized)
                     this.Setup();
@@ -43,12 +52,8 @@ namespace DEM.Net.Core.EarthData
                     Directory.CreateDirectory(dirName);
                 }
                 // Execute the request
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                request.Method = "GET";
-                request.Credentials = credentialCache;
-                request.CookieContainer = cookieContainer;
-                request.PreAuthenticate = false;
-                request.AllowAutoRedirect = true;
+                HttpWebRequest request = this.CreateWebRequest(url);
+               
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     // Now access the data
@@ -66,11 +71,24 @@ namespace DEM.Net.Core.EarthData
                     }
                     response.Close();
                 }
+
+                
             }
             catch (Exception ex)
             {
-                System.Console.WriteLine("Error: " + ex.Message);
+                logger.LogError(ex, $"Error while downloading DEM file: {ex.Message}");
             }
+        }
+
+        private HttpWebRequest CreateWebRequest(string url)
+        {
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "GET";
+            request.Credentials = credentialCache;
+            request.CookieContainer = cookieContainer;
+            request.PreAuthenticate = false;
+            request.AllowAutoRedirect = true;
+            return request;
         }
     }
 }
