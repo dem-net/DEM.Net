@@ -109,7 +109,7 @@ namespace DEM.Net.Core
 
                 try
                 {
-                    ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
+                    ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism =  2};
                     Parallel.ForEach(filesToDownload, options, file =>
                        {
                            _IRasterService.DownloadRasterFile(file, dataSet);
