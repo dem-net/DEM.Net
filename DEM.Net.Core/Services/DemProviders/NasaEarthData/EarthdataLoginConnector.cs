@@ -27,8 +27,8 @@ namespace DEM.Net.Core.EarthData
             logger.LogInformation($"Setup {nameof(EarthdataLoginConnector)}");
 
             string urs = "https://urs.earthdata.nasa.gov";
-            string username = "elevationapi";
-            string password = "EBPp-zf!uzw5Jd8";
+            string username = "<login>";
+            string password = "<password>";
 
             // Create a credential cache for authenticating when redirected to Earthdata Login
             credentialCache = new CredentialCache();
