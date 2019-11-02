@@ -106,6 +106,16 @@ namespace DEM.Net.Core
                     && GpsLocation.IsValidLatitude(_yMax);
         }
 
+        /// <summary>
+        /// Reorders min / max and returns a new BoundingBox
+        /// </summary>
+        /// <returns></returns>
+        public BoundingBox ReorderMinMax()
+        {
+            return new BoundingBox(Math.Min(_xMin, _xMax), Math.Max(_xMin, _xMax), Math.Min(_yMin, _yMax), Math.Max(_yMin, _yMax));
+        }
+
+
         public override bool Equals(object obj)
         {
             BoundingBox objTyped = obj as BoundingBox;
