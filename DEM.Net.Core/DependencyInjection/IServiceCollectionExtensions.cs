@@ -15,7 +15,7 @@ namespace DEM.Net.Core
         public static IServiceCollection AddDemNetCore(this IServiceCollection services)
         {
             services.AddSingleton<GDALVRTFileService>();
-            services.AddTransient<NasaGranuleFileService>();
+            services.AddSingleton<NasaGranuleFileService>();
             services.AddSingleton<EarthdataLoginConnector>();
 
             services.AddTransient<RasterIndexServiceResolver>(serviceProvider => dataSourceType =>
