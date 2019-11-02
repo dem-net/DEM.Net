@@ -358,6 +358,26 @@ namespace DEM.Net.Core.Imagery
             return new Uri(url, UriKind.Absolute);
         }
 
+        private string GetToken(ImageryProvider provider)
+        {
+            var tokenSecretEntry = string.Concat(nameof(AppSecrets), ":", provider.TokenUserSecretsKey);
+            return config[tokenSecretEntry];
+        }
+
+        public bool IsTokenConfigurationValid(ImageryProvider provider)
+        {
+            var token = GetToken(provider);
+            if (String.IsNullOrWhiteSpace(token))
+            {
+                var message = $"There is no token found for {provider.Name} provider. Make sure a user secrets are set with a {provider.TokenUserSecretsKey} value.";
+                _logger?.LogWarning(message);
+
+                return false;
+            }
+            return true;
+
+        }
+
         #endregion
 
         #region Normal map generation
