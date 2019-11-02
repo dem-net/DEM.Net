@@ -51,6 +51,7 @@ namespace DEM.Net.Core
         private static readonly Lazy<Dictionary<string, DEMDataSet>> Datasets = new Lazy<Dictionary<string, DEMDataSet>>(GetRegisteredDatasets, true);
 
         public static IEnumerable<DEMDataSet> RegisteredDatasets => DEMDataSet.Datasets.Value.Values;
+        public static IEnumerable<DEMDataSet> RegisteredNonSingleFileDatasets => RegisteredDatasets.Where(d=> !d.DataSource.IsGlobalFile);
 
         private static Dictionary<string, DEMDataSet> GetRegisteredDatasets()
         {

@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using DEM.Net.Core.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,22 +19,27 @@ namespace DEM.Net.Core.EarthData
         private CredentialCache credentialCache = new CredentialCache();
         bool isInitialized = false;
         private readonly ILogger<EarthdataLoginConnector> logger;
+        private readonly AppSecrets secretOptions;
 
-        public EarthdataLoginConnector(ILogger<EarthdataLoginConnector> logger)
+        public EarthdataLoginConnector(IOptions<AppSecrets> secretOptions, ILogger<EarthdataLoginConnector> logger)
         {
             this.logger = logger;
+            this.secretOptions = secretOptions.Value;
+
         }
         public void Setup()
         {
+            if (string.IsNullOrWhiteSpace(secretOptions.NasaEarthDataLogin))
+            {
+                throw new InvalidOperationException($"{nameof(EarthdataLoginConnector)} cannot download data because login and password are not set in user secrets.");
+            }
             logger.LogInformation($"Setup {nameof(EarthdataLoginConnector)}");
 
             string urs = "https://urs.earthdata.nasa.gov";
-            string username = "<login>";
-            string password = "<password>";
 
             // Create a credential cache for authenticating when redirected to Earthdata Login
             credentialCache = new CredentialCache();
-            credentialCache.Add(new Uri(urs), "Basic", new NetworkCredential(username, password));
+            credentialCache.Add(new Uri(urs), "Basic", new NetworkCredential(secretOptions.NasaEarthDataLogin, secretOptions.NasaEarthDataPassword));
 
             isInitialized = true;
         }

@@ -34,13 +34,14 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
+using DEM.Net.Core.Configuration;
+using Microsoft.Extensions.Configuration;
 
 #if NETFULL
 using System.Configuration;
 using System.Drawing;
 using System.Drawing.Imaging;
 #elif NETSTANDARD
-using Microsoft.Extensions.Configuration;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Formats.Jpeg;
@@ -58,19 +59,17 @@ namespace DEM.Net.Core.Imagery
         private int _serverCycle = 0;
         private readonly ILogger<ImageryService> _logger;
         private readonly IMeshService _meshService;
+        private readonly IConfiguration config;
         private static HttpClient _httpClient = new HttpClient();
 
 #if NETSTANDARD
         private readonly IConfigurationRoot _config;
 
-        public ImageryService(IMeshService meshService, ILogger<ImageryService> logger = null)
+        public ImageryService(IMeshService meshService,IConfiguration configuration, ILogger<ImageryService> logger = null)
         {
             _logger = logger;
             _meshService = meshService;
-            _config = new ConfigurationBuilder()
-                 .SetBasePath(Directory.GetCurrentDirectory())
-                 .AddJsonFile(Path.Combine("Config", "tokens.json"), optional: true, reloadOnChange: true)
-                 .Build();
+            this.config = configuration;
         }
 #elif NETFULL
         public ImageryService(ILogger<ImageryService> logger)
@@ -344,41 +343,19 @@ namespace DEM.Net.Core.Imagery
             url = url.Replace("{z}", zoom.ToString());
             if (url.Contains("{t}"))
             {
-#if NETFULL
-                var token = ConfigurationManager.AppSettings[provider.TokenAppSettingsKey];
+                var tokenSecretEntry = string.Concat(nameof(AppSecrets), ":", provider.TokenUserSecretsKey);
+                var token = config[tokenSecretEntry];
                 if (String.IsNullOrWhiteSpace(token))
                 {
-                    _logger?.LogError($"There is no token found for {provider.Name} provider. Make sure an App.SECRETS.config file is present in running directory with a {provider.TokenAppSettingsKey} key / value.");
+                    var message = $"There is no token found for {provider.Name} provider. Make sure a user secrets are set with a {tokenSecretEntry} value.";
+                    _logger?.LogError(message);
+                    throw new Exception(message);
                 }
-#else
 
-                IConfigurationSection configurationSection = _config.GetSection("Tokens").GetSection(provider.TokenAppSettingsKey);
-                var token = configurationSection.Value;
-                if (String.IsNullOrWhiteSpace(token))
-                {
-                    _logger?.LogError($"There is no token found for {provider.Name} provider. Make sure a config/tokens.json file is present in running directory with a {provider.TokenAppSettingsKey} key / value.");
-                }
-#endif
                 url = url.Replace("{t}", token);
             }
 
             return new Uri(url, UriKind.Absolute);
-        }
-
-
-        public Dictionary<string, string> GetConfiguredTokens()
-        {
-#if NETFULL
-            Dictionary<string, string> tokens = new Dictionary<string, string>();
-            foreach (var key in ConfigurationManager.AppSettings.AllKeys)
-            {
-                tokens[key] = ConfigurationManager.AppSettings[key];
-            }
-            return tokens;
-#else
-
-            return _config.GetSection("Tokens").GetChildren().ToDictionary(c => c.Key, c => c.Value);
-#endif
         }
 
         #endregion

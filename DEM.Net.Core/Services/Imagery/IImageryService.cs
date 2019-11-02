@@ -16,8 +16,6 @@ namespace DEM.Net.Core.Imagery
         TextureInfo GenerateNormalMap(HeightMap heightMap, string outputDirectory, string fileName = "normalmap.jpg");
         TextureInfo GenerateHeightMap(HeightMap heightMap, string outputDirectory, string fileName = "heightmap.png");
 
-        Dictionary<string, string> GetConfiguredTokens();
-
         List<ImageryProvider> GetRegisteredProviders();
 
         TileRange ComputeBoundingBoxTileRange(BoundingBox bbox, ImageryProvider provider, int minTilesPerImage = 4);
