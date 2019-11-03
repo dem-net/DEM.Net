@@ -88,19 +88,9 @@ namespace DEM.Net.Core
 
         public bool IsValid()
         {
-            if (_xMin >= _xMax)
-            {
-                double temp = _xMax;
-                _xMax = _xMin;
-                _xMin = temp;
-            }
-            if (_yMin >= _yMax)
-            {
-                double temp = _yMax;
-                _yMax = _yMin;
-                _yMin = temp;
-            }
-            return GpsLocation.IsValidLongitude(_xMin)
+            return _xMin < _xMax
+                    && _yMin < _yMax
+                    && GpsLocation.IsValidLongitude(_xMin)
                     && GpsLocation.IsValidLongitude(_xMax)
                     && GpsLocation.IsValidLatitude(_yMin)
                     && GpsLocation.IsValidLatitude(_yMax);
@@ -115,11 +105,9 @@ namespace DEM.Net.Core
             return new BoundingBox(Math.Min(_xMin, _xMax), Math.Max(_xMin, _xMax), Math.Min(_yMin, _yMax), Math.Max(_yMin, _yMax));
         }
 
-
         public override bool Equals(object obj)
         {
             BoundingBox objTyped = obj as BoundingBox;
-
 
             return this == objTyped;
         }
