@@ -2,7 +2,7 @@
 
 namespace DEM.Net.Core
 {
-    public interface IDEMDataSetIndex
+    public interface IDEMDataSetIndex : IRasterDownloader
     {
         void Setup(DEMDataSet dataset, string dataSetLocalDir);
 
@@ -11,5 +11,6 @@ namespace DEM.Net.Core
         IEnumerable<DEMFileSource> GetCoveredFileSources(DEMDataSet dataset, BoundingBox bbox);
 
         void Reset();
+
     }
 }

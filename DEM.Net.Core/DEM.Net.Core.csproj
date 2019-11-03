@@ -1,5 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <PackageId>DEM.Net.Core</PackageId>
@@ -20,8 +20,8 @@
     <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
     <AssemblyVersion>0.1.4.0</AssemblyVersion>
     <FileVersion>0.1.4.0</FileVersion>
+    <UserSecretsId>a9a5d6e1-3bb8-4dfd-ac6a-861f60dada50</UserSecretsId>
   </PropertyGroup>
-
   <!-- Build package only in Release -->
   <PropertyGroup Condition=" '$(Configuration)' == 'Release'">
     <IncludeSymbols>true</IncludeSymbols>
@@ -29,13 +29,11 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
-
   <!-- Build package only in Release -->
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug'">
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
-
   <!-- Define NETFULL and NETSTANDARD for all matching targets -->
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
     <DefineConstants>NETCORE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
@@ -43,14 +41,12 @@
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net461'">
     <DefineConstants>NET461;NETFULL</DefineConstants>
   </PropertyGroup>
-
   <!-- Conditionally obtain references for the .NET Framework 4.6.1 target -->
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Configuration" />
   </ItemGroup>
-
   <!-- .NET Standard 2.0 references, compilation flags and build options -->
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
@@ -74,31 +70,24 @@
     <Compile Include="Services\Voronoi\BeanTopologie\ITopologieService.cs" />
     <Compile Include="Services\Voronoi\BeanTopologie\TopologieService.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="BitMiracle.LibTiff.NET" Version="2.4.633" />
     <PackageReference Include="DotSpatial.Projections" Version="1.9.0" />
     <PackageReference Include="GeoAPI.CoordinateSystems" Version="1.7.5" />
     <PackageReference Include="GeoAPI.Core" Version="1.7.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="2.2.0" />
     <PackageReference Include="NetTopologySuite" Version="1.15.3" />
     <PackageReference Include="NetTopologySuite.Diagnostics.Tracing" Version="0.0.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Config\tokens.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
   <ItemGroup>
     <Folder Include="Services\Voronoi\FortuneVoronoi\" />
     <Folder Include="Model\Enums\" />
   </ItemGroup>
-
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>

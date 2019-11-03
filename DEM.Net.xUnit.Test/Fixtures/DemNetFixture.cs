@@ -1,9 +1,12 @@
 ﻿using DEM.Net.Core;
+using DEM.Net.Core.Configuration;
 using DEM.Net.glTF;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Logging.Debug;
+using System.IO;
 
 namespace DEM.Net.Test
 {
@@ -11,6 +14,11 @@ namespace DEM.Net.Test
     {
         public DemNetFixture()
         {
+            var builder = new ConfigurationBuilder()
+           .SetBasePath(Directory.GetCurrentDirectory())
+           .AddJsonFile("secrets.json", optional: false, reloadOnChange: false)
+           .Build();
+
             var services = new ServiceCollection();
             services.AddLogging(config =>
             {
@@ -24,6 +32,8 @@ namespace DEM.Net.Test
             })
             .AddDemNetCore()
             .AddDemNetglTF();
+
+            services.Configure<AppSecrets>(builder.GetSection(nameof(AppSecrets)));
 
             ServiceProvider = services.BuildServiceProvider();
         }

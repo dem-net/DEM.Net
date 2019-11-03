@@ -9,13 +9,10 @@ namespace DEM.Net.Test
 {
     public class ElevationTests : IClassFixture<DemNetFixture>
     {
-        IRasterService _rasterService;
         IElevationService _elevationService;
 
         public ElevationTests(DemNetFixture fixture)
         {
-
-            _rasterService = fixture.ServiceProvider.GetService<IRasterService>();
             _elevationService = fixture.ServiceProvider.GetService<IElevationService>();
         }
 
@@ -41,9 +38,10 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
-        [InlineData("SRTM_GL3", 45.179337, 5.721421, 216.57283020019531)]
-        [InlineData("SRTM_GL1", 45.179337, 5.721421, 216.71719360351562)]
-        [InlineData("AW3D30", 45.179337, 5.721421, 220.99562072753906)]
+        [InlineData(nameof(DEMDataSet.ASTER_GDEMV3), 45.179337, 5.721421, 221.884536743164)]
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.179337, 5.721421, 216.57283020019531)]
+        [InlineData(nameof(DEMDataSet.SRTM_GL1), 45.179337, 5.721421, 216.71719360351562)]
+        [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 220.99562072753906)]
         public void TestElevationSinglePoint(string dataSetName, double lat, double lon, double expectedElevation)
         {
             DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
@@ -57,9 +55,10 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
-        [InlineData("SRTM_GL3", 45.179337, 5.721421, 45.212278, 5.468857, 345, 2799.6234436035156, -2831.7227172851562, 178.56304931640625, 1656.548583984375)]
-        [InlineData("SRTM_GL1", 45.179337, 5.721421, 45.212278, 5.468857, 1030, 3029.673828125, -3063.4037170410156, 178, 1657.423828125)]
-        [InlineData("AW3D30", 45.179337, 5.721421, 45.212278, 5.468857, 1029, 3290.001708984375, -3328.8204193115234, 177.8447265625, 1653.1025390625)]
+        [InlineData(nameof(DEMDataSet.ASTER_GDEMV3), 45.179337, 5.721421, 45.212278, 5.468857, 1031, 3112.6337432861328, -3153.5321044921875, 172.384765625, 1648.965087890625)]
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.179337, 5.721421, 45.212278, 5.468857, 345, 2799.6234436035156, -2831.7227172851562, 178.56304931640625, 1656.548583984375)]
+        [InlineData(nameof(DEMDataSet.SRTM_GL1), 45.179337, 5.721421, 45.212278, 5.468857, 1030, 3029.673828125, -3063.4037170410156, 178, 1657.423828125)]
+        [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 45.212278, 5.468857, 1029, 3290.001708984375, -3328.8204193115234, 177.8447265625, 1653.1025390625)]
         public void TestElevationLine(string dataSetName, double latStart, double lonStart, double latEnd, double lonEnd,
             double expectedPointCount, double expectedClimb, double expectedDescent, double expectedMin, double expectedMax)
         {
@@ -77,20 +76,19 @@ namespace DEM.Net.Test
 
             var metrics = geoPoints.ComputeMetrics();
             Assert.NotNull(metrics);
-            Assert.Equal(expectedClimb, metrics.Climb);
-            Assert.Equal(expectedDescent, metrics.Descent);
-            Assert.Equal(expectedMin, metrics.MinElevation);
-            Assert.Equal(expectedMax, metrics.MaxElevation);
+            Assert.Equal(expectedClimb, metrics.Climb, 3);
+            Assert.Equal(expectedDescent, metrics.Descent, 3);
+            Assert.Equal(expectedMin, metrics.MinElevation, 3);
+            Assert.Equal(expectedMax, metrics.MaxElevation, 3);
         }
 
         [Theory()]
-        [InlineData("SRTM_GL3", 17.5,19.5,40.5,42.5 , false)] // spans on 3x3 tiles with a hole in the center
-        [InlineData("SRTM_GL3", -26, -25, 37, 38, true)] // fully covered
-        [InlineData("SRTM_GL3", -26.659806263787523, -25.729350373606543, 37.73596920859053, 38.39764411353181, false)] // 1 tile missing
-        [InlineData("SRTM_GL3", -37.43596931765545, -37.13861749268079, 50.33844888725473, 50.51342652633956, false)] // not covered at all
-        [InlineData("SRTM_GL3", 1.5, 2.5, 44.5, 45.5, true)] // fully covered by 4 tiles
-        [InlineData("SRTM_GL3", 1.5, 1.6, 44.5, 44.6, true)] // fully inside 1 tile
-        [InlineData("SRTM_GL3", 3.5, 4.5, 42.5, 42.6, false)] // half inside 1 tile, half with no tile
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), -25, -26, 37, 38, true)] // fully covered
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), -26.659806263787523, -25.729350373606543, 37.73596920859053, 38.39764411353181, false)] // 1 tile missing
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), -37.43596931765545, -37.13861749268079, 50.33844888725473, 50.51342652633956, false)] // not covered at all
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 1.5, 2.5, 44.5, 45.5, true)] // fully covered by 4 tiles
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 1.5, 1.6, 44.5, 44.6, true)] // fully inside 1 tile
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 3.5, 4.5, 42.5, 42.6, false)] // half inside 1 tile, half with no tile
         public void TestBboxCoverage(string dataSetName, double xmin, double xmax, double ymin, double ymax, bool isExpectedCovered)
         {
             BoundingBox bbox = new BoundingBox(xmin, xmax, ymin, ymax);

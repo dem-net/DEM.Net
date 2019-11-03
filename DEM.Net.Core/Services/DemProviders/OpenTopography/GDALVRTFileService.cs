@@ -196,6 +196,32 @@ namespace DEM.Net.Core
             }
         }
 
+        /// <summary>
+        /// Downloads a raster file using downloader configured for the dataset
+        /// </summary>
+        /// <param name="report">Report item return by GenerateReport methods</param>
+        /// <param name="dataset"></param>
+        public void DownloadRasterFile(DemFileReport report, DEMDataSet dataset)
+        {
+            // Create directories if not existing
+            new FileInfo(report.LocalName).Directory.Create();
+
+            _logger?.LogInformation($"Downloading file {report.URL}...");
+
+            using (HttpClient client = new HttpClient())
+            {
+
+                var contentbytes = client.GetByteArrayAsync(report.URL).Result;
+                using (FileStream fs = new FileStream(report.LocalName, FileMode.Create, FileAccess.Write))
+                {
+                    fs.Write(contentbytes, 0, contentbytes.Length);
+                }
+
+            }
+
+
+        }
+
         private IEnumerable<DEMFileSource> GetSources(DEMDataSet dataSet, string vrtFileName)
         {
             Uri localVrtUri = new Uri(Path.GetFullPath(vrtFileName), UriKind.Absolute);

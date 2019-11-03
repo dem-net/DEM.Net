@@ -23,6 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using DEM.Net.Core.Helpers;
 using DEM.Net.Core.Model;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -33,6 +34,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -44,6 +46,7 @@ namespace DEM.Net.Core
         const string MANIFEST_DIR = "manifest";
         private readonly RasterIndexServiceResolver _rasterIndexServiceResolver;
         private readonly ILogger<RasterService> _logger;
+        private NamedMonitor monitor = new NamedMonitor();
 
         private string _localDirectory;
         private Dictionary<string, List<FileMetadata>> _metadataCatalogCache = new Dictionary<string, List<FileMetadata>>();
@@ -464,6 +467,28 @@ namespace DEM.Net.Core
         }
 
 
+        /// <summary>
+        /// Downloads a raster file using downloader configured for the dataset
+        /// </summary>
+        /// <param name="report">Report item return by GenerateReport methods</param>
+        /// <param name="dataset"></param>
+        public void DownloadRasterFile(DemFileReport report, DEMDataSet dataset)
+        {
+            var downloader = _rasterIndexServiceResolver(dataset.DataSource.DataSourceType);
+
+            lock (monitor[report.URL])
+            {
+                if (!File.Exists(report.LocalName))
+                {
+                    _logger?.LogInformation($"Downloading file {report.URL}...");
+
+                    downloader.DownloadRasterFile(report, dataset);
+
+                    this.GenerateFileMetadata(report.LocalName, dataset.FileFormat, false);
+                }
+            }
+
+        }
     }
 
 

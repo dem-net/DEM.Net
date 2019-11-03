@@ -29,7 +29,7 @@ using DEM.Net.Core.Model;
 
 namespace DEM.Net.Core
 {
-    public interface IRasterService
+    public interface IRasterService : IRasterDownloader
     {
         FileMetadata ParseMetadata(IRasterFile rasterFile, bool makeRelativePath = false);
         FileMetadata ParseMetadata(string fileName, DEMFileFormat fileFormat, bool makeRelativePath = true);
@@ -97,5 +97,6 @@ namespace DEM.Net.Core
         /// <param name="fileFormat">File format, see <see cref="DEMFileFormat"/></param>
         /// <param name="force">If true, metadata will be replaced, if false the metadata will be generated only if the JSON file does not exists</param>
         void GenerateFileMetadata(string rasterFileName, DEMFileFormat fileFormat, bool force);
+
     }
 }
