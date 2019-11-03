@@ -124,8 +124,9 @@ namespace DEM.Net.Core
                 ResolutionMeters = 30,
                 PointsPerDegree = 3600,
                 NoDataValue = -9999,
-                Attribution = new Attribution("NASA/METI/AIST/Japan Spacesystems, and U.S./Japan ASTER Science Team", "https://lpdaac.usgs.gov/products/astgtmv003"
-                    , "NASA/METI/AIST/Japan Spacesystems, and U.S./Japan ASTER Science Team. ASTER Global Digital Elevation Model V003. 2019, distributed by NASA EOSDIS Land Processes DAAC, https://doi.org/10.5067/ASTER/ASTGTM.003. Accessed 2019-10-15. DOI: 10.5067/ASTER/ASTGTM.003")
+                Attribution = new Attribution(string.Concat("NASA/METI/AIST/Japan Spacesystems, and U.S./Japan ASTER Science Team. ASTER Global ",
+                                                "Digital Elevation Model V003. 2018, distributed by NASA EOSDIS Land Processes DAAC, ",
+                                                "https://doi.org/10.5067/ASTER/ASTGTM.003"))
             });
 
             return datasets;
