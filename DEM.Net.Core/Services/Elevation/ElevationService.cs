@@ -109,13 +109,10 @@ namespace DEM.Net.Core
 
                 try
                 {
-                    ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
-                    Parallel.ForEach(filesToDownload, options, file =>
-                   {
-
-                       DownloadDEMTile_HttpClient(file.URL, dataSet.FileFormat, file.LocalName);
-
-                   }
+                    Parallel.ForEach(filesToDownload, file =>
+                       {
+                           _IRasterService.DownloadRasterFile(file, dataSet);
+                       }
                     );
 
                     _IRasterService.GenerateDirectoryMetadata(dataSet, false, false);
@@ -125,6 +122,7 @@ namespace DEM.Net.Core
                 catch (AggregateException ex)
                 {
                     _logger?.LogError(ex, $"Error downloading missing files. Check internet connection or retry later. {ex.GetInnerMostException().Message}");
+                    throw;
                 }
 
 
@@ -132,42 +130,6 @@ namespace DEM.Net.Core
         }
 
 
-        private void DownloadDEMTile_HttpClient(string url, DEMFileFormat fileFormat, string localFileName)
-        {
-
-            // Create directories if not existing
-            new FileInfo(localFileName).Directory.Create();
-
-            _logger?.LogInformation($"Downloading file {url}...");
-
-            using (HttpClient client = new HttpClient())
-            {
-                //using (HttpResponseMessage response = client.GetAsync(url).Result)
-                //{
-                //    if (response.IsSuccessStatusCode)
-                //    {
-                //        using (HttpContent content = response.Content)
-                //        {
-                //            using (FileStream fs = new FileStream(localFileName, FileMode.Create, FileAccess.Write))
-                //            {
-                //                var contentbytes = content.ReadAsByteArrayAsync().Result;
-                //                fs.Write(contentbytes, 0, contentbytes.Length);
-                //            }
-                //        }
-                //    }
-                //}
-                var contentbytes = client.GetByteArrayAsync(url).Result;
-                using (FileStream fs = new FileStream(localFileName, FileMode.Create, FileAccess.Write))
-                {
-                    fs.Write(contentbytes, 0, contentbytes.Length);
-                }
-
-            }
-
-            _IRasterService.GenerateFileMetadata(localFileName, fileFormat, false);
-
-
-        }
 
         /// <summary>
         /// Extract elevation data along line path
@@ -493,7 +455,7 @@ namespace DEM.Net.Core
             List<FileMetadata> bboxMetadata = GetCoveringFiles(bbox, dataSet);
             if (bboxMetadata.Count == 0)
             {
-                const string errorMessage = "No covering files for provider bounding box.";
+                string errorMessage = $"Dataset {dataSet.Name} has no coverage for provided bounding box.";
                 this._logger.LogWarning(errorMessage);
                 throw new Exception(errorMessage);
             }

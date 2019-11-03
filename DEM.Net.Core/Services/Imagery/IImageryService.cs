@@ -8,6 +8,8 @@ namespace DEM.Net.Core.Imagery
     public interface IImageryService
     {
         Uri BuildUri(ImageryProvider provider, int x, int y, int zoom);
+
+        bool IsTokenConfigurationValid(ImageryProvider provider);
         List<Vector2> ComputeUVMap(HeightMap heightMap, TextureInfo textureInfo);
         TextureInfo ConstructTexture(TileRange tiles, BoundingBox bbox, string fileName, TextureImageFormat mimeType);
 
@@ -15,8 +17,6 @@ namespace DEM.Net.Core.Imagery
 
         TextureInfo GenerateNormalMap(HeightMap heightMap, string outputDirectory, string fileName = "normalmap.jpg");
         TextureInfo GenerateHeightMap(HeightMap heightMap, string outputDirectory, string fileName = "heightmap.png");
-
-        Dictionary<string, string> GetConfiguredTokens();
 
         List<ImageryProvider> GetRegisteredProviders();
 

@@ -314,3 +314,4 @@ UnityExample/Assets/Plugins/MeshDecimator/MeshDecimator.xml
 .axoCover/
 *.SECRETS.config
 **/log.txt
+DEM.Net.xUnit.Test/secrets.json

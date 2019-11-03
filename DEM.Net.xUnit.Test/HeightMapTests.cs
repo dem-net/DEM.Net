@@ -1,6 +1,7 @@
 ﻿using DEM.Net.Core;
 using Xunit;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 
 namespace DEM.Net.Test
 {
@@ -13,9 +14,13 @@ namespace DEM.Net.Test
             _elevationService = fixture.ServiceProvider.GetService<IElevationService>();
         }
 
-        [Fact]
-        public void BoudingBoxConservationTest()
+        [Theory()]
+        [InlineData(nameof(DEMDataSet.SRTM_GL1))]
+        [InlineData(nameof(DEMDataSet.ASTER_GDEMV3))]
+        public void BoudingBoxConservationTest(string datasetName)
         {
+
+            var dataset = DEMDataSet.RegisteredDatasets.First(d => d.Name == datasetName);
 
             string bboxWKT = "POLYGON((5.54888 43.519525, 5.61209 43.519525, 5.61209 43.565225, 5.54888 43.565225, 5.54888 43.519525))";
 
@@ -25,7 +30,7 @@ namespace DEM.Net.Test
             Assert.NotNull(bbox);
             Assert.Equal(bboxWKT, bbox.WKT);
 
-            HeightMap heightMap = _elevationService.GetHeightMap(bbox, DEMDataSet.SRTM_GL1);
+            HeightMap heightMap = _elevationService.GetHeightMap(bbox, dataset);
 
             heightMap = heightMap.ReprojectGeodeticToCartesian().BakeCoordinates();
             Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());

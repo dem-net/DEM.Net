@@ -36,7 +36,7 @@ namespace DEM.Net.Core.Imagery
         public string Name { get; set; }
         public UrlModel UrlModel { get; set; }
         public Attribution Attribution { get; set; }
-        public string TokenAppSettingsKey { get; set; }
+        public string TokenUserSecretsKey { get; set; }
         public int TileSize { get; set; } = 256;
         public int MaxDegreeOfParallelism { get; set; } = 4;
         public int MaxZoom { get; set; } = 19;
@@ -60,7 +60,7 @@ namespace DEM.Net.Core.Imagery
             Name = "MapBox-Satellite",
             Attribution = new Attribution("© MapxBox - OpenStreetMap contributors", "https://www.mapbox.com"),
             UrlModel = new UrlModel("https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token={t}", null),
-            TokenAppSettingsKey = "mapboxtoken",
+            TokenUserSecretsKey = "MapBoxToken",
             MaxZoom = 23
         };
         public static ImageryProvider MapBoxSatelliteStreet = new ImageryProvider()
@@ -68,7 +68,7 @@ namespace DEM.Net.Core.Imagery
             Name = "MapBox-SatelliteStreet",
             Attribution = new Attribution("© MapxBox - OpenStreetMap contributors", "https://www.mapbox.com"),
             UrlModel = new UrlModel("https://api.mapbox.com/v4/mapbox.streets-satellite/{z}/{x}/{y}.png?access_token={t}", null),
-            TokenAppSettingsKey = "mapboxtoken",
+            TokenUserSecretsKey = "MapBoxToken",
             MaxZoom = 23
         };
         
@@ -76,7 +76,7 @@ namespace DEM.Net.Core.Imagery
         {
             Name = "MapBox-Streets",
             Attribution = new Attribution("© MapxBox - OpenStreetMap contributors", "https://www.mapbox.com"),
-            TokenAppSettingsKey = "mapboxtoken",
+            TokenUserSecretsKey = "MapBoxToken",
             UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/xfischer/cjbtijn5qahc92qs2yghsy58p/tiles/256/{z}/{x}/{y}?access_token={t}", null),
             MaxZoom = 23
         };
