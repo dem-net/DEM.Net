@@ -209,6 +209,7 @@ namespace DEM.Net.Core.EarthData
             catch (Exception ex)
             {
                 this.logger.LogError(ex, $"Error while downloading raster {report.URL}: {ex.Message}");
+                throw;
             }
 
         }

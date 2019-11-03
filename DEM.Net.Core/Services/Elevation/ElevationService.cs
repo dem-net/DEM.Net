@@ -122,6 +122,7 @@ namespace DEM.Net.Core
                 catch (AggregateException ex)
                 {
                     _logger?.LogError(ex, $"Error downloading missing files. Check internet connection or retry later. {ex.GetInnerMostException().Message}");
+                    throw;
                 }
 
 
