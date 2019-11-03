@@ -48,4 +48,10 @@
     <ProjectReference Include="..\DEM.Net.Core\DEM.Net.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="secrets.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -1,11 +1,10 @@
 ﻿using DEM.Net.Core.Configuration;
+using DEM.Net.Core.Helpers;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Text;
 
 namespace DEM.Net.Core.EarthData
 {
