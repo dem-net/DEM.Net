@@ -317,10 +317,13 @@ namespace DEM.Net.Core
             int xStart = (int)Math.Floor((bbox.xMin - metadata.StartLon) / metadata.pixelSizeX);
             int xEnd = (int)Math.Ceiling((bbox.xMax - metadata.StartLon) / metadata.pixelSizeX);
 
+            // Tiled geotiffs like aster have overlapping 1px borders
+            int overlappingPixel = this.IsTiled ? 1 : 0;
+
             xStart = Math.Max(0, xStart);
-            xEnd = Math.Min(metadata.Width - 1, xEnd);
+            xEnd = Math.Min(metadata.Width - 1, xEnd) - overlappingPixel;
             yStart = Math.Max(0, yStart);
-            yEnd = Math.Min(metadata.Height - 1, yEnd);
+            yEnd = Math.Min(metadata.Height - 1, yEnd) - overlappingPixel;
 
             HeightMap heightMap = new HeightMap(xEnd - xStart + 1, yEnd - yStart + 1);
             heightMap.Count = heightMap.Width * heightMap.Height;
@@ -329,6 +332,7 @@ namespace DEM.Net.Core
 
             if (this.IsTiled)
             {
+                // Tiled rasters are composed of multiple "sub" images
                 // TODO store in metadata
                 int tileWidth = this.TileWidth;
                 int tileHeight = this.TileHeight;
