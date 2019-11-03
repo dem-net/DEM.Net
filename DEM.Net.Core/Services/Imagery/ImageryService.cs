@@ -36,6 +36,8 @@ using System.Reflection;
 using System.Threading;
 using DEM.Net.Core.Configuration;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using System.Collections.Concurrent;
 
 #if NETFULL
 using System.Configuration;
@@ -59,17 +61,17 @@ namespace DEM.Net.Core.Imagery
         private int _serverCycle = 0;
         private readonly ILogger<ImageryService> _logger;
         private readonly IMeshService _meshService;
-        private readonly IConfiguration config;
+        private readonly AppSecrets options;
         private static HttpClient _httpClient = new HttpClient();
 
 #if NETSTANDARD
         private readonly IConfigurationRoot _config;
 
-        public ImageryService(IMeshService meshService,IConfiguration configuration, ILogger<ImageryService> logger = null)
+        public ImageryService(IMeshService meshService, IOptions<AppSecrets> options, ILogger<ImageryService> logger = null)
         {
             _logger = logger;
             _meshService = meshService;
-            this.config = configuration;
+            this.options = options.Value;
         }
 #elif NETFULL
         public ImageryService(ILogger<ImageryService> logger)
@@ -343,11 +345,10 @@ namespace DEM.Net.Core.Imagery
             url = url.Replace("{z}", zoom.ToString());
             if (url.Contains("{t}"))
             {
-                var tokenSecretEntry = string.Concat(nameof(AppSecrets), ":", provider.TokenUserSecretsKey);
-                var token = config[tokenSecretEntry];
+                var token = GetToken(provider);
                 if (String.IsNullOrWhiteSpace(token))
                 {
-                    var message = $"There is no token found for {provider.Name} provider. Make sure a user secrets are set with a {tokenSecretEntry} value.";
+                    var message = $"There is no token found for {provider.Name} provider. Make sure a user secrets are set with a {provider.TokenUserSecretsKey} value.";
                     _logger?.LogError(message);
                     throw new Exception(message);
                 }
@@ -358,10 +359,12 @@ namespace DEM.Net.Core.Imagery
             return new Uri(url, UriKind.Absolute);
         }
 
+
+        ConcurrentDictionary<string, PropertyInfo> tokenGetters = new ConcurrentDictionary<string, PropertyInfo>();
         private string GetToken(ImageryProvider provider)
         {
-            var tokenSecretEntry = string.Concat(nameof(AppSecrets), ":", provider.TokenUserSecretsKey);
-            return config[tokenSecretEntry];
+            PropertyInfo tokenGetter = tokenGetters.GetOrAdd(provider.TokenUserSecretsKey, tokenKey => typeof(AppSecrets).GetProperty(provider.TokenUserSecretsKey));
+            return tokenGetter?.GetValue(options)?.ToString();
         }
 
         public bool IsTokenConfigurationValid(ImageryProvider provider)
@@ -471,7 +474,7 @@ namespace DEM.Net.Core.Imagery
         private Gray16 FromGeoPointToHeightMapColor(GeoPoint point, float min, float max)
         {
             float gray = MathHelper.Map(min, max, 0, (float)ushort.MaxValue, (float)(point.Elevation ?? 0f), true);
-            ushort height = (ushort)Math.Round(gray,0);
+            ushort height = (ushort)Math.Round(gray, 0);
             return new Gray16(height);
         }
 #endif
