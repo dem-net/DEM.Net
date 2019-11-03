@@ -84,6 +84,7 @@ namespace DEM.Net.Core.EarthData
             catch (Exception ex)
             {
                 logger.LogError(ex, $"Error while downloading DEM file: {ex.Message}");
+                throw;
             }
         }
 
