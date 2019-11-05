@@ -34,6 +34,10 @@ namespace DEM.Net.Core
     // Source : Brutile
     public class Attribution
     {
+        public Attribution() : this(null, null, null)
+        {
+
+        }
         public Attribution(string text = null, string url = null, string acknowledgement = null)
         {
             this.Text = text;
@@ -42,8 +46,8 @@ namespace DEM.Net.Core
 
         }
 
-        public string Text { get; }
-        public string Url { get; }
-        public string Acknowledgement {get; }
+        public string Text { get; set; }
+        public string Url { get; set; }
+        public string Acknowledgement { get; set; }
     }
 }
