@@ -61,17 +61,22 @@ namespace DEM.Net.Core.Imagery
         private int _serverCycle = 0;
         private readonly ILogger<ImageryService> _logger;
         private readonly IMeshService _meshService;
-        private readonly AppSecrets options;
+        private readonly AppSecrets appSecrets;
+        private readonly DEMNetOptions options;
         private static HttpClient _httpClient = new HttpClient();
 
 #if NETSTANDARD
         private readonly IConfigurationRoot _config;
 
-        public ImageryService(IMeshService meshService, IOptions<AppSecrets> options, ILogger<ImageryService> logger = null)
+        public ImageryService(IMeshService meshService,
+                                IOptions<AppSecrets> appSecrets,
+                                IOptions<DEMNetOptions> options,
+                                ILogger<ImageryService> logger = null)
         {
             _logger = logger;
             _meshService = meshService;
-            this.options = options.Value;
+            this.appSecrets = appSecrets?.Value;
+            this.options = options?.Value;
         }
 #elif NETFULL
         public ImageryService(ILogger<ImageryService> logger)
@@ -364,7 +369,7 @@ namespace DEM.Net.Core.Imagery
         private string GetToken(ImageryProvider provider)
         {
             PropertyInfo tokenGetter = tokenGetters.GetOrAdd(provider.TokenUserSecretsKey, tokenKey => typeof(AppSecrets).GetProperty(provider.TokenUserSecretsKey));
-            return tokenGetter?.GetValue(options)?.ToString();
+            return tokenGetter?.GetValue(appSecrets)?.ToString();
         }
 
         public bool IsTokenConfigurationValid(ImageryProvider provider)
@@ -541,6 +546,8 @@ namespace DEM.Net.Core.Imagery
             return uvs;
         }
 
+
+
         /// <summary>
         /// Get lists of all registered providers.
         /// </summary>
@@ -548,17 +555,27 @@ namespace DEM.Net.Core.Imagery
         /// <returns></returns>
         public List<ImageryProvider> GetRegisteredProviders()
         {
+            List<ImageryProvider> providers = new List<ImageryProvider>();
+            foreach (var f in predefinedStaticProviders.Value)
+            {
+                providers.Add(f.GetValue(this) as ImageryProvider);
+            }
+            if (options.ImageryProviders != null)
+            {
+                providers.AddRange(options.ImageryProviders);
+            }
+            return providers;
+        }
+
+        private Lazy<List<FieldInfo>> predefinedStaticProviders = new Lazy<List<FieldInfo>>(GetPredefinedProviders, false);
+        private static List<FieldInfo> GetPredefinedProviders()
+        {
             Type t = typeof(ImageryProvider);
             string providerTypeName = t.FullName;
             var fields = t.GetRuntimeFields().Where(f => f.FieldType.FullName == providerTypeName).ToList();
 
-            List<ImageryProvider> providers = new List<ImageryProvider>(fields.Count);
-
-            foreach (var f in fields)
-            {
-                providers.Add(f.GetValue(this) as ImageryProvider);
-            }
-            return providers;
+            return fields;
         }
+
     }
 }
