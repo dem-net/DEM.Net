@@ -128,10 +128,10 @@ namespace DEM.Net.Core.Imagery
 
 
             // 2 max download threads
-            var options = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism };
+            var parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism };
             var range = tiles.EnumerateRange().ToList();
             _logger?.LogInformation($"Downloading {range.Count} tiles...");
-            Parallel.ForEach(range, options, tileInfo =>
+            Parallel.ForEach(range, parallelOptions, tileInfo =>
             {
 
                 Uri tileUri = BuildUri(provider, tileInfo.X, tileInfo.Y, tileInfo.Zoom);
