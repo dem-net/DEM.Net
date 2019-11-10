@@ -60,6 +60,7 @@ namespace DEM.Net.Core.EarthData
                 // Execute the request
                 HttpWebRequest request = this.CreateWebRequest(url);
                
+
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     // Now access the data
