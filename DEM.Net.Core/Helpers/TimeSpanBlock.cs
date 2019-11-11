@@ -1,9 +1,10 @@
-﻿// UrlModel.cs
+﻿//
+// TimeSpanBlock.cs
 //
 // Author:
-//       Xavier Fischer 
+//       Xavier Fischer 2019-9
 //
-// Copyright (c) 2019 
+// Copyright (c) 2019 Xavier Fischer
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +23,29 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+using System;
+using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
-namespace DEM.Net.Core.Imagery
+namespace DEM.Net.Core
 {
-    public class UrlModel
+    public class TimeSpanBlock : IDisposable
     {
-        public string UrlFormat { get; set; }
-        public string[] Servers { get; set; }
+        private  Stopwatch _sw;
+        private  ILogger _logger;
+        private readonly string _operationName;
 
-        public UrlModel()
+        public TimeSpanBlock(string operationName, ILogger logger)
         {
+            _sw = Stopwatch.StartNew();
+            _logger = logger;
+            _operationName = operationName;
         }
 
-        public UrlModel(string urlFormat, string[] servers)
+        public void Dispose()
         {
-            this.UrlFormat = urlFormat;
-            this.Servers = servers;
+            _logger.LogInformation($"{_operationName} completed in {_sw.ElapsedMilliseconds} ms");
+            _sw.Stop();
         }
     }
 }

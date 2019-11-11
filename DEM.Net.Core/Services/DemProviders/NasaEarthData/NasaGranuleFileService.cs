@@ -39,8 +39,6 @@ namespace DEM.Net.Core.EarthData
                 if (dataSource is null)
                     throw new ArgumentException(nameof(dataSet), $"Dataset source is {dataSet.DataSource.DataSourceType}, only {nameof(DEMDataSourceType.NASA)} sources are supported by {nameof(NasaGranuleFileService)} null.");
 
-                this.logger?.LogInformation($"Setup for {dataSet.Name} dataset.");
-
                 if (!Directory.Exists(dataSetLocalDir))
                 {
                     Directory.CreateDirectory(dataSetLocalDir);
