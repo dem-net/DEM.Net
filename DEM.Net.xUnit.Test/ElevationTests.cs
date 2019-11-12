@@ -55,6 +55,29 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.00000000000004, 10.000000000000007, 1748)]
+        [InlineData(nameof(DEMDataSet.SRTM_GL1), 46.00000000000004, 10.000000000000007, 1744)]
+        [InlineData(nameof(DEMDataSet.AW3D30), 46.00000000000004, 10.000000000000007, 1741)]
+        public void TestElevationSinglePoint_TileEdges(string dataSetName, double lat, double lon, double expectedElevation)
+        {
+            DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+            Assert.NotNull(dataSet);
+
+            _elevationService.DownloadMissingFiles(dataSet, lat, lon);
+
+            _elevationService.DownloadMissingFiles(dataSet, lat-0.5, lon);
+            _elevationService.DownloadMissingFiles(dataSet, lat - 0.5, lon-0.5);
+            _elevationService.DownloadMissingFiles(dataSet, lat, lon - 0.5); 
+            _elevationService.DownloadMissingFiles(dataSet, lat + 0.5, lon);
+            _elevationService.DownloadMissingFiles(dataSet, lat + 0.5, lon + 0.5);
+            _elevationService.DownloadMissingFiles(dataSet, lat, lon + 0.5);
+            GeoPoint point = _elevationService.GetPointElevation(lat, lon, dataSet);
+            double elevation = point.Elevation.GetValueOrDefault(0);
+
+            Assert.Equal(expectedElevation, elevation, 0);
+        }
+
+        [Theory()]
         [InlineData(nameof(DEMDataSet.ASTER_GDEMV3), 45.179337, 5.721421, 45.212278, 5.468857, 1031, 3112.6337432861328, -3153.5321044921875, 172.384765625, 1648.965087890625)]
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.179337, 5.721421, 45.212278, 5.468857, 345, 2799.6234436035156, -2831.7227172851562, 178.56304931640625, 1656.548583984375)]
         [InlineData(nameof(DEMDataSet.SRTM_GL1), 45.179337, 5.721421, 45.212278, 5.468857, 1030, 3029.673828125, -3063.4037170410156, 178, 1657.423828125)]
@@ -83,7 +106,7 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), -25, -26, 37, 38, true)] // fully covered
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), -26, -25, 37, 38, true)] // fully covered
         [InlineData(nameof(DEMDataSet.SRTM_GL3), -26.659806263787523, -25.729350373606543, 37.73596920859053, 38.39764411353181, false)] // 1 tile missing
         [InlineData(nameof(DEMDataSet.SRTM_GL3), -37.43596931765545, -37.13861749268079, 50.33844888725473, 50.51342652633956, false)] // not covered at all
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 1.5, 2.5, 44.5, 45.5, true)] // fully covered by 4 tiles

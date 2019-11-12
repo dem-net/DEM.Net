@@ -16,7 +16,7 @@ namespace DEM.Net.Test
         {
             var builder = new ConfigurationBuilder()
            .SetBasePath(Directory.GetCurrentDirectory())
-           .AddJsonFile("secrets.json", optional: false, reloadOnChange: false)
+           .AddJsonFile("secrets.json", optional: true, reloadOnChange: false)
            .Build();
 
             var services = new ServiceCollection();
