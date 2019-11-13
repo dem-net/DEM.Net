@@ -427,43 +427,39 @@ namespace DEM.Net.Core
             return statusByFile;
         }
 
-        public DemFileReport GenerateReportForLocation(DEMDataSet dataSet, double lat, double lon)
+        public IEnumerable<DemFileReport> GenerateReportForLocation(DEMDataSet dataSet, double lat, double lon)
         {
             if (dataSet.DataSource.IsGlobalFile)
             {
-                return new DemFileReport()
+                return Enumerable.Repeat(new DemFileReport()
                 {
                     IsExistingLocally = File.Exists(dataSet.DataSource.IndexFilePath),
                     IsMetadataGenerated = File.Exists(GetMetadataFileName(dataSet.DataSource.IndexFilePath, ".json")),
                     LocalName = dataSet.DataSource.IndexFilePath,
                     URL = dataSet.DataSource.IndexFilePath
-                };
+                }, 1);
             }
             else
             {
                 var indexService = this._rasterIndexServiceResolver(dataSet.DataSource.DataSourceType);
                 indexService.Setup(dataSet, GetLocalDEMPath(dataSet));
 
-                foreach (DEMFileSource source in indexService.GetFileSources(dataSet))
-                {
-                    if (source.BBox.Intersects(lat, lon))
+                var intersectingTiles = indexService.GetFileSources(dataSet)
+                    .Where(source => source.BBox.Intersects(lat, lon))
+                    .Select(source => new DemFileReport()
                     {
+                        IsExistingLocally = File.Exists(source.LocalFileName),
+                        IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),
+                        LocalName = source.LocalFileName,
+                        URL = source.SourceFileNameAbsolute,
+                        Source = source
+                    });
 
-                        return new DemFileReport()
-                        {
-                            IsExistingLocally = File.Exists(source.LocalFileName),
-                            IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),
-                            LocalName = source.LocalFileName,
-                            URL = source.SourceFileNameAbsolute,
-                            Source = source
-                        };
-
-                    }
-                    //Trace.TraceInformation($"Source {source.SourceFileName}");
-                }
+                return intersectingTiles;
+                
+                
             }
 
-            return null;
         }
 
 

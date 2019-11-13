@@ -65,9 +65,9 @@ namespace DEM.Net.Test
 
             _elevationService.DownloadMissingFiles(dataSet, lat, lon);
 
-            _elevationService.DownloadMissingFiles(dataSet, lat-0.5, lon);
-            _elevationService.DownloadMissingFiles(dataSet, lat - 0.5, lon-0.5);
-            _elevationService.DownloadMissingFiles(dataSet, lat, lon - 0.5); 
+            _elevationService.DownloadMissingFiles(dataSet, lat - 0.5, lon);
+            _elevationService.DownloadMissingFiles(dataSet, lat - 0.5, lon - 0.5);
+            _elevationService.DownloadMissingFiles(dataSet, lat, lon - 0.5);
             _elevationService.DownloadMissingFiles(dataSet, lat + 0.5, lon);
             _elevationService.DownloadMissingFiles(dataSet, lat + 0.5, lon + 0.5);
             _elevationService.DownloadMissingFiles(dataSet, lat, lon + 0.5);

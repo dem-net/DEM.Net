@@ -79,7 +79,7 @@ namespace DEM.Net.Core
                 return;
             }
 
-            DownloadMissingFiles_FromReport(Enumerable.Repeat(report, 1), dataSet);
+            DownloadMissingFiles_FromReport(report, dataSet);
 
         }
 

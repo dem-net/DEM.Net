@@ -80,7 +80,7 @@ namespace DEM.Net.Core
         /// <param name="lat"></param>
         /// <param name="lon"></param>
         /// <returns></returns>
-        DemFileReport GenerateReportForLocation(DEMDataSet dataSet, double lat, double lon);
+        IEnumerable<DemFileReport> GenerateReportForLocation(DEMDataSet dataSet, double lat, double lon);
 
         /// <summary>
         /// Generates a full report of all datasets to check size and number of downloaded tiles
