@@ -101,16 +101,13 @@ namespace DEM.Net.Core
                 filePath = Path.Combine(_localDirectory, filePath);
             }
 
-            if (fileFormat.Name == DEMFileFormat.GEOTIFF.Name)
+            switch (fileFormat)
             {
-                return new GeoTiff(filePath);
+                case DEMFileFormat.GEOTIFF: return new GeoTiff(filePath);
+                case DEMFileFormat.SRTM_HGT: return new HGTFile(filePath);
+                default:
+                    throw new NotImplementedException($"{fileFormat} file format not implemented.");
             }
-            else if (fileFormat.Name == DEMFileFormat.SRTM_HGT.Name)
-            {
-                return new HGTFile(filePath);
-            }
-            else
-                throw new NotImplementedException($"{fileFormat} file format not implemented.");
 
         }
 
@@ -206,7 +203,7 @@ namespace DEM.Net.Core
              {
                  try
                  {
-                     GenerateFileMetadata(file, dataset.FileFormat, force);
+                     GenerateFileMetadata(file, dataset.FileFormat.Format, force);
                  }
                  catch (Exception exFile)
                  {
@@ -456,8 +453,8 @@ namespace DEM.Net.Core
                     });
 
                 return intersectingTiles;
-                
-                
+
+
             }
 
         }
@@ -480,7 +477,7 @@ namespace DEM.Net.Core
 
                     downloader.DownloadRasterFile(report, dataset);
 
-                    this.GenerateFileMetadata(report.LocalName, dataset.FileFormat, false);
+                    this.GenerateFileMetadata(report.LocalName, dataset.FileFormat.Format, false);
                 }
             }
 

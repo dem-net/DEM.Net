@@ -42,7 +42,7 @@ namespace DEM.Net.Core
         public int ResolutionMeters { get; set; }
         public int NoDataValue { get; set; }
 
-        public DEMFileFormat FileFormat { get; set; }
+        public DEMFileDefinition FileFormat { get; set; }
 
         public Attribution Attribution { get; set; }
 
@@ -62,7 +62,7 @@ namespace DEM.Net.Core
                 Description = "Shuttle Radar Topography Mission (SRTM GL3) Global 90m",
                 PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTSRTM.042013.4326.1",
                 DataSource = new VRTDataSource("https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL3/SRTM_GL3_srtm.vrt"),
-                FileFormat = DEMFileFormat.SRTM_HGT,
+                FileFormat = DEMFileDefinitions.SRTM_HGT,
                 ResolutionMeters = 90,
                 PointsPerDegree = 1200,
                 Attribution = new Attribution("OpenTopography", "https://opentopography.org/"
@@ -80,7 +80,7 @@ namespace DEM.Net.Core
                 Description = "Shuttle Radar Topography Mission (SRTM GL1) Global 30m",
                 PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTSRTM.082015.4326.1",
                 DataSource = new VRTDataSource("https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL1/SRTM_GL1_srtm.vrt"),
-                FileFormat = DEMFileFormat.SRTM_HGT,
+                FileFormat = DEMFileDefinitions.SRTM_HGT,
                 ResolutionMeters = 30,
                 PointsPerDegree = 3600,
                 Attribution = new Attribution("OpenTopography", "https://opentopography.org/", "http://www2.jpl.nasa.gov/srtm/srtmBibliography.html, https://doi.org/10.5069/G9445JDF")
@@ -91,7 +91,7 @@ namespace DEM.Net.Core
                 Description = "ALOS World 3D - 30m (nicest but contain void areas)",
                 PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTALOS.112016.4326.2",
                 DataSource = new VRTDataSource("https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/AW3D30/AW3D30_alos.vrt"),
-                FileFormat = DEMFileFormat.GEOTIFF,
+                FileFormat = DEMFileDefinitions.GEOTIFF,
                 ResolutionMeters = 30,
                 PointsPerDegree = 3600,
                 NoDataValue = -9999,
@@ -107,7 +107,7 @@ namespace DEM.Net.Core
                 Description = "Global low res coverage with bathymetry (1km resolution)",
                 PublicUrl = "https://www.ngdc.noaa.gov/mgg/global/",
                 DataSource = new SingleFileDataSource(Path.Combine("Data", "ETOPO1", "ETOPO1_Ice_g_geotiff.tif")),
-                FileFormat = DEMFileFormat.GEOTIFF,
+                FileFormat = DEMFileDefinitions.GEOTIFF,
                 ResolutionMeters = 1800,
                 PointsPerDegree = 60,
                 NoDataValue = -9999,
@@ -120,7 +120,7 @@ namespace DEM.Net.Core
                 Description = "ASTER Global Digital Elevation Model 1 arc second (30m)",
                 PublicUrl = "https://lpdaac.usgs.gov/products/astgtmv003",
                 DataSource = new NasaGranuleDataSource(indexFilePath: "ASTGTM.003.json", collectionId: "C1575726572-LPDAAC_ECS"),
-                FileFormat = DEMFileFormat.GEOTIFF,
+                FileFormat = DEMFileDefinitions.Overlapped(DEMFileDefinitions.GEOTIFF),
                 ResolutionMeters = 30,
                 PointsPerDegree = 3600,
                 NoDataValue = -9999,

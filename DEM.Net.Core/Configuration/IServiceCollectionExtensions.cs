@@ -25,7 +25,7 @@ namespace DEM.Net.Core
                     case Datasets.DEMDataSourceType.GDALVrt:
                     case Datasets.DEMDataSourceType.LocalFile:
                         return serviceProvider.GetService<GDALVRTFileService>();
-                    case Datasets.DEMDataSourceType.NASA:
+                    case Datasets.DEMDataSourceType.NasaEarthData:
                         return serviceProvider.GetService<NasaGranuleFileService>();
                     default:
                         throw new KeyNotFoundException(); // or maybe return null, up to you

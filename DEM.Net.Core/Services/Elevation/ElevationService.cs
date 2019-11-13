@@ -59,7 +59,7 @@ namespace DEM.Net.Core
         {
             var report = _IRasterService.GenerateReport(dataSet, bbox);
 
-            if (report == null)
+            if (report == null || !report.Any())
             {
                 _logger?.LogWarning($"No coverage for bbox {bbox} in {dataSet.Name} dataset.");
                 return;
@@ -73,7 +73,7 @@ namespace DEM.Net.Core
         {
             var report = _IRasterService.GenerateReportForLocation(dataSet, lat, lon);
 
-            if (report == null)
+            if (report == null || !report.Any())
             {
                 _logger?.LogWarning($"No coverage for lat/lon {lat}/{lon} in {dataSet.Name} dataset.");
                 return;
@@ -95,7 +95,7 @@ namespace DEM.Net.Core
             // Generate metadata files if missing
             foreach (var file in report.Where(r => r.IsMetadataGenerated == false && r.IsExistingLocally == true))
             {
-                _IRasterService.GenerateFileMetadata(file.LocalName, dataSet.FileFormat, false);
+                _IRasterService.GenerateFileMetadata(file.LocalName, dataSet.FileFormat.Format, false);
             }
             List<DemFileReport> filesToDownload = new List<DemFileReport>(report.Where(kvp => kvp.IsExistingLocally == false));
 
@@ -476,7 +476,7 @@ namespace DEM.Net.Core
                     List<HeightMap> tilesHeightMap = new List<HeightMap>(bboxMetadata.Count);
                     foreach (FileMetadata metadata in bboxMetadata)
                     {
-                        using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, dataSet.FileFormat))
+                        using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, dataSet.FileFormat.Format))
                         {
                             tilesHeightMap.Add(raster.GetHeightMapInBBox(bbox, metadata, NO_DATA_OUT));
                         }
