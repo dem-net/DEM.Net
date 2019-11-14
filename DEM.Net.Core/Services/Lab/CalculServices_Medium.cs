@@ -1773,7 +1773,6 @@ namespace DEM.Net.Core.Services.Lab
 
                 throw;
             }
-            return v_pointsOut;
         }
         #endregion PRIVATE CALCUL TIN
 

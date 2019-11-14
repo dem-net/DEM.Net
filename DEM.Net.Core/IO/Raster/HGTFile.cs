@@ -119,7 +119,7 @@ namespace DEM.Net.Core
             return heightValue;
         }
       
-        public FileMetadata ParseMetaData()
+        public FileMetadata ParseMetaData(DEMFileDefinition format)
         {
             FileMetadata metadata = new FileMetadata(_filename, DEMFileFormat.SRTM_HGT);
 

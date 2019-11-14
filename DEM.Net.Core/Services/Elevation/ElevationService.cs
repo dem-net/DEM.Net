@@ -95,7 +95,7 @@ namespace DEM.Net.Core
             // Generate metadata files if missing
             foreach (var file in report.Where(r => r.IsMetadataGenerated == false && r.IsExistingLocally == true))
             {
-                _IRasterService.GenerateFileMetadata(file.LocalName, dataSet.FileFormat.Format, false);
+                _IRasterService.GenerateFileMetadata(file.LocalName, dataSet.FileFormat, false);
             }
             List<DemFileReport> filesToDownload = new List<DemFileReport>(report.Where(kvp => kvp.IsExistingLocally == false));
 
@@ -518,12 +518,12 @@ namespace DEM.Net.Core
             return GeometryService.IsCovered(bbox, bboxTiles);
         }
 
-        public HeightMap GetHeightMap(BoundingBox bbox, string rasterFilePath, DEMFileFormat format)
+        public HeightMap GetHeightMap(BoundingBox bbox, string rasterFilePath, DEMFileDefinition format)
         {
             HeightMap heightMap = null;
-            using (IRasterFile raster = _IRasterService.OpenFile(rasterFilePath, format))
+            using (IRasterFile raster = _IRasterService.OpenFile(rasterFilePath, format.Format))
             {
-                var metaData = raster.ParseMetaData();
+                var metaData = raster.ParseMetaData(format);
                 heightMap = raster.GetHeightMapInBBox(bbox, metaData, NO_DATA_OUT);
             }
 

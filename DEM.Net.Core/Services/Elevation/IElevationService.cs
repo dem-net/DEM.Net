@@ -140,7 +140,7 @@ namespace DEM.Net.Core
         /// <param name="metadata">Raster file metadata. <see cref="GetCoveringFiles(BoundingBox, DEMDataSet, List{FileMetadata})"></see></param>
         /// <returns></returns>
         HeightMap GetHeightMap(FileMetadata metadata);
-        HeightMap GetHeightMap(BoundingBox bbox, string rasterFilePath, DEMFileFormat format);
+        HeightMap GetHeightMap(BoundingBox bbox, string rasterFilePath, DEMFileDefinition format);
 
         /// <summary>
         /// Retrieves bounding box for the uning of all raster file list

@@ -121,21 +121,19 @@ namespace DEM.Net.Core
         {
             return Path.Combine(GetLocalDEMPath(dataset), fileTitle);
         }
-        public FileMetadata ParseMetadata(IRasterFile rasterFile, bool makeRelativePath = false)
+        public FileMetadata ParseMetadata(IRasterFile rasterFile, DEMFileDefinition format, bool makeRelativePath = false)
         {
-            return rasterFile.ParseMetaData();
-
-
+            return rasterFile.ParseMetaData(format);
         }
-        public FileMetadata ParseMetadata(string fileName, DEMFileFormat fileFormat, bool makeRelativePath = true)
+        public FileMetadata ParseMetadata(string fileName, DEMFileDefinition fileFormat, bool makeRelativePath = true)
         {
             FileMetadata metadata = null;
 
             fileName = Path.GetFullPath(fileName);
 
-            using (IRasterFile rasterFile = OpenFile(fileName, fileFormat))
+            using (IRasterFile rasterFile = OpenFile(fileName, fileFormat.Format))
             {
-                metadata = rasterFile.ParseMetaData();
+                metadata = rasterFile.ParseMetaData(fileFormat);
             }
 
             Uri fullPath = new Uri(metadata.Filename, UriKind.Absolute);
@@ -192,7 +190,8 @@ namespace DEM.Net.Core
         /// <summary>
         /// Generate metadata files for fast in-memory indexing
         /// </summary>
-        /// <param name="directoryPath">Raster files directory</param>
+        /// <param name="dataset">Dataset</param>
+        /// <param name="deleteOnError">Deletes raster files on error</param>
         /// <param name="force">If true, force regeneration of all files. If false, only missing files will be generated.</param>
         public void GenerateDirectoryMetadata(DEMDataSet dataset, bool force, bool deleteOnError = false)
         {
@@ -203,7 +202,7 @@ namespace DEM.Net.Core
              {
                  try
                  {
-                     GenerateFileMetadata(file, dataset.FileFormat.Format, force);
+                     GenerateFileMetadata(file, dataset.FileFormat, force);
                  }
                  catch (Exception exFile)
                  {
@@ -243,7 +242,7 @@ namespace DEM.Net.Core
         }
 
 
-        public void GenerateFileMetadata(string rasterFileName, DEMFileFormat fileFormat, bool force)
+        public void GenerateFileMetadata(string rasterFileName, DEMFileDefinition fileFormat, bool force)
         {
             if (!File.Exists(rasterFileName))
                 throw new FileNotFoundException($"File {rasterFileName} does not exists !");
@@ -477,7 +476,7 @@ namespace DEM.Net.Core
 
                     downloader.DownloadRasterFile(report, dataset);
 
-                    this.GenerateFileMetadata(report.LocalName, dataset.FileFormat.Format, false);
+                    this.GenerateFileMetadata(report.LocalName, dataset.FileFormat, false);
                 }
             }
 

@@ -66,7 +66,6 @@ namespace DEM.Net.Core.Imagery
         private static HttpClient _httpClient = new HttpClient();
 
 #if NETSTANDARD
-        private readonly IConfigurationRoot _config;
 
         public ImageryService(IMeshService meshService,
                                 IOptions<AppSecrets> appSecrets,
@@ -82,6 +81,9 @@ namespace DEM.Net.Core.Imagery
         public ImageryService(ILogger<ImageryService> logger)
         {
             _logger = logger;
+            _meshService= null;
+            appSecrets = null;
+            options = null;
         }
 #endif
 
@@ -314,8 +316,7 @@ namespace DEM.Net.Core.Imagery
             }
 #endif
             return new TextureInfo(fileName, mimeType, (int)projectedBbox.Width, (int)projectedBbox.Height, zoomLevel, projectedBbox);
-            //return new TextureInfo(fileName, format, (int)tilesBbox.Width, (int)tilesBbox.Height);
-
+            
         }
 
 

@@ -31,8 +31,8 @@ namespace DEM.Net.Core
 {
     public interface IRasterService : IRasterDownloader
     {
-        FileMetadata ParseMetadata(IRasterFile rasterFile, bool makeRelativePath = false);
-        FileMetadata ParseMetadata(string fileName, DEMFileFormat fileFormat, bool makeRelativePath = true);
+        FileMetadata ParseMetadata(IRasterFile rasterFile, DEMFileDefinition fileFormat, bool makeRelativePath = false);
+        FileMetadata ParseMetadata(string fileName, DEMFileDefinition fileFormat, bool makeRelativePath = true);
         List<FileMetadata> LoadManifestMetadata(DEMDataSet dataSet, bool force, bool logTimeSpent = false);
 
         /// <summary>
@@ -94,9 +94,9 @@ namespace DEM.Net.Core
         /// This metadata is used for fast indexing, preventing to open every raster file when performing spatial queries
         /// </summary>
         /// <param name="rasterFileName">Local file name</param>
-        /// <param name="fileFormat">File format, see <see cref="DEMFileFormat"/></param>
+        /// <param name="fileFormat">File format definition, see <see cref="DEMFileDefinition"/></param>
         /// <param name="force">If true, metadata will be replaced, if false the metadata will be generated only if the JSON file does not exists</param>
-        void GenerateFileMetadata(string rasterFileName, DEMFileFormat fileFormat, bool force);
+        void GenerateFileMetadata(string rasterFileName, DEMFileDefinition fileFormat, bool force);
 
     }
 }

@@ -25,7 +25,7 @@ namespace DEM.Net.Core.Voronoi
                     v_topol = GetBeanTopologieByVoronoiGraph(v_voronoiGraph, v_BeanDAlimentation);
                 }
             }
-            catch (Exception v_ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -88,7 +88,7 @@ namespace DEM.Net.Core.Voronoi
                     v_index++;
                 }
             }
-            catch (Exception v_ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -688,7 +688,6 @@ namespace DEM.Net.Core.Voronoi
 
         public string GetHCodeArcDelaunay(int p_id1, int p_id2, bool p_nonOrdonnance_vf, char p_separateur = '_')
         {
-            string v_out = "";
             if (p_nonOrdonnance_vf)
             {
                 return p_id1.ToString() + p_separateur + p_id2.ToString();
