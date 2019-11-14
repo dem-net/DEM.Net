@@ -45,9 +45,10 @@ namespace DEM.Net.Core
         /* History
          * 
          *  2.1 : file name are relative to data directory
+         *  2.2 : file format is now mapped as an enum 
          */
 
-        public const string FILEMETADATA_VERSION = "2.1";
+        public const string FILEMETADATA_VERSION = "2.2";
         #endregion
 
 
@@ -72,12 +73,16 @@ namespace DEM.Net.Core
         public string SampleFormat { get; set; }
         public string NoDataValue { get; set; }
         public int ScanlineSize { get; set; }
+        /// <summary>
+        /// Origin longitude of physical image (for cell centered images this can be offset by 1px)
+        /// </summary>
         public double StartLon { get; set; }
+        ///
+        /// Origin latitude of physical image (for cell centered images this can be offset by 1px)
         public double StartLat { get; set; }
         public double pixelSizeX { get; set; }
         public double pixelSizeY { get; set; }
         public DEMFileFormat fileFormat { get; set; }
-
         public float MinimumAltitude { get; set; }
         public float MaximumAltitude { get; set; }
         public double EndLongitude
@@ -168,6 +173,11 @@ namespace DEM.Net.Core
 
                 switch (oldMetadata.Version)
                 {
+                    case "2.1":
+
+                        // 2.2 : file format
+                       
+                        break;
                     case "2.0":
 
                         // 2.1 : relative path

@@ -121,9 +121,14 @@ namespace DEM.Net.Core
       
         public FileMetadata ParseMetaData(DEMFileDefinition format)
         {
+            
             FileMetadata metadata = new FileMetadata(_filename, DEMFileFormat.SRTM_HGT);
 
             int numPixels = _fileBytesCount == HGTFile.HGT1201 ? 1201 : 3601;
+            if (format.OnePixelOverlap)
+            {
+                numPixels -= 1;
+            }
 
             ///
             metadata.Height = numPixels;

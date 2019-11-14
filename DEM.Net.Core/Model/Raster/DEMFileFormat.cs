@@ -23,9 +23,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,7 +39,7 @@ namespace DEM.Net.Core
     /// Here is defined the format of raster file (extension, raster type, overlaps)
     /// </summary>
 	public class DEMFileDefinition
-	{
+    {
         public DEMFileDefinition(string name, DEMFileFormat format, string extension, bool onePixelOverlap)
         {
             this.Name = name;
@@ -60,22 +63,22 @@ namespace DEM.Net.Core
         /// <summary>
         /// Some tiled DEM have 1px overlap around each tile (like NASA files). Set to true to handle properly those files
         /// </summary>
-        public bool OnePixelOverlap { get;  set; }
+        public bool OnePixelOverlap { get; set; }
         /// <summary>
         /// Physical file format enumeration
         /// </summary>
         public DEMFileFormat Format { get; set; }
 
-		public override string ToString()
-		{
-			return Name;
-		}
-	}
+        public override string ToString()
+        {
+            return Name;
+        }
+    }
 
     public static class DEMFileDefinitions
     {
         public static DEMFileDefinition SRTM_HGT => new DEMFileDefinition("Nasa SRTM HGT", DEMFileFormat.SRTM_HGT, ".hgt", onePixelOverlap: true);
-        public static DEMFileDefinition GEOTIFF  => new DEMFileDefinition("GeoTiff file", DEMFileFormat.GEOTIFF, ".tif", onePixelOverlap: false);
+        public static DEMFileDefinition GEOTIFF => new DEMFileDefinition("GeoTiff file", DEMFileFormat.GEOTIFF, ".tif", onePixelOverlap: false);
 
         public static DEMFileDefinition Overlapped(DEMFileDefinition d)
         {
@@ -83,19 +86,23 @@ namespace DEM.Net.Core
         }
     }
 
+    //[JsonConverter(typeof(StringEnumConverter))]
     public enum DEMFileFormat
     {
         /// <summary>
-        /// Shuttle Radar Topography Mission (SRTM) Data file.
+        /// Shuttle Radar Topography Mission (SRTM) Data file
         /// </summary>
+        //[EnumMember(Value = nameof(SRTM_HGT))]
         SRTM_HGT,
         /// <summary>
-        /// "Georeferenced TIFF file"
+        /// Georeferenced TIFF file
         /// </summary>
+        //[EnumMember(Value = nameof(GEOTIFF))] 
         GEOTIFF,
         /// <summary>
         /// Network Common Data Form (Climat and Forecast)
         /// </summary>
+        //[EnumMember(Value = nameof(CF_NetCDF))] 
         CF_NetCDF
     }
 }
