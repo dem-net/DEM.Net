@@ -62,7 +62,8 @@ namespace DEM.Net.Core
         /// <param name="dataSet"></param>
         /// <param name="force">If true, force regeneration of all files. If false, only missing files will be generated.</param>
         /// <param name="deleteOnError">If true, files where error are encountered will be deleted</param>
-        void GenerateDirectoryMetadata(DEMDataSet dataSet, bool force, bool deleteOnError = false);
+        /// <param name="maxDegreeOfParallelism">Set to 1 to force single thread execution (for debug purposes)</param>
+        void GenerateDirectoryMetadata(DEMDataSet dataSet, bool force, bool deleteOnError = false, int maxDegreeOfParallelism = 0);
 
 
         /// <summary>

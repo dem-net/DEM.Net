@@ -196,11 +196,12 @@ namespace DEM.Net.Core
         /// <param name="dataset">Dataset</param>
         /// <param name="deleteOnError">Deletes raster files on error</param>
         /// <param name="force">If true, force regeneration of all files. If false, only missing files will be generated.</param>
-        public void GenerateDirectoryMetadata(DEMDataSet dataset, bool force, bool deleteOnError = false)
+        /// <param name="maxDegreeOfParallelism">Set to 1 to force single thread execution (for debug purposes)</param>
+        public void GenerateDirectoryMetadata(DEMDataSet dataset, bool force, bool deleteOnError = false, int maxDegreeOfParallelism = 0)
         {
             string directoryPath = GetLocalDEMPath(dataset);
             var files = Directory.EnumerateFiles(directoryPath, "*" + dataset.FileFormat.FileExtension, SearchOption.AllDirectories);
-            ParallelOptions options = new ParallelOptions();
+            ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = Math.Min(Environment.ProcessorCount, maxDegreeOfParallelism) };
             Parallel.ForEach(files, options, file =>
              {
                  try
