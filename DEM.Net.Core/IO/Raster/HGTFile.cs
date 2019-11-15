@@ -122,10 +122,10 @@ namespace DEM.Net.Core
         public FileMetadata ParseMetaData(DEMFileDefinition format)
         {
             
-            FileMetadata metadata = new FileMetadata(_filename, DEMFileFormat.SRTM_HGT);
+            FileMetadata metadata = new FileMetadata(_filename, format);
 
             int numPixels = _fileBytesCount == HGTFile.HGT1201 ? 1201 : 3601;
-            if (format.OnePixelOverlap)
+            if (format.Registration == DEMFileRegistrationMode.Grid)
             {
                 numPixels -= 1;
             }

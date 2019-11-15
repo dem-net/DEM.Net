@@ -314,9 +314,9 @@ namespace DEM.Net.Core.Imagery
 
                 outputImage.Save(fileName);
             }
-#endif
             return new TextureInfo(fileName, mimeType, (int)projectedBbox.Width, (int)projectedBbox.Height, zoomLevel, projectedBbox);
-            
+#endif
+
         }
 
 
@@ -467,13 +467,13 @@ namespace DEM.Net.Core.Imagery
 
                 outputImage.Save(Path.Combine(outputDirectory, fileName));
             }
+            TextureInfo normal = new TextureInfo(Path.Combine(outputDirectory, fileName), TextureImageFormat.image_png, heightMap.Width, heightMap.Height);
+            return normal;
 #elif NETFULL
             throw new NotImplementedException();
 #endif
 
 
-            TextureInfo normal = new TextureInfo(Path.Combine(outputDirectory, fileName), TextureImageFormat.image_png, heightMap.Width, heightMap.Height);
-            return normal;
         }
 
 #if NETSTANDARD

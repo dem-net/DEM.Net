@@ -265,7 +265,7 @@ namespace DEM.Net.Core
 
         public FileMetadata ParseMetaData(DEMFileDefinition format)
         {
-            FileMetadata metadata = new FileMetadata(FilePath, DEMFileFormat.GEOTIFF);
+            FileMetadata metadata = new FileMetadata(FilePath, format);
 
             ///
             metadata.Height = TiffFile.GetField(TiffTag.IMAGELENGTH)[0].ToInt();
