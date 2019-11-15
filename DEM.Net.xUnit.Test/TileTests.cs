@@ -23,9 +23,9 @@ namespace DEM.Net.xUnit.Test
 
         [Theory()]
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.5, 10.5, "N46E010.hgt")]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.00000000000004, 10.000000000000007, "N45E010.hgt","N46E010.hgt","N45E009.hgt","N46E009.hgt")]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.5, 10.000000000000007, "N46E010.hgt", "N46E009.hgt")]
-        public void SourceBboxCheck(string dataSetName, double lat, double lon,params string[] expectedFileNames)
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.00000000000004, 10.000000000000007, "N46E010.hgt")]
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.5, 10.000000000000007, "N46E010.hgt")]
+        public void SourceBboxCheck(string dataSetName, double lat, double lon, string expectedFileName)
         {
             DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
             Assert.NotNull(dataSet);
@@ -35,18 +35,13 @@ namespace DEM.Net.xUnit.Test
 
             indexService.Setup(dataSet, _rasterService.LocalDirectory);
             var intersectingTiles = indexService.GetFileSources(dataSet).Where(tile => tile.BBox.Intersects(lat, lon)).ToList();
-            
-            var report = _rasterService.GenerateReportForLocation(dataSet, lat, lon)
-                         .ToList();
-            Assert.Equal(intersectingTiles.Count, report.Count);
+
+            var report = _rasterService.GenerateReportForLocation(dataSet, lat, lon);
+
             Assert.NotNull(report);
-            Assert.Equal(expectedFileNames.Length, report.Count);
 
-            var commonItems = expectedFileNames.Select(n => n.ToUpper())
-                                    .Intersect(report.Select(n => Path.GetFileName(n.LocalName).ToUpper()))
-                                    .ToList();
 
-            Assert.Equal(expectedFileNames.Length, commonItems.Count);
+            Assert.Equal(expectedFileName, Path.GetFileName(report.LocalName));
 
         }
 

@@ -37,9 +37,9 @@ namespace DEM.Net.Test
 
             // Pass the full file name
             fileName = Path.GetFullPath(fileName);
-            using (IRasterFile raster = _rasterService.OpenFile(fileName, DEMFileFormat.GEOTIFF))
+            using (IRasterFile raster = _rasterService.OpenFile(fileName, DEMFileType.GEOTIFF))
             {
-                FileMetadata metaData = raster.ParseMetaData();
+                FileMetadata metaData = raster.ParseMetaData(new DEMFileDefinition(DEMFileType.GEOTIFF, DEMFileRegistrationMode.Cell));
                 Assert.NotNull(metaData);
 
                 float elevation = raster.GetElevationAtPoint(metaData, 1000, 200);
@@ -69,9 +69,9 @@ namespace DEM.Net.Test
 
             // Pass the full file name
             fileName = Path.GetFullPath(fileName);
-            using (IRasterFile raster = _rasterService.OpenFile(fileName, DEMFileFormat.SRTM_HGT))
+            using (IRasterFile raster = _rasterService.OpenFile(fileName, DEMFileType.SRTM_HGT))
             {
-                FileMetadata metaData = raster.ParseMetaData();
+                FileMetadata metaData = raster.ParseMetaData(new DEMFileDefinition(DEMFileType.SRTM_HGT, DEMFileRegistrationMode.Grid));
                 Assert.NotNull(metaData);
 
                 float elevation = raster.GetElevationAtPoint(metaData, 300, 10);
@@ -100,9 +100,9 @@ namespace DEM.Net.Test
 
             // Pass the full file name
             fileName = Path.GetFullPath(fileName);
-            using (IRasterFile raster = _rasterService.OpenFile(fileName, DEMFileFormat.SRTM_HGT))
+            using (IRasterFile raster = _rasterService.OpenFile(fileName, DEMFileType.SRTM_HGT))
             {
-                FileMetadata metaData = raster.ParseMetaData();
+                FileMetadata metaData = raster.ParseMetaData(new DEMFileDefinition(DEMFileType.SRTM_HGT, DEMFileRegistrationMode.Grid));
                 Assert.NotNull(metaData);
 
                 Assert.Throws<IndexOutOfRangeException>(() =>

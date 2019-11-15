@@ -47,6 +47,13 @@ namespace DEM.Net.Core
             this.FileExtension = extension;
             this.Registration = registration;
         }
+        public DEMFileDefinition(DEMFileType format, DEMFileRegistrationMode registration)
+        {
+            this.Name = null;
+            this.Type = format;
+            this.FileExtension = null;
+            this.Registration = registration;
+        }
 
         public DEMFileDefinition()
         {

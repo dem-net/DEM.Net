@@ -62,7 +62,7 @@ namespace DEM.Net.Core
         /// <summary>
         /// Ensures local directories are created and download VRT file if needed
         /// </summary>
-        public void Setup(DEMDataSet dataSet, string dataSetLocalDir)
+        void IDEMDataSetIndex.Setup(DEMDataSet dataSet, string dataSetLocalDir)
         {
             try
             {

@@ -58,8 +58,7 @@ namespace DEM.Net.Test
             var report = _rasterService.GenerateReportForLocation(dataset, lat, lon);
 
             Assert.NotNull(report);
-            Assert.NotEmpty(report);
-            Assert.True(report.All(r=> r.IsExistingLocally));
+            Assert.True(report.IsExistingLocally);
         }
 
         [Theory()]
@@ -103,12 +102,8 @@ namespace DEM.Net.Test
 
             Assert.NotNull(report_SRTM_GL3);
             Assert.NotNull(report_AW3D30);
-            Assert.NotEmpty(report_SRTM_GL3);
-            Assert.NotEmpty(report_AW3D30);
-            foreach(var report in report_AW3D30)
-            {
-                Assert.False(report_SRTM_GL3.Any(r => r.LocalName == report.LocalName));
-            }
+            Assert.NotEqual(report_SRTM_GL3.LocalName
+                                , report_AW3D30.LocalName);
         }
 
 

@@ -73,13 +73,13 @@ namespace DEM.Net.Core
         {
             var report = _IRasterService.GenerateReportForLocation(dataSet, lat, lon);
 
-            if (report == null || !report.Any())
+            if (report == null)
             {
                 _logger?.LogWarning($"No coverage for lat/lon {lat}/{lon} in {dataSet.Name} dataset.");
                 return;
             }
 
-            DownloadMissingFiles_FromReport(report, dataSet);
+            DownloadMissingFiles_FromReport(Enumerable.Repeat(report, 1), dataSet);
 
         }
 
