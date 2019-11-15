@@ -221,7 +221,7 @@ namespace DEM.Net.Core
             float heightValue = 0;
             try
             {
-                using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, metadata.fileFormat))
+                using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, metadata.FileFormat.Type))
                 {
                     heightValue = GetPointElevation(raster, metadata, lat, lon, interpolator);
                 }
@@ -476,7 +476,7 @@ namespace DEM.Net.Core
                     List<HeightMap> tilesHeightMap = new List<HeightMap>(bboxMetadata.Count);
                     foreach (FileMetadata metadata in bboxMetadata)
                     {
-                        using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, dataSet.FileFormat.Format))
+                        using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, dataSet.FileFormat.Type))
                         {
                             tilesHeightMap.Add(raster.GetHeightMapInBBox(bbox, metadata, NO_DATA_OUT));
                         }
@@ -521,7 +521,7 @@ namespace DEM.Net.Core
         public HeightMap GetHeightMap(BoundingBox bbox, string rasterFilePath, DEMFileDefinition format)
         {
             HeightMap heightMap = null;
-            using (IRasterFile raster = _IRasterService.OpenFile(rasterFilePath, format.Format))
+            using (IRasterFile raster = _IRasterService.OpenFile(rasterFilePath, format.Type))
             {
                 var metaData = raster.ParseMetaData(format);
                 heightMap = raster.GetHeightMapInBBox(bbox, metaData, NO_DATA_OUT);
@@ -532,7 +532,7 @@ namespace DEM.Net.Core
         public HeightMap GetHeightMap(FileMetadata metadata)
         {
             HeightMap map = null;
-            using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, metadata.fileFormat))
+            using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, metadata.FileFormat.Type))
             {
                 map = raster.GetHeightMap(metadata);
             }
@@ -603,14 +603,14 @@ namespace DEM.Net.Core
             // Add main tile
             if (!dictionary.ContainsKey(mainTile))
             {
-                dictionary[mainTile] = rasterService.OpenFile(mainTile.Filename, mainTile.fileFormat);
+                dictionary[mainTile] = rasterService.OpenFile(mainTile.Filename, mainTile.FileFormat.Type);
             }
 
             foreach (var fileMetadata in fileMetadataList)
             {
                 if (!dictionary.ContainsKey(fileMetadata))
                 {
-                    dictionary[fileMetadata] = rasterService.OpenFile(fileMetadata.Filename, fileMetadata.fileFormat);
+                    dictionary[fileMetadata] = rasterService.OpenFile(fileMetadata.Filename, fileMetadata.FileFormat.Type);
                 }
             }
         }
@@ -863,11 +863,11 @@ namespace DEM.Net.Core
                 double xpos = (lon - metadata.StartLon) / metadata.pixelSizeX;
 
                 // If pure integers, then it's on the grid
-                float xInterpolationAmount = (float)xpos % 1;
-                float yInterpolationAmount = (float)ypos % 1;
+                double xInterpolationAmount = (double)xpos % 1d;
+                double yInterpolationAmount = (double)ypos % 1d;
 
-                bool xOnGrid = Math.Abs(xInterpolationAmount) < float.Epsilon;
-                bool yOnGrid = Math.Abs(yInterpolationAmount) < float.Epsilon;
+                bool xOnGrid = Math.Abs(xInterpolationAmount) < double.Epsilon;
+                bool yOnGrid = Math.Abs(yInterpolationAmount) < double.Epsilon;
 
                 // If xOnGrid and yOnGrid, we are on a grid intersection, and that's all
                 if (xOnGrid && yOnGrid)
@@ -899,7 +899,7 @@ namespace DEM.Net.Core
                     if (southWest == noData) southWest = avgHeight;
                     if (southEast == noData) southEast = avgHeight;
 
-                    heightValue = interpolator.Interpolate(southWest, southEast, northWest, northEast, xInterpolationAmount, yInterpolationAmount);
+                    heightValue = interpolator.Interpolate(southWest, southEast, northWest, northEast, (float)xInterpolationAmount, (float)yInterpolationAmount);
                 }
 
                 if (heightValue == NO_DATA_OUT)

@@ -112,7 +112,7 @@ namespace DEM.Net.Core
                             using (HttpClient client = new HttpClient())
                             using (HttpResponseMessage response = client.GetAsync(dataSet.DataSource.IndexFilePath).Result)
                             using (FileStream fs = new FileStream(vrtFileName, FileMode.Create, FileAccess.Write))
-                            { 
+                            {
                                 var contentbytes = client.GetByteArrayAsync(dataSet.DataSource.IndexFilePath).Result;
                                 fs.Write(contentbytes, 0, contentbytes.Length);
                             }
@@ -270,10 +270,10 @@ namespace DEM.Net.Core
                         // Transform origin
                         // Xp = padfTransform[0] + P * padfTransform[1] + L * padfTransform[2];
                         // Yp = padfTransform[3] + P * padfTransform[4] + L * padfTransform[5];
-                        source.OriginLon = geoTransform[0] + source.DstxOff * geoTransform[1] + source.DstyOff * geoTransform[2];
-                        source.OriginLat = geoTransform[3] + source.DstxOff * geoTransform[4] + source.DstyOff * geoTransform[5];
-                        source.DestLon = geoTransform[0] + (source.DstxOff + source.DstxSize) * geoTransform[1] + (source.DstyOff + source.DstySize) * geoTransform[2];
-                        source.DestLat = geoTransform[3] + (source.DstxOff + source.DstxSize) * geoTransform[4] + (source.DstyOff + source.DstySize) * geoTransform[5];
+                        source.OriginLon = Math.Round(geoTransform[0] + source.DstxOff * geoTransform[1] + source.DstyOff * geoTransform[2], 10);
+                        source.OriginLat = Math.Round(geoTransform[3] + source.DstxOff * geoTransform[4] + source.DstyOff * geoTransform[5], 10);
+                        source.DestLon = Math.Round(geoTransform[0] + (source.DstxOff + source.DstxSize) * geoTransform[1] + (source.DstyOff + source.DstySize) * geoTransform[2], 10);
+                        source.DestLat = Math.Round(geoTransform[3] + (source.DstxOff + source.DstxSize) * geoTransform[4] + (source.DstyOff + source.DstySize) * geoTransform[5], 10);
                         source.BBox = new BoundingBox(source.OriginLon, source.DestLon, source.DestLat, source.OriginLat);
                         isOnFirstSource = false;
 

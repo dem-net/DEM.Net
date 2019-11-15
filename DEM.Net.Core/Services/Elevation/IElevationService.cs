@@ -100,7 +100,7 @@ namespace DEM.Net.Core
         /// <summary>
         /// Get elevation for any raster at specified point (in raster coordinate system)
         /// </summary>
-        /// <param name="metadata">File metadata, <see cref="IRasterFile.ParseMetaData"/> and <see cref="IRasterService.OpenFile(string, DEMFileFormat)"/></param>
+        /// <param name="metadata">File metadata, <see cref="IRasterFile.ParseMetaData"/> and <see cref="IRasterService.OpenFile(string, DEMFileType)"/></param>
         /// <param name="lat"></param>
         /// <param name="lon"></param>
         /// <param name="interpolator">If null, then Bilinear interpolation will be used</param>
@@ -109,7 +109,7 @@ namespace DEM.Net.Core
         /// <summary>
         /// Get elevation for any raster at specified point (in raster coordinate system)
         /// </summary>
-        /// <param name="raster">Raster file, <see cref="IRasterService.OpenFile(string, DEMFileFormat)"/></param>
+        /// <param name="raster">Raster file, <see cref="IRasterService.OpenFile(string, DEMFileType)"/></param>
         /// <param name="metadata">File metadata, <see cref="IRasterFile.ParseMetaData"/></param>
         /// <param name="lat"></param>
         /// <param name="lon"></param>

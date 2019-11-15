@@ -42,7 +42,7 @@ namespace DEM.Net.Core
         /// otherwise the file path will be relative to <see cref="LocalDirectory"/></param>
         /// <param name="fileFormat"></param>
         /// <returns></returns>
-        IRasterFile OpenFile(string filePath, DEMFileFormat fileFormat);
+        IRasterFile OpenFile(string filePath, DEMFileType fileFormat);
 
         string LocalDirectory { get; }
 

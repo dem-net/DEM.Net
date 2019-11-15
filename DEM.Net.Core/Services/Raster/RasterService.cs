@@ -91,9 +91,9 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="filePath">If path is rooted (full file name), the specified file will be openened,
         /// otherwise the file path will be relative to <see cref="LocalDirectory"/></param>
-        /// <param name="fileFormat"><see cref="DEMFileFormat"/> enumeration indicating the file type</param>
+        /// <param name="fileFormat"><see cref="DEMFileType"/> enumeration indicating the file type</param>
         /// <returns><see cref="IRasterFile"/> interface for accessing file contents</returns>
-        public IRasterFile OpenFile(string filePath, DEMFileFormat fileFormat)
+        public IRasterFile OpenFile(string filePath, DEMFileType fileFormat)
         {
 
             if (!Path.IsPathRooted(filePath))
@@ -103,8 +103,8 @@ namespace DEM.Net.Core
 
             switch (fileFormat)
             {
-                case DEMFileFormat.GEOTIFF: return new GeoTiff(filePath);
-                case DEMFileFormat.SRTM_HGT: return new HGTFile(filePath);
+                case DEMFileType.GEOTIFF: return new GeoTiff(filePath);
+                case DEMFileType.SRTM_HGT: return new HGTFile(filePath);
                 default:
                     throw new NotImplementedException($"{fileFormat} file format not implemented.");
             }
@@ -131,7 +131,7 @@ namespace DEM.Net.Core
 
             fileName = Path.GetFullPath(fileName);
 
-            using (IRasterFile rasterFile = OpenFile(fileName, fileFormat.Format))
+            using (IRasterFile rasterFile = OpenFile(fileName, fileFormat.Type))
             {
                 metadata = rasterFile.ParseMetaData(fileFormat);
             }
@@ -166,7 +166,10 @@ namespace DEM.Net.Core
                     Parallel.ForEach(manifestFiles, file =>
                     {
                         string jsonContent = File.ReadAllText(file);
+
+
                         FileMetadata metadata = JsonConvert.DeserializeObject<FileMetadata>(jsonContent);
+
                         if (metadata.Version != FileMetadata.FILEMETADATA_VERSION)
                         {
                             metadata = FileMetadataMigrations.Migrate(_logger, metadata, _localDirectory, dataset);

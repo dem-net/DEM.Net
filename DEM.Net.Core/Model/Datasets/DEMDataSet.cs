@@ -51,7 +51,7 @@ namespace DEM.Net.Core
         private static readonly Lazy<Dictionary<string, DEMDataSet>> Datasets = new Lazy<Dictionary<string, DEMDataSet>>(GetRegisteredDatasets, true);
 
         public static IEnumerable<DEMDataSet> RegisteredDatasets => DEMDataSet.Datasets.Value.Values;
-        public static IEnumerable<DEMDataSet> RegisteredNonSingleFileDatasets => RegisteredDatasets.Where(d=> !d.DataSource.IsGlobalFile);
+        public static IEnumerable<DEMDataSet> RegisteredNonSingleFileDatasets => RegisteredDatasets.Where(d => !d.DataSource.IsGlobalFile);
 
         private static Dictionary<string, DEMDataSet> GetRegisteredDatasets()
         {
@@ -62,7 +62,7 @@ namespace DEM.Net.Core
                 Description = "Shuttle Radar Topography Mission (SRTM GL3) Global 90m",
                 PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTSRTM.042013.4326.1",
                 DataSource = new VRTDataSource("https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL3/SRTM_GL3_srtm.vrt"),
-                FileFormat = DEMFileDefinitions.SRTM_HGT,
+                FileFormat = new DEMFileDefinition("Nasa SRTM HGT", DEMFileType.SRTM_HGT, ".hgt", DEMFileRegistrationMode.Grid),
                 ResolutionMeters = 90,
                 PointsPerDegree = 1200,
                 Attribution = new Attribution("OpenTopography", "https://opentopography.org/"
@@ -80,7 +80,7 @@ namespace DEM.Net.Core
                 Description = "Shuttle Radar Topography Mission (SRTM GL1) Global 30m",
                 PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTSRTM.082015.4326.1",
                 DataSource = new VRTDataSource("https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL1/SRTM_GL1_srtm.vrt"),
-                FileFormat = DEMFileDefinitions.SRTM_HGT,
+                FileFormat = new DEMFileDefinition("Nasa SRTM HGT", DEMFileType.SRTM_HGT, ".hgt", DEMFileRegistrationMode.Grid),
                 ResolutionMeters = 30,
                 PointsPerDegree = 3600,
                 Attribution = new Attribution("OpenTopography", "https://opentopography.org/", "http://www2.jpl.nasa.gov/srtm/srtmBibliography.html, https://doi.org/10.5069/G9445JDF")
@@ -91,7 +91,7 @@ namespace DEM.Net.Core
                 Description = "ALOS World 3D - 30m (nicest but contain void areas)",
                 PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTALOS.112016.4326.2",
                 DataSource = new VRTDataSource("https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/AW3D30/AW3D30_alos.vrt"),
-                FileFormat = DEMFileDefinitions.GEOTIFF,
+                FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Cell),
                 ResolutionMeters = 30,
                 PointsPerDegree = 3600,
                 NoDataValue = -9999,
@@ -107,7 +107,7 @@ namespace DEM.Net.Core
                 Description = "Global low res coverage with bathymetry (1km resolution)",
                 PublicUrl = "https://www.ngdc.noaa.gov/mgg/global/",
                 DataSource = new SingleFileDataSource(Path.Combine("Data", "ETOPO1", "ETOPO1_Ice_g_geotiff.tif")),
-                FileFormat = DEMFileDefinitions.GEOTIFF,
+                FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Grid),
                 ResolutionMeters = 1800,
                 PointsPerDegree = 60,
                 NoDataValue = -9999,
@@ -120,7 +120,7 @@ namespace DEM.Net.Core
                 Description = "ASTER Global Digital Elevation Model 1 arc second (30m)",
                 PublicUrl = "https://lpdaac.usgs.gov/products/astgtmv003",
                 DataSource = new NasaGranuleDataSource(indexFilePath: "ASTGTM.003.json", collectionId: "C1575726572-LPDAAC_ECS"),
-                FileFormat = DEMFileDefinitions.Overlapped(DEMFileDefinitions.GEOTIFF),
+                FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Grid),
                 ResolutionMeters = 30,
                 PointsPerDegree = 3600,
                 NoDataValue = -9999,
@@ -161,8 +161,8 @@ namespace DEM.Net.Core
         /// API: https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html
         /// </summary>
         public static DEMDataSet ASTER_GDEMV3 => Datasets.Value[nameof(ASTER_GDEMV3)];
-        
-        
+
+
 
         public int PointsPerDegree { get; private set; }
 

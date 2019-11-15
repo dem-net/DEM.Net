@@ -45,17 +45,17 @@ namespace DEM.Net.Core
         /* History
          * 
          *  2.1 : file name are relative to data directory
-         *  2.2 : file format is now mapped as an enum 
+         *  2.2 : file format is now mapped to DEMFileDefinition
          */
 
         public const string FILEMETADATA_VERSION = "2.2";
         #endregion
 
 
-        public FileMetadata(string filename, DEMFileFormat fileFormat, string version = FILEMETADATA_VERSION)
+        public FileMetadata(string filename, DEMFileDefinition fileFormat, string version = FILEMETADATA_VERSION)
         {
             this.Filename = filename;
-            this.fileFormat = fileFormat;
+            this.FileFormat = fileFormat;
             this.Version = version;
         }
 
@@ -82,7 +82,7 @@ namespace DEM.Net.Core
         public double StartLat { get; set; }
         public double pixelSizeX { get; set; }
         public double pixelSizeY { get; set; }
-        public DEMFileFormat fileFormat { get; set; }
+        public DEMFileDefinition FileFormat { get; set; }
         public float MinimumAltitude { get; set; }
         public float MaximumAltitude { get; set; }
         public double EndLongitude
@@ -161,65 +161,5 @@ namespace DEM.Net.Core
             }
         }
 
-    }
-
-    internal static class FileMetadataMigrations
-    {
-        public static FileMetadata Migrate(ILogger logger, FileMetadata oldMetadata, string dataRootDirectory, DEMDataSet dataSet)
-        {
-            if (oldMetadata != null)
-            {
-                logger.LogInformation($"Migration metadata file {oldMetadata.Filename} from {oldMetadata.Version} to {FileMetadata.FILEMETADATA_VERSION}");
-
-                switch (oldMetadata.Version)
-                {
-                    case "2.1":
-
-                        // 2.2 : file format
-                       
-                        break;
-                    case "2.0":
-
-                        // 2.1 : relative path
-                        // Find dataset root within path
-                        DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(oldMetadata.Filename));
-                        while (dir.Name != dataSet.Name)
-                        {
-                            dir = dir.Parent;
-                        }
-                        dir = dir.Parent;
-                        // replace directory
-                        oldMetadata.Filename = oldMetadata.Filename.Replace(dir.FullName, dataRootDirectory);
-                        Uri fullPath = new Uri(oldMetadata.Filename, UriKind.Absolute);
-                        if (!(dataRootDirectory.Last() == Path.DirectorySeparatorChar))
-                            dataRootDirectory += Path.DirectorySeparatorChar;
-                        Uri relRoot = new Uri(dataRootDirectory, UriKind.Absolute);
-
-                        oldMetadata.Filename = Uri.UnescapeDataString(relRoot.MakeRelativeUri(fullPath).ToString());
-
-                        break;
-                    default:
-
-                        // DEMFileFormat
-                        switch (Path.GetExtension(oldMetadata.Filename).ToUpper())
-                        {
-                            case ".TIF":
-                            case ".TIFF":
-                                oldMetadata.fileFormat = DEMFileFormat.GEOTIFF;
-                                break;
-                            default:
-                                // not possible since pre V2 files could only be GEOTIFF
-                                throw new Exception("Metadata corrupted.");
-                        }
-                        break;
-                }
-
-                // set version and fileFormat
-                oldMetadata.Version = FileMetadata.FILEMETADATA_VERSION;
-
-
-            }
-            return oldMetadata;
-        }
     }
 }

@@ -36,16 +36,16 @@ namespace DEM.Net.Core
 {
     /// <summary>
     /// File specification for a given dataset. Used in raster services to handle properly different cases of files encountered
-    /// Here is defined the format of raster file (extension, raster type, overlaps)
+    /// Here is defined the format of raster file (extension, raster type, grid registration)
     /// </summary>
 	public class DEMFileDefinition
     {
-        public DEMFileDefinition(string name, DEMFileFormat format, string extension, bool onePixelOverlap)
+        public DEMFileDefinition(string name, DEMFileType format, string extension, DEMFileRegistrationMode registration)
         {
             this.Name = name;
-            this.Format = format;
+            this.Type = format;
             this.FileExtension = extension;
-            this.OnePixelOverlap = onePixelOverlap;
+            this.Registration = registration;
         }
 
         public DEMFileDefinition()
@@ -59,50 +59,22 @@ namespace DEM.Net.Core
         /// Physical raster files extension (format: ".ext")
         /// </summary>
 		public string FileExtension { get; set; }
-
-        /// <summary>
-        /// Some tiled DEM have 1px overlap around each tile (like NASA files). Set to true to handle properly those files
-        /// </summary>
-        public bool OnePixelOverlap { get; set; }
+        
         /// <summary>
         /// Physical file format enumeration
         /// </summary>
-        public DEMFileFormat Format { get; set; }
+        public DEMFileType Type { get; set; }
+
+        /// <summary>
+        /// Grid/node-registered: cells are centered on lines of latitude and longitude (usually there is one pixel overlap for each tile).
+        /// Cell/pixel-registered: cell edges are along lines of latitude and longitude.
+        /// Good explanation here : https://www.ngdc.noaa.gov/mgg/global/gridregistration.html
+        /// </summary>
+        public DEMFileRegistrationMode Registration { get; set; }
 
         public override string ToString()
         {
             return Name;
         }
-    }
-
-    public static class DEMFileDefinitions
-    {
-        public static DEMFileDefinition SRTM_HGT => new DEMFileDefinition("Nasa SRTM HGT", DEMFileFormat.SRTM_HGT, ".hgt", onePixelOverlap: true);
-        public static DEMFileDefinition GEOTIFF => new DEMFileDefinition("GeoTiff file", DEMFileFormat.GEOTIFF, ".tif", onePixelOverlap: false);
-
-        public static DEMFileDefinition Overlapped(DEMFileDefinition d)
-        {
-            return new DEMFileDefinition(d.FileExtension, d.Format, d.FileExtension, true);
-        }
-    }
-
-    //[JsonConverter(typeof(StringEnumConverter))]
-    public enum DEMFileFormat
-    {
-        /// <summary>
-        /// Shuttle Radar Topography Mission (SRTM) Data file
-        /// </summary>
-        //[EnumMember(Value = nameof(SRTM_HGT))]
-        SRTM_HGT,
-        /// <summary>
-        /// Georeferenced TIFF file
-        /// </summary>
-        //[EnumMember(Value = nameof(GEOTIFF))] 
-        GEOTIFF,
-        /// <summary>
-        /// Network Common Data Form (Climat and Forecast)
-        /// </summary>
-        //[EnumMember(Value = nameof(CF_NetCDF))] 
-        CF_NetCDF
     }
 }
