@@ -125,40 +125,67 @@ namespace DEM.Net.Core
             FileMetadata metadata = new FileMetadata(_filename, format);
 
             int numPixels = _fileBytesCount == HGTFile.HGT1201 ? 1201 : 3601;
+
             if (format.Registration == DEMFileRegistrationMode.Grid)
-            {
-                numPixels -= 1;
+            { ///
+                metadata.Height = numPixels;
+                metadata.Width = numPixels;
+                metadata.PixelScaleX = 1d / numPixels;
+                metadata.PixelScaleY = 1d / numPixels;
+                metadata.pixelSizeX = metadata.PixelScaleX;
+                metadata.pixelSizeY = -metadata.PixelScaleY;
+
+                // fileName gives is coordinates of center of first lower left pixel (south west)
+                // example N08E003.hgt
+                string fileTitle = Path.GetFileNameWithoutExtension(_filename);
+                int latSign = fileTitle.Substring(0, 1) == "N" ? 1 : -1;
+                int lonSign = fileTitle.Substring(3, 1) == "E" ? 1 : -1;
+                int lat = int.Parse(fileTitle.Substring(1, 2)) * latSign;
+                int lon = int.Parse(fileTitle.Substring(4, 3)) * lonSign;
+                metadata.OriginLongitude = lon;
+                metadata.OriginLatitude = lat + 1;
+                metadata.StartLat = metadata.OriginLatitude + (metadata.pixelSizeY / 2.0);
+                metadata.StartLon = metadata.OriginLongitude + (metadata.pixelSizeX / 2.0);
+
+                metadata.ScanlineSize = numPixels * 2; // 16 bit signed integers
+
+
+                metadata.BitsPerSample = 16;
+                // Add other information about the data
+                metadata.SampleFormat = RasterSampleFormat.INTEGER;
+                // TODO: Read this from tiff metadata or determine after parsing
+                metadata.NoDataValue = "-32768";
             }
+            else
+            {
+                metadata.Height = numPixels;
+                metadata.Width = numPixels;
+                metadata.PixelScaleX = 1d / numPixels;
+                metadata.PixelScaleY = 1d / numPixels;
+                metadata.pixelSizeX = metadata.PixelScaleX;
+                metadata.pixelSizeY = -metadata.PixelScaleY;
 
-            ///
-            metadata.Height = numPixels;
-            metadata.Width = numPixels;
+                // fileName gives is coordinates of center of first lower left pixel (south west)
+                // example N08E003.hgt
+                string fileTitle = Path.GetFileNameWithoutExtension(_filename);
+                int latSign = fileTitle.Substring(0, 1) == "N" ? 1 : -1;
+                int lonSign = fileTitle.Substring(3, 1) == "E" ? 1 : -1;
+                int lat = int.Parse(fileTitle.Substring(1, 2)) * latSign;
+                int lon = int.Parse(fileTitle.Substring(4, 3)) * lonSign;
+                metadata.OriginLongitude = lon;
+                metadata.OriginLatitude = lat + 1;
+                metadata.StartLat = metadata.OriginLatitude + (metadata.pixelSizeY / 2.0);
+                metadata.StartLon = metadata.OriginLongitude + (metadata.pixelSizeX / 2.0);
 
-            metadata.PixelScaleX = 1d / numPixels;
-            metadata.PixelScaleY = 1d / numPixels;
-            metadata.pixelSizeX = metadata.PixelScaleX;
-            metadata.pixelSizeY = -metadata.PixelScaleY;
-
-            // fileName gives is coordinates of center of first lower left pixel (south west)
-            // example N08E003.hgt
-            string fileTitle = Path.GetFileNameWithoutExtension(_filename);
-            int latSign = fileTitle.Substring(0, 1) == "N" ? 1 : -1;
-            int lonSign = fileTitle.Substring(3, 1) == "E" ? 1 : -1;
-            int lat = int.Parse(fileTitle.Substring(1, 2)) * latSign;
-            int lon = int.Parse(fileTitle.Substring(4, 3)) * lonSign;
-            metadata.OriginLongitude = lon;
-            metadata.OriginLatitude = lat + 1;
-            metadata.StartLat = metadata.OriginLatitude + (metadata.pixelSizeY / 2.0);
-            metadata.StartLon = metadata.OriginLongitude + (metadata.pixelSizeX / 2.0);
-
-            metadata.ScanlineSize = numPixels * 2; // 16 bit signed integers
+                metadata.ScanlineSize = numPixels * 2; // 16 bit signed integers
 
 
-            metadata.BitsPerSample = 16;
-            // Add other information about the data
-            metadata.SampleFormat = RasterSampleFormat.INTEGER;
-            // TODO: Read this from tiff metadata or determine after parsing
-            metadata.NoDataValue = "-32768";
+                metadata.BitsPerSample = 16;
+                // Add other information about the data
+                metadata.SampleFormat = RasterSampleFormat.INTEGER;
+                // TODO: Read this from tiff metadata or determine after parsing
+                metadata.NoDataValue = "-32768";
+            }
 
             return metadata;
         }
