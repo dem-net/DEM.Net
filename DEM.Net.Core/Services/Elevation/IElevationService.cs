@@ -158,7 +158,7 @@ namespace DEM.Net.Core
         bool IsBboxIntersectingTile(FileMetadata tileMetadata, BoundingBox bbox);
         bool IsPointInTile(FileMetadata tileMetadata, GeoPoint point);
         List<FileMetadata> GetCoveringFiles(BoundingBox bbox, DEMDataSet dataSet, List<FileMetadata> subSet = null);
-        List<FileMetadata> GetCoveringFiles(double lat, double lon, DEMDataSet dataSet, List<FileMetadata> subSet = null);
+        FileMetadata GetCoveringFile(double lat, double lon, DEMDataSet dataSet, List<FileMetadata> subSet = null);
         string GetDEMLocalPath(DEMDataSet dataSet);
 
         /// <summary>

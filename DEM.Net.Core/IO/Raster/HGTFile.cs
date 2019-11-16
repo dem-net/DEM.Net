@@ -71,8 +71,8 @@ namespace DEM.Net.Core
             _hgtStream.Seek(metadata.ScanlineSize * y, SeekOrigin.Begin);
             _hgtStream.Read(byteScanline,0, metadata.ScanlineSize);
 
-            double latitude = metadata.StartLat + (metadata.pixelSizeY * y);
-            double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
+            double latitude = metadata.PhysicalStartLat + (metadata.pixelSizeY * y);
+            double longitude = metadata.PhysicalStartLon + (metadata.pixelSizeX * x);
 
             float heightValue = 0;
             byte[] heightBytes = new byte[bytesPerSample];
@@ -130,8 +130,8 @@ namespace DEM.Net.Core
             { ///
                 metadata.Height = numPixels;
                 metadata.Width = numPixels;
-                metadata.PixelScaleX = 1d / numPixels;
-                metadata.PixelScaleY = 1d / numPixels;
+                metadata.PixelScaleX = 1d / (numPixels-1);
+                metadata.PixelScaleY = 1d / (numPixels-1);
                 metadata.pixelSizeX = metadata.PixelScaleX;
                 metadata.pixelSizeY = -metadata.PixelScaleY;
 
@@ -142,10 +142,15 @@ namespace DEM.Net.Core
                 int lonSign = fileTitle.Substring(3, 1) == "E" ? 1 : -1;
                 int lat = int.Parse(fileTitle.Substring(1, 2)) * latSign;
                 int lon = int.Parse(fileTitle.Substring(4, 3)) * lonSign;
-                metadata.OriginLongitude = lon;
-                metadata.OriginLatitude = lat + 1;
-                metadata.StartLat = metadata.OriginLatitude + (metadata.pixelSizeY / 2.0);
-                metadata.StartLon = metadata.OriginLongitude + (metadata.pixelSizeX / 2.0);
+                metadata.DataStartLon = lon;
+                metadata.DataStartLat = lat; 
+                metadata.DataEndLon = lon+1;
+                metadata.DataEndLat = lat+1;
+                metadata.PhysicalStartLat = metadata.DataStartLat + (metadata.pixelSizeY / 2.0);
+                metadata.PhysicalStartLon = metadata.DataStartLon - (metadata.pixelSizeX / 2.0);
+                metadata.PhysicalEndLon = metadata.Width * metadata.pixelSizeX + metadata.DataStartLon;
+                metadata.PhysicalEndLat = metadata.DataStartLat + metadata.Height * Math.Abs(metadata.pixelSizeY) ;
+
 
                 metadata.ScanlineSize = numPixels * 2; // 16 bit signed integers
 
@@ -158,33 +163,39 @@ namespace DEM.Net.Core
             }
             else
             {
-                metadata.Height = numPixels;
-                metadata.Width = numPixels;
-                metadata.PixelScaleX = 1d / numPixels;
-                metadata.PixelScaleY = 1d / numPixels;
-                metadata.pixelSizeX = metadata.PixelScaleX;
-                metadata.pixelSizeY = -metadata.PixelScaleY;
+                throw new NotSupportedException("HGT files should always be grid registered, not cell registered.");
+                ///
+                //metadata.Height = numPixels;
+                //metadata.Width = numPixels;
 
-                // fileName gives is coordinates of center of first lower left pixel (south west)
-                // example N08E003.hgt
-                string fileTitle = Path.GetFileNameWithoutExtension(_filename);
-                int latSign = fileTitle.Substring(0, 1) == "N" ? 1 : -1;
-                int lonSign = fileTitle.Substring(3, 1) == "E" ? 1 : -1;
-                int lat = int.Parse(fileTitle.Substring(1, 2)) * latSign;
-                int lon = int.Parse(fileTitle.Substring(4, 3)) * lonSign;
-                metadata.OriginLongitude = lon;
-                metadata.OriginLatitude = lat + 1;
-                metadata.StartLat = metadata.OriginLatitude + (metadata.pixelSizeY / 2.0);
-                metadata.StartLon = metadata.OriginLongitude + (metadata.pixelSizeX / 2.0);
+                //metadata.PixelScaleX = 1d / numPixels;
+                //metadata.PixelScaleY = 1d / numPixels;
+                //metadata.pixelSizeX = metadata.PixelScaleX;
+                //metadata.pixelSizeY = -metadata.PixelScaleY;
 
-                metadata.ScanlineSize = numPixels * 2; // 16 bit signed integers
+                //// fileName gives is coordinates of center of first lower left pixel (south west)
+                //// example N08E003.hgt
+                //string fileTitle = Path.GetFileNameWithoutExtension(_filename);
+                //int latSign = fileTitle.Substring(0, 1) == "N" ? 1 : -1;
+                //int lonSign = fileTitle.Substring(3, 1) == "E" ? 1 : -1;
+                //int lat = int.Parse(fileTitle.Substring(1, 2)) * latSign;
+                //int lon = int.Parse(fileTitle.Substring(4, 3)) * lonSign;
+                //metadata.OriginLongitude = lon;
+                //metadata.OriginLatitude = lat + 1;
+                //metadata.StartLat = metadata.OriginLatitude + (metadata.pixelSizeY / 2.0);
+                //metadata.StartLon = metadata.OriginLongitude + (metadata.pixelSizeX / 2.0);
+
+                //metadata.ScanlineSize = numPixels * 2; // 16 bit signed integers
 
 
-                metadata.BitsPerSample = 16;
-                // Add other information about the data
-                metadata.SampleFormat = RasterSampleFormat.INTEGER;
-                // TODO: Read this from tiff metadata or determine after parsing
-                metadata.NoDataValue = "-32768";
+                //metadata.BitsPerSample = 16;
+                //// Add other information about the data
+                //metadata.SampleFormat = RasterSampleFormat.INTEGER;
+                //// TODO: Read this from tiff metadata or determine after parsing
+                //metadata.NoDataValue = "-32768";
+
+                //return metadata;
+
             }
 
             return metadata;
@@ -198,10 +209,10 @@ namespace DEM.Net.Core
             int bytesPerSample = metadata.BitsPerSample / 8;
             byte[] byteScanline = new byte[metadata.ScanlineSize];
 
-            int yStart = (int)Math.Floor((bbox.yMax - metadata.StartLat) / metadata.pixelSizeY);
-            int yEnd = (int)Math.Ceiling((bbox.yMin - metadata.StartLat) / metadata.pixelSizeY);
-            int xStart = (int)Math.Floor((bbox.xMin - metadata.StartLon) / metadata.pixelSizeX);
-            int xEnd = (int)Math.Ceiling((bbox.xMax - metadata.StartLon) / metadata.pixelSizeX);
+            int yStart = (int)Math.Floor((bbox.yMax - metadata.PhysicalStartLat) / metadata.pixelSizeY);
+            int yEnd = (int)Math.Ceiling((bbox.yMin - metadata.PhysicalStartLat) / metadata.pixelSizeY);
+            int xStart = (int)Math.Floor((bbox.xMin - metadata.PhysicalStartLon) / metadata.pixelSizeX);
+            int xEnd = (int)Math.Ceiling((bbox.xMax - metadata.PhysicalStartLon) / metadata.pixelSizeX);
 
             xStart = Math.Max(0, xStart);
             xEnd = Math.Min(metadata.Width - 1, xEnd);
@@ -220,14 +231,14 @@ namespace DEM.Net.Core
             {
                 _hgtStream.Read(byteScanline, 0, metadata.ScanlineSize);
 
-                double latitude = metadata.StartLat + (metadata.pixelSizeY * y);
+                double latitude = metadata.PhysicalStartLat + (metadata.pixelSizeY * y);
 
                 // bounding box
                 if (y == yStart)
                 {
                     heightMap.BoundingBox.yMax = latitude;
-                    heightMap.BoundingBox.xMin = metadata.StartLon + (metadata.pixelSizeX * xStart);
-                    heightMap.BoundingBox.xMax = metadata.StartLon + (metadata.pixelSizeX * xEnd);
+                    heightMap.BoundingBox.xMin = metadata.PhysicalStartLon + (metadata.pixelSizeX * xStart);
+                    heightMap.BoundingBox.xMax = metadata.PhysicalStartLon + (metadata.pixelSizeX * xEnd);
                 }
                 else if (y == yEnd)
                 {
@@ -236,7 +247,7 @@ namespace DEM.Net.Core
 
                 for (int x = xStart; x <= xEnd; x++)
                 {
-                    double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
+                    double longitude = metadata.PhysicalStartLon + (metadata.pixelSizeX * x);
 
                     byte[] heightBytes = new byte[bytesPerSample];
                     float heightValue = 0;
@@ -322,10 +333,10 @@ namespace DEM.Net.Core
             {
                 _hgtStream.Read(byteScanline, 0, metadata.ScanlineSize);
 
-                double latitude = metadata.StartLat + (metadata.pixelSizeY * y);
+                double latitude = metadata.PhysicalStartLat + (metadata.pixelSizeY * y);
                 for (int x = 0; x < metadata.Width; x++)
                 {
-                    double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
+                    double longitude = metadata.PhysicalStartLon + (metadata.pixelSizeX * x);
 
                     float heightValue = 0;
                     byte[] heightBytes = new byte[bytesPerSample]; ;

@@ -66,8 +66,24 @@ namespace DEM.Net.Core
         public int Width { get; set; }
         public double PixelScaleX { get; set; }
         public double PixelScaleY { get; set; }
-        public double OriginLatitude { get; set; }
-        public double OriginLongitude { get; set; }
+        /// <summary>
+        /// Data point start latitude (used for bbox)
+        /// Image may be grid centered, with lat less than data start, but the data resides in the next overlapping tile
+        /// </summary>
+        public double DataStartLat { get; set; }
+        /// <summary>
+        /// Data point start longitude (used for bbox)
+        /// Image may be grid centered, with long less than data start, but the data resides in the next overlapping tile
+        /// </summary>
+        public double DataStartLon { get; set; }
+        /// <summary>
+        /// Data point end latitude (used for bbox)
+        /// </summary>
+        public double DataEndLat { get; set; }
+        /// <summary>
+        /// Data point end longitude (used for bbox)
+        /// </summary>
+        public double DataEndLon { get; set; }
         public int BitsPerSample { get; set; }
         public string WorldUnits { get; set; }
         public string SampleFormat { get; set; }
@@ -76,29 +92,18 @@ namespace DEM.Net.Core
         /// <summary>
         /// Origin longitude of physical image (for cell centered images this can be offset by 1px)
         /// </summary>
-        public double StartLon { get; set; }
+        public double PhysicalStartLon { get; set; }
         ///
         /// Origin latitude of physical image (for cell centered images this can be offset by 1px)
-        public double StartLat { get; set; }
+        public double PhysicalStartLat { get; set; }
+        public double PhysicalEndLon { get; set; }
+        public double PhysicalEndLat { get; set; }
         public double pixelSizeX { get; set; }
         public double pixelSizeY { get; set; }
         public DEMFileDefinition FileFormat { get; set; }
         public float MinimumAltitude { get; set; }
         public float MaximumAltitude { get; set; }
-        public double EndLongitude
-        {
-            get
-            {
-                return Width * pixelSizeX + OriginLongitude;
-            }
-        }
-        public double EndLatitude
-        {
-            get
-            {
-                return Height * pixelSizeY + OriginLatitude;
-            }
-        }
+       
 
         private float _noDataValue;
         private bool _noDataValueSet = false;
@@ -120,7 +125,7 @@ namespace DEM.Net.Core
 
         public override string ToString()
         {
-            return $"{System.IO.Path.GetFileName(Filename)}: {OriginLatitude} {OriginLongitude} -> {EndLatitude} {EndLongitude}";
+            return $"{System.IO.Path.GetFileName(Filename)}: {BoundingBox}";
         }
 
         public override bool Equals(object obj)
@@ -151,10 +156,10 @@ namespace DEM.Net.Core
             {
                 if (_boundingBox == null)
                 {
-                    double xmin = Math.Min(OriginLongitude, EndLongitude);
-                    double xmax = Math.Max(OriginLongitude, EndLongitude);
-                    double ymin = Math.Min(EndLatitude, OriginLatitude);
-                    double ymax = Math.Max(EndLatitude, OriginLatitude);
+                    double xmin = Math.Min(DataStartLon, DataEndLon);
+                    double xmax = Math.Max(DataStartLon, DataEndLon);
+                    double ymin = Math.Min(DataStartLat, DataEndLat);
+                    double ymax = Math.Max(DataStartLat, DataEndLat);
                     _boundingBox = new BoundingBox(xmin, xmax, ymin, ymax);
                 }
                 return _boundingBox;

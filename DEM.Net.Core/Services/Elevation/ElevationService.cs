@@ -244,8 +244,8 @@ namespace DEM.Net.Core
 
 
                 // precise position on the grid (with commas)
-                double ypos = (lat - metadata.StartLat) / metadata.pixelSizeY;
-                double xpos = (lon - metadata.StartLon) / metadata.pixelSizeX;
+                double ypos = (lat - metadata.PhysicalStartLat) / metadata.pixelSizeY;
+                double xpos = (lon - metadata.PhysicalStartLon) / metadata.pixelSizeX;
 
                 // If pure integers, then it's on the grid
                 float xInterpolationAmount = (float)xpos % 1;
@@ -307,12 +307,12 @@ namespace DEM.Net.Core
                 foreach (var pointsByLat in points.GroupBy(p => p.Latitude))
                 {
                     double lat = pointsByLat.Key;
-                    double ypos = (lat - metadata.StartLat) / metadata.pixelSizeY;
+                    double ypos = (lat - metadata.PhysicalStartLat) / metadata.pixelSizeY;
                     foreach (GeoPoint point in pointsByLat)
                     {
                         // precise position on the grid (with commas)
                         double lon = point.Longitude;
-                        double xpos = (lon - metadata.StartLon) / metadata.pixelSizeX;
+                        double xpos = (lon - metadata.PhysicalStartLon) / metadata.pixelSizeX;
 
                         // If pure integers, then it's on the grid
                         float xInterpolationAmount = (float)xpos % 1;
@@ -366,9 +366,9 @@ namespace DEM.Net.Core
         public GeoPoint GetPointElevation(double lat, double lon, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
             GeoPoint geoPoint = new GeoPoint(lat, lon);
-            List<FileMetadata> tiles = this.GetCoveringFiles(lat, lon, dataSet);
+            FileMetadata tile = this.GetCoveringFile(lat, lon, dataSet);
 
-            if (tiles.Count == 0)
+            if (tile == null)
             {
                 _logger?.LogWarning($"No coverage found matching provided point {geoPoint} for dataset {dataSet.Name}");
                 return null;
@@ -380,9 +380,9 @@ namespace DEM.Net.Core
 
                 using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
                 {
-                    PopulateRasterFileDictionary(adjacentRasters, tiles.First(), _IRasterService, tiles);
+                    PopulateRasterFileDictionary(adjacentRasters, tile, _IRasterService, null);
 
-                    geoPoint.Elevation = GetElevationAtPoint(adjacentRasters, tiles.First(), lat, lon, 0, interpolator);
+                    geoPoint.Elevation = GetElevationAtPoint(adjacentRasters, tile, lat, lon, 0, interpolator);
 
 
                     //Debug.WriteLine(adjacentRasters.Count);
@@ -606,11 +606,14 @@ namespace DEM.Net.Core
                 dictionary[mainTile] = rasterService.OpenFile(mainTile.Filename, mainTile.FileFormat.Type);
             }
 
-            foreach (var fileMetadata in fileMetadataList)
+            if (fileMetadataList != null)
             {
-                if (!dictionary.ContainsKey(fileMetadata))
+                foreach (var fileMetadata in fileMetadataList)
                 {
-                    dictionary[fileMetadata] = rasterService.OpenFile(fileMetadata.Filename, fileMetadata.FileFormat.Type);
+                    if (!dictionary.ContainsKey(fileMetadata))
+                    {
+                        dictionary[fileMetadata] = rasterService.OpenFile(fileMetadata.Filename, fileMetadata.FileFormat.Type);
+                    }
                 }
             }
         }
@@ -637,9 +640,9 @@ namespace DEM.Net.Core
 
             if (segTiles.Any())
             {
-                int estimatedCapacity = (segTiles.Select(t => t.OriginLongitude).Distinct().Count() // num horizontal tiles * width
+                int estimatedCapacity = (segTiles.Select(t => t.DataStartLon).Distinct().Count() // num horizontal tiles * width
                                         * segTiles.First().Width)
-                                        + (segTiles.Select(t => t.OriginLatitude).Distinct().Count() // num vertical tiles * height
+                                        + (segTiles.Select(t => t.DataStartLat).Distinct().Count() // num vertical tiles * height
                                         * segTiles.First().Height);
                 segmentPointsWithDEMPoints = new List<GeoPoint>(estimatedCapacity);
                 bool yAxisDown = segTiles.First().pixelSizeY < 0;
@@ -698,18 +701,18 @@ namespace DEM.Net.Core
             // Get the first north west tile and last south east tile. 
             // The lines are bounded by those tiles
 
-            foreach (var tilesByX in segTiles.GroupBy(t => t.StartLon).OrderBy(g => g.Key))
+            foreach (var tilesByX in segTiles.GroupBy(t => t.PhysicalStartLon).OrderBy(g => g.Key))
             {
-                List<FileMetadata> NSTilesOrdered = tilesByX.OrderByDescending(t => t.StartLat).ToList();
+                List<FileMetadata> NSTilesOrdered = tilesByX.OrderByDescending(t => t.PhysicalStartLat).ToList();
 
                 FileMetadata top = NSTilesOrdered.First();
                 FileMetadata bottom = NSTilesOrdered.Last();
 
                 // TIP: can optimize here starting with min(westernSegPoint, startlon) but careful !
-                GeoPoint curPoint = new GeoPoint(top.StartLat, top.StartLon);
+                GeoPoint curPoint = new GeoPoint(top.PhysicalStartLat, top.PhysicalStartLon);
 
                 // X Index in tile coords
-                int curIndex = (int)Math.Ceiling((curPoint.Longitude - top.StartLon) / top.PixelScaleX);
+                int curIndex = (int)Math.Ceiling((curPoint.Longitude - top.PhysicalStartLon) / top.PixelScaleX);
                 while (IsPointInTile(top, curPoint))
                 {
                     if (curIndex >= top.Width)
@@ -717,12 +720,12 @@ namespace DEM.Net.Core
                         break;
                     }
 
-                    curPoint.Longitude = top.StartLon + (top.pixelSizeX * curIndex);
+                    curPoint.Longitude = top.PhysicalStartLon + (top.pixelSizeX * curIndex);
                     if (curPoint.Longitude > easternSegPoint.Longitude)
                     {
                         break;
                     }
-                    GeoSegment line = new GeoSegment(new GeoPoint(top.OriginLatitude, curPoint.Longitude), new GeoPoint(bottom.EndLatitude, curPoint.Longitude));
+                    GeoSegment line = new GeoSegment(new GeoPoint(top.DataStartLat, curPoint.Longitude), new GeoPoint(bottom.PhysicalEndLat, curPoint.Longitude));
                     curIndex++;
                     yield return line;
                 }
@@ -734,17 +737,17 @@ namespace DEM.Net.Core
             // Get the first north west tile and last south east tile. 
             // The lines are bounded by those tiles
 
-            foreach (var tilesByY in segTiles.GroupBy(t => t.StartLat).OrderByDescending(g => g.Key))
+            foreach (var tilesByY in segTiles.GroupBy(t => t.PhysicalStartLat).OrderByDescending(g => g.Key))
             {
-                List<FileMetadata> WETilesOrdered = tilesByY.OrderBy(t => t.StartLon).ToList();
+                List<FileMetadata> WETilesOrdered = tilesByY.OrderBy(t => t.PhysicalStartLon).ToList();
 
                 FileMetadata left = WETilesOrdered.First();
                 FileMetadata right = WETilesOrdered.Last();
 
-                GeoPoint curPoint = new GeoPoint(left.StartLat, left.StartLon);
+                GeoPoint curPoint = new GeoPoint(left.PhysicalStartLat, left.PhysicalStartLon);
 
                 // Y Index in tile coords
-                int curIndex = (int)Math.Ceiling((left.StartLat - curPoint.Latitude) / left.PixelScaleY);
+                int curIndex = (int)Math.Ceiling((left.PhysicalStartLat - curPoint.Latitude) / left.PixelScaleY);
                 while (IsPointInTile(left, curPoint))
                 {
                     if (curIndex >= left.Height)
@@ -752,12 +755,12 @@ namespace DEM.Net.Core
                         break;
                     }
 
-                    curPoint.Latitude = left.StartLat + (left.pixelSizeY * curIndex);
+                    curPoint.Latitude = left.PhysicalStartLat + (left.pixelSizeY * curIndex);
                     if (curPoint.Latitude < southernSegPoint.Latitude)
                     {
                         break;
                     }
-                    GeoSegment line = new GeoSegment(new GeoPoint(curPoint.Latitude, left.OriginLongitude), new GeoPoint(curPoint.Latitude, right.EndLongitude));
+                    GeoSegment line = new GeoSegment(new GeoPoint(curPoint.Latitude, left.DataStartLon), new GeoPoint(curPoint.Latitude, right.PhysicalEndLon));
                     curIndex++;
                     yield return line;
                 }
@@ -769,10 +772,10 @@ namespace DEM.Net.Core
 
         public BoundingBox GetTilesBoundingBox(List<FileMetadata> tiles)
         {
-            double xmin = tiles.Min(t => t.OriginLongitude);
-            double xmax = tiles.Max(t => t.EndLongitude);
-            double ymin = tiles.Min(t => t.EndLatitude);
-            double ymax = tiles.Max(t => t.OriginLatitude);
+            double xmin = tiles.Min(t => t.DataStartLon);
+            double xmax = tiles.Max(t => t.PhysicalEndLon);
+            double ymin = tiles.Min(t => t.PhysicalEndLat);
+            double ymax = tiles.Max(t => t.DataStartLat);
             return new BoundingBox(xmin, xmax, ymin, ymax);
         }
 
@@ -795,7 +798,7 @@ namespace DEM.Net.Core
 
             return bboxMetadata;
         }
-        public List<FileMetadata> GetCoveringFiles(double lat, double lon, DEMDataSet dataSet, List<FileMetadata> subSet = null)
+        public FileMetadata GetCoveringFile(double lat, double lon, DEMDataSet dataSet, List<FileMetadata> subSet = null)
         {
             // Locate which files are needed
 
@@ -811,8 +814,12 @@ namespace DEM.Net.Core
                 _logger?.LogWarning($"No coverage found matching provided point {geoPoint}.");
                 //throw new NoCoverageException(dataSet, lat, lon, $"No coverage found matching provided point {geoPoint}.");
             }
+            else if (bboxMetadata.Count > 1)
+            {
+                _logger?.LogWarning($"One tile expected for a point. Got {bboxMetadata.Count} tiles for {geoPoint}.");
+            }
 
-            return bboxMetadata;
+            return bboxMetadata.FirstOrDefault();
         }
 
         public bool IsBboxIntersectingTile(FileMetadata tileMetadata, BoundingBox bbox)
@@ -857,11 +864,20 @@ namespace DEM.Net.Core
                 //const double epsilon = (Double.Epsilon * 100);
                 float noData = metadata.NoDataValueFloat;
 
+                double ypos, xpos = 0;
 
                 // precise position on the grid (with commas)
-                double ypos = (lat - metadata.StartLat) / metadata.pixelSizeY;
-                double xpos = (lon - metadata.StartLon) / metadata.pixelSizeX;
+                if (metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid)
+                {
+                    ypos = (lat - metadata.DataEndLat) / metadata.pixelSizeY;
+                    xpos = (lon - metadata.DataStartLon) / metadata.pixelSizeX;
 
+                }
+                else
+                {
+                    ypos = (lat - metadata.PhysicalEndLat) / metadata.pixelSizeY;
+                    xpos = (lon - metadata.PhysicalStartLon) / metadata.pixelSizeX;
+                }
                 // If pure integers, then it's on the grid
                 double xInterpolationAmount = (double)xpos % 1d;
                 double yInterpolationAmount = (double)ypos % 1d;
@@ -948,8 +964,8 @@ namespace DEM.Net.Core
             {
                 int yScale = Math.Sign(mainTile.pixelSizeY);
                 FileMetadata tile = tiles.Keys.FirstOrDefault(
-                    t => Math.Abs(t.OriginLatitude - mainTile.OriginLatitude + yScale * yTileOffset) < float.Epsilon
-                    && Math.Abs(t.OriginLongitude - mainTile.OriginLongitude + xTileOffset) < float.Epsilon);
+                    t => Math.Abs(t.DataStartLat - mainTile.DataStartLat + yScale * yTileOffset) < float.Epsilon
+                    && Math.Abs(t.DataStartLon - mainTile.DataStartLon + xTileOffset) < float.Epsilon);
 
                 newX = xTileOffset > 0 ? x % mainTile.Width : (mainTile.Width + x) % mainTile.Width;
                 newY = yTileOffset < 0 ? (mainTile.Height + y) % mainTile.Height : y % mainTile.Height;

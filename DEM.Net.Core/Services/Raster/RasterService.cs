@@ -197,11 +197,11 @@ namespace DEM.Net.Core
         /// <param name="deleteOnError">Deletes raster files on error</param>
         /// <param name="force">If true, force regeneration of all files. If false, only missing files will be generated.</param>
         /// <param name="maxDegreeOfParallelism">Set to 1 to force single thread execution (for debug purposes)</param>
-        public void GenerateDirectoryMetadata(DEMDataSet dataset, bool force, bool deleteOnError = false, int maxDegreeOfParallelism = 0)
+        public void GenerateDirectoryMetadata(DEMDataSet dataset, bool force, bool deleteOnError = false, int maxDegreeOfParallelism = -1)
         {
             string directoryPath = GetLocalDEMPath(dataset);
             var files = Directory.EnumerateFiles(directoryPath, "*" + dataset.FileFormat.FileExtension, SearchOption.AllDirectories);
-            ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = Math.Min(Environment.ProcessorCount, maxDegreeOfParallelism) };
+            ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = Math.Min(Environment.ProcessorCount, maxDegreeOfParallelism == 0 ? -1 : maxDegreeOfParallelism) };
             Parallel.ForEach(files, options, file =>
              {
                  try
@@ -444,23 +444,24 @@ namespace DEM.Net.Core
                 var indexService = this._rasterIndexServiceResolver(dataSet.DataSource.DataSourceType);
                 indexService.Setup(dataSet, GetLocalDEMPath(dataSet));
 
-                foreach (DEMFileSource source in indexService.GetFileSources(dataSet))
+                var sources = indexService.GetFileSources(dataSet).Where(source => source.BBox.Intersects(lat, lon)).ToList();
+                if (sources.Count > 1)
                 {
-                    if (source.BBox.Intersects(lat, lon))
-                    {
-
-                        return new DemFileReport()
-                        {
-                            IsExistingLocally = File.Exists(source.LocalFileName),
-                            IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),
-                            LocalName = source.LocalFileName,
-                            URL = source.SourceFileNameAbsolute,
-                            Source = source
-                        };
-
-                    }
-                    //Trace.TraceInformation($"Source {source.SourceFileName}");
+                    _logger.LogWarning("Should not have more than one source.");
                 }
+                else
+                {
+                    var source = sources.First();
+                    return new DemFileReport()
+                    {
+                        IsExistingLocally = File.Exists(source.LocalFileName),
+                        IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),
+                        LocalName = source.LocalFileName,
+                        URL = source.SourceFileNameAbsolute,
+                        Source = source
+                    };
+                }
+
             }
 
             return null;
