@@ -124,8 +124,7 @@ namespace DEM.Net.Core
         /// <param name="interpolationMode">Interpolation mode</param>
         /// <returns></returns>
         IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
-        float GetPointsElevation(IRasterFile raster, FileMetadata metadata, IEnumerable<GeoPoint> points, IInterpolator interpolator = null);
-
+       
         /// <summary>
         /// Returns all elevations in given bbox
         /// </summary>

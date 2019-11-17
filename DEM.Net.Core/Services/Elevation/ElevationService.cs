@@ -174,6 +174,7 @@ namespace DEM.Net.Core
             double lengthMeters = start.DistanceTo(end);
             int demResolution = dataSet.ResolutionMeters;
             int totalCapacity = 2 * (int)(lengthMeters / demResolution);
+            double registrationOffset = dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell ? 0 : 0.5;
 
             List<GeoPoint> geoPoints = new List<GeoPoint>(totalCapacity);
 
@@ -191,6 +192,7 @@ namespace DEM.Net.Core
                         , segment.End.Latitude
                         , segTiles
                         , isFirstSegment
+                        , registrationOffset
                         , true);
 
                     // Get elevation for each point
@@ -234,133 +236,7 @@ namespace DEM.Net.Core
         }
         public float GetPointElevation(IRasterFile raster, FileMetadata metadata, double lat, double lon, IInterpolator interpolator = null)
         {
-            float heightValue = 0;
-            try
-            {
-                if (interpolator == null)
-                    interpolator = GetInterpolator(InterpolationMode.Bilinear);
-
-                float noData = metadata.NoDataValueFloat;
-
-                // pixel coordinates interpolated
-                double ypos = (lat - metadata.PhysicalStartLat) / metadata.pixelSizeY;
-                double xpos = (lon - metadata.PhysicalStartLon) / metadata.pixelSizeX;
-
-                // If at pixel center (ending by .5, .5), we are on the data point, so no need for adjacent raster checks
-                double xInterpolationAmount = (xpos * 2) % 1;
-                double yInterpolationAmount = (ypos * 2) % 1;
-
-                bool xOnDataPoint = Math.Abs(xInterpolationAmount) < float.Epsilon;
-                bool yOnDataPoint = Math.Abs(yInterpolationAmount) < float.Epsilon;
-
-                // If xOnGrid and yOnGrid, we are on a grid intersection, and that's all
-                if (xOnDataPoint && yOnDataPoint)
-                {
-                    int x = (int)Math.Round(xpos, 0);
-                    int y = (int)Math.Round(ypos, 0);
-                    heightValue = raster.GetElevationAtPoint(metadata, x, y);
-                }
-                else
-                {
-                    int xCeiling = (int)Math.Ceiling(xpos);
-                    int xFloor = (int)Math.Floor(xpos);
-                    int yCeiling = (int)Math.Ceiling(ypos);
-                    int yFloor = (int)Math.Floor(ypos);
-                    // Get 4 grid nearest points (DEM grid corners)
-
-                    // If not yOnGrid and not xOnGrid we are on grid horizontal line
-                    // We need elevations for top, bottom, left and right grid points (along x axis and y axis)
-                    float northWest = raster.GetElevationAtPoint(metadata, xFloor, yFloor);
-                    float northEast = raster.GetElevationAtPoint(metadata, xCeiling, yFloor);
-                    float southWest = raster.GetElevationAtPoint(metadata, xFloor, yCeiling);
-                    float southEast = raster.GetElevationAtPoint(metadata, xCeiling, yCeiling);
-
-                    float avgHeight = GetAverageExceptForNoDataValue(noData, NO_DATA_OUT, southWest, southEast, northWest, northEast);
-
-                    if (Math.Abs(northWest - noData) < float.Epsilon) northWest = avgHeight;
-                    if (Math.Abs(northEast - noData) < float.Epsilon) northEast = avgHeight;
-                    if (Math.Abs(southWest - noData) < float.Epsilon) southWest = avgHeight;
-                    if (Math.Abs(southEast - noData) < float.Epsilon) southEast = avgHeight;
-
-                    heightValue = (float)interpolator.Interpolate(southWest, southEast, northWest, northEast, xInterpolationAmount, yInterpolationAmount);
-                }
-
-
-            }
-            catch (Exception e)
-            {
-                _logger?.LogError(e, $"Error while getting elevation data : {e.Message}{Environment.NewLine}{e.ToString()}");
-            }
-            return heightValue;
-        }
-        public float GetPointsElevation(IRasterFile raster, FileMetadata metadata, IEnumerable<GeoPoint> points, IInterpolator interpolator = null)
-        {
-            float heightValue = 0;
-            try
-            {
-                if (interpolator == null)
-                    interpolator = GetInterpolator(InterpolationMode.Bilinear);
-
-                float noData = metadata.NoDataValueFloat;
-
-                foreach (var pointsByLat in points.GroupBy(p => p.Latitude))
-                {
-                    double lat = pointsByLat.Key;
-                    double ypos = (lat - metadata.PhysicalStartLat) / metadata.pixelSizeY;
-                    foreach (GeoPoint point in pointsByLat)
-                    {
-                        // precise position on the grid (with commas)
-                        double lon = point.Longitude;
-                        double xpos = (lon - metadata.PhysicalStartLon) / metadata.pixelSizeX;
-
-                        // If pure integers, then it's on the grid
-                        double xInterpolationAmount = xpos % 1d;
-                        double yInterpolationAmount = ypos % 1d;
-
-                        bool xOnGrid = Math.Abs(xInterpolationAmount) < float.Epsilon;
-                        bool yOnGrid = Math.Abs(yInterpolationAmount) < float.Epsilon;
-
-                        // If xOnGrid and yOnGrid, we are on a grid intersection, and that's all
-                        if (xOnGrid && yOnGrid)
-                        {
-                            int x = (int)Math.Round(xpos, 0);
-                            int y = (int)Math.Round(ypos, 0);
-                            heightValue = raster.GetElevationAtPoint(metadata, x, y);
-                        }
-                        else
-                        {
-                            int xCeiling = (int)Math.Ceiling(xpos);
-                            int xFloor = (int)Math.Floor(xpos);
-                            int yCeiling = (int)Math.Ceiling(ypos);
-                            int yFloor = (int)Math.Floor(ypos);
-                            // Get 4 grid nearest points (DEM grid corners)
-
-                            // If not yOnGrid and not xOnGrid we are on grid horizontal line
-                            // We need elevations for top, bottom, left and right grid points (along x axis and y axis)
-                            float northWest = raster.GetElevationAtPoint(metadata, xFloor, yFloor);
-                            float northEast = raster.GetElevationAtPoint(metadata, xCeiling, yFloor);
-                            float southWest = raster.GetElevationAtPoint(metadata, xFloor, yCeiling);
-                            float southEast = raster.GetElevationAtPoint(metadata, xCeiling, yCeiling);
-
-                            float avgHeight = GetAverageExceptForNoDataValue(noData, NO_DATA_OUT, southWest, southEast, northWest, northEast);
-
-                            if (Math.Abs(northWest - noData) < float.Epsilon) northWest = avgHeight;
-                            if (Math.Abs(northEast - noData) < float.Epsilon) northEast = avgHeight;
-                            if (Math.Abs(southWest - noData) < float.Epsilon) southWest = avgHeight;
-                            if (Math.Abs(southEast - noData) < float.Epsilon) southEast = avgHeight;
-
-                            heightValue = (float)interpolator.Interpolate(southWest, southEast, northWest, northEast, xInterpolationAmount, yInterpolationAmount);
-                        }
-
-                        point.Elevation = heightValue;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                _logger?.LogError(e, $"Error while getting elevation data : {e.Message}{Environment.NewLine}{e.ToString()}");
-            }
-            return heightValue;
+            return GetElevationAtPoint(raster, null, metadata, lat, lon, 0, interpolator);
         }
         public GeoPoint GetPointElevation(double lat, double lon, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
@@ -636,7 +512,7 @@ namespace DEM.Net.Core
         /// <param name="returnStartPoint">If true, the segment starting point will be returned. Useful when processing a line segment by segment.</param>
         /// <param name="returnEndPoind">If true, the segment end point will be returned. Useful when processing a line segment by segment.</param>
         /// <returns></returns>
-        private List<GeoPoint> FindSegmentIntersections(double startLon, double startLat, double endLon, double endLat, List<FileMetadata> segTiles, bool returnStartPoint, bool returnEndPoind)
+        private List<GeoPoint> FindSegmentIntersections(double startLon, double startLat, double endLon, double endLat, List<FileMetadata> segTiles, bool returnStartPoint, double registrationOffsetPx, bool returnEndPoind)
         {
             List<GeoPoint> segmentPointsWithDEMPoints;
             // Find intersections with north/south lines, 
@@ -658,7 +534,7 @@ namespace DEM.Net.Core
                     throw new NotImplementedException("DEM with y axis upwards not supported.");
                 }
 
-                foreach (GeoSegment demSegment in this.GetDEMNorthSouthLines(segTiles, westernSegPoint, easternSegPoint))
+                foreach (GeoSegment demSegment in this.GetDEMNorthSouthLines(segTiles, westernSegPoint, easternSegPoint, registrationOffsetPx))
                 {
                     if (GeometryService.LineLineIntersection(out GeoPoint intersectionPoint, inputSegment, demSegment))
                     {
@@ -671,7 +547,7 @@ namespace DEM.Net.Core
                 GeoPoint northernSegPoint = startLat > endLat ? new GeoPoint(startLat, startLon) : new GeoPoint(endLat, endLon);
                 GeoPoint southernSegPoint = startLat < endLat ? new GeoPoint(startLat, startLon) : new GeoPoint(endLat, endLon);
                 inputSegment = new GeoSegment(northernSegPoint, southernSegPoint);
-                foreach (GeoSegment demSegment in this.GetDEMWestEastLines(segTiles, northernSegPoint, southernSegPoint))
+                foreach (GeoSegment demSegment in this.GetDEMWestEastLines(segTiles, northernSegPoint, southernSegPoint, registrationOffsetPx))
                 {
                     if (GeometryService.LineLineIntersection(out GeoPoint intersectionPoint, inputSegment, demSegment))
                     {
@@ -703,23 +579,22 @@ namespace DEM.Net.Core
         }
 
 
-        private IEnumerable<GeoSegment> GetDEMNorthSouthLines(List<FileMetadata> segTiles, GeoPoint westernSegPoint, GeoPoint easternSegPoint)
+        private IEnumerable<GeoSegment> GetDEMNorthSouthLines(List<FileMetadata> segTiles, GeoPoint westernSegPoint, GeoPoint easternSegPoint, double registrationOffsetPx)
         {
             // Get the first north west tile and last south east tile. 
             // The lines are bounded by those tiles
 
-            foreach (var tilesByX in segTiles.GroupBy(t => t.PhysicalStartLon).OrderBy(g => g.Key))
+            foreach (var tilesByX in segTiles.GroupBy(t => t.DataStartLon).OrderBy(g => g.Key))
             {
-                List<FileMetadata> NSTilesOrdered = tilesByX.OrderByDescending(t => t.PhysicalStartLat).ToList();
+                List<FileMetadata> NSTilesOrdered = tilesByX.OrderByDescending(t => t.DataStartLat).ToList();
 
                 FileMetadata top = NSTilesOrdered.First();
                 FileMetadata bottom = NSTilesOrdered.Last();
 
                 // TIP: can optimize here starting with min(westernSegPoint, startlon) but careful !
-                GeoPoint curPoint = new GeoPoint(top.PhysicalStartLat, top.PhysicalStartLon);
-
+                GeoPoint curPoint = new GeoPoint(top.DataStartLat, top.DataStartLon);
                 // X Index in tile coords
-                int curIndex = (int)Math.Ceiling((curPoint.Longitude - top.PhysicalStartLon) / top.PixelScaleX);
+                int curIndex = (int)Math.Ceiling((curPoint.Longitude - top.PhysicalStartLon) / top.PixelScaleX - registrationOffsetPx);
                 while (IsPointInTile(top, curPoint))
                 {
                     if (curIndex >= top.Width)
@@ -727,34 +602,34 @@ namespace DEM.Net.Core
                         break;
                     }
 
-                    curPoint.Longitude = top.PhysicalStartLon + (top.pixelSizeX * curIndex);
+                    curPoint.Longitude = top.DataStartLon + (top.pixelSizeX * curIndex);
                     if (curPoint.Longitude > easternSegPoint.Longitude)
                     {
                         break;
                     }
-                    GeoSegment line = new GeoSegment(new GeoPoint(top.DataStartLat, curPoint.Longitude), new GeoPoint(bottom.PhysicalEndLat, curPoint.Longitude));
+                    GeoSegment line = new GeoSegment(new GeoPoint(top.DataEndLat, curPoint.Longitude), new GeoPoint(bottom.DataStartLat, curPoint.Longitude));
                     curIndex++;
                     yield return line;
                 }
             }
         }
 
-        private IEnumerable<GeoSegment> GetDEMWestEastLines(List<FileMetadata> segTiles, GeoPoint northernSegPoint, GeoPoint southernSegPoint)
+        private IEnumerable<GeoSegment> GetDEMWestEastLines(List<FileMetadata> segTiles, GeoPoint northernSegPoint, GeoPoint southernSegPoint, double registrationOffsetPx)
         {
             // Get the first north west tile and last south east tile. 
             // The lines are bounded by those tiles
 
-            foreach (var tilesByY in segTiles.GroupBy(t => t.PhysicalStartLat).OrderByDescending(g => g.Key))
+            foreach (var tilesByY in segTiles.GroupBy(t => t.DataStartLat).OrderByDescending(g => g.Key))
             {
-                List<FileMetadata> WETilesOrdered = tilesByY.OrderBy(t => t.PhysicalStartLon).ToList();
+                List<FileMetadata> WETilesOrdered = tilesByY.OrderBy(t => t.DataStartLon).ToList();
 
                 FileMetadata left = WETilesOrdered.First();
                 FileMetadata right = WETilesOrdered.Last();
 
-                GeoPoint curPoint = new GeoPoint(left.PhysicalStartLat, left.PhysicalStartLon);
+                GeoPoint curPoint = new GeoPoint(left.DataEndLat, left.DataStartLon);
 
                 // Y Index in tile coords
-                int curIndex = (int)Math.Ceiling((left.PhysicalStartLat - curPoint.Latitude) / left.PixelScaleY);
+                int curIndex = (int)Math.Floor((left.PhysicalEndLat - curPoint.Latitude) / left.PixelScaleY - -registrationOffsetPx);
                 while (IsPointInTile(left, curPoint))
                 {
                     if (curIndex >= left.Height)
@@ -762,12 +637,12 @@ namespace DEM.Net.Core
                         break;
                     }
 
-                    curPoint.Latitude = left.PhysicalStartLat + (left.pixelSizeY * curIndex);
+                    curPoint.Latitude = left.DataEndLat + (left.pixelSizeY * curIndex);
                     if (curPoint.Latitude < southernSegPoint.Latitude)
                     {
                         break;
                     }
-                    GeoSegment line = new GeoSegment(new GeoPoint(curPoint.Latitude, left.DataStartLon), new GeoPoint(curPoint.Latitude, right.PhysicalEndLon));
+                    GeoSegment line = new GeoSegment(new GeoPoint(curPoint.Latitude, left.DataStartLon), new GeoPoint(curPoint.Latitude, right.DataEndLon));
                     curIndex++;
                     yield return line;
                 }
@@ -862,11 +737,14 @@ namespace DEM.Net.Core
 
         private float GetElevationAtPoint(RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float lastElevation, IInterpolator interpolator)
         {
+            return GetElevationAtPoint(adjacentTiles[metadata], adjacentTiles, metadata, lat, lon, lastElevation, interpolator);
+          
+        }
+        private float GetElevationAtPoint(IRasterFile mainRaster, RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float lastElevation, IInterpolator interpolator)
+        {
             float heightValue = 0;
             try
             {
-                IRasterFile mainRaster = adjacentTiles[metadata];
-
                 //const double epsilon = (Double.Epsilon * 100);
                 float noData = metadata.NoDataValueFloat;
 
@@ -888,12 +766,12 @@ namespace DEM.Net.Core
                     yPixel = (lat - metadata.PhysicalEndLat) / metadata.pixelSizeY;
                     xPixel = (lon - metadata.PhysicalStartLon) / metadata.pixelSizeX;
 
-                    // If at pixel center (ending by .5, .5), we are on the data point, so no need for adjacent raster checks
-                    xInterpolationAmount = Math.Abs((double)(xPixel + 0.5d) % 1d);
-                    yInterpolationAmount = Math.Abs((double)(yPixel + 0.5d) % 1d);
-
                     // In cell registration mode, the actual data point is at pixel center
-                    dataPointOffsetPx = 0.5; 
+                    dataPointOffsetPx = 0.5;
+                    // If at pixel center (ending by .5, .5), we are on the data point, so no need for adjacent raster checks
+                    xInterpolationAmount = Math.Abs((double)(xPixel + dataPointOffsetPx) % 1d);
+                    yInterpolationAmount = Math.Abs((double)(yPixel + dataPointOffsetPx) % 1d);
+                    
                 }
 
 
@@ -959,7 +837,6 @@ namespace DEM.Net.Core
             if (tiles.ContainsKey(goodTile))
             {
                 return tiles[goodTile].GetElevationAtPoint(goodTile, xRemap, yRemap);
-
             }
             else
             {
