@@ -79,7 +79,7 @@ namespace DEM.Net.Core
                 return;
             }
 
-            DownloadMissingFiles_FromReport(Enumerable.Repeat(report, 1), dataSet);
+            DownloadMissingFiles_FromReport(report, dataSet);
 
         }
 
@@ -242,20 +242,19 @@ namespace DEM.Net.Core
 
                 float noData = metadata.NoDataValueFloat;
 
-
-                // precise position on the grid (with commas)
+                // pixel coordinates interpolated
                 double ypos = (lat - metadata.PhysicalStartLat) / metadata.pixelSizeY;
                 double xpos = (lon - metadata.PhysicalStartLon) / metadata.pixelSizeX;
 
-                // If pure integers, then it's on the grid
-                float xInterpolationAmount = (float)xpos % 1;
-                float yInterpolationAmount = (float)ypos % 1;
+                // If at pixel center (ending by .5, .5), we are on the data point, so no need for adjacent raster checks
+                double xInterpolationAmount = (xpos * 2) % 1;
+                double yInterpolationAmount = (ypos * 2) % 1;
 
-                bool xOnGrid = Math.Abs(xInterpolationAmount) < float.Epsilon;
-                bool yOnGrid = Math.Abs(yInterpolationAmount) < float.Epsilon;
+                bool xOnDataPoint = Math.Abs(xInterpolationAmount) < float.Epsilon;
+                bool yOnDataPoint = Math.Abs(yInterpolationAmount) < float.Epsilon;
 
                 // If xOnGrid and yOnGrid, we are on a grid intersection, and that's all
-                if (xOnGrid && yOnGrid)
+                if (xOnDataPoint && yOnDataPoint)
                 {
                     int x = (int)Math.Round(xpos, 0);
                     int y = (int)Math.Round(ypos, 0);
@@ -283,7 +282,7 @@ namespace DEM.Net.Core
                     if (Math.Abs(southWest - noData) < float.Epsilon) southWest = avgHeight;
                     if (Math.Abs(southEast - noData) < float.Epsilon) southEast = avgHeight;
 
-                    heightValue = interpolator.Interpolate(southWest, southEast, northWest, northEast, xInterpolationAmount, yInterpolationAmount);
+                    heightValue = (float)interpolator.Interpolate(southWest, southEast, northWest, northEast, xInterpolationAmount, yInterpolationAmount);
                 }
 
 
@@ -315,8 +314,8 @@ namespace DEM.Net.Core
                         double xpos = (lon - metadata.PhysicalStartLon) / metadata.pixelSizeX;
 
                         // If pure integers, then it's on the grid
-                        float xInterpolationAmount = (float)xpos % 1;
-                        float yInterpolationAmount = (float)ypos % 1;
+                        double xInterpolationAmount = xpos % 1d;
+                        double yInterpolationAmount = ypos % 1d;
 
                         bool xOnGrid = Math.Abs(xInterpolationAmount) < float.Epsilon;
                         bool yOnGrid = Math.Abs(yInterpolationAmount) < float.Epsilon;
@@ -350,7 +349,7 @@ namespace DEM.Net.Core
                             if (Math.Abs(southWest - noData) < float.Epsilon) southWest = avgHeight;
                             if (Math.Abs(southEast - noData) < float.Epsilon) southEast = avgHeight;
 
-                            heightValue = interpolator.Interpolate(southWest, southEast, northWest, northEast, xInterpolationAmount, yInterpolationAmount);
+                            heightValue = (float)interpolator.Interpolate(southWest, southEast, northWest, northEast, xInterpolationAmount, yInterpolationAmount);
                         }
 
                         point.Elevation = heightValue;
@@ -375,14 +374,22 @@ namespace DEM.Net.Core
             }
             else
             {
+                IEnumerable<FileMetadata> adjacentRasters = null;
+                // for cell registered rasters, we need adjacent tiles for edge locations
+                if (dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell)
+                {
+                    // construct a bbox around the location
+                    adjacentRasters = this.GetCoveringFiles(BoundingBox.AroundPoint(lat, lon, Math.Abs(tile.PixelScaleX)), dataSet);
+                }
                 // Init interpolator
                 IInterpolator interpolator = GetInterpolator(interpolationMode);
 
-                using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
+                // TODO : grab adjacent tiles for cell registrered datasets to allow correct interpolation when close to edges
+                using (RasterFileDictionary tileCache = new RasterFileDictionary())
                 {
-                    PopulateRasterFileDictionary(adjacentRasters, tile, _IRasterService, null);
+                    PopulateRasterFileDictionary(tileCache, tile, _IRasterService, adjacentRasters);
 
-                    geoPoint.Elevation = GetElevationAtPoint(adjacentRasters, tile, lat, lon, 0, interpolator);
+                    geoPoint.Elevation = GetElevationAtPoint(tileCache, tile, lat, lon, 0, interpolator);
 
 
                     //Debug.WriteLine(adjacentRasters.Count);
@@ -858,55 +865,66 @@ namespace DEM.Net.Core
             float heightValue = 0;
             try
             {
-
                 IRasterFile mainRaster = adjacentTiles[metadata];
 
                 //const double epsilon = (Double.Epsilon * 100);
                 float noData = metadata.NoDataValueFloat;
 
-                double ypos, xpos = 0;
+                double yPixel, xPixel, xInterpolationAmount, yInterpolationAmount, dataPointOffsetPx = 0;
 
-                // precise position on the grid (with commas)
+                // pixel coordinates interpolated
                 if (metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid)
                 {
-                    ypos = (lat - metadata.DataEndLat) / metadata.pixelSizeY;
-                    xpos = (lon - metadata.DataStartLon) / metadata.pixelSizeX;
+                    yPixel = (lat - metadata.DataEndLat) / metadata.pixelSizeY;
+                    xPixel = (lon - metadata.DataStartLon) / metadata.pixelSizeX;
+                    // If at pixel center (ending by .5, .5), we are on the data point, so no need for adjacent raster checks
+                    xInterpolationAmount = (double)(xPixel) % 1d;
+                    yInterpolationAmount = (double)(yPixel) % 1d;
 
+                    dataPointOffsetPx = 0;
                 }
                 else
                 {
-                    ypos = (lat - metadata.PhysicalEndLat) / metadata.pixelSizeY;
-                    xpos = (lon - metadata.PhysicalStartLon) / metadata.pixelSizeX;
-                }
-                // If pure integers, then it's on the grid
-                double xInterpolationAmount = (double)xpos % 1d;
-                double yInterpolationAmount = (double)ypos % 1d;
+                    yPixel = (lat - metadata.PhysicalEndLat) / metadata.pixelSizeY;
+                    xPixel = (lon - metadata.PhysicalStartLon) / metadata.pixelSizeX;
 
-                bool xOnGrid = Math.Abs(xInterpolationAmount) < double.Epsilon;
-                bool yOnGrid = Math.Abs(yInterpolationAmount) < double.Epsilon;
+                    // If at pixel center (ending by .5, .5), we are on the data point, so no need for adjacent raster checks
+                    xInterpolationAmount = Math.Abs((double)(xPixel + 0.5d) % 1d);
+                    yInterpolationAmount = Math.Abs((double)(yPixel + 0.5d) % 1d);
+
+                    // In cell registration mode, the actual data point is at pixel center
+                    dataPointOffsetPx = 0.5; 
+                }
+
+
+                bool xOnDataPoint = Math.Abs(xInterpolationAmount) < double.Epsilon;
+                bool yOnDataPoint = Math.Abs(yInterpolationAmount) < double.Epsilon;
 
                 // If xOnGrid and yOnGrid, we are on a grid intersection, and that's all
-                if (xOnGrid && yOnGrid)
+                // TODO fix that
+                // When cell registered, this true when interpolation is 0.5 / 0.5
+                // When grid registered, this is true 
+                if (xOnDataPoint && yOnDataPoint)
                 {
-                    int x = (int)Math.Round(xpos, 0);
-                    int y = (int)Math.Round(ypos, 0);
+                    int x = (int)Math.Round(xPixel - dataPointOffsetPx, 0);
+                    int y = (int)Math.Round(yPixel - dataPointOffsetPx, 0);
                     var tile = FindTile(metadata, adjacentTiles, x, y, out x, out y);
                     heightValue = mainRaster.GetElevationAtPoint(tile, x, y);
                 }
                 else
                 {
-                    int xCeiling = (int)Math.Ceiling(xpos);
-                    int xFloor = (int)Math.Floor(xpos);
-                    int yCeiling = (int)Math.Ceiling(ypos);
-                    int yFloor = (int)Math.Floor(ypos);
+                    int xCeiling = (int)Math.Ceiling(xPixel - dataPointOffsetPx);
+                    int xFloor = (int)Math.Floor(xPixel - dataPointOffsetPx);
+                    int yCeiling = (int)Math.Ceiling(yPixel - dataPointOffsetPx);
+                    int yFloor = (int)Math.Floor(yPixel - dataPointOffsetPx);
                     // Get 4 grid nearest points (DEM grid corners)
 
                     // If not yOnGrid and not xOnGrid we are on grid horizontal line
                     // We need elevations for top, bottom, left and right grid points (along x axis and y axis)
-                    float northWest = GetElevationAtPoint(metadata, adjacentTiles, xFloor, yFloor, NO_DATA_OUT);
-                    float northEast = GetElevationAtPoint(metadata, adjacentTiles, xCeiling, yFloor, NO_DATA_OUT);
-                    float southWest = GetElevationAtPoint(metadata, adjacentTiles, xFloor, yCeiling, NO_DATA_OUT);
-                    float southEast = GetElevationAtPoint(metadata, adjacentTiles, xCeiling, yCeiling, NO_DATA_OUT);
+                    float northWest = GetElevationAtPoint(metadata, adjacentTiles, xFloor, yFloor, noData);
+                    float northEast = GetElevationAtPoint(metadata, adjacentTiles, xCeiling, yFloor, noData);
+                    float southWest = GetElevationAtPoint(metadata, adjacentTiles, xFloor, yCeiling, noData);
+                    float southEast = GetElevationAtPoint(metadata, adjacentTiles, xCeiling, yCeiling, noData);
 
                     float avgHeight = GetAverageExceptForNoDataValue(noData, NO_DATA_OUT, southWest, southEast, northWest, northEast);
 
@@ -915,7 +933,7 @@ namespace DEM.Net.Core
                     if (southWest == noData) southWest = avgHeight;
                     if (southEast == noData) southEast = avgHeight;
 
-                    heightValue = interpolator.Interpolate(southWest, southEast, northWest, northEast, (float)xInterpolationAmount, (float)yInterpolationAmount);
+                    heightValue = (float)interpolator.Interpolate(southWest, southEast, northWest, northEast, xInterpolationAmount, yInterpolationAmount);
                 }
 
                 if (heightValue == NO_DATA_OUT)
@@ -963,13 +981,43 @@ namespace DEM.Net.Core
             else
             {
                 int yScale = Math.Sign(mainTile.pixelSizeY);
-                FileMetadata tile = tiles.Keys.FirstOrDefault(
-                    t => Math.Abs(t.DataStartLat - mainTile.DataStartLat + yScale * yTileOffset) < float.Epsilon
-                    && Math.Abs(t.DataStartLon - mainTile.DataStartLon + xTileOffset) < float.Epsilon);
+                FileMetadata tile = null;
+                foreach (var t in tiles.Keys)
+                {
+                    var xOffset = Math.Abs(t.DataStartLon - mainTile.DataStartLon - xTileOffset);
+                    var yOffset = Math.Abs(t.DataStartLat - mainTile.DataStartLat - yScale * yTileOffset);
+                    if (xOffset < float.Epsilon && yOffset < float.Epsilon)
+                    {
+                        tile = t;
+                        break;
+                    }
+                }
+                //FileMetadata tile = tiles.Keys.FirstOrDefault(
+                //    t => Math.Abs(t.DataStartLat - mainTile.DataStartLat + yScale * yTileOffset) < float.Epsilon
+                //    &&  < float.Epsilon);
 
-                newX = xTileOffset > 0 ? x % mainTile.Width : (mainTile.Width + x) % mainTile.Width;
-                newY = yTileOffset < 0 ? (mainTile.Height + y) % mainTile.Height : y % mainTile.Height;
-                return tile;
+                if (tile == null)
+                {
+                    // No adjacent tile found (adjacent tiles may not have been set)
+                    if (x == mainTile.Width
+                        || y == mainTile.Height)
+                    {
+                        _logger.LogWarning($"No adjacent tile found (adjacent tiles may not have been set). Returning main tile. (x,y, tile) = ({x},{y},{mainTile})");
+                        newX = x == mainTile.Width ? mainTile.Width - 1 : x;
+                        newY = y == mainTile.Height ? mainTile.Height - 1 : y;
+                        return mainTile;
+                    }
+                    else
+                    {
+                        throw new Exception($"No adjacent tile found (adjacent tiles may not have been set). (x,y, tile) = ({x},{y},{mainTile})");
+                    }
+                }
+                else
+                {
+                    newX = xTileOffset > 0 ? x % mainTile.Width : (mainTile.Width + x) % mainTile.Width;
+                    newY = yTileOffset < 0 ? (mainTile.Height + y) % mainTile.Height : y % mainTile.Height;
+                    return tile;
+                }
             }
         }
 

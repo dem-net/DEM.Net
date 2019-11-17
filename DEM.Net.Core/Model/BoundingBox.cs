@@ -147,6 +147,11 @@ namespace DEM.Net.Core
                     && bbox.yMin <= y && y <= bbox.yMax;
         }
 
+        public static BoundingBox AroundPoint(double lat, double lon, double size)
+        {
+            return new BoundingBox(lon - size, lon + size, lat - size, lat + size);
+        }
+
         public override string ToString()
         {
             return $"Xmin: {xMin}, Xmax: {xMax}, Ymin: {yMin}, Ymax: {yMax}";

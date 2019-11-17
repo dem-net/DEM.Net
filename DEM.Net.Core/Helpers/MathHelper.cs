@@ -81,6 +81,50 @@ namespace DEM.Net.Core
         }
 
         /// <summary>
+        /// Linear interpolation between two values
+        /// </summary>
+        /// <param name="value1">First input value</param>
+        /// <param name="value2">Second input value</param>
+        /// <param name="amount">Amount of interpolation between 0 and 1.
+        /// For any other value, this function maps then range 0->1 to value1->value2</param>
+        /// <example>If 0 then <paramref name="value1"/> will be returned, if 1 then <paramref name="value2"/>will be returned.</example>
+        /// <returns>Value in the units of value1 and value2 interpolated</returns>
+        public static double Lerp(double value1, double value2, double amount)
+        { return value1 + (value2 - value1) * amount; }
+
+        /// <summary>
+        /// Maps two ranges of values and interpolates.
+        /// </summary>
+        /// <param name="inputMin">Input minimum range</param>
+        /// <param name="inputMax">Input maximum range</param>
+        /// <param name="outputMin">Output range min value (ie: whats the destination minimal value)</param>
+        /// <param name="outputMax">Output range max value (ie: whats the destination maximal value)</param>
+        /// <param name="value">Interpolation amout in the units of <paramref name="inputMin"/> and <paramref name="inputMax"/>
+        /// if <paramref name="inputMin"/>, then output will be <paramref name="outputMin"/>
+        /// if <paramref name="inputMax"/>, then output will be <paramref name="outputMax"/></param>
+        /// <param name="clamp"></param>
+        /// <returns></returns>
+        public static double Map(double inputMin, double inputMax, double outputMin, double outputMax, double value, bool clamp)
+        {
+
+            if (Math.Abs(inputMin - inputMax) < double.Epsilon)
+            {
+                return outputMin;
+            }
+            else
+            {
+                double outVal = ((value - inputMin) / (inputMax - inputMin) * (outputMax - outputMin) + outputMin);
+
+                if (clamp)
+                {
+                    MathHelper.Clamp(outVal, outputMin, outputMax);
+                }
+                return outVal;
+            }
+
+        }
+
+        /// <summary>
         /// Degrees to radians conversion
         /// </summary>
         /// <param name="angleInDegrees"></param>
