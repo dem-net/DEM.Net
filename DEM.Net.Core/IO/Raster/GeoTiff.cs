@@ -305,11 +305,14 @@ namespace DEM.Net.Core
 
             if (format.Registration == DEMFileRegistrationMode.Grid)
             {
-                
-                double startLat = metadata.DataStartLat + (pixelSizeY / 2.0);
-                double startLon = metadata.DataStartLon + (pixelSizeX / 2.0);
-                metadata.PhysicalStartLat = startLat;
-                metadata.PhysicalStartLon = startLon;
+                metadata.PhysicalStartLat = metadata.DataStartLat;
+                metadata.PhysicalStartLon = metadata.DataStartLon;
+                metadata.PhysicalEndLat = metadata.DataEndLat;
+                metadata.PhysicalEndLon = metadata.DataEndLon;
+                metadata.DataStartLat = Math.Round(metadata.DataStartLat + (metadata.PixelScaleY / 2.0), 10);
+                metadata.DataStartLon = Math.Round(metadata.DataStartLon + (metadata.PixelScaleX / 2.0), 10);
+                metadata.DataEndLat = Math.Round(metadata.DataEndLat- (metadata.PixelScaleY / 2.0), 10);
+                metadata.DataEndLon = Math.Round(metadata.DataEndLon- (metadata.PixelScaleX / 2.0), 10);
             }
             else
             {
