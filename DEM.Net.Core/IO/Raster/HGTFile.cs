@@ -71,9 +71,6 @@ namespace DEM.Net.Core
             _hgtStream.Seek(metadata.ScanlineSize * y, SeekOrigin.Begin);
             _hgtStream.Read(byteScanline,0, metadata.ScanlineSize);
 
-            double latitude = metadata.PhysicalStartLat + (metadata.pixelSizeY * y);
-            double longitude = metadata.PhysicalStartLon + (metadata.pixelSizeX * x);
-
             float heightValue = 0;
             byte[] heightBytes = new byte[bytesPerSample];
             if (BitConverter.IsLittleEndian)
