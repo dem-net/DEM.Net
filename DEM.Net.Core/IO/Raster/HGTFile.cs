@@ -205,46 +205,47 @@ namespace DEM.Net.Core
             // When 32 we have 4 bytes per sample
             int bytesPerSample = metadata.BitsPerSample / 8;
             byte[] byteScanline = new byte[metadata.ScanlineSize];
+            int registrationOffset = metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid ? 1 : 0;
 
-            int yStart = (int)Math.Floor((bbox.yMax - metadata.PhysicalEndLat) / metadata.pixelSizeY);
-            int yEnd = (int)Math.Ceiling((bbox.yMin - metadata.PhysicalEndLat) / metadata.pixelSizeY);
-            int xStart = (int)Math.Floor((bbox.xMin - metadata.PhysicalStartLon) / metadata.pixelSizeX);
-            int xEnd = (int)Math.Ceiling((bbox.xMax - metadata.PhysicalStartLon) / metadata.pixelSizeX);
+            int yNorth = (int)Math.Floor((bbox.yMax - metadata.PhysicalEndLat) / metadata.pixelSizeY);
+            int ySouth = (int)Math.Ceiling((bbox.yMin - metadata.PhysicalEndLat) / metadata.pixelSizeY)-1;
+            int xWest = (int)Math.Floor((bbox.xMin - metadata.PhysicalStartLon) / metadata.pixelSizeX);
+            int xEast = (int)Math.Ceiling((bbox.xMax - metadata.PhysicalStartLon) / metadata.pixelSizeX)-1;
 
-            xStart = Math.Max(0, xStart);
-            xEnd = Math.Min(metadata.Width - 1, xEnd);
-            yStart = Math.Max(0, yStart);
-            yEnd = Math.Min(metadata.Height - 1, yEnd);
+            xWest = Math.Max(0, xWest);
+            xEast = Math.Min(metadata.Width - 1- registrationOffset, xEast);
+            yNorth = Math.Max(0, yNorth);
+            ySouth = Math.Min(metadata.Height - 1- registrationOffset, ySouth);
 
-            HeightMap heightMap = new HeightMap(xEnd - xStart + 1, yEnd - yStart + 1);
+            HeightMap heightMap = new HeightMap(xEast - xWest + 1, ySouth - yNorth + 1);
             heightMap.Count = heightMap.Width * heightMap.Height;
             var coords = new List<GeoPoint>(heightMap.Count);
             heightMap.BoundingBox = new BoundingBox(0, 0, 0, 0);
 
             // Set position to ystart
-            _hgtStream.Seek(yStart * metadata.ScanlineSize, SeekOrigin.Begin);
+            _hgtStream.Seek(yNorth * metadata.ScanlineSize, SeekOrigin.Begin);
 
-            for (int y = yStart; y <= yEnd; y++)
+            for (int y = yNorth; y <= ySouth; y++)
             {
                 _hgtStream.Read(byteScanline, 0, metadata.ScanlineSize);
 
-                double latitude = metadata.PhysicalStartLat + (metadata.pixelSizeY * y);
+                double latitude = metadata.DataEndLat + (metadata.pixelSizeY * y);
 
                 // bounding box
-                if (y == yStart)
+                if (y == yNorth)
                 {
                     heightMap.BoundingBox.yMax = latitude;
-                    heightMap.BoundingBox.xMin = metadata.PhysicalStartLon + (metadata.pixelSizeX * xStart);
-                    heightMap.BoundingBox.xMax = metadata.PhysicalStartLon + (metadata.pixelSizeX * xEnd);
+                    heightMap.BoundingBox.xMin = metadata.DataStartLon + (metadata.pixelSizeX * xWest);
+                    heightMap.BoundingBox.xMax = metadata.DataStartLon + (metadata.pixelSizeX * xEast);
                 }
-                else if (y == yEnd)
+                else if (y == ySouth)
                 {
                     heightMap.BoundingBox.yMin = latitude;
                 }
 
-                for (int x = xStart; x <= xEnd; x++)
+                for (int x = xWest; x <= xEast; x++)
                 {
-                    double longitude = metadata.PhysicalStartLon + (metadata.pixelSizeX * x);
+                    double longitude = metadata.DataStartLon + (metadata.pixelSizeX * x);
 
                     byte[] heightBytes = new byte[bytesPerSample];
                     float heightValue = 0;
