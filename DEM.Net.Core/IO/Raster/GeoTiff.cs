@@ -338,8 +338,8 @@ namespace DEM.Net.Core
         }
         public HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = 0)
         {
-            int yStart = (int)Math.Floor((bbox.yMax - metadata.PhysicalStartLat) / metadata.pixelSizeY);
-            int yEnd = (int)Math.Ceiling((bbox.yMin - metadata.PhysicalStartLat) / metadata.pixelSizeY);
+            int yStart = (int)Math.Floor((bbox.yMax - metadata.PhysicalEndLat) / metadata.pixelSizeY);
+            int yEnd = (int)Math.Ceiling((bbox.yMin - metadata.PhysicalEndLat) / metadata.pixelSizeY);
             int xStart = (int)Math.Floor((bbox.xMin - metadata.PhysicalStartLon) / metadata.pixelSizeX);
             int xEnd = (int)Math.Ceiling((bbox.xMax - metadata.PhysicalStartLon) / metadata.pixelSizeX);
 
@@ -367,7 +367,7 @@ namespace DEM.Net.Core
 
                 for (int y = yStart; y <= yEnd; y++)
                 {
-                    double latitude = metadata.PhysicalStartLat + (metadata.pixelSizeY * y);
+                    double latitude = metadata.PhysicalEndLat + (metadata.pixelSizeY * y);
                     // bounding box
                     if (y == yStart)
                     {
@@ -428,7 +428,7 @@ namespace DEM.Net.Core
 
                     TiffFile.ReadScanline(byteScanline, y);
 
-                    double latitude = metadata.PhysicalStartLat + (metadata.pixelSizeY * y);
+                    double latitude = metadata.PhysicalEndLat + (metadata.pixelSizeY * y);
 
                     // bounding box
                     if (y == yStart)

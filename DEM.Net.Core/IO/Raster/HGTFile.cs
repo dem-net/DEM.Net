@@ -206,8 +206,8 @@ namespace DEM.Net.Core
             int bytesPerSample = metadata.BitsPerSample / 8;
             byte[] byteScanline = new byte[metadata.ScanlineSize];
 
-            int yStart = (int)Math.Floor((bbox.yMax - metadata.PhysicalStartLat) / metadata.pixelSizeY);
-            int yEnd = (int)Math.Ceiling((bbox.yMin - metadata.PhysicalStartLat) / metadata.pixelSizeY);
+            int yStart = (int)Math.Floor((bbox.yMax - metadata.PhysicalEndLat) / metadata.pixelSizeY);
+            int yEnd = (int)Math.Ceiling((bbox.yMin - metadata.PhysicalEndLat) / metadata.pixelSizeY);
             int xStart = (int)Math.Floor((bbox.xMin - metadata.PhysicalStartLon) / metadata.pixelSizeX);
             int xEnd = (int)Math.Ceiling((bbox.xMax - metadata.PhysicalStartLon) / metadata.pixelSizeX);
 
