@@ -167,12 +167,11 @@ namespace DEM.Net.Core
                     {
                         string jsonContent = File.ReadAllText(file);
 
-
                         FileMetadata metadata = JsonConvert.DeserializeObject<FileMetadata>(jsonContent);
 
                         if (metadata.Version != FileMetadata.FILEMETADATA_VERSION)
                         {
-                            metadata = FileMetadataMigrations.Migrate(_logger, metadata, _localDirectory, dataset);
+                            metadata = FileMetadataMigrations.Migrate(this, _logger, metadata, _localDirectory, dataset);
                             File.WriteAllText(file, JsonConvert.SerializeObject(metadata, Formatting.Indented));
                         }
                         metaList.Add(metadata);

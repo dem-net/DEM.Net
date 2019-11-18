@@ -32,48 +32,54 @@ namespace DEM.Net.Core
 {
     internal static class FileMetadataMigrations
     {
-        public static FileMetadata Migrate(ILogger logger, FileMetadata oldMetadata, string dataRootDirectory, DEMDataSet dataSet)
+        public static FileMetadata Migrate(IRasterService rasterService, ILogger logger, FileMetadata oldMetadata, string dataRootDirectory, DEMDataSet dataSet)
         {
             if (oldMetadata != null)
             {
                 logger.LogInformation($"Migration metadata file {oldMetadata.Filename} from {oldMetadata.Version} to {FileMetadata.FILEMETADATA_VERSION}");
+                
+                // 2.2 version requires regeneration
+                oldMetadata = rasterService.ParseMetadata(Path.Combine(rasterService.LocalDirectory, oldMetadata.Filename), dataSet.FileFormat);
 
-                switch (oldMetadata.Version)
-                {
-                    case "2.1":
+                //switch (oldMetadata.Version)
+                //{
+                //    case "2.0":
 
-                        // 2.2 : file format changed from DEMFileFormat (name + file extenstion)
-                        // to DEMFileDefinition
-                        oldMetadata.FileFormat = dataSet.FileFormat;
-                       
-                        break;
-                    case "2.0":
+                //        // 2.1 : relative path
+                //        // Find dataset root within path
+                //        DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(oldMetadata.Filename));
+                //        while (dir.Name != dataSet.Name)
+                //        {
+                //            dir = dir.Parent;
+                //        }
+                //        dir = dir.Parent;
+                //        // replace directory
+                //        oldMetadata.Filename = oldMetadata.Filename.Replace(dir.FullName, dataRootDirectory);
+                //        Uri fullPath = new Uri(oldMetadata.Filename, UriKind.Absolute);
+                //        if (!(dataRootDirectory.Last() == Path.DirectorySeparatorChar))
+                //            dataRootDirectory += Path.DirectorySeparatorChar;
+                //        Uri relRoot = new Uri(dataRootDirectory, UriKind.Absolute);
 
-                        // 2.1 : relative path
-                        // Find dataset root within path
-                        DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(oldMetadata.Filename));
-                        while (dir.Name != dataSet.Name)
-                        {
-                            dir = dir.Parent;
-                        }
-                        dir = dir.Parent;
-                        // replace directory
-                        oldMetadata.Filename = oldMetadata.Filename.Replace(dir.FullName, dataRootDirectory);
-                        Uri fullPath = new Uri(oldMetadata.Filename, UriKind.Absolute);
-                        if (!(dataRootDirectory.Last() == Path.DirectorySeparatorChar))
-                            dataRootDirectory += Path.DirectorySeparatorChar;
-                        Uri relRoot = new Uri(dataRootDirectory, UriKind.Absolute);
+                //        oldMetadata.Filename = Uri.UnescapeDataString(relRoot.MakeRelativeUri(fullPath).ToString());
+                //        oldMetadata.FileFormat = dataSet.FileFormat;
 
-                        oldMetadata.Filename = Uri.UnescapeDataString(relRoot.MakeRelativeUri(fullPath).ToString());
-                        oldMetadata.FileFormat = dataSet.FileFormat;
+                //        break;
 
-                        break;
-                    default:
+                //    case "2.1":
 
-                        // DEMFileFormat
-                        oldMetadata.FileFormat = dataSet.FileFormat;
-                        break;
-                }
+                //        // 2.2 : [Metadata regneration required] file format is now mapped to DEMFileDefinition, lat/lon bounds names changed for clarity, file format changed from DEMFileFormat (name + file extenstion)
+                //        // 
+                //        // to DEMFileDefinition
+                //        oldMetadata.FileFormat = dataSet.FileFormat;
+
+                //        break;
+
+                //    default:
+
+                //        // DEMFileFormat
+                //        oldMetadata.FileFormat = dataSet.FileFormat;
+                //        break;
+                //}
 
                 // set version and fileFormat
                 oldMetadata.Version = FileMetadata.FILEMETADATA_VERSION;

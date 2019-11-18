@@ -45,7 +45,7 @@ namespace DEM.Net.Core
         /* History
          * 
          *  2.1 : file name are relative to data directory
-         *  2.2 : file format is now mapped to DEMFileDefinition
+         *  2.2 : [Metadata regneration required] file format is now mapped to DEMFileDefinition, lat/lon bounds names changed for clarity, file format changed from DEMFileFormat (name + file extenstion)
          */
 
         public const string FILEMETADATA_VERSION = "2.2";
