@@ -416,7 +416,7 @@ namespace DEM.Net.Core.Imagery
                         outputImage[i, j] = color;
                     }
 
-                outputImage.Save(Path.Combine(outputDirectory, fileName), new JpegEncoder());
+                outputImage.Save(Path.Combine(outputDirectory, fileName));
             }
 #elif NETFULL
             using (var dbm = new DirectBitmap(heightMap.Width, heightMap.Height))
@@ -431,7 +431,7 @@ namespace DEM.Net.Core.Imagery
                         dbm.SetPixel(i, j, color);
                     }
 
-                dbm.Bitmap.Save(Path.Combine(outputDirectory, "normalmap.jpg"), ImageFormat.Jpeg);
+                dbm.Bitmap.Save(Path.Combine(outputDirectory, fileName), ImageFormat.Png);
             }
 #endif
 
