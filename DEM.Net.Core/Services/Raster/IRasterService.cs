@@ -31,8 +31,8 @@ namespace DEM.Net.Core
 {
     public interface IRasterService : IRasterDownloader
     {
-        FileMetadata ParseMetadata(IRasterFile rasterFile, bool makeRelativePath = false);
-        FileMetadata ParseMetadata(string fileName, DEMFileFormat fileFormat, bool makeRelativePath = true);
+        FileMetadata ParseMetadata(IRasterFile rasterFile, DEMFileDefinition fileFormat, bool makeRelativePath = false);
+        FileMetadata ParseMetadata(string fileName, DEMFileDefinition fileFormat, bool makeRelativePath = true);
         List<FileMetadata> LoadManifestMetadata(DEMDataSet dataSet, bool force, bool logTimeSpent = false);
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace DEM.Net.Core
         /// otherwise the file path will be relative to <see cref="LocalDirectory"/></param>
         /// <param name="fileFormat"></param>
         /// <returns></returns>
-        IRasterFile OpenFile(string filePath, DEMFileFormat fileFormat);
+        IRasterFile OpenFile(string filePath, DEMFileType fileFormat);
 
         string LocalDirectory { get; }
 
@@ -62,7 +62,8 @@ namespace DEM.Net.Core
         /// <param name="dataSet"></param>
         /// <param name="force">If true, force regeneration of all files. If false, only missing files will be generated.</param>
         /// <param name="deleteOnError">If true, files where error are encountered will be deleted</param>
-        void GenerateDirectoryMetadata(DEMDataSet dataSet, bool force, bool deleteOnError = false);
+        /// <param name="maxDegreeOfParallelism">Set to 1 to force single thread execution (for debug purposes)</param>
+        void GenerateDirectoryMetadata(DEMDataSet dataSet, bool force, bool deleteOnError = false, int maxDegreeOfParallelism = -1);
 
 
         /// <summary>
@@ -80,7 +81,7 @@ namespace DEM.Net.Core
         /// <param name="lat"></param>
         /// <param name="lon"></param>
         /// <returns></returns>
-        DemFileReport GenerateReportForLocation(DEMDataSet dataSet, double lat, double lon);
+        List<DemFileReport> GenerateReportForLocation(DEMDataSet dataSet, double lat, double lon);
 
         /// <summary>
         /// Generates a full report of all datasets to check size and number of downloaded tiles
@@ -94,9 +95,9 @@ namespace DEM.Net.Core
         /// This metadata is used for fast indexing, preventing to open every raster file when performing spatial queries
         /// </summary>
         /// <param name="rasterFileName">Local file name</param>
-        /// <param name="fileFormat">File format, see <see cref="DEMFileFormat"/></param>
+        /// <param name="fileFormat">File format definition, see <see cref="DEMFileDefinition"/></param>
         /// <param name="force">If true, metadata will be replaced, if false the metadata will be generated only if the JSON file does not exists</param>
-        void GenerateFileMetadata(string rasterFileName, DEMFileFormat fileFormat, bool force);
+        void GenerateFileMetadata(string rasterFileName, DEMFileDefinition fileFormat, bool force);
 
     }
 }

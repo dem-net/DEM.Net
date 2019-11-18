@@ -15,7 +15,7 @@ namespace DEM.Net.Core.Imagery
 
         TextureInfo ConstructTextureWithGpxTrack(TileRange tiles, BoundingBox bbox, string fileName, TextureImageFormat mimeType, IEnumerable<GeoPoint> gpxPoints);
 
-        TextureInfo GenerateNormalMap(HeightMap heightMap, string outputDirectory, string fileName = "normalmap.jpg");
+        TextureInfo GenerateNormalMap(HeightMap heightMap, string outputDirectory, string fileName = "normalmap.png");
         TextureInfo GenerateHeightMap(HeightMap heightMap, string outputDirectory, string fileName = "heightmap.png");
 
         List<ImageryProvider> GetRegisteredProviders();

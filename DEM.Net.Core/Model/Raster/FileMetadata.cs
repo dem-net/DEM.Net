@@ -45,16 +45,17 @@ namespace DEM.Net.Core
         /* History
          * 
          *  2.1 : file name are relative to data directory
+         *  2.2 : [Metadata regneration required] file format is now mapped to DEMFileDefinition, lat/lon bounds names changed for clarity, file format changed from DEMFileFormat (name + file extenstion)
          */
 
-        public const string FILEMETADATA_VERSION = "2.1";
+        public const string FILEMETADATA_VERSION = "2.2";
         #endregion
 
 
-        public FileMetadata(string filename, DEMFileFormat fileFormat, string version = FILEMETADATA_VERSION)
+        public FileMetadata(string filename, DEMFileDefinition fileFormat, string version = FILEMETADATA_VERSION)
         {
             this.Filename = filename;
-            this.fileFormat = fileFormat;
+            this.FileFormat = fileFormat;
             this.Version = version;
         }
 
@@ -65,35 +66,44 @@ namespace DEM.Net.Core
         public int Width { get; set; }
         public double PixelScaleX { get; set; }
         public double PixelScaleY { get; set; }
-        public double OriginLatitude { get; set; }
-        public double OriginLongitude { get; set; }
+        /// <summary>
+        /// Data point start latitude (used for bbox)
+        /// Image may be grid centered, with lat less than data start, but the data resides in the next overlapping tile
+        /// </summary>
+        public double DataStartLat { get; set; }
+        /// <summary>
+        /// Data point start longitude (used for bbox)
+        /// Image may be grid centered, with long less than data start, but the data resides in the next overlapping tile
+        /// </summary>
+        public double DataStartLon { get; set; }
+        /// <summary>
+        /// Data point end latitude (used for bbox)
+        /// </summary>
+        public double DataEndLat { get; set; }
+        /// <summary>
+        /// Data point end longitude (used for bbox)
+        /// </summary>
+        public double DataEndLon { get; set; }
         public int BitsPerSample { get; set; }
         public string WorldUnits { get; set; }
         public string SampleFormat { get; set; }
         public string NoDataValue { get; set; }
         public int ScanlineSize { get; set; }
-        public double StartLon { get; set; }
-        public double StartLat { get; set; }
+        /// <summary>
+        /// Origin longitude of physical image (for cell centered images this can be offset by 1px)
+        /// </summary>
+        public double PhysicalStartLon { get; set; }
+        ///
+        /// Origin latitude of physical image (for cell centered images this can be offset by 1px)
+        public double PhysicalStartLat { get; set; }
+        public double PhysicalEndLon { get; set; }
+        public double PhysicalEndLat { get; set; }
         public double pixelSizeX { get; set; }
         public double pixelSizeY { get; set; }
-        public DEMFileFormat fileFormat { get; set; }
-
+        public DEMFileDefinition FileFormat { get; set; }
         public float MinimumAltitude { get; set; }
         public float MaximumAltitude { get; set; }
-        public double EndLongitude
-        {
-            get
-            {
-                return Width * pixelSizeX + OriginLongitude;
-            }
-        }
-        public double EndLatitude
-        {
-            get
-            {
-                return Height * pixelSizeY + OriginLatitude;
-            }
-        }
+       
 
         private float _noDataValue;
         private bool _noDataValueSet = false;
@@ -115,7 +125,7 @@ namespace DEM.Net.Core
 
         public override string ToString()
         {
-            return $"{System.IO.Path.GetFileName(Filename)}: {OriginLatitude} {OriginLongitude} -> {EndLatitude} {EndLongitude}";
+            return $"{System.IO.Path.GetFileName(Filename)}: {BoundingBox}";
         }
 
         public override bool Equals(object obj)
@@ -146,70 +156,15 @@ namespace DEM.Net.Core
             {
                 if (_boundingBox == null)
                 {
-                    double xmin = Math.Min(OriginLongitude, EndLongitude);
-                    double xmax = Math.Max(OriginLongitude, EndLongitude);
-                    double ymin = Math.Min(EndLatitude, OriginLatitude);
-                    double ymax = Math.Max(EndLatitude, OriginLatitude);
+                    double xmin = Math.Min(DataStartLon, DataEndLon);
+                    double xmax = Math.Max(DataStartLon, DataEndLon);
+                    double ymin = Math.Min(DataStartLat, DataEndLat);
+                    double ymax = Math.Max(DataStartLat, DataEndLat);
                     _boundingBox = new BoundingBox(xmin, xmax, ymin, ymax);
                 }
                 return _boundingBox;
             }
         }
 
-    }
-
-    internal static class FileMetadataMigrations
-    {
-        public static FileMetadata Migrate(ILogger logger, FileMetadata oldMetadata, string dataRootDirectory, DEMDataSet dataSet)
-        {
-            if (oldMetadata != null)
-            {
-                logger.LogInformation($"Migration metadata file {oldMetadata.Filename} from {oldMetadata.Version} to {FileMetadata.FILEMETADATA_VERSION}");
-
-                switch (oldMetadata.Version)
-                {
-                    case "2.0":
-
-                        // 2.1 : relative path
-                        // Find dataset root within path
-                        DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(oldMetadata.Filename));
-                        while (dir.Name != dataSet.Name)
-                        {
-                            dir = dir.Parent;
-                        }
-                        dir = dir.Parent;
-                        // replace directory
-                        oldMetadata.Filename = oldMetadata.Filename.Replace(dir.FullName, dataRootDirectory);
-                        Uri fullPath = new Uri(oldMetadata.Filename, UriKind.Absolute);
-                        if (!(dataRootDirectory.Last() == Path.DirectorySeparatorChar))
-                            dataRootDirectory += Path.DirectorySeparatorChar;
-                        Uri relRoot = new Uri(dataRootDirectory, UriKind.Absolute);
-
-                        oldMetadata.Filename = Uri.UnescapeDataString(relRoot.MakeRelativeUri(fullPath).ToString());
-
-                        break;
-                    default:
-
-                        // DEMFileFormat
-                        switch (Path.GetExtension(oldMetadata.Filename).ToUpper())
-                        {
-                            case ".TIF":
-                            case ".TIFF":
-                                oldMetadata.fileFormat = DEMFileFormat.GEOTIFF;
-                                break;
-                            default:
-                                // not possible since pre V2 files could only be GEOTIFF
-                                throw new Exception("Metadata corrupted.");
-                        }
-                        break;
-                }
-
-                // set version and fileFormat
-                oldMetadata.Version = FileMetadata.FILEMETADATA_VERSION;
-
-
-            }
-            return oldMetadata;
-        }
     }
 }

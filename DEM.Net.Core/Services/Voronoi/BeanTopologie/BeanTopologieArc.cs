@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using GeoAPI.Geometries;
-using GeoAPI.Geometries;
 
 namespace DEM.Net.Core.Voronoi
 {

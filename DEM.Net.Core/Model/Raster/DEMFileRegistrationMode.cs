@@ -1,4 +1,4 @@
-﻿// IInterpolator.cs
+﻿// DEMFileFormat.cs
 //
 // Author:
 //       Xavier Fischer 
@@ -23,33 +23,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace DEM.Net.Core
 {
-    public interface IInterpolator
+    /// <summary>
+    /// Registration modes. Good explanation here : https://www.ngdc.noaa.gov/mgg/global/gridregistration.html
+    /// </summary>
+    public enum DEMFileRegistrationMode
     {
         /// <summary>
-        /// 
-        /// 
-        /// The concept of linear interpolation between two points can be extended to bilinear interpolation within 
-        /// the grid cell. The function is said to be linear in each variable when the other is held fixed. 
-        /// 
-        /// For example, to determine the height hi at x, y in Figure 5, the elevations at y on the vertical 
-        /// boundaries of the grid cell can be linearly interpolated between h1 and h3 at ha, and h2 and h4 at hb.
-        /// Finally, the required elevation at x can be linearly interpolated between ha and hb. 
-        /// 
-        /// Source : http://www.geocomputation.org/1999/082/gc_082.htm
+        /// Grid/node-registered: cells are centered on lines of latitude and longitude (usually there is one pixel overlap for each tile).
         /// </summary>
-        /// <param name="h1"></param>
-        /// <param name="h2"></param>
-        /// <param name="h3"></param>
-        /// <param name="h4"></param>
-        /// <returns></returns>
-        double Interpolate(double southWestHeight, double southEastHeight, double northWestHeight, double northEastHeight, double x, double y);
+        Grid,
+        /// <summary>
+        /// Cell/pixel-registered: cell edges are along lines of latitude and longitude.
+        /// </summary>
+        Cell,
     }
 }

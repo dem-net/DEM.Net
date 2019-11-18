@@ -100,7 +100,7 @@ namespace DEM.Net.Core
         /// <summary>
         /// Get elevation for any raster at specified point (in raster coordinate system)
         /// </summary>
-        /// <param name="metadata">File metadata, <see cref="IRasterFile.ParseMetaData"/> and <see cref="IRasterService.OpenFile(string, DEMFileFormat)"/></param>
+        /// <param name="metadata">File metadata, <see cref="IRasterFile.ParseMetaData"/> and <see cref="IRasterService.OpenFile(string, DEMFileType)"/></param>
         /// <param name="lat"></param>
         /// <param name="lon"></param>
         /// <param name="interpolator">If null, then Bilinear interpolation will be used</param>
@@ -109,7 +109,7 @@ namespace DEM.Net.Core
         /// <summary>
         /// Get elevation for any raster at specified point (in raster coordinate system)
         /// </summary>
-        /// <param name="raster">Raster file, <see cref="IRasterService.OpenFile(string, DEMFileFormat)"/></param>
+        /// <param name="raster">Raster file, <see cref="IRasterService.OpenFile(string, DEMFileType)"/></param>
         /// <param name="metadata">File metadata, <see cref="IRasterFile.ParseMetaData"/></param>
         /// <param name="lat"></param>
         /// <param name="lon"></param>
@@ -124,8 +124,7 @@ namespace DEM.Net.Core
         /// <param name="interpolationMode">Interpolation mode</param>
         /// <returns></returns>
         IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
-        float GetPointsElevation(IRasterFile raster, FileMetadata metadata, IEnumerable<GeoPoint> points, IInterpolator interpolator = null);
-
+       
         /// <summary>
         /// Returns all elevations in given bbox
         /// </summary>
@@ -140,7 +139,7 @@ namespace DEM.Net.Core
         /// <param name="metadata">Raster file metadata. <see cref="GetCoveringFiles(BoundingBox, DEMDataSet, List{FileMetadata})"></see></param>
         /// <returns></returns>
         HeightMap GetHeightMap(FileMetadata metadata);
-        HeightMap GetHeightMap(BoundingBox bbox, string rasterFilePath, DEMFileFormat format);
+        HeightMap GetHeightMap(BoundingBox bbox, string rasterFilePath, DEMFileDefinition format);
 
         /// <summary>
         /// Retrieves bounding box for the uning of all raster file list
@@ -158,7 +157,7 @@ namespace DEM.Net.Core
         bool IsBboxIntersectingTile(FileMetadata tileMetadata, BoundingBox bbox);
         bool IsPointInTile(FileMetadata tileMetadata, GeoPoint point);
         List<FileMetadata> GetCoveringFiles(BoundingBox bbox, DEMDataSet dataSet, List<FileMetadata> subSet = null);
-        List<FileMetadata> GetCoveringFiles(double lat, double lon, DEMDataSet dataSet, List<FileMetadata> subSet = null);
+        FileMetadata GetCoveringFile(double lat, double lon, DEMDataSet dataSet, List<FileMetadata> subSet = null);
         string GetDEMLocalPath(DEMDataSet dataSet);
 
         /// <summary>

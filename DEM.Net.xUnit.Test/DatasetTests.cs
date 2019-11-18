@@ -58,7 +58,9 @@ namespace DEM.Net.Test
             var report = _rasterService.GenerateReportForLocation(dataset, lat, lon);
 
             Assert.NotNull(report);
-            Assert.True(report.IsExistingLocally);
+            Assert.NotEmpty(report);
+            Assert.True(report.Count == 1);
+            Assert.True(report.First().IsExistingLocally);
         }
 
         [Theory()]
@@ -90,8 +92,8 @@ namespace DEM.Net.Test
         [Fact]
         public void GDALVrtPerDataset_Test()
         {
-            double lat = 43.537854;
-            double lon = 5.429993;
+            double lat = 46.537854;
+            double lon = 10.429993;
 
             DEMDataSet dataset = DEMDataSet.SRTM_GL3;
             var report_SRTM_GL3 = _rasterService.GenerateReportForLocation(dataset, lat, lon);
@@ -101,9 +103,11 @@ namespace DEM.Net.Test
             var report_AW3D30 = _rasterService.GenerateReportForLocation(dataset, lat, lon);
 
             Assert.NotNull(report_SRTM_GL3);
+            Assert.True(report_SRTM_GL3.Count == 1);
             Assert.NotNull(report_AW3D30);
-            Assert.NotEqual(report_SRTM_GL3.LocalName
-                                , report_AW3D30.LocalName);
+            Assert.True(report_AW3D30.Count == 1);
+            Assert.NotEqual(report_AW3D30.First().LocalName
+                                , report_SRTM_GL3.First().LocalName);
         }
 
 
