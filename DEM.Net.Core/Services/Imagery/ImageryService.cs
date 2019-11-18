@@ -66,7 +66,6 @@ namespace DEM.Net.Core.Imagery
         private static HttpClient _httpClient = new HttpClient();
 
 #if NETSTANDARD
-        private readonly IConfigurationRoot _config;
 
         public ImageryService(IMeshService meshService,
                                 IOptions<AppSecrets> appSecrets,
@@ -82,6 +81,9 @@ namespace DEM.Net.Core.Imagery
         public ImageryService(ILogger<ImageryService> logger)
         {
             _logger = logger;
+            _meshService= null;
+            appSecrets = null;
+            options = null;
         }
 #endif
 
@@ -312,9 +314,8 @@ namespace DEM.Net.Core.Imagery
 
                 outputImage.Save(fileName);
             }
-#endif
             return new TextureInfo(fileName, mimeType, (int)projectedBbox.Width, (int)projectedBbox.Height, zoomLevel, projectedBbox);
-            //return new TextureInfo(fileName, format, (int)tilesBbox.Width, (int)tilesBbox.Height);
+#endif
 
         }
 
@@ -415,7 +416,7 @@ namespace DEM.Net.Core.Imagery
                         outputImage[i, j] = color;
                     }
 
-                outputImage.Save(Path.Combine(outputDirectory, fileName), new JpegEncoder());
+                outputImage.Save(Path.Combine(outputDirectory, fileName));
             }
 #elif NETFULL
             using (var dbm = new DirectBitmap(heightMap.Width, heightMap.Height))
@@ -430,7 +431,7 @@ namespace DEM.Net.Core.Imagery
                         dbm.SetPixel(i, j, color);
                     }
 
-                dbm.Bitmap.Save(Path.Combine(outputDirectory, "normalmap.jpg"), ImageFormat.Jpeg);
+                dbm.Bitmap.Save(Path.Combine(outputDirectory, fileName), ImageFormat.Png);
             }
 #endif
 
@@ -466,13 +467,13 @@ namespace DEM.Net.Core.Imagery
 
                 outputImage.Save(Path.Combine(outputDirectory, fileName));
             }
+            TextureInfo normal = new TextureInfo(Path.Combine(outputDirectory, fileName), TextureImageFormat.image_png, heightMap.Width, heightMap.Height);
+            return normal;
 #elif NETFULL
             throw new NotImplementedException();
 #endif
 
 
-            TextureInfo normal = new TextureInfo(Path.Combine(outputDirectory, fileName), TextureImageFormat.image_png, heightMap.Width, heightMap.Height);
-            return normal;
         }
 
 #if NETSTANDARD

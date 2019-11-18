@@ -34,9 +34,9 @@ namespace DEM.Net.Core
     public interface IRasterFile : IDisposable
     {
         float GetElevationAtPoint(FileMetadata metadata, int x, int y);
-		HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = float.MinValue);
+        HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = float.MinValue);
         HeightMap GetHeightMap(FileMetadata metadata);
 
-        FileMetadata ParseMetaData();
+        FileMetadata ParseMetaData(DEMFileDefinition fileFormat);
     }
 }

@@ -263,9 +263,9 @@ namespace DEM.Net.Core
             return heightValue;
         }
 
-        public FileMetadata ParseMetaData()
+        public FileMetadata ParseMetaData(DEMFileDefinition format)
         {
-            FileMetadata metadata = new FileMetadata(FilePath, DEMFileFormat.GEOTIFF);
+            FileMetadata metadata = new FileMetadata(FilePath, format);
 
             ///
             metadata.Height = TiffFile.GetField(TiffTag.IMAGELENGTH)[0].ToInt();
@@ -285,15 +285,42 @@ namespace DEM.Net.Core
 
             // Ignores first set of model points (3 bytes) and assumes they are 0's...
             byte[] modelTransformation = modelTiepointTag[1].GetBytes();
-            metadata.OriginLongitude = BitConverter.ToDouble(modelTransformation, 24);
-            metadata.OriginLatitude = BitConverter.ToDouble(modelTransformation, 32);
+            metadata.DataStartLon = BitConverter.ToDouble(modelTransformation, 24);
+            metadata.DataStartLat = BitConverter.ToDouble(modelTransformation, 32);
+            metadata.DataEndLon = metadata.DataStartLon + metadata.Width * pixelSizeX;
+            metadata.DataEndLat = metadata.DataStartLat + metadata.Height * pixelSizeY;
 
+            if (metadata.DataStartLon > metadata.DataEndLon)
+            {
+                double temp = metadata.DataStartLon;
+                metadata.DataStartLon = metadata.DataEndLon;
+                metadata.DataEndLon = temp;
+            }
+            if (metadata.DataStartLat > metadata.DataEndLat)
+            {
+                double temp = metadata.DataStartLat;
+                metadata.DataStartLat = metadata.DataEndLat;
+                metadata.DataEndLat = temp;
+            }
 
-            double startLat = metadata.OriginLatitude + (pixelSizeY / 2.0);
-            double startLon = metadata.OriginLongitude + (pixelSizeX / 2.0);
-            metadata.StartLat = startLat;
-            metadata.StartLon = startLon;
-
+            if (format.Registration == DEMFileRegistrationMode.Grid)
+            {
+                metadata.PhysicalStartLat = metadata.DataStartLat;
+                metadata.PhysicalStartLon = metadata.DataStartLon;
+                metadata.PhysicalEndLat = metadata.DataEndLat;
+                metadata.PhysicalEndLon = metadata.DataEndLon;
+                metadata.DataStartLat = Math.Round(metadata.DataStartLat + (metadata.PixelScaleY / 2.0), 10);
+                metadata.DataStartLon = Math.Round(metadata.DataStartLon + (metadata.PixelScaleX / 2.0), 10);
+                metadata.DataEndLat = Math.Round(metadata.DataEndLat- (metadata.PixelScaleY / 2.0), 10);
+                metadata.DataEndLon = Math.Round(metadata.DataEndLon- (metadata.PixelScaleX / 2.0), 10);
+            }
+            else
+            {
+                metadata.PhysicalStartLat = metadata.DataStartLat;
+                metadata.PhysicalStartLon = metadata.DataStartLon;
+                metadata.PhysicalEndLat = metadata.DataEndLat;
+                metadata.PhysicalEndLon = metadata.DataEndLon;
+            }
             var scanline = new byte[TiffFile.ScanlineSize()];
             metadata.ScanlineSize = TiffFile.ScanlineSize();
 
@@ -309,13 +336,12 @@ namespace DEM.Net.Core
 
             return metadata;
         }
-
         public HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = 0)
         {
-            int yStart = (int)Math.Floor((bbox.yMax - metadata.StartLat) / metadata.pixelSizeY);
-            int yEnd = (int)Math.Ceiling((bbox.yMin - metadata.StartLat) / metadata.pixelSizeY);
-            int xStart = (int)Math.Floor((bbox.xMin - metadata.StartLon) / metadata.pixelSizeX);
-            int xEnd = (int)Math.Ceiling((bbox.xMax - metadata.StartLon) / metadata.pixelSizeX);
+            int yStart = (int)Math.Floor((bbox.yMax - metadata.PhysicalEndLat) / metadata.pixelSizeY);
+            int yEnd = (int)Math.Ceiling((bbox.yMin - metadata.PhysicalEndLat) / metadata.pixelSizeY);
+            int xStart = (int)Math.Floor((bbox.xMin - metadata.PhysicalStartLon) / metadata.pixelSizeX);
+            int xEnd = (int)Math.Ceiling((bbox.xMax - metadata.PhysicalStartLon) / metadata.pixelSizeX);
 
             // Tiled geotiffs like aster have overlapping 1px borders
             int overlappingPixel = this.IsTiled ? 1 : 0;
@@ -341,13 +367,13 @@ namespace DEM.Net.Core
 
                 for (int y = yStart; y <= yEnd; y++)
                 {
-                    double latitude = metadata.StartLat + (metadata.pixelSizeY * y);
+                    double latitude = metadata.PhysicalEndLat + (metadata.pixelSizeY * y);
                     // bounding box
                     if (y == yStart)
                     {
                         heightMap.BoundingBox.yMax = latitude;
-                        heightMap.BoundingBox.xMin = metadata.StartLon + (metadata.pixelSizeX * xStart);
-                        heightMap.BoundingBox.xMax = metadata.StartLon + (metadata.pixelSizeX * xEnd);
+                        heightMap.BoundingBox.xMin = metadata.PhysicalStartLon + (metadata.pixelSizeX * xStart);
+                        heightMap.BoundingBox.xMax = metadata.PhysicalStartLon + (metadata.pixelSizeX * xEnd);
                     }
                     else if (y == yEnd)
                     {
@@ -356,7 +382,7 @@ namespace DEM.Net.Core
 
                     for (int x = xStart; x <= xEnd; x++)
                     {
-                        double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
+                        double longitude = metadata.PhysicalStartLon + (metadata.pixelSizeX * x);
                         var tileX = (x / tileWidth) * tileWidth;
                         var tileY = (y / tileHeight) * tileHeight;
 
@@ -402,14 +428,14 @@ namespace DEM.Net.Core
 
                     TiffFile.ReadScanline(byteScanline, y);
 
-                    double latitude = metadata.StartLat + (metadata.pixelSizeY * y);
+                    double latitude = metadata.PhysicalEndLat + (metadata.pixelSizeY * y);
 
                     // bounding box
                     if (y == yStart)
                     {
                         heightMap.BoundingBox.yMax = latitude;
-                        heightMap.BoundingBox.xMin = metadata.StartLon + (metadata.pixelSizeX * xStart);
-                        heightMap.BoundingBox.xMax = metadata.StartLon + (metadata.pixelSizeX * xEnd);
+                        heightMap.BoundingBox.xMin = metadata.PhysicalStartLon + (metadata.pixelSizeX * xStart);
+                        heightMap.BoundingBox.xMax = metadata.PhysicalStartLon + (metadata.pixelSizeX * xEnd);
                     }
                     else if (y == yEnd)
                     {
@@ -418,7 +444,7 @@ namespace DEM.Net.Core
 
                     for (int x = xStart; x <= xEnd; x++)
                     {
-                        double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
+                        double longitude = metadata.PhysicalStartLon + (metadata.pixelSizeX * x);
 
                         float heightValue = 0;
                         switch (metadata.SampleFormat)
@@ -481,10 +507,10 @@ namespace DEM.Net.Core
             {
                 TiffFile.ReadScanline(byteScanline, y);
 
-                double latitude = metadata.StartLat + (metadata.pixelSizeY * y);
+                double latitude = metadata.PhysicalStartLat + (metadata.pixelSizeY * y);
                 for (int x = 0; x < metadata.Width; x++)
                 {
-                    double longitude = metadata.StartLon + (metadata.pixelSizeX * x);
+                    double longitude = metadata.PhysicalStartLon + (metadata.pixelSizeX * x);
 
                     float heightValue = 0;
                     switch (metadata.SampleFormat)

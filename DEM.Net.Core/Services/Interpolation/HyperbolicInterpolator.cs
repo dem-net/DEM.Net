@@ -39,15 +39,15 @@ namespace DEM.Net.Core.Interpolation
     /// </summary>
     public class HyperbolicInterpolator : IInterpolator
     {
-        public float Interpolate(float southWestHeight, float southEastHeight, float northWestHeight, float northEastHeight, float x, float y)
+        public double Interpolate(double southWestHeight, double southEastHeight, double northWestHeight, double northEastHeight, double x, double y)
         {
-            float h1 = southWestHeight, h2 = southEastHeight, h3 = northWestHeight, h4 = northEastHeight;
+            double h1 = southWestHeight, h2 = southEastHeight, h3 = northWestHeight, h4 = northEastHeight;
             // hyperbolic
-            float a00 = h1;
-            float a10 = h2 - h1;
-            float a01 = h3 - h1;
-            float a11 = h1 - h2 - h3 + h4;
-            float hi_hyperbolic = a00 + a10 * x + a01 * y + a11 * x * y;
+            double a00 = h1;
+            double a10 = h2 - h1;
+            double a01 = h3 - h1;
+            double a11 = h1 - h2 - h3 + h4;
+            double hi_hyperbolic = a00 + a10 * x + a01 * y + a11 * x * y;
 
             return hi_hyperbolic;
         }

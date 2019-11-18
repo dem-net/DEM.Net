@@ -6,8 +6,17 @@ namespace DEM.Net.Core.Datasets
 {
     public enum DEMDataSourceType
     {
-        GDALVrt =1,
+        /// <summary>
+        /// Data source points to a VRT file (generated gy GDAL)
+        /// </summary>
+        GDALVrt = 1,
+        /// <summary>
+        /// Data source is a single file, downloaded manually and stored at a specific location
+        /// </summary>
         LocalFile = 2,
-        NASA = 3
+        /// <summary>
+        /// Data comes from NASA EarthData Common Metadata Repository (CMR) API at https://earthdata.nasa.gov/
+        /// </summary>
+        NasaEarthData = 3
     }
 }

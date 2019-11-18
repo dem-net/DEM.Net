@@ -1,4 +1,4 @@
-﻿// DEMFileFormat.cs
+﻿// FileMetadata.cs
 //
 // Author:
 //       Xavier Fischer 
@@ -24,37 +24,27 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace DEM.Net.Core
 {
-	public class DEMFileFormat
-	{
-		public string Name { get; set; }
+    [Serializable]
+    internal class MetadataObsoleteException : Exception
+    {
+        public MetadataObsoleteException()
+        {
+        }
 
-		public string FileExtension { get; set; }
+        public MetadataObsoleteException(string message) : base(message)
+        {
+        }
 
-		public static readonly DEMFileFormat SRTM_HGT = new DEMFileFormat("Shuttle Radar Topography Mission (SRTM) Data file.", ".hgt");
-		public static readonly DEMFileFormat GEOTIFF = new DEMFileFormat("GeoTIFF file", ".tif");
+        public MetadataObsoleteException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
 
-		private DEMFileFormat(string name, string fileExtension)
-		{
-			this.Name = name;
-			this.FileExtension = fileExtension;
-		}
-
-		public DEMFileFormat()
-		{
-
-		}
-
-		public override string ToString()
-		{
-			return Name;
-		}
-
-	}
+        protected MetadataObsoleteException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
+    }
 }

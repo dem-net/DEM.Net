@@ -112,7 +112,7 @@ namespace DEM.Net.Core
                             using (HttpClient client = new HttpClient())
                             using (HttpResponseMessage response = client.GetAsync(dataSet.DataSource.IndexFilePath).Result)
                             using (FileStream fs = new FileStream(vrtFileName, FileMode.Create, FileAccess.Write))
-                            { 
+                            {
                                 var contentbytes = client.GetByteArrayAsync(dataSet.DataSource.IndexFilePath).Result;
                                 fs.Write(contentbytes, 0, contentbytes.Length);
                             }
@@ -206,8 +206,6 @@ namespace DEM.Net.Core
             // Create directories if not existing
             new FileInfo(report.LocalName).Directory.Create();
 
-            _logger?.LogInformation($"Downloading file {report.URL}...");
-
             using (HttpClient client = new HttpClient())
             {
 
@@ -227,6 +225,7 @@ namespace DEM.Net.Core
             Uri localVrtUri = new Uri(Path.GetFullPath(vrtFileName), UriKind.Absolute);
             Uri remoteVrtUri = new Uri(dataSet.DataSource.IndexFilePath, UriKind.Absolute);
             double[] geoTransform;
+            var registration = dataSet.FileFormat.Registration;
             Dictionary<string, string> properties;
 
             // Create an XmlReader
@@ -274,7 +273,24 @@ namespace DEM.Net.Core
                         source.OriginLat = geoTransform[3] + source.DstxOff * geoTransform[4] + source.DstyOff * geoTransform[5];
                         source.DestLon = geoTransform[0] + (source.DstxOff + source.DstxSize) * geoTransform[1] + (source.DstyOff + source.DstySize) * geoTransform[2];
                         source.DestLat = geoTransform[3] + (source.DstxOff + source.DstxSize) * geoTransform[4] + (source.DstyOff + source.DstySize) * geoTransform[5];
-                        source.BBox = new BoundingBox(source.OriginLon, source.DestLon, source.DestLat, source.OriginLat);
+
+                        if (registration == DEMFileRegistrationMode.Grid)
+                        {
+                            source.BBox = new BoundingBox(Math.Round(source.OriginLon + geoTransform[1] / 2, 10),
+                                                                        Math.Round(source.DestLon - +geoTransform[1] / 2, 10),
+                                                                        Math.Round(source.DestLat - geoTransform[5] / 2, 10),
+                                                                        Math.Round(source.OriginLat + geoTransform[5] / 2, 10));
+                        }
+                        else
+                        {
+                            source.OriginLon = Math.Round(source.OriginLon, 10);
+                            source.OriginLat = Math.Round(source.OriginLat, 10);
+                            source.DestLon = Math.Round(source.DestLon, 10);
+                            source.DestLat = Math.Round(source.DestLat, 10);
+                            source.BBox = new BoundingBox(source.OriginLon, source.DestLon, source.DestLat, source.OriginLat);
+                        }
+                        
+
                         isOnFirstSource = false;
 
                         yield return source;
