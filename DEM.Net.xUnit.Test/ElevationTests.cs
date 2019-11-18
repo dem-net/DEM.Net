@@ -38,10 +38,10 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
-        [InlineData(nameof(DEMDataSet.ASTER_GDEMV3), 45.179337, 5.721421, 221.884536743164)]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.179337, 5.721421, 216.57283020019531)]
-        [InlineData(nameof(DEMDataSet.SRTM_GL1), 45.179337, 5.721421, 216.71719360351562)]
-        [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 220.99562072753906)]
+        [InlineData(nameof(DEMDataSet.ASTER_GDEMV3), 45.179337, 5.721421, 222)]
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.179337, 5.721421, 217)]
+        [InlineData(nameof(DEMDataSet.SRTM_GL1), 45.179337, 5.721421, 217)]
+        [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 221)]
         public void TestElevationSinglePoint(string dataSetName, double lat, double lon, double expectedElevation)
         {
             DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
@@ -51,7 +51,7 @@ namespace DEM.Net.Test
             GeoPoint point = _elevationService.GetPointElevation(lat, lon, dataSet);
             double elevation = point.Elevation.GetValueOrDefault(0);
 
-            Assert.Equal(expectedElevation, elevation, 5);
+            Assert.Equal(expectedElevation, elevation, 0);
         }
 
         [Theory()]
@@ -78,10 +78,10 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
-        [InlineData(nameof(DEMDataSet.ASTER_GDEMV3), 45.179337, 5.721421, 45.212278, 5.468857, 1031, 3112.6337432861328, -3153.5321044921875, 172.384765625, 1648.965087890625)]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.179337, 5.721421, 45.212278, 5.468857, 345, 2799.6234436035156, -2831.7227172851562, 178.56304931640625, 1656.548583984375)]
-        [InlineData(nameof(DEMDataSet.SRTM_GL1), 45.179337, 5.721421, 45.212278, 5.468857, 1030, 3029.673828125, -3063.4037170410156, 178, 1657.423828125)]
-        [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 45.212278, 5.468857, 1029, 3290.001708984375, -3328.8204193115234, 177.8447265625, 1653.1025390625)]
+        [InlineData(nameof(DEMDataSet.ASTER_GDEMV3), 45.179337, 5.721421, 45.212278, 5.468857, 1031, 2837.678, -2878.576, 172.776, 1648.313)]
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.179337, 5.721421, 45.212278, 5.468857, 344, 2586.41, -2617.292, 178.271, 1654.438)]
+        [InlineData(nameof(DEMDataSet.SRTM_GL1), 45.179337, 5.721421, 45.212278, 5.468857, 1031, 2755.597, -2789.424, 178, 1655.313)]
+        [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 45.212278, 5.468857, 1031, 2869.021, -2907.839, 177.857, 1652.584)]
         public void TestElevationLine(string dataSetName, double latStart, double lonStart, double latEnd, double lonEnd,
             double expectedPointCount, double expectedClimb, double expectedDescent, double expectedMin, double expectedMax)
         {
