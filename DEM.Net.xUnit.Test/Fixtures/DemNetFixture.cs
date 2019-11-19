@@ -37,7 +37,23 @@ namespace DEM.Net.Test
             services.Configure<AppSecrets>(builder.GetSection(nameof(AppSecrets)));
 
             ServiceProvider = services.BuildServiceProvider();
+
+            // You can run additionnal startup steps here
+            OnStart(ServiceProvider);
         }
+
+        /// <summary>
+        /// Custom function where you can run additionnal startup tasks
+        /// </summary>
+        /// <param name="services"></param>
+        void OnStart(ServiceProvider services)
+        {
+            //foreach (var dst in DEMDataSet.RegisteredNonSingleFileDatasets)
+            //    services.GetService<IRasterService>().GenerateDirectoryMetadata(dst, true);
+
+        }
+
+
 
         public ServiceProvider ServiceProvider { get; private set; }
     }
