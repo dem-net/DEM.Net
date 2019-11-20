@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <PackageId>DEM.Net.Core</PackageId>
     <Version>0.1.4</Version>
     <Authors>Xavier Fischer, Frédéric Aubin</Authors>
@@ -21,6 +20,7 @@
     <AssemblyVersion>0.1.4.0</AssemblyVersion>
     <FileVersion>0.1.4.0</FileVersion>
     <UserSecretsId>a9a5d6e1-3bb8-4dfd-ac6a-861f60dada50</UserSecretsId>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <!-- Build package only in Release -->
   <PropertyGroup Condition=" '$(Configuration)' == 'Release'">
