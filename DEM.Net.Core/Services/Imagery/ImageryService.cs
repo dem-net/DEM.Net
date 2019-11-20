@@ -129,8 +129,7 @@ namespace DEM.Net.Core.Imagery
                 using (TimeSpanBlock timer = new TimeSpanBlock("Tile generation", _logger))
                 {
                     // Max download threads defined in provider
-                    var parallelOptions = new ParallelOptions()
-                        {MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism};
+                    var parallelOptions = new ParallelOptions() {MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism};
                     var range = tiles.EnumerateRange().ToList();
                     _logger?.LogInformation($"Generating {range.Count} tiles with {provider.Name} generator...");
                     Parallel.ForEach(range, parallelOptions, tileInfo =>
