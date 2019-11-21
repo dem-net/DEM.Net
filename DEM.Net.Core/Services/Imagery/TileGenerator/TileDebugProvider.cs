@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -10,25 +11,25 @@ namespace DEM.Net.Core.Imagery
 {
     public class TileDebugProvider : ImageryProvider, ITileGenerator
     {
-        public TileDebugProvider(int maxDegreeOfParallelism = -1, int maxZoom = 6)
+        private readonly Graticules graticuleService;
+        public TileDebugProvider(int maxDegreeOfParallelism = -1, int maxZoom = 23)
         {
             base.MaxDegreeOfParallelism = maxDegreeOfParallelism;
             base.MaxZoom = maxZoom;
+            graticuleService = new Graticules();
         }
         public byte[] GenerateTile(int x, int y, int zoom)
         {
             byte[] tileBytes = null;
             var font = SixLabors.Fonts.SystemFonts.CreateFont("Arial", 12);
 
-            var px = TileUtils.TileXYToPixelXY(x, y);
-            var latLong = TileUtils.PixelXYToLatLong(px.X, px.Y, zoom);
-            var latLongOffset = TileUtils.PixelXYToLatLong(px.X + TileSize, px.Y + TileSize, zoom);
+            var corner = TileUtils.TileXYToPixelXY(x, y);
+            var latLong = TileUtils.PixelXYToLatLong(corner.X, corner.Y, zoom);
+            var latLongOffset = TileUtils.PixelXYToLatLong(corner.X + TileSize, corner.Y + TileSize, zoom);
 
-            var testX = Math.Pow(10, -Math.Log10(latLongOffset.Long - latLong.Long)); 
-            var testY = Math.Pow(10, -Math.Log10(latLong.Lat - latLongOffset.Lat));
-
-
-
+            var graticules = graticuleService.DrawCore(latLong, latLongOffset);
+            
+            
             using (Image<Rgba32> outputImage = new Image<Rgba32>(this.TileSize, this.TileSize))
             {
                 string tileText = $"{x}/{y}/{zoom}{Environment.NewLine}";
@@ -36,6 +37,9 @@ namespace DEM.Net.Core.Imagery
                     .Fill(Rgba32.White)
                     .DrawText(tileText, font, Rgba32.Black, new PointF(10, 10))
                 );
+                outputImage.Mutate( o => DrawGraticules(o, graticules, corner, zoom));
+
+                
 
                 using (MemoryStream ms = new MemoryStream())
                 {
@@ -47,5 +51,26 @@ namespace DEM.Net.Core.Imagery
             return tileBytes;
         }
 
+        private void DrawGraticules(IImageProcessingContext<Rgba32> img, GraticuleLabels graticules, PointInt corner, int zoom)
+        {
+            foreach (var meridian in graticules.VerticalLabels)
+            {
+                var loc = meridian.worldLocation;
+                var pt = TileUtils.LatLongToPixelXY(loc.Lat, loc.Long, zoom);
+                var xpos = pt.X - corner.X;
+                var start = new PointF(xpos,0);
+                var end = new PointF(xpos,TileSize);
+                img.DrawLines(Rgba32.Gray, 1f, new PointF[] {start, end});
+            }
+            foreach (var parallel in graticules.HorizontalLabels)
+            {
+                var loc = parallel.worldLocation;
+                var pt = TileUtils.LatLongToPixelXY(loc.Lat, loc.Long, zoom);
+                var ypos = pt.Y - corner.Y;
+                var start = new PointF(0,ypos);
+                var end = new PointF(TileSize,ypos);
+                img.DrawLines(Rgba32.Gray, 1f, new PointF[] {start, end});
+            }
+        }
     }
 }

@@ -31,8 +31,14 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core.Imagery
 {
-    public class LatLong
+    public struct LatLong
     {
+        // Function to perform operation 
+        // By changing sign of integers 
+        public static LatLong operator -(LatLong c1, LatLong c2)
+        {
+            return new LatLong(c1.Lat - c2.Lat, c1.Long - c2.Long);
+        } 
         public double Lat { get; set; }
         public double Long { get; set; }
 
@@ -41,12 +47,7 @@ namespace DEM.Net.Core.Imagery
             Lat = lat;
             Long = lon;
         }
-
-        public LatLong() : this(0, 0)
-        {
-
-        }
-
+        
         public override string ToString()
         {
             return $"lat={Lat}, Long={Long}";
