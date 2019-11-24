@@ -338,10 +338,10 @@ namespace DEM.Net.Core
         }
         public HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = 0)
         {
-            int yStart = (int)Math.Floor((bbox.yMax - metadata.PhysicalEndLat) / metadata.pixelSizeY);
-            int yEnd = (int)Math.Ceiling((bbox.yMin - metadata.PhysicalEndLat) / metadata.pixelSizeY);
-            int xStart = (int)Math.Floor((bbox.xMin - metadata.PhysicalStartLon) / metadata.pixelSizeX);
-            int xEnd = (int)Math.Ceiling((bbox.xMax - metadata.PhysicalStartLon) / metadata.pixelSizeX);
+            int yStart = (int)Math.Floor((bbox.yMax - metadata.DataEndLat) / metadata.pixelSizeY);
+            int yEnd = (int)Math.Ceiling((bbox.yMin - metadata.DataEndLat) / metadata.pixelSizeY);
+            int xStart = (int)Math.Floor((bbox.xMin - metadata.DataStartLon) / metadata.pixelSizeX);
+            int xEnd = (int)Math.Ceiling((bbox.xMax - metadata.DataStartLon) / metadata.pixelSizeX);
 
             // Tiled geotiffs like aster have overlapping 1px borders
             int overlappingPixel = this.IsTiled ? 1 : 0;
@@ -367,13 +367,13 @@ namespace DEM.Net.Core
 
                 for (int y = yStart; y <= yEnd; y++)
                 {
-                    double latitude = metadata.PhysicalEndLat + (metadata.pixelSizeY * y);
+                    double latitude = metadata.DataEndLat + (metadata.pixelSizeY * y);
                     // bounding box
                     if (y == yStart)
                     {
                         heightMap.BoundingBox.yMax = latitude;
-                        heightMap.BoundingBox.xMin = metadata.PhysicalStartLon + (metadata.pixelSizeX * xStart);
-                        heightMap.BoundingBox.xMax = metadata.PhysicalStartLon + (metadata.pixelSizeX * xEnd);
+                        heightMap.BoundingBox.xMin = metadata.DataStartLon + (metadata.pixelSizeX * xStart);
+                        heightMap.BoundingBox.xMax = metadata.DataStartLon + (metadata.pixelSizeX * xEnd);
                     }
                     else if (y == yEnd)
                     {
@@ -382,7 +382,7 @@ namespace DEM.Net.Core
 
                     for (int x = xStart; x <= xEnd; x++)
                     {
-                        double longitude = metadata.PhysicalStartLon + (metadata.pixelSizeX * x);
+                        double longitude = metadata.DataStartLon + (metadata.pixelSizeX * x);
                         var tileX = (x / tileWidth) * tileWidth;
                         var tileY = (y / tileHeight) * tileHeight;
 
@@ -428,14 +428,14 @@ namespace DEM.Net.Core
 
                     TiffFile.ReadScanline(byteScanline, y);
 
-                    double latitude = metadata.PhysicalEndLat + (metadata.pixelSizeY * y);
+                    double latitude = metadata.DataEndLat + (metadata.pixelSizeY * y);
 
                     // bounding box
                     if (y == yStart)
                     {
                         heightMap.BoundingBox.yMax = latitude;
-                        heightMap.BoundingBox.xMin = metadata.PhysicalStartLon + (metadata.pixelSizeX * xStart);
-                        heightMap.BoundingBox.xMax = metadata.PhysicalStartLon + (metadata.pixelSizeX * xEnd);
+                        heightMap.BoundingBox.xMin = metadata.DataStartLon + (metadata.pixelSizeX * xStart);
+                        heightMap.BoundingBox.xMax = metadata.DataStartLon + (metadata.pixelSizeX * xEnd);
                     }
                     else if (y == yEnd)
                     {
@@ -444,7 +444,7 @@ namespace DEM.Net.Core
 
                     for (int x = xStart; x <= xEnd; x++)
                     {
-                        double longitude = metadata.PhysicalStartLon + (metadata.pixelSizeX * x);
+                        double longitude = metadata.DataStartLon + (metadata.pixelSizeX * x);
 
                         float heightValue = 0;
                         switch (metadata.SampleFormat)
@@ -507,10 +507,10 @@ namespace DEM.Net.Core
             {
                 TiffFile.ReadScanline(byteScanline, y);
 
-                double latitude = metadata.PhysicalStartLat + (metadata.pixelSizeY * y);
+                double latitude = metadata.DataStartLat + (metadata.pixelSizeY * y);
                 for (int x = 0; x < metadata.Width; x++)
                 {
-                    double longitude = metadata.PhysicalStartLon + (metadata.pixelSizeX * x);
+                    double longitude = metadata.DataStartLon + (metadata.pixelSizeX * x);
 
                     float heightValue = 0;
                     switch (metadata.SampleFormat)

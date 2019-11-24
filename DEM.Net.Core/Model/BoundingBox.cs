@@ -146,6 +146,16 @@ namespace DEM.Net.Core
             return bbox.xMin <= x && x <= bbox.xMax
                     && bbox.yMin <= y && y <= bbox.yMax;
         }
+        public List<GeoPoint> AsPoints()
+        {
+            var pts = new List<GeoPoint>();
+            pts.Add(new GeoPoint(yMax, xMin));
+            pts.Add(new GeoPoint(yMax, xMax));
+            pts.Add(new GeoPoint(yMin, xMax));
+            pts.Add(new GeoPoint(yMin, xMin));
+            pts.Add(new GeoPoint(yMax, xMin));
+            return pts;
+        }
 
         public static BoundingBox AroundPoint(double lat, double lon, double size)
         {
@@ -159,6 +169,7 @@ namespace DEM.Net.Core
 
         public bool Equals(BoundingBox other)
         {
+            if (other == null) return false;
             return _xMin == other.xMin
                     && _xMax == other.xMax
                     && _yMin == other.yMin
