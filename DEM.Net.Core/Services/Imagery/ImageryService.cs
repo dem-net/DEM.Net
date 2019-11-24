@@ -38,6 +38,7 @@ using DEM.Net.Core.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
+using Path = SixLabors.Shapes.Path;
 #if NETFULL
 using System.Configuration;
 using System.Drawing;
@@ -48,6 +49,7 @@ using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using SixLabors.Shapes;
 using SixLabors.Primitives;
 
 #endif
@@ -263,7 +265,7 @@ namespace DEM.Net.Core.Imagery
         }
 
         public TextureInfo ConstructTextureWithGpxTrack(TileRange tiles, BoundingBox bbox, string fileName,
-            TextureImageFormat mimeType, IEnumerable<GeoPoint> gpxPoints)
+            TextureImageFormat mimeType, IEnumerable<GeoPoint> gpxPoints, bool drawGpxVertices)
         {
             // where is the bbox in the final image ?
 
@@ -326,6 +328,13 @@ namespace DEM.Net.Core.Imagery
                 outputImage.Mutate(o => o
                     .DrawLines(new Rgba32(1, 0, 0, 1f), 5f, pointsOnTexture.ToArray())
                 );
+
+                if (drawGpxVertices)
+                {
+                    PathCollection pc = new PathCollection(pointsOnTexture.Select(p => new EllipsePolygon(p, 10f)));
+                    outputImage.Mutate(o => o.Draw(GraphicsOptions.Default, Pens.Solid(Rgba32.Violet, 3), pc));
+                }
+
                 // with encoder
                 //IImageEncoder encoder = ConvertFormat(mimeType);
                 //outputImage.Save(fileName, encoder);
@@ -438,7 +447,7 @@ namespace DEM.Net.Core.Imagery
                     outputImage[i, j] = color;
                 }
 
-                outputImage.Save(Path.Combine(outputDirectory, fileName));
+                outputImage.Save(System.IO.Path.Combine(outputDirectory, fileName));
             }
 #elif NETFULL
             using (var dbm = new DirectBitmap(heightMap.Width, heightMap.Height))
@@ -458,7 +467,7 @@ namespace DEM.Net.Core.Imagery
 #endif
 
 
-            TextureInfo normal = new TextureInfo(Path.Combine(outputDirectory, fileName), TextureImageFormat.image_jpeg,
+            TextureInfo normal = new TextureInfo(System.IO.Path.Combine(outputDirectory, fileName), TextureImageFormat.image_jpeg,
                 heightMap.Width, heightMap.Height);
             return normal;
         }
@@ -488,10 +497,10 @@ namespace DEM.Net.Core.Imagery
                     outputImage[i, j] = color;
                 }
 
-                outputImage.Save(Path.Combine(outputDirectory, fileName));
+                outputImage.Save(System.IO.Path.Combine(outputDirectory, fileName));
             }
 
-            TextureInfo normal = new TextureInfo(Path.Combine(outputDirectory, fileName), TextureImageFormat.image_png,
+            TextureInfo normal = new TextureInfo(System.IO.Path.Combine(outputDirectory, fileName), TextureImageFormat.image_png,
                 heightMap.Width, heightMap.Height);
             return normal;
 #elif NETFULL

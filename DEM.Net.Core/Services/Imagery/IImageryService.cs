@@ -13,7 +13,7 @@ namespace DEM.Net.Core.Imagery
         List<Vector2> ComputeUVMap(HeightMap heightMap, TextureInfo textureInfo);
         TextureInfo ConstructTexture(TileRange tiles, BoundingBox bbox, string fileName, TextureImageFormat mimeType);
 
-        TextureInfo ConstructTextureWithGpxTrack(TileRange tiles, BoundingBox bbox, string fileName, TextureImageFormat mimeType, IEnumerable<GeoPoint> gpxPoints);
+        TextureInfo ConstructTextureWithGpxTrack(TileRange tiles, BoundingBox bbox, string fileName, TextureImageFormat mimeType, IEnumerable<GeoPoint> gpxPoints, bool drawGpxVertices = false);
 
         TextureInfo GenerateNormalMap(HeightMap heightMap, string outputDirectory, string fileName = "normalmap.png");
         TextureInfo GenerateHeightMap(HeightMap heightMap, string outputDirectory, string fileName = "heightmap.png");
