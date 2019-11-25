@@ -7,7 +7,6 @@ namespace DEM.Net.Core.Imagery
     public partial class ImageryProvider
     {
         
-
         public static ImageryProvider MapBoxSatellite = new ImageryProvider()
         {
             Name = "MapBox-Satellite",

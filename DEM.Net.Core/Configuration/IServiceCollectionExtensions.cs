@@ -1,6 +1,7 @@
 ﻿using DEM.Net.Core.Datasets;
 using DEM.Net.Core.EarthData;
 using DEM.Net.Core.Imagery;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,8 @@ namespace DEM.Net.Core
     {
         public static IServiceCollection AddDemNetCore(this IServiceCollection services)
         {
+            services.AddMemoryCache();
+
             services.AddSingleton<GDALVRTFileService>();
             services.AddSingleton<NasaGranuleFileService>();
             services.AddSingleton<EarthdataLoginConnector>();

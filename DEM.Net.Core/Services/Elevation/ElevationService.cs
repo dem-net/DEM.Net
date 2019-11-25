@@ -748,7 +748,7 @@ namespace DEM.Net.Core
                 //const double epsilon = (Double.Epsilon * 100);
                 float noData = metadata.NoDataValueFloat;
 
-                double yPixel, xPixel, xInterpolationAmount, yInterpolationAmount, dataPointOffsetPx = 0;
+                double yPixel, xPixel, xInterpolationAmount, yInterpolationAmount = 0;
 
                 // pixel coordinates interpolated
                 if (metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid)
@@ -758,19 +758,16 @@ namespace DEM.Net.Core
                     // If at pixel center (ending by .5, .5), we are on the data point, so no need for adjacent raster checks
                     xInterpolationAmount = (double)(xPixel) % 1d;
                     yInterpolationAmount = (double)(yPixel) % 1d;
-
-                    dataPointOffsetPx = 0;
                 }
                 else
                 {
-                    yPixel = (lat - metadata.PhysicalEndLat) / metadata.pixelSizeY;
-                    xPixel = (lon - metadata.PhysicalStartLon) / metadata.pixelSizeX;
-
                     // In cell registration mode, the actual data point is at pixel center
-                    dataPointOffsetPx = 0.5;
                     // If at pixel center (ending by .5, .5), we are on the data point, so no need for adjacent raster checks
-                    xInterpolationAmount = Math.Abs((double)(xPixel + dataPointOffsetPx) % 1d);
-                    yInterpolationAmount = Math.Abs((double)(yPixel + dataPointOffsetPx) % 1d);
+                    yPixel = (lat - (metadata.PhysicalEndLat+metadata.pixelSizeY/2)) / metadata.pixelSizeY;
+                    xPixel = (lon - (metadata.PhysicalStartLon+metadata.pixelSizeX/2)) / metadata.pixelSizeX;
+
+                    xInterpolationAmount = Math.Abs((double)(xPixel) % 1d);
+                    yInterpolationAmount = Math.Abs((double)(yPixel) % 1d);
                     
                 }
 
@@ -784,17 +781,17 @@ namespace DEM.Net.Core
                 // When grid registered, this is true 
                 if (xOnDataPoint && yOnDataPoint)
                 {
-                    int x = (int)Math.Round(xPixel - dataPointOffsetPx, 0);
-                    int y = (int)Math.Round(yPixel - dataPointOffsetPx, 0);
+                    int x = (int)Math.Round(xPixel, 0);
+                    int y = (int)Math.Round(yPixel, 0);
                     var tile = FindTile(metadata, adjacentTiles, x, y, out x, out y);
                     heightValue = mainRaster.GetElevationAtPoint(tile, x, y);
                 }
                 else
                 {
-                    int xCeiling = (int)Math.Ceiling(xPixel - dataPointOffsetPx);
-                    int xFloor = (int)Math.Floor(xPixel - dataPointOffsetPx);
-                    int yCeiling = (int)Math.Ceiling(yPixel - dataPointOffsetPx);
-                    int yFloor = (int)Math.Floor(yPixel - dataPointOffsetPx);
+                    int xCeiling = (int)Math.Ceiling(xPixel);
+                    int xFloor = (int)Math.Floor(xPixel);
+                    int yCeiling = (int)Math.Ceiling(yPixel);
+                    int yFloor = (int)Math.Floor(yPixel);
                     // Get 4 grid nearest points (DEM grid corners)
 
                     // If not yOnGrid and not xOnGrid we are on grid horizontal line

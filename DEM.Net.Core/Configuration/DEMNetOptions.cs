@@ -7,6 +7,9 @@ namespace DEM.Net.Core.Configuration
 {
     public class DEMNetOptions
     {
+        public float RenderGpxZTranslateTrackMeters { get; set; } = 5f;
+
+        public float RenderGpxTrailWidthMeters { get; set; } = 15f;
         public List<ImageryProvider> ImageryProviders { get; set; } = new List<ImageryProvider>();
     }
 }
