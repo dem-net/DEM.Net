@@ -39,6 +39,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
 using Path = SixLabors.Shapes.Path;
+using Microsoft.Extensions.Caching.Memory;
 #if NETFULL
 using System.Configuration;
 using System.Drawing;
@@ -65,6 +66,7 @@ namespace DEM.Net.Core.Imagery
         private readonly IMeshService _meshService;
         private readonly AppSecrets appSecrets;
         private readonly DEMNetOptions options;
+        private readonly IMemoryCache cache;
         private static HttpClient _httpClient = new HttpClient();
 
 #if NETSTANDARD
@@ -72,12 +74,14 @@ namespace DEM.Net.Core.Imagery
         public ImageryService(IMeshService meshService,
             IOptions<AppSecrets> appSecrets,
             IOptions<DEMNetOptions> options,
+            IMemoryCache cache,
             ILogger<ImageryService> logger = null)
         {
             _logger = logger;
             _meshService = meshService;
             this.appSecrets = appSecrets?.Value;
             this.options = options?.Value;
+            this.cache = cache;
         }
 #elif NETFULL
         public ImageryService(ILogger<ImageryService> logger)
@@ -86,6 +90,7 @@ namespace DEM.Net.Core.Imagery
             _meshService = null;
             appSecrets = null;
             options = null;
+            cache = null;
         }
 #endif
 
@@ -131,7 +136,7 @@ namespace DEM.Net.Core.Imagery
                 using (TimeSpanBlock timer = new TimeSpanBlock("Tile generation", _logger))
                 {
                     // Max download threads defined in provider
-                    var parallelOptions = new ParallelOptions() {MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism};
+                    var parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism };
                     var range = tiles.EnumerateRange().ToList();
                     _logger?.LogInformation($"Generating {range.Count} tiles with {provider.Name} generator...");
                     Parallel.ForEach(range, parallelOptions, tileInfo =>
@@ -150,14 +155,19 @@ namespace DEM.Net.Core.Imagery
 
 
                 // Max download threads defined in provider
-                var parallelOptions = new ParallelOptions() {MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism};
+                var parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism };
                 var range = tiles.EnumerateRange().ToList();
                 _logger?.LogInformation($"Downloading {range.Count} tiles...");
                 Parallel.ForEach(range, parallelOptions, tileInfo =>
                     {
                         Uri tileUri = BuildUri(provider, tileInfo.X, tileInfo.Y, tileInfo.Zoom);
+                        var contentBytes = cache.GetOrCreate(tileUri, entry =>
+                        {
+                            entry.SetSlidingExpiration(TimeSpan.FromMinutes(5));
 
-                        var contentBytes = _httpClient.GetByteArrayAsync(tileUri).Result;
+                            return _httpClient.GetByteArrayAsync(tileUri).Result;
+                        });
+                        //var contentBytes = _httpClient.GetByteArrayAsync(tileUri).Result;
                         tiles.Add(new MapTile(contentBytes, provider.TileSize, tileUri, tileInfo));
 
                     }
@@ -234,10 +244,10 @@ namespace DEM.Net.Core.Imagery
                 bmp.Save(fileName, format);
             }
 #else
-            using (Image<Rgba32> outputImage = new Image<Rgba32>((int) projectedBbox.Width, (int) projectedBbox.Height))
+            using (Image<Rgba32> outputImage = new Image<Rgba32>((int)projectedBbox.Width, (int)projectedBbox.Height))
             {
-                int xOffset = (int) (tilesBbox.xMin - projectedBbox.xMin);
-                int yOffset = (int) (tilesBbox.yMin - projectedBbox.yMin);
+                int xOffset = (int)(tilesBbox.xMin - projectedBbox.xMin);
+                int yOffset = (int)(tilesBbox.yMin - projectedBbox.yMin);
 
                 foreach (var tile in tiles)
                 {
@@ -259,7 +269,7 @@ namespace DEM.Net.Core.Imagery
                 outputImage.Save(fileName);
             }
 #endif
-            return new TextureInfo(fileName, mimeType, (int) projectedBbox.Width, (int) projectedBbox.Height, zoomLevel,
+            return new TextureInfo(fileName, mimeType, (int)projectedBbox.Width, (int)projectedBbox.Height, zoomLevel,
                 projectedBbox);
             //return new TextureInfo(fileName, format, (int)tilesBbox.Width, (int)tilesBbox.Height);
         }
@@ -273,8 +283,8 @@ namespace DEM.Net.Core.Imagery
             int zoomLevel = tiles.First().TileInfo.Zoom;
             var projectedBbox = ConvertWorldToMap(bbox, zoomLevel);
             var tilesBbox = GetTilesBoundingBox(tiles);
-            int xOffset = (int) (tilesBbox.xMin - projectedBbox.xMin);
-            int yOffset = (int) (tilesBbox.yMin - projectedBbox.yMin);
+            int xOffset = (int)(tilesBbox.xMin - projectedBbox.xMin);
+            int yOffset = (int)(tilesBbox.yMin - projectedBbox.yMin);
 
 
             //DrawDebugBmpBbox(tiles, localBbox, tilesBbox, fileName, mimeType);
@@ -282,7 +292,7 @@ namespace DEM.Net.Core.Imagery
 
             var pointsOnTexture = gpxPoints
                 .Select(pt => TileUtils.LatLongToPixelXY(pt.Latitude, pt.Longitude, zoomLevel))
-                .Select(pt => new PointF(pt.X - (int) projectedBbox.xMin, pt.Y - (int) projectedBbox.yMin));
+                .Select(pt => new PointF(pt.X - (int)projectedBbox.xMin, pt.Y - (int)projectedBbox.yMin));
 
 #if NETFULL
             ImageFormat format = mimeType == TextureImageFormat.image_jpeg ?
@@ -310,7 +320,7 @@ namespace DEM.Net.Core.Imagery
             }
             throw new NotImplementedException("GPX drawing not implemented yet in .Net Full");
 #else
-            using (Image<Rgba32> outputImage = new Image<Rgba32>((int) projectedBbox.Width, (int) projectedBbox.Height))
+            using (Image<Rgba32> outputImage = new Image<Rgba32>((int)projectedBbox.Width, (int)projectedBbox.Height))
             {
                 foreach (var tile in tiles)
                 {
@@ -342,7 +352,7 @@ namespace DEM.Net.Core.Imagery
                 outputImage.Save(fileName);
             }
 
-            return new TextureInfo(fileName, mimeType, (int) projectedBbox.Width, (int) projectedBbox.Height, zoomLevel,
+            return new TextureInfo(fileName, mimeType, (int)projectedBbox.Width, (int)projectedBbox.Height, zoomLevel,
                 projectedBbox);
 #endif
         }
@@ -438,14 +448,14 @@ namespace DEM.Net.Core.Imagery
             using (Image<Bgra32> outputImage = new Image<Bgra32>(heightMap.Width, heightMap.Height))
             {
                 for (int j = 0; j < heightMap.Height; j++)
-                for (int i = 0; i < heightMap.Width; i++)
-                {
-                    int index = i + (j * heightMap.Width);
-                    Vector3 norm = normals[index];
-                    Bgra32 color = FromVec3NormalToColor(norm);
+                    for (int i = 0; i < heightMap.Width; i++)
+                    {
+                        int index = i + (j * heightMap.Width);
+                        Vector3 norm = normals[index];
+                        Bgra32 color = FromVec3NormalToColor(norm);
 
-                    outputImage[i, j] = color;
-                }
+                        outputImage[i, j] = color;
+                    }
 
                 outputImage.Save(System.IO.Path.Combine(outputDirectory, fileName));
             }
@@ -488,14 +498,14 @@ namespace DEM.Net.Core.Imagery
                 // Slow way: bake coordinates to list
                 var coords = heightMap.Coordinates.ToList();
                 for (int j = 0; j < heightMap.Height; j++)
-                for (int i = 0; i < heightMap.Width; i++)
-                {
-                    int index = i + (j * heightMap.Width);
-                    GeoPoint point = coords[index];
-                    Gray16 color = FromGeoPointToHeightMapColor(point, heightMap.Minimum, heightMap.Maximum);
+                    for (int i = 0; i < heightMap.Width; i++)
+                    {
+                        int index = i + (j * heightMap.Width);
+                        GeoPoint point = coords[index];
+                        Gray16 color = FromGeoPointToHeightMapColor(point, heightMap.Minimum, heightMap.Maximum);
 
-                    outputImage[i, j] = color;
-                }
+                        outputImage[i, j] = color;
+                    }
 
                 outputImage.Save(System.IO.Path.Combine(outputDirectory, fileName));
             }
@@ -511,8 +521,8 @@ namespace DEM.Net.Core.Imagery
 #if NETSTANDARD
         private Gray16 FromGeoPointToHeightMapColor(GeoPoint point, float min, float max)
         {
-            float gray = MathHelper.Map(min, max, 0, (float) ushort.MaxValue, (float) (point.Elevation ?? 0f), true);
-            ushort height = (ushort) Math.Round(gray, 0);
+            float gray = MathHelper.Map(min, max, 0, (float)ushort.MaxValue, (float)(point.Elevation ?? 0f), true);
+            ushort height = (ushort)Math.Round(gray, 0);
             return new Gray16(height);
         }
 #endif
@@ -521,15 +531,15 @@ namespace DEM.Net.Core.Imagery
 #if NETSTANDARD
         private Bgra32 FromVec3ToHeightColor(Vector3 vector3, float maxHeight)
         {
-            byte height = (byte) Math.Round(MathHelper.Map(0, maxHeight, 0, 255, vector3.Z, true), 0);
+            byte height = (byte)Math.Round(MathHelper.Map(0, maxHeight, 0, 255, vector3.Z, true), 0);
             return new Bgra32(height, height, height);
         }
 
         private Bgra32 FromVec3NormalToColor(Vector3 normal)
         {
-            return new Bgra32((byte) Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.X, true), 0),
-                (byte) Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.Y, true), 0),
-                (byte) Math.Round(MathHelper.Map(0, -1, 128, 255, -normal.Z, true), 0));
+            return new Bgra32((byte)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.X, true), 0),
+                (byte)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.Y, true), 0),
+                (byte)Math.Round(MathHelper.Map(0, -1, 128, 255, -normal.Z, true), 0));
         }
 #elif NETFULL
         private Color FromVec3ToHeightColor(Vector3 vector3, float maxHeight)
@@ -567,10 +577,10 @@ namespace DEM.Net.Core.Imagery
                 PointInt projPoint =
                     TileUtils.LatLongToPixelXY(geoPoint.Latitude, geoPoint.Longitude, textureInfo.ProjectedZoom);
 
-                float xOffset = projPoint.X - (float) bbox.xMin;
+                float xOffset = projPoint.X - (float)bbox.xMin;
                 float uvX = MathHelper.Map(1, textureInfo.Width, 0, 1, xOffset, true);
 
-                float yOffset = projPoint.Y - (float) bbox.yMin;
+                float yOffset = projPoint.Y - (float)bbox.yMin;
                 float uvY = MathHelper.Map(1, textureInfo.Height, 0, 1, yOffset, true);
 
                 uvs.Add(new Vector2(uvX, uvY));

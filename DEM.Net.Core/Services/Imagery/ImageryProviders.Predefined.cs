@@ -7,13 +7,6 @@ namespace DEM.Net.Core.Imagery
     public partial class ImageryProvider
     {
         
-        public static ImageryProvider InMemoryProvider = new ImageryProvider()
-        {
-            Name = "InMemoryDebugTiles",
-            Attribution = new Attribution("Elevation API", "https://elevationapi.com"),
-            UrlModel = null,
-            MaxZoom = 23
-        };
         public static ImageryProvider MapBoxSatellite = new ImageryProvider()
         {
             Name = "MapBox-Satellite",

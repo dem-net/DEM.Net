@@ -49,7 +49,7 @@ namespace DEM.Net.Core
         private NamedMonitor monitor = new NamedMonitor();
 
         private string _localDirectory;
-        private Dictionary<string, List<FileMetadata>> _metadataCatalogCache = new Dictionary<string, List<FileMetadata>>();
+        private ConcurrentDictionary<string, List<FileMetadata>> _metadataCatalogCache = new ConcurrentDictionary<string, List<FileMetadata>>();
 
         public string LocalDirectory
         {
@@ -65,7 +65,7 @@ namespace DEM.Net.Core
             if (!Directory.Exists(_localDirectory))
                 Directory.CreateDirectory(_localDirectory);
 
-            _metadataCatalogCache = new Dictionary<string, List<FileMetadata>>();
+            _metadataCatalogCache = new ConcurrentDictionary<string, List<FileMetadata>>();
         }
 
         public void SetLocalDirectory(string localDirectory)
@@ -77,7 +77,7 @@ namespace DEM.Net.Core
                 if (!Directory.Exists(_localDirectory))
                     Directory.CreateDirectory(_localDirectory);
 
-                _metadataCatalogCache = new Dictionary<string, List<FileMetadata>>();
+                _metadataCatalogCache = new ConcurrentDictionary<string, List<FileMetadata>>();
                 foreach (var value in Enum.GetValues(typeof(Datasets.DEMDataSourceType)))
                 {
                     _rasterIndexServiceResolver((Datasets.DEMDataSourceType)value).Reset();
@@ -149,7 +149,7 @@ namespace DEM.Net.Core
 
             if (force && _metadataCatalogCache.ContainsKey(localPath))
             {
-                _metadataCatalogCache.Remove(localPath);
+                _metadataCatalogCache.TryRemove(localPath, out List<FileMetadata> removed);
             }
             Stopwatch stopwatch = Stopwatch.StartNew();
 
