@@ -763,8 +763,8 @@ namespace DEM.Net.Core
                 {
                     // In cell registration mode, the actual data point is at pixel center
                     // If at pixel center (ending by .5, .5), we are on the data point, so no need for adjacent raster checks
-                    yPixel = (lat - (metadata.PhysicalEndLat+metadata.PixelScaleY/2)) / metadata.pixelSizeY;
-                    xPixel = (lon - (metadata.PhysicalStartLon+metadata.PixelScaleX/2)) / metadata.pixelSizeX;
+                    yPixel = (lat - (metadata.PhysicalEndLat+metadata.pixelSizeY/2)) / metadata.pixelSizeY;
+                    xPixel = (lon - (metadata.PhysicalStartLon+metadata.pixelSizeX/2)) / metadata.pixelSizeX;
 
                     xInterpolationAmount = Math.Abs((double)(xPixel) % 1d);
                     yInterpolationAmount = Math.Abs((double)(yPixel) % 1d);
