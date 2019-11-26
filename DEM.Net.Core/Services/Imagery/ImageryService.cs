@@ -163,7 +163,7 @@ namespace DEM.Net.Core.Imagery
                         Uri tileUri = BuildUri(provider, tileInfo.X, tileInfo.Y, tileInfo.Zoom);
                         var contentBytes = cache.GetOrCreate(tileUri, entry =>
                         {
-                            entry.SetSlidingExpiration(TimeSpan.FromMinutes(5));
+                            entry.SetSlidingExpiration(TimeSpan.FromMinutes(options.ImageryCacheExpirationMinutes));
 
                             return _httpClient.GetByteArrayAsync(tileUri).Result;
                         });
