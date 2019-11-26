@@ -12,7 +12,7 @@ namespace DEM.Net.Core.Imagery
     public class TileDebugProvider : ImageryProvider, ITileGenerator
     {
         private readonly Graticules graticuleService;
-        public TileDebugProvider(GeoPoint debugPoint, int maxDegreeOfParallelism = -1, int maxZoom = 23)
+        public TileDebugProvider(GeoPoint debugPoint = null, int maxDegreeOfParallelism = -1, int maxZoom = 23)
         {
             base.MaxDegreeOfParallelism = maxDegreeOfParallelism;
             base.MaxZoom = maxZoom;
@@ -31,9 +31,7 @@ namespace DEM.Net.Core.Imagery
             var latLong = TileUtils.PixelXYToLatLong(corner.X, corner.Y, zoom);
             var latLongOffset = TileUtils.PixelXYToLatLong(corner.X + TileSize, corner.Y + TileSize, zoom);
 
-            // Test
-            var testPixel = TileUtils.LatLongToPixelXY(DebugPoint.Latitude,DebugPoint.Longitude, zoom);
-            var testTile = TileUtils.PixelXYToTileXY(testPixel.X, testPixel.Y);
+            
             
             var graticules = graticuleService.DrawCore(latLong, latLongOffset);
             
@@ -47,17 +45,26 @@ namespace DEM.Net.Core.Imagery
                 );
                 outputImage.Mutate( o => DrawGraticules(o, graticules, corner, zoom));
 
-                // Draw test pixel
-                if (testTile.X == x && testTile.Y == y)
-                {
-                    var basex = TileUtils.TileXYToPixelXY(x, y);
-                    var ptLoc = new PointF(testPixel.X-basex.X, testPixel.Y-basex.Y);
-                    outputImage.Mutate(o =>
-                        o.DrawLines(Rgba32.Blue, 1f,
-                            new PointF[] {new PointF(ptLoc.X - 10, ptLoc.Y - 10), new PointF(ptLoc.X + 10, ptLoc.Y + 10)})
-                            .DrawLines(Rgba32.Blue, 1f,
-                                new PointF[] {new PointF(ptLoc.X - 10, ptLoc.Y + 10), new PointF(ptLoc.X + 10, ptLoc.Y - 10)}));
+                
 
+                // Test
+                if (DebugPoint != null)
+                {
+                    var testPixel = TileUtils.LatLongToPixelXY(DebugPoint.Latitude, DebugPoint.Longitude, zoom);
+                    var testTile = TileUtils.PixelXYToTileXY(testPixel.X, testPixel.Y);
+
+                    // Draw test pixel
+                    if (testTile.X == x && testTile.Y == y)
+                    {
+                        var basex = TileUtils.TileXYToPixelXY(x, y);
+                        var ptLoc = new PointF(testPixel.X - basex.X, testPixel.Y - basex.Y);
+                        outputImage.Mutate(o =>
+                            o.DrawLines(Rgba32.Blue, 1f,
+                                new PointF[] { new PointF(ptLoc.X - 10, ptLoc.Y - 10), new PointF(ptLoc.X + 10, ptLoc.Y + 10) })
+                                .DrawLines(Rgba32.Blue, 1f,
+                                    new PointF[] { new PointF(ptLoc.X - 10, ptLoc.Y + 10), new PointF(ptLoc.X + 10, ptLoc.Y - 10) }));
+
+                    }
                 }
 
                 using (MemoryStream ms = new MemoryStream())
