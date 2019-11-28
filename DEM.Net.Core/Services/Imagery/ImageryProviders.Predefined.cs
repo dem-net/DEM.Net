@@ -6,7 +6,9 @@ namespace DEM.Net.Core.Imagery
 {
     public partial class ImageryProvider
     {
-        
+#if DEBUG
+        public static ImageryProvider DebugProvider = new TileDebugProvider(null);
+#endif
         public static ImageryProvider MapBoxSatellite = new ImageryProvider()
         {
             Name = "MapBox-Satellite",
