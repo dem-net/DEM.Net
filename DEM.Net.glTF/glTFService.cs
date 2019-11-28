@@ -163,7 +163,9 @@ namespace DEM.Net.glTF
             string text = "DEM-Net Elevation API";
             if (attributions != null && attributions.Any())
             {
-                var attributionsText = string.Join(", ", attributions.Select(a => a.Text));
+                var attributionsText = string.Join(", ", attributions
+                                                            .Where(a => a != null && !string.IsNullOrWhiteSpace(a.Text))
+                                                            .Select(a => a.Text));
                 text = string.Concat(text, ", ", attributionsText);
             }
             return text;
@@ -173,7 +175,9 @@ namespace DEM.Net.glTF
             string text = "https://elevationapi.com";
             if (attributions != null && attributions.Any())
             {
-                var attributionsText = string.Join(Environment.NewLine, attributions.Select(a => $"{a.Text}: {a.Acknowledgement} / {a.Url}"));
+                var attributionsText = string.Join(Environment.NewLine, attributions
+                    .Where(a => a != null && !string.IsNullOrWhiteSpace(a.Text))
+                    .Select(a => $"{a.Text}: {a.Acknowledgement} / {a.Url}"));
                 text = string.Concat(text, ", ", attributionsText);
             }
             return text;
