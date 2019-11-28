@@ -14,6 +14,7 @@ namespace DEM.Net.Core.Imagery
         private readonly Graticules graticuleService;
         public TileDebugProvider(GeoPoint debugPoint = null, int maxDegreeOfParallelism = -1, int maxZoom = 23)
         {
+            base.Name = nameof(TileDebugProvider);
             base.MaxDegreeOfParallelism = maxDegreeOfParallelism;
             base.MaxZoom = maxZoom;
             graticuleService = new Graticules();
@@ -90,7 +91,10 @@ namespace DEM.Net.Core.Imagery
                     img.DrawLines(Rgba32.Gray, 1f, new PointF[] {start, end});
                     try
                     {
-                        img.DrawText(Math.Round(loc.Long,2).ToString(), font, Rgba32.Black, new PointF(xpos, 50));
+                        if (xpos < TileSize - 10)
+                        {
+                            img.DrawText(Math.Round(loc.Long, 2).ToString(), font, Rgba32.Black, new PointF(xpos, 50));
+                        }
                     }
                     catch (Exception)
                     {
