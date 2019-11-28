@@ -1,4 +1,5 @@
 ﻿using AssetGenerator.Runtime.ExtensionMethods;
+using AssetGenerator.Runtime.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -799,19 +800,25 @@ namespace AssetGenerator.Runtime
                 }
                 foreach (var runtimeExtension in runtimeMaterial.Extensions)
                 {
+                    object extension;
                     switch (runtimeExtension.Name)
                     {
+                        case nameof(Extensions.KHR_materials_unlit):
+                            extension = runtimeExtension; // no convert here, this extension has no body
+                            extensionsUsed.Add(runtimeExtension.Name);
+                            break;
                         default:
                             throw new NotImplementedException("Extension schema conversion not implemented for " + runtimeExtension.Name);
                     }
 
-                    
+                    material.Extensions.Add(runtimeExtension.Name, extension);
                 }
                 gltf.ExtensionsUsed = extensionsUsed;
             }
 
             return material;
         }
+
 
         /// <summary>
         /// Interleaves the primitive attributes to a single bufferview

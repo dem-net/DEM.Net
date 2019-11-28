@@ -26,6 +26,7 @@
 
 using AssetGenerator;
 using AssetGenerator.Runtime;
+using AssetGenerator.Runtime.Extensions;
 using DEM.Net.Core;
 using DEM.Net.Core.Imagery;
 using Microsoft.Extensions.Logging;
@@ -523,6 +524,7 @@ namespace DEM.Net.glTF
                             MetallicFactor = 0,
                             RoughnessFactor = 1
                         };
+                        //mesh.Material.Extensions = new List<Extension>() { new KHR_materials_unlit() };
                         if (texture.NormalTexture != null)
                         {
                             mesh.Material.NormalTexture = GetTextureFromImage(texture.NormalTexture.FilePath);
