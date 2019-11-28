@@ -438,19 +438,27 @@ namespace DEM.Net.Core
                 // When 32 we have 4 bytes per sample
                 int bytesPerSample = metadata.BitsPerSample / 8;
                 byte[] byteScanline = new byte[metadata.ScanlineSize];
+                double endLat = metadata.FileFormat.Registration == DEMFileRegistrationMode.Cell
+                    ? metadata.DataEndLat
+                    : metadata.DataEndLat + metadata.pixelSizeY / 2d;
+                double startLon = metadata.FileFormat.Registration == DEMFileRegistrationMode.Cell
+                    ? metadata.DataStartLon
+                    : metadata.DataStartLon + metadata.pixelSizeX / 2d;
+
                 for (int y = yStart; y <= yEnd; y++)
                 {
 
                     TiffFile.ReadScanline(byteScanline, y);
 
-                    double latitude = metadata.DataEndLat + (metadata.pixelSizeY * y);
+                    // TODO: handle Cell registered DEMs: lat is 1/2 pixel off
+                    double latitude = endLat + (metadata.pixelSizeY * y);
 
                     // bounding box
                     if (y == yStart)
                     {
                         heightMap.BoundingBox.yMax = latitude;
-                        heightMap.BoundingBox.xMin = metadata.DataStartLon + (metadata.pixelSizeX * xStart);
-                        heightMap.BoundingBox.xMax = metadata.DataStartLon + (metadata.pixelSizeX * xEnd);
+                        heightMap.BoundingBox.xMin = startLon + (metadata.pixelSizeX * xStart);
+                        heightMap.BoundingBox.xMax = startLon + (metadata.pixelSizeX * xEnd);
                     }
                     else if (y == yEnd)
                     {
@@ -459,7 +467,7 @@ namespace DEM.Net.Core
 
                     for (int x = xStart; x <= xEnd; x++)
                     {
-                        double longitude = metadata.DataStartLon + (metadata.pixelSizeX * x);
+                        double longitude = startLon + (metadata.pixelSizeX * x);
 
                         float heightValue = 0;
                         switch (metadata.SampleFormat)
