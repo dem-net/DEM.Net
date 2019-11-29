@@ -369,6 +369,7 @@ namespace DEM.Net.Core
                     if (tilesHeightMap.Count == 1)
                     {
                         heightMap = tilesHeightMap.First();
+                        bbox = heightMap.BoundingBox;
                     }
                     else
                     {
@@ -602,6 +603,13 @@ namespace DEM.Net.Core
                 GeoPoint curPoint = new GeoPoint(top.DataStartLat, top.DataStartLon);
                 // X Index in tile coords
                 int curIndex = (int)Math.Ceiling((curPoint.Longitude - top.PhysicalStartLon) / top.PixelScaleX - registrationOffsetPx);
+
+                // For cell registered datasets, DataStart is not matching the start data point. Start data point is at cell center (0.5 pixel off)
+                double startLon = top.FileFormat.Registration == DEMFileRegistrationMode.Cell 
+                    ? top.DataStartLon + top.PixelScaleX / 2d
+                    : top.DataStartLon;
+
+
                 while (IsPointInTile(top, curPoint))
                 {
                     if (curIndex >= top.Width)
@@ -609,7 +617,7 @@ namespace DEM.Net.Core
                         break;
                     }
 
-                    curPoint.Longitude = top.DataStartLon + (top.pixelSizeX * curIndex);
+                    curPoint.Longitude = startLon + (top.pixelSizeX * curIndex);
                     if (curPoint.Longitude > easternSegPoint.Longitude)
                     {
                         break;
@@ -635,6 +643,11 @@ namespace DEM.Net.Core
 
                 GeoPoint curPoint = new GeoPoint(left.DataEndLat, left.DataStartLon);
 
+                // For cell registered datasets, DataStart is not matching the start data point. Start data point is at cell center (0.5 pixel off)
+                double endLat = left.FileFormat.Registration == DEMFileRegistrationMode.Cell 
+                                ? left.DataEndLat + left.PixelScaleY / 2d
+                                : left.DataEndLat;
+
                 // Y Index in tile coords
                 int curIndex = (int)Math.Floor((left.PhysicalEndLat - curPoint.Latitude) / left.PixelScaleY - -registrationOffsetPx);
                 while (IsPointInTile(left, curPoint))
@@ -644,7 +657,7 @@ namespace DEM.Net.Core
                         break;
                     }
 
-                    curPoint.Latitude = left.DataEndLat + (left.pixelSizeY * curIndex);
+                    curPoint.Latitude = endLat + (left.pixelSizeY * curIndex);
                     if (curPoint.Latitude < southernSegPoint.Latitude)
                     {
                         break;

@@ -166,7 +166,7 @@ namespace DEM.Net.xUnit.Test
             Assert.NotNull(bbox);
             Assert.Equal(bboxWKT, bbox.WKT);
 
-            HeightMap heightMap = _elevationService.GetHeightMap(bbox, dataset);
+            HeightMap heightMap = _elevationService.GetHeightMap(ref bbox, dataset);
 
             heightMap = heightMap.ReprojectGeodeticToCartesian().BakeCoordinates();
             Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());

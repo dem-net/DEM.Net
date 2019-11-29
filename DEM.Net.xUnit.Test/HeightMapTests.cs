@@ -30,7 +30,7 @@ namespace DEM.Net.Test
             Assert.NotNull(bbox);
             Assert.Equal(bboxWKT, bbox.WKT);
 
-            HeightMap heightMap = _elevationService.GetHeightMap(bbox, dataset);
+            HeightMap heightMap = _elevationService.GetHeightMap(ref bbox, dataset);
 
             heightMap = heightMap.ReprojectGeodeticToCartesian().BakeCoordinates();
             Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
@@ -57,7 +57,7 @@ namespace DEM.Net.Test
             Assert.NotNull(bbox);
             Assert.Equal(bboxWKT, bbox.WKT);
 
-            HeightMap heightMap = _elevationService.GetHeightMap(bbox, DEMDataSet.SRTM_GL1);
+            HeightMap heightMap = _elevationService.GetHeightMap(ref bbox, DEMDataSet.SRTM_GL1);
 
             Assert.False(object.ReferenceEquals(bbox, null));
             Assert.NotNull(heightMap.Coordinates.GetBoundingBox());

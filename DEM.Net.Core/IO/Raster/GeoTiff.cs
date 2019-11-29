@@ -438,12 +438,8 @@ namespace DEM.Net.Core
                 // When 32 we have 4 bytes per sample
                 int bytesPerSample = metadata.BitsPerSample / 8;
                 byte[] byteScanline = new byte[metadata.ScanlineSize];
-                double endLat = metadata.FileFormat.Registration == DEMFileRegistrationMode.Cell
-                    ? metadata.DataEndLat
-                    : metadata.DataEndLat + metadata.pixelSizeY / 2d;
-                double startLon = metadata.FileFormat.Registration == DEMFileRegistrationMode.Cell
-                    ? metadata.DataStartLon
-                    : metadata.DataStartLon + metadata.pixelSizeX / 2d;
+                double endLat = metadata.DataEndLat + metadata.pixelSizeY / 2d;
+                double startLon = metadata.DataStartLon + metadata.pixelSizeX / 2d;
 
                 for (int y = yStart; y <= yEnd; y++)
                 {

@@ -81,7 +81,7 @@ namespace DEM.Net.Test
         [InlineData(nameof(DEMDataSet.ASTER_GDEMV3), 45.179337, 5.721421, 45.212278, 5.468857, 1031, 2837.678, -2878.576, 172.776, 1648.313)]
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.179337, 5.721421, 45.212278, 5.468857, 344, 2586.41, -2617.292, 178.271, 1654.438)]
         [InlineData(nameof(DEMDataSet.SRTM_GL1), 45.179337, 5.721421, 45.212278, 5.468857, 1031, 2755.597, -2789.424, 178, 1655.313)]
-        [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 45.212278, 5.468857, 1031, 2869.021, -2907.839, 177.857, 1652.584)]
+        [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 45.212278, 5.468857, 911, 2973.321, -3012.14, 177.845, 1653.103)]
         public void TestElevationLine(string dataSetName, double latStart, double lonStart, double latEnd, double lonEnd,
             double expectedPointCount, double expectedClimb, double expectedDescent, double expectedMin, double expectedMax)
         {

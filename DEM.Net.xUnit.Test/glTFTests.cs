@@ -76,7 +76,7 @@ namespace DEM.Net.Test
             // You can get your boox from https://geojson.net/ (save as WKT)
             string bboxWKT = "POLYGON((5.54888 43.519525, 5.61209 43.519525, 5.61209 43.565225, 5.54888 43.565225, 5.54888 43.519525))";
             var bbox = GeometryService.GetBoundingBox(bboxWKT);
-            var heightMap = _elevationService.GetHeightMap(bbox, dataset);
+            var heightMap = _elevationService.GetHeightMap(ref bbox, dataset);
                     
 
             // Triangulate height map
