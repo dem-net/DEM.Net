@@ -66,8 +66,8 @@ namespace DEM.Net.Core.Imagery
         public static ImageryProvider EsriWorldImagery = new ImageryProvider()
         {
             Name = "Esri.WorldImagery",
-            Attribution = new Attribution("Tiles © Esri - Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
-                                            "Tiles © Esri - Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"),
+            Attribution = new Attribution("Source: Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community",
+                                            "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer"),
             UrlModel = new UrlModel("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", null),
             MaxZoom = 18
         };
