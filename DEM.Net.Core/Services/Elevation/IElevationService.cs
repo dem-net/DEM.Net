@@ -128,7 +128,7 @@ namespace DEM.Net.Core
         /// <summary>
         /// Returns all elevations in given bbox
         /// </summary>
-        /// <param name="bbox"></param>
+        /// <param name="bbox">Bounding box. Passed as ref: it will be updated to reflect data source real points bounding box</param>
         /// <param name="dataSet"></param>
         /// <returns></returns>
         HeightMap GetHeightMap(ref BoundingBox bbox, DEMDataSet dataSet);
