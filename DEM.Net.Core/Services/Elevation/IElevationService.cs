@@ -131,7 +131,7 @@ namespace DEM.Net.Core
         /// <param name="bbox"></param>
         /// <param name="dataSet"></param>
         /// <returns></returns>
-        HeightMap GetHeightMap(BoundingBox bbox, DEMDataSet dataSet);
+        HeightMap GetHeightMap(ref BoundingBox bbox, DEMDataSet dataSet);
 
         /// <summary>
         /// Get all elevation for a given raster file
