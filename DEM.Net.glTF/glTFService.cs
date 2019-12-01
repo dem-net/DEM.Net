@@ -524,7 +524,7 @@ namespace DEM.Net.glTF
                         mesh.Material.MetallicRoughnessMaterial = new PbrMetallicRoughness()
                         {
                             BaseColorFactor = Vector4.One,
-                            BaseColorTexture = GetTextureFromImage(texture.BaseColorTexture.FilePath),
+                            BaseColorTexture = GetTextureFromImage(texture.BaseColorTexture?.FilePath),
                             MetallicFactor = 0,
                             RoughnessFactor = 1
                         };
@@ -549,6 +549,9 @@ namespace DEM.Net.glTF
 
         private Texture GetTextureFromImage(string texture)
         {
+            if (texture == null)
+                return null;
+
             if (!File.Exists(texture))
             {
                 throw new ArgumentException("Texture file does not exists");
