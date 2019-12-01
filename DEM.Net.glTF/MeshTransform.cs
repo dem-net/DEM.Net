@@ -51,6 +51,11 @@ namespace DEM.Net.glTF
             var matrix = Matrix4x4.CreateRotationZ(angle);
             Transform(mesh, matrix);
         }
+        public static void Translate(this MeshPrimitive mesh, float x,float y, float z)
+        {
+            var matrix = Matrix4x4.CreateTranslation(x,y,z);
+            Transform(mesh, matrix);
+        }
         public static void Transform(this MeshPrimitive mesh, Matrix4x4 matrix)
         {
             mesh.Positions = mesh.Positions.Select(v => Vector3.Transform(v, matrix));
