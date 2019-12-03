@@ -134,7 +134,7 @@ namespace DEM.Net.glTF
                     {
                         Generator = "DEM-Net Elevation API",
                         Copyright = GetAttributionText(attributions),
-                        Extras =  new Extras() { Attributes = GetAttributionExtraText(attributions) },
+                        Extras = new Extras() { Attributes = GetAttributionExtraText(attributions) },
                         Version = "2.0",
                     },
                     Scenes = new List<Scene>
@@ -315,7 +315,7 @@ namespace DEM.Net.glTF
                         // https://gist.github.com/gszauer/5718441
                         // Line triangle mesh
                         List<Vector3> sections = points.Select(pt => pt.ToVector3())
-                            .Distinct()
+                            .FilterConsecutiveSame()
                             .ToList();
 
                         List<Vector3> vertices = new List<Vector3>(sections.Count * 2);
@@ -328,7 +328,16 @@ namespace DEM.Net.glTF
 
 
                             // translate the vector to the left along its way
-                            Vector3 side = Vector3.Cross(dir, Vector3.UnitY) * width;
+                            Vector3 side;
+                            if (dir.Equals(Vector3.UnitY))
+                            {
+                                side = Vector3.UnitX * width;
+                            }
+                             else
+                            {
+                                side = Vector3.Cross(dir, Vector3.UnitY) * width;
+                            }
+                            
 
                             Vector3 v0 = current - side; // 0
                             Vector3 v1 = current + side; // 1
@@ -374,7 +383,7 @@ namespace DEM.Net.glTF
                             ,
                             Positions = vertices
                             ,
-                            Material = new Material() { DoubleSided = true  }
+                            Material = new Material() { DoubleSided = true }
                             ,
                             Indices = indices
                             ,
@@ -400,12 +409,14 @@ namespace DEM.Net.glTF
             return mesh;
         }
 
+        
+
         public MeshPrimitive GenerateTriangleMesh(IEnumerable<GeoPoint> points, List<int> indices, IEnumerable<Vector4> colors = null, PBRTexture texture = null)
         {
             Stopwatch sw = null;
             if ((_logger?.IsEnabled(LogLevel.Trace)).GetValueOrDefault(false))
             {
-                 sw = Stopwatch.StartNew();
+                sw = Stopwatch.StartNew();
                 _logger.LogTrace("Baking points...");
             }
 
@@ -545,7 +556,7 @@ namespace DEM.Net.glTF
             }
             return mesh;
         }
-      
+
 
         private Texture GetTextureFromImage(string texture)
         {
