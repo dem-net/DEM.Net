@@ -26,6 +26,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -273,6 +274,12 @@ namespace DEM.Net.Core
 
                 //Compute the triangle's normal
                 Vector3 dir = Vector3.Normalize(Vector3.Cross(v2 - v1, v3 - v1));
+
+                if (float.IsNaN(dir.X) || float.IsInfinity(dir.X))
+                {
+                    dir = Vector3.UnitY;
+                }
+                //Debug.Assert(!float.IsNaN(dir.X) && !float.IsInfinity(dir.X));
                 //Accumulate it to norm array for i1, i2, i3
                 norm[i1] += dir;
                 norm[i2] += dir;
