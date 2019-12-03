@@ -1265,6 +1265,7 @@ namespace AssetGenerator.Runtime
 
             animation.Channels = animationChannels.ToArray();
             animation.Samplers = animationSamplers.ToArray();
+            animation.Name = runtimeAnimation.Name;
 
             return animation;
         }
