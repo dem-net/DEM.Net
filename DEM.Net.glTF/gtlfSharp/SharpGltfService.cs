@@ -118,7 +118,7 @@ namespace DEM.Net.glTF.SharpglTF
             return terrainMesh;
         }
 
-        public ModelRoot CreateModel(HeightMap heightMap, GenOptions options = GenOptions.None, Func<float, Vector4> colorFunc = null)
+        public ModelRoot CreateModel(HeightMap heightMap, GenOptions options = GenOptions.None, Matrix4x4 vectorTransform = default)
         {
             Triangulation triangulation = default;
             if (options.HasFlag(GenOptions.BoxedBaseElevation0))
@@ -134,6 +134,7 @@ namespace DEM.Net.glTF.SharpglTF
                 triangulation = _meshService.TriangulateHeightMap(heightMap);
             }
 
+
             // create a basic scene
             var model = ModelRoot.CreateModel();
             var scene = model.UseScene("Default");
@@ -144,7 +145,7 @@ namespace DEM.Net.glTF.SharpglTF
               .WithPBRMetallicRoughness()
               .WithDoubleSide(true);
 
-            var indexedTriangulation = new IndexedTriangulation(triangulation);
+            var indexedTriangulation = new IndexedTriangulation(triangulation, vectorTransform);
 
             // create mesh primitive
             var primitive = rmesh.CreatePrimitive()
@@ -158,7 +159,14 @@ namespace DEM.Net.glTF.SharpglTF
 
             primitive = primitive.WithIndicesAccessor(PrimitiveType.TRIANGLES, indexedTriangulation.Indices)
                         .WithMaterial(material);
+            return model;
+        }
+        public ModelRoot CreateSTLModel(HeightMap heightMap, GenOptions options = GenOptions.None, Func<float, Vector4> colorFunc = null)
+        {
+            var model = CreateModel(heightMap, GenOptions.BoxedBaseElevationMin);
 
+            // create mesh primitive
+            var primitive = model.LogicalMeshes.First().Primitives.First();
             return model;
         }
 
@@ -189,10 +197,10 @@ namespace DEM.Net.glTF.SharpglTF
             public List<Vector3> Positions { get; private set; }
             public List<int> Indices { get; private set; }
 
-            public IndexedTriangulation(Triangulation triangulation)
+            public IndexedTriangulation(Triangulation triangulation, Matrix4x4 vectorTransform = default)
             {
                 this.Triangulation = triangulation;
-                Positions = triangulation.Positions.Select(p => p.ToVector3()).ToList();
+                Positions = triangulation.Positions.Select(p => Vector3.Transform(p.ToVector3(), vectorTransform)).ToList();
                 Indices = triangulation.Indices.ToList();
             }
 
