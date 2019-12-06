@@ -41,18 +41,19 @@ namespace DEM.Net.glTF.SharpglTF
             return model;
         }
 
-      
-        public IMeshBuilder<MaterialBuilder> CreateTerrainMesh_NoTexture(HeightMap heightMap)
-        {  Triangulation triangulation = _meshService.TriangulateHeightMap(heightMap);
-            return CreateTerrainMesh_NoTexture(triangulation);
-        }
-        public IMeshBuilder<MaterialBuilder> CreateTerrainMesh_NoTextureColor(HeightMap heightMap, Func<float, Vector4> colorFunc = null)
+
+        public IMeshBuilder<MaterialBuilder> CreateTerrainMesh(HeightMap heightMap)
         {
             Triangulation triangulation = _meshService.TriangulateHeightMap(heightMap);
-            return CreateTerrainMesh_NoTexture(triangulation, colorFunc);
+            return CreateTerrainMesh(triangulation);
+        }
+        public IMeshBuilder<MaterialBuilder> CreateTerrainMesh(HeightMap heightMap, Func<float, Vector4> colorFunc = null)
+        {
+            Triangulation triangulation = _meshService.TriangulateHeightMap(heightMap);
+            return CreateTerrainMesh(triangulation, colorFunc);
         }
 
-        public IMeshBuilder<MaterialBuilder> CreateTerrainMesh_NoTexture(Triangulation triangulation)
+        public IMeshBuilder<MaterialBuilder> CreateTerrainMesh(Triangulation triangulation)
         {
             var material = new MaterialBuilder("TerrainMaterial")
                 .WithMetallicRoughnessShader()
@@ -66,9 +67,9 @@ namespace DEM.Net.glTF.SharpglTF
             // fill the MeshBuilder with quads using the heightFunction.
             for (int i = 0; i < triangulation.NumIndices; i += 3)
             {
-                    var a = indexedTriangulation[i].ToVector3();
-                    var b = indexedTriangulation[i+1].ToVector3();
-                    var c = indexedTriangulation[i+2].ToVector3();
+                var a = indexedTriangulation[i];
+                var b = indexedTriangulation[i + 1];
+                var c = indexedTriangulation[i + 2];
 
                 terrainMesh
                     .UsePrimitive(material)
@@ -76,7 +77,7 @@ namespace DEM.Net.glTF.SharpglTF
                     new VertexPosition(a)
                     , new VertexPosition(b)
                     , new VertexPosition(c));
-                
+
             }
 
             terrainMesh.Validate();
@@ -84,7 +85,7 @@ namespace DEM.Net.glTF.SharpglTF
             return terrainMesh;
         }
 
-        public IMeshBuilder<MaterialBuilder> CreateTerrainMesh_NoTexture(Triangulation triangulation, Func<float, Vector4> colorFunc = null)
+        public IMeshBuilder<MaterialBuilder> CreateTerrainMesh(Triangulation triangulation, Func<float, Vector4> colorFunc = null)
         {
             var material = new MaterialBuilder("TerrainMaterial")
                 .WithMetallicRoughnessShader()
@@ -98,9 +99,9 @@ namespace DEM.Net.glTF.SharpglTF
             // fill the MeshBuilder with quads using the heightFunction.
             for (int i = 0; i < triangulation.NumIndices; i += 3)
             {
-                var a = indexedTriangulation[i].ToVector3();
-                var b = indexedTriangulation[i + 1].ToVector3();
-                var c = indexedTriangulation[i + 2].ToVector3();
+                var a = indexedTriangulation[i];
+                var b = indexedTriangulation[i + 1];
+                var c = indexedTriangulation[i + 2]; ;
 
                 var ac = new Vector4(1, 0, 0, 1);
                 var bc = new Vector4(0, 1, 0, 1);
@@ -117,9 +118,21 @@ namespace DEM.Net.glTF.SharpglTF
             return terrainMesh;
         }
 
-        public ModelRoot CreateModel(HeightMap heightMap, Func<float, Vector4> colorFunc = null)
+        public ModelRoot CreateModel(HeightMap heightMap, GenOptions options = GenOptions.None, Func<float, Vector4> colorFunc = null)
         {
-            Triangulation triangulation = _meshService.TriangulateHeightMap(heightMap);
+            Triangulation triangulation = default;
+            if (options.HasFlag(GenOptions.BoxedBaseElevation0))
+            {
+                triangulation = _meshService.GenerateTriangleMesh_Boxed(heightMap, BoxBaseThickness.FixedElevation, 0);
+            }
+            else if (options.HasFlag(GenOptions.BoxedBaseElevationMin))
+            {
+                triangulation = _meshService.GenerateTriangleMesh_Boxed(heightMap, BoxBaseThickness.FromMinimumPoint, 5);
+            }
+            else
+            {
+                triangulation = _meshService.TriangulateHeightMap(heightMap);
+            }
 
             // create a basic scene
             var model = ModelRoot.CreateModel();
@@ -133,13 +146,18 @@ namespace DEM.Net.glTF.SharpglTF
 
             var indexedTriangulation = new IndexedTriangulation(triangulation);
 
-            var positions = triangulation.Positions.Select(p => p.ToVector3()).ToList();
-            var indices = triangulation.Indices.ToList();
             // create mesh primitive
             var primitive = rmesh.CreatePrimitive()
-                .WithVertexAccessor("POSITION", positions)
-                .WithIndicesAccessor(PrimitiveType.TRIANGLES, indices)
-                .WithMaterial(material);
+                .WithVertexAccessor("POSITION", indexedTriangulation.Positions);
+
+            if (options.HasFlag(GenOptions.Normals))
+            {
+                var normals = _meshService.ComputeNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
+                primitive = primitive.WithVertexAccessor("NORMAL", normals.ToList());
+            }
+
+            primitive = primitive.WithIndicesAccessor(PrimitiveType.TRIANGLES, indexedTriangulation.Indices)
+                        .WithMaterial(material);
 
             return model;
         }
@@ -168,23 +186,22 @@ namespace DEM.Net.glTF.SharpglTF
         private class IndexedTriangulation
         {
             public Triangulation Triangulation { get; private set; }
-            private readonly GeoPoint[] positions;
-
-            public int[] indices { get; }
+            public List<Vector3> Positions { get; private set; }
+            public List<int> Indices { get; private set; }
 
             public IndexedTriangulation(Triangulation triangulation)
             {
                 this.Triangulation = triangulation;
-                positions = triangulation.Positions.ToArray();
-                indices = triangulation.Indices.ToArray();
+                Positions = triangulation.Positions.Select(p => p.ToVector3()).ToList();
+                Indices = triangulation.Indices.ToList();
             }
 
-            public GeoPoint this[int index]
+            public Vector3 this[int index]
             {
                 get
                 {
 
-                    return positions[indices[index]];
+                    return Positions[Indices[index]];
                 }
 
 
