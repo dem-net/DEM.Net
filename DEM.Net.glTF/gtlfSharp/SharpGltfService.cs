@@ -1,4 +1,5 @@
 ﻿using DEM.Net.Core;
+using Microsoft.Extensions.Logging;
 using SharpGLTF.Geometry;
 using SharpGLTF.Geometry.VertexTypes;
 using SharpGLTF.Materials;
@@ -13,6 +14,15 @@ namespace DEM.Net.glTF.SharpglTF
 
     public class SharpGltfService
     {
+        private readonly ILogger<glTFService> _logger;
+        private IMeshService _meshService;
+
+        public SharpGltfService(IMeshService meshService, ILogger<glTFService> logger = null)
+        {
+            _logger = logger;
+            _meshService = meshService;
+        }
+
         public ModelRoot GenerateModel(IEnumerable<AssetGenerator.Runtime.MeshPrimitive> meshPrimitives, string name, IEnumerable<Attribution> attributions = null)
         {
 
@@ -44,6 +54,12 @@ namespace DEM.Net.glTF.SharpglTF
 
             return null;
             //ModelRoot model = ModelRoot.CreateModel()
+        }
+
+        public IMeshBuilder<MaterialBuilder> GenerateTriangleMesh(HeightMap heightMap, IEnumerable<Vector4> colors = null, PBRTexture texture = null)
+        {
+            Triangulation triangulation = _meshService.TriangulateHeightMap(heightMap);
+
         }
     }
 }
