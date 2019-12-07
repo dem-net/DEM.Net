@@ -25,99 +25,6 @@ namespace DEM.Net.glTF.SharpglTF
             _meshService = meshService;
         }
 
-
-        public ModelRoot CreateModel(IMeshBuilder<MaterialBuilder> terrain)
-        {
-            // create a new gltf model
-            var model = ModelRoot.CreateModel();
-
-            // add all meshes (just one in this case) to the model
-            model.CreateMeshes(terrain);
-
-            // create a scene, a node, and assign the first mesh (the terrain)
-            model.UseScene("Default")
-                .CreateNode().WithMesh(model.LogicalMeshes[0]);
-
-            return model;
-        }
-
-
-        public IMeshBuilder<MaterialBuilder> CreateTerrainMesh(HeightMap heightMap)
-        {
-            Triangulation triangulation = _meshService.TriangulateHeightMap(heightMap);
-            return CreateTerrainMesh(triangulation);
-        }
-        public IMeshBuilder<MaterialBuilder> CreateTerrainMesh(HeightMap heightMap, Func<float, Vector4> colorFunc = null)
-        {
-            Triangulation triangulation = _meshService.TriangulateHeightMap(heightMap);
-            return CreateTerrainMesh(triangulation, colorFunc);
-        }
-
-        public IMeshBuilder<MaterialBuilder> CreateTerrainMesh(Triangulation triangulation)
-        {
-            var material = new MaterialBuilder("TerrainMaterial")
-                .WithMetallicRoughnessShader()
-                .WithDoubleSide(true);
-
-            var indexedTriangulation = new IndexedTriangulation(triangulation);
-
-            // we create a MeshBuilder
-            var terrainMesh = new MeshBuilder<VertexPosition>("terrain");
-
-            // fill the MeshBuilder with quads using the heightFunction.
-            for (int i = 0; i < triangulation.NumIndices; i += 3)
-            {
-                var a = indexedTriangulation[i];
-                var b = indexedTriangulation[i + 1];
-                var c = indexedTriangulation[i + 2];
-
-                terrainMesh
-                    .UsePrimitive(material)
-                    .AddTriangle(
-                    new VertexPosition(a)
-                    , new VertexPosition(b)
-                    , new VertexPosition(c));
-
-            }
-
-            terrainMesh.Validate();
-
-            return terrainMesh;
-        }
-
-        public IMeshBuilder<MaterialBuilder> CreateTerrainMesh(Triangulation triangulation, Func<float, Vector4> colorFunc = null)
-        {
-            var material = new MaterialBuilder("TerrainMaterial")
-                .WithMetallicRoughnessShader()
-                .WithDoubleSide(true);
-
-            var indexedTriangulation = new IndexedTriangulation(triangulation);
-
-            // we create a MeshBuilder
-            var terrainMesh = new MeshBuilder<VertexPosition, VertexColor1>("terrain");
-
-            // fill the MeshBuilder with quads using the heightFunction.
-            for (int i = 0; i < triangulation.NumIndices; i += 3)
-            {
-                var a = indexedTriangulation[i];
-                var b = indexedTriangulation[i + 1];
-                var c = indexedTriangulation[i + 2]; ;
-
-                var ac = new Vector4(1, 0, 0, 1);
-                var bc = new Vector4(0, 1, 0, 1);
-                var cc = new Vector4(0, 0, 1, 1);
-
-                terrainMesh
-                    .UsePrimitive(material)
-                    .AddTriangle((a, ac), (b, bc), (c, cc));
-
-            }
-
-            terrainMesh.Validate();
-
-            return terrainMesh;
-        }
-
         public ModelRoot CreateModel(HeightMap heightMap, GenOptions options = GenOptions.None, Matrix4x4 vectorTransform = default)
         {
             Triangulation triangulation = default;
@@ -161,36 +68,81 @@ namespace DEM.Net.glTF.SharpglTF
                         .WithMaterial(material);
             return model;
         }
-        public ModelRoot CreateSTLModel(HeightMap heightMap, GenOptions options = GenOptions.None, Func<float, Vector4> colorFunc = null)
+        public ModelRoot CreateModel(HeightMap heightMap, PBRTexture textures)
         {
-            var model = CreateModel(heightMap, GenOptions.BoxedBaseElevationMin);
+            Triangulation triangulation = _meshService.TriangulateHeightMap(heightMap);
+
+            return CreateModel(triangulation, textures);
+        }
+        public ModelRoot CreateModel(Triangulation triangulation, PBRTexture textures)
+        {
+            // create a basic scene
+            var model = ModelRoot.CreateModel();
+            var scene = model.UseScene("Default");
+            var rnode = scene.CreateNode("Terrain");
+            var rmesh = rnode.Mesh = model.CreateMesh("Terrain");
+
+
+            var material = model.CreateMaterial("Default")
+              .WithPBRMetallicRoughness(Vector4.One, textures?.BaseColorTexture?.FilePath, null, 0, 1)
+              .WithDoubleSide(true);
+            if (textures != null && textures.NormalTexture != null)
+            {
+                material.WithChannelTexture("NORMAL", 0, textures.NormalTexture.FilePath);
+            }
+
+            var indexedTriangulation = new IndexedTriangulation(triangulation);
+            var normals = _meshService.ComputeNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
+
 
             // create mesh primitive
-            var primitive = model.LogicalMeshes.First().Primitives.First();
+            var primitive = rmesh.CreatePrimitive()
+                .WithVertexAccessor("POSITION", indexedTriangulation.Positions)
+                .WithVertexAccessor("NORMAL", normals.ToList())
+                .WithIndicesAccessor(PrimitiveType.TRIANGLES, indexedTriangulation.Indices);
+
+            if (textures != null && textures.TextureCoordSets == null)
+            {
+                (Vector3 Min, Vector3 Max) coordBounds = CalculateBounds(indexedTriangulation.Positions);
+
+                textures.TextureCoordSets = indexedTriangulation.Positions.Select(pos => new Vector2(
+                    MathHelper.Map(coordBounds.Min.X, coordBounds.Max.X, 0, 1, pos.X, true)
+                    , MathHelper.Map(coordBounds.Min.Z, coordBounds.Max.Z, 0, 1, pos.Z, true)
+                    ));
+
+                primitive = primitive
+                    .WithVertexAccessor("TEXCOORD_0", textures.TextureCoordSets.ToList());
+            }
+
+            primitive = primitive.WithMaterial(material);
             return model;
         }
 
-        private class IndexedHeightMap
+        public ModelRoot GenerateTriangleMesh(List<GeoPoint> points, List<int> indices, PBRTexture textures)
         {
-            private readonly HeightMap _heightMap;
-            private readonly GeoPoint[] positions;
-            public IndexedHeightMap(HeightMap heightMap)
-            {
-                this._heightMap = heightMap;
-                positions = heightMap.Coordinates.ToArray();
-            }
-
-            public GeoPoint this[int x, int y]
-            {
-                get
-                {
-
-                    return positions[x + y * _heightMap.Width];
-                }
-
-
-            }
+            Triangulation triangulation = new Triangulation(points, indices);
+            return CreateModel(triangulation, textures);
         }
+
+        private (Vector3 min, Vector3 max) CalculateBounds(List<Vector3> positions)
+        {
+            Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+            Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+            foreach (var pos in positions)
+            {
+                // for UV coords
+                min.X = Math.Min(pos.X, min.X);
+                min.Y = Math.Min(pos.Y, min.Y);
+                min.Z = Math.Min(pos.Z, min.Z);
+
+                max.X = Math.Max(pos.X, max.X);
+                max.Y = Math.Max(pos.Y, max.Y);
+                max.Z = Math.Max(pos.Z, max.Z);
+            }
+
+            return (min, max);
+        }
+
         private class IndexedTriangulation
         {
             public Triangulation Triangulation { get; private set; }
@@ -199,6 +151,8 @@ namespace DEM.Net.glTF.SharpglTF
 
             public IndexedTriangulation(Triangulation triangulation, Matrix4x4 vectorTransform = default)
             {
+                if (vectorTransform == default)
+                    vectorTransform = Matrix4x4.Identity;
                 this.Triangulation = triangulation;
                 Positions = triangulation.Positions.Select(p => Vector3.Transform(p.ToVector3(), vectorTransform)).ToList();
                 Indices = triangulation.Indices.ToList();
