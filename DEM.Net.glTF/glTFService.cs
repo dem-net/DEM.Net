@@ -281,133 +281,133 @@ namespace DEM.Net.glTF
             return GenerateTriangleMesh(triangulation);
         }
 
-        public MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector4 color, float width)
-        {
-            MeshPrimitive mesh = null;
-            try
+            public MeshPrimitive GenerateLine(IEnumerable<GeoPoint> points, Vector4 color, float width)
             {
-                if (points == null)
+                MeshPrimitive mesh = null;
+                try
                 {
-                    _logger?.LogWarning("Points are empty.");
-                }
-                else
-                {
-                    if (width == 0)
+                    if (points == null)
                     {
-                        // Basic line strip  declaration
-                        mesh = new MeshPrimitive()
-                        {
-                            Colors = points.Select(c => color)
-                            ,
-                            ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
-                            ,
-                            ColorType = MeshPrimitive.ColorTypeEnum.VEC4
-                            ,
-                            Mode = MeshPrimitive.ModeEnum.LINE_STRIP
-                            ,
-                            Positions = points.Select(pt => pt.ToVector3())
-                            ,
-                            Material = new Material()
-                        };
+                        _logger?.LogWarning("Points are empty.");
                     }
                     else
                     {
-                        // https://gist.github.com/gszauer/5718441
-                        // Line triangle mesh
-                        List<Vector3> sections = points.Select(pt => pt.ToVector3())
-                            .FilterConsecutiveSame()
-                            .ToList();
-
-                        List<Vector3> vertices = new List<Vector3>(sections.Count * 2);
-
-                        for (int i = 0; i < sections.Count - 1; i++)
+                        if (width == 0)
                         {
-                            Vector3 current = sections[i];
-                            Vector3 next = sections[i + 1];
-                            Vector3 dir = Vector3.Normalize(next - current);
+                            // Basic line strip  declaration
+                            mesh = new MeshPrimitive()
+                            {
+                                Colors = points.Select(c => color)
+                                ,
+                                ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
+                                ,
+                                ColorType = MeshPrimitive.ColorTypeEnum.VEC4
+                                ,
+                                Mode = MeshPrimitive.ModeEnum.LINE_STRIP
+                                ,
+                                Positions = points.Select(pt => pt.ToVector3())
+                                ,
+                                Material = new Material()
+                            };
+                        }
+                        else
+                        {
+                            // https://gist.github.com/gszauer/5718441
+                            // Line triangle mesh
+                            List<Vector3> sections = points.Select(pt => pt.ToVector3())
+                                .FilterConsecutiveSame()
+                                .ToList();
+
+                            List<Vector3> vertices = new List<Vector3>(sections.Count * 2);
+
+                            for (int i = 0; i < sections.Count - 1; i++)
+                            {
+                                Vector3 current = sections[i];
+                                Vector3 next = sections[i + 1];
+                                Vector3 dir = Vector3.Normalize(next - current);
 
 
-                            // translate the vector to the left along its way
-                            Vector3 side;
-                            if (dir.Equals(Vector3.UnitY))
-                            {
-                                side = Vector3.UnitX * width;
-                            }
-                             else
-                            {
-                                side = Vector3.Cross(dir, Vector3.UnitY) * width;
-                            }
+                                // translate the vector to the left along its way
+                                Vector3 side;
+                                if (dir.Equals(Vector3.UnitY))
+                                {
+                                    side = Vector3.UnitX * width;
+                                }
+                                 else
+                                {
+                                    side = Vector3.Cross(dir, Vector3.UnitY) * width;
+                                }
                             
 
-                            Vector3 v0 = current - side; // 0
-                            Vector3 v1 = current + side; // 1
+                                Vector3 v0 = current - side; // 0
+                                Vector3 v1 = current + side; // 1
 
-                            vertices.Add(v0);
-                            vertices.Add(v1);
-
-                            if (i == sections.Count - 2) // add last vertices
-                            {
-                                v0 = next - side; // 0
-                                v1 = next + side; // 1
                                 vertices.Add(v0);
                                 vertices.Add(v1);
+
+                                if (i == sections.Count - 2) // add last vertices
+                                {
+                                    v0 = next - side; // 0
+                                    v1 = next + side; // 1
+                                    vertices.Add(v0);
+                                    vertices.Add(v1);
+                                }
                             }
+                            // add last vertices
+
+
+                            List<int> indices = new List<int>((sections.Count - 1) * 6);
+                            for (int i = 0; i < sections.Count - 1; i++)
+                            {
+                                int i0 = i * 2;
+                                indices.Add(i0);
+                                indices.Add(i0 + 1);
+                                indices.Add(i0 + 3);
+
+                                indices.Add(i0 + 0);
+                                indices.Add(i0 + 3);
+                                indices.Add(i0 + 2);
+                            }
+
+                            IEnumerable<Vector3> normals = _meshService.ComputeNormals(vertices, indices);
+                            // Basic line strip  declaration
+                            mesh = new MeshPrimitive()
+                            {
+                                Colors = vertices.Select(v => color)
+                                ,
+                                ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
+                                ,
+                                ColorType = MeshPrimitive.ColorTypeEnum.VEC4
+                                ,
+                                Mode = MeshPrimitive.ModeEnum.TRIANGLES
+                                ,
+                                Positions = vertices
+                                ,
+                                Material = new Material() { DoubleSided = true }
+                                ,
+                                Indices = indices
+                                ,
+                                Normals = normals
+                                ,
+                                IndexComponentType = MeshPrimitive.IndexComponentTypeEnum.UNSIGNED_INT
+                            };
+
+
                         }
-                        // add last vertices
 
-
-                        List<int> indices = new List<int>((sections.Count - 1) * 6);
-                        for (int i = 0; i < sections.Count - 1; i++)
-                        {
-                            int i0 = i * 2;
-                            indices.Add(i0);
-                            indices.Add(i0 + 1);
-                            indices.Add(i0 + 3);
-
-                            indices.Add(i0 + 0);
-                            indices.Add(i0 + 3);
-                            indices.Add(i0 + 2);
-                        }
-
-                        IEnumerable<Vector3> normals = _meshService.ComputeNormals(vertices, indices);
-                        // Basic line strip  declaration
-                        mesh = new MeshPrimitive()
-                        {
-                            Colors = vertices.Select(v => color)
-                            ,
-                            ColorComponentType = MeshPrimitive.ColorComponentTypeEnum.FLOAT
-                            ,
-                            ColorType = MeshPrimitive.ColorTypeEnum.VEC4
-                            ,
-                            Mode = MeshPrimitive.ModeEnum.TRIANGLES
-                            ,
-                            Positions = vertices
-                            ,
-                            Material = new Material() { DoubleSided = true }
-                            ,
-                            Indices = indices
-                            ,
-                            Normals = normals
-                            ,
-                            IndexComponentType = MeshPrimitive.IndexComponentTypeEnum.UNSIGNED_INT
-                        };
 
 
                     }
 
 
-
                 }
-
-
+                catch (Exception ex)
+                {
+                    _logger?.LogError(ex, ex.ToString());
+                    throw;
+                }
+                return mesh;
             }
-            catch (Exception ex)
-            {
-                _logger?.LogError(ex, ex.ToString());
-                throw;
-            }
-            return mesh;
-        }
 
         
 

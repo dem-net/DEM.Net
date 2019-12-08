@@ -309,5 +309,93 @@ namespace DEM.Net.Core
             return normals;
         }
 
+        public (IEnumerable<Vector3> positions, IEnumerable<int> indexes) GenerateTriangleMesh_Line(IEnumerable<GeoPoint> points, float width)
+        {
+            try
+            {
+                if (points == null)
+                {
+                    _logger?.LogWarning("Points are empty.");
+                }
+                else
+                {
+                    
+                    if (width <= 0)
+                    {
+                        throw new Exception("Line width of 0 is not supported. Please provide a with > 0.");
+                    }
+                    else
+                    {
+                        // https://gist.github.com/gszauer/5718441
+                        // Line triangle mesh
+                        List<Vector3> sections = points.Select(pt => pt.ToVector3())
+                            .FilterConsecutiveSame()
+                            .ToList();
+
+                        List<Vector3> vertices = new List<Vector3>(sections.Count * 2);
+
+                        for (int i = 0; i < sections.Count - 1; i++)
+                        {
+                            Vector3 current = sections[i];
+                            Vector3 next = sections[i + 1];
+                            Vector3 dir = Vector3.Normalize(next - current);
+
+
+                            // translate the vector to the left along its way
+                            Vector3 side;
+                            if (dir.Equals(Vector3.UnitY))
+                            {
+                                side = Vector3.UnitX * width;
+                            }
+                            else
+                            {
+                                side = Vector3.Cross(dir, Vector3.UnitY) * width;
+                            }
+
+
+                            Vector3 v0 = current - side; // 0
+                            Vector3 v1 = current + side; // 1
+
+                            vertices.Add(v0);
+                            vertices.Add(v1);
+
+                            if (i == sections.Count - 2) // add last vertices
+                            {
+                                v0 = next - side; // 0
+                                v1 = next + side; // 1
+                                vertices.Add(v0);
+                                vertices.Add(v1);
+                            }
+                        }
+                        // add last vertices
+
+
+                        List<int> indices = new List<int>((sections.Count - 1) * 6);
+                        for (int i = 0; i < sections.Count - 1; i++)
+                        {
+                            int i0 = i * 2;
+                            indices.Add(i0);
+                            indices.Add(i0 + 1);
+                            indices.Add(i0 + 3);
+
+                            indices.Add(i0 + 0);
+                            indices.Add(i0 + 3);
+                            indices.Add(i0 + 2);
+                        }
+
+                        IEnumerable<Vector3> normals = this.ComputeNormals(vertices, indices);
+
+                        return (vertices, indices);
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, ex.ToString());
+                throw;
+            }
+            return default;
+        }
     }
 }

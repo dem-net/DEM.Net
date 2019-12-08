@@ -14,7 +14,7 @@ using System.Text;
 namespace DEM.Net.glTF.SharpglTF
 {
 
-    public class SharpGltfService
+    public partial class SharpGltfService
     {
         private readonly ILogger<glTFService> _logger;
         private IMeshService _meshService;
@@ -143,32 +143,31 @@ namespace DEM.Net.glTF.SharpglTF
             return (min, max);
         }
 
-        private class IndexedTriangulation
+        public ModelRoot AddLine(ModelRoot model, IEnumerable<GeoPoint> gpxPointsElevated, Vector4 vector4, float trailWidthMeters)
         {
-            public Triangulation Triangulation { get; private set; }
-            public List<Vector3> Positions { get; private set; }
-            public List<int> Indices { get; private set; }
-
-            public IndexedTriangulation(Triangulation triangulation, Matrix4x4 vectorTransform = default)
-            {
-                if (vectorTransform == default)
-                    vectorTransform = Matrix4x4.Identity;
-                this.Triangulation = triangulation;
-                Positions = triangulation.Positions.Select(p => Vector3.Transform(p.ToVector3(), vectorTransform)).ToList();
-                Indices = triangulation.Indices.ToList();
-            }
-
-            public Vector3 this[int index]
-            {
-                get
-                {
-
-                    return Positions[Indices[index]];
-                }
+            var scene = model.UseScene("Default");
+            var rnode = scene.FindNode(n => n.Name == "Terrain");
+            var rmesh = rnode.Mesh;
 
 
-            }
+            var material = model.CreateMaterial("Line")
+               .WithPBRMetallicRoughness(vector4, null, null, 1, 0.1f)
+              .WithDoubleSide(true);
+
+
+            var triangulation = _meshService.GenerateTriangleMesh_Line(gpxPointsElevated, trailWidthMeters);
+            var indexedTriangulation = new IndexedTriangulation(triangulation.positions, triangulation.indexes);
+            var normals = _meshService.ComputeNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
+
+
+            // create mesh primitive
+            var primitive = rmesh.CreatePrimitive()
+                .WithVertexAccessor("POSITION", indexedTriangulation.Positions)
+                .WithVertexAccessor("NORMAL", normals.ToList())
+                .WithIndicesAccessor(PrimitiveType.TRIANGLES, indexedTriangulation.Indices);
+
+            primitive = primitive.WithMaterial(material);
+            return model;
         }
-
     }
 }
