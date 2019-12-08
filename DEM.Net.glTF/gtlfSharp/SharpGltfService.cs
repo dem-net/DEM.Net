@@ -18,6 +18,9 @@ namespace DEM.Net.glTF.SharpglTF
     {
         private readonly ILogger<glTFService> _logger;
         private IMeshService _meshService;
+        private const string TERRAIN_NODE_NAME = "TerrainNode";
+        private const string TERRAIN_SCENE_NAME = "TerrainScene";
+        private const string TERRAIN_MESH_NAME = "TerrainMesh";
 
         public SharpGltfService(IMeshService meshService, ILogger<glTFService> logger = null)
         {
@@ -25,7 +28,16 @@ namespace DEM.Net.glTF.SharpglTF
             _meshService = meshService;
         }
 
-        public ModelRoot CreateModel(HeightMap heightMap, GenOptions options = GenOptions.None, Matrix4x4 vectorTransform = default)
+        public ModelRoot CreateNewModel()
+        {
+            // create a basic scene
+            var model = ModelRoot.CreateModel();
+            var scene = model.UseScene(TERRAIN_SCENE_NAME);
+            scene.CreateNode(TERRAIN_NODE_NAME);
+
+            return model;
+        }
+        public ModelRoot CreateTerrainMesh(HeightMap heightMap, GenOptions options = GenOptions.None, Matrix4x4 vectorTransform = default)
         {
             Triangulation triangulation = default;
             if (options.HasFlag(GenOptions.BoxedBaseElevation0))
@@ -43,10 +55,9 @@ namespace DEM.Net.glTF.SharpglTF
 
 
             // create a basic scene
-            var model = ModelRoot.CreateModel();
-            var scene = model.UseScene("Default");
-            var rnode = scene.CreateNode("Terrain");
-            var rmesh = rnode.Mesh = model.CreateMesh("Terrain");
+            var model = CreateNewModel();
+            var rnode = model.LogicalScenes.First()?.FindNode(n => n.Name == TERRAIN_NODE_NAME);
+            var rmesh = rnode.Mesh = model.CreateMesh(TERRAIN_MESH_NAME);
 
             var material = model.CreateMaterial("Default")
               .WithPBRMetallicRoughness()
@@ -68,19 +79,23 @@ namespace DEM.Net.glTF.SharpglTF
                         .WithMaterial(material);
             return model;
         }
-        public ModelRoot CreateModel(HeightMap heightMap, PBRTexture textures)
+
+        public ModelRoot CreateTerrainMesh(HeightMap heightMap, PBRTexture textures)
+        { return AddTerrainMesh(CreateNewModel(), heightMap, textures); }
+        public ModelRoot AddTerrainMesh(ModelRoot model, HeightMap heightMap, PBRTexture textures)
         {
             Triangulation triangulation = _meshService.TriangulateHeightMap(heightMap);
 
-            return CreateModel(triangulation, textures);
+            return AddTerrainMesh(model, triangulation, textures);
         }
-        public ModelRoot CreateModel(Triangulation triangulation, PBRTexture textures)
+        public ModelRoot CreateTerrainMesh(Triangulation triangulation, PBRTexture textures)
+        { return AddTerrainMesh(CreateNewModel(), triangulation, textures); }
+        public ModelRoot AddTerrainMesh(ModelRoot model, Triangulation triangulation, PBRTexture textures)
         {
             // create a basic scene
-            var model = ModelRoot.CreateModel();
-            var scene = model.UseScene("Default");
-            var rnode = scene.CreateNode("Terrain");
-            var rmesh = rnode.Mesh = model.CreateMesh("Terrain");
+            model = model != null ? model : CreateNewModel();
+            var rnode = model.LogicalScenes.First()?.FindNode(n => n.Name == TERRAIN_NODE_NAME);
+            var rmesh = rnode.Mesh = FindOrCreateMesh(model, TERRAIN_MESH_NAME);
 
 
             var material = model.CreateMaterial("Default")
@@ -121,7 +136,7 @@ namespace DEM.Net.glTF.SharpglTF
         public ModelRoot GenerateTriangleMesh(List<GeoPoint> points, List<int> indices, PBRTexture textures)
         {
             Triangulation triangulation = new Triangulation(points, indices);
-            return CreateModel(triangulation, textures);
+            return CreateTerrainMesh(triangulation, textures);
         }
 
         private (Vector3 min, Vector3 max) CalculateBounds(List<Vector3> positions)
@@ -143,11 +158,20 @@ namespace DEM.Net.glTF.SharpglTF
             return (min, max);
         }
 
+        public Mesh FindOrCreateMesh(ModelRoot model, string meshName)
+        {
+            var mesh = model.LogicalMeshes.FirstOrDefault(m => m.Name == meshName);
+            if (mesh == null)
+            {
+                mesh = model.CreateMesh(meshName);
+            }
+            return mesh;
+        }
         public ModelRoot AddLine(ModelRoot model, IEnumerable<GeoPoint> gpxPointsElevated, Vector4 vector4, float trailWidthMeters)
         {
-            var scene = model.UseScene("Default");
-            var rnode = scene.FindNode(n => n.Name == "Terrain");
-            var rmesh = rnode.Mesh;
+            var scene = model.UseScene(TERRAIN_SCENE_NAME);
+            var rnode = scene.FindNode(n => n.Name == TERRAIN_NODE_NAME);
+            var rmesh = rnode.Mesh = FindOrCreateMesh(model, TERRAIN_MESH_NAME);
 
 
             var material = model.CreateMaterial("Line")
