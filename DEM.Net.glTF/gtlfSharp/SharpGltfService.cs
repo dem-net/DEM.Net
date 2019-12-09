@@ -93,7 +93,7 @@ namespace DEM.Net.glTF.SharpglTF
         public ModelRoot AddTerrainMesh(ModelRoot model, Triangulation triangulation, PBRTexture textures)
         {
             // create a basic scene
-            model = model != null ? model : CreateNewModel();
+            model = model ?? CreateNewModel();
             var rnode = model.LogicalScenes.First()?.FindNode(n => n.Name == TERRAIN_NODE_NAME);
             var rmesh = rnode.Mesh = FindOrCreateMesh(model, TERRAIN_MESH_NAME);
 
@@ -160,11 +160,7 @@ namespace DEM.Net.glTF.SharpglTF
 
         public Mesh FindOrCreateMesh(ModelRoot model, string meshName)
         {
-            var mesh = model.LogicalMeshes.FirstOrDefault(m => m.Name == meshName);
-            if (mesh == null)
-            {
-                mesh = model.CreateMesh(meshName);
-            }
+            var mesh = model.LogicalMeshes.FirstOrDefault(m => m.Name == meshName) ?? model.CreateMesh(meshName);
             return mesh;
         }
         public ModelRoot AddLine(ModelRoot model, IEnumerable<GeoPoint> gpxPointsElevated, Vector4 vector4, float trailWidthMeters)
