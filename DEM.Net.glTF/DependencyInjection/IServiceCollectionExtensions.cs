@@ -15,7 +15,6 @@ namespace DEM.Net.glTF
         {
             services
                     .AddTransient<IMeshService, MeshService>()
-                    .AddTransient<IglTFService, glTFService>()
                     .AddTransient<SharpGltfService>()
                     .AddTransient<ISTLExportService, STLExportService>();
 
