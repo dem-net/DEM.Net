@@ -51,7 +51,7 @@ namespace DEM.Net.Core
         private static readonly Lazy<Dictionary<string, DEMDataSet>> Datasets = new Lazy<Dictionary<string, DEMDataSet>>(GetRegisteredDatasets, true);
 
         public static IEnumerable<DEMDataSet> RegisteredDatasets => DEMDataSet.Datasets.Value.Values;
-        public static IEnumerable<DEMDataSet> RegisteredNonSingleFileDatasets => RegisteredDatasets.Where(d => !d.DataSource.IsGlobalFile);
+        public static IEnumerable<DEMDataSet> RegisteredNonLocalDatasets => RegisteredDatasets.Where(d => d.DataSource.DataSourceType != DEMDataSourceType.LocalFileSystem);
 
         private static Dictionary<string, DEMDataSet> GetRegisteredDatasets()
         {
@@ -106,7 +106,7 @@ namespace DEM.Net.Core
                 Name = "ETOPO1",
                 Description = "Global low res coverage with bathymetry (1km resolution)",
                 PublicUrl = "https://www.ngdc.noaa.gov/mgg/global/",
-                DataSource = new SingleFileDataSource(Path.Combine("Data", "ETOPO1", "ETOPO1_Ice_g_geotiff.tif")),
+                DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "ETOPO1")),
                 FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Grid),
                 ResolutionMeters = 1800,
                 PointsPerDegree = 60,
@@ -127,6 +127,16 @@ namespace DEM.Net.Core
                 Attribution = new Attribution("ASTER_GDEMV3",
                                                 "https://doi.org/10.5067/ASTER/ASTGTM.003",
                                                 "NASA/METI/AIST/Japan Spacesystems, and U.S./Japan ASTER Science Team. ASTER Global Digital Elevation Model V003. 2018, distributed by NASA EOSDIS Land Processes DAAC")
+            });
+            datasets.Add("ASCII_GRID_TEST", new DEMDataSet()
+            {
+                Name = "ASCII_GRID_TEST",
+                Description = "ASCII_GRID_TEST",
+                PublicUrl = null,
+                DataSource = new LocalFileSystem(localDirectory: @"D:\TMP\ELEVATION_DO_NOT_DELETE\TEST"),
+                FileFormat = new DEMFileDefinition("ASCIIGrid",  DEMFileType.ASCIIGrid, ".asc", DEMFileRegistrationMode.Cell),
+                ResolutionMeters = 5,
+                Attribution = new Attribution()
             });
 
             return datasets;
