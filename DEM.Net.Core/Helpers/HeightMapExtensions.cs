@@ -184,6 +184,11 @@ namespace DEM.Net.Core
         {
             return points.Scale(1, 1, zFactor);
         }
+        public static List<Gpx.GpxTrackPoint> ZScale(this List<Gpx.GpxTrackPoint> points, float zFactor = 1f)
+        {
+            points.ForEach(p => p.Elevation *= zFactor);
+            return points;
+        }
         /// <summary>
         /// Scale given points
         /// </summary>

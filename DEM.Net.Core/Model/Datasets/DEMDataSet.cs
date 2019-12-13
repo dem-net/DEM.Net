@@ -65,7 +65,7 @@ namespace DEM.Net.Core
                 FileFormat = new DEMFileDefinition("Nasa SRTM HGT", DEMFileType.SRTM_HGT, ".hgt", DEMFileRegistrationMode.Grid),
                 ResolutionMeters = 90,
                 PointsPerDegree = 1200,
-                Attribution = new Attribution("OpenTopography", "https://opentopography.org/"
+                Attribution = new Attribution("SRTM_GL3 OpenTopography", "https://opentopography.org/"
                     , @"Citing LP DAVV and Data Products: https://lpdaac.usgs.gov/about/citing_lp_daac_and_data
                         If you wish to cite the SRTM products in a report or publication please use: 
                         Farr, T. G., and M. Kobrick, 2000, Shuttle Radar Topography Mission produces a wealth of data. Eos Trans. AGU, 81:583-583.
@@ -83,7 +83,7 @@ namespace DEM.Net.Core
                 FileFormat = new DEMFileDefinition("Nasa SRTM HGT", DEMFileType.SRTM_HGT, ".hgt", DEMFileRegistrationMode.Grid),
                 ResolutionMeters = 30,
                 PointsPerDegree = 3600,
-                Attribution = new Attribution("OpenTopography", "https://opentopography.org/", "http://www2.jpl.nasa.gov/srtm/srtmBibliography.html, https://doi.org/10.5069/G9445JDF")
+                Attribution = new Attribution("SRTM_GL1 OpenTopography", "https://opentopography.org/", "http://www2.jpl.nasa.gov/srtm/srtmBibliography.html, https://doi.org/10.5069/G9445JDF")
             });
             datasets.Add("AW3D30", new DEMDataSet()
             {
@@ -95,7 +95,7 @@ namespace DEM.Net.Core
                 ResolutionMeters = 30,
                 PointsPerDegree = 3600,
                 NoDataValue = -9999,
-                Attribution = new Attribution("OpenTopography", "https://opentopography.org/"
+                Attribution = new Attribution("AW3D30 OpenTopography", "https://opentopography.org/"
                     , @"J. Takaku, T. Tadono, K. Tsutsui : Generation of High Resolution Global DSM from ALOS PRISM, The International Archives of the Photogrammetry, Remote Sensing and Spatial Information Sciences, pp.243-248, Vol. XL-4, ISPRS TC IV Symposium, Suzhou, China, 2014. [http://www.int-arch-photogramm-remote-sens-spatial-inf-sci.net/XL-4/243/2014/isprsarchives-XL-4-243-2014.pdf]
                     T.Tadono, H.Ishida, F.Oda, S.Naito, K.Minakawa, H.Iwamoto : Precise Global DEM Generation By ALOS PRISM, ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences, pp.71 - 76, Vol.II - 4, 2014. [http://www.isprs-ann-photogramm-remote-sens-spatial-inf-sci.net/II-4/71/2014/isprsannals-II-4-71-2014.pdf]
                     https://doi.org/10.5069/G94M92HB
@@ -124,9 +124,9 @@ namespace DEM.Net.Core
                 ResolutionMeters = 30,
                 PointsPerDegree = 3600,
                 NoDataValue = -9999,
-                Attribution = new Attribution(string.Concat("NASA/METI/AIST/Japan Spacesystems, and U.S./Japan ASTER Science Team. ASTER Global ",
-                                                "Digital Elevation Model V003. 2018, distributed by NASA EOSDIS Land Processes DAAC, ",
-                                                "https://doi.org/10.5067/ASTER/ASTGTM.003"))
+                Attribution = new Attribution("ASTER_GDEMV3",
+                                                "https://doi.org/10.5067/ASTER/ASTGTM.003",
+                                                "NASA/METI/AIST/Japan Spacesystems, and U.S./Japan ASTER Science Team. ASTER Global Digital Elevation Model V003. 2018, distributed by NASA EOSDIS Land Processes DAAC")
             });
 
             return datasets;

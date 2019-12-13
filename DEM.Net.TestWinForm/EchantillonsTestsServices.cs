@@ -21,9 +21,9 @@ namespace DEM.Net.TestWinForm
                 v_elevationService.DownloadMissingFiles(dataset, v_bbox);
                 //
                 HeightMap v_hMap;
-                v_hMap = v_elevationService.GetHeightMap(v_bbox, dataset);
+                v_hMap = v_elevationService.GetHeightMap(ref v_bbox, dataset);
 
-                
+
                 v_hMap = v_hMap.ReprojectTo(4326, sridCible);
                 v_pointsToTest = GetGeoPointsByHMap(v_hMap, sridCible);
             }
@@ -109,7 +109,7 @@ namespace DEM.Net.TestWinForm
                     v_coord[2] = 0;
                     //
                     BeanPoint_internal v_point = new BeanPoint_internal(v_coord, p_paramGenerationPointsTest.p10_srid);
-                   // p_code = FLabServices.createUtilitaires().GethCodeGeogPoint(v_coord);
+                    // p_code = FLabServices.createUtilitaires().GethCodeGeogPoint(v_coord);
                     p_code = FLabServices.createUtilitaires().GetHCodeGeogPoint(v_coord);
                     //(On évite les doublons)
                     if (!p_codes.Contains(p_code))

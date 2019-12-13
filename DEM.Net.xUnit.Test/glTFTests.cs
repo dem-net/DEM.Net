@@ -4,9 +4,7 @@ using System.IO.Compression;
 using DEM.Net.Core;
 using Xunit;
 using Microsoft.Extensions.DependencyInjection;
-using DEM.Net.glTF;
-using AssetGenerator.Runtime;
-using AssetGenerator;
+using DEM.Net.glTF.SharpglTF;
 
 namespace DEM.Net.Test
 {
@@ -14,14 +12,14 @@ namespace DEM.Net.Test
     {
         IRasterService _rasterService;
         IElevationService _elevationService;
-        IglTFService _gltfService;
+        SharpGltfService _sharpGltfService;
         IMeshService _meshService;
 
         public glTFTests(DemNetFixture fixture)
         {
             _rasterService = fixture.ServiceProvider.GetService<IRasterService>();
             _elevationService = fixture.ServiceProvider.GetService<IElevationService>();
-            _gltfService= fixture.ServiceProvider.GetService<IglTFService>();
+            _sharpGltfService = fixture.ServiceProvider.GetService<SharpGltfService>();
             _meshService = fixture.ServiceProvider.GetService<IMeshService>();
         }
 
@@ -50,14 +48,12 @@ namespace DEM.Net.Test
                 FileMetadata metaData = raster.ParseMetaData(new DEMFileDefinition( DEMFileType.SRTM_HGT, DEMFileRegistrationMode.Grid));
                 Assert.NotNull(metaData);
 
-                string str2 = "zsq4";
                 HeightMap heightMap = _elevationService.GetHeightMap(metaData)
                                             .ReprojectGeodeticToCartesian()
                                             .ZScale(2.5f);
 
-                MeshPrimitive meshPrimitive = _gltfService.GenerateTriangleMesh(heightMap);
-                Model model = _gltfService.GenerateModel(meshPrimitive, str2);
-                _gltfService.Export(model, ".", str2, false, true);
+                var model = _sharpGltfService.CreateTerrainMesh(heightMap);
+                model.SaveGLB("test.glb");
             }
 
             
@@ -71,7 +67,7 @@ namespace DEM.Net.Test
         {
 
             DEMDataSet dataset = DEMDataSet.SRTM_GL3;
-            var modelName = $"SteVictoireLatLon";
+            var modelName = $"SteVictoireLatLon.glb";
 
             // You can get your boox from https://geojson.net/ (save as WKT)
             string bboxWKT = "POLYGON((5.54888 43.519525, 5.61209 43.519525, 5.61209 43.565225, 5.54888 43.565225, 5.54888 43.519525))";
@@ -80,13 +76,12 @@ namespace DEM.Net.Test
                     
 
             // Triangulate height map
-            var mesh = _gltfService.GenerateTriangleMesh(heightMap);
-            var model = _gltfService.GenerateModel(mesh, modelName);
+            var model = _sharpGltfService.CreateTerrainMesh(heightMap);
 
             // Export Binary model file
-            _gltfService.Export(model, Directory.GetCurrentDirectory(), modelName, exportglTF: !exportAsBinary, exportGLB: exportAsBinary);
+            model.SaveGLB(Path.Combine(Directory.GetCurrentDirectory(), modelName));
 
-
+            Assert.True(File.Exists(Path.Combine(Directory.GetCurrentDirectory(), modelName)));
 
         }
 

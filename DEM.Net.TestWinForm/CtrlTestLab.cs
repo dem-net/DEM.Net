@@ -11,13 +11,12 @@ using DEM.Net.Core.Services.Lab;
 using System.IO;
 using DEM.Net.glTF;
 using System.Numerics;
-using AssetGenerator.Runtime;
-using AssetGenerator;
 using DEM.Net.Core;
 using DEM.Net.Core.Services.VisualisationServices;
 using NetTopologySuite.Diagnostics.Tracing;
 using GeoAPI.Geometries;
 using Microsoft.Extensions.Logging;
+using DEM.Net.glTF.SharpglTF;
 
 namespace DEM.Net.TestWinForm
 {
@@ -276,10 +275,10 @@ namespace DEM.Net.TestWinForm
                 }
             }
             //
-            IglTFService glTFService = new glTFService(null);
-            MeshPrimitive v_trianglesMesh = glTFService.GenerateTriangleMesh(v_beanToVisu3d.p00_geoPoint, v_beanToVisu3d.p01_listeIndexPointsfacettes.SelectMany(c => c).ToList());
+            SharpGltfService glTFService = new SharpGltfService(new MeshService());
+            var model = glTFService.GenerateTriangleMesh(v_beanToVisu3d.p00_geoPoint, v_beanToVisu3d.p01_listeIndexPointsfacettes.SelectMany(c => c).ToList(), null);
 
-            Model model = glTFService.GenerateModel(v_trianglesMesh, "Test Triangles");
+            
             string v_nomFichierOut = "TIN_";
             if (rdSRTMGL3.Checked)
             {
@@ -294,7 +293,7 @@ namespace DEM.Net.TestWinForm
                 v_nomFichierOut += "AW3D30";
             }
             v_nomFichierOut += "_p" + tb_precisionEnM.Text;
-            glTFService.Export(model, "Test3D", v_nomFichierOut, false, true);
+            model.SaveGLB(Path.Combine("Test3D", v_nomFichierOut + ".glb"));
             MessageBox.Show("Traitement terminé =>"+ v_nomFichierOut);
         }
 

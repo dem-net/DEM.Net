@@ -39,6 +39,28 @@ namespace DEM.Net.Core
         {
             return geoPoint.Select(p => p.ToVector3());
         }
+        public static IEnumerable<Vector3> FilterConsecutiveSame(this IEnumerable<Vector3> vectors) 
+        {
+            Vector3 last = Vector3.Zero;
+            bool firstPoint = true;
+            foreach (var pt in vectors)
+            {
+                if (firstPoint)
+                {
+                    firstPoint = false;
+                    last = pt;
+                    yield return pt;
+                }
+                else
+                {
+                    if (!pt.Equals(last))
+                    {
+                        last = pt;
+                        yield return pt;
+                    }
+                }
+            }
+        }
         public static Vector3 ToVector3(this GeoPoint geoPoint)
         {
             return new Vector3((float)geoPoint.Longitude, (float)geoPoint.Elevation, -(float)geoPoint.Latitude);

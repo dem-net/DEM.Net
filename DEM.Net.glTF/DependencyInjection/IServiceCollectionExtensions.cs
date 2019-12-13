@@ -1,6 +1,7 @@
 ﻿using DEM.Net.Core;
 using DEM.Net.Core.Imagery;
 using DEM.Net.glTF.Export;
+using DEM.Net.glTF.SharpglTF;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace DEM.Net.glTF
         {
             services
                     .AddTransient<IMeshService, MeshService>()
-                    .AddTransient<IglTFService, glTFService>()
+                    .AddTransient<SharpGltfService>()
                     .AddTransient<ISTLExportService, STLExportService>();
 
             return services;

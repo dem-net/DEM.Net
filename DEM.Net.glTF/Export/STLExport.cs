@@ -24,10 +24,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using AssetGenerator.Runtime;
 using DEM.Net.Core;
 using IxMilia.Stl;
 using Microsoft.Extensions.Logging;
+using SharpGLTF.Schema2;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -57,21 +57,13 @@ namespace DEM.Net.glTF.Export
                 StlFile stlFile = new StlFile();
                 stlFile.SolidName = GetAttributionExtraText(attributions);
 
-                //The number of the vertices
-                var positions = mesh.Positions.ToList();
-                var indices = mesh.Indices.ToList();
-
-                stlFile.Triangles.Capacity = indices.Count / 3;
-                int numTriangle = 0;
-                for (int i = 0; i < indices.Count; i += 3)
+                foreach(var triangle in mesh.EvaluateTriangles())
                 {
-
-                    stlFile.Triangles.Add(CreateStlTriangle(positions[indices[i]]
-                                                , positions[indices[i + 1]]
-                                                , positions[indices[i + 2]]));
-                    numTriangle++;
+                    stlFile.Triangles.Add(CreateStlTriangle(
+                        triangle.A.GetGeometry().GetPosition()
+                        , triangle.B.GetGeometry().GetPosition()
+                        , triangle.C.GetGeometry().GetPosition()));
                 }
-
                 // ...
                 string folder = System.IO.Path.GetDirectoryName(fileName);
                 if (!System.IO.Directory.Exists(folder))
