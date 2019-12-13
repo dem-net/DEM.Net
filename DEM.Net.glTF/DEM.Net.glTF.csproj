@@ -2,22 +2,28 @@
 
   <PropertyGroup>
     <PackageId>DEM.Net.glTF</PackageId>
-    <Version>0.1.4</Version>
+    <Version>0.2.0</Version>
     <Authors>Xavier Fischer</Authors>
-    <Copyright>Xavier Fischer</Copyright>
+    <Copyright>Xavier Fischer and Contributors</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net.glTF</PackageProjectUrl>
-    <PackageReleaseNotes>Get config tokens</PackageReleaseNotes>
+    <PackageReleaseNotes>glTF code is now using gltfSharp
+NASA Aster GDEM v3 support
+Various concurrency fixes
+GeoTIFF imprecisions fixed
+Imagery memory cache
+Attributions exported with models</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation, Mesh, 3D, glTF, Map, STL</PackageTags>
     <Title>DEM.Net</Title>
     <Product>DEM.Net</Product>
     <Description>glTF3D and STL exporters for DEM.Net</Description>
     <Summary>glTF3D and STL exporters for DEM.Net</Summary>
     <RepositoryUrl>https://github.com/dem-net/DEM.Net.glTF</RepositoryUrl>
-    <RepositoryType>GitHub</RepositoryType>
+    <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
-    <AssemblyVersion>0.1.4.0</AssemblyVersion>
+    <PackageIcon>DEMnet_64.png</PackageIcon>
+    <AssemblyVersion>0.2.0.0</AssemblyVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
@@ -31,7 +37,7 @@
 
   <!-- Build package only in Release -->
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug'">
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
   
@@ -44,6 +50,10 @@
   
   <ItemGroup>
     <ProjectReference Include="..\DEM.Net.Core\DEM.Net.Core.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="DEMnet_64.png" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
   <ProjectExtensions>
