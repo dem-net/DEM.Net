@@ -17,6 +17,8 @@ namespace DEM.Net.Core.IO.SensorLog
         }
         public static void Plot(this SensorLog log, string outputFileName, int width = 1024, int height = 768)
         {
+            GraphicsOptions graphicsOptions = new GraphicsOptions(enableAntialiasing: true);
+
             SeriesDefinition seriesDefinition = new SeriesDefinition();
             seriesDefinition.Add("LocationLatitude", (getter: data => data.LocationLatitude, noDatavalue: v => v <= 0));
             seriesDefinition.Add("LocationLongitude", (getter: data => data.LocationLongitude, noDatavalue: v => v <= 0));
@@ -52,7 +54,7 @@ namespace DEM.Net.Core.IO.SensorLog
                                     var serie = SeriesAndRanges.Series[serieIndex];
                                     Console.WriteLine($"Drawing serie {serieDef.Key}...");
                                     var pointsWithData = serie.Where(p => p.Y >= margin && p.Y <= (height - margin)).ToArray();
-                                    o.DrawLines(palette[colorIndex], 1f, pointsWithData);
+                                    o.DrawLines(graphicsOptions, palette[colorIndex], 1f, pointsWithData);
 
 
                                     serieIndex++;
@@ -69,8 +71,8 @@ namespace DEM.Net.Core.IO.SensorLog
                                     var text = $"{serieDef.Key} {SeriesAndRanges.Ranges[serieIndex].min:F2} to {SeriesAndRanges.Ranges[serieIndex].max:F2}";
                                     var textSize = TextMeasurer.Measure(text, new RendererOptions(font));
                                     var yText = margin + (textSize.Height + textSpacing) * serieIndex;
-                                    o.DrawLines(palette[colorIndex], 2f, new PointF(margin * 2 + 2, yText), new PointF(margin * 2 + 45, yText));
-                                    o.DrawText(text, font, Rgba32.Black, new PointF(margin * 2 + 50, yText));
+                                    o.DrawLines(graphicsOptions, palette[colorIndex], 2f, new PointF(margin * 2 + 2, yText), new PointF(margin * 2 + 45, yText));
+                                    o.DrawText(graphicsOptions, text, font, Rgba32.Black, new PointF(margin * 2 + 50, yText));
 
                                     serieIndex++;
                                     colorIndex = (colorIndex + 1) % palette.Length;
@@ -97,8 +99,8 @@ namespace DEM.Net.Core.IO.SensorLog
                             var serie = SeriesAndRanges.Series[serieIndex];
                             Console.WriteLine($"Drawing serie {serieDef.Key}...");
                             var pointsWithData = serie.Where(p => p.Y >= margin && p.Y <= (height - margin)).ToArray();
-                            o.DrawLines(palette[colorIndex], 1f, pointsWithData);
-
+                            o.DrawLines(graphicsOptions, palette[colorIndex], 1f, pointsWithData);
+                            
 
                             // Legend
                             Console.WriteLine($"Drawing legend...");
@@ -106,8 +108,8 @@ namespace DEM.Net.Core.IO.SensorLog
                             var text = $"{serieDef.Key} {SeriesAndRanges.Ranges[serieIndex].min:F2} to {SeriesAndRanges.Ranges[serieIndex].max:F2}";
                             var textSize = TextMeasurer.Measure(text, new RendererOptions(font));
                             var yText = margin + (textSize.Height + textSpacing);
-                            o.DrawLines(palette[colorIndex], 2f, new PointF(margin * 2 + 2, yText), new PointF(margin * 2 + 45, yText));
-                            o.DrawText(text, font, Rgba32.Black, new PointF(margin * 2 + 50, yText));
+                            o.DrawLines(graphicsOptions, palette[colorIndex], 2f, new PointF(margin * 2 + 2, yText), new PointF(margin * 2 + 45, yText));
+                            o.DrawText(graphicsOptions, text, font, Rgba32.Black, new PointF(margin * 2 + 50, yText));
                         }
                         );
 
