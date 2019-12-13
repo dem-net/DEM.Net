@@ -63,6 +63,10 @@ namespace DEM.Net.Core
         {
             return points.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR, null);
         }
+        public static List<Gpx.GpxTrackPoint> ReprojectGeodeticToCartesian(this IEnumerable<Gpx.GpxTrackPoint> points)
+        {
+            return points.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR, null);
+        }
 
         public static IEnumerable<GeoPoint> ReprojectTo(this IEnumerable<GeoPoint> points, int sourceEpsgCode, int destinationEpsgCode, int? pointCount = null)
         {
@@ -104,6 +108,46 @@ namespace DEM.Net.Core
 
             }
         }
+        public static List<Gpx.GpxTrackPoint> ReprojectTo(this IEnumerable<Gpx.GpxTrackPoint> points, int sourceEpsgCode, int destinationEpsgCode, int? pointCount = null)
+        {
+            if (sourceEpsgCode == destinationEpsgCode)
+                return points.ToList();
+
+
+            // Defines the starting coordiante system
+            ProjectionInfo pSource = ProjectionInfo.FromEpsgCode(sourceEpsgCode);
+            // Defines the starting coordiante system
+            ProjectionInfo pTarget = ProjectionInfo.FromEpsgCode(destinationEpsgCode);
+
+            if (pointCount == null)
+            {
+                return points.Select(pt => ReprojectPoint(pt, pSource, pTarget)).ToList();
+            }
+            else
+            {
+                double[] inputPoints = null;
+
+                return points.Select((p, index) =>
+                {
+                    if (inputPoints == null)
+                    {
+                        inputPoints = points.SelectMany(pt => new double[] { pt.Longitude, pt.Latitude }).ToArray();
+                        Reproject.ReprojectPoints(inputPoints, null, pSource, pTarget, 0, pointCount.Value);
+                    }
+                    p.Longitude = inputPoints[2 * index];
+                    p.Latitude = inputPoints[2 * index + 1];
+
+                    if (index == pointCount - 1)
+                    {
+                        inputPoints = null;
+                    }
+                    return p;
+                })
+                .ToList();
+
+
+            }
+        }
         public static BoundingBox ReprojectTo(this BoundingBox bbox, int sourceEpsgCode, int destinationEpsgCode)
         {
             if (sourceEpsgCode == destinationEpsgCode)
@@ -133,6 +177,17 @@ namespace DEM.Net.Core
             Reproject.ReprojectPoints(coords, new double[] { sourcePoint.Elevation.GetValueOrDefault(0) }, sourceProj, destProj, 0, 1);
 
             return new GeoPoint(coords[1], coords[0], sourcePoint.Elevation);
+        }
+        private static Gpx.GpxTrackPoint ReprojectPoint(Gpx.GpxTrackPoint sourcePoint, ProjectionInfo sourceProj, ProjectionInfo destProj)
+        {
+
+            double[] coords = { sourcePoint.Longitude, sourcePoint.Latitude };
+            // Calls the reproject function that will transform the input location to the output locaiton
+            Reproject.ReprojectPoints(coords, new double[] { sourcePoint.Elevation.GetValueOrDefault(0) }, sourceProj, destProj, 0, 1);
+
+            sourcePoint.Longitude = coords[0];
+            sourcePoint.Latitude = coords[1];
+            return sourcePoint;
         }
 
 

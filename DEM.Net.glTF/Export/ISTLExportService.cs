@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using AssetGenerator.Runtime;
 using DEM.Net.Core;
+using SharpGLTF.Schema2;
 
 namespace DEM.Net.glTF.Export
 {
