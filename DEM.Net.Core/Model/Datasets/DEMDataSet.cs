@@ -128,16 +128,6 @@ namespace DEM.Net.Core
                                                 "https://doi.org/10.5067/ASTER/ASTGTM.003",
                                                 "NASA/METI/AIST/Japan Spacesystems, and U.S./Japan ASTER Science Team. ASTER Global Digital Elevation Model V003. 2018, distributed by NASA EOSDIS Land Processes DAAC")
             });
-            datasets.Add("ASCII_GRID_TEST", new DEMDataSet()
-            {
-                Name = "ASCII_GRID_TEST",
-                Description = "ASCII_GRID_TEST",
-                PublicUrl = null,
-                DataSource = new LocalFileSystem(localDirectory: @"D:\TMP\ELEVATION_DO_NOT_DELETE\TEST"),
-                FileFormat = new DEMFileDefinition("ASCIIGrid",  DEMFileType.ASCIIGrid, ".asc", DEMFileRegistrationMode.Cell),
-                ResolutionMeters = 5,
-                Attribution = new Attribution()
-            });
 
             return datasets;
         }
