@@ -43,7 +43,7 @@ namespace DEM.Net.Core
     public class RasterService : IRasterService
     {
         const string APP_NAME = "DEM.Net";
-        const string MANIFEST_DIR = "manifest";
+        internal const string MANIFEST_DIR = "manifest";
         private readonly RasterIndexServiceResolver _rasterIndexServiceResolver;
         private readonly ILogger<RasterService> _logger;
         private NamedMonitor monitor = new NamedMonitor();

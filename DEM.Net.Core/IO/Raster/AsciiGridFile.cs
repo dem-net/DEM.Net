@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace DEM.Net.Core
@@ -25,6 +26,8 @@ namespace DEM.Net.Core
         private readonly string _filename;
         private static char[] SEPARATOR = new char[] { ' ' };
 
+        List<string> _scanLines = null;
+
         public ASCIIGridFile(string fileName)
         {
             this._filename = fileName;
@@ -33,7 +36,33 @@ namespace DEM.Net.Core
         }
         public float GetElevationAtPoint(FileMetadata metadata, int x, int y)
         {
-            throw new NotImplementedException();
+
+
+
+            if (_scanLines == null)
+            {
+                string curLine = null;
+                _fileStream.Seek(0, SeekOrigin.Begin);
+
+                // skip header
+                for (int i = 1; i <= 6 /* + (y - 1)*/; i++)
+                {
+                    curLine = _streamReader.ReadLine();
+                }
+
+                _scanLines = new List<string>(metadata.Height);
+                while (!_streamReader.EndOfStream)
+                {
+                    _scanLines.Add(_streamReader.ReadLine());
+                }
+
+            }
+
+            string strXValue = _scanLines[y].Split(SEPARATOR, x + 2, StringSplitOptions.RemoveEmptyEntries)[x];
+
+            float elevation = float.Parse(strXValue, CultureInfo.InvariantCulture);
+            return elevation;
+
         }
 
         public HeightMap GetHeightMap(FileMetadata metadata)
@@ -73,7 +102,7 @@ namespace DEM.Net.Core
                 metadata.PixelScaleX = cellsize;
                 metadata.PixelScaleY = cellsize;
                 metadata.pixelSizeX = metadata.PixelScaleX;
-                metadata.pixelSizeY = -metadata.PixelScaleY;
+                metadata.pixelSizeY = metadata.PixelScaleY;
 
                 if (fileFormat.Registration == DEMFileRegistrationMode.Grid)
                 {
@@ -110,7 +139,7 @@ namespace DEM.Net.Core
                 throw;
             }
         }
-        
+
         [Conditional("DEBUG")]
         private void DebugCheckRegistrationType(DEMFileRegistrationMode registration, string xllcornerLine, string yllcornerLine)
         {
@@ -133,6 +162,8 @@ namespace DEM.Net.Core
             {
                 if (disposing)
                 {
+                    _scanLines?.Clear();
+                    _scanLines = null;
                     _streamReader?.Dispose();
                     _fileStream?.Dispose();
                 }
