@@ -97,6 +97,16 @@ namespace DEM.Net.Core
         /// <param name="interpolationMode">Interpolation mode</param>
         /// <returns></returns>
         GeoPoint GetPointElevation(double lat, double lon, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
+
+        /// <summary>
+        /// High level method that retrieves elevation for given point
+        /// </summary>
+        /// <param name="location">GeoPoint with latitude/longitude</param>
+        /// <param name="dataSet">DEM dataset to use</param>
+        /// <param name="interpolationMode">Interpolation mode</param>
+        /// <returns></returns>
+        GeoPoint GetPointElevation(GeoPoint location, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
+
         /// <summary>
         /// Get elevation for any raster at specified point (in raster coordinate system)
         /// </summary>

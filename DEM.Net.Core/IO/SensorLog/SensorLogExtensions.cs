@@ -7,27 +7,71 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using SixLabors.Fonts;
+using DEM.Net.Core.Gpx;
 
 namespace DEM.Net.Core.IO.SensorLog
 {
     public static class SensorLogExtensions
     {
-        private class SeriesDefinition : Dictionary<string, (Func<SensorLogData, float> getter, Predicate<float> noDatavalue)>
+        #region GeoPoints
+
+        public static IEnumerable<GpxTrackPoint> ToGPX(this SensorLog sensorLog)
+        {
+            return sensorLog.Data
+                .Where(d => d.HasCoordinates)
+                .Select(d => new GpxTrackPoint()
+                {
+                    Bearing = d.LocationTrueHeading
+                 ,
+                    Elevation = d.AltimeterRelativeAltitude
+                 ,
+                    Latitude = d.LocationLatitude.Value
+                 ,
+                    Longitude = d.LocationLongitude.Value
+                 ,
+                    Time = d.LoggingTime
+                });
+        }
+
+        public static IEnumerable<GeoPoint> ToGeoPoints(this SensorLog sensorLog)
+        {
+            return sensorLog.Data.Where(d => d.HasCoordinates)
+                .Select(d => new GeoPoint(d.LocationLatitude.Value, d.LocationLongitude.Value, d.AltimeterRelativeAltitude));
+        }
+        #endregion
+
+        #region Plot
+        private class SeriesDefinition : Dictionary<string, (Func<SensorLogData, float?> getter, Predicate<float?> noDatavalue)>
         {
         }
+
         public static void Plot(this SensorLog log, string outputFileName, int width = 1024, int height = 768)
         {
             GraphicsOptions graphicsOptions = new GraphicsOptions(enableAntialiasing: true);
 
             SeriesDefinition seriesDefinition = new SeriesDefinition();
-            seriesDefinition.Add("LocationLatitude", (getter: data => data.LocationLatitude, noDatavalue: v => v <= 0));
-            seriesDefinition.Add("LocationLongitude", (getter: data => data.LocationLongitude, noDatavalue: v => v <= 0));
-            seriesDefinition.Add("AltimeterRelativeAltitude", (getter: data => data.AltimeterRelativeAltitude, noDatavalue: v => v <= 0));
-            seriesDefinition.Add("LocationAltitude", (getter: data => data.LocationAltitude, noDatavalue: v => v <= 0));
-            seriesDefinition.Add("LocationMagneticHeading", (getter: data => data.LocationMagneticHeading, noDatavalue: v => v <= 0));
-            seriesDefinition.Add("MotionYaw", (getter: data => data.MotionYaw, noDatavalue: v => v <= -9990));
-            seriesDefinition.Add("MotionPitch", (getter: data => data.MotionPitch, noDatavalue: v => v <= -9990));
-            seriesDefinition.Add("MotionRoll", (getter: data => data.MotionRoll, noDatavalue: v => v <= -9990));
+            var firstHeading = log.Data.First(d => d.LocationTrueHeading.HasValue).LocationTrueHeading.Value;
+            //seriesDefinition.Add("LocationLatitude", (getter: data => data.LocationLatitude.Value, noDatavalue: v => v == null));
+            //seriesDefinition.Add("LocationLongitude", (getter: data => data.LocationLongitude.Value, noDatavalue: v => v == 0));
+            //seriesDefinition.Add("AltimeterRelativeAltitude", (getter: data => data.AltimeterRelativeAltitude, noDatavalue: v => v <= 0));
+            seriesDefinition.Add("LocationMagneticHeading", (getter: data => data.LocationMagneticHeading, noDatavalue: v => v == null));
+            seriesDefinition.Add("LocationTrueHeading", (getter: data => data.LocationTrueHeading, noDatavalue: v => v == null));
+            seriesDefinition.Add("LocationHeadingAccuracy", (getter: data => data.LocationHeadingAccuracy, noDatavalue: v => v == null));
+            //seriesDefinition.Add("LocationAltitude", (getter: data => data.LocationAltitude, noDatavalue: v => v <= 0));
+            //seriesDefinition.Add("MotionYaw", (getter: data => data.MotionYaw, noDatavalue: v => v <= -9990));
+            //seriesDefinition.Add("MotionPitch", (getter: data => data.MotionPitch, noDatavalue: v => v <= -9990));
+            //seriesDefinition.Add("MotionRoll", (getter: data => data.MotionRoll, noDatavalue: v => v <= -9990));
+            //seriesDefinition.Add("GyroRotationX", (getter: data => data.GyroRotationX, noDatavalue: v => v <= -9990));
+            //seriesDefinition.Add("GyroRotationY", (getter: data => data.GyroRotationY, noDatavalue: v => v <= -9990));
+            //seriesDefinition.Add("GyroRotationZ", (getter: data => data.GyroRotationZ, noDatavalue: v => v <= -9990));
+            //seriesDefinition.Add("LocationCourse", (getter: data => data.LocationCourse, noDatavalue: v => v <= -9990));
+            //seriesDefinition.Add("LocationFloor", (getter: data => data.LocationFloor, noDatavalue: v => v <= -9990));
+            //seriesDefinition.Add("LocationHeadingX", (getter: data => data.LocationHeadingX, noDatavalue: v => v <= -9990));
+            //seriesDefinition.Add("LocationHeadingY", (getter: data => data.LocationHeadingY, noDatavalue: v => v <= -9990));
+            //seriesDefinition.Add("LocationHeadingZ", (getter: data => data.LocationHeadingZ, noDatavalue: v => v <= -9990));
+            //seriesDefinition.Add("MotionRotationRateX", (getter: data => data.MotionRotationRateX, noDatavalue: v => v <= -9990));
+            //seriesDefinition.Add("MotionRotationRateY", (getter: data => data.MotionRotationRateY, noDatavalue: v => v <= -9990));
+            //seriesDefinition.Add("MotionRotationRateZ", (getter: data => data.MotionRotationRateZ, noDatavalue: v => v <= -9990));
             int margin = 10;
             //width = log.Data.Count + 2 * margin;
             List<PointF[]> dataseries = GetDataSeries(log, seriesDefinition);
@@ -139,7 +183,11 @@ namespace DEM.Net.Core.IO.SensorLog
                 foreach (var def in seriesDefinition)
                 {
                     var getter = def.Value.getter;
-                    series[defIndex][i] = new PointF(i, def.Value.getter(data));
+                    float? dataValue = def.Value.getter(data);
+                    if (dataValue.HasValue)
+                    {
+                        series[defIndex][i] = new PointF(i, def.Value.getter(data).Value);
+                    }
                     defIndex++;
                 }
             }
@@ -165,7 +213,7 @@ namespace DEM.Net.Core.IO.SensorLog
             }
             return (dataseries, ranges.ToList());
         }
-        private static (float min, float max)[] ComputeRanges(List<PointF[]> dataseries, List<Predicate<float>> noDataValues)
+        private static (float min, float max)[] ComputeRanges(List<PointF[]> dataseries, List<Predicate<float?>> noDataValues)
         {
             if (noDataValues == null)
             {
@@ -192,5 +240,7 @@ namespace DEM.Net.Core.IO.SensorLog
             ctx.DrawLines(Color.Black, 1, xAxis)
                .DrawLines(Color.Black, 1, yAxis);
         }
+
+        #endregion
     }
 }

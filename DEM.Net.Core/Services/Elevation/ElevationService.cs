@@ -238,6 +238,10 @@ namespace DEM.Net.Core
         {
             return GetElevationAtPoint(raster, null, metadata, lat, lon, 0, interpolator);
         }
+        public GeoPoint GetPointElevation(GeoPoint location, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
+        {
+            return GetPointElevation(location.Latitude, location.Longitude, dataSet, interpolationMode);
+        }
         public GeoPoint GetPointElevation(double lat, double lon, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
             GeoPoint geoPoint = new GeoPoint(lat, lon);

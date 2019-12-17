@@ -24,11 +24,11 @@ namespace DEM.Net.Core.IO.SensorLog
             sensorLog.Count = sensorLog.Data.Count;
             foreach(var data in sensorLog.Data)
             {
-                sensorLog.LocationCount += (data.LocationLongitude != 0 && data.LocationLatitude != 0) ? 1 : 0;
-                sensorLog.AltitudeCount += (data.LocationAltitude != 0) ? 1 : 0;
+                sensorLog.LocationCount += (data.LocationLongitude != 0 && data.LocationLatitude.HasValue) ? 1 : 0;
+                sensorLog.AltitudeCount += (data.LocationAltitude.HasValue) ? 1 : 0;
             }
-            sensorLog.AltitudeMin = sensorLog.Data.Min(s => s.LocationAltitude);
-            sensorLog.AltitudeMax = sensorLog.Data.Max(s => s.LocationAltitude);
+            sensorLog.AltitudeMin = sensorLog.Data.Where(s=>s.LocationAltitude.HasValue).Min(s => s.LocationAltitude.Value);
+            sensorLog.AltitudeMax = sensorLog.Data.Where(s => s.LocationAltitude.HasValue).Max(s => s.LocationAltitude.Value);
 
             return sensorLog;
         }
