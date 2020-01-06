@@ -67,6 +67,7 @@ namespace DEM.Net.Core
         {
             return points.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR, null);
         }
+        
 
         public static IEnumerable<GeoPoint> ReprojectTo(this IEnumerable<GeoPoint> points, int sourceEpsgCode, int destinationEpsgCode, int? pointCount = null)
         {
@@ -107,6 +108,20 @@ namespace DEM.Net.Core
 
 
             }
+        }
+        public static IEnumerable<(int Key, GeoPoint Point)> ReprojectTo(this IEnumerable<(int Key, GeoPoint Point)> points, int sourceEpsgCode, int destinationEpsgCode, int pointCount)
+        {
+            if (sourceEpsgCode == destinationEpsgCode)
+                return points;
+
+
+            // Defines the starting coordiante system
+            ProjectionInfo pSource = ProjectionInfo.FromEpsgCode(sourceEpsgCode);
+            // Defines the starting coordiante system
+            ProjectionInfo pTarget = ProjectionInfo.FromEpsgCode(destinationEpsgCode);
+
+            return points.Select(pt => (pt.Key, ReprojectPoint(pt.Point, pSource, pTarget)));
+
         }
         public static List<Gpx.GpxTrackPoint> ReprojectTo(this IEnumerable<Gpx.GpxTrackPoint> points, int sourceEpsgCode, int destinationEpsgCode, int? pointCount = null)
         {
@@ -168,6 +183,23 @@ namespace DEM.Net.Core
 
         }
 
+        public static GeoPoint ReprojectTo(this GeoPoint point, int sourceEpsgCode, int destinationEpsgCode)
+        {
+            if (sourceEpsgCode == destinationEpsgCode)
+                return point;
+
+            // Defines the starting coordiante system
+            ProjectionInfo pSource = ProjectionInfo.FromEpsgCode(sourceEpsgCode);
+            // Defines the starting coordiante system
+            ProjectionInfo pTarget = ProjectionInfo.FromEpsgCode(destinationEpsgCode);
+
+            var tmp = ReprojectPoint(point, pSource, pTarget);
+
+            point.Latitude = tmp.Latitude;
+            point.Longitude = tmp.Longitude;
+
+            return point;
+        }
 
         private static GeoPoint ReprojectPoint(GeoPoint sourcePoint, ProjectionInfo sourceProj, ProjectionInfo destProj)
         {

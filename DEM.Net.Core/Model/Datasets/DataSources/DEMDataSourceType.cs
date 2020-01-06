@@ -11,9 +11,9 @@ namespace DEM.Net.Core.Datasets
         /// </summary>
         GDALVrt = 1,
         /// <summary>
-        /// Data source is a single file, downloaded manually and stored at a specific location
+        /// Data source is a single or multiple files, downloaded manually and stored at a specific location
         /// </summary>
-        LocalFile = 2,
+        LocalFileSystem = 2,
         /// <summary>
         /// Data comes from NASA EarthData Common Metadata Repository (CMR) API at https://earthdata.nasa.gov/
         /// </summary>
