@@ -32,7 +32,8 @@ using System.Threading.Tasks;
 namespace DEM.Net.Core
 {
     // Source : Brutile
-    public class Attribution
+    // Inherits from Dictionary to allow Json serialization in SharpGlTF
+    public class Attribution : Dictionary<string, string>
     {
         public Attribution() : this(null, null, null)
         {
@@ -43,11 +44,28 @@ namespace DEM.Net.Core
             this.Text = text;
             this.Url = url;
             this.Acknowledgement = acknowledgement;
-
         }
 
-        public string Text { get; set; }
-        public string Url { get; set; }
-        public string Acknowledgement { get; set; }
+        public string Text
+        {
+            get { return GetValue(nameof(Text)); }
+            set { base[nameof(Text)] = value;}
+        }
+        public string Url
+        {
+            get { return GetValue(nameof(Url)); }
+            set { base[nameof(Url)] = value; }
+        }
+        public string Acknowledgement
+        {
+            get { return GetValue(nameof(Acknowledgement)); }
+            set { base[nameof(Acknowledgement)] = value; }
+        }
+
+        private string GetValue(string key)
+        {
+            base.TryGetValue(key, out string value);
+            return value;
+        }
     }
 }
