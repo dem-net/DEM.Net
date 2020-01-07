@@ -35,17 +35,23 @@ namespace DEM.Net.Core
     // Inherits from Dictionary to allow Json serialization in SharpGlTF
     public class Attribution : Dictionary<string, string>
     {
-        public Attribution() : this(null, null, null)
+        public Attribution() : this("Subject not set", null, null, null)
         {
 
         }
-        public Attribution(string text = null, string url = null, string acknowledgement = null)
+        public Attribution(string subject, string text = null, string url = null, string acknowledgement = null)
         {
+            this.Subject = subject;
             this.Text = text;
             this.Url = url;
             this.Acknowledgement = acknowledgement;
         }
 
+        public string Subject
+        {
+            get { return GetValue(nameof(Subject)); }
+            set { base[nameof(Subject)] = value; }
+        }
         public string Text
         {
             get { return GetValue(nameof(Text)); }
