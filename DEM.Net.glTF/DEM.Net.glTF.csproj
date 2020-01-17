@@ -40,6 +40,9 @@ Attributions exported with models</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="gtlfSharp\SharpGltfService.cs~RF5d4699.TMP" />
+  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="IxMilia.Stl" Version="0.1.1" />

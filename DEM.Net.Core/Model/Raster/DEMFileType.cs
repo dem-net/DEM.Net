@@ -25,23 +25,24 @@
 
 namespace DEM.Net.Core
 {
-    //[JsonConverter(typeof(StringEnumConverter))]
     public enum DEMFileType
     {
         /// <summary>
         /// Shuttle Radar Topography Mission (SRTM) Data file
         /// </summary>
-        //[EnumMember(Value = nameof(SRTM_HGT))]
         SRTM_HGT,
         /// <summary>
         /// Georeferenced TIFF file
         /// </summary>
-        //[EnumMember(Value = nameof(GEOTIFF))] 
         GEOTIFF,
         /// <summary>
         /// Network Common Data Form (Climat and Forecast)
         /// </summary>
-        //[EnumMember(Value = nameof(CF_NetCDF))] 
-        CF_NetCDF
+        CF_NetCDF,
+        /// <summary>
+        /// ESRI ARC/INFO ASCII GRID
+        /// </summary>
+        /// <remarks>See https://en.wikipedia.org/wiki/Esri_grid</remarks>
+        ASCIIGrid,
     }
 }

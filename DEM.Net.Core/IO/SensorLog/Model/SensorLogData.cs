@@ -19,34 +19,189 @@ namespace DEM.Net.Core.IO.SensorLog
 
     public partial class SensorLogData
     {
+        #region Computed props
+
         #region AccelerometerAcceleration
         private Vector3 _accelerometerAcceleration = Vector3.Zero;
 
         public Vector3 AccelerometerAcceleration
         {
-            get { 
+            get
+            {
                 if (_accelerometerAcceleration == Vector3.Zero)
                 {
-                    _accelerometerAcceleration = new Vector3(AccelerometerAccelerationX
-                        , AccelerometerAccelerationY
-                        , AccelerometerAccelerationZ);
+                    _accelerometerAcceleration = new Vector3(AccelerometerAccelerationX ?? 0
+                        , AccelerometerAccelerationY ?? 0
+                        , AccelerometerAccelerationZ ?? 0);
                 }
                 return _accelerometerAcceleration;
             }
         }
         #endregion
 
+        #region GyroRotation
+        private Vector3 _gyroRotation = Vector3.Zero;
+
+        public Vector3 GyroRotation
+        {
+            get
+            {
+                if (_gyroRotation == Vector3.Zero)
+                {
+                    _gyroRotation = new Vector3(GyroRotationX ?? 0
+                        , GyroRotationY ?? 0
+                        , GyroRotationZ ?? 0);
+                }
+                return _gyroRotation;
+            }
+        }
+        #endregion
+
+        #region LocationHeading
+        private Vector3 _locationHeading = Vector3.Zero;
+
+        public Vector3 LocationHeading
+        {
+            get
+            {
+                if (_locationHeading == Vector3.Zero)
+                {
+                    _locationHeading = new Vector3(LocationHeadingX ?? 0
+                        , LocationHeadingY ?? 0
+                        , LocationHeadingZ ?? 0);
+                }
+                return _locationHeading;
+            }
+        }
+        #endregion
+
+        #region Magnetometer
+        private Vector3 _magnetometer = Vector3.Zero;
+
+        public Vector3 Magnetometer
+        {
+            get
+            {
+                if (_magnetometer == Vector3.Zero)
+                {
+                    _magnetometer = new Vector3(MagnetometerX ?? 0
+                        , MagnetometerY ?? 0
+                        , MagnetometerZ ?? 0);
+                }
+                return _magnetometer;
+            }
+        }
+        #endregion
+
+        #region MotionGravity
+        private Vector3 _motionGravity = Vector3.One;
+
+        public Vector3 MotionGravity
+        {
+            get
+            {
+                if (_motionGravity == Vector3.Zero)
+                {
+                    _motionGravity = new Vector3(MotionGravityX ?? 1
+                        , MotionGravityY ?? 1
+                        , MotionGravityZ ?? 1);
+                }
+                return _motionGravity;
+            }
+        }
+        #endregion
+
+        #region MotionMagneticField
+        private Vector3 _motionMagneticField = Vector3.Zero;
+
+        public Vector3 MotionMagneticField
+        {
+            get
+            {
+                if (_motionMagneticField == Vector3.Zero)
+                {
+                    _motionMagneticField = new Vector3(MotionMagneticFieldX ?? 0
+                        , MotionMagneticFieldY ?? 0
+                        , MotionMagneticFieldZ ?? 0);
+                }
+                return _motionMagneticField;
+            }
+        }
+        #endregion
+
+        #region MotionQuaternion
+        private Quaternion _motionQuaternion = Quaternion.Identity;
+
+        public Quaternion MotionQuaternion
+        {
+            get
+            {
+                if (_motionQuaternion == Quaternion.Identity)
+                {
+                    _motionQuaternion = new Quaternion(MotionQuaternionX ?? 0
+                        , MotionQuaternionY ?? 0
+                        , MotionQuaternionZ ?? 0
+                        , MotionQuaternionW ?? 1);
+                }
+                return _motionQuaternion;
+            }
+        }
+        #endregion
+
+        #region AccelerometerAcceleration
+        private Vector3 _motionRotationRate = Vector3.Zero;
+
+        public Vector3 MotionRotationRate
+        {
+            get
+            {
+                if (_motionRotationRate == Vector3.Zero)
+                {
+                    _motionRotationRate = new Vector3(MotionRotationRateX ?? 0
+                        , MotionRotationRateY ?? 0
+                        , MotionRotationRateZ ?? 0);
+                }
+                return _motionRotationRate;
+            }
+        }
+        #endregion
+
+        #region MotionUserAcceleration
+        private Vector3 _motionUserAcceleration = Vector3.Zero;
+
+        public Vector3 MotionUserAcceleration
+        {
+            get
+            {
+                if (_motionUserAcceleration == Vector3.Zero)
+                {
+                    _motionUserAcceleration = new Vector3(MotionUserAccelerationX ?? 0
+                        , MotionUserAccelerationY ?? 0
+                        , MotionUserAccelerationZ ?? 0);
+                }
+                return _motionUserAcceleration;
+            }
+        }
+        #endregion
+
+        public bool HasCoordinates => LocationLatitude.HasValue && LocationLongitude.HasValue;
+
+        #endregion
+
+
+        #region Json data properties
+
         [JsonProperty("accelerometerAccelerationX")]
-        internal float AccelerometerAccelerationX { get; set; }
+        internal float? AccelerometerAccelerationX { get; set; }
 
         [JsonProperty("accelerometerAccelerationY")]
-        internal float AccelerometerAccelerationY { get; set; }
+        internal float? AccelerometerAccelerationY { get; set; }
 
         [JsonProperty("accelerometerAccelerationZ")]
-        internal float AccelerometerAccelerationZ { get; set; }
+        internal float? AccelerometerAccelerationZ { get; set; }
 
         [JsonProperty("accelerometerTimestamp_sinceReboot")]
-        public float AccelerometerTimestampSinceReboot { get; set; }
+        public float? AccelerometerTimestampSinceReboot { get; set; }
 
         [JsonProperty("activity")]
         public string Activity { get; set; }
@@ -58,28 +213,28 @@ namespace DEM.Net.Core.IO.SensorLog
         public DateTime ActivityActivityStartDate { get; set; }
 
         [JsonProperty("activityTimestamp_sinceReboot")]
-        public float ActivityTimestampSinceReboot { get; set; }
+        public float? ActivityTimestampSinceReboot { get; set; }
 
         [JsonProperty("altimeterPressure")]
-        public float AltimeterPressure { get; set; }
+        public float? AltimeterPressure { get; set; }
 
         [JsonProperty("altimeterRelativeAltitude")]
-        public float AltimeterRelativeAltitude { get; set; }
+        public float? AltimeterRelativeAltitude { get; set; }
 
         [JsonProperty("altimeterReset")]
         public int AltimeterReset { get; set; }
 
         [JsonProperty("altimeterTimestamp_sinceReboot")]
-        public float AltimeterTimestampSinceReboot { get; set; }
+        public float? AltimeterTimestampSinceReboot { get; set; }
 
         [JsonProperty("avAudioRecorderAveragePower")]
-        public float AvAudioRecorderAveragePower { get; set; }
+        public float? AvAudioRecorderAveragePower { get; set; }
 
         [JsonProperty("avAudioRecorderPeakPower")]
-        public float AvAudioRecorderPeakPower { get; set; }
+        public float? AvAudioRecorderPeakPower { get; set; }
 
         [JsonProperty("batteryLevel")]
-        public float BatteryLevel { get; set; }
+        public float? BatteryLevel { get; set; }
 
         [JsonProperty("batteryState")]
         public int BatteryState { get; set; }
@@ -90,34 +245,17 @@ namespace DEM.Net.Core.IO.SensorLog
         [JsonProperty("deviceOrientation")]
         public int DeviceOrientation { get; set; }
 
-        #region GyroRotation
-        private Vector3 _gyroRotation = Vector3.Zero;
-
-        public Vector3 GyroRotation
-        {
-            get
-            {
-                if (_gyroRotation == Vector3.Zero)
-                {
-                    _gyroRotation = new Vector3(GyroRotationX
-                        , GyroRotationY
-                        , GyroRotationZ);
-                }
-                return _gyroRotation;
-            }
-        }
-        #endregion
         [JsonProperty("gyroRotationX")]
-        internal float GyroRotationX { get; set; }
+        internal float? GyroRotationX { get; set; }
 
         [JsonProperty("gyroRotationY")]
-        internal float GyroRotationY { get; set; }
+        internal float? GyroRotationY { get; set; }
 
         [JsonProperty("gyroRotationZ")]
-        internal float GyroRotationZ { get; set; }
+        internal float? GyroRotationZ { get; set; }
 
         [JsonProperty("gyroTimestamp_sinceReboot")]
-        public float GyroTimestampSinceReboot { get; set; }
+        public float? GyroTimestampSinceReboot { get; set; }
 
         [JsonProperty("identifierForVendor")]
         public string IdentifierForVendor { get; set; }
@@ -132,69 +270,52 @@ namespace DEM.Net.Core.IO.SensorLog
         public string Label { get; set; }
 
         [JsonProperty("locationAltitude")]
-        public float LocationAltitude { get; set; }
+        public float? LocationAltitude { get; set; }
 
         [JsonProperty("locationCourse")]
-        public float LocationCourse { get; set; }
+        public float? LocationCourse { get; set; }
 
         [JsonProperty("locationFloor")]
-        public float LocationFloor { get; set; }
+        public float? LocationFloor { get; set; }
 
         [JsonProperty("locationHeadingAccuracy")]
-        public float LocationHeadingAccuracy { get; set; }
+        public float? LocationHeadingAccuracy { get; set; }
 
         [JsonProperty("locationHeadingTimestamp_since1970")]
-        public float LocationHeadingTimestampSince1970 { get; set; }
+        public float? LocationHeadingTimestampSince1970 { get; set; }
 
-        #region LocationHeading
-        private Vector3 _locationHeading = Vector3.Zero;
-
-        public Vector3 LocationHeading
-        {
-            get
-            {
-                if (_locationHeading == Vector3.Zero)
-                {
-                    _locationHeading = new Vector3(LocationHeadingX
-                        , LocationHeadingY
-                        , LocationHeadingZ);
-                }
-                return _locationHeading;
-            }
-        }
-        #endregion
         [JsonProperty("locationHeadingX")]
-        internal float LocationHeadingX { get; set; }
+        internal float? LocationHeadingX { get; set; }
 
         [JsonProperty("locationHeadingY")]
-        internal float LocationHeadingY { get; set; }
+        internal float? LocationHeadingY { get; set; }
 
         [JsonProperty("locationHeadingZ")]
-        internal float LocationHeadingZ { get; set; }
+        internal float? LocationHeadingZ { get; set; }
 
         [JsonProperty("locationHorizontalAccuracy")]
-        public float LocationHorizontalAccuracy { get; set; }
+        public float? LocationHorizontalAccuracy { get; set; }
 
         [JsonProperty("locationLatitude")]
-        public float LocationLatitude { get; set; }
+        public float? LocationLatitude { get; set; }
 
         [JsonProperty("locationLongitude")]
-        public float LocationLongitude { get; set; }
+        public float? LocationLongitude { get; set; }
 
         [JsonProperty("locationMagneticHeading")]
-        public float LocationMagneticHeading { get; set; }
+        public float? LocationMagneticHeading { get; set; }
 
         [JsonProperty("locationSpeed")]
-        public float LocationSpeed { get; set; }
+        public float? LocationSpeed { get; set; }
 
         [JsonProperty("locationTimestamp_since1970")]
-        public float LocationTimestampSince1970 { get; set; }
+        public float? LocationTimestampSince1970 { get; set; }
 
         [JsonProperty("locationTrueHeading")]
-        public float LocationTrueHeading { get; set; }
+        public float? LocationTrueHeading { get; set; }
 
         [JsonProperty("locationVerticalAccuracy")]
-        public float LocationVerticalAccuracy { get; set; }
+        public float? LocationVerticalAccuracy { get; set; }
 
         [JsonProperty("loggingTime")]
         public DateTime LoggingTime { get; set; }
@@ -203,187 +324,85 @@ namespace DEM.Net.Core.IO.SensorLog
         public int LogSampleNr { get; set; }
 
         [JsonProperty("magnetometerTimestamp_sinceReboot")]
-        public float MagnetometerTimestampSinceReboot { get; set; }
+        public float? MagnetometerTimestampSinceReboot { get; set; }
 
-        #region Magnetometer
-        private Vector3 _magnetometer = Vector3.Zero;
-
-        public Vector3 Magnetometer
-        {
-            get
-            {
-                if (_magnetometer == Vector3.Zero)
-                {
-                    _magnetometer = new Vector3(MagnetometerX
-                        , MagnetometerY
-                        , MagnetometerZ);
-                }
-                return _magnetometer;
-            }
-        }
-        #endregion
         [JsonProperty("magnetometerX")]
-        internal float MagnetometerX { get; set; }
+        internal float? MagnetometerX { get; set; }
 
         [JsonProperty("magnetometerY")]
-        internal float MagnetometerY { get; set; }
+        internal float? MagnetometerY { get; set; }
 
         [JsonProperty("magnetometerZ")]
-        internal float MagnetometerZ { get; set; }
+        internal float? MagnetometerZ { get; set; }
 
         [JsonProperty("motionAttitudeReferenceFrame")]
         public string MotionAttitudeReferenceFrame { get; set; }
 
-        #region MotionGravity
-        private Vector3 _motionGravity = Vector3.Zero;
-
-        public Vector3 MotionGravity
-        {
-            get
-            {
-                if (_motionGravity == Vector3.Zero)
-                {
-                    _motionGravity = new Vector3(MotionGravityX
-                        , MotionGravityY
-                        , MotionGravityZ);
-                }
-                return _motionGravity;
-            }
-        }
-        #endregion
         [JsonProperty("motionGravityX")]
-        internal float MotionGravityX { get; set; }
+        internal float? MotionGravityX { get; set; }
 
         [JsonProperty("motionGravityY")]
-        internal float MotionGravityY { get; set; }
+        internal float? MotionGravityY { get; set; }
 
         [JsonProperty("motionGravityZ")]
-        internal float MotionGravityZ { get; set; }
+        internal float? MotionGravityZ { get; set; }
 
         [JsonProperty("motionMagneticFieldCalibrationAccuracy")]
-        public float MotionMagneticFieldCalibrationAccuracy { get; set; }
+        public float? MotionMagneticFieldCalibrationAccuracy { get; set; }
 
-        #region MotionMagneticField
-        private Vector3 _motionMagneticField = Vector3.Zero;
-
-        public Vector3 MotionMagneticField
-        {
-            get
-            {
-                if (_motionMagneticField == Vector3.Zero)
-                {
-                    _motionMagneticField = new Vector3(MotionMagneticFieldX
-                        , MotionMagneticFieldY
-                        , MotionMagneticFieldZ);
-                }
-                return _motionMagneticField;
-            }
-        }
-        #endregion
         [JsonProperty("motionMagneticFieldX")]
-        internal float MotionMagneticFieldX { get; set; }
+        internal float? MotionMagneticFieldX { get; set; }
 
         [JsonProperty("motionMagneticFieldY")]
-        internal float MotionMagneticFieldY { get; set; }
+        internal float? MotionMagneticFieldY { get; set; }
 
         [JsonProperty("motionMagneticFieldZ")]
-        internal float MotionMagneticFieldZ { get; set; }
+        internal float? MotionMagneticFieldZ { get; set; }
 
         [JsonProperty("motionPitch")]
-        public float MotionPitch { get; set; }
-
-        #region MotionQuaternion
-        private Quaternion _motionQuaternion = Quaternion.Identity;
-
-        public Quaternion MotionQuaternion
-        {
-            get
-            {
-                if (_motionQuaternion == Quaternion.Identity)
-                {
-                    _motionQuaternion = new Quaternion(MotionQuaternionX
-                        , MotionQuaternionY
-                        , MotionQuaternionZ
-                        , MotionQuaternionW);
-                }
-                return _motionQuaternion;
-            }
-        }
-        #endregion
+        public float? MotionPitch { get; set; }
 
         [JsonProperty("motionQuaternionW")]
-        internal float MotionQuaternionW { get; set; }
+        internal float? MotionQuaternionW { get; set; }
 
         [JsonProperty("motionQuaternionX")]
-        internal float MotionQuaternionX { get; set; }
+        internal float? MotionQuaternionX { get; set; }
 
         [JsonProperty("motionQuaternionY")]
-        internal float MotionQuaternionY { get; set; }
+        internal float? MotionQuaternionY { get; set; }
 
         [JsonProperty("motionQuaternionZ")]
-        internal float MotionQuaternionZ { get; set; }
+        internal float? MotionQuaternionZ { get; set; }
 
         [JsonProperty("motionRoll")]
-        public float MotionRoll { get; set; }
+        public float? MotionRoll { get; set; }
 
-        #region AccelerometerAcceleration
-        private Vector3 _motionRotationRate = Vector3.Zero;
-
-        public Vector3 MotionRotationRate
-        {
-            get
-            {
-                if (_motionRotationRate == Vector3.Zero)
-                {
-                    _motionRotationRate = new Vector3(MotionRotationRateX
-                        , MotionRotationRateY
-                        , MotionRotationRateZ);
-                }
-                return _motionRotationRate;
-            }
-        }
-        #endregion
         [JsonProperty("motionRotationRateX")]
-        internal float MotionRotationRateX { get; set; }
+        internal float? MotionRotationRateX { get; set; }
 
         [JsonProperty("motionRotationRateY")]
-        internal float MotionRotationRateY { get; set; }
+        internal float? MotionRotationRateY { get; set; }
 
         [JsonProperty("motionRotationRateZ")]
-        internal float MotionRotationRateZ { get; set; }
+        internal float? MotionRotationRateZ { get; set; }
 
         [JsonProperty("motionTimestamp_sinceReboot")]
-        public float MotionTimestampSinceReboot { get; set; }
+        public float? MotionTimestampSinceReboot { get; set; }
 
-        #region MotionUserAcceleration
-        private Vector3 _motionUserAcceleration = Vector3.Zero;
-
-        public Vector3 MotionUserAcceleration
-        {
-            get
-            {
-                if (_motionUserAcceleration == Vector3.Zero)
-                {
-                    _motionUserAcceleration = new Vector3(MotionUserAccelerationX
-                        , MotionUserAccelerationY
-                        , MotionUserAccelerationZ);
-                }
-                return _motionUserAcceleration;
-            }
-        }
-        #endregion
 
         [JsonProperty("motionUserAccelerationX")]
-        internal float MotionUserAccelerationX { get; set; }
+        internal float? MotionUserAccelerationX { get; set; }
 
         [JsonProperty("motionUserAccelerationY")]
-        internal float MotionUserAccelerationY { get; set; }
+        internal float? MotionUserAccelerationY { get; set; }
 
         [JsonProperty("motionUserAccelerationZ")]
-        internal float MotionUserAccelerationZ { get; set; }
+        internal float? MotionUserAccelerationZ { get; set; }
 
         [JsonProperty("motionYaw")]
-        public float MotionYaw { get; set; }
+        public float? MotionYaw { get; set; }
+
+        #endregion
     }
 
     public partial class SensorLogData

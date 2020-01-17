@@ -43,7 +43,7 @@ namespace DEM.Net.Core
     public class RasterService : IRasterService
     {
         const string APP_NAME = "DEM.Net";
-        const string MANIFEST_DIR = "manifest";
+        internal const string MANIFEST_DIR = "manifest";
         private readonly RasterIndexServiceResolver _rasterIndexServiceResolver;
         private readonly ILogger<RasterService> _logger;
         private NamedMonitor monitor = new NamedMonitor();
@@ -105,6 +105,7 @@ namespace DEM.Net.Core
             {
                 case DEMFileType.GEOTIFF: return new GeoTiff(filePath);
                 case DEMFileType.SRTM_HGT: return new HGTFile(filePath);
+                case DEMFileType.ASCIIGrid: return new ASCIIGridFile(filePath);
                 default:
                     throw new NotImplementedException($"{fileFormat} file format not implemented.");
             }
@@ -113,8 +114,8 @@ namespace DEM.Net.Core
 
         public string GetLocalDEMPath(DEMDataSet dataset)
         {
-            return dataset.DataSource.IsGlobalFile ?
-                        Path.GetDirectoryName(dataset.DataSource.IndexFilePath)
+            return dataset.DataSource.DataSourceType == Datasets.DEMDataSourceType.LocalFileSystem ?
+                        Path.GetFullPath(dataset.DataSource.IndexFilePath)
                         : Path.Combine(_localDirectory, dataset.Name);
         }
         public string GetLocalDEMFilePath(DEMDataSet dataset, string fileTitle)
@@ -371,56 +372,42 @@ namespace DEM.Net.Core
         /// <returns>A Dictionnary</returns>
         public List<DemFileReport> GenerateReport(DEMDataSet dataSet, BoundingBox bbox = null)
         {
-            List<DemFileReport> statusByFile = new List<DemFileReport>();
+            List<DemFileReport> statusByFile = new List<DemFileReport>(); 
 
-            if (dataSet.DataSource.IsGlobalFile)
+            var indexService = this._rasterIndexServiceResolver(dataSet.DataSource.DataSourceType);
+            indexService.Setup(dataSet, GetLocalDEMPath(dataSet));
+
+            if (bbox == null)
             {
-                statusByFile.Add(new DemFileReport()
+                // All sources
+                foreach (DEMFileSource source in indexService.GetFileSources(dataSet))
                 {
-                    IsExistingLocally = File.Exists(dataSet.DataSource.IndexFilePath),
-                    IsMetadataGenerated = File.Exists(GetMetadataFileName(dataSet.DataSource.IndexFilePath, ".json")),
-                    LocalName = dataSet.DataSource.IndexFilePath,
-                    URL = dataSet.DataSource.IndexFilePath
-                });
+                    statusByFile.Add(new DemFileReport()
+                    {
+                        IsExistingLocally = File.Exists(source.LocalFileName),
+                        IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),
+                        LocalName = source.LocalFileName,
+                        URL = source.SourceFileNameAbsolute,
+                        Source = source
+                    });
+
+                }
             }
             else
             {
-                var indexService = this._rasterIndexServiceResolver(dataSet.DataSource.DataSourceType);
-                indexService.Setup(dataSet, GetLocalDEMPath(dataSet));
-
-                if (bbox == null)
+                // only sources intersecting bbox
+                foreach (DEMFileSource source in indexService.GetCoveredFileSources(dataSet, bbox))
                 {
-                    // All sources
-                    foreach (DEMFileSource source in indexService.GetFileSources(dataSet))
+                    statusByFile.Add(new DemFileReport()
                     {
-                        statusByFile.Add(new DemFileReport()
-                        {
-                            IsExistingLocally = File.Exists(source.LocalFileName),
-                            IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),
-                            LocalName = source.LocalFileName,
-                            URL = source.SourceFileNameAbsolute,
-                            Source = source
-                        });
+                        IsExistingLocally = File.Exists(source.LocalFileName),
+                        IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),
+                        LocalName = source.LocalFileName,
+                        URL = source.SourceFileNameAbsolute,
+                        Source = source
+                    });
 
-                    }
                 }
-                else
-                {
-                    // only sources intersecting bbox
-                    foreach (DEMFileSource source in indexService.GetCoveredFileSources(dataSet, bbox))
-                    {
-                        statusByFile.Add(new DemFileReport()
-                        {
-                            IsExistingLocally = File.Exists(source.LocalFileName),
-                            IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),
-                            LocalName = source.LocalFileName,
-                            URL = source.SourceFileNameAbsolute,
-                            Source = source
-                        });
-
-                    }
-                }
-
             }
 
             return statusByFile;
@@ -428,54 +415,40 @@ namespace DEM.Net.Core
 
         public List<DemFileReport> GenerateReportForLocation(DEMDataSet dataSet, double lat, double lon)
         {
-            if (dataSet.DataSource.IsGlobalFile)
+
+            var indexService = this._rasterIndexServiceResolver(dataSet.DataSource.DataSourceType);
+            indexService.Setup(dataSet, GetLocalDEMPath(dataSet));
+
+            if (dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell)
             {
-                return new List<DemFileReport> { new DemFileReport()
-                {
-                    IsExistingLocally = File.Exists(dataSet.DataSource.IndexFilePath),
-                    IsMetadataGenerated = File.Exists(GetMetadataFileName(dataSet.DataSource.IndexFilePath, ".json")),
-                    LocalName = dataSet.DataSource.IndexFilePath,
-                    URL = dataSet.DataSource.IndexFilePath
-                }
-                };
+                var size = 1d / dataSet.PointsPerDegree;
+                var bbox = BoundingBox.AroundPoint(lat, lon, size);
+                var sources = indexService.GetFileSources(dataSet).Where(source => source.BBox.Intersects(bbox))
+                    .Select(source => new DemFileReport()
+                    {
+                        IsExistingLocally = File.Exists(source.LocalFileName),
+                        IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),
+                        LocalName = source.LocalFileName,
+                        URL = source.SourceFileNameAbsolute,
+                        Source = source
+                    })
+                    .ToList();
+                return sources;
             }
             else
             {
-                var indexService = this._rasterIndexServiceResolver(dataSet.DataSource.DataSourceType);
-                indexService.Setup(dataSet, GetLocalDEMPath(dataSet));
-
-                if (dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell)
-                {
-                    var size = 1d / dataSet.PointsPerDegree;
-                    var bbox = BoundingBox.AroundPoint(lat, lon, size);
-                    var sources = indexService.GetFileSources(dataSet).Where(source => source.BBox.Intersects(bbox))
-                        .Select(source => new DemFileReport()
-                        {
-                            IsExistingLocally = File.Exists(source.LocalFileName),
-                            IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),
-                            LocalName = source.LocalFileName,
-                            URL = source.SourceFileNameAbsolute,
-                            Source = source
-                        })
-                        .ToList();
-                    return sources;
-                }
-                else
-                {
-                    var sources = indexService.GetFileSources(dataSet)
-                                .Where(source => source.BBox.Intersects(lat, lon))
-                                .Select(source => new DemFileReport()
-                                {
-                                    IsExistingLocally = File.Exists(source.LocalFileName),
-                                    IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),
-                                    LocalName = source.LocalFileName,
-                                    URL = source.SourceFileNameAbsolute,
-                                    Source = source
-                                })
-                                .ToList();
-                    return sources;
-                }
-
+                var sources = indexService.GetFileSources(dataSet)
+                            .Where(source => source.BBox.Intersects(lat, lon))
+                            .Select(source => new DemFileReport()
+                            {
+                                IsExistingLocally = File.Exists(source.LocalFileName),
+                                IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),
+                                LocalName = source.LocalFileName,
+                                URL = source.SourceFileNameAbsolute,
+                                Source = source
+                            })
+                            .ToList();
+                return sources;
             }
         }
 

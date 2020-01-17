@@ -236,7 +236,15 @@ namespace DEM.Net.Core
         }
         public float GetPointElevation(IRasterFile raster, FileMetadata metadata, double lat, double lon, IInterpolator interpolator = null)
         {
-            return GetElevationAtPoint(raster, null, metadata, lat, lon, 0, interpolator);
+            // Do not dispose Dictionary, as IRasterFile disposal is the caller's responsability
+            RasterFileDictionary rasters = new RasterFileDictionary();
+            rasters.Add(metadata, raster);
+            return GetElevationAtPoint(raster, rasters, metadata, lat, lon, 0, interpolator);
+
+        }
+        public GeoPoint GetPointElevation(GeoPoint location, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
+        {
+            return GetPointElevation(location.Latitude, location.Longitude, dataSet, interpolationMode);
         }
         public GeoPoint GetPointElevation(double lat, double lon, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
@@ -605,7 +613,7 @@ namespace DEM.Net.Core
                 int curIndex = (int)Math.Ceiling((curPoint.Longitude - top.PhysicalStartLon) / top.PixelScaleX - registrationOffsetPx);
 
                 // For cell registered datasets, DataStart is not matching the start data point. Start data point is at cell center (0.5 pixel off)
-                double startLon = top.FileFormat.Registration == DEMFileRegistrationMode.Cell 
+                double startLon = top.FileFormat.Registration == DEMFileRegistrationMode.Cell
                     ? top.DataStartLon + top.PixelScaleX / 2d
                     : top.DataStartLon;
 
@@ -644,7 +652,7 @@ namespace DEM.Net.Core
                 GeoPoint curPoint = new GeoPoint(left.DataEndLat, left.DataStartLon);
 
                 // For cell registered datasets, DataStart is not matching the start data point. Start data point is at cell center (0.5 pixel off)
-                double endLat = left.FileFormat.Registration == DEMFileRegistrationMode.Cell 
+                double endLat = left.FileFormat.Registration == DEMFileRegistrationMode.Cell
                                 ? left.DataEndLat + left.PixelScaleY / 2d
                                 : left.DataEndLat;
 
@@ -718,7 +726,7 @@ namespace DEM.Net.Core
             }
             else if (bboxMetadata.Count > 1)
             {
-                _logger?.LogWarning($"One tile expected for a point. Got {bboxMetadata.Count} tiles for {geoPoint}.");
+                _logger?.LogInformation($"One tile expected for a point. Got {bboxMetadata.Count} tiles for {geoPoint}.");
             }
 
             return bboxMetadata.FirstOrDefault();
@@ -757,8 +765,8 @@ namespace DEM.Net.Core
 
         private float GetElevationAtPoint(RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float lastElevation, IInterpolator interpolator)
         {
-            return GetElevationAtPoint(adjacentTiles[metadata], adjacentTiles, metadata, lat, lon, lastElevation, interpolator);
-          
+            return GetElevationAtPoint(adjacentTiles[metadata], adjacentTiles, metadata, lat, lon, lastElevation, interpolator ?? GetInterpolator(InterpolationMode.Bilinear));
+
         }
         private float GetElevationAtPoint(IRasterFile mainRaster, RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float lastElevation, IInterpolator interpolator)
         {
@@ -773,7 +781,9 @@ namespace DEM.Net.Core
                 // pixel coordinates interpolated
                 if (metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid)
                 {
-                    yPixel = (lat - metadata.DataEndLat) / metadata.pixelSizeY;
+                    yPixel = Math.Sign(metadata.pixelSizeY) == 1 ?
+                        (metadata.DataEndLat - lat) / metadata.pixelSizeY
+                        : (lat - metadata.DataEndLat) / metadata.pixelSizeY;
                     xPixel = (lon - metadata.DataStartLon) / metadata.pixelSizeX;
                     // If at pixel center (ending by .5, .5), we are on the data point, so no need for adjacent raster checks
                     xInterpolationAmount = (double)(xPixel) % 1d;
@@ -783,12 +793,14 @@ namespace DEM.Net.Core
                 {
                     // In cell registration mode, the actual data point is at pixel center
                     // If at pixel center (ending by .5, .5), we are on the data point, so no need for adjacent raster checks
-                    yPixel = (lat - (metadata.PhysicalEndLat+metadata.pixelSizeY/2)) / metadata.pixelSizeY;
-                    xPixel = (lon - (metadata.PhysicalStartLon+metadata.pixelSizeX/2)) / metadata.pixelSizeX;
+                    yPixel = Math.Sign(metadata.pixelSizeY) == 1 ?
+                         ((metadata.PhysicalEndLat + metadata.pixelSizeY / 2) - lat) / metadata.pixelSizeY
+                        : (lat - (metadata.PhysicalEndLat + metadata.pixelSizeY / 2)) / metadata.pixelSizeY;
+                    xPixel = (lon - (metadata.PhysicalStartLon + metadata.pixelSizeX / 2)) / metadata.pixelSizeX;
 
                     xInterpolationAmount = Math.Abs((double)(xPixel) % 1d);
                     yInterpolationAmount = Math.Abs((double)(yPixel) % 1d);
-                    
+
                 }
 
 
@@ -846,6 +858,7 @@ namespace DEM.Net.Core
         private float GetElevationAtPoint(FileMetadata mainTile, RasterFileDictionary tiles, int x, int y, float nullValue)
         {
             FileMetadata goodTile = FindTile(mainTile, tiles, x, y, out int xRemap, out int yRemap);
+
             if (goodTile == null)
             {
                 return nullValue;
@@ -859,7 +872,6 @@ namespace DEM.Net.Core
             {
                 throw new Exception("Tile not found. Should not happen.");
             }
-
         }
 
         private FileMetadata FindTile(FileMetadata mainTile, RasterFileDictionary tiles, int x, int y, out int newX, out int newY)

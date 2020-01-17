@@ -32,6 +32,9 @@ namespace DEM.Net.glTF.SharpglTF
         {
             // create a basic scene
             var model = ModelRoot.CreateModel();
+            model.Asset.Copyright = "DEM Net Elevation API https://elevationapi.com";
+            model.Asset.Generator = "DEM Net Elevation API https://elevationapi.com with SharpGLTF";
+
             var scene = model.UseScene(TERRAIN_SCENE_NAME);
             scene.CreateNode(TERRAIN_NODE_NAME);
 

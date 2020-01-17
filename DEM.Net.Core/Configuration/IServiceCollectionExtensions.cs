@@ -18,6 +18,7 @@ namespace DEM.Net.Core
             services.AddMemoryCache();
 
             services.AddSingleton<GDALVRTFileService>();
+            services.AddSingleton<LocalFileSystemIndex>();
             services.AddSingleton<NasaGranuleFileService>();
             services.AddSingleton<EarthdataLoginConnector>();
 
@@ -26,10 +27,11 @@ namespace DEM.Net.Core
                 switch (dataSourceType)
                 {
                     case Datasets.DEMDataSourceType.GDALVrt:
-                    case Datasets.DEMDataSourceType.LocalFile:
                         return serviceProvider.GetService<GDALVRTFileService>();
                     case Datasets.DEMDataSourceType.NasaEarthData:
                         return serviceProvider.GetService<NasaGranuleFileService>();
+                    case Datasets.DEMDataSourceType.LocalFileSystem:
+                        return serviceProvider.GetService<LocalFileSystemIndex>();
                     default:
                         throw new KeyNotFoundException(); // or maybe return null, up to you
                 }
