@@ -22,7 +22,7 @@ namespace DEM.Net.Importers.netCDF
         {
             try
             {
-                string dataFile = Path.Combine(Directory.GetCurrentDirectory(), "Data", "gebco_2019_ajaccio.nc");
+                string dataFile = Path.Combine(Directory.GetCurrentDirectory(), "Data", "gebco_2019_chile.nc");
 
 
                 using (IRasterFile netCdfRaster = new NetCdfFile(dataFile))
@@ -32,6 +32,8 @@ namespace DEM.Net.Importers.netCDF
 
                    var metadata =  netCdfRaster.ParseMetaData(new DEMFileDefinition(DEMFileType.CF_NetCDF, DEMFileRegistrationMode.Cell));
 
+                    var hMap = netCdfRaster.GetHeightMap(metadata);
+                    var bbox = hMap.BoundingBox;
                     //ds.Metadata[vname] = data;
                 }
                 
