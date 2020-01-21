@@ -29,7 +29,7 @@ namespace DEM.Net.Importers.netCDF
             try
             {
                 _dataset = DataSet.Open(_filename, ResourceOpenMode.ReadOnly);
-                var varNames = new HashSet<string>(_dataset.Variables.Select(v=>v.Name));
+                var varNames = new HashSet<string>(_dataset.Variables.Select(v => v.Name));
 
                 void CheckVarName(string varName)
                 {
@@ -95,68 +95,68 @@ namespace DEM.Net.Importers.netCDF
 
         public FileMetadata ParseMetaData(DEMFileDefinition fileFormat)
         {
-            throw new NotImplementedException();
-            //try
-            //{
-                
-            //    string ncolsLine = _streamReader.ReadLine();
-            //    string nrowsLine = _streamReader.ReadLine();
-            //    string xllcornerLine = _streamReader.ReadLine();
-            //    string yllcornerLine = _streamReader.ReadLine();
-            //    string cellsizeLine = _streamReader.ReadLine();
-            //    string NODATA_valueLine = _streamReader.ReadLine();
 
-            //    DebugCheckRegistrationType(fileFormat.Registration, xllcornerLine, yllcornerLine);
+            try
+            {
+                int[] shape = new int[1];
+                Variable elevVariable = _dataset.Variables[ELEV];
+                int ncols = _dataset.Variables[LONG].Dimensions.First().Length;
+                int nrows = _dataset.Variables[LAT].Dimensions.First().Length;
+                var data = _dataset.Variables[LAT].GetData();
+                foreach(var t in data)
+                {
+                    object tt = t;
+                    int i = 0;
+                    i += 1;
+                }
 
-            //    int ncols = int.Parse(ncolsLine.Split(SEPARATOR, StringSplitOptions.RemoveEmptyEntries)[1]);
-            //    int nrows = int.Parse(nrowsLine.Split(SEPARATOR, StringSplitOptions.RemoveEmptyEntries)[1]);
-            //    double xllcorner = double.Parse(xllcornerLine.Split(SEPARATOR, StringSplitOptions.RemoveEmptyEntries)[1], CultureInfo.InvariantCulture);
-            //    double yllcorner = double.Parse(yllcornerLine.Split(SEPARATOR, StringSplitOptions.RemoveEmptyEntries)[1], CultureInfo.InvariantCulture);
-            //    double cellsize = double.Parse(cellsizeLine.Split(SEPARATOR, StringSplitOptions.RemoveEmptyEntries)[1], CultureInfo.InvariantCulture);
-            //    float NODATA_value = float.Parse(NODATA_valueLine.Split(SEPARATOR, StringSplitOptions.RemoveEmptyEntries)[1], CultureInfo.InvariantCulture);
+                //double xllcorner = double.Parse(xllcornerLine.Split(SEPARATOR, StringSplitOptions.RemoveEmptyEntries)[1], CultureInfo.InvariantCulture);
+                //double yllcorner = double.Parse(yllcornerLine.Split(SEPARATOR, StringSplitOptions.RemoveEmptyEntries)[1], CultureInfo.InvariantCulture);
+                //double cellsize = double.Parse(cellsizeLine.Split(SEPARATOR, StringSplitOptions.RemoveEmptyEntries)[1], CultureInfo.InvariantCulture);
+                //float NODATA_value = float.Parse(NODATA_valueLine.Split(SEPARATOR, StringSplitOptions.RemoveEmptyEntries)[1], CultureInfo.InvariantCulture);
 
-            //    FileMetadata metadata = new FileMetadata(_filename, fileFormat);
-            //    metadata.Height = nrows;
-            //    metadata.Width = ncols;
-            //    metadata.PixelScaleX = cellsize;
-            //    metadata.PixelScaleY = cellsize;
-            //    metadata.pixelSizeX = metadata.PixelScaleX;
-            //    metadata.pixelSizeY = metadata.PixelScaleY;
+                FileMetadata metadata = new FileMetadata(_filename, fileFormat);
+                //metadata.Height = nrows;
+                //metadata.Width = ncols;
+                //metadata.PixelScaleX = cellsize;
+                //metadata.PixelScaleY = cellsize;
+                //metadata.pixelSizeX = metadata.PixelScaleX;
+                //metadata.pixelSizeY = metadata.PixelScaleY;
 
-            //    if (fileFormat.Registration == DEMFileRegistrationMode.Grid)
-            //    {
-            //        metadata.DataStartLat = yllcorner;
-            //        metadata.DataStartLon = xllcorner;
-            //        metadata.DataEndLat = yllcorner + metadata.Height * metadata.pixelSizeY;
-            //        metadata.DataEndLon = xllcorner + metadata.Width * metadata.pixelSizeX;
+                //if (fileFormat.Registration == DEMFileRegistrationMode.Grid)
+                //{
+                //    metadata.DataStartLat = yllcorner;
+                //    metadata.DataStartLon = xllcorner;
+                //    metadata.DataEndLat = yllcorner + metadata.Height * metadata.pixelSizeY;
+                //    metadata.DataEndLon = xllcorner + metadata.Width * metadata.pixelSizeX;
 
-            //        metadata.PhysicalStartLat = yllcorner;
-            //        metadata.PhysicalStartLon = xllcorner;
-            //        metadata.PhysicalEndLat = metadata.DataEndLat;
-            //        metadata.PhysicalEndLon = metadata.DataEndLon;
-            //    }
-            //    else
-            //    {
-            //        metadata.DataStartLat = Math.Round(yllcorner + (metadata.PixelScaleY / 2.0), 10);
-            //        metadata.DataStartLon = Math.Round(xllcorner + (metadata.PixelScaleX / 2.0), 10);
-            //        metadata.DataEndLat = Math.Round(metadata.DataEndLat - (metadata.PixelScaleY / 2.0), 10);
-            //        metadata.DataEndLon = Math.Round(metadata.DataEndLon - (metadata.PixelScaleX / 2.0), 10);
+                //    metadata.PhysicalStartLat = yllcorner;
+                //    metadata.PhysicalStartLon = xllcorner;
+                //    metadata.PhysicalEndLat = metadata.DataEndLat;
+                //    metadata.PhysicalEndLon = metadata.DataEndLon;
+                //}
+                //else
+                //{
+                //    metadata.DataStartLat = Math.Round(yllcorner + (metadata.PixelScaleY / 2.0), 10);
+                //    metadata.DataStartLon = Math.Round(xllcorner + (metadata.PixelScaleX / 2.0), 10);
+                //    metadata.DataEndLat = Math.Round(metadata.DataEndLat - (metadata.PixelScaleY / 2.0), 10);
+                //    metadata.DataEndLon = Math.Round(metadata.DataEndLon - (metadata.PixelScaleX / 2.0), 10);
 
-            //        metadata.PhysicalStartLat = metadata.DataStartLat;
-            //        metadata.PhysicalStartLon = metadata.DataStartLon;
-            //        metadata.DataEndLat = yllcorner + metadata.Height * metadata.pixelSizeY;
-            //        metadata.DataEndLon = xllcorner + metadata.Width * metadata.pixelSizeX;
-            //    }
+                //    metadata.PhysicalStartLat = metadata.DataStartLat;
+                //    metadata.PhysicalStartLon = metadata.DataStartLon;
+                //    metadata.DataEndLat = yllcorner + metadata.Height * metadata.pixelSizeY;
+                //    metadata.DataEndLon = xllcorner + metadata.Width * metadata.pixelSizeX;
+                //}
 
-            //    metadata.SampleFormat = RasterSampleFormat.FLOATING_POINT;
-            //    metadata.NoDataValue = NODATA_value.ToString();
-            //    return metadata;
+                //metadata.SampleFormat = RasterSampleFormat.FLOATING_POINT;
+                //metadata.NoDataValue = NODATA_value.ToString();
+                return metadata;
 
-            //}
-            //catch (Exception)
-            //{
-            //    throw;
-            //}
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public string GetMetadataReport()
