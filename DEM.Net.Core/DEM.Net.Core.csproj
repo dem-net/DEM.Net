@@ -88,6 +88,7 @@ Attributions exported with models</PackageReleaseNotes>
     <PackageReference Include="NetTopologySuite" Version="1.15.3" />
     <PackageReference Include="NetTopologySuite.Diagnostics.Tracing" Version="0.0.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="SDSLite" Version="1.4.0" />
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0007" />
     <PackageReference Include="SixLabors.Shapes" Version="1.0.0-beta0009" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
@@ -97,7 +98,7 @@ Attributions exported with models</PackageReleaseNotes>
     <Folder Include="Model\Enums\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="DEMnet_64.png" Pack="true" PackagePath="\"/>
+    <None Include="DEMnet_64.png" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

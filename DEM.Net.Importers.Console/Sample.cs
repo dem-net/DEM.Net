@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.IO;
 using Microsoft.Extensions.Logging;
 using DEM.Net.Core;
-using DEM.Net.Plugin.netCDF;
 
 namespace DEM.Net.Importers.Console
 {

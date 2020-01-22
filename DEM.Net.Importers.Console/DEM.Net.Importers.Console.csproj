@@ -129,10 +129,6 @@
       <Project>{b335092d-4d33-4dc4-a02d-eb8731af3d76}</Project>
       <Name>DEM.Net.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DEM.Net.Plugin.netCDF\DEM.Net.Plugin.netCDF.csproj">
-      <Project>{ab5e3ae6-5db4-49bc-8a31-6c30be805a96}</Project>
-      <Name>DEM.Net.Plugin.netCDF</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
