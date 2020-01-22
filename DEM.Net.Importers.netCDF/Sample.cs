@@ -22,7 +22,7 @@ namespace DEM.Net.Importers.netCDF
         {
             try
             {
-                string dataFile = Path.Combine(Directory.GetCurrentDirectory(), "Data", "gebco_2019_chile.nc");
+                string dataFile = Path.Combine(Directory.GetCurrentDirectory(), "Data", "gebco_2019_ajaccio.nc");
 
 
                 using (IRasterFile netCdfRaster = new NetCdfFile(dataFile))
@@ -30,17 +30,20 @@ namespace DEM.Net.Importers.netCDF
 
                     _logger.LogDebug(((NetCdfFile)netCdfRaster).GetMetadataReport());
 
-                   var metadata =  netCdfRaster.ParseMetaData(new DEMFileDefinition(DEMFileType.CF_NetCDF, DEMFileRegistrationMode.Cell));
+                    var metadata = netCdfRaster.ParseMetaData(new DEMFileDefinition(DEMFileType.CF_NetCDF, DEMFileRegistrationMode.Cell));
 
                     var hMap = netCdfRaster.GetHeightMap(metadata);
                     var bbox = hMap.BoundingBox;
+                    bbox = bbox.Scale(0.5);
+
+                     hMap = netCdfRaster.GetHeightMapInBBox(bbox, metadata);
                     //ds.Metadata[vname] = data;
                 }
-                
+
             }
-            catch(FileNotFoundException fnfEx)
+            catch (FileNotFoundException fnfEx)
             {
-                _logger.LogError(fnfEx,fnfEx.Message);
+                _logger.LogError(fnfEx, fnfEx.Message);
                 throw;
             }
             catch (Exception ex)

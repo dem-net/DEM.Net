@@ -2,6 +2,7 @@
 using Microsoft.Research.Science.Data;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -105,7 +106,6 @@ namespace DEM.Net.Importers.netCDF
             heightMap.Count = heightMap.Width * heightMap.Height;
             var coords = new List<GeoPoint>(heightMap.Count);
 
-            
             MultipleDataResponse response = _dataset.GetMultipleData(
                 DataRequest.GetData(_elevationVariable),
                 DataRequest.GetData(_latVariable),
@@ -131,13 +131,59 @@ namespace DEM.Net.Importers.netCDF
                 }
             }
 
+            Debug.Assert(index == heightMap.Count);
             heightMap.Coordinates = coords;
             return heightMap;
         }
 
         public HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = float.MinValue)
         {
-            throw new NotImplementedException();
+            int registrationOffset = metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid ? 1 : 0;
+
+            int yNorth = (int)Math.Floor((bbox.yMax - metadata.PhysicalEndLat) / metadata.pixelSizeY);
+            int ySouth = (int)Math.Ceiling((bbox.yMin - metadata.PhysicalEndLat) / metadata.pixelSizeY);
+            int xWest = (int)Math.Floor((bbox.xMin - metadata.PhysicalStartLon) / metadata.pixelSizeX);
+            int xEast = (int)Math.Ceiling((bbox.xMax - metadata.PhysicalStartLon) / metadata.pixelSizeX);
+
+            xWest = Math.Max(0, xWest);
+            xEast = Math.Min(metadata.Width - 1 - registrationOffset, xEast);
+            yNorth = Math.Max(0, yNorth);
+            ySouth = Math.Min(metadata.Height - 1 - registrationOffset, ySouth);
+
+            HeightMap heightMap = new HeightMap(xEast - xWest + 1, ySouth - yNorth + 1);
+            heightMap.Count = heightMap.Width * heightMap.Height;
+            var coords = new List<GeoPoint>(heightMap.Count);
+            heightMap.BoundingBox = new BoundingBox(0, 0, 0, 0);
+
+            // The netCDF storage is arranged as contiguous latitudinal bands.
+            MultipleDataResponse response = _dataset.GetMultipleData(
+                DataRequest.GetData(_elevationVariable),
+                DataRequest.GetData(_latVariable),
+                DataRequest.GetData(_longVariable));
+
+            Array latitudes = response[_latVariable.ID].Data;
+            Array longitudes = response[_longVariable.ID].Data;
+            Array elevations = response[_elevationVariable.ID].Data;
+
+            int index = 0;
+
+            var elevationsEnumerator = elevations.GetEnumerator();
+            foreach (double longitude in longitudes)
+            {
+                foreach (double latitude in latitudes)
+                {
+                    elevationsEnumerator.MoveNext();
+                    float heightValue = (float)elevationsEnumerator.Current;
+
+                    coords.Add(new GeoPoint(latitude, longitude, heightValue));
+
+                    index++;
+                }
+            }
+
+            Debug.Assert(index == heightMap.Count);
+            heightMap.Coordinates = coords;
+            return heightMap;
         }
 
         public FileMetadata ParseMetaData(DEMFileDefinition fileFormat)
