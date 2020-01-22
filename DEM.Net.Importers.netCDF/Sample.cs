@@ -34,10 +34,12 @@ namespace DEM.Net.Importers.netCDF
 
                     var hMap = netCdfRaster.GetHeightMap(metadata);
                     var bbox = hMap.BoundingBox;
-                    bbox = bbox.Scale(0.5);
+                    var bboxS = bbox.Scale(0.3);
 
-                     hMap = netCdfRaster.GetHeightMapInBBox(bbox, metadata);
+                    hMap = netCdfRaster.GetHeightMapInBBox(bboxS, metadata);
                     //ds.Metadata[vname] = data;
+
+                    netCdfRaster.GetElevationAtPoint(metadata, 10, 10);
                 }
 
             }

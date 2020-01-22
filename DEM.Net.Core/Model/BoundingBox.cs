@@ -117,7 +117,7 @@ namespace DEM.Net.Core
         }
         public BoundingBox Scale(double scaleX, double scaleY)
         {
-            return new BoundingBox(xMin - Width * scaleX, xMax + Width * scaleX, yMax - Height * scaleY, yMin + Height * scaleY);
+            return new BoundingBox(xMin + Width * scaleX, xMax - Width * scaleX, yMin + Height * scaleY, yMax - Height * scaleY);
         }
         /// <summary>
         /// Add padding around bbox (bbox must be projected to cartesian first)

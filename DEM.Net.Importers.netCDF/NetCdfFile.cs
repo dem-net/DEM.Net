@@ -69,7 +69,7 @@ namespace DEM.Net.Importers.netCDF
 
         #region IDisposable Support
         private bool disposedValue = false; // Pour détecter les appels redondants
-        
+
 
         protected virtual void Dispose(bool disposing)
         {
@@ -97,7 +97,8 @@ namespace DEM.Net.Importers.netCDF
 
         public float GetElevationAtPoint(FileMetadata metadata, int x, int y)
         {
-            throw new NotImplementedException();
+            float height = (float)_elevationVariable.GetData(new int[] { x, y }, new int[] { 1, 1 }).GetValue(0, 0);
+            return height;
         }
 
         public HeightMap GetHeightMap(FileMetadata metadata)
@@ -118,7 +119,7 @@ namespace DEM.Net.Importers.netCDF
             int index = 0;
 
             var elevationsEnumerator = elevations.GetEnumerator();
-            foreach (double longitude in longitudes) 
+            foreach (double longitude in longitudes)
             {
                 foreach (double latitude in latitudes)
                 {
@@ -140,8 +141,8 @@ namespace DEM.Net.Importers.netCDF
         {
             int registrationOffset = metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid ? 1 : 0;
 
-            int yNorth = (int)Math.Floor((bbox.yMax - metadata.PhysicalEndLat) / metadata.pixelSizeY);
-            int ySouth = (int)Math.Ceiling((bbox.yMin - metadata.PhysicalEndLat) / metadata.pixelSizeY);
+            int yNorth = (int)Math.Floor((bbox.yMax - metadata.PhysicalStartLat) / metadata.pixelSizeY);
+            int ySouth = (int)Math.Ceiling((bbox.yMin - metadata.PhysicalStartLat) / metadata.pixelSizeY);
             int xWest = (int)Math.Floor((bbox.xMin - metadata.PhysicalStartLon) / metadata.pixelSizeX);
             int xEast = (int)Math.Ceiling((bbox.xMax - metadata.PhysicalStartLon) / metadata.pixelSizeX);
 
@@ -150,16 +151,16 @@ namespace DEM.Net.Importers.netCDF
             yNorth = Math.Max(0, yNorth);
             ySouth = Math.Min(metadata.Height - 1 - registrationOffset, ySouth);
 
-            HeightMap heightMap = new HeightMap(xEast - xWest + 1, ySouth - yNorth + 1);
+            HeightMap heightMap = new HeightMap(xEast - xWest + 1, yNorth - ySouth + 1);
             heightMap.Count = heightMap.Width * heightMap.Height;
             var coords = new List<GeoPoint>(heightMap.Count);
             heightMap.BoundingBox = new BoundingBox(0, 0, 0, 0);
 
             // The netCDF storage is arranged as contiguous latitudinal bands.
             MultipleDataResponse response = _dataset.GetMultipleData(
-                DataRequest.GetData(_elevationVariable),
-                DataRequest.GetData(_latVariable),
-                DataRequest.GetData(_longVariable));
+                DataRequest.GetData(_elevationVariable, new int[] { xWest, ySouth }, new int[] { heightMap.Width, heightMap.Height }),
+                DataRequest.GetData(_latVariable, new int[] { ySouth }, new int[] { heightMap.Height }),
+                DataRequest.GetData(_longVariable, new int[] { xWest }, new int[] { heightMap.Width }));
 
             Array latitudes = response[_latVariable.ID].Data;
             Array longitudes = response[_longVariable.ID].Data;
@@ -196,11 +197,11 @@ namespace DEM.Net.Importers.netCDF
                 int ncols = _longVariable.Dimensions.First().Length;
                 int nrows = _latVariable.Dimensions.First().Length;
 
-                Array longValues = _dataset.Variables[LONG].GetData(null, shape); 
-                Array latValues = _dataset.Variables[LAT].GetData(null, shape);
+                Array longValues = _longVariable.GetData(null, shape);
+                Array latValues = _latVariable.GetData(null, shape);
                 double xllcorner = (double)longValues.GetValue(0);
                 double yllcorner = (double)latValues.GetValue(0);
-                double cellsizex = (double)longValues.GetValue(1)- (double)longValues.GetValue(0);
+                double cellsizex = (double)longValues.GetValue(1) - (double)longValues.GetValue(0);
                 double cellsizey = (double)latValues.GetValue(1) - (double)latValues.GetValue(0);
                 float NODATA_value = -9999f;
 
@@ -221,6 +222,8 @@ namespace DEM.Net.Importers.netCDF
 
                     metadata.PhysicalStartLat = yllcorner;
                     metadata.PhysicalStartLon = xllcorner;
+                    metadata.PhysicalEndLat = yllcorner + metadata.Height * metadata.pixelSizeY;
+                    metadata.PhysicalEndLon = xllcorner + metadata.Width * metadata.pixelSizeX;
                     metadata.PhysicalEndLat = metadata.DataEndLat;
                     metadata.PhysicalEndLon = metadata.DataEndLon;
                 }
@@ -233,6 +236,8 @@ namespace DEM.Net.Importers.netCDF
 
                     metadata.PhysicalStartLat = metadata.DataStartLat;
                     metadata.PhysicalStartLon = metadata.DataStartLon;
+                    metadata.PhysicalEndLat = Math.Round(yllcorner + metadata.Height * metadata.pixelSizeY + (metadata.PixelScaleY / 2.0), 10);
+                    metadata.PhysicalEndLon = Math.Round(xllcorner + metadata.Width * metadata.pixelSizeX + (metadata.PixelScaleX / 2.0), 10);
                     metadata.DataEndLat = yllcorner + metadata.Height * metadata.pixelSizeY;
                     metadata.DataEndLon = xllcorner + metadata.Width * metadata.pixelSizeX;
                 }
