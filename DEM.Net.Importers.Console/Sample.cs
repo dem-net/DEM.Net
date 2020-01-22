@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using Microsoft.Research.Science.Data;
 using Microsoft.Extensions.Logging;
 using DEM.Net.Core;
+using DEM.Net.Plugin.netCDF;
 
-namespace DEM.Net.Importers.netCDF
+namespace DEM.Net.Importers.Console
 {
     public class Sample
     {
@@ -57,26 +57,6 @@ namespace DEM.Net.Importers.netCDF
 
         }
 
-        public string GetMetadataReport(DataSet dataset)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            sb.AppendLine($"=================== Dataset {dataset.Name}");
-            sb.AppendLine("Metadata:");
-            foreach (var data in dataset.Metadata)
-            {
-                sb.AppendLine($"{data.Key}:");
-                sb.AppendLine($"{data.Value}");
-            }
-            sb.AppendLine($"=================== Variables ");
-            foreach (var v in dataset.Variables)
-            {
-                sb.AppendLine($"{v.Name}:");
-                sb.AppendLine(v.ToString());
-            }
-
-            return sb.ToString();
-        }
     }
 }
 

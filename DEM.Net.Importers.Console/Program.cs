@@ -1,5 +1,4 @@
-﻿using DEM.Net.Importers.netCDF;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using System;

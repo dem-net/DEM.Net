@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Importers.netCDF
+namespace DEM.Net.Plugin.netCDF
 {
     /// <summary>
     /// https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2019/gebco_2019_info.html
@@ -205,11 +205,13 @@ namespace DEM.Net.Importers.netCDF
                 double cellsizey = (double)latValues.GetValue(1) - (double)latValues.GetValue(0);
                 float NODATA_value = -9999f;
 
-                FileMetadata metadata = new FileMetadata(_filename, fileFormat);
-                metadata.Height = nrows;
-                metadata.Width = ncols;
-                metadata.PixelScaleX = cellsizex;
-                metadata.PixelScaleY = cellsizey;
+                FileMetadata metadata = new FileMetadata(_filename, fileFormat)
+                {
+                    Height = nrows,
+                    Width = ncols,
+                    PixelScaleX = cellsizex,
+                    PixelScaleY = cellsizey
+                };
                 metadata.pixelSizeX = metadata.PixelScaleX;
                 metadata.pixelSizeY = metadata.PixelScaleY;
 
