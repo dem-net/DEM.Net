@@ -223,8 +223,6 @@ namespace DEM.Net.Core
 
                     metadata.PhysicalStartLat = yllcorner;
                     metadata.PhysicalStartLon = xllcorner;
-                    metadata.PhysicalEndLat = yllcorner + metadata.Height * metadata.pixelSizeY;
-                    metadata.PhysicalEndLon = xllcorner + metadata.Width * metadata.pixelSizeX;
                     metadata.PhysicalEndLat = metadata.DataEndLat;
                     metadata.PhysicalEndLon = metadata.DataEndLon;
                 }
@@ -232,8 +230,6 @@ namespace DEM.Net.Core
                 {
                     metadata.DataStartLat = Math.Round(yllcorner + (metadata.PixelScaleY / 2.0), 10);
                     metadata.DataStartLon = Math.Round(xllcorner + (metadata.PixelScaleX / 2.0), 10);
-                    metadata.DataEndLat = Math.Round(metadata.DataEndLat - (metadata.PixelScaleY / 2.0), 10);
-                    metadata.DataEndLon = Math.Round(metadata.DataEndLon - (metadata.PixelScaleX / 2.0), 10);
 
                     metadata.PhysicalStartLat = metadata.DataStartLat;
                     metadata.PhysicalStartLon = metadata.DataStartLon;
