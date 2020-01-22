@@ -14,12 +14,14 @@ namespace DEM.Net.Core
         private ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName;
 
         private ConcurrentDictionary<string, string> _directoryPerDataset;
+        private readonly IRasterService _rasterService;
         private readonly ILogger<LocalFileSystemIndex> _logger;
-        public LocalFileSystemIndex(ILogger<LocalFileSystemIndex> logger)
+        public LocalFileSystemIndex(ILogger<LocalFileSystemIndex> logger, IRasterService rasterService)
         {
             _logger = logger;
             _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
             _directoryPerDataset = new ConcurrentDictionary<string, string>();
+            _rasterService = rasterService;
         }
 
 
@@ -43,18 +45,22 @@ namespace DEM.Net.Core
         {
             foreach (var file in Directory.GetFiles(dataset.DataSource.IndexFilePath, "*" + dataset.FileFormat.FileExtension, SearchOption.AllDirectories))
             {
-                var metadataPath = Path.Combine(Path.GetDirectoryName(file), RasterService.MANIFEST_DIR,  Path.ChangeExtension(Path.GetFileName(file), ".json"));
-                if (File.Exists(metadataPath))
+                var metadataPath = Path.Combine(Path.GetDirectoryName(file), RasterService.MANIFEST_DIR, Path.ChangeExtension(Path.GetFileName(file), ".json"));
+                if (!File.Exists(metadataPath))
                 {
-                    FileMetadata metadata = JsonConvert.DeserializeObject<FileMetadata>(File.ReadAllText(metadataPath));
-                    yield return new DEMFileSource()
-                    {
-                        BBox = metadata.BoundingBox
-                         ,
-                        LocalFileName = file
-                    };
-
+                    _rasterService.GenerateFileMetadata(file, dataset.FileFormat, false);
                 }
+
+
+                FileMetadata metadata = JsonConvert.DeserializeObject<FileMetadata>(File.ReadAllText(metadataPath));
+                yield return new DEMFileSource()
+                {
+                    BBox = metadata.BoundingBox
+                     ,
+                    LocalFileName = file
+                };
+
+
             }
         }
 
