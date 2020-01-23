@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DEM.Net.Core.netCDF;
 
 namespace DEM.Net.Core
 {
@@ -17,18 +18,21 @@ namespace DEM.Net.Core
     {
         private readonly string _filename;
         private DataSet _dataset;
-        private const string LAT = "lat";
-        private const string LONG = "lon";
-        private const string ELEV = "elevation";
-
+        private netCDFField _lat = netCDFField.Create<double>("lat");
+        private netCDFField _long = netCDFField.Create<double>("lon");
+        private netCDFField _elevation = netCDFField.Create<float>("elevation");
         private Variable _latVariable;
         private Variable _longVariable;
         private Variable _elevationVariable;
 
         #region Lifecycle
-        public NetCdfFile(string fileName)
+        public NetCdfFile(string fileName, netCDFField latitudeField = null, netCDFField longitudeField = null, netCDFField elevationField = null)
         {
             _filename = fileName;
+
+            _lat = latitudeField ?? _lat;
+            _long = longitudeField ?? _long;
+            _elevation = elevationField ?? _elevation;
 
             OpenDataset();
         }
@@ -39,25 +43,21 @@ namespace DEM.Net.Core
                 _dataset = DataSet.Open(_filename, ResourceOpenMode.ReadOnly);
                 var varNamesAndTypes = _dataset.Variables.ToDictionary(v => v.Name, v => v.TypeOfData);
 
-                void CheckVariable<T>(string varName)
+                void CheckVariable(netCDFField field)
                 {
-                    if (!varNamesAndTypes.ContainsKey(varName))
+                    if (!varNamesAndTypes.ContainsKey(field.FieldName))
                     {
-                        throw new KeyNotFoundException($"NetCDF file must contain ${varName} variable.");
+                        throw new KeyNotFoundException($"NetCDF file must contain ${field.FieldName} variable.");
                     }
-                    else if (!varNamesAndTypes[varName].Equals(typeof(T)))
+                    else if (!varNamesAndTypes[field.FieldName].Equals(field.Type))
                     {
-                        throw new InvalidCastException($"NetCDF variable {varName} is of type {varNamesAndTypes[varName].Name} and doesn't match excpected type {typeof(T).Name}.");
+                        throw new InvalidCastException($"NetCDF variable {field.FieldName} is of type {varNamesAndTypes[field.FieldName].Name} and doesn't match excpected type {field.Type.Name}.");
                     }
                 }
 
-                CheckVariable<double>(LAT);
-                CheckVariable<double>(LONG);
-                CheckVariable<float>(ELEV);
-
-                _latVariable = _dataset.Variables[LAT];
-                _longVariable = _dataset.Variables[LONG];
-                _elevationVariable = _dataset.Variables[ELEV];
+                CheckVariable(_lat);
+                CheckVariable(_long);
+                CheckVariable(_elevation);
             }
             catch (Exception ex)
             {

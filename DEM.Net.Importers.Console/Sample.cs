@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Microsoft.Extensions.Logging;
 using DEM.Net.Core;
+using DEM.Net.Core.netCDF;
 
 namespace DEM.Net.Importers.Console
 {
@@ -21,10 +22,10 @@ namespace DEM.Net.Importers.Console
         {
             try
             {
-                string dataFile = Path.Combine(Directory.GetCurrentDirectory(), "Data", "gebco_2019_ajaccio.nc");
+                string dataFile = @"C:\Users\xfischer\Downloads\ETOPO1_Ice_g_gmt4.nc"; // Path.Combine(Directory.GetCurrentDirectory(), "Data", "gebco_2019_ajaccio.nc");
 
 
-                using (IRasterFile netCdfRaster = new NetCdfFile(dataFile))
+                using (IRasterFile netCdfRaster = new NetCdfFile(dataFile, netCDFField.Create<double>("y"), netCDFField.Create<double>("x"), netCDFField.Create<int>("z")))
                 {
 
                     _logger.LogDebug(((NetCdfFile)netCdfRaster).GetMetadataReport());
