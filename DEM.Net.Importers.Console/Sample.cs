@@ -22,7 +22,7 @@ namespace DEM.Net.Importers.Console
         {
             try
             {
-                string dataFile = @"C:\Users\xfischer\Downloads\ETOPO1_Ice_g_gmt4.nc"; // Path.Combine(Directory.GetCurrentDirectory(), "Data", "gebco_2019_ajaccio.nc");
+                string dataFile = @"C:\Repos\DEM.Net\DEM.Net.Importers.Console\Data\ETOPO1_Ice_g_gmt4.nc"; // Path.Combine(Directory.GetCurrentDirectory(), "Data", "gebco_2019_ajaccio.nc");
 
 
                 using (IRasterFile netCdfRaster = new NetCdfFile(dataFile, netCDFField.Create<double>("y"), netCDFField.Create<double>("x"), netCDFField.Create<int>("z")))
@@ -32,11 +32,21 @@ namespace DEM.Net.Importers.Console
 
                     var metadata = netCdfRaster.ParseMetaData(new DEMFileDefinition(DEMFileType.CF_NetCDF, DEMFileRegistrationMode.Cell));
 
-                    var hMap = netCdfRaster.GetHeightMap(metadata);
-                    var bbox = hMap.BoundingBox;
-                    var bboxS = bbox.Scale(0.3);
+                    //var hMap = netCdfRaster.GetHeightMap(metadata);
+                    //var bbox = hMap.BoundingBox;
+                    //var bboxS = bbox.Scale(0.3);
+                    
+                    var bbox = new BoundingBox(170, 171, 70, 71);
+                    var hMap = netCdfRaster.GetHeightMapInBBox(bbox, metadata);
 
-                    hMap = netCdfRaster.GetHeightMapInBBox(bboxS, metadata);
+                    bbox = new BoundingBox(170, 171, -71, -70);
+                    hMap = netCdfRaster.GetHeightMapInBBox(bbox, metadata);
+
+                    bbox = new BoundingBox(-171, -170, -71, -70);
+                    hMap = netCdfRaster.GetHeightMapInBBox(bbox, metadata);
+
+                    bbox = new BoundingBox(-171, -170, 70, 71);
+                    hMap = netCdfRaster.GetHeightMapInBBox(bbox, metadata);
                     //ds.Metadata[vname] = data;
 
                     netCdfRaster.GetElevationAtPoint(metadata, 10, 10);
