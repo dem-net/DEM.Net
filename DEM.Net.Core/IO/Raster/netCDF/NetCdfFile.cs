@@ -159,7 +159,6 @@ namespace DEM.Net.Core
 
                 heightMap = new HeightMap(xEast - xWest + 1, yNorth - ySouth + 1);
                 heightMap.Count = heightMap.Width * heightMap.Height;
-                var coords = new List<GeoPoint>(heightMap.Count);
 
                 // The netCDF storage is arranged as contiguous latitudinal bands.
                 MultipleDataResponse response = _dataset.GetMultipleData(
@@ -173,22 +172,28 @@ namespace DEM.Net.Core
 
                 int index = 0;
 
+                // Coordinates in height maps are rows in lat descending order
+                // Here, netCDF enumerates in lat ascending order.
+                // We stack the rows and enumerate them at the end
+                Stack<List<GeoPoint>> geoPointsRows = new Stack<List<GeoPoint>>();
                 var elevationsEnumerator = elevations.GetEnumerator();
                 foreach (double latitude in latitudes)
                 {
+                    List<GeoPoint> curRow = new List<GeoPoint>();
                     foreach (double longitude in longitudes)
                     {
                         elevationsEnumerator.MoveNext();
-                        float heightValue = (float)Convert.ChangeType(elevationsEnumerator.Current,typeof(float)) ;
+                        float heightValue = (float)Convert.ChangeType(elevationsEnumerator.Current,typeof(float));
 
-                        coords.Add(new GeoPoint(latitude, longitude, heightValue));
+                        curRow.Add(new GeoPoint(latitude, longitude, heightValue));
 
                         index++;
                     }
+                    geoPointsRows.Push(curRow);
                 }
 
                 Debug.Assert(index == heightMap.Count);
-                heightMap.Coordinates = coords;
+                heightMap.Coordinates = GetUnstackedCoordinates(geoPointsRows, heightMap.Count); // enumerate stack
             }
             catch (Exception ex)
             {
@@ -196,6 +201,19 @@ namespace DEM.Net.Core
             }
 
             return heightMap;
+        }
+
+        private List<GeoPoint> GetUnstackedCoordinates(Stack<List<GeoPoint>> geoPointsRows, int capacity)
+        {
+            List<GeoPoint> coords = new List<GeoPoint>(capacity);
+            while (geoPointsRows.Count > 0)
+            {
+                coords.AddRange(geoPointsRows.Pop());
+            }
+
+            Debug.Assert(coords.Count == capacity);
+            return coords;
+           
         }
 
         public FileMetadata ParseMetaData(DEMFileDefinition fileFormat)
