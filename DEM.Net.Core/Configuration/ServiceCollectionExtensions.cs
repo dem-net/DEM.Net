@@ -11,7 +11,7 @@ namespace DEM.Net.Core
 {
     public delegate IDEMDataSetIndex RasterIndexServiceResolver(DEMDataSourceType dataSourceType);
 
-    public static class IServiceCollectionExtension
+    public static class ServiceCollectionExtension
     {
         public static IServiceCollection AddDemNetCore(this IServiceCollection services)
         {

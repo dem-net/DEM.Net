@@ -776,7 +776,7 @@ namespace DEM.Net.Core
                 //const double epsilon = (Double.Epsilon * 100);
                 float noData = metadata.NoDataValueFloat;
 
-                double yPixel, xPixel, xInterpolationAmount, yInterpolationAmount = 0;
+                double yPixel, xPixel, xInterpolationAmount, yInterpolationAmount;
 
                 // pixel coordinates interpolated
                 if (metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid)
@@ -851,6 +851,7 @@ namespace DEM.Net.Core
             catch (Exception e)
             {
                 _logger?.LogError(e, $"Error while getting elevation data : {e.Message}{Environment.NewLine}{e.ToString()}");
+                throw;
             }
             return heightValue;
         }
