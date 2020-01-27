@@ -2,17 +2,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>DEM.Net.Core</PackageId>
-    <Version>0.2.0</Version>
+    <Version>0.2.2</Version>
     <Authors>Xavier Fischer, Frédéric Aubin</Authors>
     <Copyright>Xavier Fischer, Frédéric Aubin and Contributors</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
-    <PackageReleaseNotes>glTF code is now using gltfSharp
-NASA Aster GDEM v3 support
-Various concurrency fixes
-GeoTIFF imprecisions fixed
-Imagery memory cache
-Attributions exported with models</PackageReleaseNotes>
+    <PackageReleaseNotes>netCDF support (Windows and Linux only)
+Requires native netcdf libraries</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation</PackageTags>
     <Title>DEM.Net</Title>
     <Product>DEM.Net</Product>
@@ -23,8 +19,8 @@ Attributions exported with models</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
     <PackageIcon>DEMnet_64.png</PackageIcon>
-    <AssemblyVersion>0.2.0.0</AssemblyVersion>
-    <FileVersion>0.2.0.0</FileVersion>
+    <AssemblyVersion>0.2.2.0</AssemblyVersion>
+    <FileVersion>0.2.2.0</FileVersion>
     <UserSecretsId>a9a5d6e1-3bb8-4dfd-ac6a-861f60dada50</UserSecretsId>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>

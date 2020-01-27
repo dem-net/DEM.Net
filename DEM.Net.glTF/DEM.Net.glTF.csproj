@@ -2,17 +2,12 @@
 
   <PropertyGroup>
     <PackageId>DEM.Net.glTF</PackageId>
-    <Version>0.2.0</Version>
+    <Version>0.2.2</Version>
     <Authors>Xavier Fischer</Authors>
     <Copyright>Xavier Fischer and Contributors</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net.glTF</PackageProjectUrl>
-    <PackageReleaseNotes>glTF code is now using gltfSharp
-NASA Aster GDEM v3 support
-Various concurrency fixes
-GeoTIFF imprecisions fixed
-Imagery memory cache
-Attributions exported with models</PackageReleaseNotes>
+    <PackageReleaseNotes>Migrated to demnet 0.2.2</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation, Mesh, 3D, glTF, Map, STL</PackageTags>
     <Title>DEM.Net</Title>
     <Product>DEM.Net</Product>
@@ -23,7 +18,7 @@ Attributions exported with models</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
     <PackageIcon>DEMnet_64.png</PackageIcon>
-    <AssemblyVersion>0.2.0.0</AssemblyVersion>
+    <AssemblyVersion>0.2.2.0</AssemblyVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
@@ -56,7 +51,7 @@ Attributions exported with models</PackageReleaseNotes>
   </ItemGroup>
   
   <ItemGroup>
-    <None Include="DEMnet_64.png" Pack="true" PackagePath="\"/>
+    <None Include="DEMnet_64.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ProjectExtensions>
