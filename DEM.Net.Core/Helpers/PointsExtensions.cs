@@ -19,6 +19,16 @@ namespace DEM.Net.Core
         }
 
         /// <summary>
+        /// Get <see cref="ComputeMetrics(IList{GeoPoint})"/> metrics and visiblity report if any obstacles are found
+        /// </summary>
+        /// <param name="points"></param>
+        /// <returns></returns>
+        public static VisibilityMetrics ComputeVisibilityMetrics(this IList<GeoPoint> linePoints)
+        {
+            return GeometryService.ComputeVisibilityMetrics(linePoints);
+        }
+
+        /// <summary>
         /// Reduces the point list using a Douglas Peucker Reduction
         /// All details below toleranceMeters will usually be skipped
         /// </summary>

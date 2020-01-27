@@ -23,6 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace DEM.Net.Core
@@ -44,6 +46,50 @@ namespace DEM.Net.Core
         public string ToString(string numberFormat = "F2")
         {
             return $"Min/Max: {MinElevation.ToString(numberFormat, CultureInfo.InvariantCulture)} / {MaxElevation.ToString(numberFormat, CultureInfo.InvariantCulture)}, Distance: {Distance.ToString(numberFormat, CultureInfo.InvariantCulture)} m, Climb/Descent: {Climb.ToString(numberFormat, CultureInfo.InvariantCulture)} / {Descent.ToString(numberFormat, CultureInfo.InvariantCulture)}";
+        }
+    }
+
+    public class VisibilityMetrics : ElevationMetrics
+    {
+        public bool Intervisible => Obstacles.Count == 0;
+
+        public List<VisibilityObstacle> Obstacles { get; set; } = new List<VisibilityObstacle>();
+
+        internal void AddObstacle(GeoPoint point, double minObstacleElevation)
+        {
+            Obstacles.Add(new VisibilityObstacle(point, minObstacleElevation));
+        }
+
+        public override string ToString()
+        {
+            if (Intervisible)
+            {
+                return string.Concat("(Intervisible) ", base.ToString()); 
+            }
+            else
+            {
+                return string.Concat($"{Obstacles.Count} obstacle(s): ",
+                    string.Join(", ",Obstacles),
+                    Environment.NewLine,
+                    base.ToString());
+            }
+        }
+    }
+
+    public class VisibilityObstacle
+    {
+        public VisibilityObstacle(GeoPoint point, double minObstacleElevation)
+        {
+            this.GeoPoint = point;
+            this.MinObstacleElevation = minObstacleElevation;
+        }
+
+        public GeoPoint GeoPoint { get; }
+        public double MinObstacleElevation { get; }
+
+        public override string ToString()
+        {
+            return string.Concat(GeoPoint.ToString(), $", MinObstacleElevation: {MinObstacleElevation:F2}");
         }
     }
 }

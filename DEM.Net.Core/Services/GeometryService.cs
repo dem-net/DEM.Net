@@ -238,6 +238,78 @@ namespace DEM.Net.Core
 		}
 
         /// <summary>
+        /// Return visibility report from first point to last point. We assume that all points are aligned.
+        /// WARNING: those calculations are not spherical (yet) and are not accurate for long distances.
+        /// <see cref="VisibilityMetrics"/>
+        /// </summary>
+        /// <param name="points">Input list of points, visibility is calculated for first and last points (ie: are they visible or is there a relief standing in between)</param>
+        /// <returns><see cref="VisibilityMetrics"/> object</returns>
+		internal static VisibilityMetrics ComputeVisibilityMetrics(IList<GeoPoint> points, bool visibilityCheck = true)
+        {
+            VisibilityMetrics metrics = new VisibilityMetrics();
+
+            if (points.Count == 0)
+                return metrics;
+
+            GeoPoint A = points.First(), B = points.Last();
+            double hA = A.Elevation ?? 0d, hB = B.Elevation ?? 0d;
+            double AB = A.DistanceTo(B);
+            if (hA < hB)
+            {
+                MathHelper.Swap(ref A, ref B);
+                MathHelper.Swap(ref hA, ref hB);
+            }
+
+            double total = 0, minElevation = double.MaxValue, maxElevation = double.MinValue, totalClimb = 0, totalDescent = 0;
+            GeoPoint firstPoint = points[0];
+            firstPoint.DistanceFromOriginMeters = 0; // force at 0. If null, ignored in json responses
+            double lastElevation = firstPoint.Elevation ?? 0;
+
+            for (int i = 1; i < points.Count; i++)
+            {
+                GeoPoint curPoint = points[i];
+                double v_dist = DistanceTo(curPoint, points[i - 1]);
+                total += v_dist;
+                curPoint.DistanceFromOriginMeters = total;
+
+                minElevation = Math.Min(minElevation, curPoint.Elevation ?? double.MaxValue);
+                maxElevation = Math.Max(maxElevation, curPoint.Elevation ?? double.MinValue);
+
+                double currentElevation = curPoint.Elevation ?? lastElevation;
+                double diff = currentElevation - lastElevation;
+                if (diff > 0)
+                {
+                    totalClimb += diff;
+                }
+                else
+                {
+                    totalDescent += diff;
+                }
+
+                // Visibility check
+                if (AB > double.Epsilon)
+                {
+                    double distToLowestPoint = curPoint.DistanceTo(B);
+                    double hidingElevation = (distToLowestPoint * (hA - hB)) / AB + hB;
+                    if (currentElevation >= hidingElevation)
+                    {
+                        metrics.AddObstacle(curPoint, hidingElevation);
+                    }
+                }
+
+                lastElevation = currentElevation;
+
+            }
+            metrics.Climb = totalClimb;
+            metrics.Descent = totalDescent;
+            metrics.NumPoints = points.Count;
+            metrics.Distance = total;
+            metrics.MinElevation = minElevation;
+            metrics.MaxElevation = maxElevation;
+            return metrics;
+        }
+
+        /// <summary>
         /// Returns total length of line
         /// </summary>
         /// <param name="lineWKT">LIne as geometry WKT</param>
