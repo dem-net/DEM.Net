@@ -944,7 +944,30 @@ namespace DEM.Net.Core
             }
         }
 
+        public VisibilityReport GetVisibilityReport(GeoPoint source, GeoPoint target, DEMDataSet dataSet
+            , bool downloadMissingFiles = true
+            , InterpolationMode interpolationMode = InterpolationMode.Bilinear)
+        {
+            try
+            {
+                var elevationLine = GeometryService.ParseGeoPointAsGeometryLine(source, target);
 
+                if (downloadMissingFiles)
+                    this.DownloadMissingFiles(dataSet, elevationLine.GetBoundingBox());
+
+                var geoPoints = this.GetLineGeometryElevation(elevationLine, dataSet);
+
+                var metrics = geoPoints.ComputeVisibilityMetrics();
+
+                return new VisibilityReport(geoPoints.First(), geoPoints.Last(), metrics);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{nameof(GetVisibilityReport)} error: {ex.Message}");
+                throw;
+            }
+            
+        }
 
 
     }

@@ -185,5 +185,18 @@ namespace DEM.Net.Core
         /// <param name="lineElevationData"></param>
         /// <returns></returns>
         string ExportElevationTable(List<GeoPoint> lineElevationData);
+
+
+        /// <summary>
+        /// Reports ray casting from an origin to a target point,
+        /// thus giving information about wether source and target are intervisible or not
+        /// </summary>
+        /// <param name="source">Source point</param>
+        /// <param name="target">Target point</param>
+        /// <param name="dataSet">DEM dataset to use</param>
+        /// <param name="interpolationMode">Interpolation mode</param>
+        /// <remarks>Source and Target are interchangeable. Output can be BIG, as all elevations will be returned.</remarks>
+        /// <returns>A report with all obstacles</returns>
+        VisibilityReport GetVisibilityReport(GeoPoint source, GeoPoint target, DEMDataSet dataSet, bool downloadMissingFiles = true, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
     }
 }

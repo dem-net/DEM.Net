@@ -23,27 +23,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System.Globalization;
+using System;
+using System.Collections.Generic;
 
 namespace DEM.Net.Core
 {
-    public class ElevationMetrics
+    /// <summary>
+    /// Superset of elevation metrics for raycasting (intervisibility)
+    /// All reliefs standing in between are listed in <see cref="Obstacles"/>
+    /// </summary>
+    public class VisibilityMetrics : ElevationMetrics
     {
-        public double MinElevation { get; internal set; }
-        public double MaxElevation { get; internal set; }
-        public double Distance { get; internal set; }
-        public int NumPoints { get; internal set; }
-        public double Climb { get; internal set; }
-        public double Descent { get; internal set; }
+        public bool Intervisible => Obstacles.Count == 0;
 
-        public override string ToString()
+        public List<VisibilityObstacle> Obstacles { get; set; } = new List<VisibilityObstacle>();
+
+        internal void AddObstacle(VisibilityObstacle obstacle)
         {
-            return ToString("F2");
+            Obstacles.Add(obstacle);
         }
 
-        public string ToString(string numberFormat = "F2")
+        public new string ToString()
         {
-            return $"Min/Max: {MinElevation.ToString(numberFormat, CultureInfo.InvariantCulture)} / {MaxElevation.ToString(numberFormat, CultureInfo.InvariantCulture)}, Distance: {Distance.ToString(numberFormat, CultureInfo.InvariantCulture)} m, Climb/Descent: {Climb.ToString(numberFormat, CultureInfo.InvariantCulture)} / {Descent.ToString(numberFormat, CultureInfo.InvariantCulture)}";
+            if (Intervisible)
+            {
+                return string.Concat("(Intervisible) ", base.ToString());
+            }
+            else
+            {
+                return string.Concat($"{Obstacles.Count} obstacle(s): ",
+                    string.Join(Environment.NewLine + ", ", Obstacles),
+                    Environment.NewLine,
+                    base.ToString());
+            }
         }
     }
 }

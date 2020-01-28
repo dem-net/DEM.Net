@@ -92,6 +92,7 @@ Requires native netcdf libraries</PackageReleaseNotes>
   <ItemGroup>
     <Folder Include="Services\Voronoi\FortuneVoronoi\" />
     <Folder Include="Model\Enums\" />
+    <Folder Include="Model\Visibility\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DEMnet_64.png" Pack="true" PackagePath="\" />

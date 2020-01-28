@@ -314,6 +314,7 @@ namespace DEM.Net.Core
                                 lastPeakElevation = currentElevation;
                                 obstacle.PeakPoint = curPoint;
                             }
+                            
                         }
                     }
                     else
