@@ -240,13 +240,13 @@ namespace DEM.Net.Core
         /// <summary>
         /// Return visibility report from first point to last point. We assume that all points are aligned.
         /// WARNING: those calculations are not spherical (yet) and are not accurate for long distances.
-        /// <see cref="VisibilityMetrics"/>
+        /// <see cref="IntervisibilityMetrics"/>
         /// </summary>
         /// <param name="points">Input list of points, visibility is calculated for first and last points (ie: are they visible or is there a relief standing in between)</param>
-        /// <returns><see cref="VisibilityMetrics"/> object</returns>
-		internal static VisibilityMetrics ComputeVisibilityMetrics(IList<GeoPoint> points, bool visibilityCheck = true)
+        /// <returns><see cref="IntervisibilityMetrics"/> object</returns>
+		internal static IntervisibilityMetrics ComputeVisibilityMetrics(IList<GeoPoint> points, bool visibilityCheck = true)
         {
-            VisibilityMetrics metrics = new VisibilityMetrics();
+            IntervisibilityMetrics metrics = new IntervisibilityMetrics();
 
             if (points.Count == 0)
                 return metrics;
@@ -266,7 +266,7 @@ namespace DEM.Net.Core
             firstPoint.DistanceFromOriginMeters = 0; // force at 0. If null, ignored in json responses
             double lastElevation = firstPoint.Elevation ?? 0;
 
-            VisibilityObstacle obstacle = null; 
+            IntervisibilityObstacle obstacle = null;
             double lastPeakElevation = 0;
             for (int i = 1; i < points.Count; i++)
             {
@@ -302,7 +302,7 @@ namespace DEM.Net.Core
                     {
                         if (obstacle == null)
                         {
-                            obstacle = new VisibilityObstacle(curPoint, visibilityElevationThreshold);
+                            obstacle = new IntervisibilityObstacle(curPoint, visibilityElevationThreshold);
                             lastPeakElevation = currentElevation;
                             obstacle.PeakPoint = curPoint;
                         }
@@ -314,7 +314,7 @@ namespace DEM.Net.Core
                                 lastPeakElevation = currentElevation;
                                 obstacle.PeakPoint = curPoint;
                             }
-                            
+
                         }
                     }
                     else

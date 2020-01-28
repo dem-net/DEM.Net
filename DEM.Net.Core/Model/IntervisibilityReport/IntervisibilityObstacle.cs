@@ -31,9 +31,9 @@ namespace DEM.Net.Core
     /// Defines an obstacle between two non-intervisible points
     /// A ray is casted from Origin to a Target. If any relief is hit, an obstacle will be created
     /// </summary>
-    public class VisibilityObstacle
+    public class IntervisibilityObstacle
     {
-        public VisibilityObstacle(GeoPoint entryPoint, double visibilityElevationThreshold)
+        public IntervisibilityObstacle(GeoPoint entryPoint, double visibilityElevationThreshold)
         {
             this.EntryPoint = entryPoint;
             this.VisibilityElevationThreshold = visibilityElevationThreshold;

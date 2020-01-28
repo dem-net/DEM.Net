@@ -32,13 +32,13 @@ namespace DEM.Net.Core
     /// Superset of elevation metrics for raycasting (intervisibility)
     /// All reliefs standing in between are listed in <see cref="Obstacles"/>
     /// </summary>
-    public class VisibilityMetrics : ElevationMetrics
+    public class IntervisibilityMetrics : ElevationMetrics
     {
         public bool Intervisible => Obstacles.Count == 0;
 
-        public List<VisibilityObstacle> Obstacles { get; set; } = new List<VisibilityObstacle>();
+        public List<IntervisibilityObstacle> Obstacles { get; set; } = new List<IntervisibilityObstacle>();
 
-        internal void AddObstacle(VisibilityObstacle obstacle)
+        internal void AddObstacle(IntervisibilityObstacle obstacle)
         {
             Obstacles.Add(obstacle);
         }

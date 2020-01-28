@@ -23,7 +23,7 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="points"></param>
         /// <returns></returns>
-        public static VisibilityMetrics ComputeVisibilityMetrics(this IList<GeoPoint> linePoints)
+        public static IntervisibilityMetrics ComputeVisibilityMetrics(this IList<GeoPoint> linePoints)
         {
             return GeometryService.ComputeVisibilityMetrics(linePoints);
         }

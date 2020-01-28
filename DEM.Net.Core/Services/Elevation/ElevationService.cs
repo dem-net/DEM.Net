@@ -944,7 +944,7 @@ namespace DEM.Net.Core
             }
         }
 
-        public VisibilityReport GetVisibilityReport(GeoPoint source, GeoPoint target, DEMDataSet dataSet
+        public IntervisibilityReport GetIntervisibilityReport(GeoPoint source, GeoPoint target, DEMDataSet dataSet
             , bool downloadMissingFiles = true
             , InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
@@ -959,11 +959,11 @@ namespace DEM.Net.Core
 
                 var metrics = geoPoints.ComputeVisibilityMetrics();
 
-                return new VisibilityReport(geoPoints.First(), geoPoints.Last(), metrics);
+                return new IntervisibilityReport(geoPoints.First(), geoPoints.Last(), metrics);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"{nameof(GetVisibilityReport)} error: {ex.Message}");
+                _logger.LogError($"{nameof(GetIntervisibilityReport)} error: {ex.Message}");
                 throw;
             }
             

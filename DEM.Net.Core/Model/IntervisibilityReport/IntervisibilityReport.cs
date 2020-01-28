@@ -31,15 +31,16 @@ namespace DEM.Net.Core
     /// Reports ray casting from an origin to a target point
     /// If there is anything standing between the points, it will be listed in obstacles
     /// </summary>
-    public class VisibilityReport
+    public class IntervisibilityReport
     {
         public GeoPoint Origin { get; set; }
         public GeoPoint Target { get; set; }
-        //public List<GeoPoint> GeoPoints { get; set; }
-        public VisibilityMetrics Metrics { get; set; }
         public bool HasObstacles => Metrics?.Intervisible == false;
+        public int ObstacleCount => Metrics?.Obstacles?.Count ?? 0;
+        //public List<GeoPoint> GeoPoints { get; set; }
+        public IntervisibilityMetrics Metrics { get; set; }
 
-        public VisibilityReport(GeoPoint origin, GeoPoint target, VisibilityMetrics visibilityMetrics)
+        public IntervisibilityReport(GeoPoint origin, GeoPoint target, IntervisibilityMetrics visibilityMetrics)
         {
             this.Origin = origin;
             this.Target = target;

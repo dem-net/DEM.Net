@@ -197,6 +197,6 @@ namespace DEM.Net.Core
         /// <param name="interpolationMode">Interpolation mode</param>
         /// <remarks>Source and Target are interchangeable. Output can be BIG, as all elevations will be returned.</remarks>
         /// <returns>A report with all obstacles</returns>
-        VisibilityReport GetVisibilityReport(GeoPoint source, GeoPoint target, DEMDataSet dataSet, bool downloadMissingFiles = true, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
+        IntervisibilityReport GetIntervisibilityReport(GeoPoint source, GeoPoint target, DEMDataSet dataSet, bool downloadMissingFiles = true, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
     }
 }
