@@ -84,8 +84,8 @@ namespace DEM.Net.Core
         public override string ToString()
         {
             return $"Lat/Lon: {Latitude} / {Longitude} "
-                + (Elevation.HasValue ? $", Elevation: {Elevation.Value}" : "")
-                + ((DistanceFromOriginMeters ?? 0) > 0 ? $", DistanceFromOrigin: {DistanceFromOriginMeters}" : "");
+                + (Elevation.HasValue ? $", Elevation: {Elevation.Value:F2}" : "")
+                + ((DistanceFromOriginMeters ?? 0) > 0 ? $", DistanceFromOrigin: {DistanceFromOriginMeters:F2}" : "");
         }
     }
 

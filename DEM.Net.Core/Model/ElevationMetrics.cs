@@ -29,14 +29,14 @@ using System.Globalization;
 
 namespace DEM.Net.Core
 {
-	public class ElevationMetrics
-	{
-		public double MinElevation { get; internal set; }
-		public double MaxElevation { get; internal set; }
-		public double Distance { get; internal set; }
-		public int NumPoints { get; internal set; }
-		public double Climb { get; internal set; }
-		public double Descent { get; internal set; }
+    public class ElevationMetrics
+    {
+        public double MinElevation { get; internal set; }
+        public double MaxElevation { get; internal set; }
+        public double Distance { get; internal set; }
+        public int NumPoints { get; internal set; }
+        public double Climb { get; internal set; }
+        public double Descent { get; internal set; }
 
         public override string ToString()
         {
@@ -55,21 +55,21 @@ namespace DEM.Net.Core
 
         public List<VisibilityObstacle> Obstacles { get; set; } = new List<VisibilityObstacle>();
 
-        internal void AddObstacle(GeoPoint point, double minObstacleElevation)
+        internal void AddObstacle(VisibilityObstacle obstacle)
         {
-            Obstacles.Add(new VisibilityObstacle(point, minObstacleElevation));
+            Obstacles.Add(obstacle);
         }
 
         public override string ToString()
         {
             if (Intervisible)
             {
-                return string.Concat("(Intervisible) ", base.ToString()); 
+                return string.Concat("(Intervisible) ", base.ToString());
             }
             else
             {
                 return string.Concat($"{Obstacles.Count} obstacle(s): ",
-                    string.Join(", ",Obstacles),
+                    string.Join(", ", Obstacles),
                     Environment.NewLine,
                     base.ToString());
             }
@@ -78,18 +78,32 @@ namespace DEM.Net.Core
 
     public class VisibilityObstacle
     {
-        public VisibilityObstacle(GeoPoint point, double minObstacleElevation)
+        public VisibilityObstacle(GeoPoint entryPoint, double visibilityElevationThreshold)
         {
-            this.GeoPoint = point;
-            this.MinObstacleElevation = minObstacleElevation;
+            this.EntryPoint = entryPoint;
+            this.VisibilityElevationThreshold = visibilityElevationThreshold;
         }
 
-        public GeoPoint GeoPoint { get; }
-        public double MinObstacleElevation { get; }
+        public GeoPoint EntryPoint { get; }
+        public GeoPoint PeakPoint { get; set; }
+        public GeoPoint ExitPoint { get; set; }
+        public double VisibilityElevationThreshold { get; }
+
 
         public override string ToString()
         {
-            return string.Concat(GeoPoint.ToString(), $", MinObstacleElevation: {MinObstacleElevation:F2}");
+            var msg = string.Concat(PointAsString("Entry", EntryPoint)
+                                    , PointAsString("Peak", PeakPoint)
+                                    , PointAsString("Exit", ExitPoint));
+            return msg;
+        }
+
+        private string PointAsString(string label, GeoPoint pt)
+        {
+            if (pt == null)
+                return $"No {label}";
+            else
+                return $"{label}: dist={pt.DistanceFromOriginMeters ?? 0:F2}, Elevation={pt.Elevation ?? 0:F2}";
         }
     }
 }

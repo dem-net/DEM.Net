@@ -39,10 +39,10 @@ namespace DEM.Net.Core
     /// Geometry related services 
     /// </summary>
 	public static class GeometryService
-	{
-		private const int WGS84_SRID = 4326;
-		private const double EARTH_RADIUS = 6371008.0; // [m]
-		private const double RADIAN = Math.PI / 180;
+    {
+        private const int WGS84_SRID = 4326;
+        private const double EARTH_RADIUS = 6371008.0; // [m]
+        private const double RADIAN = Math.PI / 180;
 
         private static WKTReader _wktReader;
         private static IGeometryFactory _factory;
@@ -131,9 +131,9 @@ namespace DEM.Net.Core
         /// <param name="points"></param>
         /// <returns></returns>
         public static IGeometry ParseGeoPointAsGeometryLine(IEnumerable<GeoPoint> points)
-		{
+        {
             return new LineString(points.Select(pt => new Coordinate(pt.Longitude, pt.Latitude)).ToArray()) { SRID = WGS84_SRID };
-		}
+        }
         public static IGeometry ParseGeoPointAsGeometryLine(params GeoPoint[] points)
         {
             return new LineString(points.Select(pt => new Coordinate(pt.Longitude, pt.Latitude)).ToArray()) { SRID = WGS84_SRID };
@@ -150,39 +150,39 @@ namespace DEM.Net.Core
         /// <param name="line2">Any segment of the second line</param>
         /// <returns>True if lines intersects</returns>
         public static bool LineLineIntersection(out GeoPoint intersection, GeoSegment line1, GeoSegment line2)
-		{
-			bool isIntersecting = false;
-			intersection = GeoPoint.Zero;
+        {
+            bool isIntersecting = false;
+            intersection = GeoPoint.Zero;
 
-			//3d -> 2d
-			double p1_x = line1.Start.Longitude;
-			double p1_y = line1.Start.Latitude;
-			double p2_x = line1.End.Longitude;
-			double p2_y = line1.End.Latitude;
-			double p3_x = line2.Start.Longitude;
-			double p3_y = line2.Start.Latitude;
-			double p4_x = line2.End.Longitude;
-			double p4_y = line2.End.Latitude;
+            //3d -> 2d
+            double p1_x = line1.Start.Longitude;
+            double p1_y = line1.Start.Latitude;
+            double p2_x = line1.End.Longitude;
+            double p2_y = line1.End.Latitude;
+            double p3_x = line2.Start.Longitude;
+            double p3_y = line2.Start.Latitude;
+            double p4_x = line2.End.Longitude;
+            double p4_y = line2.End.Latitude;
 
 
-			double denominator = (p4_y - p3_y) * (p2_x - p1_x) - (p4_x - p3_x) * (p2_y - p1_y);
+            double denominator = (p4_y - p3_y) * (p2_x - p1_x) - (p4_x - p3_x) * (p2_y - p1_y);
 
-			//Make sure the denominator is > 0, if so the lines are parallel
-			if (denominator != 0)
-			{
-				double u_a = ((p4_x - p3_x) * (p1_y - p3_y) - (p4_y - p3_y) * (p1_x - p3_x)) / denominator;
-				double u_b = ((p2_x - p1_x) * (p1_y - p3_y) - (p2_y - p1_y) * (p1_x - p3_x)) / denominator;
+            //Make sure the denominator is > 0, if so the lines are parallel
+            if (denominator != 0)
+            {
+                double u_a = ((p4_x - p3_x) * (p1_y - p3_y) - (p4_y - p3_y) * (p1_x - p3_x)) / denominator;
+                double u_b = ((p2_x - p1_x) * (p1_y - p3_y) - (p2_y - p1_y) * (p1_x - p3_x)) / denominator;
 
-				//Is intersecting if u_a and u_b are between 0 and 1
-				if (u_a >= 0 && u_a <= 1 && u_b >= 0 && u_b <= 1)
-				{
-					intersection = new GeoPoint(p1_y + u_a * (p2_y - p1_y), p1_x + u_a * (p2_x - p1_x));
-					isIntersecting = true;
-				}
-			}
+                //Is intersecting if u_a and u_b are between 0 and 1
+                if (u_a >= 0 && u_a <= 1 && u_b >= 0 && u_b <= 1)
+                {
+                    intersection = new GeoPoint(p1_y + u_a * (p2_y - p1_y), p1_x + u_a * (p2_x - p1_x));
+                    isIntersecting = true;
+                }
+            }
 
-			return isIntersecting;
-		}
+            return isIntersecting;
+        }
 
         /// <summary>
         /// Return simple statistics from a list of points, <see cref="ElevationMetrics"/>
@@ -190,52 +190,52 @@ namespace DEM.Net.Core
         /// <param name="points">Input list of points</param>
         /// <returns><see cref="ElevationMetrics"/> object</returns>
 		internal static ElevationMetrics ComputeMetrics(IList<GeoPoint> points)
-		{
-			ElevationMetrics metrics = new ElevationMetrics();
-			double total = 0;
-			double minElevation = double.MaxValue;
-			double maxElevation = double.MinValue;
-			double totalClimb = 0;
-			double totalDescent = 0;
-			if (points.Count > 1)
-			{
+        {
+            ElevationMetrics metrics = new ElevationMetrics();
+            double total = 0;
+            double minElevation = double.MaxValue;
+            double maxElevation = double.MinValue;
+            double totalClimb = 0;
+            double totalDescent = 0;
+            if (points.Count > 1)
+            {
                 var firstPoint = points[0];
                 firstPoint.DistanceFromOriginMeters = 0; // force at 0. If null, ignored in json responses
                 double lastElevation = firstPoint.Elevation.GetValueOrDefault(0);
 
-				for (int i = 1; i < points.Count; i++)
-				{
-					GeoPoint curPoint = points[i];
-					double v_dist = DistanceTo(curPoint, points[i - 1]);
-					total += v_dist;
-					curPoint.DistanceFromOriginMeters = total;
+                for (int i = 1; i < points.Count; i++)
+                {
+                    GeoPoint curPoint = points[i];
+                    double v_dist = DistanceTo(curPoint, points[i - 1]);
+                    total += v_dist;
+                    curPoint.DistanceFromOriginMeters = total;
 
-					minElevation = Math.Min(minElevation, curPoint.Elevation.GetValueOrDefault(double.MaxValue));
-					maxElevation = Math.Max(maxElevation, curPoint.Elevation.GetValueOrDefault(double.MinValue));
+                    minElevation = Math.Min(minElevation, curPoint.Elevation.GetValueOrDefault(double.MaxValue));
+                    maxElevation = Math.Max(maxElevation, curPoint.Elevation.GetValueOrDefault(double.MinValue));
 
-					double currentElevation = curPoint.Elevation.GetValueOrDefault(lastElevation);
-					double diff = currentElevation - lastElevation;
-					if (diff > 0)
-					{
-						totalClimb += diff;
-					}
-					else
-					{
-						totalDescent += diff;
-					}
-					lastElevation = currentElevation;
+                    double currentElevation = curPoint.Elevation.GetValueOrDefault(lastElevation);
+                    double diff = currentElevation - lastElevation;
+                    if (diff > 0)
+                    {
+                        totalClimb += diff;
+                    }
+                    else
+                    {
+                        totalDescent += diff;
+                    }
+                    lastElevation = currentElevation;
 
-				}
-			}
-			metrics.Climb = totalClimb;
-			metrics.Descent = totalDescent;
-			metrics.NumPoints = points.Count;
-			metrics.Distance = total;
-			metrics.MinElevation = minElevation;
-			metrics.MaxElevation = maxElevation;
+                }
+            }
+            metrics.Climb = totalClimb;
+            metrics.Descent = totalDescent;
+            metrics.NumPoints = points.Count;
+            metrics.Distance = total;
+            metrics.MinElevation = minElevation;
+            metrics.MaxElevation = maxElevation;
 
-			return metrics;
-		}
+            return metrics;
+        }
 
         /// <summary>
         /// Return visibility report from first point to last point. We assume that all points are aligned.
@@ -254,6 +254,7 @@ namespace DEM.Net.Core
             GeoPoint A = points.First(), B = points.Last();
             double hA = A.Elevation ?? 0d, hB = B.Elevation ?? 0d;
             double AB = A.DistanceTo(B);
+            visibilityCheck = visibilityCheck && (AB > double.Epsilon);
             if (hA < hB)
             {
                 MathHelper.Swap(ref A, ref B);
@@ -265,8 +266,11 @@ namespace DEM.Net.Core
             firstPoint.DistanceFromOriginMeters = 0; // force at 0. If null, ignored in json responses
             double lastElevation = firstPoint.Elevation ?? 0;
 
+            VisibilityObstacle obstacle = null; 
+            double lastPeakElevation = 0;
             for (int i = 1; i < points.Count; i++)
             {
+                #region metrics
                 GeoPoint curPoint = points[i];
                 double v_dist = DistanceTo(curPoint, points[i - 1]);
                 total += v_dist;
@@ -285,17 +289,44 @@ namespace DEM.Net.Core
                 {
                     totalDescent += diff;
                 }
+                #endregion
 
+                #region visibility checks
                 // Visibility check
-                if (AB > double.Epsilon)
+                // If obstacle hit, add it and
+                if (visibilityCheck)
                 {
                     double distToLowestPoint = curPoint.DistanceTo(B);
-                    double hidingElevation = (distToLowestPoint * (hA - hB)) / AB + hB;
-                    if (currentElevation >= hidingElevation)
+                    double visibilityElevationThreshold = (distToLowestPoint * (hA - hB)) / AB + hB;
+                    if (currentElevation >= visibilityElevationThreshold)
                     {
-                        metrics.AddObstacle(curPoint, hidingElevation);
+                        if (obstacle == null)
+                        {
+                            obstacle = new VisibilityObstacle(curPoint, visibilityElevationThreshold);
+                            lastPeakElevation = currentElevation;
+                            obstacle.PeakPoint = curPoint;
+                        }
+                        else
+                        {
+                            // still inside obstacle, find peak
+                            if (currentElevation > lastPeakElevation)
+                            {
+                                lastPeakElevation = currentElevation;
+                                obstacle.PeakPoint = curPoint;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (obstacle != null) // out of obstacle, register it
+                        {
+                            obstacle.ExitPoint = curPoint;
+                            metrics.AddObstacle(obstacle);
+                            obstacle = null;
+                        }
                     }
                 }
+                #endregion
 
                 lastElevation = currentElevation;
 
@@ -315,9 +346,9 @@ namespace DEM.Net.Core
         /// <param name="lineWKT">LIne as geometry WKT</param>
         /// <returns></returns>
 		public static double GetLength(string lineWKT)
-		{
+        {
             return ParseWKTAsGeometry(lineWKT).Segments().Sum(seg => seg.Start.DistanceTo(seg.End));
-		}
+        }
 
         /// <summary>
         /// Computes spherical distance between to locations
@@ -326,37 +357,37 @@ namespace DEM.Net.Core
         /// <param name="pt2">Second location</param>
         /// <returns>Distance in meters</returns>
 		public static double DistanceTo(this GeoPoint pt1, GeoPoint pt2)
-		{
-			if ((pt1 == null) || (pt2 == null))
-				return 0;
-			else
-			{
-				double v_thisLatitude = pt1.Latitude;
-				double v_otherLatitude = pt2.Latitude;
-				double v_thisLongitude = pt1.Longitude;
-				double v_otherLongitude = pt2.Longitude;
+        {
+            if ((pt1 == null) || (pt2 == null))
+                return 0;
+            else
+            {
+                double v_thisLatitude = pt1.Latitude;
+                double v_otherLatitude = pt2.Latitude;
+                double v_thisLongitude = pt1.Longitude;
+                double v_otherLongitude = pt2.Longitude;
 
-				double v_deltaLatitude = Math.Abs(pt1.Latitude - pt2.Latitude);
-				double v_deltaLongitude = Math.Abs(pt1.Longitude - pt2.Longitude);
+                double v_deltaLatitude = Math.Abs(pt1.Latitude - pt2.Latitude);
+                double v_deltaLongitude = Math.Abs(pt1.Longitude - pt2.Longitude);
 
-				if (v_deltaLatitude == 0 && v_deltaLongitude == 0)
-					return 0;
+                if (v_deltaLatitude == 0 && v_deltaLongitude == 0)
+                    return 0;
 
-				v_thisLatitude *= RADIAN;
-				v_otherLatitude *= RADIAN;
-				v_deltaLongitude *= RADIAN;
+                v_thisLatitude *= RADIAN;
+                v_otherLatitude *= RADIAN;
+                v_deltaLongitude *= RADIAN;
 
-				double v_cos = Math.Cos(v_deltaLongitude) * Math.Cos(v_thisLatitude) * Math.Cos(v_otherLatitude) +
-											 Math.Sin(v_thisLatitude) * Math.Sin(v_otherLatitude);
+                double v_cos = Math.Cos(v_deltaLongitude) * Math.Cos(v_thisLatitude) * Math.Cos(v_otherLatitude) +
+                                             Math.Sin(v_thisLatitude) * Math.Sin(v_otherLatitude);
 
-				double v_ret = EARTH_RADIUS * Math.Acos(v_cos);
-				if (double.IsNaN(v_ret)) // points nearly the same
-				{
-					v_ret = 0d;
-				}
-				return v_ret;
-			}
-		}
+                double v_ret = EARTH_RADIUS * Math.Acos(v_cos);
+                if (double.IsNaN(v_ret)) // points nearly the same
+                {
+                    v_ret = 0d;
+                }
+                return v_ret;
+            }
+        }
 
         /// <summary>
         /// Computes the total length of a line
@@ -364,25 +395,25 @@ namespace DEM.Net.Core
         /// <param name="points">Points where first is line start, and last is line end</param>
         /// <returns>Line length in meters</returns>
 		public static double GetLineLength_Meters(List<GeoPoint> points)
-		{
-			double total = 0;
-			try
-			{
-				if (points.Count > 1)
-				{
-					for (int v_i = 1; v_i < points.Count; v_i++)
-					{
-						double v_dist = DistanceTo(points[v_i], points[v_i - 1]);
-						total += v_dist;
-					}
-				}
-			}
-			catch
-			{
-				throw;
-			}
-			return total;
-		}
+        {
+            double total = 0;
+            try
+            {
+                if (points.Count > 1)
+                {
+                    for (int v_i = 1; v_i < points.Count; v_i++)
+                    {
+                        double v_dist = DistanceTo(points[v_i], points[v_i - 1]);
+                        total += v_dist;
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return total;
+        }
 
 
         #region Enumerators
@@ -422,7 +453,7 @@ namespace DEM.Net.Core
                 yield return null;
             }
 
-            for (int i = 0; i < lineGeom.NumPoints-1; i++)
+            for (int i = 0; i < lineGeom.NumPoints - 1; i++)
             {
                 Coordinate[] segCoords = new Coordinate[2];
                 segCoords[0] = lineGeom.Coordinates[i];
