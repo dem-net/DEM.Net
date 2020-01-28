@@ -42,7 +42,7 @@
   <ItemGroup>
     <PackageReference Include="IxMilia.Stl" Version="0.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
-    <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0014" />
+    <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0015" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
   </ItemGroup>
   
