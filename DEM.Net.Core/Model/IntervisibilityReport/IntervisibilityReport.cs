@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DEM.Net.Core
 {
@@ -33,18 +34,19 @@ namespace DEM.Net.Core
     /// </summary>
     public class IntervisibilityReport
     {
-        public GeoPoint Origin { get; set; }
-        public GeoPoint Target { get; set; }
+        public GeoPoint Origin { get; internal set; }
+        public GeoPoint Target { get; internal set; }
         public bool HasObstacles => Metrics?.Intervisible == false;
         public int ObstacleCount => Metrics?.Obstacles?.Count ?? 0;
-        //public List<GeoPoint> GeoPoints { get; set; }
-        public IntervisibilityMetrics Metrics { get; set; }
+        public List<GeoPoint> GeoPoints { get; internal set; }
+        public IntervisibilityMetrics Metrics { get; internal set; }
 
-        public IntervisibilityReport(GeoPoint origin, GeoPoint target, IntervisibilityMetrics visibilityMetrics)
+        public IntervisibilityReport(List<GeoPoint> pointsWithElevation, IntervisibilityMetrics visibilityMetrics)
         {
-            this.Origin = origin;
-            this.Target = target;
+            this.Origin = pointsWithElevation.First();
+            this.Target = pointsWithElevation.Last();
             this.Metrics = visibilityMetrics;
+            this.GeoPoints = pointsWithElevation;
         }
     }
 }

@@ -959,7 +959,7 @@ namespace DEM.Net.Core
 
                 var metrics = geoPoints.ComputeVisibilityMetrics();
 
-                return new IntervisibilityReport(geoPoints.First(), geoPoints.Last(), metrics);
+                return new IntervisibilityReport(geoPoints, metrics);
             }
             catch (Exception ex)
             {
