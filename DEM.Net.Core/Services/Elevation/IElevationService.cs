@@ -199,7 +199,6 @@ namespace DEM.Net.Core
         /// <returns>A report with all obstacles</returns>
         IntervisibilityReport GetIntervisibilityReport(GeoPoint source, GeoPoint target, DEMDataSet dataSet
             , bool downloadMissingFiles = true
-            , bool includeAllPoints = false
             , InterpolationMode interpolationMode = InterpolationMode.Bilinear);
     }
 }

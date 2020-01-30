@@ -41,13 +41,18 @@ namespace DEM.Net.Core
         public List<GeoPoint> GeoPoints { get; internal set; }
         public IntervisibilityMetrics Metrics { get; internal set; }
 
+        public void ClearPoints()
+        {
+            GeoPoints?.Clear();
+            GeoPoints = null;
+        }
+
         public IntervisibilityReport(List<GeoPoint> pointsWithElevation, IntervisibilityMetrics visibilityMetrics, bool includeAllPoints = false)
         {
             this.Origin = pointsWithElevation.First();
             this.Target = pointsWithElevation.Last();
             this.Metrics = visibilityMetrics;
-            if (includeAllPoints)
-                this.GeoPoints = pointsWithElevation;
+            this.GeoPoints = pointsWithElevation;
         }
     }
 }
