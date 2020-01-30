@@ -946,6 +946,7 @@ namespace DEM.Net.Core
 
         public IntervisibilityReport GetIntervisibilityReport(GeoPoint source, GeoPoint target, DEMDataSet dataSet
             , bool downloadMissingFiles = true
+            , bool includeAllPoints = false
             , InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
             try
@@ -959,7 +960,7 @@ namespace DEM.Net.Core
 
                 var metrics = geoPoints.ComputeVisibilityMetrics();
 
-                return new IntervisibilityReport(geoPoints, metrics);
+                return new IntervisibilityReport(geoPoints, metrics, includeAllPoints);
             }
             catch (Exception ex)
             {
