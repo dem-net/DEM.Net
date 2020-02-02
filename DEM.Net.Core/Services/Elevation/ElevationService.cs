@@ -40,6 +40,7 @@ namespace DEM.Net.Core
     public class ElevationService : IElevationService
     {
         public const float NO_DATA_OUT = 0;
+        private const double EPSILON = 1E-10;
         private readonly IRasterService _IRasterService;
         private readonly ILogger<ElevationService> _logger;
 
@@ -804,8 +805,8 @@ namespace DEM.Net.Core
                 }
 
 
-                bool xOnDataPoint = Math.Abs(xInterpolationAmount) < double.Epsilon;
-                bool yOnDataPoint = Math.Abs(yInterpolationAmount) < double.Epsilon;
+                bool xOnDataPoint = Math.Abs(xInterpolationAmount) < EPSILON;
+                bool yOnDataPoint = Math.Abs(yInterpolationAmount) < EPSILON;
 
                 // If xOnGrid and yOnGrid, we are on a grid intersection, and that's all
                 // TODO fix that
