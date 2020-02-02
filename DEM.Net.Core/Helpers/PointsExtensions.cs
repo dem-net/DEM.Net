@@ -22,10 +22,12 @@ namespace DEM.Net.Core
         /// Get <see cref="ComputeMetrics(IList{GeoPoint})"/> metrics and visiblity report if any obstacles are found
         /// </summary>
         /// <param name="points"></param>
+        /// <param name="sourceVerticalOffset">Vertical elevation offset at source point. The line of sight will be calculated from this point (set to 1.8 for simulate a human eye height)</param>
         /// <returns></returns>
-        public static IntervisibilityMetrics ComputeVisibilityMetrics(this IList<GeoPoint> linePoints)
+        public static IntervisibilityMetrics ComputeVisibilityMetrics(this IList<GeoPoint> linePoints
+            , double sourceVerticalOffset = 0d)
         {
-            return GeometryService.ComputeVisibilityMetrics(linePoints);
+            return GeometryService.ComputeVisibilityMetrics(linePoints, visibilityCheck: true, sourceVerticalOffset: sourceVerticalOffset);
         }
 
         /// <summary>

@@ -947,6 +947,7 @@ namespace DEM.Net.Core
 
         public IntervisibilityReport GetIntervisibilityReport(GeoPoint source, GeoPoint target, DEMDataSet dataSet
             , bool downloadMissingFiles = true
+            , double sourceVerticalOffset = 0d
             , InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
             try
@@ -958,9 +959,9 @@ namespace DEM.Net.Core
 
                 var geoPoints = this.GetLineGeometryElevation(elevationLine, dataSet);
 
-                var metrics = geoPoints.ComputeVisibilityMetrics();
+                var metrics = geoPoints.ComputeVisibilityMetrics(sourceVerticalOffset);
 
-                return new IntervisibilityReport(geoPoints, metrics);
+                return new IntervisibilityReport(geoPoints, metrics, originVerticalOffset: sourceVerticalOffset);
             }
             catch (Exception ex)
             {
@@ -968,6 +969,22 @@ namespace DEM.Net.Core
                 throw;
             }
             
+        }
+
+        public IntervisibilityReport GetIntervisibilityReport(List<GeoPoint> linePoints
+            , double sourceVerticalOffset = 0d)
+        {
+            try
+            {
+                var metrics = linePoints.ComputeVisibilityMetrics(sourceVerticalOffset);
+
+                return new IntervisibilityReport(linePoints, metrics, originVerticalOffset: sourceVerticalOffset);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{nameof(GetIntervisibilityReport)} error: {ex.Message}");
+                throw;
+            }
         }
 
 

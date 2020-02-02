@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core
 {
-    public class GeoPoint
+    public class GeoPoint : IEquatable<GeoPoint>
     {
         public double Latitude { get; set; }
         public double Longitude { get; set; }
@@ -86,6 +86,15 @@ namespace DEM.Net.Core
             return $"Lat/Lon: {Latitude} / {Longitude} "
                 + (Elevation.HasValue ? $", Elevation: {Elevation.Value:F2}" : "")
                 + ((DistanceFromOriginMeters ?? 0) > 0 ? $", DistanceFromOrigin: {DistanceFromOriginMeters:F2}" : "");
+        }
+
+        public bool Equals(GeoPoint other)
+        {
+            if (this == null) return false;
+            if (other == null) return false;
+
+            return Math.Abs(this.Latitude - other.Latitude) < double.Epsilon
+                  && Math.Abs(this.Longitude - other.Longitude) < double.Epsilon;
         }
     }
 

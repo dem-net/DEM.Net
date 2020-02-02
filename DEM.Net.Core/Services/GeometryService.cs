@@ -191,50 +191,7 @@ namespace DEM.Net.Core
         /// <returns><see cref="ElevationMetrics"/> object</returns>
 		internal static ElevationMetrics ComputeMetrics(IList<GeoPoint> points)
         {
-            ElevationMetrics metrics = new ElevationMetrics();
-            double total = 0;
-            double minElevation = double.MaxValue;
-            double maxElevation = double.MinValue;
-            double totalClimb = 0;
-            double totalDescent = 0;
-            if (points.Count > 1)
-            {
-                var firstPoint = points[0];
-                firstPoint.DistanceFromOriginMeters = 0; // force at 0. If null, ignored in json responses
-                double lastElevation = firstPoint.Elevation.GetValueOrDefault(0);
-
-                for (int i = 1; i < points.Count; i++)
-                {
-                    GeoPoint curPoint = points[i];
-                    double v_dist = DistanceTo(curPoint, points[i - 1]);
-                    total += v_dist;
-                    curPoint.DistanceFromOriginMeters = total;
-
-                    minElevation = Math.Min(minElevation, curPoint.Elevation.GetValueOrDefault(double.MaxValue));
-                    maxElevation = Math.Max(maxElevation, curPoint.Elevation.GetValueOrDefault(double.MinValue));
-
-                    double currentElevation = curPoint.Elevation.GetValueOrDefault(lastElevation);
-                    double diff = currentElevation - lastElevation;
-                    if (diff > 0)
-                    {
-                        totalClimb += diff;
-                    }
-                    else
-                    {
-                        totalDescent += diff;
-                    }
-                    lastElevation = currentElevation;
-
-                }
-            }
-            metrics.Climb = totalClimb;
-            metrics.Descent = totalDescent;
-            metrics.NumPoints = points.Count;
-            metrics.Distance = total;
-            metrics.MinElevation = minElevation;
-            metrics.MaxElevation = maxElevation;
-
-            return metrics;
+            return ComputeVisibilityMetrics(points, visibilityCheck: false);
         }
 
         /// <summary>
@@ -244,7 +201,7 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="points">Input list of points, visibility is calculated for first and last points (ie: are they visible or is there a relief standing in between)</param>
         /// <returns><see cref="IntervisibilityMetrics"/> object</returns>
-		internal static IntervisibilityMetrics ComputeVisibilityMetrics(IList<GeoPoint> points, bool visibilityCheck = true)
+		internal static IntervisibilityMetrics ComputeVisibilityMetrics(IList<GeoPoint> points, bool visibilityCheck = true, double sourceVerticalOffset = 0d)
         {
             IntervisibilityMetrics metrics = new IntervisibilityMetrics();
 
@@ -253,6 +210,7 @@ namespace DEM.Net.Core
 
             GeoPoint A = points.First(), B = points.Last();
             double hA = A.Elevation ?? 0d, hB = B.Elevation ?? 0d;
+            hA += sourceVerticalOffset;
             double AB = A.DistanceTo(B);
             visibilityCheck = visibilityCheck && (AB > double.Epsilon);
             if (hA < hB)
@@ -327,11 +285,25 @@ namespace DEM.Net.Core
                         }
                     }
                 }
+
+                if (i == points.Count - 1 && obstacle != null)
+                {
+                    // Edge case: last point is exit point. We still have an active obstacle instance
+                    // If obstacle entry is curPoint, this is the same point and this is not an obstacle
+                    if (!obstacle.EntryPoint.Equals(curPoint))
+                    {
+                        obstacle.ExitPoint = curPoint;
+                        metrics.AddObstacle(obstacle);
+                        obstacle = null;
+                    }
+                }
                 #endregion
+
 
                 lastElevation = currentElevation;
 
             }
+
             metrics.Climb = totalClimb;
             metrics.Descent = totalDescent;
             metrics.NumPoints = points.Count;
