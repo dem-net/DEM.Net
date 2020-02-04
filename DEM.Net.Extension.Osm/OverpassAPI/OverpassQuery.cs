@@ -27,6 +27,8 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json.Linq;
 using System.Threading;
+using DEM.Net.Core;
+using System.Globalization;
 
 #endregion
 
@@ -582,7 +584,7 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
                             var message = await ResponseMessage.Content.ReadAsStringAsync();
                             throw new Exception("Bad request: " + message);
                         }
-                            
+
 
                         else if (((Int32)ResponseMessage.StatusCode) == 429)
                             throw new Exception("Too Many Requests!");
@@ -673,7 +675,7 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
             }
             if (_BBox != null)
             {
-                query = string.Concat(query, " (", _BBox.ToString(), ")");
+                query = string.Concat(query, " (", this.BboxAsOverpassString(_BBox), ")");
             }
             if (_Filter != null)
             {
@@ -684,6 +686,12 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
 
             return query;
 
+        }
+
+        private string BboxAsOverpassString(BoundingBox bbox)
+        {
+            var str = String.Format(CultureInfo.InvariantCulture, "{0},{1},{2},{3}", bbox.yMin, bbox.xMin, bbox.yMax, bbox.xMax);
+            return str;
         }
 
         #endregion
@@ -726,10 +734,10 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
                     QueryString.AppendLine($"rel(area)->.relations;");
                     QueryString.AppendLine($"(");
                 }
-                    NodesRelations.ForEach(rel => QueryString.AppendLine(string.Concat("node(r.relations:", '"', rel, '"', ");")));
+                NodesRelations.ForEach(rel => QueryString.AppendLine(string.Concat("node(r.relations:", '"', rel, '"', ");")));
                 if (_AreaId > 0)
                 {
-                   QueryString.AppendLine($");");
+                    QueryString.AppendLine($");");
                 }
             }
 
