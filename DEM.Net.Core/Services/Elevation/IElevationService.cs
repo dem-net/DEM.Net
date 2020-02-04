@@ -133,7 +133,7 @@ namespace DEM.Net.Core
         /// <param name="dataSet">DEM dataset to use</param>
         /// <param name="interpolationMode">Interpolation mode</param>
         /// <returns></returns>
-        IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
+        IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, bool downloadMissingFiles = true);
        
         /// <summary>
         /// Returns all elevations in given bbox

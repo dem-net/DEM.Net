@@ -283,13 +283,16 @@ namespace DEM.Net.Core
 
             return geoPoint;
         }
-        public IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
+        public IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, bool downloadMissingFiles = true)
         {
             if (points == null)
                 return null;
             IEnumerable<GeoPoint> pointsWithElevation;
             BoundingBox bbox = points.GetBoundingBox();
-            DownloadMissingFiles(dataSet, bbox);
+            if (downloadMissingFiles)
+            {
+                DownloadMissingFiles(dataSet, bbox);
+            }
             List<FileMetadata> tiles = this.GetCoveringFiles(bbox, dataSet);
 
             if (tiles.Count == 0)
@@ -968,7 +971,7 @@ namespace DEM.Net.Core
                 _logger.LogError($"{nameof(GetIntervisibilityReport)} error: {ex.Message}");
                 throw;
             }
-            
+
         }
 
         public IntervisibilityReport GetIntervisibilityReport(List<GeoPoint> linePoints
