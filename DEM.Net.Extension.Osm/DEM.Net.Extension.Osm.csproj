@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="OverpassAPI\Extensions\IEnumerableExtensions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DEM.Net.Core\DEM.Net.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="OverpassAPI\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GeoJSON.Net" Version="1.2.14" />
+  </ItemGroup>
+
+</Project>
