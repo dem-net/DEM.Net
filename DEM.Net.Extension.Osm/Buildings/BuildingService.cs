@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using Microsoft.Extensions.Logging;
+using DEM.Net.Extension.Osm.OverpassAPI;
 
 namespace DEM.Net.Extension.Osm.Buildings
 {
@@ -21,11 +22,52 @@ namespace DEM.Net.Extension.Osm.Buildings
             this._elevationService = elevationService;
             this._logger = logger;
         }
-        public List<BuildingModel> ComputeElevations(FeatureCollection buildings, DEMDataSet dataset)
+
+        public Triangulation GetBuildings3D(BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles)
+        {
+            try
+            {
+                using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(GetBuildings3D), _logger, LogLevel.Information))
+                {
+                    FeatureCollection buildings = this.GetBuildingsGeoJson(bbox);
+                    Triangulation triangulation = this.Triangulate(buildings, dataSet, downloadMissingFiles);
+                    return triangulation;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public FeatureCollection GetBuildingsGeoJson(BoundingBox bbox)
+        {
+            try
+            {
+                using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(GetBuildingsGeoJson), _logger, LogLevel.Debug))
+                {
+                    var task = new OverpassQuery(bbox)
+                    .WithWays("building")
+                    .ToGeoJSON();
+
+                    FeatureCollection buildings = task.GetAwaiter().GetResult();
+
+                    return buildings;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{nameof(GetBuildingsGeoJson)} error: {ex.Message}");
+                throw;
+            }
+
+        }
+
+        public List<BuildingModel> ComputeElevations(FeatureCollection buildings, DEMDataSet dataset, bool downloadMissingFiles = true)
         {
             List<BuildingModel> polygonPoints = new List<BuildingModel>(buildings.Features.Count);
 
-            using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(ComputeElevations), _logger))
+            using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(ComputeElevations), _logger, LogLevel.Debug))
             {
                 int totalPoints = 0;
                 foreach (var building in buildings.Features)
@@ -48,8 +90,9 @@ namespace DEM.Net.Extension.Osm.Buildings
 
                     if (lineString != null)
                     {
-                        var elevatedPoints = _elevationService.GetPointsElevation(lineString.Coordinates.Select(c => new GeoPoint(c.Latitude, c.Longitude)), dataset
-                            , downloadMissingFiles: false);
+                        var elevatedPoints = _elevationService.GetPointsElevation(lineString.Coordinates.Select(c => new GeoPoint(c.Latitude, c.Longitude))
+                            , dataset
+                            , downloadMissingFiles: downloadMissingFiles);
                         totalPoints += lineString.Coordinates.Count;
                         BuildingModel model = new BuildingModel(elevatedPoints, building.Id, building.Properties);
                         polygonPoints.Add(model);
@@ -63,9 +106,9 @@ namespace DEM.Net.Extension.Osm.Buildings
             return polygonPoints;
         }
 
-        public Triangulation Triangulate(FeatureCollection featureCollection, DEMDataSet dataset)
+        public Triangulation Triangulate(FeatureCollection featureCollection, DEMDataSet dataset, bool downloadMissingFiles = true)
         {
-            var polygonList = ComputeElevations(featureCollection, dataset);
+            var polygonList = ComputeElevations(featureCollection, dataset, downloadMissingFiles);
             return null;
         }
     }
