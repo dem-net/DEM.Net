@@ -24,7 +24,7 @@ namespace DEM.Net.Extension.Osm.Buildings
 
         const double FloorHeightMeters = 2.5;
 
-       
+
         public BuildingService(IElevationService elevationService
             , SharpGltfService gltfService
             , IMeshService meshService
@@ -179,12 +179,14 @@ namespace DEM.Net.Extension.Osm.Buildings
             // Get highest base point
             // Retrieve building size
             foreach (var building in buildingModels)
+            //foreach (var building in buildingModels.Take(2))
             {
                 var triangulation = Triangulate(building);
                 var positionsVec3 = triangulation.Positions.ToVector3().ToList();
                 var buildingNormals = _meshService.ComputeMeshNormals(positionsVec3, triangulation.Indices);
+                int initialPositionsCount = positions.Count;
                 positions.AddRange(positionsVec3);
-                indices.AddRange(triangulation.Indices);
+                indices.AddRange(triangulation.Indices.Select(i => i + initialPositionsCount).ToList());
                 normals.AddRange(buildingNormals);
             }
 
@@ -200,10 +202,11 @@ namespace DEM.Net.Extension.Osm.Buildings
             double buildingHeight = this.GetBuildingHeightMeters(building);
             double buildingTop = highestElevation + buildingHeight;
 
-            // sides (TODO check winding)
-            int i = 0;
-            foreach (var pos in building.ElevatedPoints)
+
+            // sides
+            for (int i = 0; i < building.ElevatedPoints.Count - 1; i++) // -2 because last point == first point
             {
+                var pos = building.ElevatedPoints[i];
                 if (building.MinHeight.HasValue)
                 {
                     var posBottom = pos.Clone();
@@ -214,28 +217,34 @@ namespace DEM.Net.Extension.Osm.Buildings
                 {
                     positions.Add(pos);
                 }
-                Debug.Assert(!double.IsNaN(pos.Elevation.Value));
-                Debug.Assert(!double.IsInfinity(pos.Elevation.Value));
 
                 var posTop = pos.Clone();
                 posTop.Elevation = buildingTop;
                 positions.Add(posTop);
 
-                Debug.Assert(!double.IsNaN(posTop.Elevation.Value));
-                Debug.Assert(!double.IsInfinity(posTop.Elevation.Value));
                 if (i > 0)
                 {
-                    indices.Add(i - 2);
-                    indices.Add(i - 1);
-                    indices.Add(i);
+                    indices.Add(i * 2 - 2);
+                    indices.Add(i * 2 - 1);
+                    indices.Add(i * 2);
 
 
-                    indices.Add(i);
-                    indices.Add(i - 1);
-                    indices.Add(i + 1);
+                    indices.Add(i * 2);
+                    indices.Add(i * 2 - 1);
+                    indices.Add(i * 2 + 1);
                 }
-                i += 2;
             }
+
+            // connect last vertex to first
+            int index = positions.Count;
+            indices.Add(index - 2);
+            indices.Add(index - 1);
+            indices.Add(0);
+
+
+            indices.Add(0);
+            indices.Add(index - 1);
+            indices.Add(1);
 
             return (positions, indices);
         }
