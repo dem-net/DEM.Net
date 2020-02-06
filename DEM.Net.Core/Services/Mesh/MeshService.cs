@@ -251,7 +251,14 @@ namespace DEM.Net.Core
 
         }
 
-        public IEnumerableWithCount<Vector3> ComputeNormals(List<Vector3> positions, List<int> indices)
+        /// <summary>
+        /// Computes normals for a given mesh. All positions must form a continuous mesh.
+        /// For multi meshes, perform triangulation on every mesh and aggregate normals on a final pass
+        /// </summary>
+        /// <param name="positions"></param>
+        /// <param name="indices"></param>
+        /// <returns></returns>
+        public IEnumerableWithCount<Vector3> ComputeMeshNormals(List<Vector3> positions, List<int> indices)
         {
             //The number of the vertices
             int nV = positions.Count;
@@ -289,6 +296,7 @@ namespace DEM.Net.Core
             return new EnumerableWithCount<Vector3>(nV, norm.Select(v => Vector3.Normalize(v)));
         }
 
+        
         /// <summary>
         /// Calculate normals for a given height map
         /// </summary>
@@ -297,7 +305,7 @@ namespace DEM.Net.Core
         public IEnumerableWithCount<Vector3> ComputeNormals(HeightMap heightMap)
         {
             var triangulation = TriangulateHeightMap(heightMap);
-            var normals = ComputeNormals(
+            var normals = ComputeMeshNormals(
                     heightMap.Coordinates.Select(c =>
                                                             new Vector3((
                                                                 float)c.Longitude,
@@ -383,7 +391,7 @@ namespace DEM.Net.Core
                             indices.Add(i0 + 2);
                         }
 
-                        IEnumerable<Vector3> normals = this.ComputeNormals(vertices, indices);
+                        IEnumerable<Vector3> normals = this.ComputeMeshNormals(vertices, indices);
 
                         return (vertices, indices);
 

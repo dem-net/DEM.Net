@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using DEM.Net.Extension.Osm.OverpassAPI;
 using DEM.Net.glTF.SharpglTF;
 using SharpGLTF.Schema2;
+using System.Numerics;
 
 namespace DEM.Net.Extension.Osm.Buildings
 {
@@ -18,16 +19,20 @@ namespace DEM.Net.Extension.Osm.Buildings
     {
         private readonly IElevationService _elevationService;
         private readonly SharpGltfService _gltfService;
+        private readonly IMeshService _meshService;
         private readonly ILogger<BuildingService> _logger;
 
         const double FloorHeightMeters = 2.5;
 
+       
         public BuildingService(IElevationService elevationService
             , SharpGltfService gltfService
+            , IMeshService meshService
             , ILogger<BuildingService> logger)
         {
             this._elevationService = elevationService;
             this._gltfService = gltfService;
+            this._meshService = meshService;
             this._logger = logger;
         }
 
@@ -36,15 +41,45 @@ namespace DEM.Net.Extension.Osm.Buildings
             try
             {
                 var triangulation = this.GetBuildings3DTriangulation(bbox, dataSet, downloadMissingFiles);
-                var model = _gltfService.CreateTerrainMesh(triangulation, null, doubleSided: false);
+                var model = _gltfService.CreateNewModel();
+                _gltfService.AddTerrainMesh(model, new SharpGltfService.IndexedTriangulation(triangulation), triangulation.Normals, null, doubleSided: true);
+
                 return model;
+
+                //using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(GetBuildings3DTriangulation), _logger, LogLevel.Information))
+                //{
+                //    FeatureCollection buildings = this.GetBuildingsGeoJson(bbox);
+
+                //    if (downloadMissingFiles)
+                //    {
+                //        _elevationService.DownloadMissingFiles(dataSet, bbox);
+                //    }
+                //   List<BuildingModel> buildingModels = ComputeElevations(buildings, dataSet, downloadMissingFiles);
+
+                //    foreach(var building in buildingModels)
+                //    {
+                //        try
+                //        {
+                //            var triangulation = this.Triangulate(building);
+                //            var normals =  _meshService.ComputeMeshNormals(triangulation.Positions.ToVector3().ToList(), triangulation.Indices.ToList());
+                //            var model = _gltfService.CreateTerrainMesh(triangulation, null, doubleSided: false);
+                //        }
+                //        catch (Exception ex)
+                //        {
+                //            _logger.LogWarning($"Error: {ex.Message}");
+                //        }
+
+                //    }
+
+                //}
+                //return null;
             }
             catch (Exception ex)
             {
                 throw;
             }
         }
-        public Triangulation GetBuildings3DTriangulation(BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles)
+        public TriangulationNormals GetBuildings3DTriangulation(BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles)
         {
             try
             {
@@ -52,7 +87,11 @@ namespace DEM.Net.Extension.Osm.Buildings
                 {
                     FeatureCollection buildings = this.GetBuildingsGeoJson(bbox);
 
-                    Triangulation triangulation = this.Triangulate(buildings, dataSet, downloadMissingFiles);
+                    if (downloadMissingFiles)
+                    {
+                        _elevationService.DownloadMissingFiles(dataSet, bbox);
+                    }
+                    TriangulationNormals triangulation = this.Triangulate(buildings, dataSet, false);
                     return triangulation;
                 }
             }
@@ -129,60 +168,76 @@ namespace DEM.Net.Extension.Osm.Buildings
             return polygonPoints;
         }
 
-        public Triangulation Triangulate(FeatureCollection featureCollection, DEMDataSet dataset, bool downloadMissingFiles = true)
+        public TriangulationNormals Triangulate(FeatureCollection featureCollection, DEMDataSet dataset, bool downloadMissingFiles = true)
         {
             List<BuildingModel> buildingModels = ComputeElevations(featureCollection, dataset, downloadMissingFiles);
 
-            List<GeoPoint> positions = new List<GeoPoint>();
+            List<Vector3> positions = new List<Vector3>();
             List<int> indices = new List<int>();
+            List<Vector3> normals = new List<Vector3>();
 
             // Get highest base point
             // Retrieve building size
             foreach (var building in buildingModels)
             {
-                double highestElevation = building.ElevatedPoints.OrderByDescending(p => p.Elevation ?? 0).First().Elevation ?? 0;
-                double buildingHeight = this.GetBuildingHeightMeters(building);
-                double buildingTop = highestElevation + buildingHeight;
-
-                // sides (TODO check winding)
-                int i = 0;
-                foreach (var pos in building.ElevatedPoints)
-                {
-                    if (building.MinHeight.HasValue)
-                    {
-                        var posBottom = pos.Clone();
-                        posBottom.Elevation += building.MinHeight ?? 0d;
-                        positions.Add(posBottom);
-                    }
-                    else
-                    {
-                        positions.Add(pos);
-                    }
-                    Debug.Assert(!double.IsNaN(pos.Elevation.Value));
-                    Debug.Assert(!double.IsInfinity(pos.Elevation.Value));
-
-                    var posTop = pos.Clone();
-                    posTop.Elevation = buildingTop;
-                    positions.Add(posTop);
-
-                    Debug.Assert(!double.IsNaN(posTop.Elevation.Value));
-                    Debug.Assert(!double.IsInfinity(posTop.Elevation.Value));
-                    if (i > 0)
-                    {
-                        indices.Add(i - 2);
-                        indices.Add(i - 1);
-                        indices.Add(i);
-
-
-                        indices.Add(i);
-                        indices.Add(i - 1);
-                        indices.Add(i + 1);
-                    }
-                    i += 2;
-                }
+                var triangulation = Triangulate(building);
+                var positionsVec3 = triangulation.Positions.ToVector3().ToList();
+                var buildingNormals = _meshService.ComputeMeshNormals(positionsVec3, triangulation.Indices);
+                positions.AddRange(positionsVec3);
+                indices.AddRange(triangulation.Indices);
+                normals.AddRange(buildingNormals);
             }
 
-            return new Triangulation(positions, indices);
+            return new TriangulationNormals(positions, indices, normals);
+        }
+        public (List<GeoPoint> Positions, List<int> Indices) Triangulate(BuildingModel building)
+        {
+
+            List<GeoPoint> positions = new List<GeoPoint>();
+            List<int> indices = new List<int>();
+
+            double highestElevation = building.ElevatedPoints.OrderByDescending(p => p.Elevation ?? 0).First().Elevation ?? 0;
+            double buildingHeight = this.GetBuildingHeightMeters(building);
+            double buildingTop = highestElevation + buildingHeight;
+
+            // sides (TODO check winding)
+            int i = 0;
+            foreach (var pos in building.ElevatedPoints)
+            {
+                if (building.MinHeight.HasValue)
+                {
+                    var posBottom = pos.Clone();
+                    posBottom.Elevation += building.MinHeight ?? 0d;
+                    positions.Add(posBottom);
+                }
+                else
+                {
+                    positions.Add(pos);
+                }
+                Debug.Assert(!double.IsNaN(pos.Elevation.Value));
+                Debug.Assert(!double.IsInfinity(pos.Elevation.Value));
+
+                var posTop = pos.Clone();
+                posTop.Elevation = buildingTop;
+                positions.Add(posTop);
+
+                Debug.Assert(!double.IsNaN(posTop.Elevation.Value));
+                Debug.Assert(!double.IsInfinity(posTop.Elevation.Value));
+                if (i > 0)
+                {
+                    indices.Add(i - 2);
+                    indices.Add(i - 1);
+                    indices.Add(i);
+
+
+                    indices.Add(i);
+                    indices.Add(i - 1);
+                    indices.Add(i + 1);
+                }
+                i += 2;
+            }
+
+            return (positions, indices);
         }
 
         private double GetBuildingHeightMeters(BuildingModel building)
