@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DEM.Net.Core\DEM.Net.Core.csproj" />
+    <ProjectReference Include="..\DEM.Net.glTF\DEM.Net.glTF.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,4 +21,7 @@
     <PackageReference Include="GeoJSON.Net" Version="1.2.14" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="SharpGLTF.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+  </ItemGroup>
 </Project>
