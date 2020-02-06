@@ -127,12 +127,15 @@ namespace DEM.Net.Extension.Osm.Buildings
         public List<BuildingModel> ComputeElevations(FeatureCollection buildings, DEMDataSet dataset, bool downloadMissingFiles = true)
         {
             List<BuildingModel> polygonPoints = new List<BuildingModel>(buildings.Features.Count);
-
+            Stopwatch swElevation = new Stopwatch();
+            Stopwatch swReproj = new Stopwatch();
+            Stopwatch swGeoJson = new Stopwatch();
             using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(ComputeElevations), _logger, LogLevel.Debug))
             {
                 int totalPoints = 0;
                 foreach (var building in buildings.Features)
                 {
+                    swGeoJson.Start();
                     LineString lineString = null;
                     switch (building.Geometry.Type)
                     {
@@ -148,21 +151,26 @@ namespace DEM.Net.Extension.Osm.Buildings
                             _logger.LogWarning($"ComputeElevations: type {building.Geometry.Type} not supported.");
                             break;
                     }
+                    swGeoJson.Stop();
 
                     if (lineString != null)
                     {
+                        swElevation.Start();
                         var elevatedPoints = _elevationService.GetPointsElevation(lineString.Coordinates.Select(c => new GeoPoint(c.Latitude, c.Longitude))
                             , dataset
                             , downloadMissingFiles: downloadMissingFiles);
+                        swElevation.Stop();
                         totalPoints += lineString.Coordinates.Count;
                         // Reproject
-                        BuildingModel model = new BuildingModel(elevatedPoints.ReprojectGeodeticToCartesian().ToList(), building.Id, building.Properties);
+                        swReproj.Start();
+                        BuildingModel model = new BuildingModel(elevatedPoints.ReprojectGeodeticToCartesian(lineString.Coordinates.Count).ToList(), building.Id, building.Properties);
+                        swReproj.Stop();
                         polygonPoints.Add(model);
                     }
 
                 }
 
-                _logger.LogInformation($"{nameof(ComputeElevations)} done for {totalPoints} points.");
+                _logger.LogInformation($"{nameof(ComputeElevations)} done for {totalPoints} points. (Elevations: {swElevation.Elapsed:g}, Reproj: {swReproj.Elapsed:g}, Json: {swGeoJson.Elapsed:g})");
             }
 
             return polygonPoints;
