@@ -53,15 +53,15 @@ namespace DEM.Net.Core
         }
 
         public GeoPoint(double latitude, double longitude) : this(latitude, longitude, null) { }
-        public GeoPoint() : this(0,0) { }
+        public GeoPoint() : this(0, 0) { }
 
-        public GeoPoint Clone()
+        public GeoPoint Clone(double? newHeight = null)
         {
             return new GeoPoint
             {
                 DistanceFromOriginMeters = this.DistanceFromOriginMeters
                 ,
-                Elevation = this.Elevation
+                Elevation = newHeight ?? this.Elevation
                 ,
                 Latitude = this.Latitude
                 ,
