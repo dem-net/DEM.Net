@@ -85,6 +85,8 @@ namespace DEM.Net.Extension.Osm.Buildings
                 using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(GetBuildings3DTriangulation), _logger, LogLevel.Information))
                 {
                     FeatureCollection buildings = this.GetBuildingsGeoJson(bbox);
+                    _logger.LogInformation($"{buildings?.Features?.Count} buildings downloaded");
+
 
                     if (downloadMissingFiles)
                     {
@@ -184,27 +186,31 @@ namespace DEM.Net.Extension.Osm.Buildings
             List<int> indices = new List<int>();
             List<Vector3> normals = new List<Vector3>();
 
-            // Get highest base point
-            // Retrieve building size
-            foreach (var building in buildingModels)
-            //foreach (var building in buildingModels.Take(2))
+            using (TimeSpanBlock timer = new TimeSpanBlock("Triangulation", _logger))
             {
-                var triangulation = Triangulate(building);
-                var positionsVec3 = triangulation.Positions.ToVector3().ToList();
-                var buildingNormals = _meshService.ComputeMeshNormals(positionsVec3, triangulation.Indices);
-                int initialPositionsCount = positions.Count;
-                positions.AddRange(positionsVec3);
-                indices.AddRange(triangulation.Indices.Select(i => i + initialPositionsCount).ToList());
-                normals.AddRange(buildingNormals);
+                // Get highest base point
+                // Retrieve building size
+                foreach (var building in buildingModels)
+                //foreach (var building in buildingModels.Take(1))
+                {
+                    var triangulation = this.Triangulate(building);
+                    var positionsVec3 = triangulation.Positions.ToVector3().ToList();
+                    var buildingNormals = _meshService.ComputeMeshNormals(positionsVec3, triangulation.Indices);
+                    int initialPositionsCount = positions.Count;
+                    positions.AddRange(positionsVec3);
+                    indices.AddRange(triangulation.Indices.Select(i => i + initialPositionsCount).ToList());
+                    normals.AddRange(buildingNormals);
+                }
             }
 
             return new TriangulationNormals(positions, indices, normals);
         }
-        public (List<GeoPoint> Positions, List<int> Indices) Triangulate(BuildingModel building)
+        public TriangulationList<GeoPoint> Triangulate(BuildingModel building)
         {
 
             List<GeoPoint> positions = new List<GeoPoint>();
             List<int> indices = new List<int>();
+            int outlinePointCount = building.ElevatedPoints.Count;
 
             double highestElevation = building.ElevatedPoints.OrderByDescending(p => p.Elevation ?? 0).First().Elevation ?? 0;
             double buildingHeight = this.GetBuildingHeightMeters(building);
@@ -212,13 +218,12 @@ namespace DEM.Net.Extension.Osm.Buildings
 
 
             // sides
-            for (int i = 0; i < building.ElevatedPoints.Count - 1; i++) // -2 because last point == first point
+            for (int i = 0; i < outlinePointCount - 1; i++) // -2 because last point == first point
             {
                 var pos = building.ElevatedPoints[i];
                 if (building.MinHeight.HasValue)
                 {
-                    var posBottom = pos.Clone();
-                    posBottom.Elevation += building.MinHeight ?? 0d;
+                    var posBottom = pos.Clone(building.MinHeight);
                     positions.Add(posBottom);
                 }
                 else
@@ -254,7 +259,18 @@ namespace DEM.Net.Extension.Osm.Buildings
             indices.Add(index - 1);
             indices.Add(1);
 
-            return (positions, indices);
+            //--------------------
+            // Rooftop
+            // We have a triangulation from original vertices, but now they are interleaved between bottom and top
+            // we need to remap indices on top vertices only, ie: newIndex = index * 2 + 1
+            var roofOutline = building.ElevatedPoints.Take(outlinePointCount - 1)
+                                .Select(p => p.Clone(buildingTop))
+                                .ToList();
+            TriangulationList<GeoPoint> roofTopFlat = _meshService.Tesselate(roofOutline, buildingTop);
+            var topIndices = roofTopFlat.Indices.Select(i => i * 2 + 1);
+            indices.AddRange(topIndices);
+
+            return new TriangulationList<GeoPoint>(positions, indices);
         }
 
         private double GetBuildingHeightMeters(BuildingModel building)
