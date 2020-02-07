@@ -36,13 +36,12 @@ namespace DEM.Net.Extension.Osm.Buildings
             this._logger = logger;
         }
 
-        public ModelRoot GetBuildings3DModel(BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles)
+        public ModelRoot GetBuildings3DModel(BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles, float zScale)
         {
             try
             {
-                var triangulation = this.GetBuildings3DTriangulation(bbox, dataSet, downloadMissingFiles);
-                var model = _gltfService.CreateNewModel();
-                _gltfService.AddTerrainMesh(model, new SharpGltfService.IndexedTriangulation(triangulation), triangulation.Normals, null, doubleSided: true);
+                var triangulation = this.GetBuildings3DTriangulation(bbox, dataSet, downloadMissingFiles, zScale);
+                var model = _gltfService.AddMesh(null, new SharpGltfService.IndexedTriangulation(triangulation), null, null, doubleSided: true);
 
                 return model;
 
@@ -79,7 +78,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                 throw;
             }
         }
-        public TriangulationNormals GetBuildings3DTriangulation(BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles)
+        public TriangulationNormals GetBuildings3DTriangulation(BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles, float zScale)
         {
             try
             {
@@ -91,7 +90,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                     {
                         _elevationService.DownloadMissingFiles(dataSet, bbox);
                     }
-                    TriangulationNormals triangulation = this.Triangulate(buildings, dataSet, false);
+                    TriangulationNormals triangulation = this.Triangulate(buildings, dataSet, false, zScale);
                     return triangulation;
                 }
             }
@@ -124,7 +123,7 @@ namespace DEM.Net.Extension.Osm.Buildings
 
         }
 
-        public List<BuildingModel> ComputeElevations(FeatureCollection buildings, DEMDataSet dataset, bool downloadMissingFiles = true)
+        public List<BuildingModel> ComputeElevations(FeatureCollection buildings, DEMDataSet dataset, bool downloadMissingFiles = true, float zScale = 1f)
         {
             List<BuildingModel> polygonPoints = new List<BuildingModel>(buildings.Features.Count);
             Stopwatch swElevation = new Stopwatch();
@@ -159,6 +158,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                         var elevatedPoints = _elevationService.GetPointsElevation(lineString.Coordinates.Select(c => new GeoPoint(c.Latitude, c.Longitude))
                             , dataset
                             , downloadMissingFiles: downloadMissingFiles);
+                        elevatedPoints = elevatedPoints.ZScale(zScale).ToList();
                         swElevation.Stop();
                         totalPoints += lineString.Coordinates.Count;
                         // Reproject
@@ -176,9 +176,9 @@ namespace DEM.Net.Extension.Osm.Buildings
             return polygonPoints;
         }
 
-        public TriangulationNormals Triangulate(FeatureCollection featureCollection, DEMDataSet dataset, bool downloadMissingFiles = true)
+        public TriangulationNormals Triangulate(FeatureCollection featureCollection, DEMDataSet dataset, bool downloadMissingFiles = true, float zScale = 1f)
         {
-            List<BuildingModel> buildingModels = ComputeElevations(featureCollection, dataset, downloadMissingFiles);
+            List<BuildingModel> buildingModels = ComputeElevations(featureCollection, dataset, downloadMissingFiles, zScale);
 
             List<Vector3> positions = new List<Vector3>();
             List<int> indices = new List<int>();

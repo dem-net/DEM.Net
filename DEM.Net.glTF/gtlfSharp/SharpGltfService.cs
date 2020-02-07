@@ -97,9 +97,9 @@ namespace DEM.Net.glTF.SharpglTF
         {
             var indexedTriangulation = new IndexedTriangulation(triangulation);
             var normals = _meshService.ComputeMeshNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
-            return AddTerrainMesh(model, indexedTriangulation, normals, textures, doubleSided);
+            return AddMesh(model, indexedTriangulation, normals, textures, doubleSided);
         }
-        public ModelRoot AddTerrainMesh(ModelRoot model, IndexedTriangulation indexedTriangulation, IEnumerable<Vector3> normals, PBRTexture textures, bool doubleSided = true)
+        public ModelRoot AddMesh(ModelRoot model, IndexedTriangulation indexedTriangulation, IEnumerable<Vector3> normals, PBRTexture textures, bool doubleSided = true)
         {
             // create a basic scene
             model = model ?? CreateNewModel();
