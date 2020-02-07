@@ -23,6 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using DEM.Net.Core.Tesselation;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -258,7 +259,7 @@ namespace DEM.Net.Core
         /// <param name="positions"></param>
         /// <param name="indices"></param>
         /// <returns></returns>
-        public IEnumerableWithCount<Vector3> ComputeMeshNormals(List<Vector3> positions, List<int> indices)
+        public IEnumerableWithCount<Vector3> ComputeMeshNormals(IList<Vector3> positions, IList<int> indices)
         {
             //The number of the vertices
             int nV = positions.Count;
@@ -296,7 +297,7 @@ namespace DEM.Net.Core
             return new EnumerableWithCount<Vector3>(nV, norm.Select(v => Vector3.Normalize(v)));
         }
 
-        
+
         /// <summary>
         /// Calculate normals for a given height map
         /// </summary>
@@ -327,7 +328,7 @@ namespace DEM.Net.Core
                 }
                 else
                 {
-                    
+
                     if (width <= 0)
                     {
                         throw new Exception("Line width of 0 is not supported. Please provide a with > 0.");
@@ -405,5 +406,37 @@ namespace DEM.Net.Core
             }
             return default;
         }
+
+        /// <summary>
+        /// With a polygon input ring, returns the same number of points, with indices triplets forming a triangulation
+        /// </summary>
+        /// <param name="elevatedPoints"></param>
+        /// <param name="buildingTop"></param>
+        /// <returns></returns>
+        public TriangulationList<GeoPoint> Tesselate(List<GeoPoint> elevatedPoints, double buildingTop)
+        {
+            var data = new List<double>();
+            var holeIndices = new List<int>();
+
+            foreach (var p in elevatedPoints)
+            {
+                data.Add(p.Longitude);
+                data.Add(p.Latitude);
+            }
+
+            var trianglesIndices = Earcut.Tessellate(data, holeIndices);
+            TriangulationList<GeoPoint> triangulation = new TriangulationList<GeoPoint>();
+            triangulation.Positions = elevatedPoints.Select(p =>
+            {
+                var newP = p.Clone();
+                newP.Elevation = buildingTop;
+                return newP;
+            }).ToList();
+
+            triangulation.Indices = trianglesIndices;
+
+            return triangulation;
+        }
+
     }
 }

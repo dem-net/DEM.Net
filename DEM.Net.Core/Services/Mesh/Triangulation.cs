@@ -49,6 +49,26 @@ namespace DEM.Net.Core
         }
     }
 
+    public class TriangulationList<T>
+    {
+        public IList<T> Positions { get; internal set; }
+        public IList<int> Indices { get; internal set; }
+
+        public TriangulationList()
+        {
+            Positions = new List<T>();
+            Indices = new List<int>();
+        }
+        public TriangulationList(IList<T> positions, IList<int> indices)
+        {
+            Positions = positions;
+            Indices = indices;
+        }
+
+        public int NumPositions => Positions.Count;
+        public int NumTriangles => NumIndices / 3;
+        public int NumIndices => Indices.Count;
+    }
 
     public class Triangulation<T>
     {
