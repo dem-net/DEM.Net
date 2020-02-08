@@ -44,37 +44,10 @@ namespace DEM.Net.Extension.Osm.Buildings
                 var model = _gltfService.AddMesh(null, new SharpGltfService.IndexedTriangulation(triangulation), null, null, doubleSided: true);
 
                 return model;
-
-                //using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(GetBuildings3DTriangulation), _logger, LogLevel.Information))
-                //{
-                //    FeatureCollection buildings = this.GetBuildingsGeoJson(bbox);
-
-                //    if (downloadMissingFiles)
-                //    {
-                //        _elevationService.DownloadMissingFiles(dataSet, bbox);
-                //    }
-                //   List<BuildingModel> buildingModels = ComputeElevations(buildings, dataSet, downloadMissingFiles);
-
-                //    foreach(var building in buildingModels)
-                //    {
-                //        try
-                //        {
-                //            var triangulation = this.Triangulate(building);
-                //            var normals =  _meshService.ComputeMeshNormals(triangulation.Positions.ToVector3().ToList(), triangulation.Indices.ToList());
-                //            var model = _gltfService.CreateTerrainMesh(triangulation, null, doubleSided: false);
-                //        }
-                //        catch (Exception ex)
-                //        {
-                //            _logger.LogWarning($"Error: {ex.Message}");
-                //        }
-
-                //    }
-
-                //}
-                //return null;
             }
             catch (Exception ex)
             {
+                _logger.LogError($"{nameof(GetBuildings3DModel)} error: {ex.Message}");
                 throw;
             }
         }
@@ -127,13 +100,16 @@ namespace DEM.Net.Extension.Osm.Buildings
 
         public List<BuildingModel> ComputeElevations(FeatureCollection buildings, DEMDataSet dataset, bool downloadMissingFiles = true, float zScale = 1f)
         {
-            List<BuildingModel> polygonPoints = new List<BuildingModel>(buildings.Features.Count);
+            // TODO: compute elevations in one batch. Could easily retrieve points by doing a dual enumeration from features
+
+            int geoPointIdCounter = 0;
+
+            List<BuildingModel> buildingModels = new List<BuildingModel>(buildings.Features.Count);
             Stopwatch swElevation = new Stopwatch();
             Stopwatch swReproj = new Stopwatch();
             Stopwatch swGeoJson = new Stopwatch();
             using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(ComputeElevations), _logger, LogLevel.Debug))
             {
-                int totalPoints = 0;
                 foreach (var building in buildings.Features)
                 {
                     swGeoJson.Start();
@@ -157,30 +133,72 @@ namespace DEM.Net.Extension.Osm.Buildings
                     if (lineString != null)
                     {
                         swElevation.Start();
-                        var elevatedPoints = _elevationService.GetPointsElevation(lineString.Coordinates.Select(c => new GeoPoint(c.Latitude, c.Longitude))
-                            , dataset
-                            , downloadMissingFiles: downloadMissingFiles);
-                        elevatedPoints = elevatedPoints.ZScale(zScale).ToList();
-                        swElevation.Stop();
-                        totalPoints += lineString.Coordinates.Count;
-                        // Reproject
-                        swReproj.Start();
-                        BuildingModel model = new BuildingModel(elevatedPoints.ReprojectGeodeticToCartesian(lineString.Coordinates.Count).ToList(), building.Id, building.Properties);
-                        swReproj.Stop();
-                        polygonPoints.Add(model);
-                    }
+                        List<GeoPoint> buildingGeoPoints = lineString.Coordinates.Select(c => new GeoPoint(++geoPointIdCounter, c.Latitude, c.Longitude))
+                                                            .ToList();
 
+                        buildingModels.Add(new BuildingModel(buildingGeoPoints, building.Id, building.Properties));
+
+                        swElevation.Stop();
+                    }
                 }
 
-                _logger.LogInformation($"{nameof(ComputeElevations)} done for {totalPoints} points. (Elevations: {swElevation.Elapsed:g}, Reproj: {swReproj.Elapsed:g}, Json: {swGeoJson.Elapsed:g})");
+
+                swElevation.Start();
+                var allPoints = buildingModels.SelectMany(b => b.ElevatedPoints);
+                var elevatedPoints = _elevationService.GetPointsElevation(allPoints
+                        , dataset
+                        , downloadMissingFiles: downloadMissingFiles);
+                Dictionary<int, GeoPoint> elevationResult = elevatedPoints
+                                        .ZScale(zScale)
+                                        .ReprojectGeodeticToCartesian(geoPointIdCounter)
+                                        .ToDictionary(p => p.Id.Value, p => p);
+
+                foreach (var buiding in buildingModels)
+                {
+                    foreach (var point in buiding.ElevatedPoints)
+                    {
+                        var newPoint = elevationResult[point.Id.Value];
+                        point.Latitude = newPoint.Latitude;
+                        point.Longitude = newPoint.Longitude;
+                        point.Elevation = newPoint.Elevation;
+                    }
+                }
+                elevationResult.Clear();
+                elevationResult = null;
+
+                swElevation.Stop();
+
+
+
+                //if (lineString != null)
+                //{
+                //    swElevation.Start();
+                //    var elevatedPoints = _elevationService.GetPointsElevation(lineString.Coordinates.Select(c => new GeoPoint(c.Latitude, c.Longitude))
+                //        , dataset
+                //        , downloadMissingFiles: downloadMissingFiles);
+                //    elevatedPoints = elevatedPoints.ZScale(zScale).ToList();
+                //    swElevation.Stop();
+                //    totalPoints += lineString.Coordinates.Count;
+                //    // Reproject
+                //    swReproj.Start();
+                //    BuildingModel model = new BuildingModel(elevatedPoints.ReprojectGeodeticToCartesian(lineString.Coordinates.Count).ToList(), building.Id, building.Properties);
+                //    swReproj.Stop();
+                //    polygonPoints.Add(model);
+                //}
+
             }
 
-            return polygonPoints;
+            _logger.LogInformation($"{nameof(ComputeElevations)} done for {geoPointIdCounter} points. (Elevations: {swElevation.Elapsed:g}, Reproj: {swReproj.Elapsed:g}, Json: {swGeoJson.Elapsed:g})");
+
+            return buildingModels;
+
         }
 
         public TriangulationNormals Triangulate(FeatureCollection featureCollection, DEMDataSet dataset, bool downloadMissingFiles = true, float zScale = 1f)
         {
             List<BuildingModel> buildingModels = ComputeElevations(featureCollection, dataset, downloadMissingFiles, zScale);
+
+            var tags = new HashSet<string>(buildingModels.SelectMany(b => b.Properties.Keys));
 
             List<Vector3> positions = new List<Vector3>();
             List<int> indices = new List<int>();

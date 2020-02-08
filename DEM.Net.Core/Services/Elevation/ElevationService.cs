@@ -490,15 +490,7 @@ namespace DEM.Net.Core
                     current.Elevation = lastElevation;
                     yield return current;
                 }
-
-                //adjacentRasters.Clear();
-
-
             }
-            //}
-
-
-
         }
 
         private void PopulateRasterFileDictionary(RasterFileDictionary dictionary, FileMetadata mainTile, IRasterService rasterService, IEnumerable<FileMetadata> fileMetadataList)

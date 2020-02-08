@@ -8,7 +8,7 @@ namespace DEM.Net.Extension.Osm.Buildings
 {
     public class BuildingModel
     {
-        public List<GeoPoint> ElevatedPoints { get; private set; }
+        public List<GeoPoint> ElevatedPoints { get; internal set; }
         public string Id { get; private set; }
         public IDictionary<string, object> Properties { get; private set; }
 
