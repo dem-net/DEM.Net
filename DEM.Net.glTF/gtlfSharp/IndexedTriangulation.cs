@@ -8,9 +8,10 @@ namespace DEM.Net.glTF.SharpglTF
 
     public partial class SharpGltfService
     {
-        internal class IndexedTriangulation
+        public class IndexedTriangulation
         {
             private Triangulation Triangulation;
+
             public List<Vector3> Positions { get; private set; }
             public List<int> Indices { get; private set; }
 
@@ -28,6 +29,12 @@ namespace DEM.Net.glTF.SharpglTF
                     vectorTransform = Matrix4x4.Identity;
                 Positions = vectorTransform == default ? positions.ToList() : positions.Select(p => Vector3.Transform(p, vectorTransform)).ToList();
                 Indices = indices.ToList();
+            }
+
+            public IndexedTriangulation(TriangulationNormals triangulation)
+            {
+                Positions = triangulation.Positions.ToList();
+                Indices = triangulation.Indices.ToList();
             }
 
             public Vector3 this[int index]

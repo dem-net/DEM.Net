@@ -59,15 +59,15 @@ namespace DEM.Net.Core
             return heightMap;
         }
 
-        public static IEnumerable<GeoPoint> ReprojectGeodeticToCartesian(this IEnumerable<GeoPoint> points)
+        public static IEnumerable<GeoPoint> ReprojectGeodeticToCartesian(this IEnumerable<GeoPoint> points, int? count = null)
         {
-            return points.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR, null);
+            return points.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR, count);
         }
         public static List<Gpx.GpxTrackPoint> ReprojectGeodeticToCartesian(this IEnumerable<Gpx.GpxTrackPoint> points)
         {
             return points.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR, null);
         }
-        
+
 
         public static IEnumerable<GeoPoint> ReprojectTo(this IEnumerable<GeoPoint> points, int sourceEpsgCode, int destinationEpsgCode, int? pointCount = null)
         {

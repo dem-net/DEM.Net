@@ -27,21 +27,59 @@ using DEM.Net.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DEM.Net.Core
 {
-    public class Triangulation
+    public class Triangulation : Triangulation<GeoPoint>
     {
-        public IEnumerable<GeoPoint> Positions { get; internal set; }
+        public Triangulation() : base() { }
+        public Triangulation(IEnumerable<GeoPoint> positions, IEnumerable<int> indices)
+             : base(positions, indices) { }
+    }
+    public class TriangulationNormals : Triangulation<Vector3>
+    {
+        public IEnumerable<Vector3> Normals { get; internal set; }
+        public TriangulationNormals(IEnumerable<Vector3> positions, IEnumerable<int> indices, IEnumerable<Vector3> normals)
+            : base(positions, indices)
+        {
+            Normals = normals;
+        }
+    }
+
+    public class TriangulationList<T>
+    {
+        public IList<T> Positions { get; internal set; }
+        public IList<int> Indices { get; internal set; }
+
+        public TriangulationList()
+        {
+            Positions = new List<T>();
+            Indices = new List<int>();
+        }
+        public TriangulationList(IList<T> positions, IList<int> indices)
+        {
+            Positions = positions;
+            Indices = indices;
+        }
+
+        public int NumPositions => Positions.Count;
+        public int NumTriangles => NumIndices / 3;
+        public int NumIndices => Indices.Count;
+    }
+
+    public class Triangulation<T>
+    {
+        public IEnumerable<T> Positions { get; internal set; }
         public IEnumerable<int> Indices { get; internal set; }
 
         public Triangulation()
         {
 
         }
-        public Triangulation(IEnumerable<GeoPoint> positions, IEnumerable<int> indices)
+        public Triangulation(IEnumerable<T> positions, IEnumerable<int> indices)
         {
             Positions = positions;
             Indices = indices;

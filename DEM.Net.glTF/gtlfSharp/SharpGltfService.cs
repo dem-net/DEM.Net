@@ -74,7 +74,7 @@ namespace DEM.Net.glTF.SharpglTF
 
             if (options.HasFlag(GenOptions.Normals))
             {
-                var normals = _meshService.ComputeNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
+                var normals = _meshService.ComputeMeshNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
                 primitive = primitive.WithVertexAccessor("NORMAL", normals.ToList());
             }
 
@@ -95,6 +95,12 @@ namespace DEM.Net.glTF.SharpglTF
         { return AddTerrainMesh(CreateNewModel(), triangulation, textures, doubleSided); }
         public ModelRoot AddTerrainMesh(ModelRoot model, Triangulation triangulation, PBRTexture textures, bool doubleSided = true)
         {
+            var indexedTriangulation = new IndexedTriangulation(triangulation);
+            var normals = _meshService.ComputeMeshNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
+            return AddMesh(model, indexedTriangulation, normals, textures, doubleSided);
+        }
+        public ModelRoot AddMesh(ModelRoot model, IndexedTriangulation indexedTriangulation, IEnumerable<Vector3> normals, PBRTexture textures, bool doubleSided = true)
+        {
             // create a basic scene
             model = model ?? CreateNewModel();
             var rnode = model.LogicalScenes.First()?.FindNode(n => n.Name == TERRAIN_NODE_NAME);
@@ -109,15 +115,14 @@ namespace DEM.Net.glTF.SharpglTF
                 material.WithChannelTexture("NORMAL", 0, textures.NormalTexture.FilePath);
             }
 
-            var indexedTriangulation = new IndexedTriangulation(triangulation);
-            var normals = _meshService.ComputeNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
-
-
             // create mesh primitive
             var primitive = rmesh.CreatePrimitive()
-                .WithVertexAccessor("POSITION", indexedTriangulation.Positions)
-                .WithVertexAccessor("NORMAL", normals.ToList())
-                .WithIndicesAccessor(PrimitiveType.TRIANGLES, indexedTriangulation.Indices);
+                .WithVertexAccessor("POSITION", indexedTriangulation.Positions);
+            if (normals != null)
+            {
+                primitive = primitive.WithVertexAccessor("NORMAL", normals.ToList());
+            }
+            primitive = primitive.WithIndicesAccessor(PrimitiveType.TRIANGLES, indexedTriangulation.Indices);
 
             if (textures != null && textures.TextureCoordSets == null)
             {
@@ -180,7 +185,7 @@ namespace DEM.Net.glTF.SharpglTF
 
             var triangulation = _meshService.GenerateTriangleMesh_Line(gpxPointsElevated, trailWidthMeters);
             var indexedTriangulation = new IndexedTriangulation(triangulation.positions, triangulation.indexes);
-            var normals = _meshService.ComputeNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
+            var normals = _meshService.ComputeMeshNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
 
 
             // create mesh primitive

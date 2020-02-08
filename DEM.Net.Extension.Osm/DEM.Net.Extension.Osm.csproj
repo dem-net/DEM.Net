@@ -14,11 +14,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Model\" />
     <Folder Include="OverpassAPI\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="GeoJSON.Net" Version="1.2.14" />
+    <PackageReference Include="protobuf-net" Version="2.4.4" />
   </ItemGroup>
 
   <ItemGroup>
