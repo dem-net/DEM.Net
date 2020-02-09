@@ -208,7 +208,7 @@ namespace DEM.Net.Core
             // Calls the reproject function that will transform the input location to the output locaiton
             Reproject.ReprojectPoints(coords, new double[] { sourcePoint.Elevation.GetValueOrDefault(0) }, sourceProj, destProj, 0, 1);
 
-            return new GeoPoint(coords[1], coords[0], sourcePoint.Elevation);
+            return new GeoPoint(sourcePoint.Id, coords[1], coords[0], sourcePoint.Elevation);
         }
         private static Gpx.GpxTrackPoint ReprojectPoint(Gpx.GpxTrackPoint sourcePoint, ProjectionInfo sourceProj, ProjectionInfo destProj)
         {

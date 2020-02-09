@@ -45,7 +45,7 @@ namespace DEM.Net.Core
         /// </summary>
         public double? DistanceFromOriginMeters { get; set; }
 
-        public GeoPoint(int id, double latitude, double longitude, double? altitude)
+        public GeoPoint(int? id, double latitude, double longitude, double? altitude)
             : this(latitude, longitude, altitude)
         {
             this.Id = id;
@@ -59,7 +59,7 @@ namespace DEM.Net.Core
         }
 
         public GeoPoint(double latitude, double longitude) : this(latitude, longitude, null) { }
-        public GeoPoint(int id, double latitude, double longitude) : this(id, latitude, longitude, null) { }
+        public GeoPoint(int? id, double latitude, double longitude) : this(id, latitude, longitude, null) { }
         public GeoPoint() : this(0, 0) { }
 
         public GeoPoint Clone(double? newHeight = null)
