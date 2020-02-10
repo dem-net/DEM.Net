@@ -85,6 +85,29 @@ namespace DEM.Net.Extension.Osm.Buildings
                 {
                     var task = new OverpassQuery(bbox)
                     .WithWays("building")
+                    .WithRelations("building")
+                    .ToGeoJSON();
+
+                    FeatureCollection buildings = task.GetAwaiter().GetResult();
+
+                    return buildings;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{nameof(GetBuildingsGeoJson)} error: {ex.Message}");
+                throw;
+            }
+
+        }
+        public FeatureCollection GetBuildingsGeoJson(int wayId)
+        {
+            try
+            {
+                using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(GetBuildingsGeoJson), _logger, LogLevel.Debug))
+                {
+                    var task = new OverpassQuery()
+                    .WithWays("id", wayId.ToString())
                     .ToGeoJSON();
 
                     FeatureCollection buildings = task.GetAwaiter().GetResult();
@@ -109,32 +132,32 @@ namespace DEM.Net.Extension.Osm.Buildings
             {
                 foreach (var building in buildings.Features)
                 {
-                    LineString lineString = null;
+                    BuildingModel buildingModel = null;
                     switch (building.Geometry.Type)
                     {
                         case GeoJSONObjectType.Polygon:
 
                             Polygon poly = (Polygon)building.Geometry;
-                            lineString = poly.Coordinates.Single();
+                            buildingModel = ConvertBuildingGeometry(poly, ref geoPointIdCounter);
+                            buildingModel.Id = building.Id;
+                            buildingModel.Properties = building.Properties;
+
                             break;
 
 
                         default:
-                            lineString = null;
+                            buildingModel = null;
                             _logger.LogWarning($"CreateBuildings: type {building.Geometry.Type} not supported.");
                             break;
                     }
 
-                    if (lineString != null)
+                    if (buildingModel != null)
                     {
-                        List<GeoPoint> buildingGeoPoints = lineString.Coordinates.Select(c => new GeoPoint(++geoPointIdCounter, c.Latitude, c.Longitude))
-                                                            .ToList();
-
-                        var buildingModel = new BuildingModel(buildingGeoPoints, building.Id, building.Properties);
-
                         buildingModels.Add(buildingModel);
                     }
                 }
+
+
 
             }
 
@@ -146,9 +169,35 @@ namespace DEM.Net.Extension.Osm.Buildings
 
         }
 
-        private void ValidateBuildingTags(BuildingModel buildingModel)
+        private BuildingModel ConvertBuildingGeometry(Polygon poly, ref int geoPointIdCounter)
         {
+            // Can't do it with a linq + lambda because of ref int param
+            List<GeoPoint> outerRingGeoPoints = ConvertBuildingLineString(poly.Coordinates.First(), ref geoPointIdCounter);
 
+            List<List<GeoPoint>> interiorRings = null;
+            if (poly.Coordinates.Count > 1)
+            {
+                interiorRings = new List<List<GeoPoint>>();
+                foreach (LineString innerRing in poly.Coordinates.Skip(1))
+                {
+                    interiorRings.Add(ConvertBuildingLineString(innerRing, ref geoPointIdCounter));
+                }
+            }
+
+            var buildingModel = new BuildingModel(outerRingGeoPoints, interiorRings);
+
+            return buildingModel;
+        }
+
+        private List<GeoPoint> ConvertBuildingLineString(LineString lineString, ref int geoPointIdCounter)
+        {
+            // Can't do it with a linq + lambda because of ref int param
+            List<GeoPoint> geoPoints = new List<GeoPoint>(lineString.Coordinates.Count);
+            foreach (var pt in lineString.Coordinates)
+            {
+                geoPoints.Add(new GeoPoint(++geoPointIdCounter, pt.Latitude, pt.Longitude));
+            }
+            return geoPoints;
         }
 
         public List<BuildingModel> ComputeElevations(List<BuildingModel> buildingModels, int pointCount, DEMDataSet dataset, bool downloadMissingFiles = true, float zScale = 1f)
@@ -157,7 +206,13 @@ namespace DEM.Net.Extension.Osm.Buildings
 
             using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock("Elevations+Reprojection", _logger, LogLevel.Debug))
             {
-                reprojectedPointsById = _elevationService.GetPointsElevation(buildingModels.SelectMany(b => b.ElevatedPoints)
+                // Select all points (outer ring) + (inner rings)
+                // They all have an Id, so we can lookup in which building they should be mapped after
+                var allBuildingPoints = buildingModels
+                    .SelectMany(b => b.Points);
+
+                // Compute elevations
+                reprojectedPointsById = _elevationService.GetPointsElevation(allBuildingPoints
                                                                     , dataset
                                                                     , downloadMissingFiles: downloadMissingFiles)
                                         .ZScale(zScale)
@@ -167,16 +222,19 @@ namespace DEM.Net.Extension.Osm.Buildings
 
             using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock("Remap points", _logger, LogLevel.Debug))
             {
+                int checksum = 0;
                 foreach (var buiding in buildingModels)
                 {
-                    foreach (var point in buiding.ElevatedPoints)
+                    foreach (var point in buiding.Points)
                     {
                         var newPoint = reprojectedPointsById[point.Id.Value];
                         point.Latitude = newPoint.Latitude;
                         point.Longitude = newPoint.Longitude;
                         point.Elevation = newPoint.Elevation;
+                        checksum++;
                     }
                 }
+                Debug.Assert(checksum == reprojectedPointsById.Count);
                 reprojectedPointsById.Clear();
                 reprojectedPointsById = null;
             }
@@ -187,9 +245,10 @@ namespace DEM.Net.Extension.Osm.Buildings
 
         public TriangulationNormals Triangulate(FeatureCollection featureCollection, DEMDataSet dataset, bool downloadMissingFiles = true, float zScale = 1f)
         {
-            (List<BuildingModel> Buildings, int PointCount) parsedBuildings = this.CreateBuildingsFromGeoJson(featureCollection);
+            (List<BuildingModel> Buildings, int TotalPoints) parsedBuildings = this.CreateBuildingsFromGeoJson(featureCollection);
             var buildingModels = parsedBuildings.Buildings;
-            buildingModels = this.ComputeElevations(buildingModels, parsedBuildings.PointCount, dataset, downloadMissingFiles, zScale);
+            // Faster elevation when point count is known in advance
+            buildingModels = this.ComputeElevations(buildingModels, parsedBuildings.TotalPoints, dataset, downloadMissingFiles, zScale);
 
             var tags = new HashSet<string>(buildingModels.SelectMany(b => b.Properties.Keys));
 
@@ -197,92 +256,111 @@ namespace DEM.Net.Extension.Osm.Buildings
             List<int> indices = new List<int>();
             List<Vector3> normals = new List<Vector3>();
 
-            using (TimeSpanBlock timer = new TimeSpanBlock("Triangulation", _logger))
+            StopwatchLog sw = StopwatchLog.StartNew(_logger);
+            // Get highest base point
+            // Retrieve building size
+            foreach (var building in buildingModels)
+            //foreach (var building in buildingModels.Take(1))
             {
-                // Get highest base point
-                // Retrieve building size
-                foreach (var building in buildingModels)
-                //foreach (var building in buildingModels.Take(1))
-                {
-                    var triangulation = this.Triangulate(building);
-                    var positionsVec3 = triangulation.Positions.ToVector3().ToList();
-                    var buildingNormals = _meshService.ComputeMeshNormals(positionsVec3, triangulation.Indices);
-                    int initialPositionsCount = positions.Count;
-                    positions.AddRange(positionsVec3);
-                    indices.AddRange(triangulation.Indices.Select(i => i + initialPositionsCount).ToList());
-                    normals.AddRange(buildingNormals);
-                }
+                var triangulation = this.Triangulate(building);
+                var positionsVec3 = triangulation.Positions.ToVector3().ToList();
+                var buildingNormals = _meshService.ComputeMeshNormals(positionsVec3, triangulation.Indices);
+                int initialPositionsCount = positions.Count;
+                positions.AddRange(positionsVec3);
+                indices.AddRange(triangulation.Indices.Select(i => i + initialPositionsCount).ToList());
+                normals.AddRange(buildingNormals);
             }
+            sw.LogTime("Buildings triangulation");
 
             return new TriangulationNormals(positions, indices, normals);
         }
         public TriangulationList<GeoPoint> Triangulate(BuildingModel building)
         {
 
-            List<GeoPoint> positions = new List<GeoPoint>();
-            List<int> indices = new List<int>();
-            int outlinePointCount = building.ElevatedPoints.Count;
-
-            double highestElevation = building.ElevatedPoints.OrderByDescending(p => p.Elevation ?? 0).First().Elevation ?? 0;
+            // Algo
+            // First triangulate the foot print (with inner rings if existing)
+            // This triangulation is the roof top if building is flat
+            double highestElevation = building.Points.OrderByDescending(p => p.Elevation ?? 0).First().Elevation ?? 0;
             double buildingHeight = this.GetBuildingHeightMeters(building);
             double buildingTop = highestElevation + buildingHeight;
 
 
-            // sides
-            for (int i = 0; i < outlinePointCount - 1; i++) // -2 because last point == first point
+            //--------------------
+            // Footprint
+            // In GeoJson, ring last point == first point, we must filter the first point out
+            var footPrintOutline = building.ExteriorRing.Skip(1);
+            var footPrintInnerRingsFlattened = building.InteriorRings == null ? null : building.InteriorRings.Select(r => r.Skip(1));
+            TriangulationList<GeoPoint> triangulation = _meshService.Tesselate(footPrintOutline, footPrintInnerRingsFlattened);
+
+            // Now extrude it (build the sides)
+
+            // sides / exterior
+            int startIndexOffset = 0;
+            triangulation = AppendRingWallTriangulation(triangulation, building.ExteriorRing, startIndexOffset, buildingTop, building.MinHeight);
+            startIndexOffset += building.ExteriorRing.Count;
+
+            // sides / interiors
+            foreach (var interiorRing in building.InteriorRings)
             {
-                var pos = building.ElevatedPoints[i];
-                if (building.MinHeight.HasValue)
+                triangulation = AppendRingWallTriangulation(triangulation, interiorRing, startIndexOffset, buildingTop, building.MinHeight);
+                startIndexOffset += interiorRing.Count;
+            }
+            return triangulation;
+
+        }
+
+        public TriangulationList<GeoPoint> AppendRingWallTriangulation(TriangulationList<GeoPoint> triangulation, List<GeoPoint> buildingRing, int indexOffset, double buildingTop, double? minHeight)
+        {
+            Dictionary<int, GeoPoint> currentPointIndex = triangulation.Positions.ToDictionary(p => p.Id.Value, p => p);
+            int maxIndexInitial = triangulation.Positions.Count - 1;
+
+            // walls
+            // Initial elevations are onto terrain
+            // We must add the top vertices
+            //
+            for (int i = 0; i < buildingRing.Count - 1; i++) // -2 because last point == first point
+            {
+                var posFloor = buildingRing[i];
+                if (minHeight.HasValue)
                 {
-                    var posBottom = pos.Clone(building.MinHeight);
-                    positions.Add(posBottom);
-                }
-                else
-                {
-                    positions.Add(pos);
+                    // Set floor elevation up for minHeight tags
+                    currentPointIndex[posFloor.Id.Value].Elevation = minHeight.Value;
                 }
 
-                var posTop = pos.Clone();
+                var posTop = posFloor.Clone();
                 posTop.Elevation = buildingTop;
-                positions.Add(posTop);
+                triangulation.Positions.Add(posTop);
 
                 if (i > 0)
                 {
-                    indices.Add(i * 2 - 2);
-                    indices.Add(i * 2 - 1);
-                    indices.Add(i * 2);
+                    triangulation.Indices.Add(indexOffset + i - 1);
+                    triangulation.Indices.Add(maxIndexInitial + i - 3);
+                    triangulation.Indices.Add(indexOffset + i);
 
 
-                    indices.Add(i * 2);
-                    indices.Add(i * 2 - 1);
-                    indices.Add(i * 2 + 1);
+                    triangulation.Indices.Add(maxIndexInitial + i - 3);
+                    triangulation.Indices.Add(maxIndexInitial + i - 2);
+                    triangulation.Indices.Add(indexOffset + i);
                 }
             }
 
             // connect last vertex to first
-            int index = positions.Count;
-            indices.Add(index - 2);
-            indices.Add(index - 1);
-            indices.Add(0);
+            int index = triangulation.Positions.Count;
+            triangulation.Indices.Add(maxIndexInitial);
+            triangulation.Indices.Add(index - 1);
+            triangulation.Indices.Add(indexOffset + 0);
 
 
-            indices.Add(0);
-            indices.Add(index - 1);
-            indices.Add(1);
+            triangulation.Indices.Add(index - 1);
+            triangulation.Indices.Add(maxIndexInitial + 1);
+            triangulation.Indices.Add(indexOffset + 0);
 
-            //--------------------
-            // Rooftop
-            // We have a triangulation from original vertices, but now they are interleaved between bottom and top
-            // we need to remap indices on top vertices only, ie: newIndex = index * 2 + 1
-            var roofOutline = building.ElevatedPoints.Take(outlinePointCount - 1)
-                                .Select(p => p.Clone(buildingTop))
-                                .ToList();
-            TriangulationList<GeoPoint> roofTopFlat = _meshService.Tesselate(roofOutline, buildingTop);
-            var topIndices = roofTopFlat.Indices.Select(i => i * 2 + 1);
-            indices.AddRange(topIndices);
 
-            return new TriangulationList<GeoPoint>(positions, indices);
+
+            return triangulation;
+
         }
+
 
         private double GetBuildingHeightMeters(BuildingModel building)
         {

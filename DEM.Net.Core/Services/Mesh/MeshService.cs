@@ -410,28 +410,40 @@ namespace DEM.Net.Core
         /// <summary>
         /// With a polygon input ring, returns the same number of points, with indices triplets forming a triangulation
         /// </summary>
-        /// <param name="elevatedPoints"></param>
-        /// <param name="buildingTop"></param>
+        /// <param name="outerRingPoints"></param>
         /// <returns></returns>
-        public TriangulationList<GeoPoint> Tesselate(List<GeoPoint> elevatedPoints, double buildingTop)
+        public TriangulationList<GeoPoint> Tesselate(IEnumerable<GeoPoint> outerRingPoints, IEnumerable<IEnumerable<GeoPoint>> innerRingsPoints)
         {
+            TriangulationList<GeoPoint> triangulation = new TriangulationList<GeoPoint>();
+
             var data = new List<double>();
             var holeIndices = new List<int>();
 
-            foreach (var p in elevatedPoints)
+            int index = 0;
+            foreach (var p in outerRingPoints)
             {
+                triangulation.Positions.Add(p);
+
                 data.Add(p.Longitude);
                 data.Add(p.Latitude);
-            }
 
-            var trianglesIndices = Earcut.Tessellate(data, holeIndices);
-            TriangulationList<GeoPoint> triangulation = new TriangulationList<GeoPoint>();
-            triangulation.Positions = elevatedPoints.Select(p =>
+                index += 2;
+            }
+            if (innerRingsPoints != null)
             {
-                var newP = p.Clone();
-                newP.Elevation = buildingTop;
-                return newP;
-            }).ToList();
+                foreach (var ring in innerRingsPoints)
+                    foreach (var p in ring)
+                    {
+                        triangulation.Positions.Add(p);
+
+                        data.Add(p.Longitude);
+                        data.Add(p.Latitude);
+
+                        holeIndices.Add(index++);
+                        holeIndices.Add(index++);
+                    }
+            }
+            var trianglesIndices = Earcut.Tessellate(data, holeIndices);
 
             triangulation.Indices = trianglesIndices;
 

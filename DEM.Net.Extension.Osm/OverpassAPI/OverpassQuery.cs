@@ -526,8 +526,8 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
 
                 try
                 {
-
-                    using (var ResponseMessage = await HTTPClient.PostAsync(OverpassAPI_URI, new StringContent(this.ToString())))
+                    string queryBody = this.ToString();
+                    using (var ResponseMessage = await HTTPClient.PostAsync(OverpassAPI_URI, new StringContent(queryBody)))
                     {
 
                         if (ResponseMessage.StatusCode == HttpStatusCode.OK)

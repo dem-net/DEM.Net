@@ -11,6 +11,6 @@ namespace DEM.Net.Core
         Triangulation TriangulateHeightMap(HeightMap heightMap, bool regularTriangulation = true);
         (IEnumerable<Vector3> positions, IEnumerable<int> indexes) GenerateTriangleMesh_Line(IEnumerable<GeoPoint> gpxPointsElevated, float trailWidthMeters);
 
-        TriangulationList<GeoPoint> Tesselate(List<GeoPoint> elevatedPoints, double buildingTop);
+        TriangulationList<GeoPoint> Tesselate(IEnumerable<GeoPoint> outerRingPoints, IEnumerable<IEnumerable<GeoPoint>> innerRingsPoints);
     }
 }

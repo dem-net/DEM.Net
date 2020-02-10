@@ -31,26 +31,20 @@ namespace DEM.Net.Core
 {
     public class TimeSpanBlock : IDisposable
     {
-        private Stopwatch _sw;
-        private ILogger _logger;
+        private StopwatchLog _sw;
         private readonly string _operationName;
         private readonly LogLevel _logLevel;
 
         public TimeSpanBlock(string operationName, ILogger logger, LogLevel logLevel = LogLevel.Information)
         {
-            _sw = Stopwatch.StartNew();
-            _logger = logger;
+            _sw = StopwatchLog.StartNew(logger);
             _operationName = operationName;
             _logLevel = logLevel;
         }
 
         public void Dispose()
         {
-            _sw.Stop();
-            if (_logger.IsEnabled(_logLevel))
-            {
-                _logger.Log(_logLevel, $"{_operationName} completed in {_sw.ElapsedMilliseconds} ms");
-            }
+            _sw.LogTime(_operationName, _logLevel);
         }
     }
 }
