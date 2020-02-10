@@ -40,7 +40,13 @@ namespace DEM.Net.Extension.Osm.Buildings
         {
             try
             {
-                var triangulation = this.GetBuildings3DTriangulation(bbox, dataSet, downloadMissingFiles, zScale);
+
+                FeatureCollection buildings = this.GetBuildingsGeoJson(bbox);
+                if (downloadMissingFiles)
+                {
+                    _elevationService.DownloadMissingFiles(dataSet, bbox);
+                }
+                var triangulation = this.GetBuildings3DTriangulation(buildings, dataSet, downloadMissingFiles, zScale);
                 var model = _gltfService.AddMesh(null, new SharpGltfService.IndexedTriangulation(triangulation), null, null, doubleSided: true);
 
                 return model;
@@ -51,20 +57,16 @@ namespace DEM.Net.Extension.Osm.Buildings
                 throw;
             }
         }
-        public TriangulationNormals GetBuildings3DTriangulation(BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles, float zScale)
+        public TriangulationNormals GetBuildings3DTriangulation(FeatureCollection buildings, DEMDataSet dataSet, bool downloadMissingFiles, float zScale)
         {
             try
             {
                 using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(GetBuildings3DTriangulation), _logger, LogLevel.Information))
                 {
-                    FeatureCollection buildings = this.GetBuildingsGeoJson(bbox);
+
                     _logger.LogInformation($"{buildings?.Features?.Count} buildings downloaded");
 
 
-                    if (downloadMissingFiles)
-                    {
-                        _elevationService.DownloadMissingFiles(dataSet, bbox);
-                    }
                     TriangulationNormals triangulation = this.Triangulate(buildings, dataSet, false, zScale);
                     return triangulation;
                 }
@@ -128,15 +130,24 @@ namespace DEM.Net.Extension.Osm.Buildings
                         List<GeoPoint> buildingGeoPoints = lineString.Coordinates.Select(c => new GeoPoint(++geoPointIdCounter, c.Latitude, c.Longitude))
                                                             .ToList();
 
-                        buildingModels.Add(new BuildingModel(buildingGeoPoints, building.Id, building.Properties));
+                        var buildingModel = new BuildingModel(buildingGeoPoints, building.Id, building.Properties);
+
+                        buildingModels.Add(buildingModel);
                     }
                 }
 
             }
 
+            BuildingValidator.ValidateTags(buildingModels);
+
             _logger.LogInformation($"{nameof(CreateBuildingsFromGeoJson)} done for {geoPointIdCounter} points.");
 
             return (buildingModels, geoPointIdCounter);
+
+        }
+
+        private void ValidateBuildingTags(BuildingModel buildingModel)
+        {
 
         }
 
