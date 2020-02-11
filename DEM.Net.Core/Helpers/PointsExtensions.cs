@@ -13,9 +13,9 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="points"></param>
         /// <returns></returns>
-        public static ElevationMetrics ComputeMetrics(this IList<GeoPoint> points)
+        public static ElevationMetrics ComputeMetrics(this IList<GeoPoint> points, double? noDataValue = null)
         {
-            return GeometryService.ComputeMetrics(points);
+            return GeometryService.ComputeMetrics(points, noDataValue);
         }
 
         /// <summary>
@@ -25,9 +25,9 @@ namespace DEM.Net.Core
         /// <param name="sourceVerticalOffset">Vertical elevation offset at source point. The line of sight will be calculated from this point (set to 1.8 for simulate a human eye height)</param>
         /// <returns></returns>
         public static IntervisibilityMetrics ComputeVisibilityMetrics(this IList<GeoPoint> linePoints
-            , double sourceVerticalOffset = 0d)
+            , double sourceVerticalOffset = 0d, double? noDataValue = null)
         {
-            return GeometryService.ComputeVisibilityMetrics(linePoints, visibilityCheck: true, sourceVerticalOffset: sourceVerticalOffset);
+            return GeometryService.ComputeVisibilityMetrics(linePoints, visibilityCheck: true, sourceVerticalOffset: sourceVerticalOffset, noDataValue);
         }
 
         /// <summary>
