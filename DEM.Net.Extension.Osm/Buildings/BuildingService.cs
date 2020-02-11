@@ -276,14 +276,7 @@ namespace DEM.Net.Extension.Osm.Buildings
         }
         public TriangulationList<GeoPoint> Triangulate(BuildingModel building)
         {
-
-            // Algo
-            // First triangulate the foot print (with inner rings if existing)
-            // This triangulation is the roof top if building is flat
-            double highestElevation = building.Points.OrderByDescending(p => p.Elevation ?? 0).First().Elevation ?? 0;
-            double buildingHeight = this.GetBuildingHeightMeters(building);
-            double buildingTop = highestElevation + buildingHeight;
-
+            int totalPoints = building.ExteriorRing.Count - 1 + building.InteriorRings.Sum(r => r.Count - 1);
 
             //--------------------
             // Footprint
@@ -293,20 +286,85 @@ namespace DEM.Net.Extension.Osm.Buildings
             TriangulationList<GeoPoint> triangulation = _meshService.Tesselate(footPrintOutline, footPrintInnerRingsFlattened);
 
             // Now extrude it (build the sides)
+            // Algo
+            // First triangulate the foot print (with inner rings if existing)
+            // This triangulation is the roof top if building is flat
+            (double? floor, double roof) computedHeight = this.GetBuildingHeightMeters(building);
 
-            // sides / exterior
-            int startIndexOffset = 0;
-            triangulation = AppendRingWallTriangulation(triangulation, building.ExteriorRing, startIndexOffset, buildingTop, building.MinHeight);
-            startIndexOffset += building.ExteriorRing.Count;
+            // Triangulate wall for each ring
+            List<int> numVerticesPerRing = new List<int>();
+            numVerticesPerRing.Add(building.ExteriorRing.Count - 1);
+            numVerticesPerRing.AddRange(building.InteriorRings.Select(r => r.Count - 1));
 
-            // sides / interiors
-            foreach (var interiorRing in building.InteriorRings)
+            triangulation = this.TriangulateRingsWall(triangulation, numVerticesPerRing, totalPoints);
+
+            // Building has real elevations
+            if (computedHeight.floor.HasValue)
             {
-                triangulation = AppendRingWallTriangulation(triangulation, interiorRing, startIndexOffset, buildingTop, building.MinHeight);
-                startIndexOffset += interiorRing.Count;
+                // Create floor vertices by copying roof vertices and setting their z min elevation (floor or min height)
+                var floorVertices = triangulation.Positions.Select(pt => pt.Clone(computedHeight.floor)).ToList();
+                triangulation.Positions.AddRange(floorVertices);
+
+                foreach (var pt in triangulation.Positions.Take(totalPoints))
+                {
+                    pt.Elevation = computedHeight.roof;
+                }
             }
+            else
+            {
+                // Create floor vertices by copying roof vertices and setting their z min elevation (floor or min height)
+                var floorVertices = triangulation.Positions.Select(pt => pt.Clone(null)).ToList();
+                triangulation.Positions.AddRange(floorVertices);
+
+                foreach (var pt in triangulation.Positions.Take(totalPoints))
+                {
+                    pt.Elevation = computedHeight.roof;
+                }
+            }
+
+
+
+
             return triangulation;
 
+        }
+
+        private TriangulationList<GeoPoint> TriangulateRingsWall(TriangulationList<GeoPoint> triangulation, List<int> numVerticesPerRing, int totalPoints)
+        {
+            int offset = numVerticesPerRing.Sum();
+
+            Debug.Assert(totalPoints == offset);
+
+            int ringOffset = 0;
+            foreach (var numRingVertices in numVerticesPerRing)
+            {
+                int i = 0;
+                do
+                {
+                    triangulation.Indices.Add(ringOffset + i);
+                    triangulation.Indices.Add(ringOffset + i + offset);
+                    triangulation.Indices.Add(ringOffset + i + 1);
+
+                    triangulation.Indices.Add(ringOffset + i + offset);
+                    triangulation.Indices.Add(ringOffset + i + offset + 1);
+                    triangulation.Indices.Add(ringOffset + i + 1);
+
+                    i++;
+                }
+                while (i < numRingVertices - 1);
+
+                triangulation.Indices.Add(ringOffset + i);
+                triangulation.Indices.Add(ringOffset + i + offset);
+                triangulation.Indices.Add(ringOffset + 0);
+
+                triangulation.Indices.Add(ringOffset + i + offset);
+                triangulation.Indices.Add(ringOffset + 0 + offset + 1);
+                triangulation.Indices.Add(ringOffset + 0 + 1);
+
+                ringOffset += numRingVertices;
+
+            }
+            return triangulation;
         }
 
         public TriangulationList<GeoPoint> AppendRingWallTriangulation(TriangulationList<GeoPoint> triangulation, List<GeoPoint> buildingRing, int indexOffset, double buildingTop, double? minHeight)
@@ -362,22 +420,21 @@ namespace DEM.Net.Extension.Osm.Buildings
         }
 
 
-        private double GetBuildingHeightMeters(BuildingModel building)
+        private (double? minHeight, double maxHeight) GetBuildingHeightMeters(BuildingModel building)
         {
-            if (building.Height.HasValue && building.Levels.HasValue)
-            {
-                _logger.LogWarning("Inchoerent height info.");
-            }
             if (building.Levels.HasValue && (building.Height.HasValue || building.MinHeight.HasValue))
             {
-                _logger.LogWarning("Inchoerent height info.");
+                _logger.LogWarning("Inchoerent height info (Levels and Height), choosing Height.");
             }
 
+            double highestFloorElevation = building.Points.OrderByDescending(p => p.Elevation ?? 0).First().Elevation ?? 0;
 
-            double computedHeight = (building.Levels ?? 3) * FloorHeightMeters;
+            double computedHeight = building.Height ?? (building.Levels ?? 3) * FloorHeightMeters;
+            double roofElevation = computedHeight + highestFloorElevation;
 
-            double height = (building.Height ?? computedHeight) - (building.MinHeight ?? 0d);
-            return height;
+            double? computedMinHeight = building.MinHeight == null ? default(double?) : computedHeight - building.MinHeight.Value;
+
+            return (computedMinHeight, roofElevation);
         }
     }
 }
