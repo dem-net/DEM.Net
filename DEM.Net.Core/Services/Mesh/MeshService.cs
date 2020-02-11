@@ -430,6 +430,8 @@ namespace DEM.Net.Core
             if (innerRingsPoints != null)
             {
                 foreach (var ring in innerRingsPoints)
+                {
+                    holeIndices.Add(triangulation.Positions.Count);
                     foreach (var p in ring)
                     {
                         triangulation.Positions.Add(p);
@@ -437,8 +439,8 @@ namespace DEM.Net.Core
                         data.Add(p.Longitude);
                         data.Add(p.Latitude);
 
-                        holeIndices.Add(triangulation.Positions.Count - 1);
                     }
+                }
             }
             var trianglesIndices = Earcut.Tessellate(data, holeIndices);
 

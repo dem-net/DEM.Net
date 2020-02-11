@@ -33,6 +33,13 @@ namespace DEM.Net.Core.Tesselation
 {
     internal class Earcut
     {
+        /// <summary>
+        /// Computes tesselation using earcut https://github.com/mapbox/earcut
+        /// csharp: https://github.com/oberbichler/earcut.net thanks to Bert Temme https://github.com/bertt/
+        /// </summary>
+        /// <param name="data">coordinates as pairs of x,y</param>
+        /// <param name="holeIndices">Indexes of the first Vertex of each hole</param>
+        /// <returns></returns>
         public static List<int> Tessellate(IList<double> data, IList<int> holeIndices)
         {
             var hasHoles = holeIndices.Count > 0;
