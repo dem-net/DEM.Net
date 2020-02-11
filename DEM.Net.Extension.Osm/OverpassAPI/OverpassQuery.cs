@@ -64,10 +64,11 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
         #region Data
 
         /// <summary>
-        /// The URI of the OverpassAPI.
+        /// The URI of the OverpassAPI. List of public instances here : https://wiki.openstreetmap.org/wiki/Overpass_API#Public_Overpass_API_instances
         /// </summary>
-        //public static readonly Uri OverpassAPI_URI = new Uri("http://overpass-api.de/api/interpreter");
-        public static readonly Uri OverpassAPI_URI = new Uri("http://overpass.openstreetmap.fr/api/interpreter");
+        public static readonly Uri OverpassAPI_URI = new Uri("http://overpass-api.de/api/interpreter");
+        //public static readonly Uri OverpassAPI_URI = new Uri("http://overpass.openstreetmap.fr/api/interpreter");
+        //https://lz4.overpass-api.de/api/interpreter
 
 
         /// <summary>
