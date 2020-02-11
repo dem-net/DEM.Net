@@ -189,9 +189,9 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="points">Input list of points</param>
         /// <returns><see cref="ElevationMetrics"/> object</returns>
-		internal static ElevationMetrics ComputeMetrics(IList<GeoPoint> points)
+		internal static ElevationMetrics ComputeMetrics(IList<GeoPoint> points, double? noDataValue)
         {
-            return ComputeVisibilityMetrics(points, visibilityCheck: false);
+            return ComputeVisibilityMetrics(points, visibilityCheck: false, noDataValue: noDataValue);
         }
 
         /// <summary>
@@ -201,7 +201,7 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="points">Input list of points, visibility is calculated for first and last points (ie: are they visible or is there a relief standing in between)</param>
         /// <returns><see cref="IntervisibilityMetrics"/> object</returns>
-		internal static IntervisibilityMetrics ComputeVisibilityMetrics(IList<GeoPoint> points, bool visibilityCheck = true, double sourceVerticalOffset = 0d)
+		internal static IntervisibilityMetrics ComputeVisibilityMetrics(IList<GeoPoint> points, bool visibilityCheck = true, double sourceVerticalOffset = 0d, double? noDataValue = null)
         {
             IntervisibilityMetrics metrics = new IntervisibilityMetrics();
 
@@ -226,6 +226,7 @@ namespace DEM.Net.Core
 
             IntervisibilityObstacle obstacle = null;
             double lastPeakElevation = 0;
+            int numNoDataPoints = 0;
             for (int i = 1; i < points.Count; i++)
             {
                 #region metrics
@@ -236,6 +237,8 @@ namespace DEM.Net.Core
 
                 minElevation = Math.Min(minElevation, curPoint.Elevation ?? double.MaxValue);
                 maxElevation = Math.Max(maxElevation, curPoint.Elevation ?? double.MinValue);
+
+                numNoDataPoints += curPoint.Elevation == noDataValue ? 1 : 0;
 
                 double currentElevation = curPoint.Elevation ?? lastElevation;
                 double diff = currentElevation - lastElevation;
@@ -310,6 +313,8 @@ namespace DEM.Net.Core
             metrics.Distance = total;
             metrics.MinElevation = minElevation;
             metrics.MaxElevation = maxElevation;
+            metrics.HasVoids = numNoDataPoints > 0;
+            metrics.NumVoidPoints = numNoDataPoints;
             return metrics;
         }
 

@@ -36,7 +36,7 @@ namespace DEM.Net.Core
     {
         public GeoPoint Origin { get; internal set; }
         public GeoPoint Target { get; internal set; }
-        public double OriginVerticalOffset { get; internal set; } 
+        public double OriginVerticalOffset { get; internal set; }
         public bool HasObstacles => Metrics?.Intervisible == false;
         public int ObstacleCount => Metrics?.Obstacles?.Count ?? 0;
         public List<GeoPoint> GeoPoints { get; internal set; }
