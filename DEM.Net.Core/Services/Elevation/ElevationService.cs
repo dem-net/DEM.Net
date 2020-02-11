@@ -954,7 +954,7 @@ namespace DEM.Net.Core
 
                 var geoPoints = this.GetLineGeometryElevation(elevationLine, dataSet);
 
-                var metrics = geoPoints.ComputeVisibilityMetrics(sourceVerticalOffset);
+                var metrics = geoPoints.ComputeVisibilityMetrics(sourceVerticalOffset, dataSet.NoDataValue);
 
                 return new IntervisibilityReport(geoPoints, metrics, originVerticalOffset: sourceVerticalOffset);
             }
@@ -967,11 +967,11 @@ namespace DEM.Net.Core
         }
 
         public IntervisibilityReport GetIntervisibilityReport(List<GeoPoint> linePoints
-            , double sourceVerticalOffset = 0d)
+            , double sourceVerticalOffset = 0d, double? noDataValue = null)
         {
             try
             {
-                var metrics = linePoints.ComputeVisibilityMetrics(sourceVerticalOffset);
+                var metrics = linePoints.ComputeVisibilityMetrics(sourceVerticalOffset, noDataValue: noDataValue);
 
                 return new IntervisibilityReport(linePoints, metrics, originVerticalOffset: sourceVerticalOffset);
             }
