@@ -466,10 +466,6 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
             Byte            Found = 0;
             GeoFeature      CurrentGeoFeature;
 
-            if (Relation.Id == 3484638)
-            {
-            }
-
             //if (Relation.Tags["type"].ToString() != "multipolygon")
             //{
             //    Console.WriteLine("Broken OSM multipolygon relation found!");
