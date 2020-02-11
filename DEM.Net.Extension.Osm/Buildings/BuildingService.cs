@@ -42,6 +42,7 @@ namespace DEM.Net.Extension.Osm.Buildings
             {
 
                 FeatureCollection buildings = this.GetBuildingsGeoJson(bbox);
+                _logger.LogInformation($"{buildings?.Features?.Count} buildings downloaded");
                 if (downloadMissingFiles)
                 {
                     _elevationService.DownloadMissingFiles(dataSet, bbox);
@@ -63,10 +64,6 @@ namespace DEM.Net.Extension.Osm.Buildings
             {
                 using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(GetBuildings3DTriangulation), _logger, LogLevel.Information))
                 {
-
-                    _logger.LogInformation($"{buildings?.Features?.Count} buildings downloaded");
-
-
                     TriangulationNormals triangulation = this.Triangulate(buildings, dataSet, false, zScale);
                     return triangulation;
                 }
@@ -250,8 +247,6 @@ namespace DEM.Net.Extension.Osm.Buildings
             // Faster elevation when point count is known in advance
             buildingModels = this.ComputeElevations(buildingModels, parsedBuildings.TotalPoints, dataset, downloadMissingFiles, zScale);
 
-            var tags = new HashSet<string>(buildingModels.SelectMany(b => b.Properties.Keys));
-
             List<Vector3> positions = new List<Vector3>();
             List<int> indices = new List<int>();
             List<Vector3> normals = new List<Vector3>();
@@ -358,8 +353,8 @@ namespace DEM.Net.Extension.Osm.Buildings
                 triangulation.Indices.Add(ringOffset + 0);
 
                 triangulation.Indices.Add(ringOffset + i + offset);
-                triangulation.Indices.Add(ringOffset + 0 + offset + 1);
-                triangulation.Indices.Add(ringOffset + 0 + 1);
+                triangulation.Indices.Add(ringOffset + 0 + offset);
+                triangulation.Indices.Add(ringOffset + 0);
 
                 ringOffset += numRingVertices;
 
