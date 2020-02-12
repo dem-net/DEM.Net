@@ -37,6 +37,7 @@ namespace DEM.Net.Core
         public GeoPoint Origin { get; internal set; }
         public GeoPoint Target { get; internal set; }
         public double OriginVerticalOffset { get; internal set; }
+        public double TargetVerticalOffset { get; internal set; }
         public bool HasObstacles => Metrics?.Intervisible == false;
         public int ObstacleCount => Metrics?.Obstacles?.Count ?? 0;
         public List<GeoPoint> GeoPoints { get; internal set; }
@@ -48,13 +49,15 @@ namespace DEM.Net.Core
             GeoPoints = null;
         }
 
-        public IntervisibilityReport(List<GeoPoint> pointsWithElevation, IntervisibilityMetrics visibilityMetrics, bool includeAllPoints = false, double originVerticalOffset = 0d)
+        public IntervisibilityReport(List<GeoPoint> pointsWithElevation, IntervisibilityMetrics visibilityMetrics, bool includeAllPoints = false, double originVerticalOffset = 0d
+            , double targetVerticalOffset = 0d)
         {
             this.Origin = pointsWithElevation.First();
             this.Target = pointsWithElevation.Last();
             this.Metrics = visibilityMetrics;
             this.GeoPoints = pointsWithElevation;
             this.OriginVerticalOffset = originVerticalOffset;
+            this.TargetVerticalOffset = targetVerticalOffset;
         }
     }
 }

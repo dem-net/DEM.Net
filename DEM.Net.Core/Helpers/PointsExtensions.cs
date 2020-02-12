@@ -23,11 +23,14 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="points"></param>
         /// <param name="sourceVerticalOffset">Vertical elevation offset at source point. The line of sight will be calculated from this point (set to 1.8 for simulate a human eye height)</param>
+        /// <param name="targetVerticalOffset"></param>
         /// <returns></returns>
         public static IntervisibilityMetrics ComputeVisibilityMetrics(this IList<GeoPoint> linePoints
-            , double sourceVerticalOffset = 0d, double? noDataValue = null)
+            , double sourceVerticalOffset = 0d
+            , double targetVerticalOffset = 0d
+            , double? noDataValue = null)
         {
-            return GeometryService.ComputeVisibilityMetrics(linePoints, visibilityCheck: true, sourceVerticalOffset: sourceVerticalOffset, noDataValue);
+            return GeometryService.ComputeVisibilityMetrics(linePoints, visibilityCheck: true, sourceVerticalOffset: sourceVerticalOffset, targetVerticalOffset: targetVerticalOffset, noDataValue);
         }
 
         /// <summary>
