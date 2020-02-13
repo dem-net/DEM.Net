@@ -30,6 +30,8 @@ using System.IO;
 using System.Globalization;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
+using DEM.Net.Core;
 
 namespace DEM.Net.Extension.Osm.Buildings
 {
@@ -147,7 +149,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                 try
                 {
                     // Will capture 4 items : inputval / sign / value / unit
-                    var match = Regex.Match(val.ToString(), ValueAndUnitRegex);
+                    var match = Regex.Match(val.ToString(), ValueAndUnitRegex, RegexOptions.Singleline | RegexOptions.Compiled);
                     if (match.Success)
                     {
                         var groups = match.Groups[0];

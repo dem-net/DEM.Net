@@ -127,6 +127,7 @@ namespace DEM.Net.Extension.Osm.Buildings
             int geoPointIdCounter = 0;
 
             List<BuildingModel> buildingModels = new List<BuildingModel>(buildings.Features.Count);
+            StopwatchLog parseTimer = new StopwatchLog(_logger);
             using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(CreateBuildingsFromGeoJson), _logger, LogLevel.Debug))
             {
                 foreach (var building in buildings.Features)
@@ -152,14 +153,15 @@ namespace DEM.Net.Extension.Osm.Buildings
 
                     if (buildingModel != null)
                     {
+                        parseTimer.Start();
                         _buildingValidator.ParseTags(buildingModel);
+                        parseTimer.Stop();
                         buildingModels.Add(buildingModel);
                     }
                 }
-
-
-
             }
+
+            parseTimer.LogTime("ParseTags");
 
             BuildingValidator.ValidateTags(buildingModels);
 
