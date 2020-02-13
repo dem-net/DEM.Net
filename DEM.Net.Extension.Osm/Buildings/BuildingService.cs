@@ -21,6 +21,7 @@ namespace DEM.Net.Extension.Osm.Buildings
         private readonly SharpGltfService _gltfService;
         private readonly IMeshService _meshService;
         private readonly ILogger<BuildingService> _logger;
+        private readonly BuildingValidator _buildingValidator;
 
         const double FloorHeightMeters = 2.5;
 
@@ -33,6 +34,7 @@ namespace DEM.Net.Extension.Osm.Buildings
             this._elevationService = elevationService;
             this._gltfService = gltfService;
             this._meshService = meshService;
+            this._buildingValidator = new BuildingValidator(logger);
             this._logger = logger;
         }
 
@@ -137,7 +139,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                             Polygon poly = (Polygon)building.Geometry;
                             buildingModel = ConvertBuildingGeometry(poly, ref geoPointIdCounter);
                             buildingModel.Id = building.Id;
-                            buildingModel.Properties = building.Properties;
+                            buildingModel.Tags = building.Properties;
 
                             break;
 
@@ -150,6 +152,7 @@ namespace DEM.Net.Extension.Osm.Buildings
 
                     if (buildingModel != null)
                     {
+                        _buildingValidator.ParseTags(buildingModel);
                         buildingModels.Add(buildingModel);
                     }
                 }
