@@ -571,6 +571,7 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
 
                 if (ResultList.First().Type == GeoJSONObjectType.Polygon)
                 {
+                    multiRing = multiRing.Where(r => r.Coordinates.Count >= 4).ToList();
                     geometry = new Polygon(multiRing);
                 }
                 else

@@ -164,6 +164,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                             case "ft":
                             case "feet":
                             case "foot":
+                            case "'":
                                 factor = 0.3048009193;
                                 break;
 
