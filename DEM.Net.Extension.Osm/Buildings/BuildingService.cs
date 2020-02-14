@@ -21,7 +21,6 @@ namespace DEM.Net.Extension.Osm.Buildings
         private readonly SharpGltfService _gltfService;
         private readonly IMeshService _meshService;
         private readonly ILogger<BuildingService> _logger;
-        private readonly BuildingValidator _buildingValidator;
 
         const double FloorHeightMeters = 2.5;
 
@@ -34,7 +33,6 @@ namespace DEM.Net.Extension.Osm.Buildings
             this._elevationService = elevationService;
             this._gltfService = gltfService;
             this._meshService = meshService;
-            this._buildingValidator = new BuildingValidator(logger);
             this._logger = logger;
         }
 
@@ -42,14 +40,21 @@ namespace DEM.Net.Extension.Osm.Buildings
         {
             try
             {
-
+                // Download buildings and convert them to GeoJson
                 FeatureCollection buildings = this.GetBuildingsGeoJson(bbox);
-                _logger.LogInformation($"{buildings?.Features?.Count} buildings downloaded");
-                if (downloadMissingFiles)
-                {
-                    _elevationService.DownloadMissingFiles(dataSet, bbox);
-                }
-                var triangulation = this.GetBuildings3DTriangulation(buildings, dataSet, downloadMissingFiles, zScale);
+                
+                // Download elevation data if missing
+                if (downloadMissingFiles) _elevationService.DownloadMissingFiles(dataSet, bbox);
+
+                // Create internal building model
+                 var buildingValidator = new BuildingValidator(_logger);
+                (List<BuildingModel> Buildings, int TotalPoints) parsedBuildings = this.CreateBuildingsFromGeoJson(buildings, buildingValidator);
+                
+                // Compute elevations (faster elevation when point count is known in advance)
+                parsedBuildings.Buildings = this.ComputeElevations(parsedBuildings.Buildings, parsedBuildings.TotalPoints, dataSet, downloadMissingFiles, zScale);
+
+                TriangulationNormals triangulation = this.Triangulate(parsedBuildings.Buildings);
+                
                 var model = _gltfService.AddMesh(null, new SharpGltfService.IndexedTriangulation(triangulation), null, null, doubleSided: true);
 
                 return model;
@@ -60,21 +65,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                 throw;
             }
         }
-        public TriangulationNormals GetBuildings3DTriangulation(FeatureCollection buildings, DEMDataSet dataSet, bool downloadMissingFiles, float zScale)
-        {
-            try
-            {
-                using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(GetBuildings3DTriangulation), _logger, LogLevel.Information))
-                {
-                    TriangulationNormals triangulation = this.Triangulate(buildings, dataSet, false, zScale);
-                    return triangulation;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+        
 
         public FeatureCollection GetBuildingsGeoJson(BoundingBox bbox)
         {
@@ -88,6 +79,8 @@ namespace DEM.Net.Extension.Osm.Buildings
                     .ToGeoJSON();
 
                     FeatureCollection buildings = task.GetAwaiter().GetResult();
+
+                    _logger.LogInformation($"{buildings?.Features?.Count} buildings downloaded");
 
                     return buildings;
                 }
@@ -122,7 +115,7 @@ namespace DEM.Net.Extension.Osm.Buildings
 
         }
 
-        public (List<BuildingModel> buildings, int totalPoints) CreateBuildingsFromGeoJson(FeatureCollection buildings)
+        public (List<BuildingModel> buildings, int totalPoints) CreateBuildingsFromGeoJson(FeatureCollection buildings, BuildingValidator buildingValidator)
         {
             int geoPointIdCounter = 0;
 
@@ -154,7 +147,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                     if (buildingModel != null)
                     {
                         parseTimer.Start();
-                        _buildingValidator.ParseTags(buildingModel);
+                        buildingValidator.ParseTags(buildingModel);
                         parseTimer.Stop();
                         buildingModels.Add(buildingModel);
                     }
@@ -245,13 +238,9 @@ namespace DEM.Net.Extension.Osm.Buildings
 
         }
 
-        public TriangulationNormals Triangulate(FeatureCollection featureCollection, DEMDataSet dataset, bool downloadMissingFiles = true, float zScale = 1f)
-        {
-            (List<BuildingModel> Buildings, int TotalPoints) parsedBuildings = this.CreateBuildingsFromGeoJson(featureCollection);
-            var buildingModels = parsedBuildings.Buildings;
-            // Faster elevation when point count is known in advance
-            buildingModels = this.ComputeElevations(buildingModels, parsedBuildings.TotalPoints, dataset, downloadMissingFiles, zScale);
-
+        public TriangulationNormals Triangulate(List<BuildingModel> buildingModels)
+        {            
+          
             List<Vector3> positions = new List<Vector3>();
             List<int> indices = new List<int>();
             List<Vector3> normals = new List<Vector3>();
@@ -260,7 +249,6 @@ namespace DEM.Net.Extension.Osm.Buildings
             // Get highest base point
             // Retrieve building size
             foreach (var building in buildingModels)
-            //foreach (var building in buildingModels.Take(1))
             {
                 var triangulation = this.Triangulate(building);
                 var positionsVec3 = triangulation.Positions.ToVector3().ToList();
