@@ -40,20 +40,7 @@ namespace DEM.Net.Extension.Osm.Buildings
         {
             try
             {
-                // Download buildings and convert them to GeoJson
-                FeatureCollection buildings = this.GetBuildingsGeoJson(bbox);
-                
-                // Download elevation data if missing
-                if (downloadMissingFiles) _elevationService.DownloadMissingFiles(dataSet, bbox);
-
-                // Create internal building model
-                 var buildingValidator = new BuildingValidator(_logger);
-                (List<BuildingModel> Buildings, int TotalPoints) parsedBuildings = this.CreateBuildingsFromGeoJson(buildings, buildingValidator);
-                
-                // Compute elevations (faster elevation when point count is known in advance)
-                parsedBuildings.Buildings = this.ComputeElevations(parsedBuildings.Buildings, parsedBuildings.TotalPoints, dataSet, downloadMissingFiles, zScale);
-
-                TriangulationNormals triangulation = this.Triangulate(parsedBuildings.Buildings);
+                TriangulationNormals triangulation = this.GetBuildings3DTriangulation(bbox, dataSet, downloadMissingFiles, zScale);
                 
                 var model = _gltfService.AddMesh(null, new SharpGltfService.IndexedTriangulation(triangulation), null, null, doubleSided: true);
 
@@ -65,9 +52,35 @@ namespace DEM.Net.Extension.Osm.Buildings
                 throw;
             }
         }
-        
+        public TriangulationNormals GetBuildings3DTriangulation(BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles, float zScale)
+        {
+            try
+            {
+                // Download buildings and convert them to GeoJson
+                FeatureCollection buildings = this.GetOsmDataAsGeoJson(bbox);
 
-        public FeatureCollection GetBuildingsGeoJson(BoundingBox bbox)
+                // Download elevation data if missing
+                if (downloadMissingFiles) _elevationService.DownloadMissingFiles(dataSet, bbox);
+
+                // Create internal building model
+                var buildingValidator = new BuildingValidator(_logger);
+                (List<BuildingModel> Buildings, int TotalPoints) parsedBuildings = this.CreateBuildingsFromGeoJson(buildings, buildingValidator);
+
+                // Compute elevations (faster elevation when point count is known in advance)
+                parsedBuildings.Buildings = this.ComputeElevations(parsedBuildings.Buildings, parsedBuildings.TotalPoints, dataSet, downloadMissingFiles, zScale);
+
+                TriangulationNormals triangulation = this.Triangulate(parsedBuildings.Buildings);
+                return triangulation;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{nameof(GetBuildings3DModel)} error: {ex.Message}");
+                throw;
+            }
+        }
+
+
+        public FeatureCollection GetOsmDataAsGeoJson(BoundingBox bbox)
         {
             try
             {

@@ -12,6 +12,7 @@ namespace DEM.Net.Extension.Osm
         {
             
             services.AddTransient<BuildingService>();
+            services.AddTransient<WayService>();
 
             return services;
         }

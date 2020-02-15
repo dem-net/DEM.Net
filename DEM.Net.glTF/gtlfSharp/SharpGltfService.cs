@@ -171,7 +171,7 @@ namespace DEM.Net.glTF.SharpglTF
             var mesh = model.LogicalMeshes.FirstOrDefault(m => m.Name == meshName) ?? model.CreateMesh(meshName);
             return mesh;
         }
-        public ModelRoot AddLine(ModelRoot model, IEnumerable<GeoPoint> gpxPointsElevated, Vector4 vector4, float trailWidthMeters)
+        public ModelRoot AddLine(ModelRoot model, IEnumerable<GeoPoint> gpxPointsElevated, Vector4 color, float trailWidthMeters)
         {
             var scene = model.UseScene(TERRAIN_SCENE_NAME);
             var rnode = scene.FindNode(n => n.Name == TERRAIN_NODE_NAME);
@@ -179,8 +179,9 @@ namespace DEM.Net.glTF.SharpglTF
 
 
             var material = model.CreateMaterial("Line")
-               .WithPBRMetallicRoughness(vector4, null, null, 1, 0.1f)
+               .WithPBRMetallicRoughness(color, null, null, 0, 0.9f)
               .WithDoubleSide(true);
+            material.Alpha = SharpGLTF.Schema2.AlphaMode.BLEND;
 
 
             var triangulation = _meshService.GenerateTriangleMesh_Line(gpxPointsElevated, trailWidthMeters);
