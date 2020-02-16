@@ -34,7 +34,7 @@ namespace DEM.Net.Extension.Osm
     public abstract class OsmModelFactory<TModel>
     {
         public TagRegistry TagRegistry { get; private set; } = new TagRegistry();
-        public int TotalPoints { get; }
+        internal int _totalPoints;
 
         public abstract void ParseTags(TModel model);
         public abstract TModel CreateModel(Feature feature);

@@ -83,7 +83,6 @@ namespace DEM.Net.Extension.Osm.Buildings
         }
 
 
-        
         public FeatureCollection GetBuildingsGeoJson(int wayId)
         {
             try
@@ -267,58 +266,6 @@ namespace DEM.Net.Extension.Osm.Buildings
             return triangulation;
         }
 
-        public TriangulationList<GeoPoint> AppendRingWallTriangulation(TriangulationList<GeoPoint> triangulation, List<GeoPoint> buildingRing, int indexOffset, double buildingTop, double? minHeight)
-        {
-            Dictionary<int, GeoPoint> currentPointIndex = triangulation.Positions.ToDictionary(p => p.Id.Value, p => p);
-            int maxIndexInitial = triangulation.Positions.Count - 1;
-
-            // walls
-            // Initial elevations are onto terrain
-            // We must add the top vertices
-            //
-            for (int i = 0; i < buildingRing.Count - 1; i++) // -2 because last point == first point
-            {
-                var posFloor = buildingRing[i];
-                if (minHeight.HasValue)
-                {
-                    // Set floor elevation up for minHeight tags
-                    currentPointIndex[posFloor.Id.Value].Elevation = minHeight.Value;
-                }
-
-                var posTop = posFloor.Clone();
-                posTop.Elevation = buildingTop;
-                triangulation.Positions.Add(posTop);
-
-                if (i > 0)
-                {
-                    triangulation.Indices.Add(indexOffset + i - 1);
-                    triangulation.Indices.Add(maxIndexInitial + i - 3);
-                    triangulation.Indices.Add(indexOffset + i);
-
-
-                    triangulation.Indices.Add(maxIndexInitial + i - 3);
-                    triangulation.Indices.Add(maxIndexInitial + i - 2);
-                    triangulation.Indices.Add(indexOffset + i);
-                }
-            }
-
-            // connect last vertex to first
-            int index = triangulation.Positions.Count;
-            triangulation.Indices.Add(maxIndexInitial);
-            triangulation.Indices.Add(index - 1);
-            triangulation.Indices.Add(indexOffset + 0);
-
-
-            triangulation.Indices.Add(index - 1);
-            triangulation.Indices.Add(maxIndexInitial + 1);
-            triangulation.Indices.Add(indexOffset + 0);
-
-
-
-            return triangulation;
-
-        }
-
 
         private (double? minHeight, double maxHeight) GetBuildingHeightMeters(BuildingModel building)
         {
@@ -332,7 +279,9 @@ namespace DEM.Net.Extension.Osm.Buildings
             double computedHeight = building.Height ?? (building.Levels ?? 3) * FloorHeightMeters;
             double roofElevation = computedHeight + highestFloorElevation;
 
-            double? computedMinHeight = building.MinHeight == null ? default(double?) : computedHeight - building.MinHeight.Value;
+            double? computedMinHeight = null;
+            if (building.MinHeight.HasValue)
+                computedMinHeight = roofElevation - building.MinHeight.Value;
 
             return (computedMinHeight, roofElevation);
         }

@@ -50,9 +50,6 @@ namespace DEM.Net.Extension.Osm.Ski
 
         private readonly ILogger _logger;
 
-        private int _totalPoints = 0;
-        public int TotalPoints => _totalPoints;
-
         public override void ParseTags(PisteModel model)
         {
             ParseTag<string>(model, "piste:name", v => model.Name = v);

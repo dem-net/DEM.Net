@@ -75,9 +75,9 @@ namespace DEM.Net.Extension.Osm
             File.WriteAllText($"{typeof(T).Name}_osm_tag_report_{DateTime.Now:yyyyMMdd_HHmmss}.txt", validator.GetTagsReport(), Encoding.UTF8);
 #endif
 
-            _logger.LogInformation($"{nameof(CreateModelsFromGeoJson)} done for {validator.TotalPoints} points.");
+            _logger.LogInformation($"{nameof(CreateModelsFromGeoJson)} done for {validator._totalPoints} points.");
 
-            return (models, validator.TotalPoints);
+            return (models, validator._totalPoints);
 
         }
     }

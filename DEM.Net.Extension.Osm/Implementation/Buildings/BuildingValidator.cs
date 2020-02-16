@@ -50,9 +50,6 @@ namespace DEM.Net.Extension.Osm.Buildings
 
         private readonly ILogger _logger;
 
-        private int _totalPoints = 0;
-        public int TotalPoints => _totalPoints;
-
         private static HashSet<string> GetBuildingTagKeys()
         {
             var tagKeys = new HashSet<string>();
@@ -214,7 +211,7 @@ namespace DEM.Net.Extension.Osm.Buildings
             switch (feature.Geometry.Type)
             {
                 case GeoJSON.Net.GeoJSONObjectType.Polygon:
-                    model = ConvertBuildingGeometry((Polygon)feature.Geometry, ref _totalPoints);
+                    model = ConvertBuildingGeometry((Polygon)feature.Geometry, ref base._totalPoints);
                     break;
             }
 
