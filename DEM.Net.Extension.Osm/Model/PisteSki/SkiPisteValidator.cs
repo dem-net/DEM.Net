@@ -33,13 +33,15 @@ using System.Text.RegularExpressions;
 using System.Diagnostics;
 using DEM.Net.Core;
 using System.Numerics;
+using GeoJSON.Net.Feature;
+using GeoJSON.Net.Geometry;
 
 namespace DEM.Net.Extension.Osm.Ski
 {
     /// <summary>
     /// https://wiki.openstreetmap.org/wiki/Piste_Maps
     /// </summary>
-    public class SkiPisteValidator
+    public class SkiPisteValidator : IOsmModelFactory<PisteModel>
     {
         public SkiPisteValidator(ILogger logger)
         {
@@ -48,6 +50,8 @@ namespace DEM.Net.Extension.Osm.Ski
 
         private readonly ILogger _logger;
 
+        private int _totalPoints = 0;
+        public int TotalPoints => _totalPoints;
 
         public void ParseTags(PisteModel model)
         {
@@ -94,6 +98,51 @@ namespace DEM.Net.Extension.Osm.Ski
                 }
             }
         }
+
+
+        public PisteModel CreateModel(Feature feature)
+        {
+            if (feature == null) return null;
+
+            PisteModel model = null;
+            switch (feature.Geometry.Type)
+            {
+                case GeoJSON.Net.GeoJSONObjectType.LineString:
+                    model = BuildModelFromGeometry((LineString)feature.Geometry, ref _totalPoints);
+                    break;
+            }
+
+            if (model != null)
+            {
+                model.Id = feature.Id;
+                model.Tags = feature.Properties;
+            }
+            
+
+            return model;
+        }
+
+        private PisteModel BuildModelFromGeometry(LineString geom, ref int geoPointIdCounter)
+        {
+            // Can't do it with a linq + lambda because of ref int param
+            List<GeoPoint> outerRingGeoPoints = ConvertLineString(geom, ref geoPointIdCounter);
+
+            var model = new PisteModel(outerRingGeoPoints);
+
+            return model;
+        }
+
+        private List<GeoPoint> ConvertLineString(LineString lineString, ref int geoPointIdCounter)
+        {
+            // Can't do it with a linq + lambda because of ref int param
+            List<GeoPoint> geoPoints = new List<GeoPoint>(lineString.Coordinates.Count);
+            foreach (var pt in lineString.Coordinates)
+            {
+                geoPoints.Add(new GeoPoint(++geoPointIdCounter, pt.Latitude, pt.Longitude));
+            }
+            return geoPoints;
+        }
+
     }
 
 

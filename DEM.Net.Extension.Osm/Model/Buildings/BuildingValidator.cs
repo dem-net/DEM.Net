@@ -32,17 +32,26 @@ using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 using DEM.Net.Core;
+using GeoJSON.Net.Feature;
+using GeoJSON.Net.Geometry;
+using GeoJSON.Net;
 
 namespace DEM.Net.Extension.Osm.Buildings
 {
-    public class BuildingValidator
+    public class BuildingValidator : IOsmModelFactory<BuildingModel>
     {
+        // Will capture 4 items : inputval / sign / value / unit
+        const string ValueAndUnitRegex = @"([+\-])?((?:\d+\/|(?:\d+|^|\s)\.)?\d+)\s*([^\s\d+\-.,:;^\/]+(?:\^\d+(?:$|(?=[\s:;\/])))?(?:\/[^\s\d+\-.,:;^\/]+(?:\^\d+(?:$|(?=[\s:;\/])))?)*)?";
+
         public BuildingValidator(ILogger logger)
         {
             this._logger = logger;
         }
 
         private readonly ILogger _logger;
+
+        private int _totalPoints = 0;
+        public int TotalPoints => _totalPoints;
 
         private static HashSet<string> GetBuildingTagKeys()
         {
@@ -197,8 +206,61 @@ namespace DEM.Net.Extension.Osm.Buildings
             }
         }
 
-        // Will capture 4 items : inputval / sign / value / unit
-        const string ValueAndUnitRegex = @"([+\-])?((?:\d+\/|(?:\d+|^|\s)\.)?\d+)\s*([^\s\d+\-.,:;^\/]+(?:\^\d+(?:$|(?=[\s:;\/])))?(?:\/[^\s\d+\-.,:;^\/]+(?:\^\d+(?:$|(?=[\s:;\/])))?)*)?";
+        public BuildingModel CreateModel(Feature feature)
+        {
+            if (feature == null) return null;
+
+            BuildingModel model = null;
+            switch (feature.Geometry.Type)
+            {
+                case GeoJSON.Net.GeoJSONObjectType.Polygon:
+                    model = ConvertBuildingGeometry((Polygon)feature.Geometry, ref _totalPoints);
+                    break;
+            }
+
+            if (model != null)
+            {
+                model.Id = feature.Id;
+                model.Tags = feature.Properties;
+            }
+
+
+            return model;
+        }
+
+        private BuildingModel ConvertBuildingGeometry(Polygon poly, ref int geoPointIdCounter)
+        {
+            // Can't do it with a linq + lambda because of ref int param
+            List<GeoPoint> outerRingGeoPoints = ConvertBuildingLineString(poly.Coordinates.First(), ref geoPointIdCounter);
+
+            List<List<GeoPoint>> interiorRings = null;
+            if (poly.Coordinates.Count > 1)
+            {
+                interiorRings = new List<List<GeoPoint>>();
+                foreach (LineString innerRing in poly.Coordinates.Skip(1))
+                {
+                    interiorRings.Add(ConvertBuildingLineString(innerRing, ref geoPointIdCounter));
+                }
+            }
+
+            var buildingModel = new BuildingModel(outerRingGeoPoints, interiorRings);
+
+            return buildingModel;
+        }
+
+        private List<GeoPoint> ConvertBuildingLineString(LineString lineString, ref int geoPointIdCounter)
+        {
+            // Can't do it with a linq + lambda because of ref int param
+            List<GeoPoint> geoPoints = new List<GeoPoint>(lineString.Coordinates.Count);
+            foreach (var pt in lineString.Coordinates)
+            {
+                geoPoints.Add(new GeoPoint(++geoPointIdCounter, pt.Latitude, pt.Longitude));
+            }
+            return geoPoints;
+        }
+
+
+
     }
 }
 

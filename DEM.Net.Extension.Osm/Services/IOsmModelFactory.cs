@@ -1,5 +1,5 @@
 ﻿//
-// SkiPisteValidator.cs
+// IOsmTagsParser.cs
 //
 // Author:
 //       Xavier Fischer 2020-2
@@ -23,36 +23,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using DEM.Net.Core;
-using System.Collections.Generic;
-using System.Numerics;
+using GeoJSON.Net;
+using GeoJSON.Net.Feature;
 
-namespace DEM.Net.Extension.Osm.Ski
+namespace DEM.Net.Extension.Osm
 {
-    public class PisteModel : CommonModel
+    public interface IOsmModelFactory<T>
     {
-        public string Name { get; internal set; }
-        public string Difficulty { get; internal set; }
-        public string ManMade { get; internal set; }
-        public string Type { get; internal set; }
+        int TotalPoints { get; }
 
-        public List<GeoPoint> LineString { get; internal set; }
-
-        public IEnumerable<GeoPoint> Points
-        {
-            get
-            {
-                return LineString;
-            }
-        }
-
-      
-        public Vector4 ColorVec4 { get; internal set; }
-
-        public PisteModel(List<GeoPoint> lineString)
-        {
-            this.LineString = lineString;
-        }
-
+        void ParseTags(T model);
+        T CreateModel(Feature feature);
     }
 }

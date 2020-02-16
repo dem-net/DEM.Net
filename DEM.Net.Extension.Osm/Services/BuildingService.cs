@@ -20,6 +20,7 @@ namespace DEM.Net.Extension.Osm.Buildings
         private readonly IElevationService _elevationService;
         private readonly SharpGltfService _gltfService;
         private readonly IMeshService _meshService;
+        private readonly OsmService _osmService;
         private readonly ILogger<BuildingService> _logger;
 
         const double FloorHeightMeters = 2.5;
@@ -28,11 +29,13 @@ namespace DEM.Net.Extension.Osm.Buildings
         public BuildingService(IElevationService elevationService
             , SharpGltfService gltfService
             , IMeshService meshService
+            , OsmService osmService
             , ILogger<BuildingService> logger)
         {
             this._elevationService = elevationService;
             this._gltfService = gltfService;
             this._meshService = meshService;
+            this._osmService = osmService;
             this._logger = logger;
         }
 
@@ -57,14 +60,14 @@ namespace DEM.Net.Extension.Osm.Buildings
             try
             {
                 // Download buildings and convert them to GeoJson
-                FeatureCollection buildings = this.GetOsmDataAsGeoJson(bbox);
+                FeatureCollection buildings = _osmService.GetOsmDataAsGeoJson(bbox, "building");
 
                 // Download elevation data if missing
                 if (downloadMissingFiles) _elevationService.DownloadMissingFiles(dataSet, bbox);
 
                 // Create internal building model
                 var buildingValidator = new BuildingValidator(_logger);
-                (List<BuildingModel> Buildings, int TotalPoints) parsedBuildings = this.CreateBuildingsFromGeoJson(buildings, buildingValidator);
+                (List<BuildingModel> Buildings, int TotalPoints) parsedBuildings = _osmService.CreateModelsFromGeoJson(buildings, buildingValidator);
 
                 // Compute elevations (faster elevation when point count is known in advance)
                 parsedBuildings.Buildings = this.ComputeElevations(parsedBuildings.Buildings, parsedBuildings.TotalPoints, dataSet, downloadMissingFiles, zScale);
@@ -80,31 +83,7 @@ namespace DEM.Net.Extension.Osm.Buildings
         }
 
 
-        public FeatureCollection GetOsmDataAsGeoJson(BoundingBox bbox)
-        {
-            try
-            {
-                using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(GetBuildingsGeoJson), _logger, LogLevel.Debug))
-                {
-                    var task = new OverpassQuery(bbox)
-                    .WithWays("building")
-                    .WithRelations("building")
-                    .ToGeoJSON();
-
-                    FeatureCollection buildings = task.GetAwaiter().GetResult();
-
-                    _logger.LogInformation($"{buildings?.Features?.Count} buildings downloaded");
-
-                    return buildings;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"{nameof(GetBuildingsGeoJson)} error: {ex.Message}");
-                throw;
-            }
-
-        }
+        
         public FeatureCollection GetBuildingsGeoJson(int wayId)
         {
             try
@@ -126,86 +105,6 @@ namespace DEM.Net.Extension.Osm.Buildings
                 throw;
             }
 
-        }
-
-        public (List<BuildingModel> buildings, int totalPoints) CreateBuildingsFromGeoJson(FeatureCollection buildings, BuildingValidator buildingValidator)
-        {
-            int geoPointIdCounter = 0;
-
-            List<BuildingModel> buildingModels = new List<BuildingModel>(buildings.Features.Count);
-            StopwatchLog parseTimer = new StopwatchLog(_logger);
-            using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(CreateBuildingsFromGeoJson), _logger, LogLevel.Debug))
-            {
-                foreach (var building in buildings.Features)
-                {
-                    BuildingModel buildingModel = null;
-                    switch (building.Geometry.Type)
-                    {
-                        case GeoJSONObjectType.Polygon:
-
-                            Polygon poly = (Polygon)building.Geometry;
-                            buildingModel = ConvertBuildingGeometry(poly, ref geoPointIdCounter);
-                            buildingModel.Id = building.Id;
-                            buildingModel.Tags = building.Properties;
-
-                            break;
-
-
-                        default:
-                            buildingModel = null;
-                            _logger.LogWarning($"CreateBuildings: type {building.Geometry.Type} not supported.");
-                            break;
-                    }
-
-                    if (buildingModel != null)
-                    {
-                        parseTimer.Start();
-                        buildingValidator.ParseTags(buildingModel);
-                        parseTimer.Stop();
-                        buildingModels.Add(buildingModel);
-                    }
-                }
-            }
-
-            parseTimer.LogTime("ParseTags");
-
-            BuildingValidator.ValidateTags(buildingModels);
-
-            _logger.LogInformation($"{nameof(CreateBuildingsFromGeoJson)} done for {geoPointIdCounter} points.");
-
-            return (buildingModels, geoPointIdCounter);
-
-        }
-
-        private BuildingModel ConvertBuildingGeometry(Polygon poly, ref int geoPointIdCounter)
-        {
-            // Can't do it with a linq + lambda because of ref int param
-            List<GeoPoint> outerRingGeoPoints = ConvertBuildingLineString(poly.Coordinates.First(), ref geoPointIdCounter);
-
-            List<List<GeoPoint>> interiorRings = null;
-            if (poly.Coordinates.Count > 1)
-            {
-                interiorRings = new List<List<GeoPoint>>();
-                foreach (LineString innerRing in poly.Coordinates.Skip(1))
-                {
-                    interiorRings.Add(ConvertBuildingLineString(innerRing, ref geoPointIdCounter));
-                }
-            }
-
-            var buildingModel = new BuildingModel(outerRingGeoPoints, interiorRings);
-
-            return buildingModel;
-        }
-
-        private List<GeoPoint> ConvertBuildingLineString(LineString lineString, ref int geoPointIdCounter)
-        {
-            // Can't do it with a linq + lambda because of ref int param
-            List<GeoPoint> geoPoints = new List<GeoPoint>(lineString.Coordinates.Count);
-            foreach (var pt in lineString.Coordinates)
-            {
-                geoPoints.Add(new GeoPoint(++geoPointIdCounter, pt.Latitude, pt.Longitude));
-            }
-            return geoPoints;
         }
 
         public List<BuildingModel> ComputeElevations(List<BuildingModel> buildingModels, int pointCount, DEMDataSet dataset, bool downloadMissingFiles = true, float zScale = 1f)
