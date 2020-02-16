@@ -41,7 +41,7 @@ namespace DEM.Net.Extension.Osm.Ski
     /// <summary>
     /// https://wiki.openstreetmap.org/wiki/Piste_Maps
     /// </summary>
-    public class SkiPisteValidator : IOsmModelFactory<PisteModel>
+    public class SkiPisteValidator : OsmModelFactory<PisteModel>
     {
         public SkiPisteValidator(ILogger logger)
         {
@@ -53,7 +53,7 @@ namespace DEM.Net.Extension.Osm.Ski
         private int _totalPoints = 0;
         public int TotalPoints => _totalPoints;
 
-        public void ParseTags(PisteModel model)
+        public override void ParseTags(PisteModel model)
         {
             ParseTag<string>(model, "piste:name", v => model.Name = v);
             ParseTag<string>(model, "piste:difficulty", v =>
@@ -100,8 +100,8 @@ namespace DEM.Net.Extension.Osm.Ski
         }
 
 
-        public PisteModel CreateModel(Feature feature)
-        {
+        public override PisteModel CreateModel(Feature feature)
+        {            
             if (feature == null) return null;
 
             PisteModel model = null;

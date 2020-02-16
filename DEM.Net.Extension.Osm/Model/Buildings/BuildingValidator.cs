@@ -38,7 +38,7 @@ using GeoJSON.Net;
 
 namespace DEM.Net.Extension.Osm.Buildings
 {
-    public class BuildingValidator : IOsmModelFactory<BuildingModel>
+    public class BuildingValidator : OsmModelFactory<BuildingModel>
     {
         // Will capture 4 items : inputval / sign / value / unit
         const string ValueAndUnitRegex = @"([+\-])?((?:\d+\/|(?:\d+|^|\s)\.)?\d+)\s*([^\s\d+\-.,:;^\/]+(?:\^\d+(?:$|(?=[\s:;\/])))?(?:\/[^\s\d+\-.,:;^\/]+(?:\^\d+(?:$|(?=[\s:;\/])))?)*)?";
@@ -120,7 +120,7 @@ namespace DEM.Net.Extension.Osm.Buildings
             }
         }
 
-        public void ParseTags(BuildingModel model)
+        public override void ParseTags(BuildingModel model)
         {
             ParseTag<int>(model, "buildings:levels", v => model.Levels = v);
             ParseLengthTag(model, "min_height", v => model.MinHeight = v);
@@ -206,7 +206,7 @@ namespace DEM.Net.Extension.Osm.Buildings
             }
         }
 
-        public BuildingModel CreateModel(Feature feature)
+        public override BuildingModel CreateModel(Feature feature)
         {
             if (feature == null) return null;
 
@@ -258,8 +258,6 @@ namespace DEM.Net.Extension.Osm.Buildings
             }
             return geoPoints;
         }
-
-
 
     }
 }

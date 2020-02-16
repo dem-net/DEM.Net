@@ -6,6 +6,7 @@ using GeoJSON.Net.Geometry;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace DEM.Net.Extension.Osm
@@ -45,7 +46,7 @@ namespace DEM.Net.Extension.Osm
 
         }
 
-        public (List<T> models, int totalPoints) CreateModelsFromGeoJson<T>(FeatureCollection features, IOsmModelFactory<T> validator)
+        public (List<T> models, int totalPoints) CreateModelsFromGeoJson<T>(FeatureCollection features, OsmModelFactory<T> validator)
             where T : class
         {
 
@@ -54,6 +55,7 @@ namespace DEM.Net.Extension.Osm
             {
                 foreach (var feature in features.Features)
                 {
+                    validator.RegisterTags(feature);
                     T model = validator.CreateModel(feature);
 
                     if (model == null)
@@ -69,7 +71,9 @@ namespace DEM.Net.Extension.Osm
                 }
             }
 
-            //BuildingValidator.ValidateTags(models);
+#if DEBUG
+            File.WriteAllText($"{typeof(T).Name}_osm_tag_report_{DateTime.Now:yyyyMMdd_HHmmss}.txt", validator.GetTagsReport(), Encoding.UTF8);
+#endif
 
             _logger.LogInformation($"{nameof(CreateModelsFromGeoJson)} done for {validator.TotalPoints} points.");
 
