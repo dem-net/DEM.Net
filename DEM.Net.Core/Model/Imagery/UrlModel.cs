@@ -23,6 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+
 namespace DEM.Net.Core.Imagery
 {
     public class UrlModel
@@ -38,6 +40,11 @@ namespace DEM.Net.Core.Imagery
         {
             this.UrlFormat = urlFormat;
             this.Servers = servers;
+        }
+
+        public static implicit operator UrlModel(string url)
+        {
+            return new UrlModel(url, null);
         }
     }
 }

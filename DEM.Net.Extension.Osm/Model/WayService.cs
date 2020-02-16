@@ -52,6 +52,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                 var validator = new SkiPisteValidator(_logger);
                 (List<PisteModel> Models, int TotalPoints) parsed = this.CreateSkiPistesFromGeoJson(skiPistes, validator);
 
+                _logger.LogInformation($"Computing elevations ({parsed.Models.Count} lines, {parsed.TotalPoints} total points)...");
                 // Compute elevations (faster elevation when point count is known in advance)
                 parsed.Models = this.ComputeElevations(parsed.Models, parsed.TotalPoints, dataSet, downloadMissingFiles, zScale);
 
@@ -91,33 +92,11 @@ namespace DEM.Net.Extension.Osm.Buildings
             }
             catch (Exception ex)
             {
-                _logger.LogError($"{nameof(GetBuildingsGeoJson)} error: {ex.Message}");
+                _logger.LogError($"{nameof(GetOsmDataAsGeoJson)} error: {ex.Message}");
                 throw;
             }
 
-        }
-        public FeatureCollection GetBuildingsGeoJson(int wayId)
-        {
-            try
-            {
-                using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(GetBuildingsGeoJson), _logger, LogLevel.Debug))
-                {
-                    var task = new OverpassQuery()
-                    .WithWays("id", wayId.ToString())
-                    .ToGeoJSON();
-
-                    FeatureCollection buildings = task.GetAwaiter().GetResult();
-
-                    return buildings;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"{nameof(GetBuildingsGeoJson)} error: {ex.Message}");
-                throw;
-            }
-
-        }
+        }        
 
         public (List<PisteModel> models, int totalPoints) CreateSkiPistesFromGeoJson(FeatureCollection features, SkiPisteValidator validator)
         {
@@ -144,7 +123,7 @@ namespace DEM.Net.Extension.Osm.Buildings
 
                         default:
                             pisteModel = null;
-                            _logger.LogWarning($"{nameof(CreateSkiPistesFromGeoJson)}: type {feature.Geometry.Type} not supported.");
+                            _logger.LogWarning($"{nameof(CreateSkiPistesFromGeoJson)}: {feature.Id}, type {feature.Geometry.Type} not supported.");
                             break;
                     }
 
