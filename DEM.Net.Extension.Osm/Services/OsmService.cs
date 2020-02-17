@@ -53,15 +53,16 @@ namespace DEM.Net.Extension.Osm
             List<T> models = new List<T>(features.Features.Count);
             using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(CreateModelsFromGeoJson), _logger, LogLevel.Debug))
             {
+                int count = 0;
                 foreach (var feature in features.Features)
                 {
+                    count++;
                     validator.RegisterTags(feature);
                     T model = validator.CreateModel(feature);
 
                     if (model == null)
                     {
                         _logger.LogWarning($"{nameof(CreateModelsFromGeoJson)}: {feature.Id}, type {feature.Geometry.Type} not supported.");
-                        break;
                     }
                     else
                     {

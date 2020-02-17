@@ -107,6 +107,9 @@ namespace DEM.Net.Extension.Osm.Ski
                 case GeoJSON.Net.GeoJSONObjectType.LineString:
                     model = BuildModelFromGeometry((LineString)feature.Geometry, ref _totalPoints);
                     break;
+                default:
+                    _logger.LogDebug($"{feature.Geometry.Type} not supported for {nameof(PisteModel)} {feature.Id}.");
+                    break;
             }
 
             if (model != null)

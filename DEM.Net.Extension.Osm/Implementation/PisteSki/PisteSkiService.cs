@@ -38,7 +38,29 @@ namespace DEM.Net.Extension.Osm.Buildings
             this._logger = logger;
         }
 
-        public ModelRoot GetWays3DModel(BoundingBox bbox, string wayTag, DEMDataSet dataSet, bool downloadMissingFiles, float zScale)
+        public ModelRoot GetPiste3DModel(BoundingBox bbox, string wayTag, DEMDataSet dataSet, bool downloadMissingFiles, float zScale)
+        {
+            try
+            {
+
+                List<PisteModel> models = GetPisteModels(bbox, wayTag, dataSet, downloadMissingFiles, zScale);
+
+                ModelRoot gltfModel = _gltfService.CreateNewModel();
+                foreach (var m in models)
+                {
+                    gltfModel = _gltfService.AddLine(gltfModel, m.LineString, m.ColorVec4, 30);
+                }
+
+                return gltfModel;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{nameof(GetPiste3DModel)} error: {ex.Message}");
+                throw;
+            }
+        }
+
+        public List<PisteModel> GetPisteModels(BoundingBox bbox, string wayTag, DEMDataSet dataSet, bool downloadMissingFiles, float zScale)
         {
             try
             {
@@ -56,8 +78,21 @@ namespace DEM.Net.Extension.Osm.Buildings
                 // Compute elevations (faster elevation when point count is known in advance)
                 parsed.Models = this.ComputeElevations(parsed.Models, parsed.TotalPoints, dataSet, downloadMissingFiles, zScale);
 
+                return parsed.Models;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{nameof(GetPisteModels)} error: {ex.Message}");
+                throw;
+            }
+        }
+        public ModelRoot GetPiste3DModel(List<PisteModel> models)
+        {
+            try
+            {
+
                 ModelRoot gltfModel = _gltfService.CreateNewModel();
-                foreach (var m in parsed.Models)
+                foreach (var m in models)
                 {
                     gltfModel = _gltfService.AddLine(gltfModel, m.LineString, m.ColorVec4, 30);
                 }
@@ -66,11 +101,10 @@ namespace DEM.Net.Extension.Osm.Buildings
             }
             catch (Exception ex)
             {
-                _logger.LogError($"{nameof(GetWays3DModel)} error: {ex.Message}");
+                _logger.LogError($"{nameof(GetPiste3DModel)} error: {ex.Message}");
                 throw;
             }
         }
-       
 
         public List<PisteModel> ComputeElevations(List<PisteModel> models, int pointCount, DEMDataSet dataset, bool downloadMissingFiles = true, float zScale = 1f)
         {

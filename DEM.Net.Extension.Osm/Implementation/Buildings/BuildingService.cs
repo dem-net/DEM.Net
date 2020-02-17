@@ -44,7 +44,7 @@ namespace DEM.Net.Extension.Osm.Buildings
             try
             {
                 TriangulationNormals triangulation = this.GetBuildings3DTriangulation(bbox, dataSet, downloadMissingFiles, zScale);
-                
+
                 var model = _gltfService.AddMesh(null, new SharpGltfService.IndexedTriangulation(triangulation), null, null, doubleSided: true);
 
                 return model;
@@ -150,8 +150,8 @@ namespace DEM.Net.Extension.Osm.Buildings
         }
 
         public TriangulationNormals Triangulate(List<BuildingModel> buildingModels)
-        {            
-          
+        {
+
             List<Vector3> positions = new List<Vector3>();
             List<int> indices = new List<int>();
             List<Vector3> normals = new List<Vector3>();
@@ -171,6 +171,9 @@ namespace DEM.Net.Extension.Osm.Buildings
             }
             sw.LogTime("Buildings triangulation");
 
+            int numBuildingsWithHeightInfo = buildingModels.Count(b => b.HasHeightInformation);
+            _logger.LogInformation($"Building heights: {numBuildingsWithHeightInfo}/{buildingModels.Count} ({numBuildingsWithHeightInfo / (float)buildingModels.Count:P}) with height information.");
+
             return new TriangulationNormals(positions, indices, normals);
         }
         public TriangulationList<GeoPoint> Triangulate(BuildingModel building)
@@ -188,7 +191,7 @@ namespace DEM.Net.Extension.Osm.Buildings
             // Algo
             // First triangulate the foot print (with inner rings if existing)
             // This triangulation is the roof top if building is flat
-            (double? floor, double roof) computedHeight = this.GetBuildingHeightMeters(building);
+            building = this.ComputeBuildingHeightMeters(building);
 
             // Triangulate wall for each ring
             List<int> numVerticesPerRing = new List<int>();
@@ -198,15 +201,15 @@ namespace DEM.Net.Extension.Osm.Buildings
             triangulation = this.TriangulateRingsWall(triangulation, numVerticesPerRing, totalPoints);
 
             // Building has real elevations
-            if (computedHeight.floor.HasValue)
+            if (building.ComputedFloorAltitude.HasValue)
             {
                 // Create floor vertices by copying roof vertices and setting their z min elevation (floor or min height)
-                var floorVertices = triangulation.Positions.Select(pt => pt.Clone(computedHeight.floor)).ToList();
+                var floorVertices = triangulation.Positions.Select(pt => pt.Clone(building.ComputedFloorAltitude)).ToList();
                 triangulation.Positions.AddRange(floorVertices);
 
                 foreach (var pt in triangulation.Positions.Take(totalPoints))
                 {
-                    pt.Elevation = computedHeight.roof;
+                    pt.Elevation = building.ComputedRoofAltitude;
                 }
             }
             else
@@ -217,7 +220,7 @@ namespace DEM.Net.Extension.Osm.Buildings
 
                 foreach (var pt in triangulation.Positions.Take(totalPoints))
                 {
-                    pt.Elevation = computedHeight.roof;
+                    pt.Elevation = building.ComputedRoofAltitude;
                 }
             }
 
@@ -267,8 +270,10 @@ namespace DEM.Net.Extension.Osm.Buildings
         }
 
 
-        private (double? minHeight, double maxHeight) GetBuildingHeightMeters(BuildingModel building)
+        private BuildingModel ComputeBuildingHeightMeters(BuildingModel building)
         {
+            building.HasHeightInformation = building.Levels.HasValue || building.Height.HasValue || building.MinHeight.HasValue;
+
             if (building.Levels.HasValue && (building.Height.HasValue || building.MinHeight.HasValue))
             {
                 _logger.LogWarning("Inchoerent height info (Levels and Height), choosing Height.");
@@ -283,7 +288,10 @@ namespace DEM.Net.Extension.Osm.Buildings
             if (building.MinHeight.HasValue)
                 computedMinHeight = roofElevation - building.MinHeight.Value;
 
-            return (computedMinHeight, roofElevation);
+            building.ComputedRoofAltitude = roofElevation;
+            building.ComputedFloorAltitude = computedMinHeight;
+
+            return building;
         }
     }
 }

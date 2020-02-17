@@ -213,6 +213,9 @@ namespace DEM.Net.Extension.Osm.Buildings
                 case GeoJSON.Net.GeoJSONObjectType.Polygon:
                     model = ConvertBuildingGeometry((Polygon)feature.Geometry, ref base._totalPoints);
                     break;
+                default:
+                    _logger.LogDebug($"{feature.Geometry.Type} not supported for {nameof(BuildingModel)} {feature.Id}.");
+                    break;
             }
 
             if (model != null)
