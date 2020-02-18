@@ -60,7 +60,15 @@ namespace DEM.Net.Extension.Osm.Buildings
             try
             {
                 // Download buildings and convert them to GeoJson
-                FeatureCollection buildings = _osmService.GetOsmDataAsGeoJson(bbox, "building:part");
+                //FeatureCollection buildings = _osmService.GetOsmDataAsGeoJson(bbox, q => q
+                //.WithWays("building")
+                //.WithWays("building:part")
+                //.WithRelations("type=building")
+                //.WithRelations("building"));
+
+                FeatureCollection buildings = _osmService.GetOsmDataAsGeoJson(bbox, "(way[\"building\"]({{bbox}});(._;<;);(._;>;);relation[\"building\"]({{bbox}});(._;>;););");
+
+
 
                 // Download elevation data if missing
                 if (downloadMissingFiles) _elevationService.DownloadMissingFiles(dataSet, bbox);

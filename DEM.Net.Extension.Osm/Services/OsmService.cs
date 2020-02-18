@@ -20,16 +20,43 @@ namespace DEM.Net.Extension.Osm
             this._logger = logger;
         }
 
-        public FeatureCollection GetOsmDataAsGeoJson(BoundingBox bbox, string wayTag)
+        public FeatureCollection GetOsmDataAsGeoJson(BoundingBox bbox, Func<OverpassQuery, OverpassQuery> filter = null)
+        {
+            try
+            {
+                using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(GetOsmDataAsGeoJson), _logger, LogLevel.Debug))
+                {
+                    OverpassQuery query = new OverpassQuery(bbox);
+                    if (filter != null)
+                    {
+                        query = filter(query);
+                    }
+
+                    var task = query.ToGeoJSON();
+
+                    FeatureCollection ways = task.GetAwaiter().GetResult();
+
+                    _logger.LogInformation($"{ways?.Features?.Count} features downloaded");
+
+                    return ways;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{nameof(GetOsmDataAsGeoJson)} error: {ex.Message}");
+                throw;
+            }
+
+        }
+        public FeatureCollection GetOsmDataAsGeoJson(BoundingBox bbox, string fullQueryBody)
         {
             try
             {
                 using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(GetOsmDataAsGeoJson), _logger, LogLevel.Debug))
                 {
                     var task = new OverpassQuery(bbox)
-                    .WithWays(wayTag)
-                    .WithRelations(wayTag)
-                    .ToGeoJSON();
+                        .RunQueryQL(fullQueryBody)
+                        .ToGeoJSON();
 
                     FeatureCollection ways = task.GetAwaiter().GetResult();
 

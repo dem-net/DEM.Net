@@ -65,7 +65,10 @@ namespace DEM.Net.Extension.Osm.Buildings
             try
             {
                 // Download buildings and convert them to GeoJson
-                FeatureCollection skiPistes = _osmService.GetOsmDataAsGeoJson(bbox, wayTag);
+                FeatureCollection skiPistes = _osmService.GetOsmDataAsGeoJson(bbox, q => q
+                                                                                       .WithWays(wayTag)
+                                                                                       .WithWays(wayTag)
+                                                                              );
 
                 // Download elevation data if missing
                 if (downloadMissingFiles) _elevationService.DownloadMissingFiles(dataSet, bbox);
@@ -73,7 +76,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                 // Create internal building model
                 var validator = new SkiPisteValidator(_logger);
                 (List<PisteModel> Models, int TotalPoints) parsed = _osmService.CreateModelsFromGeoJson<PisteModel>(skiPistes, validator);
-                
+
                 _logger.LogInformation($"Computing elevations ({parsed.Models.Count} lines, {parsed.TotalPoints} total points)...");
                 // Compute elevations (faster elevation when point count is known in advance)
                 parsed.Models = this.ComputeElevations(parsed.Models, parsed.TotalPoints, dataSet, downloadMissingFiles, zScale);
@@ -120,7 +123,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                                          .ToList();
                 }
                 );
-                
+
             }
 
             return models;

@@ -66,43 +66,27 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
         public static Task<FeatureCollection> ToGeoJSON(this Task<OverpassResult> ResultTask)
         {
 
-            return ResultTask.ContinueWith(task => {
+            return ResultTask.ContinueWith(task =>
+            {
 
                 // The order of the nodes, ways and relations seem not to be sorted by default!
+                var jNodes = ResultTask.Result.Elements.Where(e => e["type"].ToString() == "node");
+                var jWays = ResultTask.Result.Elements.Where(e => e["type"].ToString() == "way");
+                var jRelations = ResultTask.Result.Elements.Where(e => e["type"].ToString() == "relation");
 
                 #region 1st: Add all nodes
 
                 Node Node;
                 var Nodes = new Dictionary<UInt64, Node>();
 
-                foreach (var element in ResultTask.Result.Elements)
+                foreach (var element in jNodes)
                 {
+                    Node = Node.Parse(element);
 
-                    // {
-                    //   "type": "node",
-                    //   "id":    35304749,
-                    //   "lat":   50.8926376,
-                    //   "lon":   11.6023278,
-                    //   "tags": {
-                    //       "highway":     "bus_stop",
-                    //       "name":        "Lobeda",
-                    //       "operator":    "JES",
-                    //       "wheelchair":  "yes"
-                    //   }
-                    // }
-
-                    if (element["type"].ToString() == "node")
-                    {
-
-                        Node = Node.Parse(element);
-
-                        if (Nodes.ContainsKey(Node.Id))
-                            Console.WriteLine("Duplicate node id detected!");
-                        else
-                            Nodes.Add(Node.Id, Node);
-
-                    }
-
+                    if (Nodes.ContainsKey(Node.Id))
+                        Console.WriteLine("Duplicate node id detected!");
+                    else
+                        Nodes.Add(Node.Id, Node);
                 }
 
                 #endregion
@@ -112,48 +96,15 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
                 Way Way;
                 var Ways = new Dictionary<UInt64, Way>();
 
-                foreach (var element in ResultTask.Result.Elements)
+                foreach (var element in jWays)
                 {
+                    Way = Way.Parse(element,
+                                    NodeResolver: nodeId => Nodes[nodeId]);
 
-                    // {
-                    //   "type": "way",
-                    //   "id":   154676600,
-                    //   "nodes": [
-                    //     747761494,
-                    //     582476538,
-                    //     582476541,
-                    //     582476543,
-                    //     1671750275,
-                    //     407850195,
-                    //     407850192,
-                    //     407850188,
-                    //     1671750245,
-                    //     1671750330,
-                    //     1671750408,
-                    //     1671750415,
-                    //     1671750433,
-                    //     1671750438,
-                    //     1671750441,
-                    //     747761494
-                    //   ],
-                    //   "tags": {
-                    //     "landuse": "farm"
-                    //   }
-                    // }
-
-                    if (element["type"].ToString() == "way")
-                    {
-
-                        Way = Way.Parse(element,
-                                        NodeResolver: nodeId => Nodes[nodeId]);
-
-                        if (Ways.ContainsKey(Way.Id))
-                            Console.WriteLine("Duplicate way id detected!");
-                        else
-                            Ways.Add(Way.Id, Way);
-
-                    }
-
+                    if (Ways.ContainsKey(Way.Id))
+                        Console.WriteLine("Duplicate way id detected!");
+                    else
+                        Ways.Add(Way.Id, Way);
                 }
 
                 #endregion
@@ -163,53 +114,16 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
                 Relation Relation;
                 var Relations = new Dictionary<UInt64, Relation>();
 
-                foreach (var element in ResultTask.Result.Elements)
+                foreach (var element in jRelations)
                 {
+                    Relation = Relation.Parse(element,
+                                              NodeResolver: nodeId => Nodes[nodeId],
+                                              WayResolver: wayId => Ways[wayId]);
 
-                    // {
-                    //   "type": "relation",
-                    //   "id":   3806843,
-                    //   "members": [
-                    //        {
-                    //          "type": "way",
-                    //          "ref":  71002045,
-                    //          "role": "outer"
-                    //        },
-                    //        {
-                    //          "type": "way",
-                    //          "ref":  286959663,
-                    //          "role": "outer"
-                    //        },
-                    //        {
-                    //          "type": "way",
-                    //          "ref":  286959664,
-                    //          "role": "outer"
-                    //        },
-                    //        {
-                    //          "type": "way",
-                    //          "ref":  286959641,
-                    //          "role": "outer"
-                    //        }
-                    //   ],
-                    //   "tags": {
-                    //       "landuse": "farm",
-                    //       "type":    "multipolygon"
-                    //   }
-                    // }
-
-                    if (element["type"].ToString() == "relation")
-                    {
-
-                        Relation = Relation.Parse(element,
-                                                  NodeResolver: nodeId => Nodes[nodeId],
-                                                  WayResolver:  wayId  => Ways [wayId]);
-
-                        if (Relations.ContainsKey(Relation.Id))
-                            Console.WriteLine("Duplicate relation id detected!");
-                        else
-                            Relations.Add(Relation.Id, Relation);
-
-                    }
+                    if (Relations.ContainsKey(Relation.Id))
+                        Console.WriteLine("Duplicate relation id detected!");
+                    else
+                        Relations.Add(Relation.Id, Relation);
 
                 }
 
@@ -265,8 +179,8 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
         /// </summary>
         /// <param name="ResultTask">A Overpass query result task.</param>
         /// <param name="Filename">A file name.</param>
-        public static Task<FeatureCollection> ToGeoJSONFile(this Task<OverpassResult>  ResultTask,
-                                                  String                     Filename)
+        public static Task<FeatureCollection> ToGeoJSONFile(this Task<OverpassResult> ResultTask,
+                                                  String Filename)
         {
             return ResultTask.ToGeoJSON().ToFile(Filename);
         }
@@ -280,8 +194,8 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
         /// </summary>
         /// <param name="ResultTask">A Overpass query result task.</param>
         /// <param name="FilenameBuilder">A file name.</param>
-        public static Task<FeatureCollection> ToGeoJSONFile(this Task<OverpassResult>  ResultTask,
-                                                  Func<FeatureCollection, String>      FilenameBuilder)
+        public static Task<FeatureCollection> ToGeoJSONFile(this Task<OverpassResult> ResultTask,
+                                                  Func<FeatureCollection, String> FilenameBuilder)
         {
             return ResultTask.ToGeoJSON().ContinueWith(t1 => t1.ToFile(FilenameBuilder(t1.Result)).Result);
         }
@@ -295,8 +209,8 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
         /// </summary>
         /// <param name="JSONTask">A GeoJSON task.</param>
         /// <param name="Filename">A file name.</param>
-        public static Task<JObject> ToGeoJSONFile(this Task<JObject>  JSONTask,
-                                                  String              Filename)
+        public static Task<JObject> ToGeoJSONFile(this Task<JObject> JSONTask,
+                                                  String Filename)
         {
             return JSONTask.ToFile(Filename);
         }
@@ -310,8 +224,8 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
         /// </summary>
         /// <param name="JSONTask">A GeoJSON task.</param>
         /// <param name="FilenameBuilder">A file name.</param>
-        public static Task<JObject> ToGeoJSONFile(this Task<JObject>     JSONTask,
-                                                  Func<JObject, String>  FilenameBuilder)
+        public static Task<JObject> ToGeoJSONFile(this Task<JObject> JSONTask,
+                                                  Func<JObject, String> FilenameBuilder)
         {
             return JSONTask.ContinueWith(t1 => t1.ToFile(FilenameBuilder(t1.Result)).Result);
         }
@@ -326,8 +240,8 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
         /// </summary>
         /// <param name="GeoJSONTask">A GeoJSON task.</param>
         /// <param name="FilenameBuilder">A file name.</param>
-        public static Task<IEnumerable<JObject>> ToGeoJSONFile(this Task<IEnumerable<JObject>>  GeoJSONTask,
-                                                               Func<JObject, String>            FilenameBuilder)
+        public static Task<IEnumerable<JObject>> ToGeoJSONFile(this Task<IEnumerable<JObject>> GeoJSONTask,
+                                                               Func<JObject, String> FilenameBuilder)
         {
             return GeoJSONTask.ContinueWith(GeoJSONTasks => GeoJSONTasks.Result.Select(GeoJSON => GeoJSON.ToFile(FilenameBuilder)));
         }
@@ -364,7 +278,7 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
             var id = string.Concat("node/", Node.Id);
             Dictionary<string, object> props = new Dictionary<string, object>();
             props.Add("@id", id);
-            foreach(var tag in Node.Tags)
+            foreach (var tag in Node.Tags)
             {
                 props.Add(tag.Key, tag.Value);
             }
@@ -402,8 +316,8 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
             // https://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features
 
             var FirstNode = Way.Nodes.First();
-            var LastNode  = Way.Nodes.Last();
-            var isClosed  = FirstNode.Latitude == LastNode.Latitude && FirstNode.Longitude == LastNode.Longitude;
+            var LastNode = Way.Nodes.Last();
+            var isClosed = FirstNode.Latitude == LastNode.Latitude && FirstNode.Longitude == LastNode.Longitude;
 
             var id = string.Concat("way/", Way.Id);
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -460,11 +374,11 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
 
             // Relation.Ways.Select(Way => new JArray(Way.Nodes.Select(Node => new JArray(Node.Longitude, Node.Latitude))))
 
-            var RemainingGeoFeatures  = Relation.Ways.Select(Way => new GeoFeature(Way.Nodes.Select(Node => new Position(Node.Latitude, Node.Longitude)))).ToList();
-            var ResultList            = new List<GeoFeature>();
+            var RemainingGeoFeatures = Relation.Ways.Select(Way => new GeoFeature(Way.Nodes.Select(Node => new Position(Node.Latitude, Node.Longitude)))).ToList();
+            var ResultList = new List<GeoFeature>();
 
-            Byte            Found = 0;
-            GeoFeature      CurrentGeoFeature;
+            Byte Found = 0;
+            GeoFeature CurrentGeoFeature;
 
             //if (Relation.Tags["type"].ToString() != "multipolygon")
             //{
@@ -477,10 +391,10 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
                 CurrentGeoFeature = RemainingGeoFeatures.RemoveAndReturnFirst();
 
                 // The current geo feature is closed -> a polygon!
-                if ((!Relation.Tags.ContainsKey("type") || Relation.Tags["type"].ToString()         != "route") &&
+                if ((!Relation.Tags.ContainsKey("type") || Relation.Tags["type"].ToString() != "route") &&
                     CurrentGeoFeature.GeoCoordinates.First() == CurrentGeoFeature.GeoCoordinates.Last())
                 {
-                    CurrentGeoFeature.Type =  GeoJSONObjectType.Polygon;
+                    CurrentGeoFeature.Type = GeoJSONObjectType.Polygon;
                     ResultList.Add(CurrentGeoFeature);
                 }
 
@@ -539,7 +453,7 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
 
                     } while (RemainingGeoFeatures.Count > 0 && Found > 0);
 
-                    CurrentGeoFeature.Type  = (Relation.Tags["type"].ToString()         != "route" &&
+                    CurrentGeoFeature.Type = (Relation.Tags["type"].ToString() != "route" &&
                                                CurrentGeoFeature.GeoCoordinates.First() == CurrentGeoFeature.GeoCoordinates.Last())
                                                   ? GeoJSONObjectType.Polygon
                                                   : GeoJSONObjectType.LineString;
@@ -559,7 +473,7 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
                 if (ResultList.First().Type == GeoJSONObjectType.Polygon)
                 {
                     geometry = new Polygon(Enumerable.Range(1, 1).Select(_ => ring));
-                }                  
+                }
                 else
                 {
                     geometry = ring;
@@ -597,9 +511,9 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
 
 
 
-        
 
-        
+
+
 
     }
 
