@@ -60,7 +60,7 @@ namespace DEM.Net.Extension.Osm.Buildings
             try
             {
                 // Download buildings and convert them to GeoJson
-                FeatureCollection buildings = _osmService.GetOsmDataAsGeoJson(bbox, "building");
+                FeatureCollection buildings = _osmService.GetOsmDataAsGeoJson(bbox, "building:part");
 
                 // Download elevation data if missing
                 if (downloadMissingFiles) _elevationService.DownloadMissingFiles(dataSet, bbox);
@@ -157,18 +157,30 @@ namespace DEM.Net.Extension.Osm.Buildings
             List<Vector3> normals = new List<Vector3>();
 
             StopwatchLog sw = StopwatchLog.StartNew(_logger);
+            StopwatchLog swTri = new StopwatchLog(_logger);
+            StopwatchLog swNormals = new StopwatchLog(_logger);
+            StopwatchLog swOther = new StopwatchLog(_logger);
             // Get highest base point
             // Retrieve building size
             foreach (var building in buildingModels)
             {
-                var triangulation = this.Triangulate(building);
+                swTri.Start();
+                   var triangulation = this.Triangulate(building);
+                swTri.Stop();
+                swNormals.Start();
                 var positionsVec3 = triangulation.Positions.ToVector3().ToList();
                 var buildingNormals = _meshService.ComputeMeshNormals(positionsVec3, triangulation.Indices);
+                swNormals.Stop();
+                swOther.Start();
                 int initialPositionsCount = positions.Count;
                 positions.AddRange(positionsVec3);
                 indices.AddRange(triangulation.Indices.Select(i => i + initialPositionsCount).ToList());
                 normals.AddRange(buildingNormals);
+                swOther.Stop();
             }
+            swTri.LogTime("Triangulation");
+            swNormals.LogTime("Normals");
+            swOther.LogTime("Other");
             sw.LogTime("Buildings triangulation");
 
             int numBuildingsWithHeightInfo = buildingModels.Count(b => b.HasHeightInformation);

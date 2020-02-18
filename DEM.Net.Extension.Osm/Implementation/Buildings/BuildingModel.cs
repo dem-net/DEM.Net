@@ -38,5 +38,6 @@ namespace DEM.Net.Extension.Osm.Buildings
         public double? ComputedFloorAltitude { get; set; }
         public double ComputedRoofAltitude { get; set; }
         public bool HasHeightInformation { get; set; }
+        public bool IsPart { get; internal set; }
     }
 }

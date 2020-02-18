@@ -27,6 +27,7 @@ using GeoJSON.Net;
 using GeoJSON.Net.Feature;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace DEM.Net.Extension.Osm
@@ -60,17 +61,19 @@ namespace DEM.Net.Extension.Osm
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(string.Join(Separator, "GeometryType", "Tag", "Value", "Occurences"));
-            foreach (var occur in _geomTypes)
+            foreach (var occur in _geomTypes.OrderBy(k=>k.Key))
             {
                 sb.AppendLine(string.Join(Separator, occur.Key, "", "", occur.Value));
             }
-            foreach (var occur in _tagsOccurences)
+            foreach (var occur in _tagsOccurences.OrderBy(k => k.Key))
             {
                 sb.AppendLine(string.Join(Separator, "", occur.Key, "", occur.Value));
             }
-            foreach (var occur in _tagsValuesOccurences)
+            foreach (var occur in _tagsValuesOccurences.OrderBy(k => k.Key))
             {
-                foreach (var valOccur in occur.Value)
+                if (occur.Key == "@id") continue;
+
+                foreach (var valOccur in occur.Value.OrderBy(k => k.Key))
                 {
                     sb.AppendLine(string.Join(Separator, "", occur.Key, valOccur.Key, valOccur.Value));
                 }

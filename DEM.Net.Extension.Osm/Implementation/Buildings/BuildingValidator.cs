@@ -50,76 +50,10 @@ namespace DEM.Net.Extension.Osm.Buildings
 
         private readonly ILogger _logger;
 
-        private static HashSet<string> GetBuildingTagKeys()
-        {
-            var tagKeys = new HashSet<string>();
-            tagKeys.Add("roof:orientation");
-            tagKeys.Add("roof:orientation:compass");
-            tagKeys.Add("roof:levels");
-            tagKeys.Add("roof:shape");
-            tagKeys.Add("roof:material");
-            tagKeys.Add("roof:direction");
-            tagKeys.Add("roof:height");
-            tagKeys.Add("roof:colour");
-            tagKeys.Add("roof:levels");
-            tagKeys.Add("max_level");
-            tagKeys.Add("min_level");
-            tagKeys.Add("wall");
-            tagKeys.Add("building:height");
-            tagKeys.Add("building:levels");
-            tagKeys.Add("building:level");
-            tagKeys.Add("building:part");
-            tagKeys.Add("building:facade:material");
-            tagKeys.Add("building:min_level");
-            tagKeys.Add("building:colour");
-            tagKeys.Add("building:roof:shape");
-            tagKeys.Add("building:material");
-            tagKeys.Add("building:architecture");
-            tagKeys.Add("building:levels:underground");
-            tagKeys.Add("levels");
-            tagKeys.Add("level");
-            tagKeys.Add("height");
-            tagKeys.Add("min_height");
-            tagKeys.Add("craft");
-            tagKeys.Add("source:building");
-            tagKeys.Add("tower:type");
-            tagKeys.Add("tower:construction");
-            return tagKeys;
-        }
-
-        public static void ValidateTags(List<BuildingModel> buildingModels)
-        {
-            var keys = GetBuildingTagKeys();
-            using (StreamWriter sw = new StreamWriter("buildingsValidation.txt", false))
-            {
-                sw.WriteLine("id\t" + string.Join("\t", keys));
-
-                List<string> values = new List<string>();
-                foreach (var building in buildingModels)
-                {
-                    values.Add(building.Id);
-                    foreach (var key in keys)
-                    {
-                        if (building.Tags.TryGetValue(key, out object value))
-                        {
-                            values.Add(value.ToString());
-                        }
-                        else
-                        {
-                            values.Add(string.Empty);
-                        }
-                    }
-
-                    sw.WriteLine(string.Join("\t", values));
-                    values.Clear();
-
-                }
-            }
-        }
-
         public override void ParseTags(BuildingModel model)
         {
             ParseTag<int>(model, "buildings:levels", v => model.Levels = v);
+            ParseTag<string>(model, "buildings:part", v => model.IsPart = v.ToLower() == "yes");
             ParseLengthTag(model, "min_height", v => model.MinHeight = v);
             ParseLengthTag(model, "height", v => model.Height = v);
             ParseLengthTag(model, "building:height", v =>
@@ -191,7 +125,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                     }
                     else
                     {
-                        _logger.LogWarning($"Cannot convert tag {tagName} length value, got value {val}.");
+                        _logger.LogWarning($"Cannot extract value and unit for tag {tagName}, got value {val}.");
                     }
 
 
