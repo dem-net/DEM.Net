@@ -65,6 +65,8 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
         /// <param name="ResultTask">A Overpass query result task.</param>
         public static Task<FeatureCollection> ToGeoJSON(this Task<OverpassResult> ResultTask)
         {
+            HashSet<ulong> nodesInRelation = new HashSet<ulong>();
+            HashSet<ulong> waysInRelation = new HashSet<ulong>();
 
             return ResultTask.ContinueWith(task =>
             {
@@ -102,7 +104,12 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
                                     NodeResolver: nodeId => Nodes[nodeId]);
 
                     if (Ways.ContainsKey(Way.Id))
-                        Console.WriteLine("Duplicate way id detected!");
+                    {
+                        if (Ways[Way.Id].Tags?.Count == 0 && Way.Tags.Count > 0)
+                        {
+                            Console.WriteLine("Duplicate way id detected!");
+                        }
+                    }
                     else
                         Ways.Add(Way.Id, Way);
                 }
@@ -123,7 +130,11 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
                     if (Relations.ContainsKey(Relation.Id))
                         Console.WriteLine("Duplicate relation id detected!");
                     else
+                    {
                         Relations.Add(Relation.Id, Relation);
+                        nodesInRelation.UnionWith(Relation.Members.Where(m => m.Node != null).Select(m => m.Node.Id));
+                        waysInRelation.UnionWith(Relation.Members.Where(m => m.Way != null).Select(m => m.Way.Id));
+                    }
 
                 }
 
@@ -137,13 +148,20 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
                 //    "features": [ ]
                 // }
 
-                List<Feature> features = Nodes.Values.Where(n => n.Tags.Count > 0).Select(n => n.ToGeoJSON())
-                                        .Concat(Ways.Values.Where(n => n.Tags.Count > 0).Select(n => n.ToGeoJSON()))
-                                        .Concat(Relations.Values.Select(n => n.ToGeoJSON()))
-                                        .ToList();
 
+                List<Feature> features = new List<Feature>();
 
-                var featureCollection = new FeatureCollection(features);
+                // Debug code
+                var featuresFromNodes = Nodes.Values.Where(n => n.Tags.Count > 0 && !nodesInRelation.Contains(n.Id)).Select(n => n.ToGeoJSON()).ToList();
+                var featuresFromWays = Ways.Values.Where(n => n.Tags.Count > 0 && !waysInRelation.Contains(n.Id)).Select(n => n.ToGeoJSON()).ToList();
+                var featuresFromRelations = Relations.Values.Select(n => n.ToGeoJSON()).ToList();
+                var featureCollection = new FeatureCollection(featuresFromNodes.Concat(featuresFromWays).Concat(featuresFromRelations).ToList());
+
+                // Release code
+                //var featuresFromNodes = Nodes.Values.Where(n => n.Tags.Count > 0).Select(n => n.ToGeoJSON());
+                //var featuresFromWays = Ways.Values.Where(n => n.Tags.Count > 0).Select(n => n.ToGeoJSON());
+                //var featuresFromRelations = Relations.Values.Select(n => n.ToGeoJSON());
+                //var featureCollection = new FeatureCollection(featuresFromNodes.Concat(featuresFromWays).Concat(featuresFromRelations).ToList());
 
                 return featureCollection;
 
@@ -374,10 +392,10 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
 
             // Relation.Ways.Select(Way => new JArray(Way.Nodes.Select(Node => new JArray(Node.Longitude, Node.Latitude))))
 
-            var RemainingGeoFeatures = Relation.Ways.Select(Way => new GeoFeature(Way.Nodes.Select(Node => new Position(Node.Latitude, Node.Longitude)))).ToList();
+            var RemainingGeoFeatures = Relation.Members.Where(m=>m.Way != null).Select(m => new GeoFeature(m.Way.Nodes.Select(Node => new Position(Node.Latitude, Node.Longitude)))).ToList();
             var ResultList = new List<GeoFeature>();
 
-            Byte Found = 0;
+            bool Found = false;
             GeoFeature CurrentGeoFeature;
 
             //if (Relation.Tags["type"].ToString() != "multipolygon")
@@ -406,7 +424,7 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
                     do
                     {
 
-                        Found = 0;
+                        Found = false;
 
                         foreach (var AdditionalPath in RemainingGeoFeatures)
                         {
@@ -416,7 +434,7 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
                                 RemainingGeoFeatures.Remove(AdditionalPath);
                                 // Skip first GeoCoordinate as it is redundant!
                                 CurrentGeoFeature.GeoCoordinates.AddRange(AdditionalPath.GeoCoordinates);//.Skip(1));
-                                Found = 1;
+                                Found = true;
                                 break;
                             }
 
@@ -425,7 +443,7 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
                                 RemainingGeoFeatures.Remove(AdditionalPath);
                                 // Skip first GeoCoordinate as it is redundant!
                                 CurrentGeoFeature.GeoCoordinates.AddRange(AdditionalPath.GeoCoordinates.ReverseAndReturn());//.Skip(1));
-                                Found = 1;
+                                Found = true;
                                 break;
                             }
 
@@ -435,7 +453,7 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
                                 CurrentGeoFeature.GeoCoordinates.Reverse();
                                 // Skip first GeoCoordinate as it is redundant!
                                 CurrentGeoFeature.GeoCoordinates.AddRange(AdditionalPath.GeoCoordinates);//.Skip(1));
-                                Found = 1;
+                                Found = true;
                                 break;
                             }
 
@@ -445,13 +463,13 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
                                 CurrentGeoFeature.GeoCoordinates.Reverse();
                                 // Skip first GeoCoordinate as it is redundant!
                                 CurrentGeoFeature.GeoCoordinates.AddRange(AdditionalPath.GeoCoordinates.ReverseAndReturn());//.Skip(1));
-                                Found = 1;
+                                Found = true;
                                 break;
                             }
 
                         }
 
-                    } while (RemainingGeoFeatures.Count > 0 && Found > 0);
+                    } while (RemainingGeoFeatures.Count > 0 && Found);
 
                     CurrentGeoFeature.Type = (Relation.Tags["type"].ToString() != "route" &&
                                                CurrentGeoFeature.GeoCoordinates.First() == CurrentGeoFeature.GeoCoordinates.Last())

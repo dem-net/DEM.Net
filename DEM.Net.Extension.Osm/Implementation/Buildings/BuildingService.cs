@@ -66,7 +66,12 @@ namespace DEM.Net.Extension.Osm.Buildings
                 //.WithRelations("type=building")
                 //.WithRelations("building"));
 
-                FeatureCollection buildings = _osmService.GetOsmDataAsGeoJson(bbox, "(way[\"building\"]({{bbox}});(._;<;);(._;>;);relation[\"building\"]({{bbox}});(._;>;););");
+                FeatureCollection buildings = _osmService.GetOsmDataAsGeoJson(bbox, 
+                    @"(way[""building""] ({{bbox}});
+                        way[""building:part""] ({{bbox}});
+                        relation[type=building] ({{bbox}});
+                        relation[""building""] ({{bbox}});
+                       );");
 
 
 
