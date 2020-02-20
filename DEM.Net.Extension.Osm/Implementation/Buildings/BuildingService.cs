@@ -248,7 +248,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                 }
                 else
                 {
-                    triangulation.Colors = floorVertices.Select(p => Vector4.One).ToList();
+                    triangulation.Colors.AddRange(floorVertices.Select(p => Vector4.One));
                 }
 
                 foreach (var pt in triangulation.Positions.Take(totalPoints))
@@ -267,7 +267,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                 }
                 else
                 {
-                    triangulation.Colors = floorVertices.Select(p => Vector4.One).ToList();
+                    triangulation.Colors.AddRange(floorVertices.Select(p => Vector4.One));
                 }
 
                 foreach (var pt in triangulation.Positions.Take(totalPoints))
@@ -277,7 +277,7 @@ namespace DEM.Net.Extension.Osm.Buildings
             }
 
 
-
+            Debug.Assert(triangulation.Colors.Count == 0 || triangulation.Colors.Count == triangulation.Positions.Count);
 
             return triangulation;
 
