@@ -39,6 +39,23 @@ namespace DEM.Net.Extension.Osm.Buildings
             this._logger = logger;
         }
 
+        public ModelRoot GetBuildings3DModel(List<BuildingModel> buildings, DEMDataSet dataSet, bool downloadMissingFiles, float zScale)
+        {
+            try
+            {
+                TriangulationNormals triangulation = this.GetBuildings3DTriangulation(buildings, null, dataSet, downloadMissingFiles, zScale);
+
+                var model = _gltfService.AddMesh(null, new SharpGltfService.IndexedTriangulation(triangulation), null, null, doubleSided: true);
+
+                return model;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{nameof(GetBuildings3DModel)} error: {ex.Message}");
+                throw;
+            }
+        }
+
         public ModelRoot GetBuildings3DModel(BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles, float zScale)
         {
             try
@@ -55,7 +72,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                 throw;
             }
         }
-        public TriangulationNormals GetBuildings3DTriangulation(BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles, float zScale)
+        public (List<BuildingModel> Buildings, int TotalPoints) GetBuildingsModel(BoundingBox bbox)
         {
             try
             {
@@ -73,26 +90,45 @@ namespace DEM.Net.Extension.Osm.Buildings
                         //relation[""building""] ({{bbox}});
                        );");
 
-
-
-                // Download elevation data if missing
-                if (downloadMissingFiles) _elevationService.DownloadMissingFiles(dataSet, bbox);
-
                 // Create internal building model
                 var buildingValidator = new BuildingValidator(_logger);
                 (List<BuildingModel> Buildings, int TotalPoints) parsedBuildings = _osmService.CreateModelsFromGeoJson(buildings, buildingValidator);
 
-                // Compute elevations (faster elevation when point count is known in advance)
-                parsedBuildings.Buildings = this.ComputeElevations(parsedBuildings.Buildings, parsedBuildings.TotalPoints, dataSet, downloadMissingFiles, zScale);
+                return parsedBuildings;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{nameof(GetBuildingsModel)} error: {ex.Message}");
+                throw;
+            }
+        }
+        public TriangulationNormals GetBuildings3DTriangulation(BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles, float zScale)
+        {
+            try
+            {
+              
+                // Download elevation data if missing
+                if (downloadMissingFiles) _elevationService.DownloadMissingFiles(dataSet, bbox);
 
-                TriangulationNormals triangulation = this.Triangulate(parsedBuildings.Buildings);
-                return triangulation;
+                (List<BuildingModel> Buildings, int TotalPoints) parsedBuildings = GetBuildingsModel(bbox);
+
+                return GetBuildings3DTriangulation(parsedBuildings.Buildings, parsedBuildings.TotalPoints, dataSet, downloadMissingFiles, zScale);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"{nameof(GetBuildings3DModel)} error: {ex.Message}");
                 throw;
             }
+        }
+        public TriangulationNormals GetBuildings3DTriangulation(List<BuildingModel> buildings, int? count, DEMDataSet dataSet, bool downloadMissingFiles, float zScale)
+        {
+
+            // Compute elevations (faster elevation when point count is known in advance)
+            buildings = this.ComputeElevations(buildings, count ?? buildings.Sum(b => b.Points.Count()), dataSet, downloadMissingFiles, zScale);
+
+            TriangulationNormals triangulation = this.Triangulate(buildings);
+            return triangulation;
+
         }
 
 
@@ -206,12 +242,15 @@ namespace DEM.Net.Extension.Osm.Buildings
         {
             int totalPoints = building.ExteriorRing.Count - 1 + building.InteriorRings.Sum(r => r.Count - 1);
 
-            //--------------------
-            // Footprint
-            // In GeoJson, ring last point == first point, we must filter the first point out
-            var footPrintOutline = building.ExteriorRing.Skip(1);
+            //==========================
+            // Footprint triangulation
+            //
+            var footPrintOutline = building.ExteriorRing.Skip(1); // In GeoJson, ring last point == first point, we must filter the first point out
             var footPrintInnerRingsFlattened = building.InteriorRings == null ? null : building.InteriorRings.Select(r => r.Skip(1));
+
             TriangulationList<GeoPoint> triangulation = _meshService.Tesselate(footPrintOutline, footPrintInnerRingsFlattened);
+            int numFootPrintIndices = triangulation.Indices.Count;
+            /////
 
             // Now extrude it (build the sides)
             // Algo
@@ -220,19 +259,11 @@ namespace DEM.Net.Extension.Osm.Buildings
             building = this.ComputeBuildingHeightMeters(building);
 
             // Triangulate wall for each ring
+            // (We add floor indices before copying the vertices, they will be duplicated and z shifted later on)
             List<int> numVerticesPerRing = new List<int>();
             numVerticesPerRing.Add(building.ExteriorRing.Count - 1);
             numVerticesPerRing.AddRange(building.InteriorRings.Select(r => r.Count - 1));
-
-            triangulation = this.TriangulateRingsWall(triangulation, numVerticesPerRing, totalPoints);
-            if (building.Color.HasValue)
-            {
-                triangulation.Colors = triangulation.Positions.Select(p => building.Color.Value).ToList();
-            }
-            else
-            {
-                triangulation.Colors = triangulation.Positions.Select(p => Vector4.One).ToList();
-            }
+            triangulation = this.TriangulateRingsWalls(triangulation, numVerticesPerRing, totalPoints);
 
             // Roof
             // Building has real elevations
@@ -240,21 +271,29 @@ namespace DEM.Net.Extension.Osm.Buildings
             // Create floor vertices by copying roof vertices and setting their z min elevation (floor or min height)
             var floorVertices = triangulation.Positions.Select(pt => pt.Clone(building.ComputedFloorAltitude)).ToList();
             triangulation.Positions.AddRange(floorVertices);
-            if (building.RoofColor.HasValue)
-            {
-                triangulation.Colors.AddRange(floorVertices.Select(p => building.RoofColor.Value));
-            }
-            else
-            {
-                triangulation.Colors.AddRange(floorVertices.Select(p => Vector4.One));
-            }
 
+            // Take the first vertices and z shift them
             foreach (var pt in triangulation.Positions.Take(totalPoints))
             {
                 pt.Elevation = building.ComputedRoofAltitude;
             }
 
+            //==========================
+            // Colors: if walls and roof color is the same, all vertices can have the same color
+            // otherwise we must duplicate vertices to ensure consistent triangles color (avoid unrealistic shades)
+            // Vertices repartition: <roof_wallcolor> / <floor_wallcolor>
+            // if distinct roof we should get:  <roof_wallcolor> / <floor_wallcolor> // <roof_roofcolor>
+            Vector4 DefaultColor = Vector4.One;
+            bool mustCopyVerticesForRoof = (building.Color ?? DefaultColor) != (building.RoofColor ?? DefaultColor);
+            // assign wall or default color to all vertices
+            triangulation.Colors = triangulation.Positions.Select(p => building.Color ?? DefaultColor).ToList();
 
+            if (mustCopyVerticesForRoof)
+            {
+                triangulation.Positions.AddRange(triangulation.Positions.Take(totalPoints));
+                triangulation.Indices.AddRange(triangulation.Indices.Take(numFootPrintIndices));
+                triangulation.Colors.AddRange(Enumerable.Range(1, totalPoints).Select(_ => building.RoofColor ?? DefaultColor));
+            }
 
             Debug.Assert(triangulation.Colors.Count == 0 || triangulation.Colors.Count == triangulation.Positions.Count);
 
@@ -262,7 +301,7 @@ namespace DEM.Net.Extension.Osm.Buildings
 
         }
 
-        private TriangulationList<GeoPoint> TriangulateRingsWall(TriangulationList<GeoPoint> triangulation, List<int> numVerticesPerRing, int totalPoints)
+        private TriangulationList<GeoPoint> TriangulateRingsWalls(TriangulationList<GeoPoint> triangulation, List<int> numVerticesPerRing, int totalPoints)
         {
             int offset = numVerticesPerRing.Sum();
 
@@ -286,6 +325,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                 }
                 while (i < numRingVertices - 1);
 
+                // Connect last vertices to start vertices
                 triangulation.Indices.Add(ringOffset + i);
                 triangulation.Indices.Add(ringOffset + i + offset);
                 triangulation.Indices.Add(ringOffset + 0);
