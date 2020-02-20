@@ -66,7 +66,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                 //.WithRelations("type=building")
                 //.WithRelations("building"));
 
-                FeatureCollection buildings = _osmService.GetOsmDataAsGeoJson(bbox, 
+                FeatureCollection buildings = _osmService.GetOsmDataAsGeoJson(bbox,
                     @"(way[""building""] ({{bbox}});
                         way[""building:part""] ({{bbox}});
                         //relation[type=building] ({{bbox}});
@@ -170,36 +170,35 @@ namespace DEM.Net.Extension.Osm.Buildings
             List<int> indices = new List<int>();
             List<Vector3> normals = new List<Vector3>();
 
-            StopwatchLog sw = StopwatchLog.StartNew(_logger);
-            StopwatchLog swTri = new StopwatchLog(_logger);
-            StopwatchLog swNormals = new StopwatchLog(_logger);
-            StopwatchLog swOther = new StopwatchLog(_logger);
-            // Get highest base point
-            // Retrieve building size
-            foreach (var building in buildingModels)
+            using (TimeSpanBlock timer = new TimeSpanBlock(nameof(Triangulate), _logger, LogLevel.Information))
             {
-                swTri.Start();
-                   var triangulation = this.Triangulate(building);
-                swTri.Stop();
-                swNormals.Start();
-                var positionsVec3 = triangulation.Positions.ToVector3().ToList();
-                var buildingNormals = _meshService.ComputeMeshNormals(positionsVec3, triangulation.Indices);
-                swNormals.Stop();
-                swOther.Start();
-                int initialPositionsCount = positions.Count;
-                positions.AddRange(positionsVec3);
-                indices.AddRange(triangulation.Indices.Select(i => i + initialPositionsCount).ToList());
-                colors.AddRange(triangulation.Colors);
-                normals.AddRange(buildingNormals);
-                swOther.Stop();
-            }
-            swTri.LogTime("Triangulation");
-            swNormals.LogTime("Normals");
-            swOther.LogTime("Other");
-            sw.LogTime("Buildings triangulation");
+                // Get highest base point
+                // Retrieve building size
+                int numWithHeight = 0;
+                int numWithColor = 0;
 
-            int numBuildingsWithHeightInfo = buildingModels.Count(b => b.HasHeightInformation);
-            _logger.LogInformation($"Building heights: {numBuildingsWithHeightInfo}/{buildingModels.Count} ({numBuildingsWithHeightInfo / (float)buildingModels.Count:P}) with height information.");
+                foreach (var building in buildingModels)
+                {
+                    numWithHeight += building.HasHeightInformation ? 1 : 0;
+                    numWithColor += (building.Color.HasValue || building.RoofColor.HasValue) ? 1 : 0;
+
+                    var triangulation = this.Triangulate(building);
+
+                    var positionsVec3 = triangulation.Positions.ToVector3().ToList();
+                    var buildingNormals = _meshService.ComputeMeshNormals(positionsVec3, triangulation.Indices);
+
+                    int initialPositionsCount = positions.Count;
+
+                    positions.AddRange(positionsVec3);
+                    indices.AddRange(triangulation.Indices.Select(i => i + initialPositionsCount).ToList());
+                    colors.AddRange(triangulation.Colors);
+                    normals.AddRange(buildingNormals);
+                }
+
+                _logger.LogInformation($"Building heights: {numWithHeight}/{buildingModels.Count} ({numWithHeight / (float)buildingModels.Count:P}) with height information.");
+                _logger.LogInformation($"Building colors: {numWithColor}/{buildingModels.Count} ({numWithColor / (float)buildingModels.Count:P}) with color information.");
+            }
+
 
             return new TriangulationNormals(positions, indices, normals, colors);
         }
@@ -234,7 +233,7 @@ namespace DEM.Net.Extension.Osm.Buildings
             {
                 triangulation.Colors = triangulation.Positions.Select(p => Vector4.One).ToList();
             }
-            
+
             // Roof
             // Building has real elevations
             if (building.ComputedFloorAltitude.HasValue)
