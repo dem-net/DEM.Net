@@ -236,44 +236,24 @@ namespace DEM.Net.Extension.Osm.Buildings
 
             // Roof
             // Building has real elevations
-            if (building.ComputedFloorAltitude.HasValue)
-            {
-                // Create floor vertices by copying roof vertices and setting their z min elevation (floor or min height)
-                var floorVertices = triangulation.Positions.Select(pt => pt.Clone(building.ComputedFloorAltitude)).ToList();
-                triangulation.Positions.AddRange(floorVertices);
-                if (building.RoofColor.HasValue)
-                {
-                    triangulation.Colors.AddRange(floorVertices.Select(p => building.RoofColor.Value));
-                }
-                else
-                {
-                    triangulation.Colors.AddRange(floorVertices.Select(p => Vector4.One));
-                }
 
-                foreach (var pt in triangulation.Positions.Take(totalPoints))
-                {
-                    pt.Elevation = building.ComputedRoofAltitude;
-                }
+            // Create floor vertices by copying roof vertices and setting their z min elevation (floor or min height)
+            var floorVertices = triangulation.Positions.Select(pt => pt.Clone(building.ComputedFloorAltitude)).ToList();
+            triangulation.Positions.AddRange(floorVertices);
+            if (building.RoofColor.HasValue)
+            {
+                triangulation.Colors.AddRange(floorVertices.Select(p => building.RoofColor.Value));
             }
             else
             {
-                // Create floor vertices by copying roof vertices and setting their z min elevation (floor or min height)
-                var floorVertices = triangulation.Positions.Select(pt => pt.Clone(null)).ToList();
-                triangulation.Positions.AddRange(floorVertices);
-                if (building.RoofColor.HasValue)
-                {
-                    triangulation.Colors.AddRange(floorVertices.Select(p => building.RoofColor.Value));
-                }
-                else
-                {
-                    triangulation.Colors.AddRange(floorVertices.Select(p => Vector4.One));
-                }
-
-                foreach (var pt in triangulation.Positions.Take(totalPoints))
-                {
-                    pt.Elevation = building.ComputedRoofAltitude;
-                }
+                triangulation.Colors.AddRange(floorVertices.Select(p => Vector4.One));
             }
+
+            foreach (var pt in triangulation.Positions.Take(totalPoints))
+            {
+                pt.Elevation = building.ComputedRoofAltitude;
+            }
+
 
 
             Debug.Assert(triangulation.Colors.Count == 0 || triangulation.Colors.Count == triangulation.Positions.Count);
