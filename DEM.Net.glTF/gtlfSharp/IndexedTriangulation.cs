@@ -13,6 +13,7 @@ namespace DEM.Net.glTF.SharpglTF
             private Triangulation Triangulation;
 
             public List<Vector3> Positions { get; private set; }
+            public List<Vector4> Colors { get; private set; }
             public List<int> Indices { get; private set; }
 
             public IndexedTriangulation(Triangulation triangulation, Matrix4x4 vectorTransform = default)
@@ -35,6 +36,7 @@ namespace DEM.Net.glTF.SharpglTF
             {
                 Positions = triangulation.Positions.ToList();
                 Indices = triangulation.Indices.ToList();
+                Colors = triangulation.Colors?.ToList();
             }
 
             public Vector3 this[int index]

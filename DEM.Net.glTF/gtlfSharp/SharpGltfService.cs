@@ -118,6 +118,16 @@ namespace DEM.Net.glTF.SharpglTF
             // create mesh primitive
             var primitive = rmesh.CreatePrimitive()
                 .WithVertexAccessor("POSITION", indexedTriangulation.Positions);
+
+            if (indexedTriangulation.Colors != null && indexedTriangulation.Colors.Any())
+            {
+                primitive =primitive
+                    .WithVertexAccessor("COLOR_0", indexedTriangulation.Colors.Select(c => c.X).ToList())
+                    .WithVertexAccessor("COLOR_1", indexedTriangulation.Colors.Select(c => c.Y).ToList())
+                    .WithVertexAccessor("COLOR_2", indexedTriangulation.Colors.Select(c => c.Z).ToList())
+                    .WithVertexAccessor("COLOR_3", indexedTriangulation.Colors.Select(c => c.W).ToList());
+            }
+
             if (normals != null)
             {
                 primitive = primitive.WithVertexAccessor("NORMAL", normals.ToList());

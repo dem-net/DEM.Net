@@ -29,6 +29,7 @@ using Newtonsoft.Json.Linq;
 using System.Threading;
 using DEM.Net.Core;
 using System.Globalization;
+using System.Diagnostics;
 
 #endregion
 
@@ -538,6 +539,7 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
 
                 try
                 {
+                    Debug.WriteLine("Overpass query:" + Environment.NewLine + queryBody);
                     using (var ResponseMessage = await HTTPClient.PostAsync(OverpassAPI_URI, new StringContent(queryBody)))
                     {
 

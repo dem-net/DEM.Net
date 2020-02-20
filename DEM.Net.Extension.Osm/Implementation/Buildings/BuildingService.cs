@@ -69,8 +69,8 @@ namespace DEM.Net.Extension.Osm.Buildings
                 FeatureCollection buildings = _osmService.GetOsmDataAsGeoJson(bbox, 
                     @"(way[""building""] ({{bbox}});
                         way[""building:part""] ({{bbox}});
-                        relation[type=building] ({{bbox}});
-                        relation[""building""] ({{bbox}});
+                        //relation[type=building] ({{bbox}});
+                        //relation[""building""] ({{bbox}});
                        );");
 
 
@@ -166,6 +166,7 @@ namespace DEM.Net.Extension.Osm.Buildings
         {
 
             List<Vector3> positions = new List<Vector3>();
+            List<Vector4> colors = new List<Vector4>();
             List<int> indices = new List<int>();
             List<Vector3> normals = new List<Vector3>();
 
@@ -188,6 +189,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                 int initialPositionsCount = positions.Count;
                 positions.AddRange(positionsVec3);
                 indices.AddRange(triangulation.Indices.Select(i => i + initialPositionsCount).ToList());
+                colors.AddRange(triangulation.Colors);
                 normals.AddRange(buildingNormals);
                 swOther.Stop();
             }
@@ -199,7 +201,7 @@ namespace DEM.Net.Extension.Osm.Buildings
             int numBuildingsWithHeightInfo = buildingModels.Count(b => b.HasHeightInformation);
             _logger.LogInformation($"Building heights: {numBuildingsWithHeightInfo}/{buildingModels.Count} ({numBuildingsWithHeightInfo / (float)buildingModels.Count:P}) with height information.");
 
-            return new TriangulationNormals(positions, indices, normals);
+            return new TriangulationNormals(positions, indices, normals, colors);
         }
         public TriangulationList<GeoPoint> Triangulate(BuildingModel building)
         {
@@ -224,13 +226,30 @@ namespace DEM.Net.Extension.Osm.Buildings
             numVerticesPerRing.AddRange(building.InteriorRings.Select(r => r.Count - 1));
 
             triangulation = this.TriangulateRingsWall(triangulation, numVerticesPerRing, totalPoints);
-
+            if (building.Color.HasValue)
+            {
+                triangulation.Colors = triangulation.Positions.Select(p => building.Color.Value).ToList();
+            }
+            else
+            {
+                triangulation.Colors = triangulation.Positions.Select(p => Vector4.One).ToList();
+            }
+            
+            // Roof
             // Building has real elevations
             if (building.ComputedFloorAltitude.HasValue)
             {
                 // Create floor vertices by copying roof vertices and setting their z min elevation (floor or min height)
                 var floorVertices = triangulation.Positions.Select(pt => pt.Clone(building.ComputedFloorAltitude)).ToList();
                 triangulation.Positions.AddRange(floorVertices);
+                if (building.RoofColor.HasValue)
+                {
+                    triangulation.Colors.AddRange(floorVertices.Select(p => building.RoofColor.Value));
+                }
+                else
+                {
+                    triangulation.Colors = floorVertices.Select(p => Vector4.One).ToList();
+                }
 
                 foreach (var pt in triangulation.Positions.Take(totalPoints))
                 {
@@ -242,6 +261,14 @@ namespace DEM.Net.Extension.Osm.Buildings
                 // Create floor vertices by copying roof vertices and setting their z min elevation (floor or min height)
                 var floorVertices = triangulation.Positions.Select(pt => pt.Clone(null)).ToList();
                 triangulation.Positions.AddRange(floorVertices);
+                if (building.RoofColor.HasValue)
+                {
+                    triangulation.Colors.AddRange(floorVertices.Select(p => building.RoofColor.Value));
+                }
+                else
+                {
+                    triangulation.Colors = floorVertices.Select(p => Vector4.One).ToList();
+                }
 
                 foreach (var pt in triangulation.Positions.Take(totalPoints))
                 {
