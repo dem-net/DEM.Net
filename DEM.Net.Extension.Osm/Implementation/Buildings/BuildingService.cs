@@ -106,7 +106,7 @@ namespace DEM.Net.Extension.Osm.Buildings
         {
             try
             {
-              
+
                 // Download elevation data if missing
                 if (downloadMissingFiles) _elevationService.DownloadMissingFiles(dataSet, bbox);
 
@@ -281,8 +281,13 @@ namespace DEM.Net.Extension.Osm.Buildings
             //==========================
             // Colors: if walls and roof color is the same, all vertices can have the same color
             // otherwise we must duplicate vertices to ensure consistent triangles color (avoid unrealistic shades)
-            // Vertices repartition: <roof_wallcolor> / <floor_wallcolor>
-            // if distinct roof we should get:  <roof_wallcolor> / <floor_wallcolor> // <roof_roofcolor>
+            // AND shift the roof triangulation indices
+            // Before:
+            //      Vertices: <roof_wallcolor_0..i> / <floor_wallcolor_i..j>
+            //      Indices: <roof_triangulation_0..i> / <roof_wall_triangulation_0..j>
+            // After:
+            //      Vertices: <roof_wallcolor_0..i> / <floor_wallcolor_i..j> // <roof_roofcolor_j..k>
+            //      Indices: <roof_triangulation_j..k> / <roof_wall_triangulation_0..j>
             Vector4 DefaultColor = Vector4.One;
             bool mustCopyVerticesForRoof = (building.Color ?? DefaultColor) != (building.RoofColor ?? DefaultColor);
             // assign wall or default color to all vertices
@@ -291,8 +296,14 @@ namespace DEM.Net.Extension.Osm.Buildings
             if (mustCopyVerticesForRoof)
             {
                 triangulation.Positions.AddRange(triangulation.Positions.Take(totalPoints));
-                triangulation.Indices.AddRange(triangulation.Indices.Take(numFootPrintIndices));
                 triangulation.Colors.AddRange(Enumerable.Range(1, totalPoints).Select(_ => building.RoofColor ?? DefaultColor));
+
+                // shift roof triangulation indices
+                for (int i = 0; i < numFootPrintIndices; i++)
+                {
+                    triangulation.Indices[i] += (triangulation.Positions.Count - totalPoints);
+                }
+
             }
 
             Debug.Assert(triangulation.Colors.Count == 0 || triangulation.Colors.Count == triangulation.Positions.Count);
