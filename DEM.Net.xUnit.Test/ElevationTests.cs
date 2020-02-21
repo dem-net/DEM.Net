@@ -65,9 +65,9 @@ namespace DEM.Net.Test
 
             _elevationService.DownloadMissingFiles(dataSet, lat, lon);
 
-            _elevationService.DownloadMissingFiles(dataSet, lat-0.5, lon);
-            _elevationService.DownloadMissingFiles(dataSet, lat - 0.5, lon-0.5);
-            _elevationService.DownloadMissingFiles(dataSet, lat, lon - 0.5); 
+            _elevationService.DownloadMissingFiles(dataSet, lat - 0.5, lon);
+            _elevationService.DownloadMissingFiles(dataSet, lat - 0.5, lon - 0.5);
+            _elevationService.DownloadMissingFiles(dataSet, lat, lon - 0.5);
             _elevationService.DownloadMissingFiles(dataSet, lat + 0.5, lon);
             _elevationService.DownloadMissingFiles(dataSet, lat + 0.5, lon + 0.5);
             _elevationService.DownloadMissingFiles(dataSet, lat, lon + 0.5);
@@ -128,7 +128,7 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), 39.97052612249965  , 20.178894102573395, 40.16242159876657, 20.476635396480564, 3)]
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 39.97052612249965, 20.178894102573395, 40.16242159876657, 20.476635396480564, 3)]
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 39.97052612249965, 20.178894102573395, 40.16242159876657, 20.476635396480564, 3)]
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 39.97052612249965, 20.178894102573395, 40.16242159876657, 20.476635396480564, 3)]
         public void TestIntervisibility(string dataSetName, double latStart, double lonStart
@@ -137,7 +137,7 @@ namespace DEM.Net.Test
             DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
             Assert.NotNull(dataSet);
 
-            IntervisibilityReport report = _elevationService.GetIntervisibilityReport(new GeoPoint(latStart, lonStart), new GeoPoint(latEnd, lonEnd),dataSet);
+            IntervisibilityReport report = _elevationService.GetIntervisibilityReport(new GeoPoint(latStart, lonStart), new GeoPoint(latEnd, lonEnd), dataSet);
 
             Assert.NotNull(report);
             Assert.Equal(expectedObstacles, report.ObstacleCount, 0);
