@@ -3,6 +3,8 @@
 #### DEM.Net.Core [![NuGet Version](http://img.shields.io/nuget/v/DEM.Net.Core.svg?style=flat)](https://www.nuget.org/packages/DEM.Net.Core/)
 #### DEM.Net.glTF [![NuGet Version](http://img.shields.io/nuget/v/DEM.Net.glTF.svg?style=flat)](https://www.nuget.org/packages/DEM.Net.glTF/)
 
+**This library is licensed for personal use or for smal companies generating less than $100,000 annually, for any other cases, please get in touch with us.**
+
 # DEM.Net 
 Digital Elevation Model library in C#
 - Elevation queries (point, polylines, heightmap, GPX)
