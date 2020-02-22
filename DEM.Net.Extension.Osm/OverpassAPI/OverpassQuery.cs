@@ -29,6 +29,7 @@ using Newtonsoft.Json.Linq;
 using System.Threading;
 using DEM.Net.Core;
 using System.Globalization;
+using System.Diagnostics;
 
 #endregion
 
@@ -516,7 +517,18 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
         /// Execute this Overpass query.
         /// </summary>
         /// <returns>A Overpass query result.</returns>
-        public async Task<OverpassResult> RunQuery(UInt32 Timeout = 0)
+        public Task<OverpassResult> RunQuery(UInt32 Timeout = 0)
+        {
+            return this.RunQuery(this.ToString(), Timeout);
+
+        }
+        public Task<OverpassResult> RunQueryQL(string request, UInt32 Timeout = 0)
+        {
+            return this.RunQuery(this.ToStringWithQLInjection(request), Timeout);
+        }
+
+
+        public async Task<OverpassResult> RunQuery(string queryBody, UInt32 Timeout = 0)
         {
 
             if (Timeout > 0)
@@ -527,7 +539,7 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
 
                 try
                 {
-                    string queryBody = this.ToString();
+                    Debug.WriteLine("Overpass query:" + Environment.NewLine + queryBody);
                     using (var ResponseMessage = await HTTPClient.PostAsync(OverpassAPI_URI, new StringContent(queryBody)))
                     {
 
@@ -611,7 +623,6 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
             throw new Exception("General HTTP client error!");
 
         }
-
         #endregion
 
 
@@ -666,8 +677,19 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
         {
 
             string query = String.Concat(Type,
-                                 Collection.Select(Item => String.Concat(@"[""", Item.Key, @"""", (Item.Value != "" ? @"=""" + Item.Value + @"""" : ""), "]")).
-                                    Aggregate((a, b) => a + b));
+                                 Collection.Select(Item =>
+                                 {
+                                     bool useQuotesAndValue = !Item.Key.Contains("=");
+                                     if (useQuotesAndValue)
+                                     {
+                                         return String.Concat(@"[""", Item.Key, @"""", (Item.Value != "" ? @"=""" + Item.Value + @"""" : ""), "]");
+                                     }
+                                     else
+                                     {
+                                         return String.Concat($"[{Item.Key}]"); 
+                                     }
+                                 }
+                                 ).Aggregate((a, b) => a + b));
 
 
             if (_AreaId > 0)
@@ -751,6 +773,29 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
 
             if (NodesRelations.Count == 0)
                 QueryString.AppendLine(");");
+
+            QueryString.AppendLine("out body;");
+            QueryString.AppendLine(">;");
+            QueryString.AppendLine("out skel qt;");
+
+            var result = QueryString.ToString();
+            return result;
+
+        }
+
+        public  String ToStringWithQLInjection(string query)
+        {
+
+            var QueryString = new StringBuilder();
+
+            QueryString.AppendLine("[out:json]");
+            QueryString.AppendLine("[timeout:" + _QueryTimeout + "];");
+
+            if (_BBox != null)
+            {
+                query = query.Replace("{{bbox}}", this.BboxAsOverpassString(_BBox));
+            }
+            QueryString.AppendLine(query);
 
             QueryString.AppendLine("out body;");
             QueryString.AppendLine(">;");

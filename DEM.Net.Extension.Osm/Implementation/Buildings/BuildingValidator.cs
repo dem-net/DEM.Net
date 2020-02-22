@@ -35,6 +35,8 @@ using DEM.Net.Core;
 using GeoJSON.Net.Feature;
 using GeoJSON.Net.Geometry;
 using GeoJSON.Net;
+using System.Numerics;
+using System.Drawing;
 
 namespace DEM.Net.Extension.Osm.Buildings
 {
@@ -54,8 +56,11 @@ namespace DEM.Net.Extension.Osm.Buildings
         {
             ParseTag<int>(model, "buildings:levels", v => model.Levels = v);
             ParseTag<string>(model, "buildings:part", v => model.IsPart = v.ToLower() == "yes");
+            ParseTag<string>(model, "building:part", v => model.IsPart = v.ToLower() == "yes");
             ParseLengthTag(model, "min_height", v => model.MinHeight = v);
             ParseLengthTag(model, "height", v => model.Height = v);
+            ParseTag<string, Vector4>(model, "building:colour", htmlColor => HtmlColorToVec4(htmlColor), v => model.Color = v);
+            ParseTag<string, Vector4>(model, "roof:colour", htmlColor => HtmlColorToVec4(htmlColor), v => model.RoofColor = v);
             ParseLengthTag(model, "building:height", v =>
             {
                 if (model.Height != null)
@@ -66,14 +71,35 @@ namespace DEM.Net.Extension.Osm.Buildings
             });
         }
 
+        private Vector4 HtmlColorToVec4(string htmlColor)
+        {
+            float componentRemap (byte c) => (float)MathHelper.Map(0, 255, 0, 1, c, true);
+
+            var color = Color.White;
+            try
+            {
+                color = ColorTranslator.FromHtml(htmlColor);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning($"Cannot parse color {htmlColor}");
+            } 
+            return new Vector4(componentRemap(color.R), componentRemap(color.G), componentRemap(color.B), componentRemap(color.A));
+        }
+
         private void ParseTag<T>(BuildingModel model, string tagName, Action<T> updateAction)
+        {
+            ParseTag<T, T>(model, tagName, t => t, updateAction);
+        }
+        private void ParseTag<Tin, Tout>(BuildingModel model, string tagName, Func<Tin,Tout> transformFunc, Action<Tout> updateAction)
         {
             if (model.Tags.TryGetValue(tagName, out object val))
             {
                 try
                 {
-                    T typedVal = (T)Convert.ChangeType(val, typeof(T), CultureInfo.InvariantCulture);
-                    updateAction(typedVal);
+                    Tin typedVal = (Tin)Convert.ChangeType(val, typeof(Tin), CultureInfo.InvariantCulture);
+                    Tout outVal = transformFunc(typedVal);
+                    updateAction(outVal);
                 }
                 catch (Exception ex)
                 {

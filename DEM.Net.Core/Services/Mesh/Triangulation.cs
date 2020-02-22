@@ -42,27 +42,37 @@ namespace DEM.Net.Core
     public class TriangulationNormals : Triangulation<Vector3>
     {
         public IEnumerable<Vector3> Normals { get; internal set; }
-        public TriangulationNormals(IEnumerable<Vector3> positions, IEnumerable<int> indices, IEnumerable<Vector3> normals)
+        public List<Vector4> Colors { get; set; }
+        public TriangulationNormals(IEnumerable<Vector3> positions, IEnumerable<int> indices, IEnumerable<Vector3> normals, List<Vector4> colors)
             : base(positions, indices)
         {
             Normals = normals;
+            Colors = colors;
         }
     }
 
     public class TriangulationList<T>
     {
-        public List<T> Positions { get; internal set; }
+        public List<T> Positions { get; internal set; } 
+        public List<Vector4> Colors { get; set; }
         public List<int> Indices { get; internal set; }
 
         public TriangulationList()
         {
             Positions = new List<T>();
             Indices = new List<int>();
+            Colors = new List<Vector4>();
         }
         public TriangulationList(List<T> positions, List<int> indices)
         {
             Positions = positions;
             Indices = indices;
+        }
+        public TriangulationList(List<T> positions, List<Vector4> colors, List<int> indices)
+        {
+            Positions = positions;
+            Indices = indices;
+            Colors = colors;
         }
 
         public int NumPositions => Positions.Count;

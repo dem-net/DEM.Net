@@ -54,39 +54,7 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
 
         #endregion
 
-        #region Nodes
-
-        private readonly List<Node> _Nodes;
-
-        /// <summary>
-        /// The nodes of an OSM relation.
-        /// </summary>
-        public List<Node> Nodes
-        {
-            get
-            {
-                return _Nodes;
-            }
-        }
-
-        #endregion
-
-        #region Ways
-
-        private readonly List<Way> _Ways;
-
-        /// <summary>
-        /// The ways of an OSM relation.
-        /// </summary>
-        public List<Way> Ways
-        {
-            get
-            {
-                return _Ways;
-            }
-        }
-
-        #endregion
+        public List<Member> Members { get; set; } = new List<Member>();
 
         #region Tags
 
@@ -117,20 +85,16 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
         /// <param name="Ways">Optional ways for this OSM relation.</param>
         /// <param name="Tags">Optional tags for this OSM relation.</param>
         public Relation(UInt64                                     Id,
-                        IEnumerable<Node>                          Nodes,
-                        IEnumerable<Way>                           Ways,
+                        IEnumerable<Member>                        Members,
                         IEnumerable<KeyValuePair<String, String>>  Tags = null)
         {
 
             this._Id         = Id;
 
-            this._Nodes      = Nodes != null
-                                   ? new List<Node>(Nodes)
-                                   : new List<Node>();
 
-            this._Ways       = Ways != null
-                                   ? new List<Way>(Ways)
-                                   : new List<Way>();
+            this.Members = Members != null
+                                   ? new List<Member>(Members)
+                                   : new List<Member>();
 
             this._Tags       = Tags != null
                                    ? Tags.ToDictionary(kvp => kvp.Key,
@@ -189,18 +153,14 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
             var r =  new Relation(UInt64.Parse(JSON["id"].ToString()),
 
                                 JSON["members"] != null
-                                             ? JSON["members"].Children<JObject>().Where(v => v["type"].ToString() == "node").Select(v => NodeResolver(UInt64.Parse(v["ref"].ToString())))
-                                             : null,
-
-                                JSON["members"] != null // "role": "inner" | "role": "outer"
-                                             ? JSON["members"].Children<JObject>().Where(v => v["type"].ToString() == "way").Select(v => WayResolver(UInt64.Parse(v["ref"].ToString())))
-                                             : null,
-
-                                JSON["tags"] != null
-                                    ? JSON["tags"].
-                                          Children<JProperty>().
-                                          Select(v => new KeyValuePair<String, String>(v.Name, v.Value.ToString()))
-                                    : null);
+                                             ? JSON["members"].Children<JObject>().Select(v =>
+                                             {
+                                                 if (v["type"].ToString() == "node")
+                                                     return new Member() { Role = v["role"].ToString(), Node = NodeResolver(UInt64.Parse(v["ref"].ToString())) };
+                                                 else
+                                                     return new Member() { Role = v["role"].ToString(), Way = WayResolver(UInt64.Parse(v["ref"].ToString())) };
+                                             })
+                                             : null);
 
             return r;
 
@@ -221,6 +181,19 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
 
         #endregion
 
+    }
+
+    public class Member
+    {
+        public string Role { get; set; }
+        public Node Node { get; set; }
+        public Way Way { get; set; }
+
+        public override string ToString()
+        {
+            return Node != null ? $"Node {Node.Id} with role {Role}"
+                : $"Way {Way.Id} with role {Role}";
+        }
     }
 
 }
