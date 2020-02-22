@@ -8,7 +8,7 @@ Be the person you would have loved to meet when you started.
 
 ## License 
 
-This license is for personal use or smaller companies generating less than $100,000 annually, for other cases, please get in touche with us.
+*This license is for personal use or smaller companies generating less than $100,000 annually, for other cases, please get in touche with us.*
 
 ```
 MIT License
@@ -24,6 +24,8 @@ furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
+
+THIS LICENSE IS FOR PERSONAL USE AND FOR COMPANIES GENERATING LESS THAN $100000 annually (ONE HUNDRED THOUSAND US DOLLARS)
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
