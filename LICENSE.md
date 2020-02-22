@@ -8,7 +8,7 @@ Be the person you would have loved to meet when you started.
 
 ## License 
 
-*This license is for personal use or smaller companies generating less than $100,000 annually, for other cases, please get in touche with us.*
+**This license is for personal use or smaller companies generating less than $100,000 annually, for any other cases, please get in touch with us.**
 
 ```
 MIT License
