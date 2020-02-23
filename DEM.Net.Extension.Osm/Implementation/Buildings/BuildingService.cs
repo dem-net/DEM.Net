@@ -123,7 +123,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                 OverpassCountResult buildingsCount = _osmService.GetOsmDataCount(bbox,
                    BuildingService.OverpassQueryBody);
 
-               
+
                 return buildingsCount;
             }
             catch (Exception ex)
@@ -321,7 +321,7 @@ namespace DEM.Net.Extension.Osm.Buildings
             //      Vertices: <roof_wallcolor_0..i> / <floor_wallcolor_i..j> // <roof_roofcolor_j..k>
             //      Indices: <roof_triangulation_j..k> / <roof_wall_triangulation_0..j>
             Vector4 DefaultColor = Vector4.One;
-            bool mustCopyVerticesForRoof = (building.Color ?? DefaultColor) != (building.RoofColor ?? DefaultColor);
+            bool mustCopyVerticesForRoof = (building.Color ?? DefaultColor) != (building.RoofColor ?? building.Color);
             // assign wall or default color to all vertices
             triangulation.Colors = triangulation.Positions.Select(p => building.Color ?? DefaultColor).ToList();
 
