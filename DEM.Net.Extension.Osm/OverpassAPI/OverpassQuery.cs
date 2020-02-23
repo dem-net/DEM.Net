@@ -41,6 +41,10 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
     /// </summary>
     public class OverpassQuery
     {
+        private UInt64 _AreaId;
+        private BoundingBox _BBox;
+        private string _Filter;
+        private bool _Count = false;
 
         #region Documentation
 
@@ -91,9 +95,6 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
 
         #region AreaId
 
-        private UInt64 _AreaId;
-        private BoundingBox _BBox;
-        private string _Filter;
 
         /// <summary>
         /// The area identification used for this query.
@@ -363,6 +364,16 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
         public OverpassQuery InBBox(BoundingBox bbox)
         {
             this._BBox = bbox;
+            return this;
+        }
+
+        #endregion
+
+        #region AsCount
+
+        public OverpassQuery AsCount()
+        {
+            this._Count = true;
             return this;
         }
 
@@ -774,9 +785,16 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
             if (NodesRelations.Count == 0)
                 QueryString.AppendLine(");");
 
-            QueryString.AppendLine("out body;");
-            QueryString.AppendLine(">;");
-            QueryString.AppendLine("out skel qt;");
+            if (this._Count)
+            {
+                QueryString.AppendLine(">;");
+                QueryString.AppendLine("out skel qt;");
+            }
+            else
+            {
+                QueryString.AppendLine(">;");
+                QueryString.AppendLine("out count qt;");
+            }
 
             var result = QueryString.ToString();
             return result;
@@ -797,9 +815,17 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
             }
             QueryString.AppendLine(query);
 
-            QueryString.AppendLine("out body;");
-            QueryString.AppendLine(">;");
-            QueryString.AppendLine("out skel qt;");
+            if (this._Count)
+            {
+                QueryString.AppendLine(">;");
+                QueryString.AppendLine("out count qt;");                
+            }
+            else
+            {
+                QueryString.AppendLine("out body;");
+                QueryString.AppendLine(">;");
+                QueryString.AppendLine("out skel qt;");
+            }
 
             var result = QueryString.ToString();
             return result;

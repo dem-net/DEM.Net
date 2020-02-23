@@ -1,4 +1,5 @@
 ﻿using DEM.Net.Core;
+using DEM.Net.Extension.Osm.Model;
 using DEM.Net.Extension.Osm.OverpassAPI;
 using GeoJSON.Net;
 using GeoJSON.Net.Feature;
@@ -63,6 +64,28 @@ namespace DEM.Net.Extension.Osm
                     _logger.LogInformation($"{ways?.Features?.Count} features downloaded");
 
                     return ways;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{nameof(GetOsmDataAsGeoJson)} error: {ex.Message}");
+                throw;
+            }
+
+        }
+        public OverpassCountResult GetOsmDataCount(BoundingBox bbox, string fullQueryBody)
+        {
+            try
+            {
+                using (TimeSpanBlock timeSpanBlock = new TimeSpanBlock(nameof(GetOsmDataAsGeoJson), _logger, LogLevel.Debug))
+                {
+                    var task = new OverpassQuery(bbox).AsCount()
+                        .RunQueryQL(fullQueryBody)
+                        .ToCount();
+
+                    OverpassCountResult count = task.GetAwaiter().GetResult();
+
+                    return count;
                 }
             }
             catch (Exception ex)

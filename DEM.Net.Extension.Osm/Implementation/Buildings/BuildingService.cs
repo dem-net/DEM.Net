@@ -12,6 +12,7 @@ using DEM.Net.Extension.Osm.OverpassAPI;
 using DEM.Net.glTF.SharpglTF;
 using SharpGLTF.Schema2;
 using System.Numerics;
+using DEM.Net.Extension.Osm.Model;
 
 namespace DEM.Net.Extension.Osm.Buildings
 {
@@ -24,6 +25,12 @@ namespace DEM.Net.Extension.Osm.Buildings
         private readonly ILogger<BuildingService> _logger;
 
         const double FloorHeightMeters = 2.5;
+
+        const string OverpassQueryBody = @"(way[""building""] ({{bbox}});
+                        way[""building:part""] ({{bbox}});
+                        //relation[type=building] ({{bbox}});
+                        //relation[""building""] ({{bbox}});
+                       );";
 
 
         public BuildingService(IElevationService elevationService
@@ -84,11 +91,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                 //.WithRelations("building"));
 
                 FeatureCollection buildings = _osmService.GetOsmDataAsGeoJson(bbox,
-                    @"(way[""building""] ({{bbox}});
-                        way[""building:part""] ({{bbox}});
-                        //relation[type=building] ({{bbox}});
-                        //relation[""building""] ({{bbox}});
-                       );");
+                    BuildingService.OverpassQueryBody);
 
                 // Create internal building model
                 var buildingValidator = new BuildingValidator(_logger);
@@ -99,6 +102,30 @@ namespace DEM.Net.Extension.Osm.Buildings
             catch (Exception ex)
             {
                 _logger.LogError($"{nameof(GetBuildingsModel)} error: {ex.Message}");
+                throw;
+            }
+        }
+
+        public OverpassCountResult GetCount(BoundingBox bbox)
+        {
+            try
+            {
+                // Download buildings and convert them to GeoJson
+                //FeatureCollection buildings = _osmService.GetOsmDataAsGeoJson(bbox, q => q
+                //.WithWays("building")
+                //.WithWays("building:part")
+                //.WithRelations("type=building")
+                //.WithRelations("building"));
+
+                OverpassCountResult buildingsCount = _osmService.GetOsmDataCount(bbox,
+                   BuildingService.OverpassQueryBody);
+
+               
+                return buildingsCount;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{nameof(GetCount)} error: {ex.Message}");
                 throw;
             }
         }
