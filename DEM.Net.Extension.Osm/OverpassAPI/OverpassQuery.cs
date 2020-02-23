@@ -697,7 +697,7 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
                                      }
                                      else
                                      {
-                                         return String.Concat($"[{Item.Key}]"); 
+                                         return String.Concat($"[{Item.Key}]");
                                      }
                                  }
                                  ).Aggregate((a, b) => a + b));
@@ -788,12 +788,13 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
             if (this._Count)
             {
                 QueryString.AppendLine(">;");
-                QueryString.AppendLine("out skel qt;");
+                QueryString.AppendLine("out count qt;");
             }
             else
             {
+                QueryString.AppendLine("out body;");
                 QueryString.AppendLine(">;");
-                QueryString.AppendLine("out count qt;");
+                QueryString.AppendLine("out skel qt;");
             }
 
             var result = QueryString.ToString();
@@ -801,7 +802,7 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
 
         }
 
-        public  String ToStringWithQLInjection(string query)
+        public String ToStringWithQLInjection(string query)
         {
 
             var QueryString = new StringBuilder();
@@ -818,7 +819,7 @@ namespace DEM.Net.Extension.Osm.OverpassAPI
             if (this._Count)
             {
                 QueryString.AppendLine(">;");
-                QueryString.AppendLine("out count qt;");                
+                QueryString.AppendLine("out count qt;");
             }
             else
             {
