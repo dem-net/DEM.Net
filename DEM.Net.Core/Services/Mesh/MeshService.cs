@@ -259,7 +259,7 @@ namespace DEM.Net.Core
         /// <param name="positions"></param>
         /// <param name="indices"></param>
         /// <returns></returns>
-        public IEnumerableWithCount<Vector3> ComputeMeshNormals(IList<Vector3> positions, IList<int> indices)
+        public IEnumerable<Vector3> ComputeMeshNormals(IList<Vector3> positions, IList<int> indices)
         {
             //The number of the vertices
             int nV = positions.Count;
@@ -293,8 +293,19 @@ namespace DEM.Net.Core
                 norm[i2] += dir;
                 norm[i3] += dir;
             }
+            foreach (var vec in norm)
+            {
+                if (vec == Vector3.Zero)
+                {
+                    _logger.LogWarning("Invalid normal detected");
+                    yield return Vector3.UnitY;
+                }
+                else
+                {
+                    yield return Vector3.Normalize(vec);
+                }
+            }
 
-            return new EnumerableWithCount<Vector3>(nV, norm.Select(v => Vector3.Normalize(v)));
         }
 
 
@@ -303,7 +314,7 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="heightMap">Height map (gridded data)</param>
         /// <returns>Normals for each point of the height map</returns>
-        public IEnumerableWithCount<Vector3> ComputeNormals(HeightMap heightMap)
+        public IEnumerable<Vector3> ComputeNormals(HeightMap heightMap)
         {
             var triangulation = TriangulateHeightMap(heightMap);
             var normals = ComputeMeshNormals(
