@@ -79,7 +79,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                 throw;
             }
         }
-        public (List<BuildingModel> Buildings, int TotalPoints) GetBuildingsModel(BoundingBox bbox, bool useOsmColors, string defaultHtmlColor = null, Action<string, int> progressReport = null)
+        public (List<BuildingModel> Buildings, int TotalPoints) GetBuildingsModel(BoundingBox bbox, bool useOsmColors = true, string defaultHtmlColor = null, Action<string, int> progressReport = null)
         {
             try
             {
