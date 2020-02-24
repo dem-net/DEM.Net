@@ -45,12 +45,20 @@ namespace DEM.Net.Extension.Osm.Buildings
         // Will capture 4 items : inputval / sign / value / unit
         const string ValueAndUnitRegex = @"([+\-])?((?:\d+\/|(?:\d+|^|\s)\.)?\d+)\s*([^\s\d+\-.,:;^\/]+(?:\^\d+(?:$|(?=[\s:;\/])))?(?:\/[^\s\d+\-.,:;^\/]+(?:\^\d+(?:$|(?=[\s:;\/])))?)*)?";
 
-        public BuildingValidator(ILogger logger)
+        private readonly ILogger _logger;
+        private readonly bool _useOsmColors;
+        private readonly Vector4 _defaultColor = new Vector4(.9f, .9f, .9f, 1f); // Color.FromArgb(230, 230, 230);
+
+        public BuildingValidator(ILogger logger, bool useOsmColors, string defaultHtmlColor = null)
         {
             this._logger = logger;
-        }
+            this._useOsmColors = useOsmColors;
+            if (!string.IsNullOrWhiteSpace(defaultHtmlColor))
+            {
+                this._defaultColor = HtmlColorToVec4(defaultHtmlColor);
+            }
 
-        private readonly ILogger _logger;
+        }
 
         public override void ParseTags(BuildingModel model)
         {
@@ -59,8 +67,17 @@ namespace DEM.Net.Extension.Osm.Buildings
             ParseTag<string>(model, "building:part", v => model.IsPart = v.ToLower() == "yes");
             ParseLengthTag(model, "min_height", v => model.MinHeight = v);
             ParseLengthTag(model, "height", v => model.Height = v);
-            ParseTag<string, Vector4>(model, "building:colour", htmlColor => HtmlColorToVec4(htmlColor), v => model.Color = v);
-            ParseTag<string, Vector4>(model, "roof:colour", htmlColor => HtmlColorToVec4(htmlColor), v => model.RoofColor = v);
+            if (_useOsmColors)
+            {
+                ParseTag<string, Vector4>(model, "building:colour", htmlColor => HtmlColorToVec4(htmlColor), v => model.Color = v);
+                ParseTag<string, Vector4>(model, "roof:colour", htmlColor => HtmlColorToVec4(htmlColor), v => model.RoofColor = v);
+            }
+            else
+            {
+                model.Color = _defaultColor;
+                // no roof color, it would duplicate roof vertices
+            }
+
             ParseLengthTag(model, "building:height", v =>
             {
                 if (model.Height != null)
@@ -73,9 +90,9 @@ namespace DEM.Net.Extension.Osm.Buildings
 
         private Vector4 HtmlColorToVec4(string htmlColor)
         {
-            float componentRemap (byte c) => (float)MathHelper.Map(0, 255, 0, 1, c, true);
+            float componentRemap(byte c) => c / 255f;
 
-            var color = Color.White;
+            var color = Color.FromArgb(230, 230, 230);
             try
             {
                 color = ColorTranslator.FromHtml(htmlColor);
@@ -83,7 +100,7 @@ namespace DEM.Net.Extension.Osm.Buildings
             catch (Exception ex)
             {
                 _logger.LogWarning($"Cannot parse color {htmlColor}");
-            } 
+            }
             return new Vector4(componentRemap(color.R), componentRemap(color.G), componentRemap(color.B), componentRemap(color.A));
         }
 
@@ -91,7 +108,7 @@ namespace DEM.Net.Extension.Osm.Buildings
         {
             ParseTag<T, T>(model, tagName, t => t, updateAction);
         }
-        private void ParseTag<Tin, Tout>(BuildingModel model, string tagName, Func<Tin,Tout> transformFunc, Action<Tout> updateAction)
+        private void ParseTag<Tin, Tout>(BuildingModel model, string tagName, Func<Tin, Tout> transformFunc, Action<Tout> updateAction)
         {
             if (model.Tags.TryGetValue(tagName, out object val))
             {

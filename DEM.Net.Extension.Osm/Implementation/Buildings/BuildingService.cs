@@ -63,11 +63,11 @@ namespace DEM.Net.Extension.Osm.Buildings
             }
         }
 
-        public ModelRoot GetBuildings3DModel(BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles, float zScale)
+        public ModelRoot GetBuildings3DModel(BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles, float zScale, bool useOsmColors, string defaultHtmlColor = null)
         {
             try
             {
-                TriangulationNormals triangulation = this.GetBuildings3DTriangulation(bbox, dataSet, downloadMissingFiles, zScale);
+                TriangulationNormals triangulation = this.GetBuildings3DTriangulation(bbox, dataSet, downloadMissingFiles, zScale, useOsmColors, defaultHtmlColor);
 
                 var model = _gltfService.AddMesh(null, new IndexedTriangulation(triangulation), null, null, doubleSided: true);
 
@@ -79,7 +79,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                 throw;
             }
         }
-        public (List<BuildingModel> Buildings, int TotalPoints) GetBuildingsModel(BoundingBox bbox)
+        public (List<BuildingModel> Buildings, int TotalPoints) GetBuildingsModel(BoundingBox bbox, bool useOsmColors, string defaultHtmlColor = null, Action<string, int> progressReport = null)
         {
             try
             {
@@ -90,11 +90,14 @@ namespace DEM.Net.Extension.Osm.Buildings
                 //.WithRelations("type=building")
                 //.WithRelations("building"));
 
+                progressReport?.Invoke("OSM buildings: downloading", 0);
                 FeatureCollection buildings = _osmService.GetOsmDataAsGeoJson(bbox,
                     BuildingService.OverpassQueryBody);
 
+
+                progressReport?.Invoke("OSM buildings: converting", 20);
                 // Create internal building model
-                var buildingValidator = new BuildingValidator(_logger);
+                var buildingValidator = new BuildingValidator(_logger, useOsmColors, defaultHtmlColor);
                 (List<BuildingModel> Buildings, int TotalPoints) parsedBuildings = _osmService.CreateModelsFromGeoJson(buildings, buildingValidator);
 
                 return parsedBuildings;
@@ -129,7 +132,7 @@ namespace DEM.Net.Extension.Osm.Buildings
                 throw;
             }
         }
-        public TriangulationNormals GetBuildings3DTriangulation(BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles, float zScale)
+        public TriangulationNormals GetBuildings3DTriangulation(BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles, float zScale, bool useOsmColors, string defaultHtmlColor = null, Action<string, int> progressReport = null)
         {
             try
             {
@@ -137,9 +140,9 @@ namespace DEM.Net.Extension.Osm.Buildings
                 // Download elevation data if missing
                 if (downloadMissingFiles) _elevationService.DownloadMissingFiles(dataSet, bbox);
 
-                (List<BuildingModel> Buildings, int TotalPoints) parsedBuildings = GetBuildingsModel(bbox);
+                (List<BuildingModel> Buildings, int TotalPoints) parsedBuildings = GetBuildingsModel(bbox, useOsmColors, defaultHtmlColor, progressReport);
 
-                return GetBuildings3DTriangulation(parsedBuildings.Buildings, parsedBuildings.TotalPoints, dataSet, downloadMissingFiles, zScale);
+                return GetBuildings3DTriangulation(parsedBuildings.Buildings, parsedBuildings.TotalPoints, dataSet, downloadMissingFiles, zScale, progressReport);
             }
             catch (Exception ex)
             {
@@ -147,12 +150,14 @@ namespace DEM.Net.Extension.Osm.Buildings
                 throw;
             }
         }
-        public TriangulationNormals GetBuildings3DTriangulation(List<BuildingModel> buildings, int? count, DEMDataSet dataSet, bool downloadMissingFiles, float zScale)
+        public TriangulationNormals GetBuildings3DTriangulation(List<BuildingModel> buildings, int? count, DEMDataSet dataSet, bool downloadMissingFiles, float zScale, Action<string, int> progressReport = null)
         {
 
+            progressReport?.Invoke("OSM buildings: getting elevation...", 50);
             // Compute elevations (faster elevation when point count is known in advance)
             buildings = this.ComputeElevations(buildings, count ?? buildings.Sum(b => b.Points.Count()), dataSet, downloadMissingFiles, zScale);
 
+            progressReport?.Invoke("OSM buildings: triangulating...", 75);
             TriangulationNormals triangulation = this.Triangulate(buildings);
             return triangulation;
 
