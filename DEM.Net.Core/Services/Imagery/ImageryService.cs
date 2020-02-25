@@ -57,7 +57,7 @@ using SixLabors.Primitives;
 
 namespace DEM.Net.Core.Imagery
 {
-    public class ImageryService : IImageryService
+    public class ImageryService
     {
         #region Tiled imagery
 
@@ -275,7 +275,7 @@ namespace DEM.Net.Core.Imagery
         }
 
         public TextureInfo ConstructTextureWithGpxTrack(TileRange tiles, BoundingBox bbox, string fileName,
-            TextureImageFormat mimeType, IEnumerable<GeoPoint> gpxPoints, bool drawGpxVertices)
+            TextureImageFormat mimeType, IEnumerable<GeoPoint> gpxPoints, bool drawGpxVertices = false)
         {
             // where is the bbox in the final image ?
 
@@ -440,7 +440,7 @@ namespace DEM.Net.Core.Imagery
         /// <param name="heightMap">heightMap in projected coordinates</param>
         /// <param name="outputDirectory"></param>
         /// <returns></returns>
-        public TextureInfo GenerateNormalMap(HeightMap heightMap, string outputDirectory, string fileName)
+        public TextureInfo GenerateNormalMap(HeightMap heightMap, string outputDirectory, string fileName = "normalmap.png")
         {
             List<Vector3> normals = _meshService.ComputeNormals(heightMap).ToList();
 
