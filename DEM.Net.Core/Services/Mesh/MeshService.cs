@@ -23,6 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using DEM.Net.Core.Tesselation;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -251,7 +252,14 @@ namespace DEM.Net.Core
 
         }
 
-        public IEnumerableWithCount<Vector3> ComputeNormals(List<Vector3> positions, List<int> indices)
+        /// <summary>
+        /// Computes normals for a given mesh. All positions must form a continuous mesh.
+        /// For multi meshes, perform triangulation on every mesh and aggregate normals on a final pass
+        /// </summary>
+        /// <param name="positions"></param>
+        /// <param name="indices"></param>
+        /// <returns></returns>
+        public IEnumerable<Vector3> ComputeMeshNormals(IList<Vector3> positions, IList<int> indices)
         {
             //The number of the vertices
             int nV = positions.Count;
@@ -285,19 +293,31 @@ namespace DEM.Net.Core
                 norm[i2] += dir;
                 norm[i3] += dir;
             }
+            foreach (var vec in norm)
+            {
+                if (vec == Vector3.Zero)
+                {
+                    _logger.LogWarning("Invalid normal detected");
+                    yield return Vector3.UnitY;
+                }
+                else
+                {
+                    yield return Vector3.Normalize(vec);
+                }
+            }
 
-            return new EnumerableWithCount<Vector3>(nV, norm.Select(v => Vector3.Normalize(v)));
         }
+
 
         /// <summary>
         /// Calculate normals for a given height map
         /// </summary>
         /// <param name="heightMap">Height map (gridded data)</param>
         /// <returns>Normals for each point of the height map</returns>
-        public IEnumerableWithCount<Vector3> ComputeNormals(HeightMap heightMap)
+        public IEnumerable<Vector3> ComputeNormals(HeightMap heightMap)
         {
             var triangulation = TriangulateHeightMap(heightMap);
-            var normals = ComputeNormals(
+            var normals = ComputeMeshNormals(
                     heightMap.Coordinates.Select(c =>
                                                             new Vector3((
                                                                 float)c.Longitude,
@@ -319,7 +339,7 @@ namespace DEM.Net.Core
                 }
                 else
                 {
-                    
+
                     if (width <= 0)
                     {
                         throw new Exception("Line width of 0 is not supported. Please provide a with > 0.");
@@ -383,7 +403,7 @@ namespace DEM.Net.Core
                             indices.Add(i0 + 2);
                         }
 
-                        IEnumerable<Vector3> normals = this.ComputeNormals(vertices, indices);
+                        IEnumerable<Vector3> normals = this.ComputeMeshNormals(vertices, indices);
 
                         return (vertices, indices);
 
@@ -397,5 +417,48 @@ namespace DEM.Net.Core
             }
             return default;
         }
+
+        /// <summary>
+        /// With a polygon input ring, returns the same number of points, with indices triplets forming a triangulation
+        /// </summary>
+        /// <param name="outerRingPoints"></param>
+        /// <returns></returns>
+        public TriangulationList<GeoPoint> Tesselate(IEnumerable<GeoPoint> outerRingPoints, IEnumerable<IEnumerable<GeoPoint>> innerRingsPoints)
+        {
+            TriangulationList<GeoPoint> triangulation = new TriangulationList<GeoPoint>();
+
+            var data = new List<double>();
+            var holeIndices = new List<int>();
+
+            foreach (var p in outerRingPoints)
+            {
+                triangulation.Positions.Add(p);
+
+                data.Add(p.Longitude);
+                data.Add(p.Latitude);
+
+            }
+            if (innerRingsPoints != null)
+            {
+                foreach (var ring in innerRingsPoints)
+                {
+                    holeIndices.Add(triangulation.Positions.Count);
+                    foreach (var p in ring)
+                    {
+                        triangulation.Positions.Add(p);
+
+                        data.Add(p.Longitude);
+                        data.Add(p.Latitude);
+
+                    }
+                }
+            }
+            var trianglesIndices = Earcut.Tessellate(data, holeIndices);
+
+            triangulation.Indices = trianglesIndices;
+
+            return triangulation;
+        }
+
     }
 }

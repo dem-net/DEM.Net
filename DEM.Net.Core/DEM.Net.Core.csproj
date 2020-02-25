@@ -92,6 +92,7 @@
     <Folder Include="Services\Voronoi\FortuneVoronoi\" />
     <Folder Include="Model\Enums\" />
     <Folder Include="Model\IntervisibilityReport\" />
+    <Folder Include="Helpers\System\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DEMnet_64.png" Pack="true" PackagePath="\" />

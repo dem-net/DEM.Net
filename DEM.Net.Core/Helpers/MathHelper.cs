@@ -159,6 +159,11 @@ namespace DEM.Net.Core
             b = temp;
         }
 
+        public static IEnumerable<double> MetersToKm(this IEnumerable<double> meters)
+        {
+            return meters.Select(d => d * 0.001d);
+        }
+
 
 
     }

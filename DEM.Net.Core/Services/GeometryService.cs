@@ -201,7 +201,7 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="points">Input list of points, visibility is calculated for first and last points (ie: are they visible or is there a relief standing in between)</param>
         /// <returns><see cref="IntervisibilityMetrics"/> object</returns>
-		internal static IntervisibilityMetrics ComputeVisibilityMetrics(IList<GeoPoint> points, bool visibilityCheck = true, double sourceVerticalOffset = 0d, double? noDataValue = null)
+		internal static IntervisibilityMetrics ComputeVisibilityMetrics(IList<GeoPoint> points, bool visibilityCheck = true, double sourceVerticalOffset = 0d, double targetVerticalOffset = 0, double? noDataValue = null)
         {
             IntervisibilityMetrics metrics = new IntervisibilityMetrics();
 
@@ -211,6 +211,7 @@ namespace DEM.Net.Core
             GeoPoint A = points.First(), B = points.Last();
             double hA = A.Elevation ?? 0d, hB = B.Elevation ?? 0d;
             hA += sourceVerticalOffset;
+            hB += targetVerticalOffset;
             double AB = A.DistanceTo(B);
             visibilityCheck = visibilityCheck && (AB > double.Epsilon);
             if (hA < hB)

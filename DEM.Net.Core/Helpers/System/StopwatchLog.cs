@@ -1,14 +1,13 @@
-﻿//
-// TimeSpanBlock.cs
+﻿// StopwatchLog.cs
 //
 // Author:
-//       Xavier Fischer 2019-9
+//       Xavier Fischer
 //
-// Copyright (c) 2019 Xavier Fischer
+// Copyright (c) 2020 Xavier Fischer
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
+// in the Software without restriction, including without limitation the right
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
@@ -29,23 +28,29 @@ using Microsoft.Extensions.Logging;
 
 namespace DEM.Net.Core
 {
-    public class TimeSpanBlock : IDisposable
+    public class StopwatchLog : Stopwatch
     {
-        private  Stopwatch _sw;
-        private  ILogger _logger;
-        private readonly string _operationName;
+        private readonly ILogger _logger;
 
-        public TimeSpanBlock(string operationName, ILogger logger)
+        public static StopwatchLog StartNew(ILogger logger)
         {
-            _sw = Stopwatch.StartNew();
-            _logger = logger;
-            _operationName = operationName;
+            StopwatchLog sw = new StopwatchLog(logger);
+            sw.Start();
+            return sw;
+        }
+        public StopwatchLog(ILogger logger)
+        {
+            this._logger = logger;
         }
 
-        public void Dispose()
+        public void LogTime(string operationName = "Operation", LogLevel level = LogLevel.Information)
         {
-            _logger.LogInformation($"{_operationName} completed in {_sw.ElapsedMilliseconds} ms");
-            _sw.Stop();
+            this.Stop();
+            if (_logger.IsEnabled(level))
+            {
+                _logger.Log(level, $"{operationName} completed in {this.Elapsed:g}");
+            }
+            this.Start();
         }
     }
 }

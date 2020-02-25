@@ -27,21 +27,69 @@ using DEM.Net.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DEM.Net.Core
 {
-    public class Triangulation
+    public class Triangulation : Triangulation<GeoPoint>
     {
-        public IEnumerable<GeoPoint> Positions { get; internal set; }
+        public Triangulation() : base() { }
+        public Triangulation(IEnumerable<GeoPoint> positions, IEnumerable<int> indices)
+             : base(positions, indices) { }
+    }
+    public class TriangulationNormals : Triangulation<Vector3>
+    {
+        public IEnumerable<Vector3> Normals { get; internal set; }
+        public List<Vector4> Colors { get; set; }
+        public TriangulationNormals(IEnumerable<Vector3> positions, IEnumerable<int> indices, IEnumerable<Vector3> normals, List<Vector4> colors)
+            : base(positions, indices)
+        {
+            Normals = normals;
+            Colors = colors;
+        }
+    }
+
+    public class TriangulationList<T>
+    {
+        public List<T> Positions { get; internal set; } 
+        public List<Vector4> Colors { get; set; }
+        public List<int> Indices { get; internal set; }
+
+        public TriangulationList()
+        {
+            Positions = new List<T>();
+            Indices = new List<int>();
+            Colors = new List<Vector4>();
+        }
+        public TriangulationList(List<T> positions, List<int> indices)
+        {
+            Positions = positions;
+            Indices = indices;
+        }
+        public TriangulationList(List<T> positions, List<Vector4> colors, List<int> indices)
+        {
+            Positions = positions;
+            Indices = indices;
+            Colors = colors;
+        }
+
+        public int NumPositions => Positions.Count;
+        public int NumTriangles => NumIndices / 3;
+        public int NumIndices => Indices.Count;
+    }
+
+    public class Triangulation<T>
+    {
+        public IEnumerable<T> Positions { get; internal set; }
         public IEnumerable<int> Indices { get; internal set; }
 
         public Triangulation()
         {
 
         }
-        public Triangulation(IEnumerable<GeoPoint> positions, IEnumerable<int> indices)
+        public Triangulation(IEnumerable<T> positions, IEnumerable<int> indices)
         {
             Positions = positions;
             Indices = indices;

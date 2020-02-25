@@ -59,15 +59,15 @@ namespace DEM.Net.Core
             return heightMap;
         }
 
-        public static IEnumerable<GeoPoint> ReprojectGeodeticToCartesian(this IEnumerable<GeoPoint> points)
+        public static IEnumerable<GeoPoint> ReprojectGeodeticToCartesian(this IEnumerable<GeoPoint> points, int? count = null)
         {
-            return points.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR, null);
+            return points.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR, count);
         }
         public static List<Gpx.GpxTrackPoint> ReprojectGeodeticToCartesian(this IEnumerable<Gpx.GpxTrackPoint> points)
         {
             return points.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR, null);
         }
-        
+
 
         public static IEnumerable<GeoPoint> ReprojectTo(this IEnumerable<GeoPoint> points, int sourceEpsgCode, int destinationEpsgCode, int? pointCount = null)
         {
@@ -208,7 +208,7 @@ namespace DEM.Net.Core
             // Calls the reproject function that will transform the input location to the output locaiton
             Reproject.ReprojectPoints(coords, new double[] { sourcePoint.Elevation.GetValueOrDefault(0) }, sourceProj, destProj, 0, 1);
 
-            return new GeoPoint(coords[1], coords[0], sourcePoint.Elevation);
+            return new GeoPoint(sourcePoint.Id, coords[1], coords[0], sourcePoint.Elevation);
         }
         private static Gpx.GpxTrackPoint ReprojectPoint(Gpx.GpxTrackPoint sourcePoint, ProjectionInfo sourceProj, ProjectionInfo destProj)
         {

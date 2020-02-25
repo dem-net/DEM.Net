@@ -1,9 +1,10 @@
-﻿// IEnumerableWithCount.cs
+﻿//
+// TimeSpanBlock.cs
 //
 // Author:
-//       Xavier Fischer 
+//       Xavier Fischer 2019-9
 //
-// Copyright (c) 2019 
+// Copyright (c) 2019 Xavier Fischer
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,41 +23,28 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace DEM.Net.Core
 {
-    public interface IEnumerableWithCount<out T> : IEnumerable<T>
+    public class TimeSpanBlock : IDisposable
     {
-        int Count { get; }
-    }
+        private StopwatchLog _sw;
+        private readonly string _operationName;
+        private readonly LogLevel _logLevel;
 
-    public class EnumerableWithCount<T> : IEnumerableWithCount<T>
-    {
-        private readonly IEnumerable<T> _enumerable;
-        private readonly int _count;
-
-        public EnumerableWithCount(int count, IEnumerable<T> enumerable)
+        public TimeSpanBlock(string operationName, ILogger logger, LogLevel logLevel = LogLevel.Information)
         {
-            _enumerable = enumerable;
-            _count = count;
-        }
-        public int Count => _count;
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            return _enumerable.GetEnumerator();
+            _sw = StopwatchLog.StartNew(logger);
+            _operationName = operationName;
+            _logLevel = logLevel;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public void Dispose()
         {
-            return _enumerable.GetEnumerator();
+            _sw.LogTime(_operationName, _logLevel);
         }
     }
 }

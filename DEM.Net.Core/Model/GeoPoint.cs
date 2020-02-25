@@ -34,6 +34,7 @@ namespace DEM.Net.Core
 {
     public class GeoPoint : IEquatable<GeoPoint>
     {
+        public int? Id { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public double? Elevation { get; set; }
@@ -44,6 +45,11 @@ namespace DEM.Net.Core
         /// </summary>
         public double? DistanceFromOriginMeters { get; set; }
 
+        public GeoPoint(int? id, double latitude, double longitude, double? altitude)
+            : this(latitude, longitude, altitude)
+        {
+            this.Id = id;
+        }
         public GeoPoint(double latitude, double longitude, double? altitude)
         {
             this.Latitude = latitude;
@@ -53,15 +59,18 @@ namespace DEM.Net.Core
         }
 
         public GeoPoint(double latitude, double longitude) : this(latitude, longitude, null) { }
+        public GeoPoint(int? id, double latitude, double longitude) : this(id, latitude, longitude, null) { }
         public GeoPoint() : this(0, 0) { }
 
-        public GeoPoint Clone()
+        public GeoPoint Clone(double? newHeight = null)
         {
             return new GeoPoint
             {
+                Id = this.Id
+                ,
                 DistanceFromOriginMeters = this.DistanceFromOriginMeters
                 ,
-                Elevation = this.Elevation
+                Elevation = newHeight ?? this.Elevation
                 ,
                 Latitude = this.Latitude
                 ,
@@ -83,7 +92,9 @@ namespace DEM.Net.Core
         }
         public override string ToString()
         {
-            return $"Lat/Lon: {Latitude} / {Longitude} "
+            return
+                (Id.HasValue ? $"Id: {Id.Value}, " : "")
+                + $"Lat/Lon: {Latitude} / {Longitude} "
                 + (Elevation.HasValue ? $", Elevation: {Elevation.Value:F2}" : "")
                 + ((DistanceFromOriginMeters ?? 0) > 0 ? $", DistanceFromOrigin: {DistanceFromOriginMeters:F2}" : "");
         }

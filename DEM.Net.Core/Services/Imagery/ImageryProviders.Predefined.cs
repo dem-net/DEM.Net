@@ -72,5 +72,21 @@ namespace DEM.Net.Core.Imagery
             UrlModel = new UrlModel("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", null),
             MaxZoom = 18
         };
+        public static ImageryProvider MapTilerSatellite = new ImageryProvider()
+        {
+            Name = "MapTiler-Satellite",
+            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "© MapTiler - © OpenStreetMap contributors", "https://www.maptiler.com/copyright/"),
+            UrlModel = new UrlModel("https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key={t}", null),
+            TokenUserSecretsKey = "MapTilerKey",
+            MaxZoom = 20
+        };
+        public static ImageryProvider MapTilerHillshades = new ImageryProvider()
+        {
+            Name = "MapTiler-Hillshades",
+            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "© MapTiler - © OpenStreetMap contributors", "https://www.maptiler.com/copyright/"),
+            UrlModel = new UrlModel("https://api.maptiler.com/tiles/hillshades/{z}/{x}/{y}.png?key={t}", null),
+            TokenUserSecretsKey = "MapTilerKey",
+            MaxZoom = 12
+        };
     }
 }

@@ -133,8 +133,8 @@ namespace DEM.Net.Core
         /// <param name="dataSet">DEM dataset to use</param>
         /// <param name="interpolationMode">Interpolation mode</param>
         /// <returns></returns>
-        IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
-
+        IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, bool downloadMissingFiles = true);
+       
         /// <summary>
         /// Returns all elevations in given bbox
         /// </summary>
@@ -201,6 +201,7 @@ namespace DEM.Net.Core
         IntervisibilityReport GetIntervisibilityReport(GeoPoint source, GeoPoint target, DEMDataSet dataSet
             , bool downloadMissingFiles = true
             , double sourceVerticalOffset = 0d
+            , double targetElevationOffset = 0d
             , InterpolationMode interpolationMode = InterpolationMode.Bilinear);
 
         /// <summary>
@@ -210,11 +211,13 @@ namespace DEM.Net.Core
         /// <param name="linePoints">Line of sight points (returned from <see cref="GetLineGeometryElevation(IEnumerable{GeoPoint}, DEMDataSet, InterpolationMode)"/>).
         /// Points must be all aligned. Non aligned point will return unexpected results.</param>
         /// <param name="sourceVerticalOffset">Vertical elevation offset at source point. The line of sight will be calculated from this point (set to 1.8 for simulate a human eye height)</param>
+        /// <param name="targetVerticalOffset">Vertical elevation offset at target point. The line of sight will be calculated from this point (set to 1.8 for simulate a human eye height)</param>
         /// <param name="noDataValue">Value to expect when point has no elevation data available. See <see cref="ElevationMetrics.HasVoids"/></param>
         /// <remarks>Source and Target are interchangeable. Output can be BIG, as all elevations will be returned.</remarks>
         /// <returns>A report with all obstacles</returns>
         IntervisibilityReport GetIntervisibilityReport(List<GeoPoint> linePoints
             , double sourceVerticalOffset = 0d
+            , double targetVerticalOffset = 0d
             , double? noDataValue = null);
     }
 }

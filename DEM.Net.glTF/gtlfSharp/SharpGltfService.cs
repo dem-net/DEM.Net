@@ -40,7 +40,7 @@ namespace DEM.Net.glTF.SharpglTF
 
             return model;
         }
-        public ModelRoot CreateTerrainMesh(HeightMap heightMap, GenOptions options = GenOptions.None, Matrix4x4 vectorTransform = default)
+        public ModelRoot CreateTerrainMesh(HeightMap heightMap, GenOptions options = GenOptions.None, Matrix4x4 vectorTransform = default, bool doubleSided = true)
         {
             Triangulation triangulation = default;
             if (options.HasFlag(GenOptions.BoxedBaseElevation0))
@@ -64,7 +64,7 @@ namespace DEM.Net.glTF.SharpglTF
 
             var material = model.CreateMaterial("Default")
               .WithPBRMetallicRoughness()
-              .WithDoubleSide(true);
+              .WithDoubleSide(doubleSided);
 
             var indexedTriangulation = new IndexedTriangulation(triangulation, vectorTransform);
 
@@ -74,7 +74,7 @@ namespace DEM.Net.glTF.SharpglTF
 
             if (options.HasFlag(GenOptions.Normals))
             {
-                var normals = _meshService.ComputeNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
+                var normals = _meshService.ComputeMeshNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
                 primitive = primitive.WithVertexAccessor("NORMAL", normals.ToList());
             }
 
@@ -91,9 +91,15 @@ namespace DEM.Net.glTF.SharpglTF
 
             return AddTerrainMesh(model, triangulation, textures);
         }
-        public ModelRoot CreateTerrainMesh(Triangulation triangulation, PBRTexture textures)
-        { return AddTerrainMesh(CreateNewModel(), triangulation, textures); }
-        public ModelRoot AddTerrainMesh(ModelRoot model, Triangulation triangulation, PBRTexture textures)
+        public ModelRoot CreateTerrainMesh(Triangulation triangulation, PBRTexture textures, bool doubleSided = true)
+        { return AddTerrainMesh(CreateNewModel(), triangulation, textures, doubleSided); }
+        public ModelRoot AddTerrainMesh(ModelRoot model, Triangulation triangulation, PBRTexture textures, bool doubleSided = true)
+        {
+            var indexedTriangulation = new IndexedTriangulation(triangulation);
+            var normals = _meshService.ComputeMeshNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
+            return AddMesh(model, indexedTriangulation, normals, textures, doubleSided);
+        }
+        public ModelRoot AddMesh(ModelRoot model, IndexedTriangulation indexedTriangulation, IEnumerable<Vector3> normals, PBRTexture textures, bool doubleSided = true)
         {
             // create a basic scene
             model = model ?? CreateNewModel();
@@ -103,21 +109,30 @@ namespace DEM.Net.glTF.SharpglTF
 
             var material = model.CreateMaterial("Default")
               .WithPBRMetallicRoughness(Vector4.One, textures?.BaseColorTexture?.FilePath, null, 0, 1)
-              .WithDoubleSide(true);
+              .WithDoubleSide(doubleSided);
             if (textures != null && textures.NormalTexture != null)
             {
                 material.WithChannelTexture("NORMAL", 0, textures.NormalTexture.FilePath);
             }
 
-            var indexedTriangulation = new IndexedTriangulation(triangulation);
-            var normals = _meshService.ComputeNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
-
-
             // create mesh primitive
-            var primitive = rmesh.CreatePrimitive()
-                .WithVertexAccessor("POSITION", indexedTriangulation.Positions)
-                .WithVertexAccessor("NORMAL", normals.ToList())
-                .WithIndicesAccessor(PrimitiveType.TRIANGLES, indexedTriangulation.Indices);
+            MeshPrimitive primitive = rmesh.CreatePrimitive();
+            
+
+            if (indexedTriangulation.Colors != null && indexedTriangulation.Colors.Any())
+            {
+                primitive = primitive.WithVertexAccessor("POSITION", indexedTriangulation.Positions);
+                primitive = primitive.WithVertexAccessor("COLOR_0", indexedTriangulation.Colors);
+            }else
+            {
+                primitive = primitive.WithVertexAccessor("POSITION", indexedTriangulation.Positions);
+            }
+
+            if (normals != null)
+            {
+                primitive = primitive.WithVertexAccessor("NORMAL", normals.ToList());
+            }
+            primitive = primitive.WithIndicesAccessor(PrimitiveType.TRIANGLES, indexedTriangulation.Indices);
 
             if (textures != null && textures.TextureCoordSets == null)
             {
@@ -166,7 +181,7 @@ namespace DEM.Net.glTF.SharpglTF
             var mesh = model.LogicalMeshes.FirstOrDefault(m => m.Name == meshName) ?? model.CreateMesh(meshName);
             return mesh;
         }
-        public ModelRoot AddLine(ModelRoot model, IEnumerable<GeoPoint> gpxPointsElevated, Vector4 vector4, float trailWidthMeters)
+        public ModelRoot AddLine(ModelRoot model, IEnumerable<GeoPoint> gpxPointsElevated, Vector4 color, float trailWidthMeters)
         {
             var scene = model.UseScene(TERRAIN_SCENE_NAME);
             var rnode = scene.FindNode(n => n.Name == TERRAIN_NODE_NAME);
@@ -174,13 +189,14 @@ namespace DEM.Net.glTF.SharpglTF
 
 
             var material = model.CreateMaterial("Line")
-               .WithPBRMetallicRoughness(vector4, null, null, 1, 0.1f)
+               .WithPBRMetallicRoughness(color, null, null, 0, 0.9f)
               .WithDoubleSide(true);
+            material.Alpha = SharpGLTF.Schema2.AlphaMode.BLEND;
 
 
             var triangulation = _meshService.GenerateTriangleMesh_Line(gpxPointsElevated, trailWidthMeters);
             var indexedTriangulation = new IndexedTriangulation(triangulation.positions, triangulation.indexes);
-            var normals = _meshService.ComputeNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
+            var normals = _meshService.ComputeMeshNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
 
 
             // create mesh primitive

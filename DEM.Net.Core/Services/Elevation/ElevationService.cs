@@ -283,13 +283,16 @@ namespace DEM.Net.Core
 
             return geoPoint;
         }
-        public IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
+        public IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, bool downloadMissingFiles = true)
         {
             if (points == null)
                 return null;
             IEnumerable<GeoPoint> pointsWithElevation;
             BoundingBox bbox = points.GetBoundingBox();
-            DownloadMissingFiles(dataSet, bbox);
+            if (downloadMissingFiles)
+            {
+                DownloadMissingFiles(dataSet, bbox);
+            }
             List<FileMetadata> tiles = this.GetCoveringFiles(bbox, dataSet);
 
             if (tiles.Count == 0)
@@ -487,15 +490,7 @@ namespace DEM.Net.Core
                     current.Elevation = lastElevation;
                     yield return current;
                 }
-
-                //adjacentRasters.Clear();
-
-
             }
-            //}
-
-
-
         }
 
         private void PopulateRasterFileDictionary(RasterFileDictionary dictionary, FileMetadata mainTile, IRasterService rasterService, IEnumerable<FileMetadata> fileMetadataList)
@@ -948,6 +943,7 @@ namespace DEM.Net.Core
         public IntervisibilityReport GetIntervisibilityReport(GeoPoint source, GeoPoint target, DEMDataSet dataSet
             , bool downloadMissingFiles = true
             , double sourceVerticalOffset = 0d
+            , double targetVerticalOffset = 0d
             , InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
             try
@@ -959,9 +955,9 @@ namespace DEM.Net.Core
 
                 var geoPoints = this.GetLineGeometryElevation(elevationLine, dataSet);
 
-                var metrics = geoPoints.ComputeVisibilityMetrics(sourceVerticalOffset, dataSet.NoDataValue);
+                var metrics = geoPoints.ComputeVisibilityMetrics(sourceVerticalOffset, targetVerticalOffset, dataSet.NoDataValue);
 
-                return new IntervisibilityReport(geoPoints, metrics, originVerticalOffset: sourceVerticalOffset);
+                return new IntervisibilityReport(geoPoints, metrics, originVerticalOffset: sourceVerticalOffset, targetVerticalOffset: targetVerticalOffset);
             }
             catch (Exception ex)
             {
@@ -972,13 +968,13 @@ namespace DEM.Net.Core
         }
 
         public IntervisibilityReport GetIntervisibilityReport(List<GeoPoint> linePoints
-            , double sourceVerticalOffset = 0d, double? noDataValue = null)
+            , double sourceVerticalOffset = 0d, double targetVerticalOffset = 0d, double? noDataValue = null)
         {
             try
             {
-                var metrics = linePoints.ComputeVisibilityMetrics(sourceVerticalOffset, noDataValue: noDataValue);
+                var metrics = linePoints.ComputeVisibilityMetrics(sourceVerticalOffset, targetVerticalOffset, noDataValue: noDataValue);
 
-                return new IntervisibilityReport(linePoints, metrics, originVerticalOffset: sourceVerticalOffset);
+                return new IntervisibilityReport(linePoints, metrics, originVerticalOffset: sourceVerticalOffset, targetVerticalOffset: targetVerticalOffset);
             }
             catch (Exception ex)
             {
