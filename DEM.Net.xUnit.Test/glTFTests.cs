@@ -53,7 +53,7 @@ namespace DEM.Net.Test
                                             .ZScale(2.5f);
 
                 var model = _sharpGltfService.CreateTerrainMesh(heightMap);
-                model.SaveGLB("test.glb");
+                model.SaveGLB(Path.Combine(Directory.GetCurrentDirectory(),"test.glb"));
             }
 
             
