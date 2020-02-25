@@ -42,7 +42,7 @@ namespace DEM.Net.Core
                     .AddSingleton<IRasterService, RasterService>()
                     .AddTransient<IElevationService, ElevationService>()
                     .AddTransient<IMeshService, MeshService>()
-                    .AddSingleton<IImageryService, ImageryService>();
+                    .AddSingleton<ImageryService>();
 
             return services;
         }
