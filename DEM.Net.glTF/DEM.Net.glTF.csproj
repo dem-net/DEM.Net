@@ -49,6 +49,10 @@
   <ItemGroup>
     <None Include="DEMnet_64.png" Pack="true" PackagePath="\" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\DEM.Net.Core\DEM.Net.Core.csproj" />
+  </ItemGroup>
 
   <ProjectExtensions>
     <MonoDevelop>
