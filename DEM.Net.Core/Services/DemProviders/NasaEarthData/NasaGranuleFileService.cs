@@ -92,7 +92,7 @@ namespace DEM.Net.Core.EarthData
                 }
                 if (_cacheByDemName.ContainsKey(indexFileName) == false)
                 {
-                    _cacheByDemName[dataSet.Name] = this.GetSources(dataSet, indexFileName);
+                    _cacheByDemName[indexFileName] = this.GetSources(dataSet, indexFileName);
                 }
 
             }
