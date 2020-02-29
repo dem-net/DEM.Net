@@ -90,9 +90,9 @@ namespace DEM.Net.Core.EarthData
                 {
                     _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
                 }
-                if (_cacheByDemName.ContainsKey(indexFileName) == false)
+                if (_cacheByDemName.ContainsKey(dataSet.Name) == false)
                 {
-                    _cacheByDemName[indexFileName] = this.GetSources(dataSet, indexFileName);
+                    _cacheByDemName[dataSet.Name] = this.GetSources(dataSet, indexFileName);
                 }
 
             }
