@@ -34,6 +34,14 @@ namespace DEM.Net.Core.Imagery
             TokenUserSecretsKey = "MapBoxToken",
             UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/xfischer/cjbtijn5qahc92qs2yghsy58p/tiles/256/{z}/{x}/{y}?access_token={t}", null),
             MaxZoom = 23
+        }; 
+        public static ImageryProvider MapBoxOutdoors = new ImageryProvider()
+        {
+            Name = "MapBox-Outdoors",
+            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "© MapxBox - OpenStreetMap contributors", "https://www.mapbox.com"),
+            TokenUserSecretsKey = "MapBoxToken",
+            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/xfischer/ck77w9wh11jp81ip2rj4kg7xq/tiles/256/{z}/{x}/{y}?access_token={t}", null),
+            MaxZoom = 23
         };
         public static ImageryProvider StamenTerrain = new ImageryProvider()
         {
