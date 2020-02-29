@@ -42,6 +42,8 @@ namespace DEM.Net.Core
             _logLevel = logLevel;
         }
 
+        public TimeSpan Elapsed => _sw.Elapsed;
+
         public void Dispose()
         {
             _sw.LogTime(_operationName, _logLevel);
