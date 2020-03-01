@@ -110,10 +110,10 @@ namespace DEM.Net.Core
 
                 try
                 {
-                    Parallel.ForEach(filesToDownload,new ParallelOptions { MaxDegreeOfParallelism = 2 }, file =>
-                       {
-                           _IRasterService.DownloadRasterFile(file, dataSet);
-                       }
+                    Parallel.ForEach(filesToDownload, new ParallelOptions { MaxDegreeOfParallelism = 2 }, file =>
+                        {
+                            _IRasterService.DownloadRasterFile(file, dataSet);
+                        }
                     );
 
                     _IRasterService.GenerateDirectoryMetadata(dataSet, false, false);
@@ -373,7 +373,11 @@ namespace DEM.Net.Core
                     {
                         using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, dataSet.FileFormat.Type))
                         {
-                            tilesHeightMap.Add(raster.GetHeightMapInBBox(bbox, metadata, NO_DATA_OUT));
+                            var hmap = raster.GetHeightMapInBBox(bbox, metadata, NO_DATA_OUT);
+                            if (hmap.Count > 0)
+                            {
+                                tilesHeightMap.Add(hmap);
+                            }
                         }
                     }
 

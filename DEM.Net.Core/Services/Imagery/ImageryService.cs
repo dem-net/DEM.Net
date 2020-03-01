@@ -251,15 +251,23 @@ namespace DEM.Net.Core.Imagery
 
                 foreach (var tile in tiles)
                 {
-                    using (Image<Rgba32> tileImg = Image.Load(tile.Image))
+                    try
                     {
-                        int x = (tile.TileInfo.X - tiles.Start.X) * tileSize + xOffset;
-                        int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize + yOffset;
+                        using (Image<Rgba32> tileImg = Image.Load(tile.Image))
+                        {
+                            int x = (tile.TileInfo.X - tiles.Start.X) * tileSize + xOffset;
+                            int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize + yOffset;
 
-                        outputImage.Mutate(o => o
-                            .DrawImage(tileImg, new Point(x, y), 1f)
-                        );
+                            outputImage.Mutate(o => o
+                                .DrawImage(tileImg, new Point(x, y), 1f)
+                            );
+                        }
                     }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError($"Error while generating texture: {ex.Message}");
+                    }
+                    
                 }
 
                 // with encoder
