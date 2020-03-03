@@ -10,6 +10,7 @@ namespace DEM.Net.Core.Configuration
         public string NasaEarthDataPassword { get; set; }
         public string MapBoxToken { get; set; }
         public string MapTilerKey { get; set; }
+        public string SketchFabToken { get; set; }
     }
 
 }
