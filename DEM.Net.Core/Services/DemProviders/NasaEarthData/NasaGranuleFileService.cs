@@ -140,7 +140,7 @@ namespace DEM.Net.Core.EarthData
                 BBox = GetBBox(file.Box),
                 SourceFileName = file.GranuleId,
                 SourceFileNameAbsolute = file.ZipFileLink,
-                LocalFileName = Path.Combine(dataSetLocalDir, "Granules", this.FileNameFromGranuleId(file.GranuleId))
+                LocalFileName = Path.Combine(dataSetLocalDir, "Granules", this.FileNameFromGranuleId(file.GranuleId, dataSet))
             }).ToList();
         }
 
@@ -188,13 +188,13 @@ namespace DEM.Net.Core.EarthData
                 // - Keep only _dem.tif file
                 // - rename it as .tif
                 // - suppress other files
-                
+
                 using (var archive = ZipFile.Open(zipFileName, ZipArchiveMode.Read))
                 {
-                    var geoTiffFile = archive.Entries.FirstOrDefault(e => e.Name.ToLower().EndsWith("_dem.tif"));
+                    var geoTiffFile = archive.Entries.FirstOrDefault(e => e.Name.ToLower().EndsWith(dataset.FileFormat.FileExtension));
                     if (geoTiffFile == null)
                     {
-                        this.logger.LogError($"Cannot find geoTiff file into archive {report.LocalName}");
+                        this.logger.LogError($"Cannot find any {dataset.FileFormat.FileExtension} file into archive {report.LocalName}");
                     }
                     else
                     {
@@ -212,9 +212,9 @@ namespace DEM.Net.Core.EarthData
 
         }
 
-        private string FileNameFromGranuleId(string granuleId)
+        private string FileNameFromGranuleId(string granuleId, DEMDataSet dataSet)
         {
-            var fileName = string.Concat(Path.GetFileNameWithoutExtension(granuleId), "_dem.tif");
+            var fileName = string.Concat(Path.GetFileNameWithoutExtension(granuleId), dataSet.FileFormat.FileExtension);
             return fileName;
         }
     }

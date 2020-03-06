@@ -52,19 +52,19 @@ namespace DEM.Net.Core.EarthData
         public DateTimeOffset Updated { get; set; }
 
         [JsonProperty("dataset_id")]
-        public DatasetId DatasetId { get; set; }
+        public string DatasetId { get; set; }
 
         [JsonProperty("data_center")]
-        public DataCenter DataCenter { get; set; }
+        public string DataCenter { get; set; }
 
         [JsonProperty("title")]
         public string Title { get; set; }
 
         [JsonProperty("coordinate_system")]
-        public CoordinateSystem CoordinateSystem { get; set; }
+        public string CoordinateSystem { get; set; }
 
         [JsonProperty("day_night_flag")]
-        public DayNightFlag DayNightFlag { get; set; }
+        public string DayNightFlag { get; set; }
 
         [JsonProperty("time_end")]
         public DateTimeOffset TimeEnd { get; set; }
@@ -82,7 +82,7 @@ namespace DEM.Net.Core.EarthData
         public bool BrowseFlag { get; set; }
 
         [JsonProperty("collection_concept_id")]
-        public CollectionConceptId CollectionConceptId { get; set; }
+        public string CollectionConceptId { get; set; }
 
         [JsonProperty("online_access_flag")]
         public bool OnlineAccessFlag { get; set; }
@@ -103,7 +103,7 @@ namespace DEM.Net.Core.EarthData
         public string Title { get; set; }
 
         [JsonProperty("hreflang")]
-        public Hreflang Hreflang { get; set; }
+        public string Hreflang { get; set; }
 
         [JsonProperty("href")]
         public Uri Href { get; set; }
@@ -112,17 +112,6 @@ namespace DEM.Net.Core.EarthData
         public bool? Inherited { get; set; }
     }
 
-    public enum CollectionConceptId { C1575726572LpdaacEcs };
-
-    public enum CoordinateSystem { Geodetic };
-
-    public enum DataCenter { LpdaacEcs };
-
-    public enum DatasetId { AsterGlobalDigitalElevationModelV003 };
-
-    public enum DayNightFlag { Unspecified };
-
-    public enum Hreflang { EnUs };
 
     public enum TypeEnum { ApplicationZip, ImageJpeg, TextHtml, TextXml };
 
@@ -146,221 +135,11 @@ namespace DEM.Net.Core.EarthData
             DateParseHandling = DateParseHandling.None,
             Converters =
             {
-                CollectionConceptIdConverter.Singleton,
-                CoordinateSystemConverter.Singleton,
-                DataCenterConverter.Singleton,
-                DatasetIdConverter.Singleton,
-                DayNightFlagConverter.Singleton,
-                HreflangConverter.Singleton,
                 TypeEnumConverter.Singleton,
                 OriginalFormatConverter.Singleton,
                 new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
             },
         };
-    }
-
-    internal class CollectionConceptIdConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(CollectionConceptId) || t == typeof(CollectionConceptId?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            if (value == "C1575726572-LPDAAC_ECS")
-            {
-                return CollectionConceptId.C1575726572LpdaacEcs;
-            }
-            throw new Exception("Cannot unmarshal type CollectionConceptId");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (CollectionConceptId)untypedValue;
-            if (value == CollectionConceptId.C1575726572LpdaacEcs)
-            {
-                serializer.Serialize(writer, "C1575726572-LPDAAC_ECS");
-                return;
-            }
-            throw new Exception("Cannot marshal type CollectionConceptId");
-        }
-
-        public static readonly CollectionConceptIdConverter Singleton = new CollectionConceptIdConverter();
-    }
-
-    internal class CoordinateSystemConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(CoordinateSystem) || t == typeof(CoordinateSystem?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            if (value == "GEODETIC")
-            {
-                return CoordinateSystem.Geodetic;
-            }
-            throw new Exception("Cannot unmarshal type CoordinateSystem");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (CoordinateSystem)untypedValue;
-            if (value == CoordinateSystem.Geodetic)
-            {
-                serializer.Serialize(writer, "GEODETIC");
-                return;
-            }
-            throw new Exception("Cannot marshal type CoordinateSystem");
-        }
-
-        public static readonly CoordinateSystemConverter Singleton = new CoordinateSystemConverter();
-    }
-
-    internal class DataCenterConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(DataCenter) || t == typeof(DataCenter?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            if (value == "LPDAAC_ECS")
-            {
-                return DataCenter.LpdaacEcs;
-            }
-            throw new Exception("Cannot unmarshal type DataCenter");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (DataCenter)untypedValue;
-            if (value == DataCenter.LpdaacEcs)
-            {
-                serializer.Serialize(writer, "LPDAAC_ECS");
-                return;
-            }
-            throw new Exception("Cannot marshal type DataCenter");
-        }
-
-        public static readonly DataCenterConverter Singleton = new DataCenterConverter();
-    }
-
-    internal class DatasetIdConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(DatasetId) || t == typeof(DatasetId?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            if (value == "ASTER Global Digital Elevation Model V003")
-            {
-                return DatasetId.AsterGlobalDigitalElevationModelV003;
-            }
-            throw new Exception("Cannot unmarshal type DatasetId");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (DatasetId)untypedValue;
-            if (value == DatasetId.AsterGlobalDigitalElevationModelV003)
-            {
-                serializer.Serialize(writer, "ASTER Global Digital Elevation Model V003");
-                return;
-            }
-            throw new Exception("Cannot marshal type DatasetId");
-        }
-
-        public static readonly DatasetIdConverter Singleton = new DatasetIdConverter();
-    }
-
-    internal class DayNightFlagConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(DayNightFlag) || t == typeof(DayNightFlag?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            if (value == "UNSPECIFIED")
-            {
-                return DayNightFlag.Unspecified;
-            }
-            throw new Exception("Cannot unmarshal type DayNightFlag");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (DayNightFlag)untypedValue;
-            if (value == DayNightFlag.Unspecified)
-            {
-                serializer.Serialize(writer, "UNSPECIFIED");
-                return;
-            }
-            throw new Exception("Cannot marshal type DayNightFlag");
-        }
-
-        public static readonly DayNightFlagConverter Singleton = new DayNightFlagConverter();
-    }
-
-    internal class HreflangConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(Hreflang) || t == typeof(Hreflang?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            if (value == "en-US")
-            {
-                return Hreflang.EnUs;
-            }
-            throw new Exception("Cannot unmarshal type Hreflang");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (Hreflang)untypedValue;
-            if (value == Hreflang.EnUs)
-            {
-                serializer.Serialize(writer, "en-US");
-                return;
-            }
-            throw new Exception("Cannot marshal type Hreflang");
-        }
-
-        public static readonly HreflangConverter Singleton = new HreflangConverter();
     }
 
     internal class TypeEnumConverter : JsonConverter
@@ -374,6 +153,7 @@ namespace DEM.Net.Core.EarthData
             switch (value)
             {
                 case "application/zip":
+                case "application/x-zip":
                     return TypeEnum.ApplicationZip;
                 case "image/jpeg":
                     return TypeEnum.ImageJpeg;

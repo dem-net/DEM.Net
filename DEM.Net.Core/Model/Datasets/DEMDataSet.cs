@@ -130,7 +130,7 @@ namespace DEM.Net.Core
                 Description = "ASTER Global Digital Elevation Model 1 arc second (30m)",
                 PublicUrl = "https://lpdaac.usgs.gov/products/astgtmv003",
                 DataSource = new NasaGranuleDataSource(indexFilePath: "ASTGTM.003.json", collectionId: "C1575726572-LPDAAC_ECS"),
-                FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Grid),
+                FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, "_dem.tif", DEMFileRegistrationMode.Grid),
                 ResolutionMeters = 30,
                 ResolutionArcSeconds = 1,
                 PointsPerDegree = 3600,
@@ -138,6 +138,21 @@ namespace DEM.Net.Core
                 Attribution = new Attribution(ATTRIBUTION_SUBJECT, "ASTER_GDEMV3",
                                                 "https://doi.org/10.5067/ASTER/ASTGTM.003",
                                                 "NASA/METI/AIST/Japan Spacesystems, and U.S./Japan ASTER Science Team. ASTER Global Digital Elevation Model V003. 2018, distributed by NASA EOSDIS Land Processes DAAC")
+            });
+            datasets.Add("NASADEM", new DEMDataSet()
+            {
+                Name = "NASADEM",
+                Description = "NASADEM MEaSUREs Merged DEM Global 1 arc second (30m)",
+                PublicUrl = "https://lpdaac.usgs.gov/products/nasadem_hgtv001/",
+                DataSource = new NasaGranuleDataSource(indexFilePath: "NASADEM.json", collectionId: "C1546314043-LPDAAC_ECS"),
+                FileFormat = new DEMFileDefinition("Nasa SRTM HGT", DEMFileType.SRTM_HGT, ".hgt", DEMFileRegistrationMode.Grid),
+                ResolutionMeters = 30,
+                ResolutionArcSeconds = 1,
+                PointsPerDegree = 3600,
+                NoDataValue = -9999,
+                Attribution = new Attribution(ATTRIBUTION_SUBJECT, "NASADEM",
+                                                "https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001",
+                                                "NASA JPL. NASADEM Merged DEM Global 1 arc second V001. 2020, distributed by NASA EOSDIS Land Processes DAAC, https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001. Accessed 2020-03-06.")
             });
             datasets.Add("GEBCO_2019", new DEMDataSet()
             {

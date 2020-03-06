@@ -64,12 +64,12 @@ namespace DEM.Net.Core
 
         private float GetHGTValue(FileMetadata metadata, int x, int y)
         {
-           
+
             int bytesPerSample = metadata.BitsPerSample / 8;
             byte[] byteScanline = new byte[metadata.ScanlineSize];
 
             _hgtStream.Seek(metadata.ScanlineSize * y, SeekOrigin.Begin);
-            _hgtStream.Read(byteScanline,0, metadata.ScanlineSize);
+            _hgtStream.Read(byteScanline, 0, metadata.ScanlineSize);
 
             float heightValue = 0;
             byte[] heightBytes = new byte[bytesPerSample];
@@ -112,13 +112,13 @@ namespace DEM.Net.Core
                         throw new Exception("Sample format unsupported.");
                 }
             }
-            
+
             return heightValue;
         }
-      
+
         public FileMetadata ParseMetaData(DEMFileDefinition format)
         {
-            
+
             FileMetadata metadata = new FileMetadata(_filename, format);
 
             int numPixels = _fileBytesCount == HGTFile.HGT1201 ? 1201 : 3601;
@@ -127,26 +127,27 @@ namespace DEM.Net.Core
             { ///
                 metadata.Height = numPixels;
                 metadata.Width = numPixels;
-                metadata.PixelScaleX = 1d / (numPixels-1);
-                metadata.PixelScaleY = 1d / (numPixels-1);
+                metadata.PixelScaleX = 1d / (numPixels - 1);
+                metadata.PixelScaleY = 1d / (numPixels - 1);
                 metadata.pixelSizeX = metadata.PixelScaleX;
                 metadata.pixelSizeY = -metadata.PixelScaleY;
 
                 // fileName gives is coordinates of center of first lower left pixel (south west)
                 // example N08E003.hgt
-                string fileTitle = Path.GetFileNameWithoutExtension(_filename);
+                // NASADEM: NASADEM_HGT_n43e005.hgt
+                string fileTitle = Path.GetFileNameWithoutExtension(_filename).Split('_').Last().ToUpper();
                 int latSign = fileTitle.Substring(0, 1) == "N" ? 1 : -1;
                 int lonSign = fileTitle.Substring(3, 1) == "E" ? 1 : -1;
                 int lat = int.Parse(fileTitle.Substring(1, 2)) * latSign;
                 int lon = int.Parse(fileTitle.Substring(4, 3)) * lonSign;
                 metadata.DataStartLon = lon;
-                metadata.DataStartLat = lat; 
-                metadata.DataEndLon = lon+1;
-                metadata.DataEndLat = lat+1;
+                metadata.DataStartLat = lat;
+                metadata.DataEndLon = lon + 1;
+                metadata.DataEndLat = lat + 1;
                 metadata.PhysicalStartLat = metadata.DataStartLat + (metadata.pixelSizeY / 2.0);
                 metadata.PhysicalStartLon = metadata.DataStartLon - (metadata.pixelSizeX / 2.0);
                 metadata.PhysicalEndLon = metadata.Width * metadata.pixelSizeX + metadata.DataStartLon;
-                metadata.PhysicalEndLat = metadata.DataStartLat + metadata.Height * Math.Abs(metadata.pixelSizeY) ;
+                metadata.PhysicalEndLat = metadata.DataStartLat + metadata.Height * Math.Abs(metadata.pixelSizeY);
 
 
                 metadata.ScanlineSize = numPixels * 2; // 16 bit signed integers
@@ -213,9 +214,9 @@ namespace DEM.Net.Core
             int xEast = (int)Math.Ceiling((bbox.xMax - metadata.PhysicalStartLon) / metadata.pixelSizeX);
 
             xWest = Math.Max(0, xWest);
-            xEast = Math.Min(metadata.Width - 1- registrationOffset, xEast);
+            xEast = Math.Min(metadata.Width - 1 - registrationOffset, xEast);
             yNorth = Math.Max(0, yNorth);
-            ySouth = Math.Min(metadata.Height - 1- registrationOffset, ySouth);
+            ySouth = Math.Min(metadata.Height - 1 - registrationOffset, ySouth);
 
             HeightMap heightMap = new HeightMap(xEast - xWest + 1, ySouth - yNorth + 1);
             heightMap.Count = heightMap.Width * heightMap.Height;
