@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <PackageId>DEM.Net.glTF</PackageId>
-    <Version>0.2.5</Version>
+    <Version>0.2.6</Version>
     <Authors>Xavier Fischer</Authors>
     <Copyright>Xavier Fischer and Contributors</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net.glTF</PackageProjectUrl>
-    <PackageReleaseNotes>Migrated to demnet 0.2.5</PackageReleaseNotes>
+    <PackageReleaseNotes>Migrated to demnet 0.2.6</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation, Mesh, 3D, glTF, Map, STL</PackageTags>
     <Title>DEM.Net</Title>
     <Product>DEM.Net</Product>
@@ -15,11 +15,13 @@
     <Summary>glTF3D and STL exporters for DEM.Net</Summary>
     <RepositoryUrl>https://github.com/dem-net/DEM.Net.glTF</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageLicenseExpression></PackageLicenseExpression>
     <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
     <PackageIcon>DEMnet_64.png</PackageIcon>
-    <AssemblyVersion>0.2.5.0</AssemblyVersion>
+    <AssemblyVersion>0.2.6.0</AssemblyVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
   </PropertyGroup>
 
   <!-- Build package only in Release -->
@@ -37,6 +39,10 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="gtlfSharp\SharpGltfService.cs~RF5d4699.TMP" />
+    <None Include="..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
   
   <ItemGroup>
