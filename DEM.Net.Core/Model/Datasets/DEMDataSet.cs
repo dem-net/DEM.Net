@@ -208,6 +208,11 @@ namespace DEM.Net.Core
         /// </summary>
         public static DEMDataSet ASTER_GDEMV3 => Datasets.Value[nameof(ASTER_GDEMV3)];
 
+        /// <summary>
+        /// NASADEM https://cmr.earthdata.nasa.gov/search/concepts/C1546314043-LPDAAC_ECS
+        /// API: https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html
+        /// </summary>
+        public static DEMDataSet NASADEM => Datasets.Value[nameof(NASADEM)];
 
 
         public int PointsPerDegree { get; private set; }
