@@ -26,7 +26,6 @@ namespace DEM.Net.Core.Imagery
             TokenUserSecretsKey = "MapBoxToken",
             MaxZoom = 23
         };
-
         public static ImageryProvider MapBoxStreets = new ImageryProvider()
         {
             Name = "MapBox-Streets",
@@ -42,13 +41,6 @@ namespace DEM.Net.Core.Imagery
             TokenUserSecretsKey = "MapBoxToken",
             UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/xfischer/ck77w9wh11jp81ip2rj4kg7xq/tiles/256/{z}/{x}/{y}?access_token={t}", null),
             MaxZoom = 23
-        };
-        public static ImageryProvider StamenTerrain = new ImageryProvider()
-        {
-            Name = "Stamen-Terrain",
-            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Stamen Terrain", "https://stamen.com/", "Map tiles by <a href=\"http://stamen.com\">Stamen Design</a>, under <a href=\"http://creativecommons.org/licenses/by/3.0\">CC BY 3.0</a>. Data by <a href=\"http://openstreetmap.org\">OpenStreetMap</a>, under <a href=\"http://www.openstreetmap.org/copyright\">ODbL</a>."),
-            UrlModel = new UrlModel("http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.png", new[] { "a", "b", "c", "d" }),
-            MaxZoom = 14
         };
         public static ImageryProvider StamenToner = new ImageryProvider()
         {
@@ -79,13 +71,29 @@ namespace DEM.Net.Core.Imagery
             UrlModel = new UrlModel("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", null),
             MaxZoom = 18
         };
-        public static ImageryProvider MapTilerSatellite = new ImageryProvider()
+        public static ImageryProvider ThunderForestOutdoors = new ImageryProvider()
         {
-            Name = "MapTiler-Satellite",
-            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapTiler Satellite", "https://www.maptiler.com/copyright/", "© MapTiler - © OpenStreetMap contributors"),
-            UrlModel = new UrlModel("https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key={t}", null),
-            TokenUserSecretsKey = "MapTilerKey",
-            MaxZoom = 20
+            Name = "ThunderForest-Outdoors",
+            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "ThunderForest", "https://www.thunderforest.com", "Maps © www.thunderforest.com, Data © www.osm.org/copyright"),
+            UrlModel = new UrlModel("https://tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey={t}", null),
+            TokenUserSecretsKey = "ThunderForestApiKey",
+            MaxZoom = 22
+        };
+        public static ImageryProvider ThunderForestLandscape = new ImageryProvider()
+        {
+            Name = "ThunderForest-Landscape",
+            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "ThunderForest", "https://www.thunderforest.com", "Maps © www.thunderforest.com, Data © www.osm.org/copyright"),
+            UrlModel = new UrlModel("https://tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey={t}", null),
+            TokenUserSecretsKey = "ThunderForestApiKey",
+            MaxZoom = 22
+        };
+        public static ImageryProvider ThunderForestNeighbourhood = new ImageryProvider()
+        {
+            Name = "ThunderForest-Neighbourhood",
+            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "ThunderForest", "https://www.thunderforest.com", "Maps © www.thunderforest.com, Data © www.osm.org/copyright"),
+            UrlModel = new UrlModel("https://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey={t}", null),
+            TokenUserSecretsKey = "ThunderForestApiKey",
+            MaxZoom = 22
         };
 
     }
