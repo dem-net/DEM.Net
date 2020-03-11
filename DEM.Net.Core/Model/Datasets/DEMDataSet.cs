@@ -73,13 +73,11 @@ namespace DEM.Net.Core
                 ResolutionArcSeconds = 3,
                 PointsPerDegree = 1200,
                 Attribution = new Attribution(ATTRIBUTION_SUBJECT, "SRTM_GL3 OpenTopography", "https://opentopography.org/"
-                    , @"Citing LP DAVV and Data Products: https://lpdaac.usgs.gov/about/citing_lp_daac_and_data
-                        If you wish to cite the SRTM products in a report or publication please use: 
-                        Farr, T. G., and M. Kobrick, 2000, Shuttle Radar Topography Mission produces a wealth of data. Eos Trans. AGU, 81:583-583.
-                        Farr, T. G. et al., 2007, The Shuttle Radar Topography Mission, Rev. Geophys., 45, RG2004, doi:10.1029/2005RG000183. (Also available online at http://www2.jpl.nasa.gov/srtm/SRTM_paper.pdf)
-                        Kobrick, M., 2006, On the toes of giants--How SRTM was born, Photogramm. Eng. Remote Sens., 72:206-210.
-                        Rosen, P. A. et al., 2000, Synthetic aperture radar interferometry, Proc. IEEE, 88:333-382.
-                        https://doi.org/10.5069/G9445JDF")
+                    , "Farr, T. G., and M. Kobrick, 2000, Shuttle Radar Topography Mission produces a wealth of data. Eos Trans. AGU, 81:583-583." + Environment.NewLine +
+                        "Farr, T. G. et al., 2007, The Shuttle Radar Topography Mission, Rev. Geophys., 45, RG2004, doi:10.1029/2005RG000183. (Also available online at http://www2.jpl.nasa.gov/srtm/SRTM_paper.pdf)" + Environment.NewLine +
+                        "Kobrick, M., 2006, On the toes of giants--How SRTM was born, Photogramm. Eng. Remote Sens., 72:206-210." + Environment.NewLine +
+                        "Rosen, P. A. et al., 2000, Synthetic aperture radar interferometry, Proc. IEEE, 88:333-382." + Environment.NewLine +
+                        "https://doi.org/10.5069/G9445JDF")
             });
             datasets.Add("SRTM_GL1", new DEMDataSet()
             {
@@ -105,10 +103,9 @@ namespace DEM.Net.Core
                 PointsPerDegree = 3600,
                 NoDataValue = -9999,
                 Attribution = new Attribution(ATTRIBUTION_SUBJECT, "AW3D30 OpenTopography", "https://opentopography.org/"
-                    , @"J. Takaku, T. Tadono, K. Tsutsui : Generation of High Resolution Global DSM from ALOS PRISM, The International Archives of the Photogrammetry, Remote Sensing and Spatial Information Sciences, pp.243-248, Vol. XL-4, ISPRS TC IV Symposium, Suzhou, China, 2014. [http://www.int-arch-photogramm-remote-sens-spatial-inf-sci.net/XL-4/243/2014/isprsarchives-XL-4-243-2014.pdf]
-                    T.Tadono, H.Ishida, F.Oda, S.Naito, K.Minakawa, H.Iwamoto : Precise Global DEM Generation By ALOS PRISM, ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences, pp.71 - 76, Vol.II - 4, 2014. [http://www.isprs-ann-photogramm-remote-sens-spatial-inf-sci.net/II-4/71/2014/isprsannals-II-4-71-2014.pdf]
-                    https://doi.org/10.5069/G94M92HB
-                    ")
+                    , "J. Takaku, T. Tadono, K. Tsutsui : Generation of High Resolution Global DSM from ALOS PRISM, The International Archives of the Photogrammetry, Remote Sensing and Spatial Information Sciences, pp.243-248, Vol. XL-4, ISPRS TC IV Symposium, Suzhou, China, 2014. [http://www.int-arch-photogramm-remote-sens-spatial-inf-sci.net/XL-4/243/2014/isprsarchives-XL-4-243-2014.pdf]" + Environment.NewLine +
+                    "T.Tadono, H.Ishida, F.Oda, S.Naito, K.Minakawa, H.Iwamoto : Precise Global DEM Generation By ALOS PRISM, ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences, pp.71 - 76, Vol.II - 4, 2014. [http://www.isprs-ann-photogramm-remote-sens-spatial-inf-sci.net/II-4/71/2014/isprsannals-II-4-71-2014.pdf]" + Environment.NewLine +
+                    "https://doi.org/10.5069/G94M92HB")
             });
             datasets.Add("ETOPO1", new DEMDataSet()
             {
