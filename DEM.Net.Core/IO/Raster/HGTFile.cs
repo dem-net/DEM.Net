@@ -239,7 +239,7 @@ namespace DEM.Net.Core
                     heightMap.BoundingBox.xMin = metadata.DataStartLon + (metadata.pixelSizeX * xWest);
                     heightMap.BoundingBox.xMax = metadata.DataStartLon + (metadata.pixelSizeX * xEast);
                 }
-                else if (y == ySouth)
+                if (y == ySouth)
                 {
                     heightMap.BoundingBox.yMin = latitude;
                 }
