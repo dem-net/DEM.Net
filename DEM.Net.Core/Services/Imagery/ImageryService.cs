@@ -165,9 +165,8 @@ namespace DEM.Net.Core.Imagery
                         {
                             entry.SetSlidingExpiration(TimeSpan.FromMinutes(options.ImageryCacheExpirationMinutes));
 
-                            return _httpClient.GetByteArrayAsync(tileUri).Result;
-                        });
-                        //var contentBytes = _httpClient.GetByteArrayAsync(tileUri).Result;
+                            return _httpClient.GetByteArrayAsync(tileUri).GetAwaiter().GetResult();
+                        });                        
                         tiles.Add(new MapTile(contentBytes, provider.TileSize, tileUri, tileInfo));
 
                     }
@@ -278,7 +277,7 @@ namespace DEM.Net.Core.Imagery
             }
 #endif
             return new TextureInfo(fileName, mimeType, (int)projectedBbox.Width, (int)projectedBbox.Height, zoomLevel,
-                projectedBbox);
+                projectedBbox, tiles.Count);
             //return new TextureInfo(fileName, format, (int)tilesBbox.Width, (int)tilesBbox.Height);
         }
 

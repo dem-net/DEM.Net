@@ -62,6 +62,7 @@ namespace DEM.Net.Core.Imagery
         public MapTileInfo End { get; set; }
         public int NumCols => End.X - Start.X + 1;
         public int NumRows => End.Y - Start.Y + 1;
+        public int Count => NumCols * NumRows;
 
         public BoundingBox AreaOfInterest { get; internal set; }
 
