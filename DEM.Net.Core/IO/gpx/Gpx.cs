@@ -44,7 +44,7 @@ namespace DEM.Net.Core.Gpx
 
     public class GpxPoint
     {
-        private const double EARTH_RADIUS = 6371; // [km]
+        private const double EARTH_RADIUS = 6378; // [km]
         private const double RADIAN = Math.PI / 180;
 
         protected GpxProperties Properties_ = new GpxProperties();
