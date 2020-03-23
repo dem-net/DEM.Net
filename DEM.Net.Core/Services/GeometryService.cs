@@ -41,7 +41,7 @@ namespace DEM.Net.Core
 	public static class GeometryService
     {
         private const int WGS84_SRID = 4326;
-        private const double EARTH_RADIUS = 6371008.0; // [m]
+        private const double EARTH_RADIUS = 6378137.0; // [m]
         private const double RADIAN = Math.PI / 180;
 
         private static WKTReader _wktReader;
