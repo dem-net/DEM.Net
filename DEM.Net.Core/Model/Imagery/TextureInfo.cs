@@ -42,8 +42,9 @@ namespace DEM.Net.Core.Imagery
         public int Height { get; }
         public int ProjectedZoom { get; }
         public BoundingBox ProjectedBounds { get; }
+        public int? TileCount { get; set; }
 
-        public TextureInfo(string filePath, TextureImageFormat imageFormat, int width, int height, int zoom = 0, BoundingBox projectedBounds = null)
+        public TextureInfo(string filePath, TextureImageFormat imageFormat, int width, int height, int zoom = 0, BoundingBox projectedBounds = null, int? tileCount = null)
         {
             this.FilePath = filePath;
             this.FileName = Path.GetFileName(filePath);
@@ -52,8 +53,9 @@ namespace DEM.Net.Core.Imagery
             this.Height = height;
             this.ProjectedZoom = zoom;
             this.ProjectedBounds = projectedBounds;
+            this.TileCount = tileCount;
         }
 
-       
+
     }
 }
