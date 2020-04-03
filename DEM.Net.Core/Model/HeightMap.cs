@@ -41,6 +41,8 @@ namespace DEM.Net.Core
             Height = height;
             Coordinates = null;
             Count = width * height;
+            Minimum = float.MaxValue;
+            Maximum = float.MinValue;
         }
 
         private BoundingBox _bbox;
