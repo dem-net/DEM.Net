@@ -73,7 +73,7 @@ namespace DEM.Net.Core.EarthData
                             if (hasData)
                             {
                                 // Only retrieve bbox and dem file link (zip file)
-                                links.AddRange(result.Feed.Entry.Select(GetNasaDemFile));
+                                links.AddRange(result.Feed.Entry.Select(GetNasaDemFile).Where(file => file != null));
                             }
                         }
                     }
@@ -108,18 +108,27 @@ namespace DEM.Net.Core.EarthData
 
         private NasaDemFile GetNasaDemFile(Entry entry)
         {
-            if (entry == null)
-                throw new ArgumentNullException(nameof(entry), "Entry is mandatory.");
-            if (entry.Boxes == null || entry.Boxes.Count == 0)
-                throw new ArgumentNullException(nameof(entry.Boxes), "Boxes should contain at least an element.");
-            if (entry.Links == null || entry.Links.Count == 0)
-                throw new ArgumentNullException(nameof(entry.Links), "Links should contain at least an element.");
+            try
+            {
+                if (entry == null)
+                    throw new ArgumentNullException(nameof(entry), "Entry is mandatory.");
+                if (entry.Boxes == null || entry.Boxes.Count == 0)
+                    throw new ArgumentNullException(nameof(entry.Boxes), "Boxes should contain at least an element.");
+                if (entry.Links == null || entry.Links.Count == 0)
+                    throw new ArgumentNullException(nameof(entry.Links), "Links should contain at least an element.");
 
-            var link = entry.Links.FirstOrDefault(l => l.Type == TypeEnum.ApplicationZip);
-            if (link == null)
-                throw new ArgumentNullException(nameof(link), "ApplicationZip Link is mandatory.");
+                var link = entry.Links.FirstOrDefault(l => l.Type == TypeEnum.ApplicationZip);
+                if (link == null)
+                    throw new ArgumentNullException(nameof(link), "ApplicationZip Link is mandatory.");
 
-            return new NasaDemFile(entry.ProducerGranuleId, entry.Boxes.First(), link.Href.AbsoluteUri);
+                return new NasaDemFile(entry.ProducerGranuleId, entry.Boxes.First(), link.Href.AbsoluteUri);
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning("Error parsing Nasa entry. File will be ignored: " + ex.Message);
+                return null;
+            }
+
         }
 
         private List<DEMFileSource> GetSources(DEMDataSet dataSet, string indexFileName)
