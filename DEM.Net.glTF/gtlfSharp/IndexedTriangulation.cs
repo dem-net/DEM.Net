@@ -10,7 +10,7 @@ namespace DEM.Net.glTF.SharpglTF
     {
         private Triangulation Triangulation;
 
-        public List<Vector3> Positions { get; private set; }
+        public List<Vector3> Positions { get; set; }
         public List<Vector4> Colors { get; private set; }
         public List<int> Indices { get; private set; }
 
