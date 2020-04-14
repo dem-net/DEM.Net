@@ -107,6 +107,14 @@ namespace DEM.Net.Core
             return Math.Abs(this.Latitude - other.Latitude) < double.Epsilon
                   && Math.Abs(this.Longitude - other.Longitude) < double.Epsilon;
         }
+
+        public override int GetHashCode()
+        {
+            int hashCode = -1416534245;
+            hashCode = hashCode * -1521134295 + Latitude.GetHashCode();
+            hashCode = hashCode * -1521134295 + Longitude.GetHashCode();
+            return hashCode;
+        }
     }
 
 

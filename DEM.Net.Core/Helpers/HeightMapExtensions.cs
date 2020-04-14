@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,6 +37,29 @@ namespace DEM.Net.Core
     /// </summary>
     public static class HeightMapExtensions
     {
+        /// <summary>
+        /// Centers height map on origin
+        /// </summary>
+        /// <param name="heightMap"></param>
+        /// <returns></returns>
+        /// <remarks>This can be used in an height map processing pipeline, as coordinates are changed only on enumeration</remarks>
+        public static HeightMap CenterOnOrigin(this HeightMap heightMap, out Matrix4x4 transform)
+        {
+            //Logger.Info("CenterOnOrigin...");
+            var bbox = heightMap.BoundingBox;
+
+            double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
+            double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
+            heightMap.Coordinates = heightMap.Coordinates.Translate(-xOriginOffset, -yOriginOffset);
+
+            // world to model is (x,y,z) -> (x,z,-y)
+            // translate (X,Y,0) -> (X,0,-Y)
+            transform = System.Numerics.Matrix4x4.CreateTranslation(-(float)xOriginOffset, 0, (float)yOriginOffset);
+
+            heightMap.BoundingBox = new BoundingBox(bbox.xMin - xOriginOffset, bbox.xMax - xOriginOffset
+                                                    , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset);
+            return heightMap;
+        }
         /// <summary>
         /// Centers height map on origin
         /// </summary>

@@ -95,17 +95,17 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public static BoundingBox GetBoundingBox(this IEnumerable<GeoPoint> points)
         {
-            BoundingBox bbox = new BoundingBox(double.MaxValue, double.MinValue, double.MaxValue, double.MinValue);
+            double xmin = double.MaxValue, ymin = double.MaxValue, xmax = double.MinValue, ymax = double.MinValue;
 
             foreach (var pt in points)
             {
-                bbox.xMin = Math.Min(bbox.xMin, pt.Longitude);
-                bbox.xMax = Math.Max(bbox.xMax, pt.Longitude);
+                xmin = Math.Min(xmin, pt.Longitude);
+                xmax = Math.Max(xmax, pt.Longitude);
 
-                bbox.yMin = Math.Min(bbox.yMin, pt.Latitude);
-                bbox.yMax = Math.Max(bbox.yMax, pt.Latitude);
+                ymin = Math.Min(ymin, pt.Latitude);
+                ymax = Math.Max(ymax, pt.Latitude);
             }
-            return bbox;
+            return new BoundingBox(xmin, xmax, ymin, ymax);
         }
         /// <summary>
         /// Returns the bouding box of a segment
@@ -114,15 +114,14 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public static BoundingBox GetBoundingBox(this GeoSegment segment)
         {
-            BoundingBox bbox = new BoundingBox(double.MaxValue, double.MinValue, double.MaxValue, double.MinValue);
+            double xmin = double.MaxValue, ymin = double.MaxValue, xmax = double.MinValue, ymax = double.MinValue;
+            xmin = Math.Min(segment.Start.Longitude, segment.End.Longitude);
+            xmax = Math.Max(segment.Start.Longitude, segment.End.Longitude);
 
-            bbox.xMin = Math.Min(segment.Start.Longitude, segment.End.Longitude);
-            bbox.xMax = Math.Max(segment.Start.Longitude, segment.End.Longitude);
+            ymin = Math.Min(segment.Start.Latitude, segment.End.Latitude);
+            ymax = Math.Max(segment.Start.Latitude, segment.End.Latitude);
 
-            bbox.yMin = Math.Min(segment.Start.Latitude, segment.End.Latitude);
-            bbox.yMax = Math.Max(segment.Start.Latitude, segment.End.Latitude);
-
-            return bbox;
+            return new BoundingBox(xmin, xmax, ymin, ymax);
         }
 
         /// <summary>
