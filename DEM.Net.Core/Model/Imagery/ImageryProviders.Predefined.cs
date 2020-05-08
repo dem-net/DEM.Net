@@ -14,7 +14,8 @@ namespace DEM.Net.Core.Imagery
         {
             Name = "MapBox-Satellite",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Satellite", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
-            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token={t}", null),
+            UrlModel = new UrlModel("https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token={t}", null),
+            //UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token={t}", null),
             TokenUserSecretsKey = "MapBoxToken",
             TileSize = 256,
             MaxZoom = 23
@@ -23,7 +24,8 @@ namespace DEM.Net.Core.Imagery
         {
             Name = "MapBox-SatelliteStreet",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Satellite Street", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
-            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/256/{z}/{x}/{y}?access_token={t}", null),
+            UrlModel = new UrlModel("https://api.mapbox.com/v4/mapbox.streets-satellite/{z}/{x}/{y}.png?access_token={t}", null),
+            //UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/256/{z}/{x}/{y}?access_token={t}", null),
             TokenUserSecretsKey = "MapBoxToken",
             MaxZoom = 23
         };
@@ -32,7 +34,8 @@ namespace DEM.Net.Core.Imagery
             Name = "MapBox-Streets",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Streets", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
             TokenUserSecretsKey = "MapBoxToken",
-            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}?access_token={t}", null),
+            UrlModel = new UrlModel("https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token={t}", null),
+            //UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}?access_token={t}", null),
             MaxZoom = 23
         };
         public static ImageryProvider MapBoxOutdoors = new ImageryProvider()
@@ -40,7 +43,8 @@ namespace DEM.Net.Core.Imagery
             Name = "MapBox-Outdoors",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Outdoors", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
             TokenUserSecretsKey = "MapBoxToken",
-            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/256/{z}/{x}/{y}?access_token={t}", null),
+            UrlModel = new UrlModel("https://api.mapbox.com/v4/mapbox.outdoors/{z}/{x}/{y}.png?access_token={t}", null),
+            //UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/256/{z}/{x}/{y}?access_token={t}", null),
             MaxZoom = 23
         };
         public static ImageryProvider MapBoxLight = new ImageryProvider()
@@ -48,7 +52,8 @@ namespace DEM.Net.Core.Imagery
             Name = "MapBox-Light",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Light", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
             TokenUserSecretsKey = "MapBoxToken",
-            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}?access_token={t}", null),
+            UrlModel = new UrlModel("https://api.mapbox.com/v4/mapbox.light/{z}/{x}/{y}.png?access_token={t}", null),
+            //UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}?access_token={t}", null),
             MaxZoom = 23
         };
         public static ImageryProvider MapBoxDark = new ImageryProvider()
@@ -56,7 +61,8 @@ namespace DEM.Net.Core.Imagery
             Name = "MapBox-Dark",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Dark", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
             TokenUserSecretsKey = "MapBoxToken",
-            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/256/{z}/{x}/{y}?access_token={t}", null),
+            UrlModel = new UrlModel("https://api.mapbox.com/v4/mapbox.dark/{z}/{x}/{y}.png?access_token={t}", null),
+            //UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/256/{z}/{x}/{y}?access_token={t}", null),
             MaxZoom = 23
         };
         public static ImageryProvider StamenToner = new ImageryProvider()
