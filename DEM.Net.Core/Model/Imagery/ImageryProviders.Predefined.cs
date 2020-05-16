@@ -8,9 +8,9 @@ namespace DEM.Net.Core.Imagery
     {
         public const string ATTRIBUTION_SUBJECT = "Imagery";
 #if DEBUG
-        public static ImageryProvider DebugProvider = new TileDebugProvider(null);
+        public static readonly ImageryProvider DebugProvider = new TileDebugProvider(null);
 #endif
-        public static ImageryProvider MapBoxSatellite = new ImageryProvider()
+        public static readonly ImageryProvider MapBoxSatellite = new ImageryProvider()
         {
             Name = "MapBox-Satellite",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Satellite", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
@@ -20,7 +20,7 @@ namespace DEM.Net.Core.Imagery
             TileSize = 256,
             MaxZoom = 23
         };
-        public static ImageryProvider MapBoxSatelliteStreet = new ImageryProvider()
+        public static readonly ImageryProvider MapBoxSatelliteStreet = new ImageryProvider()
         {
             Name = "MapBox-SatelliteStreet",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Satellite Street", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
@@ -29,7 +29,7 @@ namespace DEM.Net.Core.Imagery
             TokenUserSecretsKey = "MapBoxToken",
             MaxZoom = 23
         };
-        public static ImageryProvider MapBoxStreets = new ImageryProvider()
+        public static readonly ImageryProvider MapBoxStreets = new ImageryProvider()
         {
             Name = "MapBox-Streets",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Streets", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
@@ -38,7 +38,7 @@ namespace DEM.Net.Core.Imagery
             //UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}?access_token={t}", null),
             MaxZoom = 23
         };
-        public static ImageryProvider MapBoxOutdoors = new ImageryProvider()
+        public static readonly ImageryProvider MapBoxOutdoors = new ImageryProvider()
         {
             Name = "MapBox-Outdoors",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Outdoors", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
@@ -47,7 +47,7 @@ namespace DEM.Net.Core.Imagery
             //UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/256/{z}/{x}/{y}?access_token={t}", null),
             MaxZoom = 23
         };
-        public static ImageryProvider MapBoxLight = new ImageryProvider()
+        public static readonly ImageryProvider MapBoxLight = new ImageryProvider()
         {
             Name = "MapBox-Light",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Light", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
@@ -56,7 +56,7 @@ namespace DEM.Net.Core.Imagery
             //UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}?access_token={t}", null),
             MaxZoom = 23
         };
-        public static ImageryProvider MapBoxDark = new ImageryProvider()
+        public static readonly ImageryProvider MapBoxDark = new ImageryProvider()
         {
             Name = "MapBox-Dark",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Dark", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
@@ -65,21 +65,21 @@ namespace DEM.Net.Core.Imagery
             //UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/256/{z}/{x}/{y}?access_token={t}", null),
             MaxZoom = 23
         };
-        public static ImageryProvider StamenToner = new ImageryProvider()
+        public static readonly ImageryProvider StamenToner = new ImageryProvider()
         {
             Name = "Stamen-Toner",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Stamen Toner", "https://stamen.com/", "Map tiles by <a href=\"http://stamen.com\">Stamen Design</a>, under <a href=\"http://creativecommons.org/licenses/by/3.0\">CC BY 3.0</a>. Data by <a href=\"http://openstreetmap.org\">OpenStreetMap</a>, under <a href=\"http://www.openstreetmap.org/copyright\">ODbL</a>."),
             UrlModel = new UrlModel("http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png", new[] { "a", "b", "c", "d" }),
             MaxZoom = 14
         };
-        public static ImageryProvider StamenWaterColor = new ImageryProvider()
+        public static readonly ImageryProvider StamenWaterColor = new ImageryProvider()
         {
             Name = "Stamen-Watercolor",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Stamen Watercolor", "https://stamen.com/", "Map tiles by <a href=\"http://stamen.com\">Stamen Design</a>, under <a href=\"http://creativecommons.org/licenses/by/3.0\">CC BY 3.0</a>. Data by <a href=\"http://openstreetmap.org\">OpenStreetMap</a>, under <a href=\"http://creativecommons.org/licenses/by-sa/3.0\">CC BY SA</a>."),
             UrlModel = new UrlModel("http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg", new[] { "a", "b", "c", "d" }),
             MaxZoom = 14
         };
-        public static ImageryProvider OpenTopoMap = new ImageryProvider()
+        public static readonly ImageryProvider OpenTopoMap = new ImageryProvider()
         {
             Name = "OpenTopoMap",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "OpenTopoMap",
@@ -87,14 +87,15 @@ namespace DEM.Net.Core.Imagery
             UrlModel = new UrlModel("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", new[] { "a", "b", "c" }),
             MaxZoom = 17
         };
-        //public static ImageryProvider EsriWorldImagery = new ImageryProvider()
-        //{
-        //    Name = "Esri.WorldImagery",
-        //    Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Esri World Imagery", "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer", "Source: Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community"),
-        //    UrlModel = new UrlModel("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", null),
-        //    MaxZoom = 18
-        //};
-        public static ImageryProvider ThunderForestOutdoors = new ImageryProvider()
+        public static readonly ImageryProvider EsriWorldImagery = new ImageryProvider()
+        {
+            Name = "Esri.WorldImagery",
+            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Esri World Imagery", "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer", "Source: Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community"),
+            UrlModel = new UrlModel("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", null),
+            MaxZoom = 18,
+            PrivateUseOnly = true
+        };
+        public static readonly ImageryProvider ThunderForestOutdoors = new ImageryProvider()
         {
             Name = "ThunderForest-Outdoors",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "ThunderForest", "https://www.thunderforest.com", "Maps © www.thunderforest.com, Data © www.osm.org/copyright"),
@@ -102,7 +103,7 @@ namespace DEM.Net.Core.Imagery
             TokenUserSecretsKey = "ThunderForestApiKey",
             MaxZoom = 22
         };
-        public static ImageryProvider ThunderForestLandscape = new ImageryProvider()
+        public static readonly ImageryProvider ThunderForestLandscape = new ImageryProvider()
         {
             Name = "ThunderForest-Landscape",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "ThunderForest", "https://www.thunderforest.com", "Maps © www.thunderforest.com, Data © www.osm.org/copyright"),
@@ -110,7 +111,7 @@ namespace DEM.Net.Core.Imagery
             TokenUserSecretsKey = "ThunderForestApiKey",
             MaxZoom = 22
         };
-        public static ImageryProvider ThunderForestNeighbourhood = new ImageryProvider()
+        public static readonly ImageryProvider ThunderForestNeighbourhood = new ImageryProvider()
         {
             Name = "ThunderForest-Neighbourhood",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "ThunderForest", "https://www.thunderforest.com", "Maps © www.thunderforest.com, Data © www.osm.org/copyright"),
