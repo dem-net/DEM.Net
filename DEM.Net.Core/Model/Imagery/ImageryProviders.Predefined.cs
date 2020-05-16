@@ -87,13 +87,14 @@ namespace DEM.Net.Core.Imagery
             UrlModel = new UrlModel("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", new[] { "a", "b", "c" }),
             MaxZoom = 17
         };
-        //public static ImageryProvider EsriWorldImagery = new ImageryProvider()
-        //{
-        //    Name = "Esri.WorldImagery",
-        //    Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Esri World Imagery", "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer", "Source: Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community"),
-        //    UrlModel = new UrlModel("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", null),
-        //    MaxZoom = 18
-        //};
+        public static ImageryProvider EsriWorldImagery = new ImageryProvider()
+        {
+            Name = "Esri.WorldImagery",
+            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Esri World Imagery", "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer", "Source: Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community"),
+            UrlModel = new UrlModel("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", null),
+            MaxZoom = 18,
+            PrivateUseOnly = true
+        };
         public static ImageryProvider ThunderForestOutdoors = new ImageryProvider()
         {
             Name = "ThunderForest-Outdoors",
