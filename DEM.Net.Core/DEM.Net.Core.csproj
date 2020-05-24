@@ -42,6 +42,12 @@
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net461'">
     <DefineConstants>NET461;NETFULL</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
   <!-- Conditionally obtain references for the .NET Framework 4.6.1 target -->
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
     <Reference Include="System.Net.Http" />
