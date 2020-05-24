@@ -23,6 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using GeoAPI.Operation.Buffer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -34,12 +35,21 @@ namespace DEM.Net.Core.Imagery
 {
     public class TileRange : IEnumerable<MapTile>
     {
-        private List<MapTile> _tiles;
+        private List<MapTile> _tiles = new List<MapTile>();
         private object _syncLock = new object();
+
         public TileRange(ImageryProvider provider)
         {
-            Provider = provider;
-            _tiles = new List<MapTile>();
+            TileSize = provider.TileSize;
+        }
+        public TileRange(int tileSize)
+        {
+            TileSize = tileSize;
+        }
+        public TileRange(MapTileInfo start, MapTileInfo end, int tileSize)
+        {
+            TileSize = tileSize;
+            this.Start = start; this.End = end;
         }
 
         public void Add(MapTile tile)
@@ -57,7 +67,21 @@ namespace DEM.Net.Core.Imagery
             }
         }
 
-        public ImageryProvider Provider { get; set; }
+        public TileRange ZoomIn()
+        {
+            if (this.Start.Zoom == 23) return this;
+
+            return new TileRange(Start.ZoomIn("0"), End.ZoomIn("3"), this.TileSize);
+        }
+
+        public TileRange ZoomOut()
+        {
+            if (this.Start.Zoom == 1) return this;
+
+            return new TileRange(Start.ZoomOut(), End.ZoomOut(), this.TileSize);
+        }
+
+        public int TileSize { get; set; }
         public MapTileInfo Start { get; set; }
         public MapTileInfo End { get; set; }
         public int NumCols => End.X - Start.X + 1;

@@ -62,6 +62,9 @@ namespace DEM.Net.Core.Imagery
         #region Tiled imagery
 
         private int _serverCycle = 0;
+
+       
+
         private readonly ILogger<ImageryService> _logger;
         private readonly IMeshService _meshService;
         private readonly AppSecrets appSecrets;
@@ -214,7 +217,7 @@ namespace DEM.Net.Core.Imagery
             var tilesBbox = GetTilesBoundingBox(tiles);
 
             //DrawDebugBmpBbox(tiles, localBbox, tilesBbox, fileName, mimeType);
-            int tileSize = tiles.Provider.TileSize;
+            int tileSize = tiles.TileSize;
 
 #if NETFULL
             ImageFormat format = mimeType == TextureImageFormat.image_jpeg ?
@@ -295,7 +298,7 @@ namespace DEM.Net.Core.Imagery
 
 
             //DrawDebugBmpBbox(tiles, localBbox, tilesBbox, fileName, mimeType);
-            int tileSize = tiles.Provider.TileSize;
+            int tileSize = tiles.TileSize;
 
             var pointsOnTexture = gpxPoints
                 .Select(pt => TileUtils.LatLongToPixelXY(pt.Latitude, pt.Longitude, zoomLevel))
@@ -502,17 +505,19 @@ namespace DEM.Net.Core.Imagery
 #if NETSTANDARD
             using (Image<Gray16> outputImage = new Image<Gray16>(heightMap.Width, heightMap.Height))
             {
-                // Slow way: bake coordinates to list
-                var coords = heightMap.Coordinates.ToList();
-                for (int j = 0; j < heightMap.Height; j++)
-                    for (int i = 0; i < heightMap.Width; i++)
-                    {
-                        int index = i + (j * heightMap.Width);
-                        GeoPoint point = coords[index];
-                        Gray16 color = FromGeoPointToHeightMapColor(point, heightMap.Minimum, heightMap.Maximum);
+                int hMapIndex = 0;
+                foreach (var coord in heightMap.Coordinates)
+                {
+                    // index is i + (j * heightMap.Width);
+                    var j = hMapIndex / heightMap.Width;
+                    var i = hMapIndex - j * heightMap.Width;
 
-                        outputImage[i, j] = color;
-                    }
+                    float gray = MathHelper.Map(heightMap.Minimum, heightMap.Maximum, 0, ushort.MaxValue, (float)(coord.Elevation ?? 0f), true);
+
+                    outputImage[i, j] = new Gray16((ushort)Math.Round(gray, 0));
+
+                    hMapIndex++;
+                }
 
                 outputImage.Save(System.IO.Path.Combine(outputDirectory, fileName));
             }
@@ -525,12 +530,124 @@ namespace DEM.Net.Core.Imagery
 #endif
         }
 
+        public TextureInfo GenerateHeightMap(float[] heightMap, int width, int height,float minHeight, float maxHeight, string outputDirectory,
+            string fileName = "heightmap.png")
+        {
+#if NETSTANDARD
+            using (Image<Gray16> outputImage = new Image<Gray16>(width, height))
+            {
+                int hMapIndex = 0;
+                foreach (var coord in heightMap)
+                {
+                    // index is i + (j * heightMap.Width);
+                    var j = hMapIndex / width;
+                    var i = hMapIndex - j * height;
+
+                    float gray = MathHelper.Map(minHeight, maxHeight, 0, ushort.MaxValue, coord, true);
+
+                    outputImage[i, j] = new Gray16((ushort)Math.Round(gray, 0));
+
+                    hMapIndex++;
+                }
+
+                outputImage.Save(System.IO.Path.Combine(outputDirectory, fileName));
+            }
+
+            TextureInfo normal = new TextureInfo(System.IO.Path.Combine(outputDirectory, fileName), TextureImageFormat.image_png,
+                width, height);
+            return normal;
+#elif NETFULL
+            throw new NotImplementedException();
+#endif
+        }
+
+        public void GenerateTerrainRGB(float[] heightMap, int width, int height, float minHeight, float maxHeight, string outputDirectory,
+            string fileName = "terrainRGB.png")
+        {
+#if NETSTANDARD
+            using (Image<Gray16> outputImage = new Image<Gray16>(width, height))
+            {
+                int hMapIndex = 0;
+                foreach (var coord in heightMap)
+                {
+                    // index is i + (j * heightMap.Width);
+                    var j = hMapIndex / width;
+                    var i = hMapIndex - j * height;
+
+                    float gray = MathHelper.Map(minHeight, maxHeight, 0, ushort.MaxValue, coord, true);
+
+                    outputImage[i, j] = new Gray16((ushort)Math.Round(gray, 0));
+
+                    hMapIndex++;
+                }
+
+                outputImage.Save(System.IO.Path.Combine(outputDirectory, fileName));
+            }
+
+            TextureInfo normal = new TextureInfo(System.IO.Path.Combine(outputDirectory, fileName), TextureImageFormat.image_png,
+                width, height);
+            return normal;
+#elif NETFULL
+            throw new NotImplementedException();
+#endif
+        }
+
+        public float[] ResizeHeightMap(HeightMap heightMap, int width, int height)
+        {
+#if NETSTANDARD
+            float[] outMap = new float[width * height];
+
+            using (Image<Gray16> outputImage = new Image<Gray16>(heightMap.Width, heightMap.Height))
+            {
+                
+                int hMapIndex = 0;
+                foreach(var coord in heightMap.Coordinates)
+                {
+                    var j = hMapIndex / heightMap.Width;
+                    var i = hMapIndex - j* heightMap.Width;
+
+                    float gray = MathHelper.Map(heightMap.Minimum, heightMap.Maximum, 0, (float)ushort.MaxValue, (float)(coord.Elevation ?? 0f), true);
+                    
+                    outputImage[i, j] = new Gray16((ushort)Math.Round(gray, 0));
+
+                    hMapIndex++;
+                }
+
+                // Resize
+                outputImage.Mutate(i => i.Resize(width, height));
+
+                // Read heights from pixels again
+                for (int j = 0; j < height; j++)
+                    for (int i = 0; i < width; i++)
+                    {
+                        Gray16 color = outputImage[i, j];
+                        outMap[i + (j * width)] = FromColorToHeight(color, heightMap.Minimum, heightMap.Maximum);
+                    }
+            }
+
+            return outMap;
+#elif NETFULL
+            throw new NotImplementedException();
+#endif
+        }
+
 #if NETSTANDARD
         private Gray16 FromGeoPointToHeightMapColor(GeoPoint point, float min, float max)
         {
             float gray = MathHelper.Map(min, max, 0, (float)ushort.MaxValue, (float)(point.Elevation ?? 0f), true);
             ushort height = (ushort)Math.Round(gray, 0);
             return new Gray16(height);
+        }
+        private Gray16 FromElevationToHeightMapColor(float elevation , float min, float max)
+        {
+            float gray = MathHelper.Map(min, max, 0, (float)ushort.MaxValue, elevation, true);
+            ushort height = (ushort)Math.Round(gray, 0);
+            return new Gray16(height);
+        }
+        private float FromColorToHeight(Gray16 color, float min, float max)
+        {
+            float height = MathHelper.Map(0, (float)ushort.MaxValue, min, max, color.PackedValue, true);
+            return height;
         }
 #endif
 

@@ -35,6 +35,7 @@ namespace DEM.Net.Core.Imagery
         public int TileSize { get; set; } = 256;
         public int MaxDegreeOfParallelism { get; set; } = 4;
         public int MaxZoom { get; set; } = 19;
+        public bool PrivateUseOnly { get; set; }
 
         public override string ToString()
         {
