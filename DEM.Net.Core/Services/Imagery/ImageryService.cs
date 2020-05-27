@@ -490,21 +490,73 @@ namespace DEM.Net.Core.Imagery
             }
         }
 
-        public float[] ResizeHeightMap(HeightMap heightMap, int width, int height)
+        /// <summary>
+        /// Warp height map, supposing it's already projected to 3857, thus the warp is only resizing the image
+        /// we'll use image resizing algorithms (bicubic interpolation)
+        /// Margin is there for RTIN, we add 1px borders to the right and bottom edges (source: https://observablehq.com/@mourner/martin-real-time-rtin-terrain-mesh)
+        /// </summary>
+        /// <param name="heightMap"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="margin"></param>
+        /// <returns></returns>
+        public float[] ResizeHeightMap_RTIN(HeightMap heightMap, int width, int height, int margin)
+        {
+            return ResizeHeightMap_RTIN(heightMap.Coordinates.Select(c => (float)(c.Elevation ?? 0)), heightMap.Width, heightMap.Height, width, height, heightMap.Minimum, heightMap.Maximum, margin);
+        }
+        public float[] ResizeHeightMap_RTIN(GeoPoint[] heightMap, int sourceWidth, int sourceHeight, int destWidth, int destHeight, float minElevation, float maxElevation, int margin)
+        {
+            return ResizeHeightMap_RTIN(heightMap.Select(c => (float)(c.Elevation ?? 0)), sourceWidth, sourceHeight, destWidth, destHeight, minElevation, maxElevation, margin);
+        }
+        //{
+
+        //    float[] outMap = new float[(width + margin) * (height + margin)];
+
+        //    using (Image<Gray16> outputImage = new Image<Gray16>(heightMap.Width, heightMap.Height))
+        //    {
+
+        //        int hMapIndex = 0;
+        //        foreach (var coord in heightMap.Coordinates)
+        //        {
+        //            var j = hMapIndex / heightMap.Width;
+        //            var i = hMapIndex - j * heightMap.Width;
+
+        //            float gray = MathHelper.Map(heightMap.Minimum, heightMap.Maximum, 0, (float)ushort.MaxValue, (float)(coord.Elevation ?? 0f), true);
+
+        //            outputImage[i, j] = new Gray16((ushort)Math.Round(gray, 0));
+
+        //            hMapIndex++;
+        //        }
+
+        //        // Resize
+        //        outputImage.Mutate(i => i.Resize(width, height));
+
+        //        // Read heights from pixels again
+        //        for (int j = 0; j < height + margin; j++)
+        //            for (int i = 0; i < width + margin; i++)
+        //            {
+        //                Gray16 color = outputImage[Math.Min(i, width - 1), Math.Min(j, height - 1)];
+        //                outMap[i + (j * width)] = FromColorToHeight(color, heightMap.Minimum, heightMap.Maximum);
+        //            }
+        //    }
+
+        //    return outMap;
+        //}
+        public float[] ResizeHeightMap_RTIN(IEnumerable<float> heightMap, int sourceWidth, int sourceHeight, int destWidth, int destHeight, float minElevation, float maxElevation, int margin)
         {
 
-            float[] outMap = new float[width * height];
+            float[] outMap = new float[(destWidth + margin) * (destHeight + margin)];
 
-            using (Image<Gray16> outputImage = new Image<Gray16>(heightMap.Width, heightMap.Height))
+            using (Image<Gray16> outputImage = new Image<Gray16>(sourceWidth, sourceHeight))
             {
 
                 int hMapIndex = 0;
-                foreach (var coord in heightMap.Coordinates)
+                foreach (var coord in heightMap)
                 {
-                    var j = hMapIndex / heightMap.Width;
-                    var i = hMapIndex - j * heightMap.Width;
+                    var j = hMapIndex / sourceWidth;
+                    var i = hMapIndex - j * sourceWidth;
 
-                    float gray = MathHelper.Map(heightMap.Minimum, heightMap.Maximum, 0, (float)ushort.MaxValue, (float)(coord.Elevation ?? 0f), true);
+                    float gray = MathHelper.Map(minElevation, maxElevation, 0, (float)ushort.MaxValue, coord, true);
 
                     outputImage[i, j] = new Gray16((ushort)Math.Round(gray, 0));
 
@@ -512,19 +564,60 @@ namespace DEM.Net.Core.Imagery
                 }
 
                 // Resize
-                outputImage.Mutate(i => i.Resize(width, height));
+                outputImage.Mutate(i => i.Resize(destWidth, destHeight));
 
                 // Read heights from pixels again
-                for (int j = 0; j < height; j++)
-                    for (int i = 0; i < width; i++)
+                for (int j = 0; j < destHeight + margin; j++)
+                    for (int i = 0; i < destWidth + margin; i++)
                     {
-                        Gray16 color = outputImage[i, j];
-                        outMap[i + (j * width)] = FromColorToHeight(color, heightMap.Minimum, heightMap.Maximum);
+                        Gray16 color = outputImage[Math.Min(i, destWidth - 1), Math.Min(j, destHeight - 1)];
+                        outMap[i + (j * destWidth)] = FromColorToHeight(color, minElevation, maxElevation);
                     }
             }
 
             return outMap;
         }
+        public unsafe float[] ResizeHeightMap_RGB_RTIN(IEnumerable<float> heightMap, int sourceWidth, int sourceHeight, int destWidth, int destHeight, float minElevation, float maxElevation, int margin)
+        {
+
+            float[] outMap = new float[(destWidth + margin) * (destHeight + margin)];
+            byte[] bytes = new byte[4];
+
+            using (Image<Rgb24> outputImage = new Image<Rgb24>(sourceWidth, sourceHeight))
+            {
+
+                int hMapIndex = 0;
+                foreach (var coord in heightMap)
+                {
+                    var j = hMapIndex / sourceWidth;
+                    var i = hMapIndex - j * sourceWidth;
+
+                    int data = (int)Math.Round((coord + 10000) * 10, 0);
+
+                    fixed (byte* b = bytes)
+                        *((int*)b) = data;
+
+                    outputImage[i, j] = new Rgb24(bytes[2], bytes[1], bytes[0]);
+
+                    hMapIndex++;
+                }
+
+                // Resize
+                outputImage.Mutate(i => i.Resize(destWidth, destHeight));
+
+                // Read heights from pixels again
+                for (int j = 0; j < destHeight + margin; j++)
+                    for (int i = 0; i < destWidth + margin; i++)
+                    {
+                        Rgb24 color = outputImage[Math.Min(i, destWidth - 1), Math.Min(j, destHeight - 1)];
+                        outMap[i + (j * destWidth)] = FromColorRGBToHeight(color);
+                    }
+            }
+
+            return outMap;
+        }
+
+      
 
         private Gray16 FromGeoPointToHeightMapColor(GeoPoint point, float min, float max)
         {
@@ -541,6 +634,11 @@ namespace DEM.Net.Core.Imagery
         private float FromColorToHeight(Gray16 color, float min, float max)
         {
             float height = MathHelper.Map(0, (float)ushort.MaxValue, min, max, color.PackedValue, true);
+            return height;
+        }
+        private float FromColorRGBToHeight(Rgb24 color)
+        {
+            float height = height = -10000 + ((color.R * 256 * 256 + color.G * 256 + color.B) * 0.1f);
             return height;
         }
 

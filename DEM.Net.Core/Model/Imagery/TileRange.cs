@@ -88,6 +88,8 @@ namespace DEM.Net.Core.Imagery
         public int NumRows => End.Y - Start.Y + 1;
         public int Count => NumCols * NumRows;
 
+        public int Zoom => Start.Zoom;
+
         public BoundingBox AreaOfInterest { get; internal set; }
 
         public IEnumerator<MapTile> GetEnumerator()

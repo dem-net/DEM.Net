@@ -341,9 +341,12 @@ namespace DEM.Net.Core
             return sb.ToString();
         }
 
-        public HeightMap GetHeightMap(ref BoundingBox bbox, DEMDataSet dataSet)
+        public HeightMap GetHeightMap(ref BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles = true)
         {
-            DownloadMissingFiles(dataSet, bbox);
+            if (downloadMissingFiles)
+            {
+                DownloadMissingFiles(dataSet, bbox);
+            }
 
             // Locate which files are needed
             // Find files matching coords

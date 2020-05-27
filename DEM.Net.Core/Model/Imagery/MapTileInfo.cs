@@ -51,6 +51,18 @@ namespace DEM.Net.Core.Imagery
         public int Y { get; set; }
         public int Zoom { get; set; }
 
+        public int TileSize => 256;
+
+        public TileRange ZoomIn()
+        {
+            if (Zoom == 23) return new TileRange(this,this,this.TileSize);
+
+            return new TileRange(this.ZoomIn("0"), this.ZoomIn("3"), this.TileSize);
+        }
+        public TileRange ToTileRange()
+        {
+            return new TileRange(this, this, this.TileSize);
+        }
         public MapTileInfo ZoomIn(string quadIndex)
         {
             if (Zoom == 23) return this;
