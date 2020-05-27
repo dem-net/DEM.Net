@@ -47,6 +47,5 @@ namespace DEM.Net.Core.Imagery
         public Uri Uri { get; set; }
         public byte[] Image { get; set; }
 
-
     }
 }
