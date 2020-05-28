@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core.Imagery
 {
-    public class TileRange : IEnumerable<MapTile>
+    public class TileRange
     {
         private List<MapTile> _tiles = new List<MapTile>();
         private object _syncLock = new object();
@@ -67,6 +67,25 @@ namespace DEM.Net.Core.Imagery
             }
         }
 
+        public IReadOnlyList<MapTile> Tiles
+        {
+            get
+            {
+                return _tiles.AsReadOnly();
+            }
+        }
+        public IEnumerable<MapTileInfo> TilesInfo
+        {
+            get
+            {
+                for (int x = Start.X; x <= End.X; x++)
+                    for (int y = Start.Y; y <= End.Y; y++)
+                    {
+                        yield return new MapTileInfo(x, y, Start.Zoom);
+                    }
+            }
+        }
+
         public TileRange ZoomIn()
         {
             if (this.Start.Zoom == 23) return this;
@@ -92,30 +111,5 @@ namespace DEM.Net.Core.Imagery
 
         public BoundingBox AreaOfInterest { get; internal set; }
 
-        public IEnumerator<MapTile> GetEnumerator()
-        {
-            lock (_syncLock)
-            {
-                return _tiles.GetEnumerator();
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            lock (_syncLock)
-            {
-                return _tiles.GetEnumerator();
-            }
-        }
-
-
-        public IEnumerable<MapTileInfo> EnumerateRange()
-        {
-            for (int x = Start.X; x <= End.X; x++)
-                for (int y = Start.Y; y <= End.Y; y++)
-                {
-                    yield return new MapTileInfo(x, y, Start.Zoom);
-                }
-        }
     }
 }

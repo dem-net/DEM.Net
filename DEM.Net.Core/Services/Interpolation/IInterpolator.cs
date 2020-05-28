@@ -51,5 +51,6 @@ namespace DEM.Net.Core
         /// <param name="h4"></param>
         /// <returns></returns>
         double Interpolate(double southWestHeight, double southEastHeight, double northWestHeight, double northEastHeight, double x, double y);
+
     }
 }

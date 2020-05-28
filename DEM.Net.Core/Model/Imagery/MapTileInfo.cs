@@ -79,6 +79,11 @@ namespace DEM.Net.Core.Imagery
             return new MapTileInfo(x0, y0, z0);
         }
 
+        public override string ToString()
+        {
+            return $"{X}_{Y}_z{Zoom}";
+        }
+
         public BoundingBox BoundingBox
         {
             get

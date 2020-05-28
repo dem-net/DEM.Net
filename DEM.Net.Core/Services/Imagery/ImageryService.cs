@@ -121,12 +121,12 @@ namespace DEM.Net.Core.Imagery
                 {
                     // Max download threads defined in provider
                     var parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism };
-                    var range = tiles.EnumerateRange().ToList();
+                    var range = tiles.Tiles;
                     _logger?.LogInformation($"Generating {range.Count} tiles with {provider.Name} generator...");
-                    Parallel.ForEach(range, parallelOptions, tileInfo =>
+                    Parallel.ForEach(range, parallelOptions, tile =>
                         {
-                            var contentbytes = generator.GenerateTile(tileInfo.X, tileInfo.Y, tileInfo.Zoom);
-                            tiles.Add(new MapTile(contentbytes, provider.TileSize, null, tileInfo));
+                            var contentbytes = generator.GenerateTile(tile.TileInfo.X, tile.TileInfo.Y, tile.TileInfo.Zoom);
+                            tiles.Add(new MapTile(contentbytes, provider.TileSize, null, tile.TileInfo));
                         }
                     );
                 }
@@ -140,18 +140,18 @@ namespace DEM.Net.Core.Imagery
 
                 // Max download threads defined in provider
                 var parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism };
-                var range = tiles.EnumerateRange().ToList();
+                var range = tiles.Tiles;
                 _logger?.LogInformation($"Downloading {range.Count} tiles...");
-                Parallel.ForEach(range, parallelOptions, tileInfo =>
+                Parallel.ForEach(range, parallelOptions, tile =>
                     {
-                        Uri tileUri = BuildUri(provider, tileInfo.X, tileInfo.Y, tileInfo.Zoom);
+                        Uri tileUri = BuildUri(provider, tile.TileInfo.X, tile.TileInfo.Y, tile.TileInfo.Zoom);
                         var contentBytes = cache.GetOrCreate(tileUri, entry =>
                         {
                             entry.SetSlidingExpiration(TimeSpan.FromMinutes(options.ImageryCacheExpirationMinutes));
 
                             return _httpClient.GetByteArrayAsync(tileUri).GetAwaiter().GetResult();
                         });
-                        tiles.Add(new MapTile(contentBytes, provider.TileSize, tileUri, tileInfo));
+                        tiles.Add(new MapTile(contentBytes, provider.TileSize, tileUri, tile.TileInfo));
 
                     }
                 );
@@ -179,10 +179,11 @@ namespace DEM.Net.Core.Imagery
 
         BoundingBox GetTilesBoundingBox(TileRange tiles)
         {
+            var tileInfos = tiles.TilesInfo.ToList();
             var bboxTopLeft =
-                TileUtils.TileXYToPixelXY(tiles.Min(tile => tile.TileInfo.X), tiles.Min(tile => tile.TileInfo.Y));
-            var bboxBottomRight = TileUtils.TileXYToPixelXY(tiles.Max(tile => tile.TileInfo.X) + 1,
-                tiles.Max(tile => tile.TileInfo.Y) + 1);
+                TileUtils.TileXYToPixelXY(tileInfos.Min(t => t.X), tileInfos.Min(t => t.Y));
+            var bboxBottomRight = TileUtils.TileXYToPixelXY(tileInfos.Max(t => t.X) + 1,
+                tileInfos.Max(t => t.Y) + 1);
 
             return new BoundingBox(bboxTopLeft.X, bboxBottomRight.X, bboxTopLeft.Y, bboxBottomRight.Y);
         }
@@ -193,7 +194,7 @@ namespace DEM.Net.Core.Imagery
             // where is the bbox in the final image ?
 
             // get pixel in full map
-            int zoomLevel = tiles.First().TileInfo.Zoom;
+            int zoomLevel = tiles.Tiles.First().TileInfo.Zoom;
             var projectedBbox = ConvertWorldToMap(bbox, zoomLevel);
             var tilesBbox = GetTilesBoundingBox(tiles);
 
@@ -205,7 +206,7 @@ namespace DEM.Net.Core.Imagery
                 int xOffset = (int)(tilesBbox.xMin - projectedBbox.xMin);
                 int yOffset = (int)(tilesBbox.yMin - projectedBbox.yMin);
 
-                foreach (var tile in tiles)
+                foreach (var tile in tiles.Tiles)
                 {
                     try
                     {
@@ -244,7 +245,7 @@ namespace DEM.Net.Core.Imagery
             // where is the bbox in the final image ?
 
             // get pixel in full map
-            int zoomLevel = tiles.First().TileInfo.Zoom;
+            int zoomLevel = tiles.Tiles.First().TileInfo.Zoom;
             var projectedBbox = ConvertWorldToMap(bbox, zoomLevel);
             var tilesBbox = GetTilesBoundingBox(tiles);
             int xOffset = (int)(tilesBbox.xMin - projectedBbox.xMin);
@@ -261,7 +262,7 @@ namespace DEM.Net.Core.Imagery
 
             using (Image<Rgba32> outputImage = new Image<Rgba32>((int)projectedBbox.Width, (int)projectedBbox.Height))
             {
-                foreach (var tile in tiles)
+                foreach (var tile in tiles.Tiles)
                 {
                     using (Image<Rgba32> tileImg = Image.Load(tile.Image))
                     {
