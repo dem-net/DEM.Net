@@ -121,12 +121,12 @@ namespace DEM.Net.Core.Imagery
                 {
                     // Max download threads defined in provider
                     var parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism };
-                    var range = tiles.Tiles;
+                    var range = tiles.TilesInfo.ToList();
                     _logger?.LogInformation($"Generating {range.Count} tiles with {provider.Name} generator...");
                     Parallel.ForEach(range, parallelOptions, tile =>
                         {
-                            var contentbytes = generator.GenerateTile(tile.TileInfo.X, tile.TileInfo.Y, tile.TileInfo.Zoom);
-                            tiles.Add(new MapTile(contentbytes, provider.TileSize, null, tile.TileInfo));
+                            var contentbytes = generator.GenerateTile(tile.X, tile.Y, tile.Zoom);
+                            tiles.Add(new MapTile(contentbytes, provider.TileSize, null, tile));
                         }
                     );
                 }
@@ -140,18 +140,18 @@ namespace DEM.Net.Core.Imagery
 
                 // Max download threads defined in provider
                 var parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism };
-                var range = tiles.Tiles;
+                var range = tiles.TilesInfo.ToList();
                 _logger?.LogInformation($"Downloading {range.Count} tiles...");
                 Parallel.ForEach(range, parallelOptions, tile =>
                     {
-                        Uri tileUri = BuildUri(provider, tile.TileInfo.X, tile.TileInfo.Y, tile.TileInfo.Zoom);
+                        Uri tileUri = BuildUri(provider, tile.X, tile.Y, tile.Zoom);
                         var contentBytes = cache.GetOrCreate(tileUri, entry =>
                         {
                             entry.SetSlidingExpiration(TimeSpan.FromMinutes(options.ImageryCacheExpirationMinutes));
 
                             return _httpClient.GetByteArrayAsync(tileUri).GetAwaiter().GetResult();
                         });
-                        tiles.Add(new MapTile(contentBytes, provider.TileSize, tileUri, tile.TileInfo));
+                        tiles.Add(new MapTile(contentBytes, provider.TileSize, tileUri, tile));
 
                     }
                 );
@@ -210,11 +210,14 @@ namespace DEM.Net.Core.Imagery
                 {
                     try
                     {
+                        int x = (tile.TileInfo.X - tiles.Start.X) * tileSize + xOffset;
+                        int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize + yOffset;
+
+                        if (x >= projectedBbox.Width || y >= projectedBbox.Height)
+                            continue;
+
                         using (Image<Rgba32> tileImg = Image.Load(tile.Image))
                         {
-                            int x = (tile.TileInfo.X - tiles.Start.X) * tileSize + xOffset;
-                            int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize + yOffset;
-
                             outputImage.Mutate(o => o
                                 .DrawImage(tileImg, new Point(x, y), 1f)
                             );
