@@ -222,7 +222,9 @@ namespace DEM.Net.Core
 
         public override string ToString()
         {
-            return $"Xmin: {xMin}, Xmax: {xMax}, Ymin: {yMin}, Ymax: {yMax}, Zmin: {zMin}, Zmax: {zMax}";
+            //  "Xmin: {xMin}, Xmax: {xMax}, Ymin: {yMin}, Ymax: {yMax}, Zmin: {zMin}, Zmax: {zMax}, Center: {this.Center[0]}, this.Center";
+            return string.Format(CultureInfo.InvariantCulture, "Xmin: {0}, Xmax: {1}, Ymin: {2}, Ymax: {3}, Zmin: {4}, Zmax: {5}, Center: {6}, {7}, {8}"
+                , xMin, xMax, yMin, yMax, zMin, zMax, Center[0], Center[1], Center[2]);
         }
 
         public bool Equals(BoundingBox other)
