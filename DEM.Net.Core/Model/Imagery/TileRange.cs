@@ -23,6 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using GeoAPI.Operation.Buffer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -32,14 +33,23 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core.Imagery
 {
-    public class TileRange : IEnumerable<MapTile>
+    public class TileRange
     {
-        private List<MapTile> _tiles;
+        private List<MapTile> _tiles = new List<MapTile>();
         private object _syncLock = new object();
+
         public TileRange(ImageryProvider provider)
         {
-            Provider = provider;
-            _tiles = new List<MapTile>();
+            TileSize = provider.TileSize;
+        }
+        public TileRange(int tileSize)
+        {
+            TileSize = tileSize;
+        }
+        public TileRange(MapTileInfo start, MapTileInfo end, int tileSize)
+        {
+            TileSize = tileSize;
+            this.Start = start; this.End = end;
         }
 
         public void Add(MapTile tile)
@@ -57,39 +67,49 @@ namespace DEM.Net.Core.Imagery
             }
         }
 
-        public ImageryProvider Provider { get; set; }
+        public IReadOnlyList<MapTile> Tiles
+        {
+            get
+            {
+                return _tiles.AsReadOnly();
+            }
+        }
+        public IEnumerable<MapTileInfo> TilesInfo
+        {
+            get
+            {
+                for (int x = Start.X; x <= End.X; x++)
+                    for (int y = Start.Y; y <= End.Y; y++)
+                    {
+                        yield return new MapTileInfo(x, y, Start.Zoom);
+                    }
+            }
+        }
+
+        public TileRange ZoomIn()
+        {
+            if (this.Start.Zoom == 23) return this;
+
+            return new TileRange(Start.ZoomIn("0"), End.ZoomIn("3"), this.TileSize);
+        }
+
+        public TileRange ZoomOut()
+        {
+            if (this.Start.Zoom == 1) return this;
+
+            return new TileRange(Start.ZoomOut(), End.ZoomOut(), this.TileSize);
+        }
+
+        public int TileSize { get; set; }
         public MapTileInfo Start { get; set; }
         public MapTileInfo End { get; set; }
         public int NumCols => End.X - Start.X + 1;
         public int NumRows => End.Y - Start.Y + 1;
         public int Count => NumCols * NumRows;
 
+        public int Zoom => Start.Zoom;
+
         public BoundingBox AreaOfInterest { get; internal set; }
 
-        public IEnumerator<MapTile> GetEnumerator()
-        {
-            lock (_syncLock)
-            {
-                return _tiles.GetEnumerator();
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            lock (_syncLock)
-            {
-                return _tiles.GetEnumerator();
-            }
-        }
-
-
-        public IEnumerable<MapTileInfo> EnumerateRange()
-        {
-            for (int x = Start.X; x <= End.X; x++)
-                for (int y = Start.Y; y <= End.Y; y++)
-                {
-                    yield return new MapTileInfo(x, y, Start.Zoom);
-                }
-        }
     }
 }

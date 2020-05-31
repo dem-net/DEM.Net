@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -51,11 +52,11 @@ namespace DEM.Net.Core.Interpolation
     {
         public double Interpolate(double southWestHeight, double southEastHeight, double northWestHeight, double northEastHeight, double x, double y)
         {
-            double h1 = southWestHeight, h2 = southEastHeight, h3 = northWestHeight, h4 = northEastHeight;
+            double sw = southWestHeight, se = southEastHeight, nw = northWestHeight, ne = northEastHeight;
             // bilinear
-            double ha = MathHelper.Lerp(h3, h1, y);
-            double hb = MathHelper.Lerp(h4, h2, y);
-            double hi_linear = MathHelper.Lerp(ha, hb, x);
+            double ha = MathHelper.Lerp(nw, sw, y);
+            double hb = MathHelper.Lerp(ne, se, y);
+            double hi_linear = MathHelper.Lerp(MathHelper.Lerp(nw, sw, y), MathHelper.Lerp(ne, se, y), x);
 
             return hi_linear;
         }

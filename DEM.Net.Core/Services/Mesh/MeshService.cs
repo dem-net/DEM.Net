@@ -293,11 +293,13 @@ namespace DEM.Net.Core
                 norm[i2] += dir;
                 norm[i3] += dir;
             }
-            foreach (var vec in norm)
+#if DEBUG
+            for (int i = 0; i < norm.Length; i++)
             {
+                var vec = norm[i];
                 if (vec == Vector3.Zero)
                 {
-                    _logger.LogWarning("Invalid normal detected");
+                    //_logger.LogWarning("Invalid normal detected for position {0}", i);
                     yield return Vector3.UnitY;
                 }
                 else
@@ -305,7 +307,12 @@ namespace DEM.Net.Core
                     yield return Vector3.Normalize(vec);
                 }
             }
-
+#else
+            foreach (var vec in norm)
+            {
+                yield return vec == Vector3.Zero ? Vector3.UnitY : Vector3.Normalize(vec);
+            }
+#endif
         }
 
 
