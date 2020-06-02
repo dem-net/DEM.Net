@@ -308,6 +308,8 @@ namespace DEM.Net.Core
 
                 }
             }
+            heightMap.BoundingBox.zMin = heightMap.Minimum;
+            heightMap.BoundingBox.zMax = heightMap.Maximum;
             Debug.Assert(heightMap.Width * heightMap.Height == coords.Count);
 
             heightMap.Coordinates = coords;

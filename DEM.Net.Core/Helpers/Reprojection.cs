@@ -165,7 +165,7 @@ namespace DEM.Net.Core
         }
         public static BoundingBox ReprojectTo(this BoundingBox bbox, int sourceEpsgCode, int destinationEpsgCode)
         {
-            if (sourceEpsgCode == destinationEpsgCode)
+            if (sourceEpsgCode == destinationEpsgCode || bbox.SRID == destinationEpsgCode)
                 return bbox;
 
 
@@ -179,7 +179,12 @@ namespace DEM.Net.Core
             var maxmax = ReprojectPoint(new GeoPoint(bbox.yMax, bbox.xMax), pSource, pTarget);
             var maxmin = ReprojectPoint(new GeoPoint(bbox.yMax, bbox.xMin), pSource, pTarget);
 
-            return GeometryService.GetBoundingBox(new GeoPoint[] { minmin, minmax, maxmax, maxmin });
+            var outBbox = GeometryService.GetBoundingBox(new GeoPoint[] { minmin, minmax, maxmax, maxmin });
+            outBbox.zMin = bbox.zMin;
+            outBbox.zMax = bbox.zMax;
+            outBbox.SRID = destinationEpsgCode;
+
+            return outBbox;
 
         }
 

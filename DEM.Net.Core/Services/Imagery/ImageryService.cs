@@ -174,7 +174,7 @@ namespace DEM.Net.Core.Imagery
         {
             var bboxTopLeft = TileUtils.LatLongToPixelXY(bbox.yMax, bbox.xMin, zoomLevel);
             var bboxBottomRight = TileUtils.LatLongToPixelXY(bbox.yMin, bbox.xMax, zoomLevel);
-            return new BoundingBox(bboxTopLeft.X, bboxBottomRight.X, bboxTopLeft.Y, bboxBottomRight.Y);
+            return new BoundingBox(bboxTopLeft.X, bboxBottomRight.X, bboxTopLeft.Y, bboxBottomRight.Y, bbox.zMin, bbox.zMax);
         }
 
         BoundingBox GetTilesBoundingBox(TileRange tiles)
@@ -621,7 +621,7 @@ namespace DEM.Net.Core.Imagery
             return outMap;
         }
 
-      
+
 
         private Gray16 FromGeoPointToHeightMapColor(GeoPoint point, float min, float max)
         {

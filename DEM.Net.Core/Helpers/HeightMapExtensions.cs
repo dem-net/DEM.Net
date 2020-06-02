@@ -50,14 +50,16 @@ namespace DEM.Net.Core
 
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
-            heightMap.Coordinates = heightMap.Coordinates.Translate(-xOriginOffset, -yOriginOffset);
+            double zOriginOffset = bbox.zMax - (bbox.zMax - bbox.zMin) / 2d;
+            heightMap.Coordinates = heightMap.Coordinates.Translate(-xOriginOffset, -yOriginOffset, -zOriginOffset);
 
             // world to model is (x,y,z) -> (x,z,-y)
             // translate (X,Y,0) -> (X,0,-Y)
             transform = System.Numerics.Matrix4x4.CreateTranslation(-(float)xOriginOffset, 0, (float)yOriginOffset);
 
             heightMap.BoundingBox = new BoundingBox(bbox.xMin - xOriginOffset, bbox.xMax - xOriginOffset
-                                                    , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset);
+                                                    , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset
+                                                    , bbox.zMin - zOriginOffset, bbox.zMax - zOriginOffset);
             return heightMap;
         }
         /// <summary>
@@ -73,10 +75,12 @@ namespace DEM.Net.Core
 
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
-            heightMap.Coordinates = heightMap.Coordinates.Translate(-xOriginOffset, -yOriginOffset);
+            double zOriginOffset = bbox.zMax - (bbox.zMax - bbox.zMin) / 2d;
+            heightMap.Coordinates = heightMap.Coordinates.Translate(-xOriginOffset, -yOriginOffset, -zOriginOffset);
 
             heightMap.BoundingBox = new BoundingBox(bbox.xMin - xOriginOffset, bbox.xMax - xOriginOffset
-                                                    , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset);
+                                                    , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset
+                                                    , bbox.zMin - zOriginOffset, bbox.zMax - zOriginOffset);
             return heightMap;
         }
 
@@ -106,7 +110,8 @@ namespace DEM.Net.Core
             //Logger.Info("CenterOnOrigin...");
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
-            points = points.Translate(-xOriginOffset, -yOriginOffset, 0);
+            double zOriginOffset = bbox.zMax - (bbox.zMax - bbox.zMin) / 2d;
+            points = points.Translate(-xOriginOffset, -yOriginOffset, -zOriginOffset);
 
             return points;
         }
@@ -170,7 +175,7 @@ namespace DEM.Net.Core
         public static HeightMap Scale(this HeightMap heightMap, float x = 1f, float y = 1f, float z = 1f)
         {
             heightMap.Coordinates = heightMap.Coordinates.Scale(x, y, z);
-            heightMap.BoundingBox = heightMap.BoundingBox.Scale(x, y); // z does not affect bbox
+            heightMap.BoundingBox = heightMap.BoundingBox.Scale(x, y, z);
             heightMap.Minimum *= z;
             heightMap.Maximum *= z;
 
@@ -195,7 +200,7 @@ namespace DEM.Net.Core
                 scale = (float)(maxSize / heightMap.BoundingBox.Height);
             }
             heightMap.Coordinates = heightMap.Coordinates.Scale(scale, scale, scale);
-            heightMap.BoundingBox = heightMap.BoundingBox.ScaleAbsolute(scale, scale);
+            heightMap.BoundingBox = heightMap.BoundingBox.ScaleAbsolute(scale, scale, scale);
             return heightMap;
         }
         /// <summary>

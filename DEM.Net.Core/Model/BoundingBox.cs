@@ -217,7 +217,7 @@ namespace DEM.Net.Core
 
         public static BoundingBox AroundPoint(double lat, double lon, double size)
         {
-            return new BoundingBox(lon - size, lon + size, lat - size, lat + size);
+            return new BoundingBox(lon - size, lon + size, lat - size, lat + size, 0, 0);
         }
 
         public override string ToString()
@@ -282,5 +282,12 @@ namespace DEM.Net.Core
                 return fs.ToString(CultureInfo.InvariantCulture);
             }
         }
+
+        /// <summary>
+        /// Spatial reference ID for the bounding box coordinates
+        /// Useful when reprojecting / recentering model : the bbbox can be reprojected on the fly
+        /// </summary>
+        public int SRID { get; set; } = 4326;
+
     }
 }

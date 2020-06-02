@@ -154,7 +154,7 @@ namespace DEM.Net.Core
 
                 xWest = Math.Max(0, xWest);
                 xEast = Math.Min(metadata.Width - 1 - registrationOffset, xEast);
-                yNorth = Math.Max(0, yNorth);   
+                yNorth = Math.Max(0, yNorth);
                 ySouth = Math.Min(metadata.Height - 1 - registrationOffset, ySouth);
 
                 heightMap = new HeightMap(xEast - xWest + 1, yNorth - ySouth + 1);
@@ -183,7 +183,7 @@ namespace DEM.Net.Core
                     foreach (double longitude in longitudes)
                     {
                         elevationsEnumerator.MoveNext();
-                        float heightValue = (float)Convert.ChangeType(elevationsEnumerator.Current,typeof(float));
+                        float heightValue = (float)Convert.ChangeType(elevationsEnumerator.Current, typeof(float));
 
                         curRow.Add(new GeoPoint(latitude, longitude, heightValue));
 
@@ -194,6 +194,8 @@ namespace DEM.Net.Core
 
                 Debug.Assert(index == heightMap.Count);
                 heightMap.Coordinates = GetUnstackedCoordinates(geoPointsRows, heightMap.Count); // enumerate stack
+                heightMap.BoundingBox.zMin = heightMap.Minimum;
+                heightMap.BoundingBox.zMax = heightMap.Maximum;
             }
             catch (Exception ex)
             {
@@ -213,7 +215,7 @@ namespace DEM.Net.Core
 
             Debug.Assert(coords.Count == capacity);
             return coords;
-           
+
         }
 
         public FileMetadata ParseMetaData(DEMFileDefinition fileFormat)

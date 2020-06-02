@@ -55,7 +55,7 @@ namespace DEM.Net.Core.Imagery
 
         public TileRange ZoomIn()
         {
-            if (Zoom == 23) return new TileRange(this,this,this.TileSize);
+            if (Zoom == 23) return new TileRange(this, this, this.TileSize);
 
             return new TileRange(this.ZoomIn("0"), this.ZoomIn("3"), this.TileSize);
         }

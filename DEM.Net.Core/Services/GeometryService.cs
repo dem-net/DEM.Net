@@ -95,7 +95,12 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public static BoundingBox GetBoundingBox(this IEnumerable<GeoPoint> points)
         {
-            double xmin = double.MaxValue, ymin = double.MaxValue, xmax = double.MinValue, ymax = double.MinValue;
+            double xmin = double.MaxValue,
+                ymin = double.MaxValue,
+                zmin = double.MaxValue,
+                xmax = double.MinValue,
+                ymax = double.MinValue,
+                zmax = double.MinValue;
 
             foreach (var pt in points)
             {
@@ -104,8 +109,11 @@ namespace DEM.Net.Core
 
                 ymin = Math.Min(ymin, pt.Latitude);
                 ymax = Math.Max(ymax, pt.Latitude);
+
+                zmin = Math.Min(zmin, pt.Elevation ?? 0);
+                zmax = Math.Max(zmax, pt.Elevation ?? 0);
             }
-            return new BoundingBox(xmin, xmax, ymin, ymax);
+            return new BoundingBox(xmin, xmax, ymin, ymax, zmin, zmax);
         }
         /// <summary>
         /// Returns the bouding box of a segment

@@ -400,7 +400,9 @@ namespace DEM.Net.Core
                         heightMap.BoundingBox = new BoundingBox(xmin: tilesHeightMap.Min(h => h.BoundingBox.xMin)
                                                                 , xmax: tilesHeightMap.Max(h => h.BoundingBox.xMax)
                                                                 , ymin: tilesHeightMap.Min(h => h.BoundingBox.yMin)
-                                                                , ymax: tilesHeightMap.Max(h => h.BoundingBox.yMax));
+                                                                , ymax: tilesHeightMap.Max(h => h.BoundingBox.yMax)
+                                                                , zmin: tilesHeightMap.Min(h => h.BoundingBox.zMin)
+                                                                , zmax: tilesHeightMap.Max(h => h.BoundingBox.zMax));
                         bbox = heightMap.BoundingBox;
                         heightMap.Coordinates = tilesHeightMap.SelectMany(hmap => hmap.Coordinates).Sort();
                         heightMap.Count = totalWidth * totalHeight;

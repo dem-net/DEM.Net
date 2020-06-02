@@ -311,8 +311,8 @@ namespace DEM.Net.Core
                 metadata.PhysicalEndLon = metadata.DataEndLon;
                 metadata.DataStartLat = Math.Round(metadata.DataStartLat + (metadata.PixelScaleY / 2.0), 10);
                 metadata.DataStartLon = Math.Round(metadata.DataStartLon + (metadata.PixelScaleX / 2.0), 10);
-                metadata.DataEndLat = Math.Round(metadata.DataEndLat- (metadata.PixelScaleY / 2.0), 10);
-                metadata.DataEndLon = Math.Round(metadata.DataEndLon- (metadata.PixelScaleX / 2.0), 10);
+                metadata.DataEndLat = Math.Round(metadata.DataEndLat - (metadata.PixelScaleY / 2.0), 10);
+                metadata.DataEndLon = Math.Round(metadata.DataEndLon - (metadata.PixelScaleX / 2.0), 10);
             }
             else
             {
@@ -501,6 +501,8 @@ namespace DEM.Net.Core
                 }
 
             }
+            heightMap.BoundingBox.zMin = heightMap.Minimum;
+            heightMap.BoundingBox.zMax = heightMap.Maximum;
             Debug.Assert(heightMap.Width * heightMap.Height == coords.Count);
 
             heightMap.Coordinates = coords;
