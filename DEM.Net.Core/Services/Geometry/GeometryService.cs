@@ -110,8 +110,8 @@ namespace DEM.Net.Core
                 ymin = Math.Min(ymin, pt.Latitude);
                 ymax = Math.Max(ymax, pt.Latitude);
 
-                zmin = Math.Min(zmin, pt.Elevation ?? 0);
-                zmax = Math.Max(zmax, pt.Elevation ?? 0);
+                zmin = Math.Min(zmin, pt.Elevation ?? double.MaxValue);
+                zmax = Math.Max(zmax, pt.Elevation ?? double.MinValue);
             }
             return new BoundingBox(xmin, xmax, ymin, ymax, zmin, zmax);
         }

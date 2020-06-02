@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 namespace DEM.Net.Core
 {
     [Serializable()]
-    public class HeightMap 
+    public class HeightMap
     {
         public HeightMap(int width, int height)
         {
@@ -41,6 +41,8 @@ namespace DEM.Net.Core
             Height = height;
             Coordinates = null;
             Count = width * height;
+            Minimum = 15000;
+            Maximum = -15000;
         }
 
         private BoundingBox _bbox;

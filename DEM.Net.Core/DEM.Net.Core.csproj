@@ -99,6 +99,7 @@
     <Folder Include="Model\Enums\" />
     <Folder Include="Model\IntervisibilityReport\" />
     <Folder Include="Helpers\System\" />
+    <Folder Include="Services\Geometry\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DEMnet_64.png" Pack="true" PackagePath="\" />

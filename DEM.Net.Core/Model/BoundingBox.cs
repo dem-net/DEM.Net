@@ -167,7 +167,8 @@ namespace DEM.Net.Core
         {
             return new BoundingBox(xMin - Width * scaleX, xMax + Width * scaleX
                 , yMin - Height * scaleY, yMax + Height * scaleY
-                , zMin - Depth * scaleZ, zMax + Depth * scaleZ);
+                , zMin - Depth * scaleZ, zMax + Depth * scaleZ)
+            { SRID = this.SRID };
         }
         /// <summary>
         /// Add padding around bbox (bbox must be projected to cartesian first)
@@ -178,13 +179,15 @@ namespace DEM.Net.Core
         {
             return new BoundingBox(xMin - paddingMeters, xMax + paddingMeters
                 , yMax + paddingMeters, yMin - paddingMeters
-                , zMax + paddingMeters, zMin - paddingMeters);
+                , zMax + paddingMeters, zMin - paddingMeters)
+            { SRID = this.SRID };
         }
         public BoundingBox ScaleAbsolute(double scaleX, double scaleY, double scaleZ = 1)
         {
             return new BoundingBox(xMin * scaleX, xMax * scaleX
                 , yMin * scaleY, yMax * scaleY
-                , zMin * scaleZ, zMax * scaleZ);
+                , zMin * scaleZ, zMax * scaleZ)
+            { SRID = this.SRID };
         }
 
         public double[] Center
