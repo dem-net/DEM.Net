@@ -102,10 +102,10 @@ namespace DEM.Net.Core
 
         public BoundingBox() : this(double.MaxValue, double.MinValue
             , double.MaxValue, double.MinValue
-            , double.MaxValue, double.MinValue)
+            , 0, 0)
         {
         }
-        public BoundingBox(double xmin, double xmax, double ymin, double ymax) : this(xmin, xmax, ymin, ymax, double.MaxValue, double.MinValue)
+        public BoundingBox(double xmin, double xmax, double ymin, double ymax) : this(xmin, xmax, ymin, ymax, 0, 0)
         {
         }
 
