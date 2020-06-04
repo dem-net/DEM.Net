@@ -38,14 +38,17 @@ namespace DEM.Net.Core
 
     public class ModelGenerationTransform : IGeoTransformPipeline
     {
-        private readonly BoundingBox _bbox;
+        public BoundingBox BoundingBox { get; set; }
         private readonly int _outputSrid;
         private readonly bool _centerOnOrigin;
         private readonly float _zFactor;
 
+        public ModelGenerationTransform(int outputSrid, bool centerOnOrigin, float zFactor) : this(null, outputSrid, centerOnOrigin, zFactor)
+        {
+        }
         public ModelGenerationTransform(BoundingBox bbox, int outputSrid, bool centerOnOrigin, float zFactor)
         {
-            _bbox = bbox;
+            this.BoundingBox = bbox;
             _outputSrid = outputSrid;
             _centerOnOrigin = centerOnOrigin;
             _zFactor = zFactor;
@@ -71,7 +74,12 @@ namespace DEM.Net.Core
 
             if (_centerOnOrigin)
             {
-                points = points.CenterOnOrigin(_bbox.ReprojectTo(_bbox.SRID, _outputSrid));
+                if (BoundingBox == null)
+                {
+                    throw new ArgumentNullException($"Bouding box must be set when using {nameof(IGeoTransformPipeline)}.{nameof(TransformPoints)} with center on origin");
+                }
+
+                points = points.CenterOnOrigin(this.BoundingBox.ReprojectTo(this.BoundingBox.SRID, _outputSrid));
             }
 
             points = points.ZScale(_zFactor);
