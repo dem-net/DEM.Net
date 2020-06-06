@@ -97,14 +97,19 @@ namespace DEM.Net.glTF.SharpglTF
         {
             var indexedTriangulation = new IndexedTriangulation(triangulation);
             var normals = _meshService.ComputeMeshNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
-            return AddMesh(model, indexedTriangulation, normals, textures, doubleSided);
+            return AddMesh(model, TERRAIN_NODE_NAME, indexedTriangulation, normals, textures, doubleSided);
         }
-        public ModelRoot AddMesh(ModelRoot model, IndexedTriangulation indexedTriangulation, IEnumerable<Vector3> normals, PBRTexture textures, bool doubleSided = true)
+        public ModelRoot AddMesh(ModelRoot model, string nodeName, IndexedTriangulation indexedTriangulation, IEnumerable<Vector3> normals, PBRTexture textures, bool doubleSided = true)
         {
             // create a basic scene
             model = model ?? CreateNewModel();
-            var rnode = model.LogicalScenes.First()?.FindNode(n => n.Name == TERRAIN_NODE_NAME);
-            var rmesh = rnode.Mesh = FindOrCreateMesh(model, TERRAIN_MESH_NAME);
+            var rnode = model.LogicalScenes.First()?.FindNode(n => n.Name == nodeName);
+            if (rnode == null)
+            {
+                rnode = model.LogicalScenes.First().CreateNode(nodeName);
+            }
+
+            var rmesh = rnode.Mesh = FindOrCreateMesh(model, string.Concat(rnode, "Mesh"));
 
 
             var material = model.CreateMaterial("Default")
@@ -117,13 +122,14 @@ namespace DEM.Net.glTF.SharpglTF
 
             // create mesh primitive
             MeshPrimitive primitive = rmesh.CreatePrimitive();
-            
+
 
             if (indexedTriangulation.Colors != null && indexedTriangulation.Colors.Any())
             {
                 primitive = primitive.WithVertexAccessor("POSITION", indexedTriangulation.Positions);
                 primitive = primitive.WithVertexAccessor("COLOR_0", indexedTriangulation.Colors);
-            }else
+            }
+            else
             {
                 primitive = primitive.WithVertexAccessor("POSITION", indexedTriangulation.Positions);
             }
@@ -181,11 +187,13 @@ namespace DEM.Net.glTF.SharpglTF
             var mesh = model.LogicalMeshes.FirstOrDefault(m => m.Name == meshName) ?? model.CreateMesh(meshName);
             return mesh;
         }
-        public ModelRoot AddLine(ModelRoot model, IEnumerable<GeoPoint> gpxPointsElevated, Vector4 color, float trailWidthMeters)
+        public ModelRoot AddLine(ModelRoot model, string nodeName, IEnumerable<GeoPoint> gpxPointsElevated, Vector4 color, float trailWidthMeters)
         {
             var scene = model.UseScene(TERRAIN_SCENE_NAME);
-            var rnode = scene.FindNode(n => n.Name == TERRAIN_NODE_NAME);
-            var rmesh = rnode.Mesh = FindOrCreateMesh(model, TERRAIN_MESH_NAME);
+            var rnode = scene.FindNode(n => n.Name == nodeName);
+            if (rnode == null)
+                rnode = scene.CreateNode(nodeName);
+            var rmesh = rnode.Mesh = FindOrCreateMesh(model, string.Concat(nodeName, "Mesh"));
 
 
             var material = model.CreateMaterial("Line")
@@ -206,6 +214,45 @@ namespace DEM.Net.glTF.SharpglTF
                 .WithIndicesAccessor(PrimitiveType.TRIANGLES, indexedTriangulation.Indices);
 
             primitive = primitive.WithMaterial(material);
+            return model;
+        }
+        public ModelRoot AddLines(ModelRoot model, string nodeName, IEnumerable<(IEnumerable<GeoPoint> points, float trailWidthMeters)> lines, Vector4 color)
+        {
+            var scene = model.UseScene(TERRAIN_SCENE_NAME);
+            var rnode = scene.FindNode(n => n.Name == nodeName);
+            if (rnode == null)
+                rnode = scene.CreateNode(nodeName);
+            var rmesh = rnode.Mesh = FindOrCreateMesh(model, string.Concat(nodeName, "Mesh"));
+
+
+            var material = model.CreateMaterial("Line")
+               .WithPBRMetallicRoughness(color, null, null, 0, 0.9f)
+              .WithDoubleSide(true);
+            material.Alpha = SharpGLTF.Schema2.AlphaMode.BLEND;
+
+
+            List<Vector3> positions = new List<Vector3>();
+            List<int> indices = new List<int>();
+
+            foreach (var line in lines)
+            {
+                var triangulation = _meshService.GenerateTriangleMesh_Line(line.points, line.trailWidthMeters);
+
+                indices.AddRange(triangulation.indexes.Select(i => i + positions.Count)); // offset indices, adding last positions count
+                positions.AddRange(triangulation.positions);
+            }
+
+            var indexedTriangulation = new IndexedTriangulation(positions, indices);
+            var normals = _meshService.ComputeMeshNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
+
+
+            // create mesh primitive
+            var primitive = rmesh.CreatePrimitive()
+                .WithVertexAccessor("POSITION", indexedTriangulation.Positions)
+                .WithVertexAccessor("NORMAL", normals.ToList())
+                .WithIndicesAccessor(PrimitiveType.TRIANGLES, indexedTriangulation.Indices)
+                .WithMaterial(material);
+
             return model;
         }
     }
