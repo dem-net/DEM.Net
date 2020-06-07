@@ -24,12 +24,14 @@ Supported by [![JetBrainSupport](https://raw.githubusercontent.com/dem-net/Resou
 ## Input
 - GeoTIFF (JAXA AW3D, and any GeoTIFF)
 - HGT (Nasa SRTM)
+- netCDF
 ## Output
 - glTF
+- STL
 
 # Current dev status
 - All incoming features are listed in the project board here : https://dev.azure.com/dem-net/elevationapi/_workitems/recentlyupdated/.
-- Feel free to suggest any idea you'd like to see covered here in the issues : https://github.com/xfischer/DEM.Net/issues.
+- Feel free to suggest any idea you'd like to see covered here in the issues : https://github.com/dem-net/DEM.Net/issues.
 
 # SampleApp 
 (Work in progress)
