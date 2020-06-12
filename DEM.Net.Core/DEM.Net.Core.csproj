@@ -96,7 +96,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Services\Voronoi\FortuneVoronoi\" />
-    <Folder Include="Model\Enums\" />
     <Folder Include="Model\IntervisibilityReport\" />
     <Folder Include="Helpers\System\" />
     <Folder Include="Services\Geometry\" />

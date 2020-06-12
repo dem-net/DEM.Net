@@ -67,27 +67,30 @@ namespace DEM.Net.Core
         /// <param name="lineGeoPoints">List of points that, when joined, makes the input line</param>
         /// <param name="dataSet">DEM dataset to use</param>
         /// <param name="interpolationMode">Interpolation mode</param>
+        /// <param name="behavior">Action to use when no data is found in dataset</param>
         /// <remarks>Output can be BIG, as all elevations will be returned.</remarks>
         /// <returns></returns>
-        List<GeoPoint> GetLineGeometryElevation(IEnumerable<GeoPoint> lineGeoPoints, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
+        List<GeoPoint> GetLineGeometryElevation(IEnumerable<GeoPoint> lineGeoPoints, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero);
         /// <summary>
         /// High level method that retrieves all dataset elevations along given line
         /// </summary>
         /// <param name="lineStringGeometry">Line geometry</param>
         /// <param name="dataSet">DEM dataset to use</param>
         /// <param name="interpolationMode">Interpolation mode</param>
+        /// <param name="behavior">Action to use when no data is found in dataset</param>
         /// <remarks>Output can be BIG, as all elevations will be returned.</remarks>
         /// <returns></returns>
-        List<GeoPoint> GetLineGeometryElevation(IGeometry lineStringGeometry, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
+        List<GeoPoint> GetLineGeometryElevation(IGeometry lineStringGeometry, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero);
         /// <summary>
         /// High level method that retrieves all dataset elevations along given line
         /// </summary>
         /// <param name="lineWKT">Line geometry in WKT</param>
         /// <param name="dataSet">DEM dataset to use</param>
         /// <param name="interpolationMode">Interpolation mode</param>
+        /// <param name="behavior">Action to use when no data is found in dataset</param>
         /// <remarks>Output can be BIG, as all elevations will be returned.</remarks>
         /// <returns></returns>
-        List<GeoPoint> GetLineGeometryElevation(string lineWKT, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear);
+        List<GeoPoint> GetLineGeometryElevation(string lineWKT, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero);
         /// <summary>
         /// High level method that retrieves elevation for given point
         /// </summary>
@@ -133,7 +136,7 @@ namespace DEM.Net.Core
         /// <param name="dataSet">DEM dataset to use</param>
         /// <param name="interpolationMode">Interpolation mode</param>
         /// <returns></returns>
-        IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, bool downloadMissingFiles = true);
+        IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero, bool downloadMissingFiles = true);
        
         /// <summary>
         /// Returns all elevations in given bbox
