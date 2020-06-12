@@ -81,7 +81,7 @@ namespace DEM.Net.Core.Imagery
                 for (int x = Start.X; x <= End.X; x++)
                     for (int y = Start.Y; y <= End.Y; y++)
                     {
-                        yield return new MapTileInfo(x, y, Start.Zoom);
+                        yield return new MapTileInfo(x, y, Start.Zoom, this.TileSize);
                     }
             }
         }

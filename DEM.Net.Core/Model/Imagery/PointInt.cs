@@ -1,4 +1,4 @@
-﻿// PointInt.cs
+﻿// Point<int>.cs
 //
 // Author:
 //       Xavier Fischer
@@ -31,17 +31,18 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core.Imagery
 {
-    public struct PointInt
+    public struct Point<T>
     {
-        public int X;
-        public int Y;
+        public T X;
+        public T Y;
 
 
-        public PointInt(int x, int y)
+        public Point(T x, T y)
         {
             X = x;
             Y = y;
         }
+
         public override string ToString()
         {
             return $"x={X}, y={Y}";
