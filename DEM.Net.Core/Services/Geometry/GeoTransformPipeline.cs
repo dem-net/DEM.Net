@@ -23,6 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace DEM.Net.Core
@@ -42,24 +43,44 @@ namespace DEM.Net.Core
         private readonly int _outputSrid;
         private readonly bool _centerOnOrigin;
         private readonly float _zFactor;
+        private BoundingBox bbox;
+        private int sRID_PROJECTED_MERCATOR;
+        private bool centerOnOrigin;
+        private float zScale;
+        private readonly bool _centerOnZOrigin;
 
-        public ModelGenerationTransform(int outputSrid, bool centerOnOrigin, float zFactor) : this(null, outputSrid, centerOnOrigin, zFactor)
+        public ModelGenerationTransform(int outputSrid, bool centerOnOrigin, float zFactor) : this(null, outputSrid, centerOnOrigin, zFactor, true)
         {
         }
-        public ModelGenerationTransform(BoundingBox bbox, int outputSrid, bool centerOnOrigin, float zFactor)
+        public ModelGenerationTransform(BoundingBox bbox, int outputSrid, bool centerOnOrigin, float zFactor, bool centerOnZOrigin)
         {
             this.BoundingBox = bbox;
             _outputSrid = outputSrid;
             _centerOnOrigin = centerOnOrigin;
             _zFactor = zFactor;
+            _centerOnZOrigin = centerOnZOrigin;
         }
+
+        //public HeightMap TransformHeightMap(HeightMap hMap)
+        //{
+        //    hMap = hMap.ReprojectTo(4326, _outputSrid);
+
+        //    if (_centerOnOrigin)
+        //    {
+        //        hMap = hMap.CenterOnOrigin();
+        //    }
+
+        //    hMap = hMap.ZScale(_zFactor);
+
+        //    return hMap;
+        //}
         public HeightMap TransformHeightMap(HeightMap hMap)
         {
             hMap = hMap.ReprojectTo(4326, _outputSrid);
 
             if (_centerOnOrigin)
             {
-                hMap = hMap.CenterOnOrigin();
+                hMap = hMap.CenterOnOrigin(this.BoundingBox.ReprojectTo(this.BoundingBox.SRID, _outputSrid), _centerOnZOrigin);
             }
 
             hMap = hMap.ZScale(_zFactor);

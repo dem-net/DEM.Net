@@ -68,15 +68,30 @@ namespace DEM.Net.Core
         /// <param name="heightMap"></param>
         /// <returns></returns>
         /// <remarks>This can be used in an height map processing pipeline, as coordinates are changed only on enumeration</remarks>
-        public static HeightMap CenterOnOrigin(this HeightMap heightMap)
+        public static HeightMap CenterOnOrigin(this HeightMap heightMap, bool centerOnZ = false)
         {
             //Logger.Info("CenterOnOrigin...");
             var bbox = heightMap.BoundingBox;
 
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
-            //double zOriginOffset = bbox.zMax - (bbox.zMax - bbox.zMin) / 2d;
-            heightMap.Coordinates = heightMap.Coordinates.Translate(-xOriginOffset, -yOriginOffset, -bbox.zMin);
+            double zOriginOffset = bbox.zMax - (bbox.zMax - bbox.zMin) / 2d;
+            heightMap.Coordinates = heightMap.Coordinates.Translate(-xOriginOffset, -yOriginOffset, centerOnZ ? -bbox.zMin : 0);
+
+            heightMap.BoundingBox = new BoundingBox(bbox.xMin - xOriginOffset, bbox.xMax - xOriginOffset
+                                                    , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset
+                                                    , 0, bbox.zMax - bbox.zMin);
+            return heightMap;
+        }
+
+        public static HeightMap CenterOnOrigin(this HeightMap heightMap, BoundingBox bbox, bool centerOnZ = false)
+        {
+            //Logger.Info("CenterOnOrigin...");
+            
+            double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
+            double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
+            double zOriginOffset = bbox.zMax - (bbox.zMax - bbox.zMin) / 2d;
+            heightMap.Coordinates = heightMap.Coordinates.Translate(-xOriginOffset, -yOriginOffset, centerOnZ ? -bbox.zMin : 0);
 
             heightMap.BoundingBox = new BoundingBox(bbox.xMin - xOriginOffset, bbox.xMax - xOriginOffset
                                                     , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset
