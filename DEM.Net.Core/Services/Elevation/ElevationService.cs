@@ -585,11 +585,13 @@ namespace DEM.Net.Core
             // add start and/or end point
             if (returnStartPoint)
             {
-                segmentPointsWithDEMPoints.Add(inputSegment.Start);
+                segmentPointsWithDEMPoints.Add(new GeoPoint(startLat, startLon));
+                //segmentPointsWithDEMPoints.Add(inputSegment.Start);
             }
             if (returnEndPoind)
             {
-                segmentPointsWithDEMPoints.Add(inputSegment.End);
+                segmentPointsWithDEMPoints.Add(new GeoPoint(endLat, endLon));
+                //segmentPointsWithDEMPoints.Add(inputSegment.End);
             }
 
             // sort points in segment order
