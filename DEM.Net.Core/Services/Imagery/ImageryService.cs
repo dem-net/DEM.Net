@@ -87,7 +87,8 @@ namespace DEM.Net.Core.Imagery
             PointInt topLeft;
             PointInt bottomRight;
 
-            // optimal zoom calculation (maybe there's a direct way)
+            // optimal zoom calculation (maybe there's a direct way) 
+            // see : https://docs.microsoft.com/fr-fr/azure/azure-maps/zoom-levels-and-tile-grid?tabs=csharp#tile-math-source-code (prepare tissues for nose bleed, and don't go if you're allergic to trigo and/or magical constants)
             // calculate the size of the full bbox at increasing zoom levels
             // until the full image would be greater than a tile
             int zoom = 0;

@@ -109,7 +109,7 @@ namespace DEM.Net.glTF.SharpglTF
                 rnode = model.LogicalScenes.First().CreateNode(nodeName);
             }
 
-            var rmesh = rnode.Mesh = FindOrCreateMesh(model, string.Concat(rnode, "Mesh"));
+            var rmesh = rnode.Mesh = FindOrCreateMesh(model, string.Concat(rnode.Name, "Mesh"));
 
 
             var material = model.CreateMaterial("Default")
