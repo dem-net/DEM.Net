@@ -183,7 +183,8 @@ namespace DEM.Net.Core
                 //Is intersecting if u_a and u_b are between 0 and 1
                 if (u_a >= 0 && u_a <= 1 && u_b >= 0 && u_b <= 1)
                 {
-                    intersection = new GeoPoint(p1_y + u_a * (p2_y - p1_y), p1_x + u_a * (p2_x - p1_x));
+                    intersection.Latitude = p1_y + u_a * (p2_y - p1_y);
+                    intersection.Longitude = p1_x + u_a * (p2_x - p1_x);
                     isIntersecting = true;
                 }
             }
