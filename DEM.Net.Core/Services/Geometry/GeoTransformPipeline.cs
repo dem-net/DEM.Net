@@ -37,6 +37,50 @@ namespace DEM.Net.Core
 
     }
 
+    public class GeoTransformPipelineFacade : IGeoTransformPipeline
+    {
+        private IGeoTransformPipeline pipeline;
+        private Func<HeightMap, HeightMap> transformHmap;
+        private Func<IEnumerable<GeoPoint>, IEnumerable<GeoPoint>> transformPoints;
+
+        public GeoTransformPipelineFacade(IGeoTransformPipeline pipeline)
+        {
+            this.transformHmap = pipeline.TransformHeightMap;
+        }
+
+        public IGeoTransformPipeline AddPreTransformHeightMap(Func<HeightMap, HeightMap> transform)
+        {
+            this.transformHmap = h => transformHmap(transform(h));
+            return this;
+        }
+        public IGeoTransformPipeline AddPostTransformHeightMap(Func<HeightMap, HeightMap> transform)
+        {
+            this.transformHmap = h => transform(transformHmap(h));
+            return this;
+        }
+
+        public HeightMap TransformHeightMap(HeightMap hmap)
+        {
+            return transformHmap(hmap);
+        }
+
+        public IGeoTransformPipeline AddPreTransformPoints(Func<IEnumerable<GeoPoint>, IEnumerable<GeoPoint>> transform)
+        {
+            this.transformPoints = h => transformPoints(transform(h));
+            return this;
+        }
+        public IGeoTransformPipeline AddPostTransformPoints(Func<IEnumerable<GeoPoint>, IEnumerable<GeoPoint>> transform)
+        {
+            this.transformPoints = h => transform(transformPoints(h));
+            return this;
+        }
+
+        public IEnumerable<GeoPoint> TransformPoints(IEnumerable<GeoPoint> points)
+        {
+            return transformPoints(points);
+        }
+    }
+
     public class ModelGenerationTransform : IGeoTransformPipeline
     {
         public BoundingBox BoundingBox { get; set; }
@@ -61,19 +105,6 @@ namespace DEM.Net.Core
             _centerOnZOrigin = centerOnZOrigin;
         }
 
-        //public HeightMap TransformHeightMap(HeightMap hMap)
-        //{
-        //    hMap = hMap.ReprojectTo(4326, _outputSrid);
-
-        //    if (_centerOnOrigin)
-        //    {
-        //        hMap = hMap.CenterOnOrigin();
-        //    }
-
-        //    hMap = hMap.ZScale(_zFactor);
-
-        //    return hMap;
-        //}
         public HeightMap TransformHeightMap(HeightMap hMap)
         {
             hMap = hMap.ReprojectTo(4326, _outputSrid);
@@ -107,7 +138,7 @@ namespace DEM.Net.Core
 
             return points;
 
-
         }
+
     }
 }
