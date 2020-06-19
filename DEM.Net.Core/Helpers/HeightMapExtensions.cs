@@ -87,7 +87,7 @@ namespace DEM.Net.Core
         public static HeightMap CenterOnOrigin(this HeightMap heightMap, BoundingBox bbox, bool centerOnZ = false)
         {
             //Logger.Info("CenterOnOrigin...");
-            
+
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
             double zOriginOffset = bbox.zMax - (bbox.zMax - bbox.zMin) / 2d;
@@ -288,6 +288,17 @@ namespace DEM.Net.Core
             }
             //Logger.Info("ZTranslate done...");
 
+        }
+        public static IEnumerable<GeoPoint> Translate(this IEnumerable<GeoPoint> points, GeoPoint vector)
+        {
+            foreach (var pt in points)
+            {
+                var pout = pt.Clone();
+                pout.Latitude += vector.Latitude;
+                pout.Longitude += vector.Longitude;
+                pout.Elevation += vector.Elevation ?? 0;
+                yield return pout;
+            }
         }
 
 

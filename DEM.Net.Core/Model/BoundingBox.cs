@@ -170,6 +170,14 @@ namespace DEM.Net.Core
                 , zMin - Depth * scaleZ, zMax + Depth * scaleZ)
             { SRID = this.SRID };
         }
+
+        public BoundingBox Translate(double x, double y, double z)
+        {
+            return new BoundingBox(xMin + x, xMax + x
+                , yMin + y, yMax + y
+                , zMin + z, zMax + z)
+            { SRID = this.SRID };
+        }
         /// <summary>
         /// Add padding around bbox (bbox must be projected to cartesian first)
         /// </summary>
