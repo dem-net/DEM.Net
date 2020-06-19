@@ -38,7 +38,6 @@ namespace DEM.Net.Core
         private const string ATTRIBUTION_SUBJECT = "Digital Elevation Model";
 
         public string Name { get; set; }
-
         public string Description { get; set; }
         public string PublicUrl { get; set; }
         /// <summary>
@@ -47,12 +46,16 @@ namespace DEM.Net.Core
         public int ResolutionMeters { get; set; }
         public float ResolutionArcSeconds { get; set; }
         public int NoDataValue { get; set; }
-
         public DEMFileDefinition FileFormat { get; set; }
-
         public Attribution Attribution { get; set; }
-
         public IDEMDataSource DataSource { get; set; }
+        public int PointsPerDegree { get; private set; }
+        public int SRID { get; set; } = Reprojection.SRID_GEODETIC;
+
+        public override string ToString()
+        {
+            return Name;
+        }
 
         private static readonly Lazy<Dictionary<string, DEMDataSet>> Datasets = new Lazy<Dictionary<string, DEMDataSet>>(GetRegisteredDatasets, true);
 
@@ -212,11 +215,5 @@ namespace DEM.Net.Core
         public static DEMDataSet NASADEM => Datasets.Value[nameof(NASADEM)];
 
 
-        public int PointsPerDegree { get; private set; }
-
-        public override string ToString()
-        {
-            return Name;
-        }
     }
 }
