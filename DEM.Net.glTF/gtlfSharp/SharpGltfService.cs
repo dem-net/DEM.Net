@@ -62,7 +62,7 @@ namespace DEM.Net.glTF.SharpglTF
             var rnode = model.LogicalScenes.First()?.FindNode(n => n.Name == TERRAIN_NODE_NAME);
             var rmesh = rnode.Mesh = model.CreateMesh(TERRAIN_MESH_NAME);
 
-            var material = model.CreateMaterial("Default")
+            var material = model.CreateMaterial(string.Concat(TERRAIN_MESH_NAME, "Material"))
               .WithPBRMetallicRoughness()
               .WithDoubleSide(doubleSided);
 
@@ -112,7 +112,7 @@ namespace DEM.Net.glTF.SharpglTF
             var rmesh = rnode.Mesh = FindOrCreateMesh(model, string.Concat(rnode.Name, "Mesh"));
 
 
-            var material = model.CreateMaterial("Default")
+            var material = model.CreateMaterial(string.Concat(nodeName, "Material"))
               .WithPBRMetallicRoughness(Vector4.One, textures?.BaseColorTexture?.FilePath, null, 0, 1)
               .WithDoubleSide(doubleSided);
             if (textures != null && textures.NormalTexture != null)
@@ -196,7 +196,7 @@ namespace DEM.Net.glTF.SharpglTF
             var rmesh = rnode.Mesh = FindOrCreateMesh(model, string.Concat(nodeName, "Mesh"));
 
 
-            var material = model.CreateMaterial("Line")
+            var material = model.CreateMaterial(string.Concat(nodeName, "Material"))
                .WithPBRMetallicRoughness(color, null, null, 0, 0.9f)
               .WithDoubleSide(true);
             material.Alpha = SharpGLTF.Schema2.AlphaMode.BLEND;
@@ -225,7 +225,7 @@ namespace DEM.Net.glTF.SharpglTF
             var rmesh = rnode.Mesh = FindOrCreateMesh(model, string.Concat(nodeName, "Mesh"));
 
 
-            var material = model.CreateMaterial("Line")
+            var material = model.CreateMaterial(string.Concat(nodeName, "Material"))
                .WithPBRMetallicRoughness(color, null, null, 0, 0.9f)
               .WithDoubleSide(true);
             material.Alpha = SharpGLTF.Schema2.AlphaMode.BLEND;
