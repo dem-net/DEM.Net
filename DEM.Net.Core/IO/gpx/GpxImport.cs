@@ -41,7 +41,7 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public static IEnumerable<IEnumerable<T>> ReadGPX_Segments<T>(Stream gpxFileStream, Func<GpxTrackPoint, T> conversionFunc)
         {
-            IEnumerable<IEnumerable<T>> segments = null;
+            IEnumerable<IEnumerable<T>> segments = Enumerable.Empty<IEnumerable<T>>();
             using (GpxReader reader = new GpxReader(gpxFileStream))
             {
                 while (reader.Read())
@@ -50,7 +50,7 @@ namespace DEM.Net.Core
                     {
                         case GpxObjectType.Track:
                             GpxTrack track = reader.Track;
-                            segments = ConvertTrack(track, conversionFunc);
+                            segments = segments.Concat(ConvertTrack(track, conversionFunc));
                             break;
                     }
                 }
