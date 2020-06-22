@@ -37,7 +37,7 @@ namespace DEM.Net.Core
     public static class Reprojection
     {
 
-        public const int SRID_GEODETIC = 4236;
+        public const int SRID_GEODETIC = 4326;
         public const int SRID_PROJECTED_LAMBERT_93 = 2154;
         public const int SRID_PROJECTED_MERCATOR = 3857;
 
