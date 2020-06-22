@@ -283,7 +283,7 @@ namespace DEM.Net.Core
             foreach (var pt in points)
             {
                 var pout = pt.Clone();
-                pout.Elevation += distance;
+                pout.Elevation = (pout.Elevation ?? 0) + distance;
                 yield return pout;
             }
             //Logger.Info("ZTranslate done...");
