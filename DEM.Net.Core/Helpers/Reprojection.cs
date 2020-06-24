@@ -198,12 +198,9 @@ namespace DEM.Net.Core
             // Defines the starting coordiante system
             ProjectionInfo pTarget = ProjectionInfo.FromEpsgCode(destinationEpsgCode);
 
-            var tmp = ReprojectPoint(point, pSource, pTarget);
+            var pointReproj = ReprojectPoint(point, pSource, pTarget);
 
-            point.Latitude = tmp.Latitude;
-            point.Longitude = tmp.Longitude;
-
-            return point;
+            return pointReproj;
         }
 
         private static GeoPoint ReprojectPoint(GeoPoint sourcePoint, ProjectionInfo sourceProj, ProjectionInfo destProj)
