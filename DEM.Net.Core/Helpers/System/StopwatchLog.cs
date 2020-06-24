@@ -31,7 +31,6 @@ namespace DEM.Net.Core
     public class StopwatchLog : Stopwatch
     {
         private readonly ILogger _logger;
-
         public static StopwatchLog StartNew(ILogger logger)
         {
             StopwatchLog sw = new StopwatchLog(logger);
@@ -52,5 +51,17 @@ namespace DEM.Net.Core
             }
             this.Start();
         }
+        public void LogTime(string operationName, bool reset, LogLevel level = LogLevel.Information)
+        {
+            this.Stop();
+            if (_logger.IsEnabled(level))
+            {
+                _logger.Log(level, $"{operationName} completed in {this.Elapsed:g}");
+            }
+
+            if (reset) this.Restart(); else this.Start();
+
+        }
     }
+
 }
