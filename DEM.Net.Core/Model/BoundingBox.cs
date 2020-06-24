@@ -34,53 +34,18 @@ namespace DEM.Net.Core
 {
     public class BoundingBox : IEquatable<BoundingBox>
     {
-        private double _xMin;
-        public double xMin
-        {
-            get { return _xMin; }
-            set { _xMin = value; }
-        }
-
-        private double _xMax;
-        public double xMax
-        {
-            get { return _xMax; }
-            set { _xMax = value; }
-        }
-
-        private double _yMin;
-        public double yMin
-        {
-            get { return _yMin; }
-            set { _yMin = value; }
-        }
-
-        private double _yMax;
-        public double yMax
-        {
-            get { return _yMax; }
-            set { _yMax = value; }
-        }
-
-        private double _zMin;
-        public double zMin
-        {
-            get { return _zMin; }
-            set { _zMin = value; }
-        }
-
-        private double _zMax;
-        public double zMax
-        {
-            get { return _zMax; }
-            set { _zMax = value; }
-        }
+        public double xMin { get; set; }
+        public double xMax { get; set; }
+        public double yMin { get; set; }
+        public double yMax { get; set; }
+        public double zMin { get; set; }
+        public double zMax { get; set; }
 
         public double Width
         {
             get
             {
-                return _xMax - _xMin;
+                return xMax - xMin;
             }
         }
 
@@ -88,7 +53,7 @@ namespace DEM.Net.Core
         {
             get
             {
-                return _yMax - _yMin;
+                return yMax - yMin;
             }
         }
 
@@ -96,7 +61,7 @@ namespace DEM.Net.Core
         {
             get
             {
-                return _zMax - _zMin;
+                return zMax - zMin;
             }
         }
 
@@ -111,31 +76,31 @@ namespace DEM.Net.Core
 
         public BoundingBox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)
         {
-            _xMin = xmin;
-            _xMax = xmax;
-            _yMin = ymin;
-            _yMax = ymax;
-            _zMin = zmin;
-            _zMax = zmax;
+            xMin = xmin;
+            xMax = xmax;
+            yMin = ymin;
+            yMax = ymax;
+            zMin = zmin;
+            zMax = zmax;
         }
 
         public bool IsValid()
         {
-            return _xMin < _xMax
-                    && _yMin < _yMax
-                    && GpsLocation.IsValidLongitude(_xMin)
-                    && GpsLocation.IsValidLongitude(_xMax)
-                    && GpsLocation.IsValidLatitude(_yMin)
-                    && GpsLocation.IsValidLatitude(_yMax);
+            return xMin < xMax
+                    && yMin < yMax
+                    && GpsLocation.IsValidLongitude(xMin)
+                    && GpsLocation.IsValidLongitude(xMax)
+                    && GpsLocation.IsValidLatitude(yMin)
+                    && GpsLocation.IsValidLatitude(yMax);
         }
         public void UnionWith(double x, double y, double z)
         {
-            _xMin = Math.Min(_xMin, x);
-            _xMax = Math.Max(_xMax, x);
-            _yMin = Math.Min(_yMin, y);
-            _yMax = Math.Max(_yMax, y);
-            _zMin = Math.Min(_zMin, z);
-            _zMax = Math.Max(_zMax, z);
+            xMin = Math.Min(xMin, x);
+            xMax = Math.Max(xMax, x);
+            yMin = Math.Min(yMin, y);
+            yMax = Math.Max(yMax, y);
+            zMin = Math.Min(zMin, z);
+            zMax = Math.Max(zMax, z);
         }
 
         /// <summary>
@@ -144,9 +109,9 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public BoundingBox ReorderMinMax()
         {
-            return new BoundingBox(Math.Min(_xMin, _xMax), Math.Max(_xMin, _xMax)
-                , Math.Min(_yMin, _yMax), Math.Max(_yMin, _yMax)
-                , Math.Min(_zMin, _zMax), Math.Max(_zMin, _zMax));
+            return new BoundingBox(Math.Min(xMin, xMax), Math.Max(xMin, xMax)
+                , Math.Min(yMin, yMax), Math.Max(yMin, yMax)
+                , Math.Min(zMin, zMax), Math.Max(zMin, zMax));
         }
 
         public override bool Equals(object obj)
@@ -241,19 +206,19 @@ namespace DEM.Net.Core
         public bool Equals(BoundingBox other)
         {
             if (other == null) return false;
-            return _xMin == other.xMin
-                    && _xMax == other.xMax
-                    && _yMin == other.yMin
-                    && _yMax == other.yMax;
+            return xMin == other.xMin
+                    && xMax == other.xMax
+                    && yMin == other.yMin
+                    && yMax == other.yMax;
         }
 
         public override int GetHashCode()
         {
             var hashCode = -1820762126;
-            hashCode = hashCode * -1521134295 + _xMin.GetHashCode();
-            hashCode = hashCode * -1521134295 + _xMax.GetHashCode();
-            hashCode = hashCode * -1521134295 + _yMin.GetHashCode();
-            hashCode = hashCode * -1521134295 + _yMax.GetHashCode();
+            hashCode = hashCode * -1521134295 + xMin.GetHashCode();
+            hashCode = hashCode * -1521134295 + xMax.GetHashCode();
+            hashCode = hashCode * -1521134295 + yMin.GetHashCode();
+            hashCode = hashCode * -1521134295 + yMax.GetHashCode();
             return hashCode;
         }
 
