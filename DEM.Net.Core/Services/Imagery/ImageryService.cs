@@ -82,6 +82,10 @@ namespace DEM.Net.Core.Imagery
         public TileRange ComputeBoundingBoxTileRange(BoundingBox bbox, ImageryProvider provider,
             int minTilesPerImage = 4)
         {
+            // TODO good one, to test
+            // texture quality would be expressed in tex size
+            //TileUtils.BestMapView(new double[] { bbox.xMin, bbox.yMin, bbox.xMax, bbox.yMax }, 16384, 16384, 0, provider.TileSize, out double centerLat, out double centerLon, out double zoomBestView);
+
             TileRange tiles = new TileRange(provider);
             BoundingBox mapBbox;
             Point<double> topLeft;
@@ -102,7 +106,7 @@ namespace DEM.Net.Core.Imagery
                 bottomRight = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMin, bbox.xMax), zoom, provider.TileSize);
                 mapBbox = new BoundingBox(topLeft.X, bottomRight.X, topLeft.Y, bottomRight.Y);
             } while (zoom < provider.MaxZoom
-                     && (mapBbox.Width < maxSize || mapBbox.Height < maxSize));
+                     && Math.Min(mapBbox.Width, mapBbox.Height) < maxSize );
 
             // now we have the minimum zoom without image
             // we can know which tiles are needed
