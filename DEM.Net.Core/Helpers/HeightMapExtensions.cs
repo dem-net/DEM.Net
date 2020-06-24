@@ -120,13 +120,13 @@ namespace DEM.Net.Core
         /// <param name="points"></param>
         /// <param name="bbox"></param>
         /// <returns></returns>
-        public static IEnumerable<GeoPoint> CenterOnOrigin(this IEnumerable<GeoPoint> points, BoundingBox bbox)
+        public static IEnumerable<GeoPoint> CenterOnOrigin(this IEnumerable<GeoPoint> points, BoundingBox bbox, bool centerOnZ = false)
         {
             //Logger.Info("CenterOnOrigin...");
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
             //double zOriginOffset = bbox.zMax - (bbox.zMax - bbox.zMin) / 2d;
-            points = points.Translate(-xOriginOffset, -yOriginOffset, -bbox.zMin); // Set minZ = 0
+            points = points.Translate(-xOriginOffset, -yOriginOffset, centerOnZ ? -bbox.zMin : 0); // Set minZ = 0
 
             return points;
         }
@@ -283,7 +283,7 @@ namespace DEM.Net.Core
             foreach (var pt in points)
             {
                 var pout = pt.Clone();
-                pout.Elevation += distance;
+                pout.Elevation = (pout.Elevation ?? 0) + distance;
                 yield return pout;
             }
             //Logger.Info("ZTranslate done...");
