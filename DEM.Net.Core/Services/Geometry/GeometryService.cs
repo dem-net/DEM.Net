@@ -95,7 +95,12 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public static BoundingBox GetBoundingBox(this IEnumerable<GeoPoint> points)
         {
-            double xmin = double.MaxValue, ymin = double.MaxValue, xmax = double.MinValue, ymax = double.MinValue;
+            double xmin = double.MaxValue,
+                ymin = double.MaxValue,
+                zmin = double.MaxValue,
+                xmax = double.MinValue,
+                ymax = double.MinValue,
+                zmax = double.MinValue;
 
             foreach (var pt in points)
             {
@@ -104,8 +109,11 @@ namespace DEM.Net.Core
 
                 ymin = Math.Min(ymin, pt.Latitude);
                 ymax = Math.Max(ymax, pt.Latitude);
+
+                zmin = Math.Min(zmin, pt.Elevation ?? double.MaxValue);
+                zmax = Math.Max(zmax, pt.Elevation ?? double.MinValue);
             }
-            return new BoundingBox(xmin, xmax, ymin, ymax);
+            return new BoundingBox(xmin, xmax, ymin, ymax, zmin, zmax);
         }
         /// <summary>
         /// Returns the bouding box of a segment
@@ -175,7 +183,8 @@ namespace DEM.Net.Core
                 //Is intersecting if u_a and u_b are between 0 and 1
                 if (u_a >= 0 && u_a <= 1 && u_b >= 0 && u_b <= 1)
                 {
-                    intersection = new GeoPoint(p1_y + u_a * (p2_y - p1_y), p1_x + u_a * (p2_x - p1_x));
+                    intersection.Latitude = p1_y + u_a * (p2_y - p1_y);
+                    intersection.Longitude = p1_x + u_a * (p2_x - p1_x);
                     isIntersecting = true;
                 }
             }

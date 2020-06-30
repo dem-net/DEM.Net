@@ -82,31 +82,36 @@ namespace DEM.Net.Core.Imagery
         public TileRange ComputeBoundingBoxTileRange(BoundingBox bbox, ImageryProvider provider,
             int minTilesPerImage = 4)
         {
+            // TODO good one, to test
+            // texture quality would be expressed in tex size
+            //TileUtils.BestMapView(new double[] { bbox.xMin, bbox.yMin, bbox.xMax, bbox.yMax }, 16384, 16384, 0, provider.TileSize, out double centerLat, out double centerLon, out double zoomBestView);
+
             TileRange tiles = new TileRange(provider);
             BoundingBox mapBbox;
-            PointInt topLeft;
-            PointInt bottomRight;
+            Point<double> topLeft;
+            Point<double> bottomRight;
 
-            // optimal zoom calculation (maybe there's a direct way)
+            // optimal zoom calculation (maybe there's a direct way) 
+            // see : https://docs.microsoft.com/fr-fr/azure/azure-maps/zoom-levels-and-tile-grid?tabs=csharp#tile-math-source-code (prepare tissues for nose bleed, and don't go if you're allergic to trigo and/or magical constants)
             // calculate the size of the full bbox at increasing zoom levels
             // until the full image would be greater than a tile
             int zoom = 0;
-            int maxSize = provider.TileSize * minTilesPerImage;
+            int maxSize = 256 * minTilesPerImage; /* fixed to 256px to limit number of tiles */
             do
             {
                 zoom++;
 
                 // coords are pixels in global map image (see TileUtils.MapSize(zoom))
-                topLeft = TileUtils.LatLongToPixelXY(bbox.yMax, bbox.xMin, zoom);
-                bottomRight = TileUtils.LatLongToPixelXY(bbox.yMin, bbox.xMax, zoom);
+                topLeft = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMax, bbox.xMin), zoom, provider.TileSize);
+                bottomRight = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMin, bbox.xMax), zoom, provider.TileSize);
                 mapBbox = new BoundingBox(topLeft.X, bottomRight.X, topLeft.Y, bottomRight.Y);
             } while (zoom < provider.MaxZoom
-                     && (mapBbox.Width < maxSize || mapBbox.Height < maxSize));
+                     && Math.Min(mapBbox.Width, mapBbox.Height) < maxSize );
 
             // now we have the minimum zoom without image
             // we can know which tiles are needed
-            tiles.Start = new MapTileInfo(TileUtils.PixelXYToTileXY(topLeft.X, topLeft.Y), zoom);
-            tiles.End = new MapTileInfo(TileUtils.PixelXYToTileXY(bottomRight.X, bottomRight.Y), zoom);
+            tiles.Start = new MapTileInfo(TileUtils.GlobalPixelToTileXY(topLeft.X, topLeft.Y, provider.TileSize), zoom, provider.TileSize);
+            tiles.End = new MapTileInfo(TileUtils.GlobalPixelToTileXY(bottomRight.X, bottomRight.Y, provider.TileSize), zoom, provider.TileSize);
             tiles.AreaOfInterest = mapBbox;
 
             return tiles;
@@ -170,20 +175,20 @@ namespace DEM.Net.Core.Imagery
             return this.DownloadTiles(tiles, provider);
         }
 
-        BoundingBox ConvertWorldToMap(BoundingBox bbox, int zoomLevel)
+        BoundingBox ConvertWorldToMap(BoundingBox bbox, int zoomLevel, int tileSize)
         {
-            var bboxTopLeft = TileUtils.LatLongToPixelXY(bbox.yMax, bbox.xMin, zoomLevel);
-            var bboxBottomRight = TileUtils.LatLongToPixelXY(bbox.yMin, bbox.xMax, zoomLevel);
-            return new BoundingBox(bboxTopLeft.X, bboxBottomRight.X, bboxTopLeft.Y, bboxBottomRight.Y);
+            var bboxTopLeft = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMax, bbox.xMin), zoomLevel, tileSize);
+            var bboxBottomRight = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMin, bbox.xMax), zoomLevel, tileSize);
+            return new BoundingBox(bboxTopLeft.X, bboxBottomRight.X, bboxTopLeft.Y, bboxBottomRight.Y, bbox.zMin, bbox.zMax);
         }
 
         BoundingBox GetTilesBoundingBox(TileRange tiles)
         {
             var tileInfos = tiles.TilesInfo.ToList();
             var bboxTopLeft =
-                TileUtils.TileXYToPixelXY(tileInfos.Min(t => t.X), tileInfos.Min(t => t.Y));
-            var bboxBottomRight = TileUtils.TileXYToPixelXY(tileInfos.Max(t => t.X) + 1,
-                tileInfos.Max(t => t.Y) + 1);
+                TileUtils.TileXYToGlobalPixel(tileInfos.Min(t => t.X), tileInfos.Min(t => t.Y), tiles.TileSize);
+            var bboxBottomRight = TileUtils.TileXYToGlobalPixel(tileInfos.Max(t => t.X) + 1,
+                tileInfos.Max(t => t.Y) + 1, tiles.TileSize);
 
             return new BoundingBox(bboxTopLeft.X, bboxBottomRight.X, bboxTopLeft.Y, bboxBottomRight.Y);
         }
@@ -195,7 +200,7 @@ namespace DEM.Net.Core.Imagery
 
             // get pixel in full map
             int zoomLevel = tiles.Tiles.First().TileInfo.Zoom;
-            var projectedBbox = ConvertWorldToMap(bbox, zoomLevel);
+            var projectedBbox = ConvertWorldToMap(bbox, zoomLevel, tiles.TileSize);
             var tilesBbox = GetTilesBoundingBox(tiles);
 
             //DrawDebugBmpBbox(tiles, localBbox, tilesBbox, fileName, mimeType);
@@ -249,7 +254,7 @@ namespace DEM.Net.Core.Imagery
 
             // get pixel in full map
             int zoomLevel = tiles.Tiles.First().TileInfo.Zoom;
-            var projectedBbox = ConvertWorldToMap(bbox, zoomLevel);
+            var projectedBbox = ConvertWorldToMap(bbox, zoomLevel, tiles.TileSize);
             var tilesBbox = GetTilesBoundingBox(tiles);
             int xOffset = (int)(tilesBbox.xMin - projectedBbox.xMin);
             int yOffset = (int)(tilesBbox.yMin - projectedBbox.yMin);
@@ -259,8 +264,8 @@ namespace DEM.Net.Core.Imagery
             int tileSize = tiles.TileSize;
 
             var pointsOnTexture = gpxPoints
-                .Select(pt => TileUtils.LatLongToPixelXY(pt.Latitude, pt.Longitude, zoomLevel))
-                .Select(pt => new PointF(pt.X - (int)projectedBbox.xMin, pt.Y - (int)projectedBbox.yMin));
+                .Select(pt => TileUtils.PositionToGlobalPixel(new LatLong(pt.Latitude, pt.Longitude), zoomLevel, tiles.TileSize))
+                .Select(pt => new PointF((float)(pt.X - (int)projectedBbox.xMin), (float)(pt.Y - (int)projectedBbox.yMin)));
 
 
             using (Image<Rgba32> outputImage = new Image<Rgba32>((int)projectedBbox.Width, (int)projectedBbox.Height))
@@ -284,7 +289,7 @@ namespace DEM.Net.Core.Imagery
 
                 if (drawGpxVertices)
                 {
-                    PathCollection pc = new PathCollection(pointsOnTexture.Select(p => new EllipsePolygon(p, 10f)));
+                    PathCollection pc = new PathCollection(pointsOnTexture.Select(p => new EllipsePolygon(p, new SizeF(10f, 10f))));
                     outputImage.Mutate(o => o.Draw(GraphicsOptions.Default, Pens.Solid(Rgba32.Violet, 3), pc));
                 }
 
@@ -621,7 +626,7 @@ namespace DEM.Net.Core.Imagery
             return outMap;
         }
 
-      
+
 
         private Gray16 FromGeoPointToHeightMapColor(GeoPoint point, float min, float max)
         {
@@ -663,7 +668,7 @@ namespace DEM.Net.Core.Imagery
         #endregion
 
 
-        public List<Vector2> ComputeUVMap(HeightMap heightMap, TextureInfo textureInfo)
+        public List<Vector2> ComputeUVMap(HeightMap heightMap, TextureInfo textureInfo, int tileSize)
         {
             /**********************************
             * We need to map texture pixels to heightmap points
@@ -678,13 +683,13 @@ namespace DEM.Net.Core.Imagery
             var bbox = textureInfo.ProjectedBounds;
             foreach (GeoPoint geoPoint in heightMap.Coordinates)
             {
-                PointInt projPoint =
-                    TileUtils.LatLongToPixelXY(geoPoint.Latitude, geoPoint.Longitude, textureInfo.ProjectedZoom);
+                Point<double> projPoint =
+                    TileUtils.PositionToGlobalPixel(new LatLong(geoPoint.Latitude, geoPoint.Longitude), textureInfo.ProjectedZoom, tileSize);
 
-                float xOffset = projPoint.X - (float)bbox.xMin;
+                float xOffset = (float)projPoint.X - (float)bbox.xMin;
                 float uvX = MathHelper.Map(1, textureInfo.Width, 0, 1, xOffset, true);
 
-                float yOffset = projPoint.Y - (float)bbox.yMin;
+                float yOffset = (float)projPoint.Y - (float)bbox.yMin;
                 float uvY = MathHelper.Map(1, textureInfo.Height, 0, 1, yOffset, true);
 
                 uvs.Add(new Vector2(uvX, uvY));

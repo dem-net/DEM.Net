@@ -336,7 +336,7 @@ namespace DEM.Net.Core
             return normals;
         }
 
-        public (IEnumerable<Vector3> positions, IEnumerable<int> indexes) GenerateTriangleMesh_Line(IEnumerable<GeoPoint> points, float width)
+        public (List<Vector3> positions, List<int> indexes) GenerateTriangleMesh_Line(IEnumerable<GeoPoint> points, float width)
         {
             try
             {

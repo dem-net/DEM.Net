@@ -28,15 +28,15 @@ namespace DEM.Net.Core.Imagery
             byte[] tileBytes = null;
             var font = SixLabors.Fonts.SystemFonts.CreateFont("Arial", 12);
 
-            var corner = TileUtils.TileXYToPixelXY(x, y);
-            var latLong = TileUtils.PixelXYToLatLong(corner.X, corner.Y, zoom);
-            var latLongOffset = TileUtils.PixelXYToLatLong(corner.X + TileSize, corner.Y + TileSize, zoom);
+            var corner = TileUtils.TileXYToGlobalPixel(x, y, TileSize);
+            var latLong = TileUtils.GlobalPixelToPosition(new Point<double>(corner.X, corner.Y), zoom, TileSize);
+            var latLongOffset = TileUtils.GlobalPixelToPosition(new Point<double>(corner.X + TileSize, corner.Y + TileSize), zoom, TileSize);
 
-            
-            
+
+
             var graticules = graticuleService.DrawCore(latLong, latLongOffset);
-            
-            
+
+
             using (Image<Rgba32> outputImage = new Image<Rgba32>(this.TileSize, this.TileSize))
             {
                 string tileText = $"{x}/{y}/{zoom}{Environment.NewLine}";
@@ -44,21 +44,21 @@ namespace DEM.Net.Core.Imagery
                     .Fill(Rgba32.White)
                     .DrawText(tileText, font, Rgba32.Black, new PointF(10, 10))
                 );
-                outputImage.Mutate( o => DrawGraticules(o, graticules, corner, zoom));
+                outputImage.Mutate(o => DrawGraticules(o, graticules, corner, zoom));
 
-                
+
 
                 // Test
                 if (DebugPoint != null)
                 {
-                    var testPixel = TileUtils.LatLongToPixelXY(DebugPoint.Latitude, DebugPoint.Longitude, zoom);
-                    var testTile = TileUtils.PixelXYToTileXY(testPixel.X, testPixel.Y);
+                    var testPixel = TileUtils.PositionToGlobalPixel(new LatLong(DebugPoint.Latitude, DebugPoint.Longitude), zoom, TileSize);
+                    var testTile = TileUtils.GlobalPixelToTileXY(testPixel.X, testPixel.Y, TileSize);
 
                     // Draw test pixel
                     if (testTile.X == x && testTile.Y == y)
                     {
-                        var basex = TileUtils.TileXYToPixelXY(x, y);
-                        var ptLoc = new PointF(testPixel.X - basex.X, testPixel.Y - basex.Y);
+                        var basex = TileUtils.TileXYToGlobalPixel(x, y, TileSize);
+                        var ptLoc = new PointF((float)(testPixel.X - basex.X), (float)(testPixel.Y - basex.Y));
                         outputImage.Mutate(o =>
                             o.DrawLines(Rgba32.Blue, 1f,
                                 new PointF[] { new PointF(ptLoc.X - 10, ptLoc.Y - 10), new PointF(ptLoc.X + 10, ptLoc.Y + 10) })
@@ -78,52 +78,52 @@ namespace DEM.Net.Core.Imagery
             return tileBytes;
         }
 
-        private void DrawGraticules(IImageProcessingContext img, GraticuleLabels graticules, PointInt corner, int zoom)
+        private void DrawGraticules(IImageProcessingContext img, GraticuleLabels graticules, Point<double> corner, int zoom)
         {
-                var font = SixLabors.Fonts.SystemFonts.CreateFont("Arial", 8);
-                foreach (var meridian in graticules.VerticalLabels)
+            var font = SixLabors.Fonts.SystemFonts.CreateFont("Arial", 8);
+            foreach (var meridian in graticules.VerticalLabels)
+            {
+                var loc = meridian.worldLocation;
+                var pt = TileUtils.PositionToGlobalPixel(new LatLong(loc.Lat, loc.Long), zoom, TileSize);
+                var xpos = pt.X - corner.X;
+                var start = new PointF((float)xpos, 0);
+                var end = new PointF((float)xpos, TileSize);
+                img.DrawLines(Rgba32.Gray, 1f, new PointF[] { start, end });
+                try
                 {
-                    var loc = meridian.worldLocation;
-                    var pt = TileUtils.LatLongToPixelXY(loc.Lat, loc.Long, zoom);
-                    var xpos = pt.X - corner.X;
-                    var start = new PointF(xpos,0);
-                    var end = new PointF(xpos,TileSize);
-                    img.DrawLines(Rgba32.Gray, 1f, new PointF[] {start, end});
-                    try
+                    if (xpos < TileSize - 10)
                     {
-                        if (xpos < TileSize - 10)
-                        {
-                            img.DrawText(Math.Round(loc.Long, 2).ToString(), font, Rgba32.Black, new PointF(xpos, 50));
-                        }
+                        img.DrawText(Math.Round(loc.Long, 2).ToString(), font, Rgba32.Black, new PointF((float)xpos, 50));
                     }
-                    catch (Exception)
-                    {
-                       
-                    }
-                    
-                    
                 }
-                foreach (var parallel in graticules.HorizontalLabels)
+                catch (Exception)
                 {
-                    var loc = parallel.worldLocation;
-                    var pt = TileUtils.LatLongToPixelXY(loc.Lat, loc.Long, zoom);
-                    var ypos = pt.Y - corner.Y;
-                    var start = new PointF(0,ypos);
-                    var end = new PointF(TileSize,ypos);
-                    img.DrawLines(Rgba32.Gray, 1f, new PointF[] {start, end});
-                    try
-                    {
-                        img.DrawText(Math.Round(loc.Lat,4).ToString(), font, Rgba32.Black, new PointF(50, ypos));
-                    }
-                    catch (Exception)
-                    {
-                       
-                    }
-                        
+
                 }
-            
-            
-           
+
+
+            }
+            foreach (var parallel in graticules.HorizontalLabels)
+            {
+                var loc = parallel.worldLocation;
+                var pt = TileUtils.PositionToGlobalPixel(new LatLong(loc.Lat, loc.Long), zoom, TileSize);
+                var ypos = pt.Y - corner.Y;
+                var start = new PointF(0, (float)ypos);
+                var end = new PointF(TileSize, (float)ypos);
+                img.DrawLines(Rgba32.Gray, 1f, new PointF[] { start, end });
+                try
+                {
+                    img.DrawText(Math.Round(loc.Lat, 4).ToString(), font, Rgba32.Black, new PointF(50, (float)ypos));
+                }
+                catch (Exception)
+                {
+
+                }
+
+            }
+
+
+
         }
     }
 }

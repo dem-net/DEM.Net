@@ -27,6 +27,7 @@ using DEM.Net.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,7 +40,7 @@ namespace DEM.Net.Core
         {
             return geoPoint.Select(p => p.ToVector3());
         }
-        public static IEnumerable<Vector3> FilterConsecutiveSame(this IEnumerable<Vector3> vectors) 
+        public static IEnumerable<Vector3> FilterConsecutiveSame(this IEnumerable<Vector3> vectors)
         {
             Vector3 last = Vector3.Zero;
             bool firstPoint = true;
@@ -63,11 +64,15 @@ namespace DEM.Net.Core
         }
         public static Vector3 ToVector3(this GeoPoint geoPoint)
         {
-            return new Vector3((float)geoPoint.Longitude, (float)geoPoint.Elevation, -(float)geoPoint.Latitude);
+            return new Vector3((float)geoPoint.Longitude, (float)(geoPoint.Elevation ?? 0D), -(float)geoPoint.Latitude);
         }
         public static Vector4 ToVector4(this Vector3 vector3, float w = 0f)
         {
             return new Vector4(vector3, w);
+        }
+        public static Vector4 CreateColor(byte r, byte g, byte b, byte a = 255)
+        {
+            return new Vector4(r / 255f, g / 255f, b / 255f, a / 255f);
         }
         public static IEnumerable<Vector3> ToQuadPoints(this Vector3 vertex, float pointSize)
         {

@@ -137,7 +137,7 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="lineWKT"></param>
         /// <returns></returns>
-        public List<GeoPoint> GetLineGeometryElevation(string lineWKT, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
+        public List<GeoPoint> GetLineGeometryElevation(string lineWKT, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
         {
             IGeometry geom = GeometryService.ParseWKTAsGeometry(lineWKT);
 
@@ -149,7 +149,7 @@ namespace DEM.Net.Core
             return GetLineGeometryElevation(geom, dataSet, interpolationMode);
         }
 
-        public List<GeoPoint> GetLineGeometryElevation(IGeometry lineStringGeometry, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
+        public List<GeoPoint> GetLineGeometryElevation(IGeometry lineStringGeometry, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
         {
             if (lineStringGeometry == null || lineStringGeometry.IsEmpty)
                 return null;
@@ -197,7 +197,7 @@ namespace DEM.Net.Core
                         , true);
 
                     // Get elevation for each point
-                    intersections = this.GetElevationData(intersections, adjacentRasters, segTiles, interpolator);
+                    intersections = this.GetElevationData(intersections, adjacentRasters, segTiles, interpolator, behavior);
 
                     // Add to output list
                     geoPoints.AddRange(intersections);
@@ -209,14 +209,14 @@ namespace DEM.Net.Core
 
             return geoPoints;
         }
-        public List<GeoPoint> GetLineGeometryElevation(IEnumerable<GeoPoint> lineGeoPoints, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
+        public List<GeoPoint> GetLineGeometryElevation(IEnumerable<GeoPoint> lineGeoPoints, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
         {
             if (lineGeoPoints == null)
                 throw new ArgumentNullException(nameof(lineGeoPoints), "Point list is null");
 
             IGeometry geometry = GeometryService.ParseGeoPointAsGeometryLine(lineGeoPoints);
 
-            return GetLineGeometryElevation(geometry, dataSet, interpolationMode);
+            return GetLineGeometryElevation(geometry, dataSet, interpolationMode, behavior);
         }
 
         public float GetPointElevation(FileMetadata metadata, double lat, double lon, IInterpolator interpolator = null)
@@ -240,7 +240,7 @@ namespace DEM.Net.Core
             // Do not dispose Dictionary, as IRasterFile disposal is the caller's responsability
             RasterFileDictionary rasters = new RasterFileDictionary();
             rasters.Add(metadata, raster);
-            return GetElevationAtPoint(raster, rasters, metadata, lat, lon, 0, interpolator);
+            return GetElevationAtPoint(raster, rasters, metadata, lat, lon, 0, interpolator, NoDataBehavior.UseNoDataDefinedInDem);
 
         }
         public GeoPoint GetPointElevation(GeoPoint location, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
@@ -274,7 +274,7 @@ namespace DEM.Net.Core
                 {
                     PopulateRasterFileDictionary(tileCache, tile, _IRasterService, adjacentRasters);
 
-                    geoPoint.Elevation = GetElevationAtPoint(tileCache, tile, lat, lon, 0, interpolator);
+                    geoPoint.Elevation = GetElevationAtPoint(tileCache, tile, lat, lon, 0, interpolator, NoDataBehavior.SetToZero);
 
 
                     //Debug.WriteLine(adjacentRasters.Count);
@@ -283,7 +283,7 @@ namespace DEM.Net.Core
 
             return geoPoint;
         }
-        public IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, bool downloadMissingFiles = true)
+        public IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero, bool downloadMissingFiles = true)
         {
             if (points == null)
                 return null;
@@ -308,7 +308,7 @@ namespace DEM.Net.Core
                 {
 
                     // Get elevation for each point
-                    pointsWithElevation = this.GetElevationData(points, adjacentRasters, tiles, interpolator);
+                    pointsWithElevation = this.GetElevationData(points, adjacentRasters, tiles, interpolator, NoDataBehavior.SetToZero);
 
                     //Debug.WriteLine(adjacentRasters.Count);
                 }  // Ensures all rasters are properly closed
@@ -400,7 +400,9 @@ namespace DEM.Net.Core
                         heightMap.BoundingBox = new BoundingBox(xmin: tilesHeightMap.Min(h => h.BoundingBox.xMin)
                                                                 , xmax: tilesHeightMap.Max(h => h.BoundingBox.xMax)
                                                                 , ymin: tilesHeightMap.Min(h => h.BoundingBox.yMin)
-                                                                , ymax: tilesHeightMap.Max(h => h.BoundingBox.yMax));
+                                                                , ymax: tilesHeightMap.Max(h => h.BoundingBox.yMax)
+                                                                , zmin: tilesHeightMap.Min(h => h.BoundingBox.zMin)
+                                                                , zmax: tilesHeightMap.Max(h => h.BoundingBox.zMax));
                         bbox = heightMap.BoundingBox;
                         heightMap.Coordinates = tilesHeightMap.SelectMany(hmap => hmap.Coordinates).Sort();
                         heightMap.Count = totalWidth * totalHeight;
@@ -457,7 +459,7 @@ namespace DEM.Net.Core
         /// <param name="adjacentRasters"></param>
         /// <param name="segTiles"></param>
         /// <param name="interpolator"></param>
-        public IEnumerable<GeoPoint> GetElevationData(IEnumerable<GeoPoint> intersections, RasterFileDictionary adjacentRasters, List<FileMetadata> segTiles, IInterpolator interpolator)
+        public IEnumerable<GeoPoint> GetElevationData(IEnumerable<GeoPoint> intersections, RasterFileDictionary adjacentRasters, List<FileMetadata> segTiles, IInterpolator interpolator, NoDataBehavior behavior)
         {
             // Group by raster file for sequential and faster access
             var pointsByTileQuery = from point in intersections
@@ -470,8 +472,6 @@ namespace DEM.Net.Core
                                     group pointTile by pointTile.Tile into pointsByTile
                                     where pointsByTile.Key != null
                                     select pointsByTile;
-
-
 
             float lastElevation = 0;
 
@@ -493,7 +493,7 @@ namespace DEM.Net.Core
                 foreach (var pointile in tilePoints)
                 {
                     GeoPoint current = pointile.Point;
-                    lastElevation = this.GetElevationAtPoint(adjacentRasters, mainTile, current.Latitude, current.Longitude, lastElevation, interpolator);
+                    lastElevation = this.GetElevationAtPoint(adjacentRasters, mainTile, current.Latitude, current.Longitude, lastElevation, interpolator, behavior);
                     current.Elevation = lastElevation;
                     yield return current;
                 }
@@ -583,11 +583,13 @@ namespace DEM.Net.Core
             // add start and/or end point
             if (returnStartPoint)
             {
-                segmentPointsWithDEMPoints.Add(inputSegment.Start);
+                segmentPointsWithDEMPoints.Add(new GeoPoint(startLat, startLon));
+                //segmentPointsWithDEMPoints.Add(inputSegment.Start);
             }
             if (returnEndPoind)
             {
-                segmentPointsWithDEMPoints.Add(inputSegment.End);
+                segmentPointsWithDEMPoints.Add(new GeoPoint(endLat, endLon));
+                //segmentPointsWithDEMPoints.Add(inputSegment.End);
             }
 
             // sort points in segment order
@@ -766,12 +768,12 @@ namespace DEM.Net.Core
 
         }
 
-        private float GetElevationAtPoint(RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float lastElevation, IInterpolator interpolator)
+        private float GetElevationAtPoint(RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float noDataElevation, IInterpolator interpolator, NoDataBehavior behavior)
         {
-            return GetElevationAtPoint(adjacentTiles[metadata], adjacentTiles, metadata, lat, lon, lastElevation, interpolator ?? GetInterpolator(InterpolationMode.Bilinear));
+            return GetElevationAtPoint(adjacentTiles[metadata], adjacentTiles, metadata, lat, lon, noDataElevation, interpolator ?? GetInterpolator(InterpolationMode.Bilinear), behavior);
 
         }
-        private float GetElevationAtPoint(IRasterFile mainRaster, RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float lastElevation, IInterpolator interpolator)
+        private float GetElevationAtPoint(IRasterFile mainRaster, RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float noDataElevation, IInterpolator interpolator, NoDataBehavior behavior)
         {
             float heightValue = 0;
             try
@@ -848,7 +850,12 @@ namespace DEM.Net.Core
 
                 if (heightValue == NO_DATA_OUT)
                 {
-                    heightValue = lastElevation;
+                    switch (behavior)
+                    {
+                        case NoDataBehavior.LastElevation: heightValue = noDataElevation; break;
+                        case NoDataBehavior.SetToZero: heightValue = 0; break;
+                        case NoDataBehavior.UseNoDataDefinedInDem: heightValue = NO_DATA_OUT; break;
+                    }
                 }
             }
             catch (Exception e)

@@ -50,14 +50,16 @@ namespace DEM.Net.Core
 
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
-            heightMap.Coordinates = heightMap.Coordinates.Translate(-xOriginOffset, -yOriginOffset);
+            double zOriginOffset = bbox.zMax - (bbox.zMax - bbox.zMin) / 2d;
+            heightMap.Coordinates = heightMap.Coordinates.Translate(-xOriginOffset, -yOriginOffset, -zOriginOffset);
 
             // world to model is (x,y,z) -> (x,z,-y)
             // translate (X,Y,0) -> (X,0,-Y)
             transform = System.Numerics.Matrix4x4.CreateTranslation(-(float)xOriginOffset, 0, (float)yOriginOffset);
 
             heightMap.BoundingBox = new BoundingBox(bbox.xMin - xOriginOffset, bbox.xMax - xOriginOffset
-                                                    , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset);
+                                                    , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset
+                                                    , bbox.zMin - zOriginOffset, bbox.zMax - zOriginOffset);
             return heightMap;
         }
         /// <summary>
@@ -66,17 +68,34 @@ namespace DEM.Net.Core
         /// <param name="heightMap"></param>
         /// <returns></returns>
         /// <remarks>This can be used in an height map processing pipeline, as coordinates are changed only on enumeration</remarks>
-        public static HeightMap CenterOnOrigin(this HeightMap heightMap)
+        public static HeightMap CenterOnOrigin(this HeightMap heightMap, bool centerOnZ = false)
         {
             //Logger.Info("CenterOnOrigin...");
             var bbox = heightMap.BoundingBox;
 
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
-            heightMap.Coordinates = heightMap.Coordinates.Translate(-xOriginOffset, -yOriginOffset);
+            double zOriginOffset = bbox.zMax - (bbox.zMax - bbox.zMin) / 2d;
+            heightMap.Coordinates = heightMap.Coordinates.Translate(-xOriginOffset, -yOriginOffset, centerOnZ ? -bbox.zMin : 0);
 
             heightMap.BoundingBox = new BoundingBox(bbox.xMin - xOriginOffset, bbox.xMax - xOriginOffset
-                                                    , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset);
+                                                    , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset
+                                                    , 0, bbox.zMax - bbox.zMin);
+            return heightMap;
+        }
+
+        public static HeightMap CenterOnOrigin(this HeightMap heightMap, BoundingBox bbox, bool centerOnZ = false)
+        {
+            //Logger.Info("CenterOnOrigin...");
+
+            double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
+            double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
+            double zOriginOffset = bbox.zMax - (bbox.zMax - bbox.zMin) / 2d;
+            heightMap.Coordinates = heightMap.Coordinates.Translate(-xOriginOffset, -yOriginOffset, centerOnZ ? -bbox.zMin : 0);
+
+            heightMap.BoundingBox = new BoundingBox(bbox.xMin - xOriginOffset, bbox.xMax - xOriginOffset
+                                                    , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset
+                                                    , 0, bbox.zMax - bbox.zMin);
             return heightMap;
         }
 
@@ -101,12 +120,13 @@ namespace DEM.Net.Core
         /// <param name="points"></param>
         /// <param name="bbox"></param>
         /// <returns></returns>
-        public static IEnumerable<GeoPoint> CenterOnOrigin(this IEnumerable<GeoPoint> points, BoundingBox bbox)
+        public static IEnumerable<GeoPoint> CenterOnOrigin(this IEnumerable<GeoPoint> points, BoundingBox bbox, bool centerOnZ = false)
         {
             //Logger.Info("CenterOnOrigin...");
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
-            points = points.Translate(-xOriginOffset, -yOriginOffset, 0);
+            //double zOriginOffset = bbox.zMax - (bbox.zMax - bbox.zMin) / 2d;
+            points = points.Translate(-xOriginOffset, -yOriginOffset, centerOnZ ? -bbox.zMin : 0); // Set minZ = 0
 
             return points;
         }
@@ -170,7 +190,7 @@ namespace DEM.Net.Core
         public static HeightMap Scale(this HeightMap heightMap, float x = 1f, float y = 1f, float z = 1f)
         {
             heightMap.Coordinates = heightMap.Coordinates.Scale(x, y, z);
-            heightMap.BoundingBox = heightMap.BoundingBox.Scale(x, y); // z does not affect bbox
+            heightMap.BoundingBox = heightMap.BoundingBox.Scale(x, y, z);
             heightMap.Minimum *= z;
             heightMap.Maximum *= z;
 
@@ -195,7 +215,7 @@ namespace DEM.Net.Core
                 scale = (float)(maxSize / heightMap.BoundingBox.Height);
             }
             heightMap.Coordinates = heightMap.Coordinates.Scale(scale, scale, scale);
-            heightMap.BoundingBox = heightMap.BoundingBox.ScaleAbsolute(scale, scale);
+            heightMap.BoundingBox = heightMap.BoundingBox.ScaleAbsolute(scale, scale, scale);
             return heightMap;
         }
         /// <summary>
@@ -263,11 +283,22 @@ namespace DEM.Net.Core
             foreach (var pt in points)
             {
                 var pout = pt.Clone();
-                pout.Elevation += distance;
+                pout.Elevation = (pout.Elevation ?? 0) + distance;
                 yield return pout;
             }
             //Logger.Info("ZTranslate done...");
 
+        }
+        public static IEnumerable<GeoPoint> Translate(this IEnumerable<GeoPoint> points, GeoPoint vector)
+        {
+            foreach (var pt in points)
+            {
+                var pout = pt.Clone();
+                pout.Latitude += vector.Latitude;
+                pout.Longitude += vector.Longitude;
+                pout.Elevation += vector.Elevation ?? 0;
+                yield return pout;
+            }
         }
 
 

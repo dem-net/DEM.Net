@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 
 using DEM.Net.Core;
+using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,10 +87,17 @@ namespace DEM.Net.Core
         }
 
 
-        public static GeoPoint Zero
+        public static GeoPoint Zero => new GeoPoint(0d, 0d, 0d);
+        public static GeoPoint UnitX => new GeoPoint(1d, 0d, 0d);
+        public static GeoPoint UnitY => new GeoPoint(0d, 1d, 0d);
+        public static GeoPoint UnitZ => new GeoPoint(0d, 0d, 1d);
+
+        public static GeoPoint operator *(GeoPoint left, float right)
         {
-            get { return new GeoPoint(0, 0); }
+            return new GeoPoint(left.Latitude * right, left.Longitude * right, left.Elevation.GetValueOrDefault(0) * right);
         }
+
+
         public override string ToString()
         {
             return

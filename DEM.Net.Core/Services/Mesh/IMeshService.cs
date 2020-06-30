@@ -9,7 +9,7 @@ namespace DEM.Net.Core
         IEnumerable<Vector3> ComputeMeshNormals(IList<Vector3> positions, IList<int> indices);
         Triangulation GenerateTriangleMesh_Boxed(HeightMap heightMap, BoxBaseThickness thickness, float zValue);
         Triangulation TriangulateHeightMap(HeightMap heightMap, bool regularTriangulation = true);
-        (IEnumerable<Vector3> positions, IEnumerable<int> indexes) GenerateTriangleMesh_Line(IEnumerable<GeoPoint> gpxPointsElevated, float trailWidthMeters);
+        (List<Vector3> positions, List<int> indexes) GenerateTriangleMesh_Line(IEnumerable<GeoPoint> gpxPointsElevated, float trailWidthMeters);
 
         TriangulationList<GeoPoint> Tesselate(IEnumerable<GeoPoint> outerRingPoints, IEnumerable<IEnumerable<GeoPoint>> innerRingsPoints);
     }

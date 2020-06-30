@@ -189,10 +189,10 @@ namespace DEM.Net.Core.Imagery
     public struct GraticuleLabel
     {
         public string label;
-        public PointInt location;
+        public Point<int> location;
         public LatLong worldLocation;
              
-        public GraticuleLabel(string Label, PointInt Location)
+        public GraticuleLabel(string Label, Point<int> Location)
         {
             this.label = Label;
             this.location = Location;
@@ -200,7 +200,7 @@ namespace DEM.Net.Core.Imagery
         }
         public GraticuleLabel(LatLong worldLocation)
         { this.label = null;
-            this.location =new PointInt(0,0);
+            this.location =new Point<int>(0,0);
             this.worldLocation = worldLocation;
         }
     }

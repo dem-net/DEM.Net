@@ -20,9 +20,9 @@
         {
             Name = "MapBox-SatelliteStreet",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Satellite Street", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
-            UrlModel = new UrlModel("https://api.mapbox.com/v4/mapbox.streets-satellite/{z}/{x}/{y}.png?access_token={t}", null),
-            //UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/256/{z}/{x}/{y}?access_token={t}", null),
             TokenUserSecretsKey = "MapBoxToken",
+            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}?access_token={t}", null),
+            TileSize = 512,
             MaxZoom = 23
         };
         public static readonly ImageryProvider MapBoxStreets = new ImageryProvider
@@ -30,8 +30,8 @@
             Name = "MapBox-Streets",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Streets", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
             TokenUserSecretsKey = "MapBoxToken",
-            UrlModel = new UrlModel("https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token={t}", null),
-            //UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}?access_token={t}", null),
+            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={t}", null),
+            TileSize = 512,
             MaxZoom = 23
         };
         public static readonly ImageryProvider MapBoxOutdoors = new ImageryProvider
@@ -48,8 +48,8 @@
             Name = "MapBox-Light",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Light", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
             TokenUserSecretsKey = "MapBoxToken",
-            UrlModel = new UrlModel("https://api.mapbox.com/v4/mapbox.light/{z}/{x}/{y}.png?access_token={t}", null),
-            //UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}?access_token={t}", null),
+            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/{z}/{x}/{y}?access_token={t}", null),
+            TileSize = 512,
             MaxZoom = 23
         };
         public static readonly ImageryProvider MapBoxDark = new ImageryProvider
@@ -57,8 +57,8 @@
             Name = "MapBox-Dark",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Dark", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
             TokenUserSecretsKey = "MapBoxToken",
-            UrlModel = new UrlModel("https://api.mapbox.com/v4/mapbox.dark/{z}/{x}/{y}.png?access_token={t}", null),
-            //UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/256/{z}/{x}/{y}?access_token={t}", null),
+            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/{z}/{x}/{y}?access_token={t}", null),
+            TileSize = 512,
             MaxZoom = 23
         };
         public static readonly ImageryProvider StamenToner = new ImageryProvider
@@ -66,14 +66,14 @@
             Name = "Stamen-Toner",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Stamen Toner", "https://stamen.com/", "Map tiles by <a href=\"http://stamen.com\">Stamen Design</a>, under <a href=\"http://creativecommons.org/licenses/by/3.0\">CC BY 3.0</a>. Data by <a href=\"http://openstreetmap.org\">OpenStreetMap</a>, under <a href=\"http://www.openstreetmap.org/copyright\">ODbL</a>."),
             UrlModel = new UrlModel("http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png", new[] { "a", "b", "c", "d" }),
-            MaxZoom = 14
+            MaxZoom = 18
         };
         public static readonly ImageryProvider StamenWaterColor = new ImageryProvider
         {
             Name = "Stamen-Watercolor",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Stamen Watercolor", "https://stamen.com/", "Map tiles by <a href=\"http://stamen.com\">Stamen Design</a>, under <a href=\"http://creativecommons.org/licenses/by/3.0\">CC BY 3.0</a>. Data by <a href=\"http://openstreetmap.org\">OpenStreetMap</a>, under <a href=\"http://creativecommons.org/licenses/by-sa/3.0\">CC BY SA</a>."),
             UrlModel = new UrlModel("http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg", new[] { "a", "b", "c", "d" }),
-            MaxZoom = 14
+            MaxZoom = 18
         };
         public static readonly ImageryProvider OpenTopoMap = new ImageryProvider
         {

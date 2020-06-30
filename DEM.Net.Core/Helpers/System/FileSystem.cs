@@ -43,4 +43,29 @@ namespace DEM.Net.Core
             return fileSizeBytes;
         }
     }
+
+    public static class StreamReaderExtensions
+    {
+        public static void Skip(this StreamReader sr, int numLines)
+        {
+            for (int i = 1; i <= numLines; i++)
+            {
+                sr.ReadLine();
+            }
+        }
+        public static string[] ReadUntil(this StreamReader sr, Predicate<string> match)
+        {
+            List<string> lines = new List<string>();
+            string line;
+            do
+            {
+                line = sr.ReadLine();
+                lines.Add(line);
+            }
+            while (match(line) == false && !sr.EndOfStream);
+
+            return lines.ToArray();
+        }
+
+    }
 }

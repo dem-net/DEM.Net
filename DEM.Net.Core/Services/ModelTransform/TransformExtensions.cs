@@ -1,9 +1,9 @@
-﻿// Point<int>.cs
+﻿// TransformExtensions.cs
 //
 // Author:
 //       Xavier Fischer
 //
-// Copyright (c) 2019 
+// Copyright (c) 2020 Xavier Fischer
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,30 +22,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DEM.Net.Core.Imagery
+namespace DEM.Net.Core
 {
-    public struct Point<T>
+    public static class TransformExtensions
     {
-        public T X;
-        public T Y;
-
-
-        public Point(T x, T y)
+        public static Func<IEnumerable<GeoPoint>, IEnumerable<GeoPoint>> PostTransform(this Func<IEnumerable<GeoPoint>, IEnumerable<GeoPoint>> func, Func<IEnumerable<GeoPoint>, IEnumerable<GeoPoint>> postTransform)
         {
-            X = x;
-            Y = y;
-        }
-
-        public override string ToString()
-        {
-            return $"x={X}, y={Y}";
+            return pts => postTransform(func(pts));
         }
     }
 }
