@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <PackageId>DEM.Net.Core</PackageId>
-        <Version>0.2.7</Version>
+        <Version>0.2.7.1</Version>
         <Authors>Xavier Fischer, Frédéric Aubin</Authors>
         <Copyright>Xavier Fischer, Frédéric Aubin and Contributors</Copyright>
         <Owners>Xavier Fischer</Owners>
@@ -19,8 +19,8 @@
         </PackageLicenseExpression>
         <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
         <PackageIcon>DEMnet_64.png</PackageIcon>
-        <AssemblyVersion>0.2.7.0</AssemblyVersion>
-        <FileVersion>0.2.7.0</FileVersion>
+        <AssemblyVersion>0.2.7.1</AssemblyVersion>
+        <FileVersion>0.2.7.1</FileVersion>
         <UserSecretsId>a9a5d6e1-3bb8-4dfd-ac6a-861f60dada50</UserSecretsId>
         <TargetFramework>netstandard2.0</TargetFramework>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
@@ -85,7 +85,7 @@
         <Compile Include="Services\Voronoi\BeanTopologie\TopologieService.cs" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="BitMiracle.LibTiff.NET" Version="2.4.633" />
+        <PackageReference Include="BitMiracle.LibTiff.NET" Version="2.4.639" />
         <PackageReference Include="DotSpatial.Projections.NetStandard" Version="1.0.0" />
         <PackageReference Include="GeoAPI.CoordinateSystems" Version="1.7.5" />
         <PackageReference Include="GeoAPI.Core" Version="1.7.5" />

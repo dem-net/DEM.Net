@@ -1,61 +1,55 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-
-    <IsPackable>false</IsPackable>
-
-    <StartupObject></StartupObject>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="TestData\lauzannier.gpx" />
-    <None Remove="TestData\N043E005_AVE_DSM.tif.zip" />
-    <None Remove="TestData\N43E005.hgt.zip" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="TestData\lauzannier.gpx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TestData\N043E005_AVE_DSM.tif.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TestData\N43E005.hgt.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="BitMiracle.LibTiff.NET" Version="2.4.633" />
-    <PackageReference Include="DotSpatial.Projections" Version="1.9.0" />
-    <PackageReference Include="GeoAPI.CoordinateSystems" Version="1.7.5" />
-    <PackageReference Include="GeoAPI.Core" Version="1.7.5" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.2.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
-    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-    <PackageReference Include="xunit" Version="2.4.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\DEM.Net.glTF\DEM.Net.glTF.csproj" />
-    <ProjectReference Include="..\DEM.Net.Core\DEM.Net.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="secrets.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <IsPackable>false</IsPackable>
+        <StartupObject>
+        </StartupObject>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Remove="TestData\lauzannier.gpx" />
+        <None Remove="TestData\N043E005_AVE_DSM.tif.zip" />
+        <None Remove="TestData\N43E005.hgt.zip" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="TestData\lauzannier.gpx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="TestData\N043E005_AVE_DSM.tif.zip">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="TestData\N43E005.hgt.zip">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="BitMiracle.LibTiff.NET" Version="2.4.639" />
+        <PackageReference Include="DotSpatial.Projections" Version="1.9.0" />
+        <PackageReference Include="GeoAPI.CoordinateSystems" Version="1.7.5" />
+        <PackageReference Include="GeoAPI.Core" Version="1.7.5" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.2.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+        <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+        <PackageReference Include="xunit" Version="2.4.0" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\DEM.Net.glTF\DEM.Net.glTF.csproj" />
+        <ProjectReference Include="..\DEM.Net.Core\DEM.Net.Core.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Update="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="secrets.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 </Project>
