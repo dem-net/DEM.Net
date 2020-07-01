@@ -11,14 +11,14 @@ namespace DEM.Net.xUnit.Test
 {
     public class TileTests : IClassFixture<DemNetFixture>
     {
-        readonly IElevationService _elevationService;
-        readonly IRasterService _rasterService;
+        readonly ElevationService _elevationService;
+        readonly RasterService _rasterService;
         readonly RasterIndexServiceResolver _rasterResolver;
 
         public TileTests(DemNetFixture fixture)
         {
-            _elevationService = fixture.ServiceProvider.GetService<IElevationService>();
-            _rasterService = fixture.ServiceProvider.GetService<IRasterService>();
+            _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
+            _rasterService = fixture.ServiceProvider.GetService<RasterService>();
             _rasterResolver = fixture.ServiceProvider.GetService<RasterIndexServiceResolver>();
         }
 

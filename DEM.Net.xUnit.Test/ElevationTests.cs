@@ -9,11 +9,11 @@ namespace DEM.Net.Test
 {
     public class ElevationTests : IClassFixture<DemNetFixture>
     {
-        IElevationService _elevationService;
+        ElevationService _elevationService;
 
         public ElevationTests(DemNetFixture fixture)
         {
-            _elevationService = fixture.ServiceProvider.GetService<IElevationService>();
+            _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
         }
 
         [Fact(DisplayName = "Not covered elevation check")]

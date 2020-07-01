@@ -10,17 +10,17 @@ namespace DEM.Net.Test
 {
     public class glTFTests : IClassFixture<DemNetFixture>
     {
-        IRasterService _rasterService;
-        IElevationService _elevationService;
+        RasterService _rasterService;
+        ElevationService _elevationService;
         SharpGltfService _sharpGltfService;
-        IMeshService _meshService;
+        MeshService _meshService;
 
         public glTFTests(DemNetFixture fixture)
         {
-            _rasterService = fixture.ServiceProvider.GetService<IRasterService>();
-            _elevationService = fixture.ServiceProvider.GetService<IElevationService>();
+            _rasterService = fixture.ServiceProvider.GetService<RasterService>();
+            _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
             _sharpGltfService = fixture.ServiceProvider.GetService<SharpGltfService>();
-            _meshService = fixture.ServiceProvider.GetService<IMeshService>();
+            _meshService = fixture.ServiceProvider.GetService<MeshService>();
         }
 
         [Fact]

@@ -9,13 +9,13 @@ namespace DEM.Net.Test
 {
     public class RasterTests : IClassFixture<DemNetFixture>
     {
-        IRasterService _rasterService;
-        IElevationService _elevationService;
+        RasterService _rasterService;
+        ElevationService _elevationService;
 
         public RasterTests(DemNetFixture fixture)
         {
-            _rasterService = fixture.ServiceProvider.GetService<IRasterService>();
-            _elevationService = fixture.ServiceProvider.GetService<IElevationService>();
+            _rasterService = fixture.ServiceProvider.GetService<RasterService>();
+            _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
         }
 
         [Fact]

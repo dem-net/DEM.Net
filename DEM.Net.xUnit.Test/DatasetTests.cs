@@ -10,15 +10,15 @@ namespace DEM.Net.Test
 {
     public class DatasetTests : IClassFixture<DemNetFixture>
     {
-        readonly IRasterService _rasterService;
-        readonly IElevationService _elevationService;
+        readonly RasterService _rasterService;
+        readonly ElevationService _elevationService;
         readonly RasterIndexServiceResolver _indexServiceResolver;
 
 
         public DatasetTests(DemNetFixture fixture)
         {
-            _rasterService = fixture.ServiceProvider.GetService<IRasterService>();
-            _elevationService = fixture.ServiceProvider.GetService<IElevationService>();
+            _rasterService = fixture.ServiceProvider.GetService<RasterService>();
+            _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
             _indexServiceResolver = fixture.ServiceProvider.GetService<RasterIndexServiceResolver>();
         }
 

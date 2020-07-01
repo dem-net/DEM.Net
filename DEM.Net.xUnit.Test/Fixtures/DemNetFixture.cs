@@ -49,7 +49,7 @@ namespace DEM.Net.Test
         void OnStart(ServiceProvider services)
         {
             //foreach (var dst in DEMDataSet.RegisteredNonSingleFileDatasets)
-            //    services.GetService<IRasterService>().GenerateDirectoryMetadata(dst, true);
+            //    services.GetService<RasterService>().GenerateDirectoryMetadata(dst, true);
 
         }
 

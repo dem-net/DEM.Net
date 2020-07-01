@@ -7,11 +7,11 @@ namespace DEM.Net.Test
 {
     public class HeightMapTests : IClassFixture<DemNetFixture>
     {
-        IElevationService _elevationService;
+        ElevationService _elevationService;
 
         public HeightMapTests(DemNetFixture fixture)
         {
-            _elevationService = fixture.ServiceProvider.GetService<IElevationService>();
+            _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
         }
 
         [Theory()]
