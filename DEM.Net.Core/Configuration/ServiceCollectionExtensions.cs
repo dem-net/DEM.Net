@@ -39,9 +39,9 @@ namespace DEM.Net.Core
 
             services
                     .AddSingleton<IDEMDataSetIndex,GDALVRTFileService>()
-                    .AddSingleton<IRasterService, RasterService>()
-                    .AddTransient<IElevationService, ElevationService>()
-                    .AddTransient<IMeshService, MeshService>()
+                    .AddSingleton<RasterService>()
+                    .AddTransient<ElevationService>()
+                    .AddTransient<MeshService>()
                     .AddSingleton<ImageryService>();
 
             return services;

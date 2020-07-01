@@ -59,14 +59,14 @@ namespace DEM.Net.Core.Imagery
 
 
         private readonly ILogger<ImageryService> _logger;
-        private readonly IMeshService _meshService;
+        private readonly MeshService _meshService;
         private readonly AppSecrets appSecrets;
         private readonly DEMNetOptions options;
         private readonly IMemoryCache cache;
         private static HttpClient _httpClient = new HttpClient();
 
 
-        public ImageryService(IMeshService meshService,
+        public ImageryService(MeshService meshService,
             IOptions<AppSecrets> appSecrets,
             IOptions<DEMNetOptions> options,
             IMemoryCache cache,

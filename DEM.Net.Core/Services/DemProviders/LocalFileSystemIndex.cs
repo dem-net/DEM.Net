@@ -14,9 +14,9 @@ namespace DEM.Net.Core
         private ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName;
 
         private ConcurrentDictionary<string, string> _directoryPerDataset;
-        private readonly IRasterService _rasterService;
+        private readonly RasterService _rasterService;
         private readonly ILogger<LocalFileSystemIndex> _logger;
-        public LocalFileSystemIndex(ILogger<LocalFileSystemIndex> logger, IRasterService rasterService)
+        public LocalFileSystemIndex(ILogger<LocalFileSystemIndex> logger, RasterService rasterService)
         {
             _logger = logger;
             _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();

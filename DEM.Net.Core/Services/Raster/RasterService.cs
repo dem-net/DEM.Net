@@ -40,7 +40,7 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core
 {
-    public class RasterService : IRasterService
+    public class RasterService : IRasterDownloader
     {
         const string APP_NAME = "DEM.Net";
         internal const string MANIFEST_DIR = "manifest";
@@ -68,6 +68,11 @@ namespace DEM.Net.Core
             _metadataCatalogCache = new ConcurrentDictionary<string, List<FileMetadata>>();
         }
 
+        /// <summary>
+        /// Change directory to user specified directory. Causes local caches to reset.
+        /// Directory will be created if not existing
+        /// </summary>
+        /// <param name="localDirectory"></param>
         public void SetLocalDirectory(string localDirectory)
         {
             localDirectory = Path.Combine(localDirectory, APP_NAME);
@@ -246,7 +251,13 @@ namespace DEM.Net.Core
             return GetMetadataFileName(rasterFileName, outDirPath, extension);
         }
 
-
+        /// <summary>
+        /// Generates a <see cref="FileMetadata"/> as JSON file containing raster file information.
+        /// This metadata is used for fast indexing, preventing to open every raster file when performing spatial queries
+        /// </summary>
+        /// <param name="rasterFileName">Local file name</param>
+        /// <param name="fileFormat">File format definition, see <see cref="DEMFileDefinition"/></param>
+        /// <param name="force">If true, metadata will be replaced, if false the metadata will be generated only if the JSON file does not exists</param>
         public void GenerateFileMetadata(string rasterFileName, DEMFileDefinition fileFormat, bool force)
         {
             if (!File.Exists(rasterFileName))

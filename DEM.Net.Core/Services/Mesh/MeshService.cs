@@ -35,7 +35,7 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core
 {
-    public class MeshService : IMeshService
+    public class MeshService
     {
         private readonly ILogger<MeshService> _logger;
 

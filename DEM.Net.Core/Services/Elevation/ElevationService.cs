@@ -37,28 +37,36 @@ using Microsoft.Extensions.Logging;
 
 namespace DEM.Net.Core
 {
-    public class ElevationService : IElevationService
+    public class ElevationService
     {
         public const float NO_DATA_OUT = 0;
         private const double EPSILON = 1E-10;
-        private readonly IRasterService _IRasterService;
+        private readonly RasterService _RasterService;
         private readonly ILogger<ElevationService> _logger;
 
-        public ElevationService(IRasterService rasterService, ILogger<ElevationService> logger = null)
+        public ElevationService(RasterService rasterService, ILogger<ElevationService> logger = null)
         {
-            _IRasterService = rasterService;
+            _RasterService = rasterService;
             _logger = logger;
         }
 
 
         public string GetDEMLocalPath(DEMDataSet dataSet)
         {
-            return _IRasterService.GetLocalDEMPath(dataSet);
+            return _RasterService.GetLocalDEMPath(dataSet);
         }
 
+        /// <summary>
+        /// Given a bounding box and a dataset, downloads all covered tiles
+        /// using VRT file specified in dataset
+        /// </summary>
+        /// <param name="dataSet">DEMDataSet used</param>
+        /// <param name="bbox">Bounding box, <see cref="GeometryService.GetBoundingBox(string)"/></param>
+        /// <remarks>VRT file is downloaded once. It will be cached in local for 30 days.
+        /// </remarks>
         public void DownloadMissingFiles(DEMDataSet dataSet, BoundingBox bbox = null)
         {
-            var report = _IRasterService.GenerateReport(dataSet, bbox);
+            var report = _RasterService.GenerateReport(dataSet, bbox);
 
             if (report == null || !report.Any())
             {
@@ -70,9 +78,18 @@ namespace DEM.Net.Core
 
         }
 
+        /// <summary>
+        /// Given a location and a dataset, downloads all covered tiles
+        /// using VRT file specified in dataset
+        /// </summary>
+        /// <param name="dataSet">DEMDataSet used</param>
+        /// <param name="lat">Latitude of location</param>
+        /// <param name="lon">Longitude of location</param>
+        /// <remarks>VRT file is downloaded once. It will be cached in local for 30 days.
+        /// </remarks>
         public void DownloadMissingFiles(DEMDataSet dataSet, double lat, double lon)
         {
-            var report = _IRasterService.GenerateReportForLocation(dataSet, lat, lon);
+            var report = _RasterService.GenerateReportForLocation(dataSet, lat, lon);
 
             if (report == null)
             {
@@ -84,6 +101,14 @@ namespace DEM.Net.Core
 
         }
 
+        /// <summary>
+        /// Given a location and a dataset, downloads all covered tiles
+        /// using VRT file specified in dataset
+        /// </summary>
+        /// <param name="dataSet">DEMDataSet used</param>
+        /// <param name="geoPoint">GeoPoint</param>
+        /// <remarks>VRT file is downloaded once. It will be cached in local for 30 days.
+        /// </remarks>
         public void DownloadMissingFiles(DEMDataSet dataSet, GeoPoint geoPoint)
         {
             if (geoPoint == null)
@@ -96,7 +121,7 @@ namespace DEM.Net.Core
             // Generate metadata files if missing
             foreach (var file in report.Where(r => r.IsMetadataGenerated == false && r.IsExistingLocally == true))
             {
-                _IRasterService.GenerateFileMetadata(file.LocalName, dataSet.FileFormat, false);
+                _RasterService.GenerateFileMetadata(file.LocalName, dataSet.FileFormat, false);
             }
             List<DemFileReport> filesToDownload = new List<DemFileReport>(report.Where(kvp => kvp.IsExistingLocally == false));
 
@@ -112,12 +137,12 @@ namespace DEM.Net.Core
                 {
                     Parallel.ForEach(filesToDownload, new ParallelOptions { MaxDegreeOfParallelism = 2 }, file =>
                         {
-                            _IRasterService.DownloadRasterFile(file, dataSet);
+                            _RasterService.DownloadRasterFile(file, dataSet);
                         }
                     );
 
-                    _IRasterService.GenerateDirectoryMetadata(dataSet, false, false);
-                    _IRasterService.LoadManifestMetadata(dataSet, true);
+                    _RasterService.GenerateDirectoryMetadata(dataSet, false, false);
+                    _RasterService.LoadManifestMetadata(dataSet, true);
 
                 }
                 catch (AggregateException ex)
@@ -131,11 +156,14 @@ namespace DEM.Net.Core
         }
 
 
-
         /// <summary>
-        /// Extract elevation data along line path
+        /// High level method that retrieves all dataset elevations along given line
         /// </summary>
-        /// <param name="lineWKT"></param>
+        /// <param name="lineWKT">Line geometry in WKT</param>
+        /// <param name="dataSet">DEM dataset to use</param>
+        /// <param name="interpolationMode">Interpolation mode</param>
+        /// <param name="behavior">Action to use when no data is found in dataset</param>
+        /// <remarks>Output can be BIG, as all elevations will be returned.</remarks>
         /// <returns></returns>
         public List<GeoPoint> GetLineGeometryElevation(string lineWKT, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
         {
@@ -149,6 +177,15 @@ namespace DEM.Net.Core
             return GetLineGeometryElevation(geom, dataSet, interpolationMode);
         }
 
+        /// <summary>
+        /// High level method that retrieves all dataset elevations along given line
+        /// </summary>
+        /// <param name="lineStringGeometry">Line geometry</param>
+        /// <param name="dataSet">DEM dataset to use</param>
+        /// <param name="interpolationMode">Interpolation mode</param>
+        /// <param name="behavior">Action to use when no data is found in dataset</param>
+        /// <remarks>Output can be BIG, as all elevations will be returned.</remarks>
+        /// <returns></returns>
         public List<GeoPoint> GetLineGeometryElevation(IGeometry lineStringGeometry, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
         {
             if (lineStringGeometry == null || lineStringGeometry.IsEmpty)
@@ -209,6 +246,16 @@ namespace DEM.Net.Core
 
             return geoPoints;
         }
+
+        /// <summary>
+        /// High level method that retrieves all dataset elevations along given line
+        /// </summary>
+        /// <param name="lineGeoPoints">List of points that, when joined, makes the input line</param>
+        /// <param name="dataSet">DEM dataset to use</param>
+        /// <param name="interpolationMode">Interpolation mode</param>
+        /// <param name="behavior">Action to use when no data is found in dataset</param>
+        /// <remarks>Output can be BIG, as all elevations will be returned.</remarks>
+        /// <returns></returns>
         public List<GeoPoint> GetLineGeometryElevation(IEnumerable<GeoPoint> lineGeoPoints, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
         {
             if (lineGeoPoints == null)
@@ -219,12 +266,20 @@ namespace DEM.Net.Core
             return GetLineGeometryElevation(geometry, dataSet, interpolationMode, behavior);
         }
 
+        /// <summary>
+        /// Get elevation for any raster at specified point (in raster coordinate system)
+        /// </summary>
+        /// <param name="metadata">File metadata, <see cref="IRasterFile.ParseMetaData"/> and <see cref="RasterService.OpenFile(string, DEMFileType)"/></param>
+        /// <param name="lat"></param>
+        /// <param name="lon"></param>
+        /// <param name="interpolator">If null, then Bilinear interpolation will be used</param>
+        /// <returns></returns>
         public float GetPointElevation(FileMetadata metadata, double lat, double lon, IInterpolator interpolator = null)
         {
             float heightValue = 0;
             try
             {
-                using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, metadata.FileFormat.Type))
+                using (IRasterFile raster = _RasterService.OpenFile(metadata.Filename, metadata.FileFormat.Type))
                 {
                     heightValue = GetPointElevation(raster, metadata, lat, lon, interpolator);
                 }
@@ -235,6 +290,16 @@ namespace DEM.Net.Core
             }
             return heightValue;
         }
+
+        /// <summary>
+        /// Get elevation for any raster at specified point (in raster coordinate system)
+        /// </summary>
+        /// <param name="raster">Raster file, <see cref="RasterService.OpenFile(string, DEMFileType)"/></param>
+        /// <param name="metadata">File metadata, <see cref="IRasterFile.ParseMetaData"/></param>
+        /// <param name="lat"></param>
+        /// <param name="lon"></param>
+        /// <param name="interpolator">If null, then Bilinear interpolation will be used</param>
+        /// <returns></returns>
         public float GetPointElevation(IRasterFile raster, FileMetadata metadata, double lat, double lon, IInterpolator interpolator = null)
         {
             // Do not dispose Dictionary, as IRasterFile disposal is the caller's responsability
@@ -243,10 +308,27 @@ namespace DEM.Net.Core
             return GetElevationAtPoint(raster, rasters, metadata, lat, lon, 0, interpolator, NoDataBehavior.UseNoDataDefinedInDem);
 
         }
+
+        /// <summary>
+        /// High level method that retrieves elevation for given point
+        /// </summary>
+        /// <param name="location">GeoPoint with latitude/longitude</param>
+        /// <param name="dataSet">DEM dataset to use</param>
+        /// <param name="interpolationMode">Interpolation mode</param>
+        /// <returns></returns>
         public GeoPoint GetPointElevation(GeoPoint location, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
             return GetPointElevation(location.Latitude, location.Longitude, dataSet, interpolationMode);
         }
+
+        /// <summary>
+        /// High level method that retrieves elevation for given point
+        /// </summary>
+        /// <param name="lat">Point latitude</param>
+        /// <param name="lon">Point longitude</param>
+        /// <param name="dataSet">DEM dataset to use</param>
+        /// <param name="interpolationMode">Interpolation mode</param>
+        /// <returns></returns>
         public GeoPoint GetPointElevation(double lat, double lon, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
             GeoPoint geoPoint = new GeoPoint(lat, lon);
@@ -272,7 +354,7 @@ namespace DEM.Net.Core
                 // TODO : grab adjacent tiles for cell registrered datasets to allow correct interpolation when close to edges
                 using (RasterFileDictionary tileCache = new RasterFileDictionary())
                 {
-                    PopulateRasterFileDictionary(tileCache, tile, _IRasterService, adjacentRasters);
+                    PopulateRasterFileDictionary(tileCache, tile, _RasterService, adjacentRasters);
 
                     geoPoint.Elevation = GetElevationAtPoint(tileCache, tile, lat, lon, 0, interpolator, NoDataBehavior.SetToZero);
 
@@ -283,6 +365,14 @@ namespace DEM.Net.Core
 
             return geoPoint;
         }
+
+        /// <summary>
+        /// High level method that retrieves elevation for each given point
+        /// </summary>
+        /// <param name="points">List of points</param>
+        /// <param name="dataSet">DEM dataset to use</param>
+        /// <param name="interpolationMode">Interpolation mode</param>
+        /// <returns></returns>
         public IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero, bool downloadMissingFiles = true)
         {
             if (points == null)
@@ -330,6 +420,11 @@ namespace DEM.Net.Core
             }
         }
 
+        /// <summary>
+        /// Generate a tab separated list of points and elevations
+        /// </summary>
+        /// <param name="lineElevationData"></param>
+        /// <returns></returns>
         public string ExportElevationTable(List<GeoPoint> lineElevationData)
         {
             StringBuilder sb = new StringBuilder();
@@ -341,6 +436,12 @@ namespace DEM.Net.Core
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Returns all elevations in given bbox
+        /// </summary>
+        /// <param name="bbox">Bounding box. Passed as ref: it will be updated to reflect data source real points bounding box</param>
+        /// <param name="dataSet"></param>
+        /// <returns></returns>
         public HeightMap GetHeightMap(ref BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles = true)
         {
             if (downloadMissingFiles)
@@ -374,7 +475,7 @@ namespace DEM.Net.Core
                     List<HeightMap> tilesHeightMap = new List<HeightMap>(bboxMetadata.Count);
                     foreach (FileMetadata metadata in bboxMetadata)
                     {
-                        using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, dataSet.FileFormat.Type))
+                        using (IRasterFile raster = _RasterService.OpenFile(metadata.Filename, dataSet.FileFormat.Type))
                         {
                             var hmap = raster.GetHeightMapInBBox(bbox, metadata, NO_DATA_OUT);
                             if (hmap.Count > 0)
@@ -433,7 +534,7 @@ namespace DEM.Net.Core
         public HeightMap GetHeightMap(BoundingBox bbox, string rasterFilePath, DEMFileDefinition format)
         {
             HeightMap heightMap = null;
-            using (IRasterFile raster = _IRasterService.OpenFile(rasterFilePath, format.Type))
+            using (IRasterFile raster = _RasterService.OpenFile(rasterFilePath, format.Type))
             {
                 var metaData = raster.ParseMetaData(format);
                 heightMap = raster.GetHeightMapInBBox(bbox, metaData, NO_DATA_OUT);
@@ -441,10 +542,16 @@ namespace DEM.Net.Core
 
             return heightMap;
         }
+
+        /// <summary>
+        /// Get all elevation for a given raster file
+        /// </summary>
+        /// <param name="metadata">Raster file metadata. <see cref="GetCoveringFiles(BoundingBox, DEMDataSet, List{FileMetadata})"></see></param>
+        /// <returns></returns>
         public HeightMap GetHeightMap(FileMetadata metadata)
         {
             HeightMap map = null;
-            using (IRasterFile raster = _IRasterService.OpenFile(metadata.Filename, metadata.FileFormat.Type))
+            using (IRasterFile raster = _RasterService.OpenFile(metadata.Filename, metadata.FileFormat.Type))
             {
                 map = raster.GetHeightMap(metadata);
             }
@@ -487,7 +594,7 @@ namespace DEM.Net.Core
 
 
                 // We open rasters first, then we iterate
-                PopulateRasterFileDictionary(adjacentRasters, mainTile, _IRasterService, tilePoints.SelectMany(tp => tp.AdjacentTiles));
+                PopulateRasterFileDictionary(adjacentRasters, mainTile, _RasterService, tilePoints.SelectMany(tp => tp.AdjacentTiles));
 
 
                 foreach (var pointile in tilePoints)
@@ -500,7 +607,7 @@ namespace DEM.Net.Core
             }
         }
 
-        private void PopulateRasterFileDictionary(RasterFileDictionary dictionary, FileMetadata mainTile, IRasterService rasterService, IEnumerable<FileMetadata> fileMetadataList)
+        private void PopulateRasterFileDictionary(RasterFileDictionary dictionary, FileMetadata mainTile, RasterService rasterService, IEnumerable<FileMetadata> fileMetadataList)
         {
             // Add main tile
             if (!dictionary.ContainsKey(mainTile))
@@ -527,7 +634,7 @@ namespace DEM.Net.Core
         /// <param name="startLat">Segment start latitude</param>
         /// <param name="endLon">Segment end longitude</param>
         /// <param name="endLat">Segment end latitude</param>
-        /// <param name="segTiles">Metadata files <see cref="IElevationService.GetCoveringFiles"/> to see how to get them relative to segment geometry</param>
+        /// <param name="segTiles">Metadata files <see cref="ElevationService.GetCoveringFiles"/> to see how to get them relative to segment geometry</param>
         /// <param name="returnStartPoint">If true, the segment starting point will be returned. Useful when processing a line segment by segment.</param>
         /// <param name="returnEndPoind">If true, the segment end point will be returned. Useful when processing a line segment by segment.</param>
         /// <returns></returns>
@@ -684,7 +791,11 @@ namespace DEM.Net.Core
         }
 
 
-
+        /// <summary>
+        /// Retrieves bounding box for the uning of all raster file list
+        /// </summary>
+        /// <param name="tiles"></param>
+        /// <returns></returns>
         public BoundingBox GetTilesBoundingBox(List<FileMetadata> tiles)
         {
             double xmin = tiles.Min(t => t.DataStartLon);
@@ -700,7 +811,7 @@ namespace DEM.Net.Core
             // Locate which files are needed
 
             // Load metadata catalog
-            List<FileMetadata> metadataCatalog = subSet ?? _IRasterService.LoadManifestMetadata(dataSet, false);
+            List<FileMetadata> metadataCatalog = subSet ?? _RasterService.LoadManifestMetadata(dataSet, false);
 
             // Find files matching coords
             List<FileMetadata> bboxMetadata = new List<FileMetadata>(metadataCatalog.Where(m => IsBboxIntersectingTile(m, bbox)));
@@ -718,7 +829,7 @@ namespace DEM.Net.Core
             // Locate which files are needed
 
             // Load metadata catalog
-            List<FileMetadata> metadataCatalog = subSet ?? _IRasterService.LoadManifestMetadata(dataSet, false);
+            List<FileMetadata> metadataCatalog = subSet ?? _RasterService.LoadManifestMetadata(dataSet, false);
 
             var geoPoint = new GeoPoint(lat, lon);
             // Find files matching coords
@@ -737,6 +848,13 @@ namespace DEM.Net.Core
             return bboxMetadata.FirstOrDefault();
         }
 
+        /// <summary>
+        /// Performs point / bbox intersection
+        /// </summary>
+        /// <param name="originLatitude"></param>
+        /// <param name="originLongitude"></param>
+        /// <param name="bbox"></param>
+        /// <returns></returns>
         public bool IsBboxIntersectingTile(FileMetadata tileMetadata, BoundingBox bbox)
         {
             BoundingBox tileBBox = tileMetadata.BoundingBox;
@@ -954,6 +1072,17 @@ namespace DEM.Net.Core
             }
         }
 
+        /// <summary>
+        /// High level method reporting ray casting from an origin to a target point,
+        /// thus giving information about wether source and target are intervisible or not
+        /// </summary>
+        /// <param name="source">Source point</param>
+        /// <param name="target">Target point</param>
+        /// <param name="sourceVerticalOffset">Vertical elevation offset at source point. The line of sight will be calculated from this point (set to 1.8 for simulate a human eye height)</param>
+        /// <param name="dataSet">DEM dataset to use</param>
+        /// <param name="interpolationMode">Interpolation mode</param>
+        /// <remarks>Source and Target are interchangeable. Output can be BIG, as all elevations will be returned.</remarks>
+        /// <returns>A report with all obstacles</returns>
         public IntervisibilityReport GetIntervisibilityReport(GeoPoint source, GeoPoint target, DEMDataSet dataSet
             , bool downloadMissingFiles = true
             , double sourceVerticalOffset = 0d
@@ -981,6 +1110,17 @@ namespace DEM.Net.Core
 
         }
 
+        /// <summary>
+        /// Reports ray casting from an origin to a target point,
+        /// thus giving information about wether source and target are intervisible or not. The input is a line where all points have elevations computed
+        /// </summary>
+        /// <param name="linePoints">Line of sight points (returned from <see cref="GetLineGeometryElevation(IEnumerable{GeoPoint}, DEMDataSet, InterpolationMode)"/>).
+        /// Points must be all aligned. Non aligned point will return unexpected results.</param>
+        /// <param name="sourceVerticalOffset">Vertical elevation offset at source point. The line of sight will be calculated from this point (set to 1.8 for simulate a human eye height)</param>
+        /// <param name="targetVerticalOffset">Vertical elevation offset at target point. The line of sight will be calculated from this point (set to 1.8 for simulate a human eye height)</param>
+        /// <param name="noDataValue">Value to expect when point has no elevation data available. See <see cref="ElevationMetrics.HasVoids"/></param>
+        /// <remarks>Source and Target are interchangeable. Output can be BIG, as all elevations will be returned.</remarks>
+        /// <returns>A report with all obstacles</returns>
         public IntervisibilityReport GetIntervisibilityReport(List<GeoPoint> linePoints
             , double sourceVerticalOffset = 0d, double targetVerticalOffset = 0d, double? noDataValue = null)
         {

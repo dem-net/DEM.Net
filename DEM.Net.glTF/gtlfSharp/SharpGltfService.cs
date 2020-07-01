@@ -17,12 +17,12 @@ namespace DEM.Net.glTF.SharpglTF
     public partial class SharpGltfService
     {
         private readonly ILogger<SharpGltfService> _logger;
-        private IMeshService _meshService;
+        private MeshService _meshService;
         private const string TERRAIN_NODE_NAME = "TerrainNode";
         private const string TERRAIN_SCENE_NAME = "TerrainScene";
         private const string TERRAIN_MESH_NAME = "TerrainMesh";
 
-        public SharpGltfService(IMeshService meshService, ILogger<SharpGltfService> logger = null)
+        public SharpGltfService(MeshService meshService, ILogger<SharpGltfService> logger = null)
         {
             _logger = logger;
             _meshService = meshService;

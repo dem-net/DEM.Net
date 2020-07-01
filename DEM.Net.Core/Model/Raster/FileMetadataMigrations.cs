@@ -32,7 +32,7 @@ namespace DEM.Net.Core
 {
     internal static class FileMetadataMigrations
     {
-        public static FileMetadata Migrate(IRasterService rasterService, ILogger logger, FileMetadata oldMetadata, string dataRootDirectory, DEMDataSet dataSet)
+        public static FileMetadata Migrate(RasterService rasterService, ILogger logger, FileMetadata oldMetadata, string dataRootDirectory, DEMDataSet dataSet)
         {
             if (oldMetadata != null)
             {
