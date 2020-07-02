@@ -187,6 +187,34 @@ namespace DEM.Net.glTF.SharpglTF
             var mesh = model.LogicalMeshes.FirstOrDefault(m => m.Name == meshName) ?? model.CreateMesh(meshName);
             return mesh;
         }
+
+        public ModelRoot AddMesh(ModelRoot model, string nodeName, TriangulationList<Vector3> triangulation, Vector4 color)
+        {
+            var scene = model.UseScene(TERRAIN_SCENE_NAME);
+            var rnode = scene.FindNode(n => n.Name == nodeName);
+            if (rnode == null)
+                rnode = scene.CreateNode(nodeName);
+            var rmesh = rnode.Mesh = FindOrCreateMesh(model, string.Concat(nodeName, "Mesh"));
+
+
+            var material = model.CreateMaterial(string.Concat(nodeName, "Material"))
+               .WithPBRMetallicRoughness(color, null, null, 0, 0.9f)
+              .WithDoubleSide(true);
+            material.Alpha = SharpGLTF.Schema2.AlphaMode.BLEND;
+
+
+            var normals = _meshService.ComputeMeshNormals(triangulation.Positions, triangulation.Indices);
+
+
+            // create mesh primitive
+            var primitive = rmesh.CreatePrimitive()
+                .WithVertexAccessor("POSITION", triangulation.Positions)
+                .WithVertexAccessor("NORMAL", normals.ToList())
+                .WithIndicesAccessor(PrimitiveType.TRIANGLES, triangulation.Indices);
+
+            primitive = primitive.WithMaterial(material);
+            return model;
+        }
         public ModelRoot AddLine(ModelRoot model, string nodeName, IEnumerable<GeoPoint> gpxPointsElevated, Vector4 color, float trailWidthMeters)
         {
             var scene = model.UseScene(TERRAIN_SCENE_NAME);
@@ -203,15 +231,14 @@ namespace DEM.Net.glTF.SharpglTF
 
 
             var triangulation = _meshService.GenerateTriangleMesh_Line(gpxPointsElevated, trailWidthMeters);
-            var indexedTriangulation = new IndexedTriangulation(triangulation.positions, triangulation.indexes);
-            var normals = _meshService.ComputeMeshNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
+            var normals = _meshService.ComputeMeshNormals(triangulation.Positions, triangulation.Indices);
 
 
             // create mesh primitive
             var primitive = rmesh.CreatePrimitive()
-                .WithVertexAccessor("POSITION", indexedTriangulation.Positions)
+                .WithVertexAccessor("POSITION", triangulation.Positions)
                 .WithVertexAccessor("NORMAL", normals.ToList())
-                .WithIndicesAccessor(PrimitiveType.TRIANGLES, indexedTriangulation.Indices);
+                .WithIndicesAccessor(PrimitiveType.TRIANGLES, triangulation.Indices);
 
             primitive = primitive.WithMaterial(material);
             return model;
@@ -236,21 +263,20 @@ namespace DEM.Net.glTF.SharpglTF
 
             foreach (var line in lines)
             {
-                var triangulation = _meshService.GenerateTriangleMesh_Line(line.points, line.trailWidthMeters);
+                TriangulationList<Vector3> triangulation = _meshService.GenerateTriangleMesh_Line(line.points, line.trailWidthMeters);
 
-                indices.AddRange(triangulation.indexes.Select(i => i + positions.Count)); // offset indices, adding last positions count
-                positions.AddRange(triangulation.positions);
+                indices.AddRange(triangulation.Indices.Select(i => i + positions.Count)); // offset indices, adding last positions count
+                positions.AddRange(triangulation.Positions);
             }
 
-            var indexedTriangulation = new IndexedTriangulation(positions, indices);
-            var normals = _meshService.ComputeMeshNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
+            var normals = _meshService.ComputeMeshNormals(positions, indices);
 
 
             // create mesh primitive
             var primitive = rmesh.CreatePrimitive()
-                .WithVertexAccessor("POSITION", indexedTriangulation.Positions)
+                .WithVertexAccessor("POSITION", positions)
                 .WithVertexAccessor("NORMAL", normals.ToList())
-                .WithIndicesAccessor(PrimitiveType.TRIANGLES, indexedTriangulation.Indices)
+                .WithIndicesAccessor(PrimitiveType.TRIANGLES, indices)
                 .WithMaterial(material);
 
             return model;

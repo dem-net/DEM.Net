@@ -116,5 +116,32 @@ namespace DEM.Net.Core
                     vectors.Max(v => v.Y),
                     vectors.Max(v => v.Z));
         }
+
+        public static TriangulationList<Vector3> Translate(this TriangulationList<Vector3> triangulation, Vector3 vector)
+        {
+            Matrix4x4 translate = Matrix4x4.CreateTranslation(vector);
+            for (int i = 0; i < triangulation.NumPositions; i++)
+            {
+                triangulation.Positions[i] = Vector3.Transform(triangulation.Positions[i], translate);
+            }
+            return triangulation;
+        }
+
+        public static TriangulationList<Vector3> CenterOnOrigin(this TriangulationList<Vector3> triangulation, BoundingBox bbox, bool centerOnZ = false)
+        {
+            //Logger.Info("CenterOnOrigin...");
+            double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
+            double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
+
+            Matrix4x4 translate = Matrix4x4.CreateTranslation((float)-xOriginOffset, (float)-yOriginOffset, centerOnZ ? (float)-bbox.zMin : 0);
+            for (int i = 0; i < triangulation.NumPositions; i++)
+            {
+                triangulation.Positions[i] = Vector3.Transform(triangulation.Positions[i], translate);
+            }
+
+            return triangulation;
+        }
+
+        
     }
 }

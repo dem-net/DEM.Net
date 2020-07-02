@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using DEM.Net.Core.Imagery;
@@ -108,6 +109,28 @@ namespace DEM.Net.Core
 
 
             }
+        }
+        public static TriangulationList<Vector3> ReprojectTo(this TriangulationList<Vector3> triangulation, int sourceEpsgCode, int destinationEpsgCode)
+        {
+            if (sourceEpsgCode == destinationEpsgCode)
+                return triangulation;
+
+
+            // Defines the starting coordiante system
+            ProjectionInfo pSource = ProjectionInfo.FromEpsgCode(sourceEpsgCode);
+            // Defines the starting coordiante system
+            ProjectionInfo pTarget = ProjectionInfo.FromEpsgCode(destinationEpsgCode);
+
+
+            double[] inputPoints = triangulation.Positions.SelectMany(pt => new double[] { pt.X, pt.Y }).ToArray();
+            Reproject.ReprojectPoints(inputPoints, null, pSource, pTarget, 0, triangulation.NumPositions);
+
+            for(int i = 0; i< triangulation.NumPositions; i++)
+            {
+                triangulation.Positions[i] = new Vector3((float)inputPoints[2 * i], (float)inputPoints[2 * i + 1], triangulation.Positions[i].Z);
+            }
+            return triangulation;
+
         }
         public static IEnumerable<(int Key, GeoPoint Point)> ReprojectTo(this IEnumerable<(int Key, GeoPoint Point)> points, int sourceEpsgCode, int destinationEpsgCode, int pointCount)
         {

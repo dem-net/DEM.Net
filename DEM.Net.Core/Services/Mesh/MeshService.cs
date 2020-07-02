@@ -336,7 +336,7 @@ namespace DEM.Net.Core
             return normals;
         }
 
-        public (List<Vector3> positions, List<int> indexes) GenerateTriangleMesh_Line(IEnumerable<GeoPoint> points, float width)
+        public TriangulationList<Vector3> GenerateTriangleMesh_Line(IEnumerable<GeoPoint> points, float width)
         {
             try
             {
@@ -353,13 +353,13 @@ namespace DEM.Net.Core
                     }
                     else
                     {
+                        TriangulationList<Vector3> triangulation = new TriangulationList<Vector3>();
+
                         // https://gist.github.com/gszauer/5718441
                         // Line triangle mesh
                         List<Vector3> sections = points.Select(pt => pt.ToVector3())
                             .FilterConsecutiveSame()
                             .ToList();
-
-                        List<Vector3> vertices = new List<Vector3>(sections.Count * 2);
 
                         for (int i = 0; i < sections.Count - 1; i++)
                         {
@@ -383,36 +383,33 @@ namespace DEM.Net.Core
                             Vector3 v0 = current - side; // 0
                             Vector3 v1 = current + side; // 1
 
-                            vertices.Add(v0);
-                            vertices.Add(v1);
+                            triangulation.Positions.Add(v0);
+                            triangulation.Positions.Add(v1);
 
                             if (i == sections.Count - 2) // add last vertices
                             {
                                 v0 = next - side; // 0
                                 v1 = next + side; // 1
-                                vertices.Add(v0);
-                                vertices.Add(v1);
+                                triangulation.Positions.Add(v0);
+                                triangulation.Positions.Add(v1);
                             }
                         }
                         // add last vertices
 
 
-                        List<int> indices = new List<int>((sections.Count - 1) * 6);
                         for (int i = 0; i < sections.Count - 1; i++)
                         {
                             int i0 = i * 2;
-                            indices.Add(i0);
-                            indices.Add(i0 + 1);
-                            indices.Add(i0 + 3);
+                            triangulation.Indices.Add(i0);
+                            triangulation.Indices.Add(i0 + 1);
+                            triangulation.Indices.Add(i0 + 3);
 
-                            indices.Add(i0 + 0);
-                            indices.Add(i0 + 3);
-                            indices.Add(i0 + 2);
+                            triangulation.Indices.Add(i0 + 0);
+                            triangulation.Indices.Add(i0 + 3);
+                            triangulation.Indices.Add(i0 + 2);
                         }
 
-                        IEnumerable<Vector3> normals = this.ComputeMeshNormals(vertices, indices);
-
-                        return (vertices, indices);
+                        return triangulation;
 
                     }
                 }
@@ -463,6 +460,72 @@ namespace DEM.Net.Core
             var trianglesIndices = Earcut.Tessellate(data, holeIndices);
 
             triangulation.Indices = trianglesIndices;
+
+            return triangulation;
+        }
+
+
+        /// <summary>
+        /// Create a cylinder where the base center is at position
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="radius"></param>
+        /// <param name="height"></param>
+        /// <param name="segmentCount">Base is not a circle, it's a polygon with this segment count</param>
+        /// <returns></returns>
+        public TriangulationList<Vector3> CreateCylinder(Vector3 position, float radius, float height, int segmentCount = 12)
+        {
+            if (segmentCount < 3) throw new ArgumentOutOfRangeException(nameof(segmentCount), segmentCount, "There must be a least 3 segments to form a polygonal cylinder base");
+
+
+            TriangulationList<Vector3> triangulation = new TriangulationList<Vector3>();
+
+            // base
+            triangulation.Positions.Add(position);
+            var angleStep = 2d * Math.PI / segmentCount;
+            double angle = 0;
+            for (int i = 0; i < segmentCount; i++)
+            {
+                var x = (float)Math.Cos(angle) * radius;
+                var y = (float)Math.Sin(angle) * radius;
+
+                triangulation.Positions.Add(new Vector3(position.X + x, position.Y + y, position.Z));
+
+                angle += angleStep;
+            }
+
+            // top (copy the base vertices with Z tranlation)
+            var topPositions = triangulation.Positions.Select(p => new Vector3(p.X, p.Y, p.Z + height)).ToList();
+            triangulation.Positions.AddRange(topPositions);
+
+            // indices 
+            // base (clockwise winding)
+            for (int i = 0; i < segmentCount; i++)
+            {
+                triangulation.Indices.Add(0);
+                triangulation.Indices.Add(i + 1);
+                triangulation.Indices.Add(i == 0 ? segmentCount : i);
+            }
+            // top (anticlockwise winding)
+            var offset = segmentCount + 1;
+            for (int i = 0; i < segmentCount; i++)
+            {
+                triangulation.Indices.Add(0 + offset);
+                triangulation.Indices.Add((i == 0 ? segmentCount : i) + offset);
+                triangulation.Indices.Add(i + 1 + offset);
+            }
+
+            // sides
+            for (int i = 0; i < segmentCount; i++)
+            {
+                triangulation.Indices.Add(i + 1);
+                triangulation.Indices.Add(i + 1 + offset);
+                triangulation.Indices.Add((i == 0 ? segmentCount : i) + offset);
+
+                triangulation.Indices.Add(i + 1);
+                triangulation.Indices.Add((i == 0 ? segmentCount : i) + offset);
+                triangulation.Indices.Add((i == 0 ? segmentCount : i));
+            }
 
             return triangulation;
         }
