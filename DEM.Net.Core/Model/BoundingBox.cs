@@ -144,15 +144,27 @@ namespace DEM.Net.Core
             { SRID = this.SRID };
         }
         /// <summary>
-        /// Add padding around bbox (bbox must be projected to cartesian first)
+        /// Add padding around bbox (in bbox units)
         /// </summary>
-        /// <param name="paddingMeters"></param>
+        /// <param name="padding"></param>
         /// <returns></returns>
-        public BoundingBox Pad(double paddingMeters)
+        public BoundingBox Pad(double padding)
         {
-            return new BoundingBox(xMin - paddingMeters, xMax + paddingMeters
-                , yMax + paddingMeters, yMin - paddingMeters
-                , zMax + paddingMeters, zMin - paddingMeters)
+            return Pad(padding, padding, padding);
+        }
+        /// <summary>
+        /// Add padding around bbox (in bbox units)
+        /// </summary>
+        /// <param name="paddingX"></param>
+        /// <param name="paddingY"></param>
+        /// <param name="paddingZ"></param>
+        /// <returns></returns>
+        public BoundingBox Pad(double paddingX, double paddingY, double paddingZ)
+        {
+            return new BoundingBox(
+                xMin - paddingX, xMax + paddingX,
+                yMax + paddingY, yMin - paddingY,
+                zMax + paddingZ, zMin - paddingZ)
             { SRID = this.SRID };
         }
         public BoundingBox ScaleAbsolute(double scaleX, double scaleY, double scaleZ = 1)
