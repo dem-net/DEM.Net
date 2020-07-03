@@ -74,6 +74,13 @@ namespace DEM.Net.Core
         {
             return new Vector3(vector3.X, vector3.Z, -vector3.Y);
         }
+        public static void ToGlTFSpace(this List<Vector3> vector3)
+        {
+            for (int i = 0; i < vector3.Count; i++)
+            {
+                vector3[i] = new Vector3(vector3[i].X, vector3[i].Z, -vector3[i].Y);
+            }
+        }
         public static Vector4 ToVector4(this Vector3 vector3, float w = 0f)
         {
             return new Vector4(vector3, w);
@@ -128,13 +135,16 @@ namespace DEM.Net.Core
         public static TriangulationList<Vector3> Translate(this TriangulationList<Vector3> triangulation, Vector3 vector)
         {
             Matrix4x4 translate = Matrix4x4.CreateTranslation(vector);
+            return Transform(triangulation, translate);
+        }
+        public static TriangulationList<Vector3> Transform(this TriangulationList<Vector3> triangulation, Matrix4x4 matrix4x4)
+        {
             for (int i = 0; i < triangulation.NumPositions; i++)
             {
-                triangulation.Positions[i] = Vector3.Transform(triangulation.Positions[i], translate);
+                triangulation.Positions[i] = Vector3.Transform(triangulation.Positions[i], matrix4x4);
             }
             return triangulation;
         }
-
         public static TriangulationList<Vector3> CenterOnOrigin(this TriangulationList<Vector3> triangulation, BoundingBox bbox, bool centerOnZ = false)
         {
             //Logger.Info("CenterOnOrigin...");

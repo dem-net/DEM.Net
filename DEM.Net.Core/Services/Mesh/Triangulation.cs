@@ -78,6 +78,19 @@ namespace DEM.Net.Core
         public int NumPositions => Positions.Count;
         public int NumTriangles => NumIndices / 3;
         public int NumIndices => Indices.Count;
+
+        public static TriangulationList<T> operator +(TriangulationList<T> a, TriangulationList<T> b)
+        {
+            if (Object.ReferenceEquals(a, null))
+                return b;
+            if (Object.ReferenceEquals(b, null))
+                return a;
+
+            return new TriangulationList<T>(
+                positions: a.Positions.Concat(b.Positions).ToList(),
+                colors: a.Colors.Concat(b.Colors).ToList(),
+                indices: a.Indices.Concat(b.Indices.Select(i => i + a.NumPositions)).ToList());
+        }
     }
 
     public class Triangulation<T>
@@ -98,5 +111,17 @@ namespace DEM.Net.Core
         public int NumPositions { get; internal set; }
         public int NumTriangles => NumIndices / 3;
         public int NumIndices { get; internal set; }
+
+        public static Triangulation<T> operator +(Triangulation<T> a, Triangulation<T> b)
+        {
+            if (Object.ReferenceEquals(a, null))
+                return b;
+            if (Object.ReferenceEquals(b, null))
+                return a;
+
+            return new Triangulation<T>(
+                positions: a.Positions.Concat(b.Positions),
+                indices: a.Indices.Concat(b.Indices.Select(i => i + a.NumPositions)));
+        }
     }
 }

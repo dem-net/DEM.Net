@@ -188,8 +188,10 @@ namespace DEM.Net.glTF.SharpglTF
             return mesh;
         }
 
-        public ModelRoot AddMesh(ModelRoot model, string nodeName, TriangulationList<Vector3> triangulation, Vector4 color)
+        public ModelRoot AddMesh(ModelRoot model, string nodeName, TriangulationList<Vector3> triangulation, Vector4 color = default)
         {
+            if (color == default) color = Vector4.One;
+
             var scene = model.UseScene(TERRAIN_SCENE_NAME);
             var rnode = scene.FindNode(n => n.Name == nodeName);
             if (rnode == null)
@@ -198,9 +200,12 @@ namespace DEM.Net.glTF.SharpglTF
 
 
             var material = model.CreateMaterial(string.Concat(nodeName, "Material"))
-               .WithPBRMetallicRoughness(color, null, null, 0, 0.9f)
-              .WithDoubleSide(true);
+                .WithPBRMetallicRoughness(color, null, null, 0, 1f)
+                .WithDoubleSide(true);
             material.Alpha = SharpGLTF.Schema2.AlphaMode.BLEND;
+
+            // Rotate for glTF compliance
+            triangulation.Positions.ToGlTFSpace();
 
             var normals = _meshService.ComputeMeshNormals(triangulation.Positions, triangulation.Indices);
 
@@ -210,6 +215,11 @@ namespace DEM.Net.glTF.SharpglTF
                 .WithVertexAccessor("POSITION", triangulation.Positions)
                 .WithVertexAccessor("NORMAL", normals.ToList())
                 .WithIndicesAccessor(PrimitiveType.TRIANGLES, triangulation.Indices);
+
+            if (triangulation.Colors?.Count > 0)
+            {
+                primitive = primitive.WithVertexAccessor("COLOR_0", triangulation.Colors);
+            }
 
             primitive = primitive.WithMaterial(material);
             return model;

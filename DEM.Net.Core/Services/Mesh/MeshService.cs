@@ -466,14 +466,14 @@ namespace DEM.Net.Core
 
 
         /// <summary>
-        /// Create a cylinder where the base center is at position
+        /// Create a cylinder where the base center is at position (height is in Z direction)
         /// </summary>
         /// <param name="position"></param>
         /// <param name="radius"></param>
         /// <param name="height"></param>
         /// <param name="segmentCount">Base is not a circle, it's a polygon with this segment count</param>
         /// <returns></returns>
-        public TriangulationList<Vector3> CreateCylinder(Vector3 position, float radius, float height, int segmentCount = 12)
+        public TriangulationList<Vector3> CreateCylinder(Vector3 position, float radius, float height, Vector4 color, int segmentCount = 12)
         {
             if (segmentCount < 3) throw new ArgumentOutOfRangeException(nameof(segmentCount), segmentCount, "There must be a least 3 segments to form a polygonal cylinder base");
 
@@ -527,8 +527,93 @@ namespace DEM.Net.Core
                 triangulation.Indices.Add((i == 0 ? segmentCount : i));
             }
 
+            // add color for each position
+            triangulation.Colors = triangulation.Positions.Select(p => color).ToList();
             return triangulation;
         }
 
+        /// <summary>
+        /// Create a cylinder where the base center is at position (orientation base->tip in Z axis)
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="radius"></param>
+        /// <param name="height"></param>
+        /// <param name="segmentCount">Base is not a circle, it's a polygon with this segment count</param>
+        /// <returns></returns>
+        public TriangulationList<Vector3> CreateCone(Vector3 position, float radius, float height, Vector4 color, int segmentCount = 12)
+        {
+            if (segmentCount < 3) throw new ArgumentOutOfRangeException(nameof(segmentCount), segmentCount, "There must be a least 3 segments to form a polygonal cylinder base");
+
+
+            TriangulationList<Vector3> triangulation = new TriangulationList<Vector3>();
+
+            // base
+            triangulation.Positions.Add(position);
+            var angleStep = 2d * Math.PI / segmentCount;
+            double angle = 0;
+            for (int i = 0; i < segmentCount; i++)
+            {
+                var x = (float)Math.Cos(angle) * radius;
+                var y = (float)Math.Sin(angle) * radius;
+
+                triangulation.Positions.Add(new Vector3(position.X + x, position.Y + y, position.Z));
+
+                angle += angleStep;
+            }
+
+            // top
+            triangulation.Positions.Add(new Vector3(position.X, position.Y, position.Z + height));
+
+            // indices 
+            // base (clockwise winding)
+            for (int i = 0; i < segmentCount; i++)
+            {
+                triangulation.Indices.Add(0);
+                triangulation.Indices.Add(i + 1);
+                triangulation.Indices.Add(i == 0 ? segmentCount : i);
+            }
+            // sides
+            for (int i = 0; i < segmentCount; i++)
+            {
+                triangulation.Indices.Add(triangulation.Positions.Count - 1);
+                triangulation.Indices.Add(i + 1);
+                triangulation.Indices.Add(i == 0 ? segmentCount : i);
+            }
+
+            // add color for each position
+            triangulation.Colors = triangulation.Positions.Select(p => color).ToList();
+
+            return triangulation;
+        }
+
+
+        public TriangulationList<Vector3> CreateAxis(float radius = 2f, float length = 50f, float tipRadius = 2.5f, float tipLength = 10f, int segmentCount = 10)
+        {
+            TriangulationList<Vector3> axis = new TriangulationList<Vector3>();
+
+            float halfPi = (float)Math.PI / 2f;
+
+            var red = VectorsExtensions.CreateColor(255, 0, 0, 255);
+            var green = VectorsExtensions.CreateColor(0, 255, 0, 255);
+            var blue = VectorsExtensions.CreateColor(0, 0, 255, 255);
+
+            // Z axis
+            axis += CreateCylinder(Vector3.Zero, radius, length, blue, segmentCount);
+            axis += CreateCone(Vector3.UnitZ * length, tipRadius, tipLength, blue, segmentCount);
+
+            // X axis (90* rotation around Y)
+            axis += CreateCylinder(Vector3.Zero, radius, length, red, segmentCount)
+                        .Transform(Matrix4x4.CreateRotationY(halfPi) * Matrix4x4.CreateRotationZ(halfPi));
+            axis += CreateCone(Vector3.UnitZ * length, tipRadius, tipLength, red, segmentCount)
+                        .Transform(Matrix4x4.CreateRotationY(halfPi) * Matrix4x4.CreateRotationZ(halfPi));
+
+            // Y axis (90* rotation around X)
+            axis += CreateCylinder(Vector3.Zero, radius, length, green, segmentCount)
+                       .Transform(Matrix4x4.CreateRotationX(halfPi) * Matrix4x4.CreateRotationZ(halfPi));
+            axis += CreateCone(Vector3.UnitZ * length, tipRadius, tipLength, green, segmentCount)
+                        .Transform(Matrix4x4.CreateRotationX(halfPi) * Matrix4x4.CreateRotationZ(halfPi));
+
+            return axis;
+        }
     }
 }

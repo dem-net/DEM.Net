@@ -130,6 +130,17 @@ namespace DEM.Net.Core
 
             return points;
         }
+
+        public static GeoPoint CenterOnOrigin(this GeoPoint point, BoundingBox bbox, bool centerOnZ = false)
+        {
+            //Logger.Info("CenterOnOrigin...");
+            double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
+            double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
+            //double zOriginOffset = bbox.zMax - (bbox.zMax - bbox.zMin) / 2d;
+            point = point.Translate(-xOriginOffset, -yOriginOffset, centerOnZ ? -bbox.zMin : 0); // Set minZ = 0
+
+            return point;
+        }
         /// <summary>
         /// Translate points
         /// </summary>
@@ -149,6 +160,18 @@ namespace DEM.Net.Core
                 p.Elevation += z;
                 yield return p;
             }
+            //Logger.Info("Translate done...");
+        }
+        private static GeoPoint Translate(this GeoPoint point, double x, double y, double z = 0)
+        {
+            //Logger.Info("Translate...");
+
+            var p = point.Clone();
+            p.Latitude += y;
+            p.Longitude += x;
+            p.Elevation += z;
+            return p;
+
             //Logger.Info("Translate done...");
         }
 
