@@ -357,7 +357,7 @@ namespace DEM.Net.Core
 
                         // https://gist.github.com/gszauer/5718441
                         // Line triangle mesh
-                        List<Vector3> sections = points.Select(pt => pt.ToVector3())
+                        List<Vector3> sections = points.Select(pt => pt.ToVector3GlTFSpace())
                             .FilterConsecutiveSame()
                             .ToList();
 

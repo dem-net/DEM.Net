@@ -36,9 +36,9 @@ namespace DEM.Net.Core
 {
     public static class VectorsExtensions
     {
-        public static IEnumerable<Vector3> ToVector3(this IEnumerable<GeoPoint> geoPoint)
+        public static IEnumerable<Vector3> ToVector3GlTFSpace(this IEnumerable<GeoPoint> geoPoint)
         {
-            return geoPoint.Select(p => p.ToVector3());
+            return geoPoint.Select(p => p.ToVector3GlTFSpace());
         }
         public static IEnumerable<Vector3> FilterConsecutiveSame(this IEnumerable<Vector3> vectors)
         {
@@ -62,9 +62,17 @@ namespace DEM.Net.Core
                 }
             }
         }
-        public static Vector3 ToVector3(this GeoPoint geoPoint)
+        public static Vector3 ToVector3GlTFSpace(this GeoPoint geoPoint)
         {
-            return new Vector3((float)geoPoint.Longitude, (float)(geoPoint.Elevation ?? 0D), -(float)geoPoint.Latitude);
+            return ToGlTFSpace(new Vector3((float)geoPoint.Longitude, (float)geoPoint.Latitude, (float)(geoPoint.Elevation ?? 0D)));
+        }
+        public static Vector3 AsVector3(this GeoPoint geoPoint)
+        {
+            return new Vector3((float)geoPoint.Longitude, (float)geoPoint.Latitude, (float)(geoPoint.Elevation ?? 0D));
+        }
+        public static Vector3 ToGlTFSpace(this Vector3 vector3)
+        {
+            return new Vector3(vector3.X, vector3.Z, -vector3.Y);
         }
         public static Vector4 ToVector4(this Vector3 vector3, float w = 0f)
         {
@@ -142,6 +150,6 @@ namespace DEM.Net.Core
             return triangulation;
         }
 
-        
+
     }
 }

@@ -19,7 +19,7 @@ namespace DEM.Net.glTF.SharpglTF
             if (vectorTransform == default)
                 vectorTransform = Matrix4x4.Identity;
             this.Triangulation = triangulation;
-            Positions = triangulation.Positions.Select(p => Vector3.Transform(p.ToVector3(), vectorTransform)).ToList();
+            Positions = triangulation.Positions.Select(p => Vector3.Transform(p.ToVector3GlTFSpace(), vectorTransform)).ToList();
             Indices = triangulation.Indices.ToList();
         }
         public IndexedTriangulation(IEnumerable<Vector3> positions, IEnumerable<int> indices, Matrix4x4 vectorTransform = default)

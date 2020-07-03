@@ -53,7 +53,7 @@ namespace DEM.Net.Core
 
     public class TriangulationList<T>
     {
-        public List<T> Positions { get; internal set; } 
+        public List<T> Positions { get; set; } 
         public List<Vector4> Colors { get; set; }
         public List<int> Indices { get; internal set; }
 

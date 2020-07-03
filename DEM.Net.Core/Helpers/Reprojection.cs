@@ -132,6 +132,15 @@ namespace DEM.Net.Core
             return triangulation;
 
         }
+        public static TriangulationList<Vector3> ToGlTFSpace(this TriangulationList<Vector3> triangulation)
+        {
+            for (int i = 0; i < triangulation.NumPositions; i++)
+            {
+                triangulation.Positions[i] = triangulation.Positions[i].ToGlTFSpace();
+            }
+            return triangulation;
+
+        }
         public static IEnumerable<(int Key, GeoPoint Point)> ReprojectTo(this IEnumerable<(int Key, GeoPoint Point)> points, int sourceEpsgCode, int destinationEpsgCode, int pointCount)
         {
             if (sourceEpsgCode == destinationEpsgCode)

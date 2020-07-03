@@ -202,7 +202,6 @@ namespace DEM.Net.glTF.SharpglTF
               .WithDoubleSide(true);
             material.Alpha = SharpGLTF.Schema2.AlphaMode.BLEND;
 
-
             var normals = _meshService.ComputeMeshNormals(triangulation.Positions, triangulation.Indices);
 
 
