@@ -48,10 +48,12 @@ namespace DEM.Net.Core
         private static readonly object DOWNLOAD_LOCKER = new object();
         private readonly ILogger<GDALVRTFileService> _logger;
         private ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public GDALVRTFileService(ILogger<GDALVRTFileService> logger = null)
+        public GDALVRTFileService(IHttpClientFactory httpClientFactory, ILogger<GDALVRTFileService> logger = null)
         {
             _logger = logger;
+            _httpClientFactory = httpClientFactory;
             _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
         }
         public void Reset()
@@ -109,7 +111,8 @@ namespace DEM.Net.Core
                         {
                             _logger?.LogInformation($"Downloading index file from {dataSet.DataSource.IndexFilePath}... This file will be downloaded once and stored locally.");
 
-                            using (HttpClient client = new HttpClient())
+                            HttpClient client = _httpClientFactory.CreateClient();
+
                             using (HttpResponseMessage response = client.GetAsync(dataSet.DataSource.IndexFilePath).Result)
                             using (FileStream fs = new FileStream(vrtFileName, FileMode.Create, FileAccess.Write))
                             {
@@ -206,15 +209,12 @@ namespace DEM.Net.Core
             // Create directories if not existing
             new FileInfo(report.LocalName).Directory.Create();
 
-            using (HttpClient client = new HttpClient())
+            HttpClient client = _httpClientFactory.CreateClient();
+
+            var contentbytes = client.GetByteArrayAsync(report.URL).Result;
+            using (FileStream fs = new FileStream(report.LocalName, FileMode.Create, FileAccess.Write))
             {
-
-                var contentbytes = client.GetByteArrayAsync(report.URL).Result;
-                using (FileStream fs = new FileStream(report.LocalName, FileMode.Create, FileAccess.Write))
-                {
-                    fs.Write(contentbytes, 0, contentbytes.Length);
-                }
-
+                fs.Write(contentbytes, 0, contentbytes.Length);
             }
 
 
@@ -289,7 +289,7 @@ namespace DEM.Net.Core
                             source.DestLat = Math.Round(source.DestLat, 10);
                             source.BBox = new BoundingBox(source.OriginLon, source.DestLon, source.DestLat, source.OriginLat);
                         }
-                        
+
 
                         isOnFirstSource = false;
 

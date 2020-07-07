@@ -1,6 +1,7 @@
 ﻿using DEM.Net.Core.Datasets;
 using DEM.Net.Core.EarthData;
 using DEM.Net.Core.Imagery;
+using DEM.Net.Core.Services.Imagery;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -16,6 +17,7 @@ namespace DEM.Net.Core
         public static IServiceCollection AddDemNetCore(this IServiceCollection services)
         {
             services.AddMemoryCache();
+            services.AddHttpClient();
 
             services.AddSingleton<GDALVRTFileService>();
             services.AddSingleton<LocalFileSystemIndex>();
@@ -42,7 +44,9 @@ namespace DEM.Net.Core
                     .AddSingleton<RasterService>()
                     .AddTransient<ElevationService>()
                     .AddTransient<MeshService>()
+                    .AddTransient<ImageryCache>()
                     .AddSingleton<ImageryService>();
+
 
             return services;
         }

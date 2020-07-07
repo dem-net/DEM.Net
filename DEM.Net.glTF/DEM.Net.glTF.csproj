@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <PackageId>DEM.Net.glTF</PackageId>
@@ -46,8 +46,8 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="IxMilia.Stl" Version="0.1.1" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
-        <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0015" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.5" />
+        <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0018" />
         <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
     </ItemGroup>
     <ItemGroup>

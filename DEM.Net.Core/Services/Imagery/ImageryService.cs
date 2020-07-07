@@ -47,6 +47,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.Shapes;
 using SixLabors.Primitives;
+using DEM.Net.Core.Services.Imagery;
 
 namespace DEM.Net.Core.Imagery
 {
@@ -62,14 +63,13 @@ namespace DEM.Net.Core.Imagery
         private readonly MeshService _meshService;
         private readonly AppSecrets appSecrets;
         private readonly DEMNetOptions options;
-        private readonly IMemoryCache cache;
-        private static HttpClient _httpClient = new HttpClient();
+        private readonly ImageryCache cache;
 
 
         public ImageryService(MeshService meshService,
             IOptions<AppSecrets> appSecrets,
             IOptions<DEMNetOptions> options,
-            IMemoryCache cache,
+            ImageryCache cache,
             ILogger<ImageryService> logger = null)
         {
             _logger = logger;
@@ -150,12 +150,9 @@ namespace DEM.Net.Core.Imagery
                 Parallel.ForEach(range, parallelOptions, tile =>
                     {
                         Uri tileUri = BuildUri(provider, tile.X, tile.Y, tile.Zoom);
-                        var contentBytes = cache.GetOrCreate(tileUri, entry =>
-                        {
-                            entry.SetSlidingExpiration(TimeSpan.FromMinutes(options.ImageryCacheExpirationMinutes));
 
-                            return _httpClient.GetByteArrayAsync(tileUri).GetAwaiter().GetResult();
-                        });
+                        var contentBytes = cache.GetTile(tileUri, provider, tile);
+
                         tiles.Add(new MapTile(contentBytes, provider.TileSize, tileUri, tile));
 
                     }
