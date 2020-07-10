@@ -576,8 +576,8 @@ namespace DEM.Net.Core
             for (int i = 0; i < segmentCount; i++)
             {
                 triangulation.Indices.Add(triangulation.Positions.Count - 1);
-                triangulation.Indices.Add(i + 1);
                 triangulation.Indices.Add(i == 0 ? segmentCount : i);
+                triangulation.Indices.Add(i + 1);
             }
 
             // add color for each position
