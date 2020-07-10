@@ -188,7 +188,7 @@ namespace DEM.Net.glTF.SharpglTF
             return mesh;
         }
 
-        public ModelRoot AddMesh(ModelRoot model, string nodeName, TriangulationList<Vector3> triangulation, Vector4 color = default)
+        public ModelRoot AddMesh(ModelRoot model, string nodeName, TriangulationList<Vector3> triangulation, Vector4 color = default, bool doubleSided = true)
         {
             if (color == default) color = Vector4.One;
 
@@ -201,7 +201,7 @@ namespace DEM.Net.glTF.SharpglTF
 
             var material = model.CreateMaterial(string.Concat(nodeName, "Material"))
                 .WithPBRMetallicRoughness(color, null, null, 0, 1f)
-                .WithDoubleSide(true);
+                .WithDoubleSide(doubleSided);
             material.Alpha = SharpGLTF.Schema2.AlphaMode.BLEND;
 
             // Rotate for glTF compliance
