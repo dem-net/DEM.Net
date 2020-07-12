@@ -190,7 +190,7 @@ namespace DEM.Net.glTF.SharpglTF
 
         public ModelRoot AddMesh(ModelRoot model, string nodeName, TriangulationList<Vector3> triangulation, Vector4 color = default, bool doubleSided = true)
         {
-            if (color == default) color = Vector4.One;
+            if (color == default || triangulation.HasColors) color = Vector4.One;
 
             var scene = model.UseScene(TERRAIN_SCENE_NAME);
             var rnode = scene.FindNode(n => n.Name == nodeName);
@@ -202,7 +202,9 @@ namespace DEM.Net.glTF.SharpglTF
             var material = model.CreateMaterial(string.Concat(nodeName, "Material"))
                 .WithPBRMetallicRoughness(color, null, null, 0, 1f)
                 .WithDoubleSide(doubleSided);
-            material.Alpha = SharpGLTF.Schema2.AlphaMode.BLEND;
+            material.Alpha = (color.W < 1.0 || (triangulation.HasColors && triangulation.Colors.Any(c => c.W < 1.0))) ? 
+                                SharpGLTF.Schema2.AlphaMode.BLEND
+                                : SharpGLTF.Schema2.AlphaMode.OPAQUE;
 
             // Rotate for glTF compliance
             triangulation.Positions.ToGlTFSpace();
@@ -216,7 +218,7 @@ namespace DEM.Net.glTF.SharpglTF
                 .WithVertexAccessor("NORMAL", normals.ToList())
                 .WithIndicesAccessor(PrimitiveType.TRIANGLES, triangulation.Indices);
 
-            if (triangulation.Colors?.Count > 0)
+            if (triangulation.HasColors)
             {
                 primitive = primitive.WithVertexAccessor("COLOR_0", triangulation.Colors);
             }

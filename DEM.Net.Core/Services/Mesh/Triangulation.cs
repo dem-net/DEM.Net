@@ -55,6 +55,7 @@ namespace DEM.Net.Core
     {
         public List<T> Positions { get; set; } 
         public List<Vector4> Colors { get; set; }
+        public bool HasColors => Colors?.Count > 0;
         public List<int> Indices { get; internal set; }
 
         public TriangulationList()
