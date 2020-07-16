@@ -19,16 +19,20 @@ namespace DEM.Net.Core.Services.Imagery
     {
         public const string IMAGERY_DIR = "imagery";
         private readonly IMemoryCache cache;
-        private readonly float cacheExpirationMinutes;
+        private readonly DEMNetOptions options;
         private readonly IHttpClientFactory httpClientFactory;
         private readonly string _localDirectory;
+        private readonly TimeSpan diskExpirationHours;
 
         public ImageryCache(IMemoryCache cache,
             IOptions<DEMNetOptions> options,
             IHttpClientFactory clientFactory)
         {
             this.cache = cache;
-            this.cacheExpirationMinutes = options.Value.ImageryCacheExpirationMinutes;
+
+            this.options = options.Value;
+            this.diskExpirationHours = TimeSpan.FromHours(options.Value.ImageryDiskCacheExpirationHours);
+
             this.httpClientFactory = clientFactory;
             this._localDirectory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), RasterService.APP_NAME, IMAGERY_DIR);
             CreateDirectoryIfNotExists(_localDirectory);
@@ -38,17 +42,31 @@ namespace DEM.Net.Core.Services.Imagery
         {
             var contentBytes = cache.GetOrCreate(tileUri, entry =>
             {
-                entry.SetSlidingExpiration(TimeSpan.FromMinutes(cacheExpirationMinutes));
+                entry.SetSlidingExpiration(TimeSpan.FromMinutes(options.ImageryCacheExpirationMinutes));
 
                 // Check if present on disk
-                var tileFile = GetTileDiskPath(provider, tileInfo);
-                if (File.Exists(tileFile))
-                    return File.ReadAllBytes(tileFile);
+                if (options.UseImageryDiskCache)
+                {
+                    var tileFile = GetTileDiskPath(provider, tileInfo);
+                    if (File.Exists(tileFile) && (DateTime.Now - File.GetCreationTime(tileFile)) <= diskExpirationHours)
+                    {
+                        return File.ReadAllBytes(tileFile);
+                    }
 
-                HttpClient httpClient = httpClientFactory.CreateClient();
-                var bytes = httpClient.GetByteArrayAsync(tileUri).GetAwaiter().GetResult();
-                File.WriteAllBytes(tileFile, bytes);
-                return bytes;
+
+                    HttpClient httpClient = httpClientFactory.CreateClient();
+                    var bytes = httpClient.GetByteArrayAsync(tileUri).GetAwaiter().GetResult();
+                    File.WriteAllBytes(tileFile, bytes);
+
+                    return bytes;
+                }
+                else
+                {
+                    HttpClient httpClient = httpClientFactory.CreateClient();
+                    return httpClient.GetByteArrayAsync(tileUri).GetAwaiter().GetResult();
+                }
+
+
             });
 
             return contentBytes;
