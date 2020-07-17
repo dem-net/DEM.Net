@@ -132,6 +132,16 @@ namespace DEM.Net.Core
             return triangulation;
 
         }
+        public static TriangulationList<Vector3> ZScale(this TriangulationList<Vector3> triangulation, float zScale)
+        {
+            for (int i = 0; i < triangulation.NumPositions; i++)
+            {
+                Vector3 pos = triangulation.Positions[i];
+                pos.Z *= zScale;
+                triangulation.Positions[i] = pos;
+            }
+            return triangulation;
+        }
         public static TriangulationList<Vector3> ToGlTFSpace(this TriangulationList<Vector3> triangulation)
         {
             for (int i = 0; i < triangulation.NumPositions; i++)
