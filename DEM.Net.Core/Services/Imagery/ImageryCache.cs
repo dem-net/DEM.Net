@@ -48,7 +48,7 @@ namespace DEM.Net.Core.Services.Imagery
                 if (options.UseImageryDiskCache)
                 {
                     var tileFile = GetTileDiskPath(provider, tileInfo);
-                    if (File.Exists(tileFile) && (DateTime.Now - File.GetCreationTime(tileFile)) <= diskExpirationHours)
+                    if (File.Exists(tileFile) && (DateTime.Now - File.GetLastWriteTime(tileFile)) <= diskExpirationHours)
                     {
                         return File.ReadAllBytes(tileFile);
                     }
