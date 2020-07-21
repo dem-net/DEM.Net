@@ -149,7 +149,7 @@ namespace DEM.Net.Core
         /// <param name="y"></param>
         /// <param name="z"></param>
         /// <returns></returns>
-        private static IEnumerable<GeoPoint> Translate(this IEnumerable<GeoPoint> points, double x, double y, double z = 0)
+        public static IEnumerable<GeoPoint> Translate(this IEnumerable<GeoPoint> points, double x, double y, double z = 0)
         {
             //Logger.Info("Translate...");
             foreach (var pt in points)
@@ -162,7 +162,7 @@ namespace DEM.Net.Core
             }
             //Logger.Info("Translate done...");
         }
-        private static GeoPoint Translate(this GeoPoint point, double x, double y, double z = 0)
+        public static GeoPoint Translate(this GeoPoint point, double x, double y, double z = 0)
         {
             //Logger.Info("Translate...");
 
@@ -277,6 +277,21 @@ namespace DEM.Net.Core
             }
             //Logger.Info("Scale done...");
 
+        }/// <summary>
+         /// Scale given points
+         /// </summary>
+         /// <param name="points"></param>
+         /// <param name="x"></param>
+         /// <param name="y"></param>
+         /// <param name="z"></param>
+         /// <returns></returns>
+        public static GeoPoint Scale(this GeoPoint pt, float x = 1f, float y = 1f, float z = 1f)
+        {
+                var pout = pt.Clone();
+                pout.Longitude *= x;
+                pout.Latitude *= y;
+                pout.Elevation *= z;
+                return pout;
         }
 
         /// <summary>
