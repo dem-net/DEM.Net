@@ -159,6 +159,16 @@ namespace DEM.Net.Core
 
             return triangulation;
         }
+        public static TriangulationList<Vector3> CenterOnOrigin(this TriangulationList<Vector3> triangulation, Vector3 origin)
+        {
+           Matrix4x4 translate = Matrix4x4.CreateTranslation((float)-origin.X, (float)-origin.Y, -origin.Z);
+            for (int i = 0; i < triangulation.NumPositions; i++)
+            {
+                triangulation.Positions[i] = Vector3.Transform(triangulation.Positions[i], translate);
+            }
+
+            return triangulation;
+        }
 
 
     }

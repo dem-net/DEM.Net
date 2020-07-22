@@ -23,6 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using DEM.Net.Core.Gpx;
+using SixLabors.ImageSharp.ColorSpaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +62,20 @@ namespace DEM.Net.Core
             heightMap.BoundingBox = new BoundingBox(bbox.xMin - xOriginOffset, bbox.xMax - xOriginOffset
                                                     , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset
                                                     , bbox.zMin - zOriginOffset, bbox.zMax - zOriginOffset);
+            return heightMap;
+        }
+        public static HeightMap CenterOnOrigin(this HeightMap heightMap, GeoPoint origin)
+        {
+            //Logger.Info("CenterOnOrigin...");
+            var bbox = heightMap.BoundingBox;
+
+            heightMap.Coordinates = heightMap.Coordinates.Translate(-origin.Longitude, -origin.Latitude, -origin.Elevation ?? 0);
+
+
+
+            heightMap.BoundingBox = new BoundingBox(bbox.xMin - origin.Longitude, bbox.xMax - origin.Longitude
+                                                    , bbox.yMin - origin.Latitude, bbox.yMax - origin.Latitude
+                                                    , bbox.zMin - origin.Elevation ?? 0, bbox.zMax - origin.Elevation ?? 0);
             return heightMap;
         }
         /// <summary>
@@ -112,6 +128,10 @@ namespace DEM.Net.Core
             var bbox = points.GetBoundingBox();
 
             return points.CenterOnOrigin(bbox);
+        }
+        public static IEnumerable<GeoPoint> CenterOnOrigin(this IEnumerable<GeoPoint> points, GeoPoint origin)
+        {
+            return points.Translate(-origin.Longitude, -origin.Latitude, -origin.Elevation ?? 0);
         }
 
         /// <summary>
@@ -287,11 +307,11 @@ namespace DEM.Net.Core
          /// <returns></returns>
         public static GeoPoint Scale(this GeoPoint pt, float x = 1f, float y = 1f, float z = 1f)
         {
-                var pout = pt.Clone();
-                pout.Longitude *= x;
-                pout.Latitude *= y;
-                pout.Elevation *= z;
-                return pout;
+            var pout = pt.Clone();
+            pout.Longitude *= x;
+            pout.Latitude *= y;
+            pout.Elevation *= z;
+            return pout;
         }
 
         /// <summary>
@@ -305,6 +325,14 @@ namespace DEM.Net.Core
             heightMap.Coordinates = heightMap.Coordinates.ZTranslate(distance);
             heightMap.Minimum += distance;
             heightMap.Maximum += distance;
+
+            return heightMap;
+        }
+        public static HeightMap Translate(this HeightMap heightMap, GeoPoint pt)
+        {
+            heightMap.Coordinates = heightMap.Coordinates.Translate(pt.Longitude, pt.Latitude, pt.Elevation ?? 0);
+            heightMap.Minimum += (float)(pt.Elevation ?? 0);
+            heightMap.Maximum += (float)(pt.Elevation ?? 0);
 
             return heightMap;
         }
