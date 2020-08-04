@@ -207,6 +207,10 @@ namespace DEM.Net.Core
         {
             return new BoundingBox(lon - size, lon + size, lat - size, lat + size, 0, 0);
         }
+        public static BoundingBox AroundPoint(GeoPoint point, double size)
+        {
+            return BoundingBox.AroundPoint(point.Latitude, point.Longitude, size);
+        }
 
         public override string ToString()
         {

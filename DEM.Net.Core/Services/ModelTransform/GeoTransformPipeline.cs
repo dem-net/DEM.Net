@@ -29,7 +29,7 @@ using System.Collections.Generic;
 namespace DEM.Net.Core
 {
 
-    public abstract class GeoTransformPipeline
+    public class GeoTransformPipeline
     {
         public Func<IEnumerable<GeoPoint>, IEnumerable<GeoPoint>> TransformPoints { get; set; }
         public Func<HeightMap, HeightMap> TransformHeightMap { get; set; }
@@ -38,5 +38,8 @@ namespace DEM.Net.Core
         {
             return this.MemberwiseClone() as GeoTransformPipeline;
         }
+
+        public static GeoTransformPipeline Default => new GeoTransformPipeline() { TransformHeightMap = h => h, TransformPoints = pts => pts };
     }
+
 }
