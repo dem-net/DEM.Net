@@ -102,6 +102,15 @@ namespace DEM.Net.Core
             zMin = Math.Min(zMin, z);
             zMax = Math.Max(zMax, z);
         }
+        public void UnionWith(BoundingBox bbox)
+        {
+            xMin = Math.Min(xMin, bbox.xMin);
+            xMax = Math.Max(xMax, bbox.xMax);
+            yMin = Math.Min(yMin, bbox.yMin);
+            yMax = Math.Max(yMax, bbox.yMax);
+            zMin = Math.Min(zMin, bbox.zMin);
+            zMax = Math.Max(zMax, bbox.zMax);
+        }
 
         /// <summary>
         /// Reorders min / max and returns a new BoundingBox
