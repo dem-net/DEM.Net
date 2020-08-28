@@ -85,6 +85,10 @@ namespace DEM.Net.Core
         {
             return new Vector4(vector3, w);
         }
+        public static string ToRgbString(this Vector4 color)
+        {
+            return $"{color.X * 255f:N0},{color.Y * 255f:N0},{color.Z * 255f:N0}";
+        }
         public static Vector4 CreateColor(byte r, byte g, byte b, byte a = 255)
         {
             return new Vector4(r / 255f, g / 255f, b / 255f, a / 255f);
