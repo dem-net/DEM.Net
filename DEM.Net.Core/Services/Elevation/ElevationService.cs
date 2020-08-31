@@ -370,7 +370,10 @@ namespace DEM.Net.Core
             {
                 IGeometry geometry = GeometryService.ParseGeoPointAsGeometryLine(linePts.Value);
 
-                outLines.TryAdd(linePts.Key, GetLineGeometryElevation(geometry, dataSet, tiles, nsLines, weLines, interpolationMode, behavior));
+                if (!outLines.TryAdd(linePts.Key, GetLineGeometryElevation(geometry, dataSet, tiles, nsLines, weLines, interpolationMode, behavior)))
+                {
+                    _logger.LogWarning("Could not add line");
+                }
             });
             return outLines.ToDictionary(k => k.Key, v => v.Value);
         }
