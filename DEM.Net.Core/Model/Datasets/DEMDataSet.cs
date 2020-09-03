@@ -67,7 +67,7 @@ namespace DEM.Net.Core
             Dictionary<string, DEMDataSet> datasets = new Dictionary<string, DEMDataSet>();
             datasets.Add("SRTM_GL3", new DEMDataSet()
             {
-                Name = "SRTM_GL3",
+                Name = nameof(SRTM_GL3),
                 Description = "Shuttle Radar Topography Mission (SRTM GL3) Global 90m",
                 PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTSRTM.042013.4326.1",
                 DataSource = new VRTDataSource("https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL3/SRTM_GL3_srtm.vrt"),
@@ -84,7 +84,7 @@ namespace DEM.Net.Core
             });
             datasets.Add("SRTM_GL1", new DEMDataSet()
             {
-                Name = "SRTM_GL1",
+                Name = nameof(SRTM_GL1),
                 Description = "Shuttle Radar Topography Mission (SRTM GL1) Global 30m",
                 PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTSRTM.082015.4326.1",
                 DataSource = new VRTDataSource("https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL1/SRTM_GL1_srtm.vrt"),
@@ -96,7 +96,7 @@ namespace DEM.Net.Core
             }); ;
             datasets.Add("AW3D30", new DEMDataSet()
             {
-                Name = "AW3D30",
+                Name = nameof(AW3D30),
                 Description = "ALOS World 3D - 30m (nicest but contain void areas)",
                 PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTALOS.112016.4326.2",
                 DataSource = new VRTDataSource("https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/AW3D30/AW3D30_alos.vrt"),
@@ -112,7 +112,7 @@ namespace DEM.Net.Core
             });
             datasets.Add("ETOPO1", new DEMDataSet()
             {
-                Name = "ETOPO1",
+                Name = nameof(ETOPO1),
                 Description = "Global low res coverage with bathymetry (1km resolution)",
                 PublicUrl = "https://www.ngdc.noaa.gov/mgg/global/",
                 DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "ETOPO1")),
@@ -126,7 +126,7 @@ namespace DEM.Net.Core
             });
             datasets.Add("ASTER_GDEMV3", new DEMDataSet()
             {
-                Name = "ASTER_GDEMV3",
+                Name = nameof(ASTER_GDEMV3),
                 Description = "ASTER Global Digital Elevation Model 1 arc second (30m)",
                 PublicUrl = "https://lpdaac.usgs.gov/products/astgtmv003",
                 DataSource = new NasaGranuleDataSource(indexFilePath: "ASTGTM.003.json", collectionId: "C1575726572-LPDAAC_ECS"),
@@ -141,7 +141,7 @@ namespace DEM.Net.Core
             });
             datasets.Add("NASADEM", new DEMDataSet()
             {
-                Name = "NASADEM",
+                Name = nameof(NASADEM),
                 Description = "NASADEM MEaSUREs Merged DEM Global 1 arc second (30m)",
                 PublicUrl = "https://lpdaac.usgs.gov/products/nasadem_hgtv001/",
                 DataSource = new NasaGranuleDataSource(indexFilePath: "NASADEM.json", collectionId: "C1546314043-LPDAAC_ECS"),
@@ -156,7 +156,7 @@ namespace DEM.Net.Core
             });
             datasets.Add("GEBCO_2019", new DEMDataSet()
             {
-                Name = "GEBCO_2019",
+                Name = nameof(GEBCO_2019),
                 Description = "GEBCO’s gridded bathymetric data set, a global terrain model for ocean and land at 15 arc-second intervals",
                 PublicUrl = "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2019/gebco_2019_info.html",
                 DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "GEBCO_2019")),
@@ -168,6 +168,21 @@ namespace DEM.Net.Core
                 Attribution = new Attribution(ATTRIBUTION_SUBJECT, "GEBCO Compilation Group (2019) GEBCO 2019 Grid (doi:10.5285/836f016a-33be-6ddc-e053-6c86abc0788e)",
                                                 "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2019/gebco_2019_info.html",
                                                 "GEBCO Compilation Group (2019) GEBCO 2019 Grid (doi:10.5285/836f016a-33be-6ddc-e053-6c86abc0788e)")
+            }); 
+            datasets.Add("GEBCO_2010", new DEMDataSet()
+            {
+                Name = nameof(GEBCO_2020),
+                Description = "GEBCO’s gridded bathymetric data set, a global terrain model for ocean and land at 15 arc-second intervals",
+                PublicUrl = "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2020/",
+                DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "GEBCO_2020")),
+                FileFormat = new DEMFileDefinition("netCDF file", DEMFileType.CF_NetCDF, ".nc", DEMFileRegistrationMode.Cell),
+                ResolutionMeters = 464,
+                ResolutionArcSeconds = 15,
+                PointsPerDegree = 240,
+                NoDataValue = -9999,
+                Attribution = new Attribution(ATTRIBUTION_SUBJECT, "GEBCO Compilation Group (2020) GEBCO 2020 Grid (doi:10.5285/a29c5465-b138-234d-e053-6c86abc040b9)",
+                                                 "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2020/",
+                                                 "GEBCO Compilation Group (2020) GEBCO 2020 Grid (doi:10.5285/a29c5465-b138-234d-e053-6c86abc040b9)")
             });
 
             return datasets;
@@ -201,6 +216,7 @@ namespace DEM.Net.Core
         /// Global medium res coverage with bathymetry (500m resolution)
         /// </summary>
         public static DEMDataSet GEBCO_2019 => Datasets.Value[nameof(GEBCO_2019)];
+        public static DEMDataSet GEBCO_2020 => Datasets.Value[nameof(GEBCO_2020)];
 
         /// <summary>
         /// ASTER GDEM V3 https://cmr.earthdata.nasa.gov/search/concepts/C1575726572-LPDAAC_ECS/11

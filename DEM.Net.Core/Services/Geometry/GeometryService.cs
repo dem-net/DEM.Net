@@ -158,6 +158,9 @@ namespace DEM.Net.Core
         /// <returns>True if lines intersects</returns>
         public static bool LineLineIntersection(out GeoPoint intersection, GeoSegment line1, GeoSegment line2)
         {
+            bool isIntersecting = false;
+            intersection = GeoPoint.Zero;
+
             //3d -> 2d
             double p1_x = line1.Start.Longitude;
             double p1_y = line1.Start.Latitude;
@@ -180,14 +183,13 @@ namespace DEM.Net.Core
                 //Is intersecting if u_a and u_b are between 0 and 1
                 if (u_a >= 0 && u_a <= 1 && u_b >= 0 && u_b <= 1)
                 {
-                    intersection = new GeoPoint(latitude: p1_y + u_a * (p2_y - p1_y)
-                        , longitude: p1_x + u_a * (p2_x - p1_x));
-                    return true;
+                    intersection.Latitude = p1_y + u_a * (p2_y - p1_y);
+                    intersection.Longitude = p1_x + u_a * (p2_x - p1_x);
+                    isIntersecting = true;
                 }
             }
 
-            intersection = null;
-            return false;
+            return isIntersecting;
         }
 
         /// <summary>
