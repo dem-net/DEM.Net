@@ -13,6 +13,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "License", "License", "{D6ED
 		LICENSE.md = LICENSE.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Net.Core", "DEM.Net.Core\DEM.Net.Core.csproj", "{2D691A22-A4BC-4592-8DCC-87BA5E6292FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Net.glTF", "DEM.Net.glTF\DEM.Net.glTF.csproj", "{70F12269-F056-4C49-9467-07831D0BF711}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{9417FC33-D64A-4B15-AD47-286382F1FF21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9417FC33-D64A-4B15-AD47-286382F1FF21}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{9417FC33-D64A-4B15-AD47-286382F1FF21}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{2D691A22-A4BC-4592-8DCC-87BA5E6292FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D691A22-A4BC-4592-8DCC-87BA5E6292FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D691A22-A4BC-4592-8DCC-87BA5E6292FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D691A22-A4BC-4592-8DCC-87BA5E6292FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70F12269-F056-4C49-9467-07831D0BF711}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70F12269-F056-4C49-9467-07831D0BF711}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70F12269-F056-4C49-9467-07831D0BF711}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70F12269-F056-4C49-9467-07831D0BF711}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
