@@ -47,6 +47,7 @@
         </None>
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="DEM.Net.Core" Version="0.2.7.3" />
         <PackageReference Include="IxMilia.Stl" Version="0.1.1" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.5" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
@@ -58,9 +59,6 @@
     </ItemGroup>
     <ItemGroup>
         <None Include="DEMnet_64.png" Pack="true" PackagePath="\" />
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\DEM.Net.Core\DEM.Net.Core.csproj" />
     </ItemGroup>
     <ProjectExtensions>
         <MonoDevelop>
