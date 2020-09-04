@@ -2,15 +2,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <PackageId>DEM.Net.glTF</PackageId>
-        <Version>0.2.7.2</Version>
+        <Version>0.2.7.3</Version>
         <Authors>Xavier Fischer</Authors>
         <Copyright>Xavier Fischer and Contributors</Copyright>
         <Owners>Xavier Fischer</Owners>
         <PackageProjectUrl>https://github.com/dem-net/DEM.Net.glTF</PackageProjectUrl>
-        <PackageReleaseNotes>Migrated to demnet 0.2.7.2</PackageReleaseNotes>
+        <PackageReleaseNotes>Migrated to demnet 0.2.7.3</PackageReleaseNotes>
         <PackageTags>DEM, Terrain, Elevation, Mesh, 3D, glTF, Map, STL</PackageTags>
         <Title>DEM.Net</Title>
-        <Product>DEM.Net</Product>
+        <Product>DEM.Net Elevation API</Product>
         <Description>glTF3D and STL exporters for DEM.Net</Description>
         <Summary>glTF3D and STL exporters for DEM.Net</Summary>
         <RepositoryUrl>https://github.com/dem-net/DEM.Net.glTF</RepositoryUrl>
@@ -19,10 +19,13 @@
         </PackageLicenseExpression>
         <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
         <PackageIcon>DEMnet_64.png</PackageIcon>
-        <AssemblyVersion>0.2.7.2</AssemblyVersion>
+        <AssemblyVersion>0.2.7.3</AssemblyVersion>
         <TargetFramework>netstandard2.0</TargetFramework>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+      <LicenseUrl>https://raw.githubusercontent.com/dem-net/DEM.Net.Extensions/master/LICENSE.md</LicenseUrl>
         <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+      <PublishRepositoryUrl>true</PublishRepositoryUrl>
+      <EmbedUntrackedSources>true</EmbedUntrackedSources>
     </PropertyGroup>
     <!-- Build package only in Release -->
     <PropertyGroup Condition=" '$(Configuration)' == 'Release'">
@@ -37,7 +40,6 @@
         <GenerateDocumentationFile>false</GenerateDocumentationFile>
     </PropertyGroup>
     <ItemGroup>
-        <None Remove="gtlfSharp\SharpGltfService.cs~RF5d4699.TMP" />
         <None Include="..\LICENSE.md">
             <Pack>True</Pack>
             <PackagePath>
@@ -47,6 +49,10 @@
     <ItemGroup>
         <PackageReference Include="IxMilia.Stl" Version="0.1.1" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.5" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0018" />
         <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
     </ItemGroup>

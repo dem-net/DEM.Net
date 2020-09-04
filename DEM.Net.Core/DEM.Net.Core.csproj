@@ -2,17 +2,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <PackageId>DEM.Net.Core</PackageId>
-        <Version>0.2.7.2</Version>
+        <Version>0.2.7.3</Version>
         <Authors>Xavier Fischer, Frédéric Aubin</Authors>
         <Copyright>Xavier Fischer, Frédéric Aubin and Contributors</Copyright>
         <Owners>Xavier Fischer</Owners>
         <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
-        <PackageReleaseNotes>
-          Code refactor (removed useless interfaces, readability)
-          Lines bulk elevation (better performance)
-          Imagery disk cache
-          Procedural mesh generation for axis, cylinder, cones
-        </PackageReleaseNotes>
+        <PackageReleaseNotes>- Code refactor (removed useless interfaces, readability)
+- Lines bulk elevation (better performance)
+- Imagery disk cache
+- Procedural mesh generation for axis, cylinder, cones</PackageReleaseNotes>
         <PackageTags>DEM, Terrain, Elevation</PackageTags>
         <Title>DEM.Net</Title>
         <Product>DEM.Net</Product>
@@ -20,16 +18,17 @@
         <Summary>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Summary>
         <RepositoryUrl>https://github.com/dem-net/DEM.Net</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageLicenseExpression>
-        </PackageLicenseExpression>
+        <PackageLicenseExpression></PackageLicenseExpression>
         <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
         <PackageIcon>DEMnet_64.png</PackageIcon>
-        <AssemblyVersion>0.2.7.2</AssemblyVersion>
-        <FileVersion>0.2.7.2</FileVersion>
+        <AssemblyVersion>0.2.7.3</AssemblyVersion>
+        <FileVersion>0.2.7.3</FileVersion>
         <UserSecretsId>a9a5d6e1-3bb8-4dfd-ac6a-861f60dada50</UserSecretsId>
         <TargetFramework>netstandard2.0</TargetFramework>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
         <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
     </PropertyGroup>
     <!-- Build package only in Release -->
     <PropertyGroup Condition=" '$(Configuration)' == 'Release'">
@@ -94,6 +93,10 @@
         <PackageReference Include="DotSpatial.Projections.NetStandard" Version="1.0.0" />
         <PackageReference Include="GeoAPI.CoordinateSystems" Version="1.7.5" />
         <PackageReference Include="GeoAPI.Core" Version="1.7.5" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="NetTopologySuite" Version="1.15.3" />
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.5" />
         <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.5" />
