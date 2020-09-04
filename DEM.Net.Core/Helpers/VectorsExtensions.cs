@@ -36,9 +36,9 @@ namespace DEM.Net.Core
 {
     public static class VectorsExtensions
     {
-        public static IEnumerable<Vector3> ToVector3(this IEnumerable<GeoPoint> geoPoint)
+        public static IEnumerable<Vector3> ToVector3GlTFSpace(this IEnumerable<GeoPoint> geoPoint)
         {
-            return geoPoint.Select(p => p.ToVector3());
+            return geoPoint.Select(p => p.ToVector3GlTFSpace());
         }
         public static IEnumerable<Vector3> FilterConsecutiveSame(this IEnumerable<Vector3> vectors)
         {
@@ -62,13 +62,32 @@ namespace DEM.Net.Core
                 }
             }
         }
-        public static Vector3 ToVector3(this GeoPoint geoPoint)
+        public static Vector3 ToVector3GlTFSpace(this GeoPoint geoPoint)
         {
-            return new Vector3((float)geoPoint.Longitude, (float)(geoPoint.Elevation ?? 0D), -(float)geoPoint.Latitude);
+            return ToGlTFSpace(new Vector3((float)geoPoint.Longitude, (float)geoPoint.Latitude, (float)(geoPoint.Elevation ?? 0D)));
+        }
+        public static Vector3 AsVector3(this GeoPoint geoPoint)
+        {
+            return new Vector3((float)geoPoint.Longitude, (float)geoPoint.Latitude, (float)(geoPoint.Elevation ?? 0D));
+        }
+        public static Vector3 ToGlTFSpace(this Vector3 vector3)
+        {
+            return new Vector3(vector3.X, vector3.Z, -vector3.Y);
+        }
+        public static void ToGlTFSpace(this List<Vector3> vector3)
+        {
+            for (int i = 0; i < vector3.Count; i++)
+            {
+                vector3[i] = new Vector3(vector3[i].X, vector3[i].Z, -vector3[i].Y);
+            }
         }
         public static Vector4 ToVector4(this Vector3 vector3, float w = 0f)
         {
             return new Vector4(vector3, w);
+        }
+        public static string ToRgbString(this Vector4 color)
+        {
+            return $"{color.X * 255f:N0},{color.Y * 255f:N0},{color.Z * 255f:N0}";
         }
         public static Vector4 CreateColor(byte r, byte g, byte b, byte a = 255)
         {
@@ -116,5 +135,45 @@ namespace DEM.Net.Core
                     vectors.Max(v => v.Y),
                     vectors.Max(v => v.Z));
         }
+
+        public static TriangulationList<Vector3> Translate(this TriangulationList<Vector3> triangulation, Vector3 vector)
+        {
+            Matrix4x4 translate = Matrix4x4.CreateTranslation(vector);
+            return Transform(triangulation, translate);
+        }
+        public static TriangulationList<Vector3> Transform(this TriangulationList<Vector3> triangulation, Matrix4x4 matrix4x4)
+        {
+            for (int i = 0; i < triangulation.NumPositions; i++)
+            {
+                triangulation.Positions[i] = Vector3.Transform(triangulation.Positions[i], matrix4x4);
+            }
+            return triangulation;
+        }
+        public static TriangulationList<Vector3> CenterOnOrigin(this TriangulationList<Vector3> triangulation, BoundingBox bbox, bool centerOnZ = false)
+        {
+            //Logger.Info("CenterOnOrigin...");
+            double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
+            double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
+
+            Matrix4x4 translate = Matrix4x4.CreateTranslation((float)-xOriginOffset, (float)-yOriginOffset, centerOnZ ? (float)-bbox.zMin : 0);
+            for (int i = 0; i < triangulation.NumPositions; i++)
+            {
+                triangulation.Positions[i] = Vector3.Transform(triangulation.Positions[i], translate);
+            }
+
+            return triangulation;
+        }
+        public static TriangulationList<Vector3> CenterOnOrigin(this TriangulationList<Vector3> triangulation, Vector3 origin)
+        {
+           Matrix4x4 translate = Matrix4x4.CreateTranslation((float)-origin.X, (float)-origin.Y, -origin.Z);
+            for (int i = 0; i < triangulation.NumPositions; i++)
+            {
+                triangulation.Positions[i] = Vector3.Transform(triangulation.Positions[i], translate);
+            }
+
+            return triangulation;
+        }
+
+
     }
 }

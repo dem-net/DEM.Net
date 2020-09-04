@@ -19,13 +19,14 @@ namespace DEM.Net.Core.EarthData
     {
         private readonly ILogger<NasaGranuleFileService> logger;
         private ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName;
-        private static HttpClient _httpClient = new HttpClient();
+        private readonly IHttpClientFactory httpClientFactory;
         private readonly EarthdataLoginConnector rasterDownloader;
 
-        public NasaGranuleFileService(ILogger<NasaGranuleFileService> logger, EarthdataLoginConnector rasterDownloader)
+        public NasaGranuleFileService(ILogger<NasaGranuleFileService> logger, EarthdataLoginConnector rasterDownloader, IHttpClientFactory httpClientFactory)
         {
             this.logger = logger;
             this.rasterDownloader = rasterDownloader;
+            this.httpClientFactory = httpClientFactory;
         }
         public void Setup(DEMDataSet dataSet, string dataSetLocalDir)
         {
@@ -59,12 +60,13 @@ namespace DEM.Net.Core.EarthData
                     int pageIndex = 0;
                     int PAGE_SIZE = 2000;
                     links = new List<NasaDemFile>(30000);
+                    var httpClient = httpClientFactory.CreateClient();
                     do
                     {
                         pageIndex++;
                         logger.LogInformation($"Getting entries on page {pageIndex} with page size of {PAGE_SIZE} ({(pageIndex - 1) * PAGE_SIZE} entries so far)...");
                         var url = dataSource.GetUrl(PAGE_SIZE, pageIndex);
-                        var json = _httpClient.GetStringAsync(url).GetAwaiter().GetResult();
+                        var json = httpClient.GetStringAsync(url).GetAwaiter().GetResult();
                         hasData = !string.IsNullOrWhiteSpace(json);
                         if (hasData)
                         {

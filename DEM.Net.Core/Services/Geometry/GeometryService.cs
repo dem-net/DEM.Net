@@ -429,15 +429,15 @@ namespace DEM.Net.Core
 
             if (lineGeom == null || lineGeom.IsEmpty)
             {
-                yield return null;
+                yield break;
             }
             if (lineGeom.OgcGeometryType != OgcGeometryType.LineString)
             {
-                yield return null;
+                yield break;
             }
             if (lineGeom.NumPoints < 2)
             {
-                yield return null;
+                yield break;
             }
 
             for (int i = 0; i < lineGeom.NumPoints - 1; i++)

@@ -2,12 +2,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <PackageId>DEM.Net.Core</PackageId>
-        <Version>0.2.7.1</Version>
+        <Version>0.2.7.2</Version>
         <Authors>Xavier Fischer, Frédéric Aubin</Authors>
         <Copyright>Xavier Fischer, Frédéric Aubin and Contributors</Copyright>
         <Owners>Xavier Fischer</Owners>
         <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
-        <PackageReleaseNotes>Various bug fixes, OSM pipeline, glTF models centered on origin</PackageReleaseNotes>
+        <PackageReleaseNotes>
+          Code refactor (removed useless interfaces, readability)
+          Lines bulk elevation (better performance)
+          Imagery disk cache
+          Procedural mesh generation for axis, cylinder, cones
+        </PackageReleaseNotes>
         <PackageTags>DEM, Terrain, Elevation</PackageTags>
         <Title>DEM.Net</Title>
         <Product>DEM.Net</Product>
@@ -19,8 +24,8 @@
         </PackageLicenseExpression>
         <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
         <PackageIcon>DEMnet_64.png</PackageIcon>
-        <AssemblyVersion>0.2.7.1</AssemblyVersion>
-        <FileVersion>0.2.7.1</FileVersion>
+        <AssemblyVersion>0.2.7.2</AssemblyVersion>
+        <FileVersion>0.2.7.2</FileVersion>
         <UserSecretsId>a9a5d6e1-3bb8-4dfd-ac6a-861f60dada50</UserSecretsId>
         <TargetFramework>netstandard2.0</TargetFramework>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
@@ -59,9 +64,9 @@
     </ItemGroup>
     <!-- .NET Standard 2.0 references, compilation flags and build options -->
     <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.2.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.5" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.5" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.5" />
     </ItemGroup>
     <ItemGroup>
         <Compile Remove="Services\Voronoi\BeanTopologie\**" />
@@ -89,14 +94,15 @@
         <PackageReference Include="DotSpatial.Projections.NetStandard" Version="1.0.0" />
         <PackageReference Include="GeoAPI.CoordinateSystems" Version="1.7.5" />
         <PackageReference Include="GeoAPI.Core" Version="1.7.5" />
-        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.2.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.2.0" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
-        <PackageReference Include="Microsoft.Extensions.Options" Version="2.2.0" />
         <PackageReference Include="NetTopologySuite" Version="1.15.3" />
+        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.5" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.5" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.5" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.5" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.5" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.5" />
         <PackageReference Include="NetTopologySuite.Diagnostics.Tracing" Version="0.0.3" />
-        <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
         <PackageReference Include="SDSLite" Version="1.4.0" />
         <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0007" />
         <PackageReference Include="SixLabors.Shapes" Version="1.0.0-beta0009" />

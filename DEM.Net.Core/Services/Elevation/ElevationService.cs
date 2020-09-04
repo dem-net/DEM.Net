@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -186,6 +187,75 @@ namespace DEM.Net.Core
         /// <param name="behavior">Action to use when no data is found in dataset</param>
         /// <remarks>Output can be BIG, as all elevations will be returned.</remarks>
         /// <returns></returns>
+        public List<GeoPoint> GetLineGeometryElevation(IGeometry lineStringGeometry, DEMDataSet dataSet, List<FileMetadata> segTiles, List<GeoSegment> nsLines, List<GeoSegment> weLines, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
+        {
+            if (lineStringGeometry == null || lineStringGeometry.IsEmpty)
+                return null;
+            if (lineStringGeometry.OgcGeometryType != OgcGeometryType.LineString)
+            {
+                throw new Exception("Geometry must be a linestring");
+            }
+            if (lineStringGeometry.SRID != 4326)
+            {
+                throw new Exception("Geometry SRID must be set to 4326 (WGS 84)");
+            }
+
+            BoundingBox bbox = lineStringGeometry.GetBoundingBox();
+
+            // Init interpolator
+            IInterpolator interpolator = GetInterpolator(interpolationMode);
+
+            var ptStart = lineStringGeometry.Coordinates[0];
+            var ptEnd = lineStringGeometry.Coordinates.Last();
+            GeoPoint start = new GeoPoint(ptStart.Y, ptStart.X);
+            GeoPoint end = new GeoPoint(ptEnd.Y, ptEnd.X);
+            double lengthMeters = start.DistanceTo(end);
+            int demResolution = dataSet.ResolutionMeters;
+            int totalCapacity = 2 * (int)(lengthMeters / demResolution);
+            double registrationOffset = dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell ? 0 : 0.5;
+
+            List<GeoPoint> geoPoints = new List<GeoPoint>(totalCapacity);
+
+            using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
+            {
+                bool isFirstSegment = true; // used to return first point only for first segments, for all other segments last point will be returned
+                foreach (GeoSegment segment in lineStringGeometry.Segments())
+                {
+                    // Find all intersection with segment and DEM grid
+                    IEnumerable<GeoPoint> intersections = this.FindSegmentIntersections(segment.Start.Longitude
+                        , segment.Start.Latitude
+                        , segment.End.Longitude
+                        , segment.End.Latitude
+                        , segTiles
+                        , nsLines
+                        , weLines
+                        , isFirstSegment
+                        , registrationOffset
+                        , true);
+
+                    // Get elevation for each point
+                    intersections = this.GetElevationData(intersections, adjacentRasters, segTiles, interpolator, behavior);
+
+                    // Add to output list
+                    geoPoints.AddRange(intersections);
+
+                    isFirstSegment = false;
+                }
+                //Debug.WriteLine(adjacentRasters.Count);
+            }  // Ensures all rasters are properly closed
+
+            return geoPoints;
+        }
+
+        /// <summary>
+        /// High level method that retrieves all dataset elevations along given line
+        /// </summary>
+        /// <param name="lineStringGeometry">Line geometry</param>
+        /// <param name="dataSet">DEM dataset to use</param>
+        /// <param name="interpolationMode">Interpolation mode</param>
+        /// <param name="behavior">Action to use when no data is found in dataset</param>
+        /// <remarks>Output can be BIG, as all elevations will be returned.</remarks>
+        /// <returns></returns>
         public List<GeoPoint> GetLineGeometryElevation(IGeometry lineStringGeometry, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
         {
             if (lineStringGeometry == null || lineStringGeometry.IsEmpty)
@@ -221,20 +291,18 @@ namespace DEM.Net.Core
                 bool isFirstSegment = true; // used to return first point only for first segments, for all other segments last point will be returned
                 foreach (GeoSegment segment in lineStringGeometry.Segments())
                 {
-                    List<FileMetadata> segTiles = this.GetCoveringFiles(segment.GetBoundingBox(), dataSet, tiles);
-
                     // Find all intersection with segment and DEM grid
                     IEnumerable<GeoPoint> intersections = this.FindSegmentIntersections(segment.Start.Longitude
                         , segment.Start.Latitude
                         , segment.End.Longitude
                         , segment.End.Latitude
-                        , segTiles
+                        , tiles
                         , isFirstSegment
                         , registrationOffset
                         , true);
 
                     // Get elevation for each point
-                    intersections = this.GetElevationData(intersections, adjacentRasters, segTiles, interpolator, behavior);
+                    intersections = this.GetElevationData(intersections, adjacentRasters, tiles, interpolator, behavior);
 
                     // Add to output list
                     geoPoints.AddRange(intersections);
@@ -264,6 +332,50 @@ namespace DEM.Net.Core
             IGeometry geometry = GeometryService.ParseGeoPointAsGeometryLine(lineGeoPoints);
 
             return GetLineGeometryElevation(geometry, dataSet, interpolationMode, behavior);
+        }
+
+        /// <summary>
+        /// High level method that retrieves all dataset elevations along given lines
+        /// </summary>
+        /// <param name="lineGeoPoints">List of points that, when joined, makes the input line</param>
+        /// <param name="dataSet">DEM dataset to use</param>
+        /// <param name="interpolationMode">Interpolation mode</param>
+        /// <param name="behavior">Action to use when no data is found in dataset</param>
+        /// <remarks>Output can be BIG, as all elevations will be returned.</remarks>
+        /// <returns></returns>
+        public Dictionary<TKey, List<GeoPoint>> GetLinesGeometryElevation<TKey>(Dictionary<TKey, List<GeoPoint>> lineGeoPoints, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
+        {
+            List<IGeometry> geoLines = lineGeoPoints.Select(l => GeometryService.ParseGeoPointAsGeometryLine(l.Value)).ToList();
+            var bbox = GeometryService.GetBoundingBox(geoLines.First());
+            foreach (var linePts in geoLines.Skip(1))
+            {
+                bbox.UnionWith(GeometryService.GetBoundingBox(linePts));
+            }
+
+
+            List<FileMetadata> tiles = this.GetCoveringFiles(bbox, dataSet);
+            double registrationOffset = dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell ? 0 : 0.5;
+            var weLines = GetDEMWestEastLines(tiles, registrationOffset);
+            var nsLines = GetDEMNorthSouthLines(tiles, registrationOffset);
+
+            //Dictionary<TKey, List<GeoPoint>> outLines = new Dictionary<TKey, List<GeoPoint>>(lineGeoPoints.Count);
+            //foreach (var linePts in lineGeoPoints)
+            //{
+            //    IGeometry geometry = GeometryService.ParseGeoPointAsGeometryLine(linePts.Value);
+
+            //    outLines.Add(linePts.Key, GetLineGeometryElevation(geometry, dataSet, tiles, nsLines, weLines, interpolationMode, behavior));
+            //}
+            ConcurrentDictionary<TKey, List<GeoPoint>> outLines = new ConcurrentDictionary<TKey, List<GeoPoint>>();
+            Parallel.ForEach(lineGeoPoints, linePts =>
+            {
+                IGeometry geometry = GeometryService.ParseGeoPointAsGeometryLine(linePts.Value);
+
+                if (!outLines.TryAdd(linePts.Key, GetLineGeometryElevation(geometry, dataSet, tiles, nsLines, weLines, interpolationMode, behavior)))
+                {
+                    _logger.LogWarning("Could not add line");
+                }
+            });
+            return outLines.ToDictionary(k => k.Key, v => v.Value);
         }
 
         /// <summary>
@@ -638,6 +750,85 @@ namespace DEM.Net.Core
         /// <param name="returnStartPoint">If true, the segment starting point will be returned. Useful when processing a line segment by segment.</param>
         /// <param name="returnEndPoind">If true, the segment end point will be returned. Useful when processing a line segment by segment.</param>
         /// <returns></returns>
+        private List<GeoPoint> FindSegmentIntersections(double startLon, double startLat, double endLon, double endLat, List<FileMetadata> segTiles, List<GeoSegment> nsLines, List<GeoSegment> weLines, bool returnStartPoint, double registrationOffsetPx, bool returnEndPoind)
+        {
+            List<GeoPoint> segmentPointsWithDEMPoints;
+            // Find intersections with north/south lines, 
+            // starting form segment western point to easternmost point
+            GeoPoint westernSegPoint = startLon < endLon ? new GeoPoint(startLat, startLon) : new GeoPoint(endLat, endLon);
+            GeoPoint easternSegPoint = startLon > endLon ? new GeoPoint(startLat, startLon) : new GeoPoint(endLat, endLon);
+            GeoSegment inputSegment = new GeoSegment(westernSegPoint, easternSegPoint);
+
+            if (segTiles.Any())
+            {
+                int estimatedCapacity = (segTiles.Select(t => t.DataStartLon).Distinct().Count() // num horizontal tiles * width
+                                        * segTiles.First().Width)
+                                        + (segTiles.Select(t => t.DataStartLat).Distinct().Count() // num vertical tiles * height
+                                        * segTiles.First().Height);
+                segmentPointsWithDEMPoints = new List<GeoPoint>(estimatedCapacity);
+                bool yAxisDown = segTiles.First().pixelSizeY < 0;
+                if (yAxisDown == false)
+                {
+                    throw new NotImplementedException("DEM with y axis upwards not supported.");
+                }
+
+                foreach (GeoSegment demSegment in nsLines.Where(l => l.Start.Longitude > startLon && l.Start.Longitude < endLon))
+                {
+                    if (GeometryService.LineLineIntersection(out GeoPoint intersectionPoint, inputSegment, demSegment))
+                    {
+                        segmentPointsWithDEMPoints.Add(intersectionPoint);
+                    }
+                }
+
+                // Find intersections with west/east lines, 
+                // starting form segment northernmost point to southernmost point
+                GeoPoint northernSegPoint = startLat > endLat ? new GeoPoint(startLat, startLon) : new GeoPoint(endLat, endLon);
+                GeoPoint southernSegPoint = startLat < endLat ? new GeoPoint(startLat, startLon) : new GeoPoint(endLat, endLon);
+                inputSegment = new GeoSegment(northernSegPoint, southernSegPoint);
+                foreach (GeoSegment demSegment in weLines.Where(l => l.Start.Latitude > endLat && l.Start.Latitude < startLat))
+                {
+                    if (GeometryService.LineLineIntersection(out GeoPoint intersectionPoint, inputSegment, demSegment))
+                    {
+                        segmentPointsWithDEMPoints.Add(intersectionPoint);
+                    }
+                }
+            }
+            else
+            {
+                // No DEM coverage
+                segmentPointsWithDEMPoints = new List<GeoPoint>(2);
+            }
+
+            // add start and/or end point
+            if (returnStartPoint)
+            {
+                segmentPointsWithDEMPoints.Add(new GeoPoint(startLat, startLon));
+                //segmentPointsWithDEMPoints.Add(inputSegment.Start);
+            }
+            if (returnEndPoind)
+            {
+                segmentPointsWithDEMPoints.Add(new GeoPoint(endLat, endLon));
+                //segmentPointsWithDEMPoints.Add(inputSegment.End);
+            }
+
+            // sort points in segment order
+            //
+            segmentPointsWithDEMPoints.Sort(new DistanceFromPointComparer(new GeoPoint(startLat, startLon)));
+
+            return segmentPointsWithDEMPoints;
+        }
+
+        /// <summary>
+        /// Finds all intersections between given segment and DEM grid
+        /// </summary>
+        /// <param name="startLon">Segment start longitude</param>
+        /// <param name="startLat">Segment start latitude</param>
+        /// <param name="endLon">Segment end longitude</param>
+        /// <param name="endLat">Segment end latitude</param>
+        /// <param name="segTiles">Metadata files <see cref="ElevationService.GetCoveringFiles"/> to see how to get them relative to segment geometry</param>
+        /// <param name="returnStartPoint">If true, the segment starting point will be returned. Useful when processing a line segment by segment.</param>
+        /// <param name="returnEndPoind">If true, the segment end point will be returned. Useful when processing a line segment by segment.</param>
+        /// <returns></returns>
         private List<GeoPoint> FindSegmentIntersections(double startLon, double startLat, double endLon, double endLat, List<FileMetadata> segTiles, bool returnStartPoint, double registrationOffsetPx, bool returnEndPoind)
         {
             List<GeoPoint> segmentPointsWithDEMPoints;
@@ -787,6 +978,88 @@ namespace DEM.Net.Core
                     yield return line;
                 }
             }
+
+        }
+
+
+        private List<GeoSegment> GetDEMNorthSouthLines(List<FileMetadata> segTiles, double registrationOffsetPx)
+        {
+            // Get the first north west tile and last south east tile. 
+            // The lines are bounded by those tiles
+
+            List<GeoSegment> segments = new List<GeoSegment>();
+
+            foreach (var tilesByX in segTiles.GroupBy(t => t.DataStartLon).OrderBy(g => g.Key))
+            {
+                List<FileMetadata> NSTilesOrdered = tilesByX.OrderByDescending(t => t.DataStartLat).ToList();
+
+                FileMetadata top = NSTilesOrdered.First();
+                FileMetadata bottom = NSTilesOrdered.Last();
+
+                // TIP: can optimize here starting with min(westernSegPoint, startlon) but careful !
+                GeoPoint curPoint = new GeoPoint(top.DataStartLat, top.DataStartLon);
+                // X Index in tile coords
+                int curIndex = (int)Math.Ceiling((curPoint.Longitude - top.PhysicalStartLon) / top.PixelScaleX - registrationOffsetPx);
+
+                // For cell registered datasets, DataStart is not matching the start data point. Start data point is at cell center (0.5 pixel off)
+                double startLon = top.FileFormat.Registration == DEMFileRegistrationMode.Cell
+                    ? top.DataStartLon + top.PixelScaleX / 2d
+                    : top.DataStartLon;
+
+
+                while (IsPointInTile(top, curPoint))
+                {
+                    if (curIndex >= top.Width)
+                    {
+                        break;
+                    }
+
+                    curPoint.Longitude = startLon + (top.pixelSizeX * curIndex);
+
+                    segments.Add(new GeoSegment(new GeoPoint(top.DataEndLat, curPoint.Longitude), new GeoPoint(bottom.DataStartLat, curPoint.Longitude)));
+                    curIndex++;
+                }
+            }
+
+            return segments;
+        }
+
+        private List<GeoSegment> GetDEMWestEastLines(List<FileMetadata> segTiles, double registrationOffsetPx)
+        {
+            // Get the first north west tile and last south east tile. 
+            // The lines are bounded by those tiles
+            List<GeoSegment> segments = new List<GeoSegment>();
+            foreach (var tilesByY in segTiles.GroupBy(t => t.DataStartLat).OrderByDescending(g => g.Key))
+            {
+                List<FileMetadata> WETilesOrdered = tilesByY.OrderBy(t => t.DataStartLon).ToList();
+
+                FileMetadata left = WETilesOrdered.First();
+                FileMetadata right = WETilesOrdered.Last();
+
+                GeoPoint curPoint = new GeoPoint(left.DataEndLat, left.DataStartLon);
+
+                // For cell registered datasets, DataStart is not matching the start data point. Start data point is at cell center (0.5 pixel off)
+                double endLat = left.FileFormat.Registration == DEMFileRegistrationMode.Cell
+                                ? left.DataEndLat + left.PixelScaleY / 2d
+                                : left.DataEndLat;
+
+                // Y Index in tile coords
+                int curIndex = (int)Math.Floor((left.PhysicalEndLat - curPoint.Latitude) / left.PixelScaleY - -registrationOffsetPx);
+                while (IsPointInTile(left, curPoint))
+                {
+                    if (curIndex >= left.Height)
+                    {
+                        break;
+                    }
+
+                    curPoint.Latitude = endLat + (left.pixelSizeY * curIndex);
+
+                    segments.Add(new GeoSegment(new GeoPoint(curPoint.Latitude, left.DataStartLon), new GeoPoint(curPoint.Latitude, right.DataEndLon)));
+                    curIndex++;
+                }
+            }
+
+            return segments;
 
         }
 

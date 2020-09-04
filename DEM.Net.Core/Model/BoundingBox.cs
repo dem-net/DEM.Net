@@ -102,6 +102,15 @@ namespace DEM.Net.Core
             zMin = Math.Min(zMin, z);
             zMax = Math.Max(zMax, z);
         }
+        public void UnionWith(BoundingBox bbox)
+        {
+            xMin = Math.Min(xMin, bbox.xMin);
+            xMax = Math.Max(xMax, bbox.xMax);
+            yMin = Math.Min(yMin, bbox.yMin);
+            yMax = Math.Max(yMax, bbox.yMax);
+            zMin = Math.Min(zMin, bbox.zMin);
+            zMax = Math.Max(zMax, bbox.zMax);
+        }
 
         /// <summary>
         /// Reorders min / max and returns a new BoundingBox
@@ -206,6 +215,10 @@ namespace DEM.Net.Core
         public static BoundingBox AroundPoint(double lat, double lon, double size)
         {
             return new BoundingBox(lon - size, lon + size, lat - size, lat + size, 0, 0);
+        }
+        public static BoundingBox AroundPoint(GeoPoint point, double size)
+        {
+            return BoundingBox.AroundPoint(point.Latitude, point.Longitude, size);
         }
 
         public override string ToString()
