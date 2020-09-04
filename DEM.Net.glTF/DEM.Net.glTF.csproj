@@ -1,72 +1,74 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <PackageId>DEM.Net.glTF</PackageId>
-        <Version>0.2.7.3</Version>
-        <Authors>Xavier Fischer</Authors>
-        <Copyright>Xavier Fischer and Contributors</Copyright>
-        <Owners>Xavier Fischer</Owners>
-        <PackageProjectUrl>https://github.com/dem-net/DEM.Net.glTF</PackageProjectUrl>
-        <PackageReleaseNotes>Migrated to demnet 0.2.7.3</PackageReleaseNotes>
-        <PackageTags>DEM, Terrain, Elevation, Mesh, 3D, glTF, Map, STL</PackageTags>
-        <Title>DEM.Net</Title>
-        <Product>DEM.Net Elevation API</Product>
-        <Description>glTF3D and STL exporters for DEM.Net</Description>
-        <Summary>glTF3D and STL exporters for DEM.Net</Summary>
-        <RepositoryUrl>https://github.com/dem-net/DEM.Net.glTF</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageLicenseExpression>
-        </PackageLicenseExpression>
-        <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
-        <PackageIcon>DEMnet_64.png</PackageIcon>
-        <AssemblyVersion>0.2.7.3</AssemblyVersion>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-      <LicenseUrl>https://raw.githubusercontent.com/dem-net/DEM.Net.Extensions/master/LICENSE.md</LicenseUrl>
-        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-      <PublishRepositoryUrl>true</PublishRepositoryUrl>
-      <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    </PropertyGroup>
-    <!-- Build package only in Release -->
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release'">
-        <IncludeSymbols>true</IncludeSymbols>
-        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    </PropertyGroup>
-    <!-- Build package only in Release -->
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug'">
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    </PropertyGroup>
-    <ItemGroup>
-        <None Include="..\LICENSE.md">
-            <Pack>True</Pack>
-            <PackagePath>
-            </PackagePath>
-        </None>
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="DEM.Net.Core" Version="0.2.7.3" />
-        <PackageReference Include="IxMilia.Stl" Version="0.1.1" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.5" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0018" />
-        <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-    </ItemGroup>
-    <ItemGroup>
-        <None Include="DEMnet_64.png" Pack="true" PackagePath="\" />
-    </ItemGroup>
-    <ProjectExtensions>
-        <MonoDevelop>
-            <Properties>
-                <Policies>
-                    <StandardHeader IncludeInNewFiles="True" Text="&#xA;${FileName}&#xA; &#xA;Author:&#xA;      ${AuthorName}&#xA;&#xA;Copyright (c) ${Year} ${CopyrightHolder}&#xA;&#xA;Permission is hereby granted, free of charge, to any person obtaining a copy&#xA;of this software and associated documentation files (the &quot;Software&quot;), to deal&#xA;in the Software without restriction, including without limitation the rights&#xA;to use, copy, modify, merge, publish, distribute, sublicense, and/or sell&#xA;copies of the Software, and to permit persons to whom the Software is&#xA;furnished to do so, subject to the following conditions:&#xA;&#xA;The above copyright notice and this permission notice shall be included in&#xA;all copies or substantial portions of the Software.&#xA;&#xA;THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR&#xA;IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,&#xA;FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE&#xA;AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER&#xA;LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,&#xA;OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN&#xA;THE SOFTWARE." />
-                </Policies>
-            </Properties>
-        </MonoDevelop>
-    </ProjectExtensions>
+  <PropertyGroup>
+    <PackageId>DEM.Net.glTF</PackageId>
+    <Version>0.2.7.3</Version>
+    <Authors>Xavier Fischer</Authors>
+    <Copyright>Xavier Fischer and Contributors</Copyright>
+    <Owners>Xavier Fischer</Owners>
+    <PackageProjectUrl>https://github.com/dem-net/DEM.Net.glTF</PackageProjectUrl>
+    <PackageReleaseNotes>Migrated to demnet 0.2.7.3</PackageReleaseNotes>
+    <PackageTags>DEM, Terrain, Elevation, Mesh, 3D, glTF, Map, STL</PackageTags>
+    <Title>DEM.Net</Title>
+    <Product>DEM.Net Elevation API</Product>
+    <Description>glTF3D and STL exporters for DEM.Net</Description>
+    <Summary>glTF3D and STL exporters for DEM.Net</Summary>
+    <RepositoryUrl>https://github.com/dem-net/DEM.Net.glTF</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>
+    </PackageLicenseExpression>
+    <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
+    <PackageIcon>DEMnet_64.png</PackageIcon>
+    <AssemblyVersion>0.2.7.3</AssemblyVersion>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <LicenseUrl>https://raw.githubusercontent.com/dem-net/DEM.Net.Extensions/master/LICENSE.md</LicenseUrl>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+  <!-- Build package only in Release -->
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release'">
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <!-- Build package only in Release -->
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath>
+      </PackagePath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="IxMilia.Stl" Version="0.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.5" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0018" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DEMnet_64.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DEM.Net.Core\DEM.Net.Core.csproj" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <StandardHeader IncludeInNewFiles="True" Text="&#xA;${FileName}&#xA; &#xA;Author:&#xA;      ${AuthorName}&#xA;&#xA;Copyright (c) ${Year} ${CopyrightHolder}&#xA;&#xA;Permission is hereby granted, free of charge, to any person obtaining a copy&#xA;of this software and associated documentation files (the &quot;Software&quot;), to deal&#xA;in the Software without restriction, including without limitation the rights&#xA;to use, copy, modify, merge, publish, distribute, sublicense, and/or sell&#xA;copies of the Software, and to permit persons to whom the Software is&#xA;furnished to do so, subject to the following conditions:&#xA;&#xA;The above copyright notice and this permission notice shall be included in&#xA;all copies or substantial portions of the Software.&#xA;&#xA;THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR&#xA;IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,&#xA;FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE&#xA;AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER&#xA;LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,&#xA;OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN&#xA;THE SOFTWARE." />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>
