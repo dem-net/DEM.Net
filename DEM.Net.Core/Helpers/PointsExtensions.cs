@@ -12,6 +12,7 @@ namespace DEM.Net.Core
         /// Assumes that the provided list is a "line string"
         /// </summary>
         /// <param name="points"></param>
+        /// <param name="noDataValue"></param>
         /// <returns></returns>
         public static ElevationMetrics ComputeMetrics(this IList<GeoPoint> points, double? noDataValue = null)
         {

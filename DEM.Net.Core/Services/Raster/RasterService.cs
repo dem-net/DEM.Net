@@ -46,7 +46,7 @@ namespace DEM.Net.Core
         internal const string MANIFEST_DIR = "manifest";
         private readonly RasterIndexServiceResolver _rasterIndexServiceResolver;
         private readonly ILogger<RasterService> _logger;
-        private NamedMonitor monitor = new NamedMonitor();
+        private readonly NamedMonitor monitor = new NamedMonitor();
 
         private string _localDirectory;
         private ConcurrentDictionary<string, List<FileMetadata>> _metadataCatalogCache = new ConcurrentDictionary<string, List<FileMetadata>>();
@@ -128,11 +128,11 @@ namespace DEM.Net.Core
         {
             return Path.Combine(GetLocalDEMPath(dataset), fileTitle);
         }
-        public FileMetadata ParseMetadata(IRasterFile rasterFile, DEMFileDefinition format, bool makeRelativePath = false)
+        public FileMetadata ParseMetadata(IRasterFile rasterFile, DEMFileDefinition format)
         {
             return rasterFile.ParseMetaData(format);
         }
-        public FileMetadata ParseMetadata(string fileName, DEMFileDefinition fileFormat, bool makeRelativePath = true)
+        public FileMetadata ParseMetadata(string fileName, DEMFileDefinition fileFormat)
         {
             FileMetadata metadata = null;
 
