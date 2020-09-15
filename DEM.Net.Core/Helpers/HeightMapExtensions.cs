@@ -99,6 +99,15 @@ namespace DEM.Net.Core
                                                     , 0, bbox.zMax - bbox.zMin);
             return heightMap;
         }
+        public static BoundingBox CenterOnOrigin(this BoundingBox bbox, bool centerOnZ = false)
+        {
+            double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
+            double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
+            return new BoundingBox(bbox.xMin - xOriginOffset, bbox.xMax - xOriginOffset
+                                                     , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset
+                                                     , 0, bbox.zMax - bbox.zMin);
+
+        }
 
         public static HeightMap CenterOnOrigin(this HeightMap heightMap, BoundingBox bbox, bool centerOnZ = false)
         {

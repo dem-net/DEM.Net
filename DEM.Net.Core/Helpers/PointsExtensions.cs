@@ -45,5 +45,20 @@ namespace DEM.Net.Core
         {
             return DouglasPeucker.DouglasPeuckerReduction(points, toleranceMeters);
         }
+
+        public static IEnumerable<GeoPoint> FitInto(this IEnumerable<GeoPoint> points, BoundingBox bboxUsedForGeneration, float maxSize)
+        {
+            float scale = 1f;
+            if (bboxUsedForGeneration.Width > bboxUsedForGeneration.Height)
+            {
+                scale = (float)(maxSize / bboxUsedForGeneration.Width);
+            }
+            else
+            {
+                scale = (float)(maxSize / bboxUsedForGeneration.Height);
+            }
+
+            return points.Scale(scale, scale, scale);
+        }
     }
 }
