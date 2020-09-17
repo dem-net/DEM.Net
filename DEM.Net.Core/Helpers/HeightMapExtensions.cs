@@ -256,7 +256,11 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public static HeightMap FitInto(this HeightMap heightMap, float maxSize)
         {
-            float scale = 1f;
+            return FitInto(heightMap, maxSize, out float scale);
+        }
+        public static HeightMap FitInto(this HeightMap heightMap, float maxSize, out float scale)
+        {
+            scale = 1f;
             if (heightMap.BoundingBox.Width > heightMap.BoundingBox.Height)
             {
                 scale = (float)(maxSize / heightMap.BoundingBox.Width);
