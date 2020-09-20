@@ -24,10 +24,12 @@
 // THE SOFTWARE.
 
 using DEM.Net.Core;
+using NetTopologySuite.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -91,6 +93,11 @@ namespace DEM.Net.Core
                 positions: a.Positions.Concat(b.Positions).ToList(),
                 colors: a.Colors.Concat(b.Colors).ToList(),
                 indices: a.Indices.Concat(b.Indices.Select(i => i + a.NumPositions)).ToList());
+        }
+
+        public TriangulationList<T> Clone()
+        {
+            return new TriangulationList<T>(new List<T>(Positions), new List<Vector4>(Colors), new List<int>(Indices));
         }
     }
 
