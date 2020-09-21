@@ -113,8 +113,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DEM.Net.Core" Version="0.2.7.3" />
-    <PackageReference Include="DEM.Net.glTF" Version="0.2.7.3" />
     <PackageReference Include="DotSpatial.Projections">
       <Version>1.9.0</Version>
     </PackageReference>
@@ -256,6 +254,10 @@
     <PackageReference Include="System.Xml.XDocument">
       <Version>4.3.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DEM.Net.Core\DEM.Net.Core.csproj" />
+    <ProjectReference Include="..\DEM.Net.glTF\DEM.Net.glTF.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
