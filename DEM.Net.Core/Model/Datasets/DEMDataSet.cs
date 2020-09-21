@@ -70,7 +70,7 @@ namespace DEM.Net.Core
                 Name = nameof(SRTM_GL3),
                 Description = "Shuttle Radar Topography Mission (SRTM GL3) Global 90m",
                 PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTSRTM.042013.4326.1",
-                DataSource = new VRTDataSource("https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL3/SRTM_GL3_srtm.vrt"),
+                DataSource = new VRTDataSource("https://opentopography.s3.sdsc.edu/raster/SRTM_GL3/SRTM_GL3_srtm.vrt"),
                 FileFormat = new DEMFileDefinition("Nasa SRTM HGT", DEMFileType.SRTM_HGT, ".hgt", DEMFileRegistrationMode.Grid),
                 ResolutionMeters = 90,
                 ResolutionArcSeconds = 3,
@@ -87,7 +87,7 @@ namespace DEM.Net.Core
                 Name = nameof(SRTM_GL1),
                 Description = "Shuttle Radar Topography Mission (SRTM GL1) Global 30m",
                 PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTSRTM.082015.4326.1",
-                DataSource = new VRTDataSource("https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/SRTM_GL1/SRTM_GL1_srtm.vrt"),
+                DataSource = new VRTDataSource("https://opentopography.s3.sdsc.edu/raster/SRTM_GL1/SRTM_GL1_srtm.vrt"),
                 FileFormat = new DEMFileDefinition("Nasa SRTM HGT", DEMFileType.SRTM_HGT, ".hgt", DEMFileRegistrationMode.Grid),
                 ResolutionMeters = 30,
                 ResolutionArcSeconds = 1,
@@ -99,7 +99,7 @@ namespace DEM.Net.Core
                 Name = nameof(AW3D30),
                 Description = "ALOS World 3D - 30m (nicest but contain void areas)",
                 PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTALOS.112016.4326.2",
-                DataSource = new VRTDataSource("https://cloud.sdsc.edu/v1/AUTH_opentopography/Raster/AW3D30/AW3D30_alos.vrt"),
+                DataSource = new VRTDataSource("https://opentopography.s3.sdsc.edu/raster/AW3D30/AW3D30_alos.vrt"),
                 FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Cell),
                 ResolutionMeters = 30,
                 ResolutionArcSeconds = 1,
@@ -216,7 +216,7 @@ namespace DEM.Net.Core
         /// Global medium res coverage with bathymetry (500m resolution)
         /// </summary>
         public static DEMDataSet GEBCO_2019 => Datasets.Value[nameof(GEBCO_2019)];
-        public static DEMDataSet GEBCO_2020 => Datasets.Value[nameof(GEBCO_2020)];
+        //public static DEMDataSet GEBCO_2020 => Datasets.Value[nameof(GEBCO_2020)];
 
         /// <summary>
         /// ASTER GDEM V3 https://cmr.earthdata.nasa.gov/search/concepts/C1575726572-LPDAAC_ECS/11

@@ -82,6 +82,7 @@ namespace DEM.Net.Core
         /// Centers height map on origin
         /// </summary>
         /// <param name="heightMap"></param>
+        /// <param name="centerOnZ"></param>
         /// <returns></returns>
         /// <remarks>This can be used in an height map processing pipeline, as coordinates are changed only on enumeration</remarks>
         public static HeightMap CenterOnOrigin(this HeightMap heightMap, bool centerOnZ = false)
@@ -91,13 +92,21 @@ namespace DEM.Net.Core
 
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
-            double zOriginOffset = bbox.zMax - (bbox.zMax - bbox.zMin) / 2d;
             heightMap.Coordinates = heightMap.Coordinates.Translate(-xOriginOffset, -yOriginOffset, centerOnZ ? -bbox.zMin : 0);
 
             heightMap.BoundingBox = new BoundingBox(bbox.xMin - xOriginOffset, bbox.xMax - xOriginOffset
                                                     , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset
                                                     , 0, bbox.zMax - bbox.zMin);
             return heightMap;
+        }
+        public static BoundingBox CenterOnOrigin(this BoundingBox bbox, bool centerOnZ = false)
+        {
+            double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
+            double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
+            return new BoundingBox(bbox.xMin - xOriginOffset, bbox.xMax - xOriginOffset
+                                                     , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset
+                                                     , 0, bbox.zMax - bbox.zMin);
+
         }
 
         public static HeightMap CenterOnOrigin(this HeightMap heightMap, BoundingBox bbox, bool centerOnZ = false)
@@ -106,7 +115,6 @@ namespace DEM.Net.Core
 
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
-            double zOriginOffset = bbox.zMax - (bbox.zMax - bbox.zMin) / 2d;
             heightMap.Coordinates = heightMap.Coordinates.Translate(-xOriginOffset, -yOriginOffset, centerOnZ ? -bbox.zMin : 0);
 
             heightMap.BoundingBox = new BoundingBox(bbox.xMin - xOriginOffset, bbox.xMax - xOriginOffset
@@ -248,7 +256,11 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public static HeightMap FitInto(this HeightMap heightMap, float maxSize)
         {
-            float scale = 1f;
+            return FitInto(heightMap, maxSize, out float scale);
+        }
+        public static HeightMap FitInto(this HeightMap heightMap, float maxSize, out float scale)
+        {
+            scale = 1f;
             if (heightMap.BoundingBox.Width > heightMap.BoundingBox.Height)
             {
                 scale = (float)(maxSize / heightMap.BoundingBox.Width);
@@ -403,11 +415,13 @@ namespace DEM.Net.Core
             if (step == 0 || step % 2 != 0)
                 throw new ArgumentOutOfRangeException("step", "Step must be a factor of 2");
 
-            HeightMap hMap = new HeightMap(heightMap.Width / step, heightMap.Height / step);
-            hMap.Maximum = heightMap.Maximum;
-            hMap.Minimum = heightMap.Minimum;
-            hMap.BoundingBox = heightMap.BoundingBox;
-            hMap.Coordinates = DownsampleCoordinates(heightMap.Coordinates.ToList(), heightMap.Width, heightMap.Height, step).ToList();
+            HeightMap hMap = new HeightMap(heightMap.Width / step, heightMap.Height / step)
+            {
+                Maximum = heightMap.Maximum,
+                Minimum = heightMap.Minimum,
+                BoundingBox = heightMap.BoundingBox,
+                Coordinates = DownsampleCoordinates(heightMap.Coordinates.ToList(), heightMap.Width, heightMap.Height, step).ToList()
+            };
 
             return hMap;
         }

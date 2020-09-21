@@ -12,6 +12,7 @@ namespace DEM.Net.Core
         /// Assumes that the provided list is a "line string"
         /// </summary>
         /// <param name="points"></param>
+        /// <param name="noDataValue"></param>
         /// <returns></returns>
         public static ElevationMetrics ComputeMetrics(this IList<GeoPoint> points, double? noDataValue = null)
         {
@@ -43,6 +44,21 @@ namespace DEM.Net.Core
         public static List<GeoPoint> Simplify(this IReadOnlyList<GeoPoint> points, double toleranceMeters)
         {
             return DouglasPeucker.DouglasPeuckerReduction(points, toleranceMeters);
+        }
+
+        public static IEnumerable<GeoPoint> FitInto(this IEnumerable<GeoPoint> points, BoundingBox bboxUsedForGeneration, float maxSize)
+        {
+            float scale = 1f;
+            if (bboxUsedForGeneration.Width > bboxUsedForGeneration.Height)
+            {
+                scale = (float)(maxSize / bboxUsedForGeneration.Width);
+            }
+            else
+            {
+                scale = (float)(maxSize / bboxUsedForGeneration.Height);
+            }
+
+            return points.Scale(scale, scale, scale);
         }
     }
 }

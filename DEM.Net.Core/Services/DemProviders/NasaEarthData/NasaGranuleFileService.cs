@@ -66,6 +66,7 @@ namespace DEM.Net.Core.EarthData
                         pageIndex++;
                         logger.LogInformation($"Getting entries on page {pageIndex} with page size of {PAGE_SIZE} ({(pageIndex - 1) * PAGE_SIZE} entries so far)...");
                         var url = dataSource.GetUrl(PAGE_SIZE, pageIndex);
+                        
                         var json = httpClient.GetStringAsync(url).GetAwaiter().GetResult();
                         hasData = !string.IsNullOrWhiteSpace(json);
                         if (hasData)
