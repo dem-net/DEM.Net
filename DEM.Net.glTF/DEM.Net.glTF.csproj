@@ -2,12 +2,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>DEM.Net.glTF</PackageId>
-    <Version>0.2.7.3</Version>
+    <Version>0.2.7.4</Version>
     <Authors>Xavier Fischer</Authors>
     <Copyright>Xavier Fischer and Contributors</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net.glTF</PackageProjectUrl>
-    <PackageReleaseNotes>Migrated to demnet 0.2.7.3</PackageReleaseNotes>
+    <PackageReleaseNotes>Migrated to demnet 0.2.7.4</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation, Mesh, 3D, glTF, Map, STL</PackageTags>
     <Title>DEM.Net</Title>
     <Product>DEM.Net Elevation API</Product>
@@ -19,10 +19,9 @@
     </PackageLicenseExpression>
     <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
     <PackageIcon>DEMnet_64.png</PackageIcon>
-    <AssemblyVersion>0.2.7.3</AssemblyVersion>
+    <AssemblyVersion>0.2.7.4</AssemblyVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <LicenseUrl>https://raw.githubusercontent.com/dem-net/DEM.Net.Extensions/master/LICENSE.md</LicenseUrl>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -40,13 +39,6 @@
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="..\LICENSE.md">
-      <Pack>True</Pack>
-      <PackagePath>
-      </PackagePath>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="IxMilia.Stl" Version="0.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.5" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
@@ -57,6 +49,11 @@
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\LICENSE.md" Link="LICENSE.md">
+      <PackagePath>
+            </PackagePath>
+      <Pack>True</Pack>
+    </None>
     <None Include="DEMnet_64.png" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>

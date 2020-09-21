@@ -2,15 +2,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <PackageId>DEM.Net.Core</PackageId>
-        <Version>0.2.7.3</Version>
+        <Version>0.2.7.4</Version>
         <Authors>Xavier Fischer, Frédéric Aubin</Authors>
         <Copyright>Xavier Fischer, Frédéric Aubin and Contributors</Copyright>
         <Owners>Xavier Fischer</Owners>
         <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
-        <PackageReleaseNotes>- Code refactor (removed useless interfaces, readability)
-- Lines bulk elevation (better performance)
-- Imagery disk cache
-- Procedural mesh generation for axis, cylinder, cones</PackageReleaseNotes>
+        <PackageReleaseNotes>- OpenTopography endpoints updated
+- Disabled GEBCO 2020
+- New STL transforms
+- Triangulation Clone()</PackageReleaseNotes>
         <PackageTags>DEM, Terrain, Elevation</PackageTags>
         <Title>DEM.Net</Title>
         <Product>DEM.Net</Product>
@@ -21,8 +21,8 @@
         <PackageLicenseExpression></PackageLicenseExpression>
         <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
         <PackageIcon>DEMnet_64.png</PackageIcon>
-        <AssemblyVersion>0.2.7.3</AssemblyVersion>
-        <FileVersion>0.2.7.3</FileVersion>
+        <AssemblyVersion>0.2.7.4</AssemblyVersion>
+        <FileVersion>0.2.7.4</FileVersion>
         <UserSecretsId>a9a5d6e1-3bb8-4dfd-ac6a-861f60dada50</UserSecretsId>
         <TargetFramework>netstandard2.0</TargetFramework>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
