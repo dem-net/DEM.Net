@@ -113,7 +113,7 @@ namespace DEM.Net.glTF.SharpglTF
 
 
             var material = model.CreateMaterial(string.Concat(nodeName, "Material"))
-              .WithPBRMetallicRoughness(Vector4.One, textures?.BaseColorTexture?.FilePath, null, 0, 1)
+              .WithPBRMetallicRoughness(new Vector4(1, 1, 1, 0.8f), textures?.BaseColorTexture?.FilePath, null, 0.15f, 0.85f)
               .WithDoubleSide(doubleSided);
             if (textures != null && textures.NormalTexture != null)
             {
@@ -202,7 +202,7 @@ namespace DEM.Net.glTF.SharpglTF
             var material = model.CreateMaterial(string.Concat(nodeName, "Material"))
                 .WithPBRMetallicRoughness(color, null, null, 0, 1f)
                 .WithDoubleSide(doubleSided);
-            material.Alpha = (color.W < 1.0 || (triangulation.HasColors && triangulation.Colors.Any(c => c.W < 1.0))) ? 
+            material.Alpha = (color.W < 1.0 || (triangulation.HasColors && triangulation.Colors.Any(c => c.W < 1.0))) ?
                                 SharpGLTF.Schema2.AlphaMode.BLEND
                                 : SharpGLTF.Schema2.AlphaMode.OPAQUE;
 
