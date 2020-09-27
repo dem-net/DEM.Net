@@ -1,0 +1,35 @@
+{
+  "solution": "DEM.Net.sln",
+  "mappings": {
+    "DEM.Net.Core": "DEM.Net.Core/DEM.Net.Core.csproj",
+    "DEM.Net.glTF": "DEM.Net.glTF/DEM.Net.glTF.csproj"
+  },
+  "restore": [
+    {
+      "name": "DEM.Net.xUnit.Test",
+      "packages": [
+        {
+          "packageName": "DEM.Net.Core",
+          "version": "0.2.7.4"
+        },
+        {
+          "packageName": "DEM.Net.glTF",
+          "version": "0.2.7.4"
+        }
+      ]
+    },
+    {
+      "name": "DEM.Net.TestWinForm",
+      "packages": [
+        {
+          "packageName": "DEM.Net.Core",
+          "version": "0.2.7.3"
+        },
+        {
+          "packageName": "DEM.Net.glTF",
+          "version": "0.2.7.3"
+        }
+      ]
+    }
+  ]
+}

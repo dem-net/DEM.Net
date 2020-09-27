@@ -226,8 +226,9 @@ namespace DEM.Net.glTF.SharpglTF
             primitive = primitive.WithMaterial(material);
             return model;
         }
-        public ModelRoot AddLine(ModelRoot model, string nodeName, IEnumerable<GeoPoint> gpxPointsElevated, Vector4 color, float trailWidthMeters)
+        public ModelRoot AddLine(ModelRoot model, string nodeName, IEnumerable<GeoPoint> gpxPointsElevated, Vector4 color, float trailWidthMeters, Matrix4x4 transform = default)
         {
+            model = model ?? CreateNewModel();
             var scene = model.UseScene(TERRAIN_SCENE_NAME);
             var rnode = scene.FindNode(n => n.Name == nodeName);
             if (rnode == null)
@@ -241,7 +242,7 @@ namespace DEM.Net.glTF.SharpglTF
             material.Alpha = SharpGLTF.Schema2.AlphaMode.BLEND;
 
 
-            var triangulation = _meshService.GenerateTriangleMesh_Line(gpxPointsElevated, trailWidthMeters);
+            var triangulation = _meshService.GenerateTriangleMesh_Line(gpxPointsElevated, trailWidthMeters, transform);
             var normals = _meshService.ComputeMeshNormals(triangulation.Positions, triangulation.Indices);
 
 
@@ -254,7 +255,7 @@ namespace DEM.Net.glTF.SharpglTF
             primitive = primitive.WithMaterial(material);
             return model;
         }
-        public ModelRoot AddLines(ModelRoot model, string nodeName, IEnumerable<(IEnumerable<GeoPoint> points, float trailWidthMeters)> lines, Vector4 color)
+        public ModelRoot AddLines(ModelRoot model, string nodeName, IEnumerable<(IEnumerable<GeoPoint> points, float trailWidthMeters)> lines, Vector4 color, Matrix4x4 transform = default)
         {
             var scene = model.UseScene(TERRAIN_SCENE_NAME);
             var rnode = scene.FindNode(n => n.Name == nodeName);
@@ -274,7 +275,7 @@ namespace DEM.Net.glTF.SharpglTF
 
             foreach (var line in lines)
             {
-                TriangulationList<Vector3> triangulation = _meshService.GenerateTriangleMesh_Line(line.points, line.trailWidthMeters);
+                TriangulationList<Vector3> triangulation = _meshService.GenerateTriangleMesh_Line(line.points, line.trailWidthMeters, transform);
 
                 indices.AddRange(triangulation.Indices.Select(i => i + positions.Count)); // offset indices, adding last positions count
                 positions.AddRange(triangulation.Positions);

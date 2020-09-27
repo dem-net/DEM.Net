@@ -336,7 +336,7 @@ namespace DEM.Net.Core
             return normals;
         }
 
-        public TriangulationList<Vector3> GenerateTriangleMesh_Line(IEnumerable<GeoPoint> points, float width)
+        public TriangulationList<Vector3> GenerateTriangleMesh_Line(IEnumerable<GeoPoint> points, float width, Matrix4x4 transform)
         {
             try
             {
@@ -357,7 +357,8 @@ namespace DEM.Net.Core
 
                         // https://gist.github.com/gszauer/5718441
                         // Line triangle mesh
-                        List<Vector3> sections = points.Select(pt => pt.ToVector3GlTFSpace())
+                        transform = transform == default ? Matrix4x4.Identity : transform;
+                        List<Vector3> sections = points.Select(pt => Vector3.Transform(pt.ToVector3GlTFSpace(), transform))
                             .FilterConsecutiveSame()
                             .ToList();
 

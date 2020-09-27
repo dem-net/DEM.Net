@@ -3,11 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DEM.Net.glTF", "DEM.Net.glTF\DEM.Net.glTF.csproj", "{CE185808-4B76-4E86-9F8C-B28BDA08CD8B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DEM.Net.xUnit.Test", "DEM.Net.xUnit.Test\DEM.Net.xUnit.Test.csproj", "{33F6AD6A-91B8-46BF-A00B-338869907800}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DEM.Net.Core", "DEM.Net.Core\DEM.Net.Core.csproj", "{B335092D-4D33-4DC4-A02D-EB8731AF3D76}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Net.TestWinForm", "DEM.Net.TestWinForm\DEM.Net.TestWinForm.csproj", "{9417FC33-D64A-4B15-AD47-286382F1FF21}"
 EndProject
@@ -17,28 +13,32 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "License", "License", "{D6ED
 		LICENSE.md = LICENSE.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Net.Core", "DEM.Net.Core\DEM.Net.Core.csproj", "{3C7C78DC-968D-48DD-A43E-7C4DB9BD4F0F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Net.glTF", "DEM.Net.glTF\DEM.Net.glTF.csproj", "{F6E24B6D-2D2F-411A-8756-8B5A95B98B85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CE185808-4B76-4E86-9F8C-B28BDA08CD8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CE185808-4B76-4E86-9F8C-B28BDA08CD8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CE185808-4B76-4E86-9F8C-B28BDA08CD8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CE185808-4B76-4E86-9F8C-B28BDA08CD8B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{33F6AD6A-91B8-46BF-A00B-338869907800}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{33F6AD6A-91B8-46BF-A00B-338869907800}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33F6AD6A-91B8-46BF-A00B-338869907800}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33F6AD6A-91B8-46BF-A00B-338869907800}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B335092D-4D33-4DC4-A02D-EB8731AF3D76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B335092D-4D33-4DC4-A02D-EB8731AF3D76}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B335092D-4D33-4DC4-A02D-EB8731AF3D76}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B335092D-4D33-4DC4-A02D-EB8731AF3D76}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9417FC33-D64A-4B15-AD47-286382F1FF21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9417FC33-D64A-4B15-AD47-286382F1FF21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9417FC33-D64A-4B15-AD47-286382F1FF21}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{9417FC33-D64A-4B15-AD47-286382F1FF21}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{3C7C78DC-968D-48DD-A43E-7C4DB9BD4F0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C7C78DC-968D-48DD-A43E-7C4DB9BD4F0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C7C78DC-968D-48DD-A43E-7C4DB9BD4F0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C7C78DC-968D-48DD-A43E-7C4DB9BD4F0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6E24B6D-2D2F-411A-8756-8B5A95B98B85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6E24B6D-2D2F-411A-8756-8B5A95B98B85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6E24B6D-2D2F-411A-8756-8B5A95B98B85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6E24B6D-2D2F-411A-8756-8B5A95B98B85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
