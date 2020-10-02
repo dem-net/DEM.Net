@@ -115,6 +115,7 @@ namespace DEM.Net.Core
                     metadata.PhysicalStartLon = xllcorner;
                     metadata.PhysicalEndLat = metadata.DataEndLat;
                     metadata.PhysicalEndLon = metadata.DataEndLon;
+
                 }
                 else
                 {
@@ -127,6 +128,8 @@ namespace DEM.Net.Core
                     metadata.PhysicalStartLon = metadata.DataStartLon;
                     metadata.DataEndLat = yllcorner + metadata.Height * metadata.pixelSizeY;
                     metadata.DataEndLon = xllcorner + metadata.Width * metadata.pixelSizeX;
+                    metadata.PhysicalEndLat = metadata.DataEndLat;
+                    metadata.PhysicalEndLon = metadata.DataEndLon;
                 }
 
                 metadata.SampleFormat = RasterSampleFormat.FLOATING_POINT;
