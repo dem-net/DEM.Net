@@ -590,6 +590,7 @@ namespace DEM.Net.Core
                         using (IRasterFile raster = _RasterService.OpenFile(metadata.Filename, dataSet.FileFormat.Type))
                         {
                             var hmap = raster.GetHeightMapInBBox(bbox, metadata, NO_DATA_OUT);
+                            hmap.BoundingBox.SRID = bbox.SRID;
                             if (hmap.Count > 0)
                             {
                                 tilesHeightMap.Add(hmap);
@@ -615,7 +616,7 @@ namespace DEM.Net.Core
                                                                 , ymin: tilesHeightMap.Min(h => h.BoundingBox.yMin)
                                                                 , ymax: tilesHeightMap.Max(h => h.BoundingBox.yMax)
                                                                 , zmin: tilesHeightMap.Min(h => h.BoundingBox.zMin)
-                                                                , zmax: tilesHeightMap.Max(h => h.BoundingBox.zMax));
+                                                                , zmax: tilesHeightMap.Max(h => h.BoundingBox.zMax)) { SRID = bbox.SRID };
                         bbox = heightMap.BoundingBox;
                         heightMap.Coordinates = tilesHeightMap.SelectMany(hmap => hmap.Coordinates).Sort();
                         heightMap.Count = totalWidth * totalHeight;
