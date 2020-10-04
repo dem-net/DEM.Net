@@ -140,7 +140,7 @@ namespace DEM.Net.Core
 
             using (IRasterFile rasterFile = OpenFile(fileName, fileFormat.Type))
             {
-                metadata = rasterFile.ParseMetaData(fileFormat);
+                 metadata = rasterFile.ParseMetaData(fileFormat);
             }
 
             Uri fullPath = new Uri(metadata.Filename, UriKind.Absolute);
@@ -208,6 +208,7 @@ namespace DEM.Net.Core
             string directoryPath = GetLocalDEMPath(dataset);
             var files = Directory.EnumerateFiles(directoryPath, "*" + dataset.FileFormat.FileExtension, SearchOption.AllDirectories);
             ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = Math.Min(Environment.ProcessorCount, maxDegreeOfParallelism == 0 ? -1 : maxDegreeOfParallelism) };
+            //ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = 1 };
             Parallel.ForEach(files, options, file =>
              {
                  try
