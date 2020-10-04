@@ -27,6 +27,7 @@ namespace DEM.Net.Core
         private static char[] SEPARATOR = new char[] { ' ' };
 
         List<string> _scanLines = null;
+        List<List<string>> _data = null;
 
         public ASCIIGridFile(string fileName)
         {
@@ -36,26 +37,9 @@ namespace DEM.Net.Core
         }
         public float GetElevationAtPoint(FileMetadata metadata, int x, int y)
         {
-
-
-
             if (_scanLines == null)
             {
-                string curLine = null;
-                _fileStream.Seek(0, SeekOrigin.Begin);
-
-                // skip header
-                for (int i = 1; i <= 6 /* + (y - 1)*/; i++)
-                {
-                    curLine = _streamReader.ReadLine();
-                }
-
-                _scanLines = new List<string>(metadata.Height);
-                while (!_streamReader.EndOfStream)
-                {
-                    _scanLines.Add(_streamReader.ReadLine());
-                }
-
+                ReadAllFile(metadata);
             }
 
             string strXValue = _scanLines[y].Split(SEPARATOR, x + 2, StringSplitOptions.RemoveEmptyEntries)[x];
@@ -65,6 +49,44 @@ namespace DEM.Net.Core
 
         }
 
+        private void ReadAllFile(FileMetadata metadata)
+        {
+            string curLine = null;
+            _fileStream.Seek(0, SeekOrigin.Begin);
+
+            // skip header
+            for (int i = 1; i <= 6 /* + (y - 1)*/; i++)
+            {
+                curLine = _streamReader.ReadLine();
+            }
+
+            _scanLines = new List<string>(metadata.Height);
+            _data = new List<List<string>>(metadata.Height);
+            while (!_streamReader.EndOfStream)
+            {
+                var line = _streamReader.ReadLine();
+                _scanLines.Add(line);
+
+                var values = new List<string>(metadata.Width);
+                var current = string.Empty;
+                foreach (char c in line)
+                {
+                    if (c == ' ')
+                    {
+                        values.Add(current);
+                        current = string.Empty;
+                    }
+                    else
+                    {
+                        current += c;
+                    }                    
+                }
+                values.Add(current);
+                Debug.Assert(values.Count == metadata.Width);
+                _data.Add(values);
+            }
+        }
+
         public HeightMap GetHeightMap(FileMetadata metadata)
         {
             throw new NotImplementedException();
@@ -72,7 +94,61 @@ namespace DEM.Net.Core
 
         public HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = float.MinValue)
         {
-            throw new NotImplementedException();
+            if (_scanLines == null)
+            {
+                ReadAllFile(metadata);
+            }
+            int registrationOffset = metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid ? 1 : 0;
+
+            int yNorth = (int)Math.Floor((bbox.yMax - metadata.PhysicalEndLat) / metadata.pixelSizeY);
+            int ySouth = (int)Math.Ceiling((bbox.yMin - metadata.PhysicalEndLat) / metadata.pixelSizeY);
+            int xWest = (int)Math.Floor((bbox.xMin - metadata.PhysicalStartLon) / metadata.pixelSizeX);
+            int xEast = (int)Math.Ceiling((bbox.xMax - metadata.PhysicalStartLon) / metadata.pixelSizeX);
+
+            xWest = Math.Max(0, xWest);
+            xEast = Math.Min(metadata.Width - 1 - registrationOffset, xEast);
+            yNorth = Math.Max(0, yNorth);
+            ySouth = Math.Min(metadata.Height - 1 - registrationOffset, ySouth);
+
+            HeightMap heightMap = new HeightMap(xEast - xWest + 1, ySouth - yNorth + 1);
+            heightMap.Count = heightMap.Width * heightMap.Height;
+            var coords = new List<GeoPoint>(heightMap.Count);
+            heightMap.BoundingBox = new BoundingBox(0, 0, 0, 0);
+
+            for (int y = yNorth; y <= ySouth; y++)
+            {
+                double latitude = metadata.DataEndLat + (metadata.pixelSizeY * y);
+
+                // bounding box
+                if (y == yNorth)
+                {
+                    heightMap.BoundingBox.yMax = latitude;
+                    heightMap.BoundingBox.xMin = metadata.DataStartLon + (metadata.pixelSizeX * xWest);
+                    heightMap.BoundingBox.xMax = metadata.DataStartLon + (metadata.pixelSizeX * xEast);
+                }
+                if (y == ySouth)
+                {
+                    heightMap.BoundingBox.yMin = latitude;
+                }
+
+                for (int x = xWest; x <= xEast; x++)
+                {
+                    double longitude = metadata.DataStartLon + (metadata.pixelSizeX * x);
+
+                    float heightValue = float.Parse(_data[y][x], CultureInfo.InvariantCulture);
+                    heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
+                    heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
+
+                    coords.Add(new GeoPoint(latitude, longitude, heightValue));
+
+                }
+            }
+            heightMap.BoundingBox.zMin = heightMap.Minimum;
+            heightMap.BoundingBox.zMax = heightMap.Maximum;
+            Debug.Assert(heightMap.Width * heightMap.Height == coords.Count);
+
+            heightMap.Coordinates = coords;
+            return heightMap;
         }
 
         public FileMetadata ParseMetaData(DEMFileDefinition fileFormat)
@@ -101,8 +177,8 @@ namespace DEM.Net.Core
                 metadata.Width = ncols;
                 metadata.PixelScaleX = cellsize;
                 metadata.PixelScaleY = cellsize;
-                metadata.pixelSizeX = metadata.PixelScaleX;
-                metadata.pixelSizeY = metadata.PixelScaleY;
+                metadata.pixelSizeX = cellsize;
+                metadata.pixelSizeY = -cellsize;
 
                 if (fileFormat.Registration == DEMFileRegistrationMode.Grid)
                 {
@@ -119,15 +195,15 @@ namespace DEM.Net.Core
                 }
                 else
                 {
-                    metadata.DataStartLat = Math.Round(yllcorner + (metadata.PixelScaleY / 2.0), 10);
-                    metadata.DataStartLon = Math.Round(xllcorner + (metadata.PixelScaleX / 2.0), 10);
+                    metadata.DataStartLat = Math.Round(yllcorner + (metadata.pixelSizeY / 2.0), 10);
+                    metadata.DataStartLon = Math.Round(xllcorner - (metadata.PixelScaleX / 2.0), 10);
+                    metadata.DataEndLat = yllcorner + metadata.Height * cellsize;
+                    metadata.DataEndLon = xllcorner + metadata.Width * cellsize;
                     metadata.DataEndLat = Math.Round(metadata.DataEndLat - (metadata.PixelScaleY / 2.0), 10);
                     metadata.DataEndLon = Math.Round(metadata.DataEndLon - (metadata.PixelScaleX / 2.0), 10);
 
                     metadata.PhysicalStartLat = metadata.DataStartLat;
                     metadata.PhysicalStartLon = metadata.DataStartLon;
-                    metadata.DataEndLat = yllcorner + metadata.Height * metadata.pixelSizeY;
-                    metadata.DataEndLon = xllcorner + metadata.Width * metadata.pixelSizeX;
                     metadata.PhysicalEndLat = metadata.DataEndLat;
                     metadata.PhysicalEndLon = metadata.DataEndLon;
                 }
