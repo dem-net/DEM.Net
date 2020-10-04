@@ -25,6 +25,7 @@
 
 using DEM.Net.Core.Tesselation;
 using Microsoft.Extensions.Logging;
+using NetTopologySuite.IO;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -464,7 +465,76 @@ namespace DEM.Net.Core
 
             return triangulation;
         }
+        public TriangulationList<Vector3> CreateWaterSurface(Vector3 bottomLeft, Vector3 topRight, Vector3 topLeft, Vector3 bottomRight, float minZ, Vector4 color)
+        {
+            TriangulationList<Vector3> triangulation = new TriangulationList<Vector3>();
 
+            // base
+            triangulation.Positions.Add(bottomLeft);
+            triangulation.Positions.Add(topLeft);
+            triangulation.Positions.Add(topRight);
+            triangulation.Positions.Add(bottomRight);
+
+            triangulation.Positions.Add(bottomLeft.AtZ(minZ));
+            triangulation.Positions.Add(topLeft.AtZ(minZ));
+            triangulation.Positions.Add(topRight.AtZ(minZ));
+            triangulation.Positions.Add(bottomRight.AtZ(minZ));
+
+            // base at min Z
+            triangulation.Indices.AddRange(new[] { 0, 2, 1 });
+            triangulation.Indices.AddRange(new[] { 0, 3, 2 });
+
+            // sides
+            triangulation.Indices.AddRange(new[] { 0, 1, 5 });
+            triangulation.Indices.AddRange(new[] { 0, 5, 4 });
+
+            triangulation.Indices.AddRange(new[] { 1, 2, 6 });
+            triangulation.Indices.AddRange(new[] { 1, 6, 5 });
+
+            triangulation.Indices.AddRange(new[] { 2, 3, 7 });
+            triangulation.Indices.AddRange(new[] { 2, 7, 6 });
+
+            triangulation.Indices.AddRange(new[] { 3, 0, 4 });
+            triangulation.Indices.AddRange(new[] { 3, 4, 7 });
+
+            //triangulation.Colors = new List<Vector4>();
+            //triangulation.Colors.Add(VectorsExtensions.CreateColor(255, 0, 0));
+            //triangulation.Colors.Add(VectorsExtensions.CreateColor(0, 255, 0));
+            //triangulation.Colors.Add(VectorsExtensions.CreateColor(0, 0, 255));
+            //triangulation.Colors.Add(VectorsExtensions.CreateColor(255,255, 255));
+
+            // add color for each position
+            triangulation.Colors = triangulation.Positions.Select(p => color).ToList();
+            return triangulation;
+        }
+        public TriangulationList<Vector3> CreatePlane(Vector3 bottomLeft, Vector3 topRight, Vector3 topLeft, Vector3 bottomRight, Vector4 color)
+        {
+            TriangulationList<Vector3> triangulation = new TriangulationList<Vector3>();
+
+            // base
+            triangulation.Positions.Add(bottomLeft);
+            triangulation.Positions.Add(topLeft);
+            triangulation.Positions.Add(topRight);
+            triangulation.Positions.Add(bottomRight);
+
+
+            triangulation.Indices.Add(0);
+            triangulation.Indices.Add(2);
+            triangulation.Indices.Add(1);
+            triangulation.Indices.Add(0);
+            triangulation.Indices.Add(3);
+            triangulation.Indices.Add(2);
+
+            //triangulation.Colors = new List<Vector4>();
+            //triangulation.Colors.Add(VectorsExtensions.CreateColor(255, 0, 0));
+            //triangulation.Colors.Add(VectorsExtensions.CreateColor(0, 255, 0));
+            //triangulation.Colors.Add(VectorsExtensions.CreateColor(0, 0, 255));
+            //triangulation.Colors.Add(VectorsExtensions.CreateColor(255,255, 255));
+
+            // add color for each position
+            triangulation.Colors = triangulation.Positions.Select(p => color).ToList();
+            return triangulation;
+        }
 
         /// <summary>
         /// Create a cylinder where the base center is at position (height is in Z direction)

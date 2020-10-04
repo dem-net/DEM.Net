@@ -489,8 +489,20 @@ namespace DEM.Net.Core
 
             IGeometry bboxPoly = bbox.ToPolygon();
             IGeometry tilesPolygon = UnaryUnionOp.Union(bboxTiles.Select(GeometryService.ToPolygon).ToList());
-
+           
             var inside = tilesPolygon.Contains(bboxPoly);
+
+            if (!inside)
+            {
+                var dbgString = @"declare @b geometry = geometry::STGeomFromText('{bbox.WKT}',2154)
+declare @t geometry = geometry::STGeomFromText('{tilesPolygon.WKT}',2154)
+select @b
+select @t
+select @b union all select @t";
+                dbgString = dbgString.Replace("{bbox.WKT}", bbox.WKT);
+                dbgString = dbgString.Replace("{tilesPolygon.WKT}", tilesPolygon.AsText());
+            }
+
             return inside;
         }
 

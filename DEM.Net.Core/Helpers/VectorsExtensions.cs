@@ -93,6 +93,11 @@ namespace DEM.Net.Core
         {
             return new Vector4(r / 255f, g / 255f, b / 255f, a / 255f);
         }
+        public static Vector3 AtZ(this Vector3 vector3, float newZ)
+        {
+            vector3.Z = newZ;
+            return vector3;
+        }
         public static IEnumerable<Vector3> ToQuadPoints(this Vector3 vertex, float pointSize)
         {
             float halfSize = pointSize / 2f;
