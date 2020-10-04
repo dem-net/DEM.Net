@@ -96,7 +96,7 @@ namespace DEM.Net.Core.Imagery
             // calculate the size of the full bbox at increasing zoom levels
             // until the full image would be greater than a tile
             int zoom = 0;
-            int maxSize = 256 * minTilesPerImage; /* fixed to 256px to limit number of tiles */
+                int maxSize = 256 * minTilesPerImage; /* fixed to 256px to limit number of tiles */
             do
             {
                 zoom++;
