@@ -245,7 +245,7 @@ namespace DEM.Net.Core.Imagery
         }
 
         public TextureInfo ConstructTextureWithGpxTrack(TileRange tiles, BoundingBox bbox, string fileName,
-            TextureImageFormat mimeType, IEnumerable<GeoPoint> gpxPoints, bool drawGpxVertices = false)
+            TextureImageFormat mimeType, IEnumerable<GeoPoint> gpxPoints, bool drawGpxVertices = false, Rgba32 color = default(Rgba32), float lineWidth = 5f)
         {
             // where is the bbox in the final image ?
 
@@ -281,7 +281,7 @@ namespace DEM.Net.Core.Imagery
                 }
 
                 outputImage.Mutate(o => o
-                    .DrawLines(new Rgba32(1, 0, 0, 1f), 5f, pointsOnTexture.ToArray())
+                    .DrawLines(color == default(Rgba32) ? new Rgba32(1, 0, 0, 1f) : color, lineWidth, pointsOnTexture.ToArray())
                 );
 
                 if (drawGpxVertices)

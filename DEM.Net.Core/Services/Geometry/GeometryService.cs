@@ -495,12 +495,11 @@ namespace DEM.Net.Core
             if (!inside)
             {
                 var dbgString = @"declare @b geometry = geometry::STGeomFromText('{bbox.WKT}',2154)
-declare @t geometry = geometry::STGeomFromText('{tilesPolygon.WKT}',2154)
-select @b
-select @t
-select @b union all select @t";
+                                declare @t geometry = geometry::STGeomFromText('{tilesPolygon.WKT}',2154)
+                                select @b,'Bbox' union all select @t , 'Tiles'";
                 dbgString = dbgString.Replace("{bbox.WKT}", bbox.WKT);
                 dbgString = dbgString.Replace("{tilesPolygon.WKT}", tilesPolygon.AsText());
+
             }
 
             return inside;
