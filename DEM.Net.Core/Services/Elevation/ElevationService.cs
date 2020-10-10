@@ -1318,7 +1318,11 @@ namespace DEM.Net.Core
                     }
                     else
                     {
-                        throw new Exception($"No adjacent tile found (adjacent tiles may not have been set). (x,y, tile) = ({x},{y},{mainTile})");
+                        _logger.LogWarning($"No adjacent tile found(adjacent tiles may not have been set). (x, y, tile) = ({ x},{ y},{ mainTile})");
+                        newX = xTileOffset > 0 ? x % mainTile.Width : (mainTile.Width + x) % mainTile.Width;
+                        newY = yTileOffset < 0 ? (mainTile.Height + y) % mainTile.Height : y % mainTile.Height;
+                        return mainTile;
+                        //
                     }
                 }
                 else
