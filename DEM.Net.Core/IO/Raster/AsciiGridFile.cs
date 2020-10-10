@@ -26,7 +26,6 @@ namespace DEM.Net.Core
         private readonly string _filename;
         private static char[] SEPARATOR = new char[] { ' ' };
 
-        List<string> _scanLines = null;
         List<List<string>> _data = null;
 
         public ASCIIGridFile(string fileName)
@@ -37,7 +36,7 @@ namespace DEM.Net.Core
         }
         public float GetElevationAtPoint(FileMetadata metadata, int x, int y)
         {
-            if (_scanLines == null)
+            if (_data == null)
             {
                 ReadAllFile(metadata);
             }
@@ -60,13 +59,11 @@ namespace DEM.Net.Core
                 curLine = _streamReader.ReadLine();
             }
 
-            _scanLines = new List<string>(metadata.Height);
             _data = new List<List<string>>(metadata.Height);
             while (!_streamReader.EndOfStream)
             {
                 var line = _streamReader.ReadLine();
-                _scanLines.Add(line);
-
+                
                 var values = new List<string>(metadata.Width);
                 var current = string.Empty;
                 foreach (char c in line)
@@ -94,7 +91,7 @@ namespace DEM.Net.Core
 
         public HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = float.MinValue)
         {
-            if (_scanLines == null)
+            if (_data == null)
             {
                 ReadAllFile(metadata);
             }
@@ -241,8 +238,8 @@ namespace DEM.Net.Core
             {
                 if (disposing)
                 {
-                    _scanLines?.Clear();
-                    _scanLines = null;
+                    _data?.Clear();
+                    _data = null;
                     _streamReader?.Dispose();
                     _fileStream?.Dispose();
                 }
