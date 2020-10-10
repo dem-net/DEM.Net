@@ -27,6 +27,7 @@ namespace DEM.Net.Core
         private static char[] SEPARATOR = new char[] { ' ' };
 
         List<List<string>> _data = null;
+        private static Dictionary<string, List<List<string>>> _tempCache = new Dictionary<string, List<List<string>>>();
 
         public ASCIIGridFile(string fileName)
         {
@@ -50,6 +51,11 @@ namespace DEM.Net.Core
 
         private void ReadAllFile(FileMetadata metadata)
         {
+            if (_tempCache.ContainsKey(_filename))
+            {
+                _data = _tempCache[_filename];
+                return;
+            }
             string curLine = null;
             _fileStream.Seek(0, SeekOrigin.Begin);
 
@@ -63,7 +69,7 @@ namespace DEM.Net.Core
             while (!_streamReader.EndOfStream)
             {
                 var line = _streamReader.ReadLine();
-                
+
                 var values = new List<string>(metadata.Width);
                 var current = string.Empty;
                 foreach (char c in line)
@@ -76,12 +82,13 @@ namespace DEM.Net.Core
                     else
                     {
                         current += c;
-                    }                    
+                    }
                 }
                 values.Add(current);
                 Debug.Assert(values.Count == metadata.Width);
                 _data.Add(values);
             }
+            _tempCache[_filename] = _data;
         }
 
         public HeightMap GetHeightMap(FileMetadata metadata)
@@ -238,8 +245,8 @@ namespace DEM.Net.Core
             {
                 if (disposing)
                 {
-                    _data?.Clear();
-                    _data = null;
+                    //_data?.Clear();
+                    //_data = null;
                     _streamReader?.Dispose();
                     _fileStream?.Dispose();
                 }
