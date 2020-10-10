@@ -42,7 +42,7 @@ namespace DEM.Net.Core
                 ReadAllFile(metadata);
             }
 
-            string strXValue = _scanLines[y].Split(SEPARATOR, x + 2, StringSplitOptions.RemoveEmptyEntries)[x];
+            string strXValue = _data[y][x];
 
             float elevation = float.Parse(strXValue, CultureInfo.InvariantCulture);
             return elevation;
