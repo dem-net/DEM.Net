@@ -1375,7 +1375,9 @@ namespace DEM.Net.Core
                     this.DownloadMissingFiles(dataSet, elevationLine.GetBoundingBox());
 
                 var geoPoints = this.GetLineGeometryElevation(elevationLine, dataSet);
-
+                if (dataSet.SRID != Reprojection.SRID_GEODETIC)
+                    geoPoints = geoPoints.ReprojectTo(dataSet.SRID, Reprojection.SRID_GEODETIC).ToList();
+                
                 var metrics = geoPoints.ComputeVisibilityMetrics(sourceVerticalOffset, targetVerticalOffset, dataSet.NoDataValue);
 
                 return new IntervisibilityReport(geoPoints, metrics, originVerticalOffset: sourceVerticalOffset, targetVerticalOffset: targetVerticalOffset);
