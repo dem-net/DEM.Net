@@ -53,6 +53,7 @@ namespace DEM.Net.Core
 
 
                 FileMetadata metadata = JsonConvert.DeserializeObject<FileMetadata>(File.ReadAllText(metadataPath));
+                metadata.BoundingBox.SRID = dataset.SRID;
                 yield return new DEMFileSource()
                 {
                     BBox = metadata.BoundingBox

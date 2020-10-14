@@ -175,7 +175,7 @@ namespace DEM.Net.Core
                         string jsonContent = File.ReadAllText(file);
 
                         FileMetadata metadata = JsonConvert.DeserializeObject<FileMetadata>(jsonContent);
-
+                        metadata.BoundingBox.SRID = dataset.SRID;
                         if (metadata.Version != FileMetadata.FILEMETADATA_VERSION)
                         {
                             metadata = FileMetadataMigrations.Migrate(this, _logger, metadata, _localDirectory, dataset);
