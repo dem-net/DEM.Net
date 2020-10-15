@@ -20,26 +20,30 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="fileName">Path to GPX file</param>
         /// <returns></returns>
-        public static IEnumerable<IEnumerable<T>> ReadGPX_Segments<T>(string fileName, Func<GpxTrackPoint, T> conversionFunc)
+        public static IEnumerable<IEnumerable<T>> ReadGPX_Segments<T>(string fileName
+            , Func<GpxTrackPoint, T> conversionFunc
+            , Func<GpxRoutePoint, T> routeConversionFunc)
         {
             IEnumerable<IEnumerable<T>> segments = null;
             using (FileStream fs = new FileStream(fileName, FileMode.Open))
             {
-                segments = ReadGPX_Segments(fs, conversionFunc);
+                segments = ReadGPX_Segments(fs, conversionFunc, routeConversionFunc);
             }
 
             return segments;
         }
         public static IEnumerable<IEnumerable<GeoPoint>> ReadGPX_Segments(string fileName)
         {
-            return ReadGPX_Segments(fileName, ToGeoPoint);
+            return ReadGPX_Segments(fileName, ToGeoPoint, ToGeoPoint);
         }
         /// <summary>
         /// Read gpx file segments as enumerable GeoPoints
         /// </summary>
         /// <param name="gpxFileStream">GPX file stream</param>
         /// <returns></returns>
-        public static IEnumerable<IEnumerable<T>> ReadGPX_Segments<T>(Stream gpxFileStream, Func<GpxTrackPoint, T> conversionFunc)
+        public static IEnumerable<IEnumerable<T>> ReadGPX_Segments<T>(Stream gpxFileStream
+            , Func<GpxTrackPoint, T> conversionFunc
+            , Func<GpxRoutePoint, T> routeConversionFunc)
         {
             IEnumerable<IEnumerable<T>> segments = Enumerable.Empty<IEnumerable<T>>();
             using (GpxReader reader = new GpxReader(gpxFileStream))
@@ -52,6 +56,10 @@ namespace DEM.Net.Core
                             GpxTrack track = reader.Track;
                             segments = segments.Concat(ConvertTrack(track, conversionFunc));
                             break;
+                        case GpxObjectType.Route:
+                            GpxRoute route = reader.Route;
+                            segments = segments.Concat(ConvertRoute(route, routeConversionFunc));
+                            break;
                     }
                 }
             }
@@ -59,7 +67,7 @@ namespace DEM.Net.Core
         }
         public static IEnumerable<IEnumerable<GeoPoint>> ReadGPX_Segments(Stream gpxFileStream)
         {
-            return ReadGPX_Segments(gpxFileStream, ToGeoPoint);
+            return ReadGPX_Segments(gpxFileStream, ToGeoPoint, ToGeoPoint);
         }
 
 
@@ -82,8 +90,30 @@ namespace DEM.Net.Core
             }
             return segments;
         }
+        private static IEnumerable<IEnumerable<T>> ConvertRoute<T>(GpxRoute route, Func<GpxRoutePoint, T> conversionFunc)
+        {
+            IEnumerable<IEnumerable<T>> segments = null;
+
+            if (route == null || route.RoutePoints == null)
+                throw new ArgumentNullException("route", "Route is empty.");
+
+            try
+            {
+                segments = Enumerable.Range(0,1).Select(_=> route.RoutePoints.Select(pt => conversionFunc(pt)));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return segments;
+        }
 
         public static GeoPoint ToGeoPoint(this GpxTrackPoint pt)
+        {
+            return new GeoPoint(pt.Latitude, pt.Longitude, pt.Elevation);
+        }
+        public static GeoPoint ToGeoPoint(this GpxRoutePoint pt)
         {
             return new GeoPoint(pt.Latitude, pt.Longitude, pt.Elevation);
         }
