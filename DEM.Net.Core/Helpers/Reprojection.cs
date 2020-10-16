@@ -41,6 +41,7 @@ namespace DEM.Net.Core
         public const int SRID_GEODETIC = 4326;
         public const int SRID_PROJECTED_LAMBERT_93 = 2154;
         public const int SRID_PROJECTED_MERCATOR = 3857;
+        public const int SRID_NAD83 = 4269;
 
         public static HeightMap ReprojectGeodeticToCartesian(this HeightMap heightMap)
         {
