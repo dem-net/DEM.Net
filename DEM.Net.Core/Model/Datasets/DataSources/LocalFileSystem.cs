@@ -14,8 +14,6 @@ namespace DEM.Net.Core.Datasets
         }
         public string IndexFilePath => _localDirectory;
 
-        public bool IsGlobalFile => false;
-
         public DEMDataSourceType DataSourceType => DEMDataSourceType.LocalFileSystem;
     }
 }
