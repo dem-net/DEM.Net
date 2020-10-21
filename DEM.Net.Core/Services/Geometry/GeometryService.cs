@@ -503,10 +503,12 @@ namespace DEM.Net.Core
                 tilesPolygon = UnaryUnionOp.Union(bboxTiles.Select(t => (IGeometry)(new LineString(t.ToRing().Coordinates))).ToList());
 
                 var dbgString = @"declare @b geometry = geometry::STGeomFromText('{bbox.WKT}',2154)
-                                declare @t geometry = geometry::STGeomFromText('{tilesPolygon.WKT}',2154)
-                                select @b,'Bbox' union all select @t , 'Tiles'";
+                                select @b,'Bbox'";
+
+                var wkts = bboxTiles.Select(t => new Polygon(t.ToRing()).ToText());
+
                 dbgString = dbgString.Replace("{bbox.WKT}", bbox.WKT);
-                dbgString = dbgString.Replace("{tilesPolygon.WKT}", tilesPolygon.AsText());
+                dbgString += string.Join(" ", wkts.Select(s => $"union all select geometry::STGeomFromText('{s}',2154) , 'Tiles'"));
 
                 System.Diagnostics.Debug.WriteLine(dbgString);
                 return inside;

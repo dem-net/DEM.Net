@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -579,7 +580,10 @@ namespace DEM.Net.Core
                     this._logger.LogWarning("Bounding box is partially covered by DEM dataset. Generating missing tiles as virtual with no_data.");
                     // create missing metadata. Will be marked as "VirtalMetadata"
                     var missingMetadata = CreateMissingTilesMetadata(bbox, dataSet, bboxMetadata);
+
+                    Debug.Assert(missingMetadata.Select(t => t.Filename).Distinct().Count() == missingMetadata.Count, "Non unique tiles. This is BAD");
                     bboxMetadata.AddRange(missingMetadata);
+                    Debug.Assert(this.IsBoundingBoxCovered(bbox, bboxMetadata.Select(m => m.BoundingBox)), "Still uncovered. Missing tiles generation failed");
                 }
 
                 // get height map for each file at bbox
@@ -661,25 +665,31 @@ namespace DEM.Net.Core
             double tileSizeY = templateTile.Height * templateTile.PixelScaleY;
 
             // output list
-            List<FileMetadata> missingTiles = new List<FileMetadata>();
+            HashSet<FileMetadata> missingTiles = new HashSet<FileMetadata>();
 
             double x = bbox.xMin, y = bbox.yMin;
+            double currentX = x;
             int i = 0, j = 0;
-            while (x <= bbox.xMax)
+            do
             {
                 j = 0;
-                y = bbox.yMin + j * tileSizeY;
-
-                while (y <= bbox.yMax)
+                currentX = bbox.xMin + i * tileSizeX;
+                x = Math.Min(bbox.xMax, currentX);
+                y = bbox.yMin;
+                double currentY = y;
+                do
                 {
+                    currentY = bbox.yMin + j * tileSizeY;
+                    y = Math.Min(bbox.yMax, currentY);
+
                     if (!bboxMetadata.Any(tile => IsPointInTile(tile, y, x)))
                     {
 
                         // filename must be unique so we use a Guid
                         FileMetadata missingTile = templateTile.Clone();
-
                         var xIndex = (int)Math.Floor((x - tilesBbox.xMin) / tileSizeX);
                         var yIndex = (int)Math.Floor((y - tilesBbox.yMin) / tileSizeY);
+                        missingTile.Filename = $"[{xIndex}, {yIndex}]";
 
                         // missing tile
                         _logger.LogInformation($"Generating missing tile at x/y = {x:F5} {y:F5}, index = [{xIndex}, {yIndex}]");
@@ -696,17 +706,22 @@ namespace DEM.Net.Core
 
                         missingTile.VirtualMetadata = true;
 
-                        missingTiles.Add(missingTile);
+                        if (missingTiles.Contains(missingTile))
+                            _logger.LogWarning("Missing tiles already contains tile. Algo must be optimized...");
+                        else
+                            missingTiles.Add(missingTile);
                     }
-
                     j++;
-                    y = bbox.yMin + j * tileSizeY;
+
                 }
+                while (currentY < bbox.yMax);
+
                 i++;
-                x = bbox.xMin + i * tileSizeX;
-            }
+
+            } while (currentX < bbox.xMax);
+
             _logger.LogInformation($"{missingTiles.Count} missing tiles generated.");
-            return missingTiles;
+            return missingTiles.ToList();
 
         }
 
