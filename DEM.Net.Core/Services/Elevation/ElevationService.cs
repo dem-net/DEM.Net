@@ -588,7 +588,7 @@ namespace DEM.Net.Core
                 {
                     if (metadata.VirtualMetadata)
                     {
-                        var hmap = _RasterService.GetVirtualHeightMapInBBox(bbox, metadata, NO_DATA_OUT);
+                        var hmap = _RasterService.GetVirtualHeightMapInBBox(bbox, metadata);
                         hmap.BoundingBox.SRID = bbox.SRID;
                         if (hmap.Count > 0)
                         {
