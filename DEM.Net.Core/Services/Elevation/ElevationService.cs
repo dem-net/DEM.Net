@@ -500,6 +500,7 @@ namespace DEM.Net.Core
 
             if (tiles.Count == 0)
             {
+                _logger.LogWarning("No coverage for points in dataset. Check extent or spatial reference id (projection)");
                 return null;
             }
             else
@@ -1258,7 +1259,7 @@ namespace DEM.Net.Core
             return GetElevationAtPoint(adjacentTiles[metadata], adjacentTiles, metadata, lat, lon, noDataElevation, interpolator ?? GetInterpolator(InterpolationMode.Bilinear), behavior);
 
         }
-        private float GetElevationAtPoint(IRasterFile mainRaster, RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float noDataElevation, IInterpolator interpolator, NoDataBehavior behavior)
+        public float GetElevationAtPoint(IRasterFile mainRaster, RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float noDataElevation, IInterpolator interpolator, NoDataBehavior behavior)
         {
             float heightValue = 0;
             try
