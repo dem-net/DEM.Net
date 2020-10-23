@@ -686,5 +686,20 @@ namespace DEM.Net.Core
 
             return axis;
         }
+
+        public TriangulationList<Vector3> CreateArrow(float radius = 2f, float length = 50f, float tipRadius = 2.5f, float tipLength = 10f, int segmentCount = 10)
+        {
+            TriangulationList<Vector3> arrow = new TriangulationList<Vector3>();
+
+            float halfPi = (float)Math.PI / 2f;
+
+            var white = VectorsExtensions.CreateColor(255,255,255, 255);
+
+            // Z axis
+            arrow += CreateCylinder(Vector3.Zero, radius, length, white, segmentCount);
+            arrow += CreateCone(Vector3.UnitZ * length, tipRadius, tipLength, white, segmentCount);
+
+            return arrow;
+        }
     }
 }

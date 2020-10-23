@@ -146,6 +146,9 @@ namespace DEM.Net.Core
             Matrix4x4 translate = Matrix4x4.CreateTranslation(vector);
             return Transform(triangulation, translate);
         }
+        public static TriangulationList<Vector3> RotateX(this TriangulationList<Vector3> triangulation, float radians) => Transform(triangulation, Matrix4x4.CreateRotationX(radians));
+        public static TriangulationList<Vector3> RotateY(this TriangulationList<Vector3> triangulation, float radians) => Transform(triangulation, Matrix4x4.CreateRotationY(radians));
+        public static TriangulationList<Vector3> RotateZ(this TriangulationList<Vector3> triangulation, float radians) => Transform(triangulation, Matrix4x4.CreateRotationZ(radians));
         public static TriangulationList<Vector3> Transform(this TriangulationList<Vector3> triangulation, Matrix4x4 matrix4x4)
         {
             for (int i = 0; i < triangulation.NumPositions; i++)
