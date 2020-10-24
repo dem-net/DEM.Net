@@ -465,6 +465,42 @@ namespace DEM.Net.Core
 
             return triangulation;
         }
+        public TriangulationList<Vector3> Tesselate(IEnumerable<Vector3> outerRingPoints, IEnumerable<IEnumerable<Vector3>> innerRingsPoints)
+        {
+            TriangulationList<Vector3> triangulation = new TriangulationList<Vector3>();
+
+            var data = new List<double>();
+            var holeIndices = new List<int>();
+
+            foreach (var p in outerRingPoints)
+            {
+                triangulation.Positions.Add(p);
+
+                data.Add(p.X);
+                data.Add(p.Y);
+
+            }
+            if (innerRingsPoints != null)
+            {
+                foreach (var ring in innerRingsPoints)
+                {
+                    holeIndices.Add(triangulation.Positions.Count);
+                    foreach (var p in ring)
+                    {
+                        triangulation.Positions.Add(p);
+
+                        data.Add(p.X);
+                        data.Add(p.Y);
+
+                    }
+                }
+            }
+            var trianglesIndices = Earcut.Tessellate(data, holeIndices);
+
+            triangulation.Indices = trianglesIndices;
+
+            return triangulation;
+        }
         public TriangulationList<Vector3> CreateWaterSurface(Vector3 bottomLeft, Vector3 topRight, Vector3 topLeft, Vector3 bottomRight, float minZ, Vector4 color)
         {
             TriangulationList<Vector3> triangulation = new TriangulationList<Vector3>();
@@ -687,11 +723,9 @@ namespace DEM.Net.Core
             return axis;
         }
 
-        public TriangulationList<Vector3> CreateArrow(float radius = 2f, float length = 50f, float tipRadius = 2.5f, float tipLength = 10f, int segmentCount = 10)
+        public TriangulationList<Vector3> CreateArrow(float radius = 0.05f, float length = 0.75f, float tipRadius = 0.1f, float tipLength = 0.25f, int segmentCount = 30)
         {
             TriangulationList<Vector3> arrow = new TriangulationList<Vector3>();
-
-            float halfPi = (float)Math.PI / 2f;
 
             var white = VectorsExtensions.CreateColor(255,255,255, 255);
 
@@ -701,5 +735,7 @@ namespace DEM.Net.Core
 
             return arrow;
         }
+
+        
     }
 }

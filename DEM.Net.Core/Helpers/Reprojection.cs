@@ -143,6 +143,14 @@ namespace DEM.Net.Core
             }
             return triangulation;
         }
+        public static TriangulationList<Vector3> Scale(this TriangulationList<Vector3> triangulation, float factor)
+        {
+            return triangulation.Transform(Matrix4x4.CreateScale(factor));
+        }
+        public static TriangulationList<Vector3> Scale(this TriangulationList<Vector3> triangulation, Vector3 scales)
+        {
+            return triangulation.Transform(Matrix4x4.CreateScale(scales));
+        }
         public static TriangulationList<Vector3> ToGlTFSpace(this TriangulationList<Vector3> triangulation)
         {
             for (int i = 0; i < triangulation.NumPositions; i++)
