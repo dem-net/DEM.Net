@@ -181,7 +181,26 @@ namespace DEM.Net.Core
 
             return triangulation;
         }
+        public static TriangulationList<Vector3> CenterOnOrigin(this TriangulationList<Vector3> triangulation)
+        {
+            return triangulation.CenterOnOrigin(triangulation.GetBoundingBox(), true);
+        }
 
+        public static BoundingBox GetBoundingBox(this TriangulationList<Vector3> triangulation)
+        {
+            var bbox = new BoundingBox() { zMin = double.MaxValue, zMax = double.MinValue };
+            for (int i = 0; i < triangulation.NumPositions; i++)
+            {
+                bbox.xMin = Math.Min(bbox.xMin, triangulation.Positions[i].X);
+                bbox.xMax = Math.Max(bbox.xMax, triangulation.Positions[i].X);
+                bbox.yMin = Math.Min(bbox.yMin, triangulation.Positions[i].Y);
+                bbox.yMax = Math.Max(bbox.yMax, triangulation.Positions[i].Y);
+                bbox.zMin = Math.Min(bbox.zMin, triangulation.Positions[i].Z);
+                bbox.zMax = Math.Max(bbox.zMax, triangulation.Positions[i].Z);
+            }
+
+            return bbox;
+        }
 
     }
 }
