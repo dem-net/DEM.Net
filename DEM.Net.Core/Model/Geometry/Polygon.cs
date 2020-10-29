@@ -1,5 +1,6 @@
 ﻿using SixLabors.ImageSharp.ColorSpaces;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 
@@ -15,5 +16,7 @@ namespace DEM.Net.Core
         public List<T> ExteriorRing { get; set; }
 
         public List<List<T>> InteriorRings { get; set; }
+
+        public int NumPoints => ExteriorRing.Count + (InteriorRings?.Sum(r => r.Count) ?? 0);
     }
 }
