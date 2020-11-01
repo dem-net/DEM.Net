@@ -1,133 +1,134 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <PackageId>DEM.Net.Core</PackageId>
-        <Version>0.2.7.4</Version>
-        <Authors>Xavier Fischer, Frédéric Aubin</Authors>
-        <Copyright>Xavier Fischer, Frédéric Aubin and Contributors</Copyright>
-        <Owners>Xavier Fischer</Owners>
-        <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
-        <PackageReleaseNotes>- OpenTopography endpoints updated
+  <PropertyGroup>
+    <PackageId>DEM.Net.Core</PackageId>
+    <Version>0.2.8.0</Version>
+    <Authors>Xavier Fischer, Frédéric Aubin</Authors>
+    <Copyright>Xavier Fischer, Frédéric Aubin and Contributors</Copyright>
+    <Owners>Xavier Fischer</Owners>
+    <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
+    <PackageReleaseNotes>- OpenTopography endpoints updated
 - Disabled GEBCO 2020
 - New STL transforms
 - Triangulation Clone()</PackageReleaseNotes>
-        <PackageTags>DEM, Terrain, Elevation</PackageTags>
-        <Title>DEM.Net</Title>
-        <Product>DEM.Net</Product>
-        <Description>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Description>
-        <Summary>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Summary>
-        <RepositoryUrl>https://github.com/dem-net/DEM.Net</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageLicenseExpression></PackageLicenseExpression>
-        <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
-        <PackageIcon>DEMnet_64.png</PackageIcon>
-        <AssemblyVersion>0.2.7.4</AssemblyVersion>
-        <FileVersion>0.2.7.4</FileVersion>
-        <UserSecretsId>a9a5d6e1-3bb8-4dfd-ac6a-861f60dada50</UserSecretsId>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-        <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    </PropertyGroup>
-    <!-- Build package only in Release -->
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release'">
-        <IncludeSymbols>true</IncludeSymbols>
-        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    </PropertyGroup>
-    <!-- Build package only in Release -->
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug'">
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    </PropertyGroup>
-    <!-- Define NETFULL and NETSTANDARD for all matching targets -->
-    <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
-        <DefineConstants>NETCORE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(TargetFramework)' == 'net461'">
-        <DefineConstants>NET461;NETFULL</DefineConstants>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    </PropertyGroup>
-    <!-- Conditionally obtain references for the .NET Framework 4.6.1 target -->
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-        <Reference Include="System.Net.Http" />
-        <Reference Include="System.Drawing" />
-        <Reference Include="System.Configuration" />
-    </ItemGroup>
-    <!-- .NET Standard 2.0 references, compilation flags and build options -->
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.5" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.5" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.5" />
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Remove="Services\Voronoi\BeanTopologie\**" />
-        <EmbeddedResource Remove="Services\Voronoi\BeanTopologie\**" />
-        <None Remove="Services\Voronoi\BeanTopologie\**" />
-        <None Include="..\LICENSE.md">
-            <Pack>True</Pack>
-            <PackagePath>
-            </PackagePath>
-        </None>
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologie.cs" />
-        <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologieArc.cs" />
-        <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologieArcComposant.cs" />
-        <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologieArcComposite.cs" />
-        <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologieIlot.cs" />
-        <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologieVertex.cs" />
-        <Compile Include="Services\Voronoi\BeanTopologie\enumTopologie.cs" />
-        <Compile Include="Services\Voronoi\BeanTopologie\ITopologieService.cs" />
-        <Compile Include="Services\Voronoi\BeanTopologie\TopologieService.cs" />
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="BitMiracle.LibTiff.NET" Version="2.4.639" />
-        <PackageReference Include="DotSpatial.Projections.NetStandard" Version="1.0.0" />
-        <PackageReference Include="GeoAPI.CoordinateSystems" Version="1.7.5" />
-        <PackageReference Include="GeoAPI.Core" Version="1.7.5" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="NetTopologySuite" Version="1.15.3" />
-        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.5" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.5" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.5" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.5" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.5" />
-        <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.5" />
-        <PackageReference Include="NetTopologySuite.Diagnostics.Tracing" Version="0.0.3" />
-        <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-        <PackageReference Include="SDSCore" Version="1.2.0" />
-        <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0007" />
-        <PackageReference Include="SixLabors.Shapes" Version="1.0.0-beta0009" />
-        <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
-        <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-    </ItemGroup>
-    <ItemGroup>
-        <Folder Include="Services\Voronoi\FortuneVoronoi\" />
-        <Folder Include="Model\IntervisibilityReport\" />
-        <Folder Include="Helpers\System\" />
-        <Folder Include="Services\Geometry\" />
-    </ItemGroup>
-    <ItemGroup>
-        <None Include="DEMnet_64.png" Pack="true" PackagePath="\" />
-    </ItemGroup>
-    <ProjectExtensions>
-        <MonoDevelop>
-            <Properties>
-                <Policies>
-                    <StandardHeader IncludeInNewFiles="True" Text="${FileName}&#xA;&#xA;Author:&#xA;      ${AuthorName}&#xA;&#xA;Copyright (c) ${Year} ${CopyrightHolder}&#xA;&#xA;Permission is hereby granted, free of charge, to any person obtaining a copy&#xA;of this software and associated documentation files (the &quot;Software&quot;), to deal&#xA;in the Software without restriction, including without limitation the right&#xA;to use, copy, modify, merge, publish, distribute, sublicense, and/or sell&#xA;copies of the Software, and to permit persons to whom the Software is&#xA;furnished to do so, subject to the following conditions:&#xA;&#xA;The above copyright notice and this permission notice shall be included in&#xA;all copies or substantial portions of the Software.&#xA;&#xA;THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR&#xA;IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,&#xA;FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE&#xA;AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER&#xA;LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,&#xA;OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN&#xA;THE SOFTWARE." />
-                </Policies>
-            </Properties>
-        </MonoDevelop>
-    </ProjectExtensions>
+    <PackageTags>DEM, Terrain, Elevation</PackageTags>
+    <Title>DEM.Net</Title>
+    <Product>DEM.Net</Product>
+    <Description>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Description>
+    <Summary>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Summary>
+    <RepositoryUrl>https://github.com/dem-net/DEM.Net</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>
+    </PackageLicenseExpression>
+    <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
+    <PackageIcon>DEMnet_64.png</PackageIcon>
+    <AssemblyVersion>0.2.7.4</AssemblyVersion>
+    <FileVersion>0.2.7.4</FileVersion>
+    <UserSecretsId>a9a5d6e1-3bb8-4dfd-ac6a-861f60dada50</UserSecretsId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+  <!-- Build package only in Release -->
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release'">
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <!-- Build package only in Release -->
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+  <!-- Define NETFULL and NETSTANDARD for all matching targets -->
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
+    <DefineConstants>NETCORE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net461'">
+    <DefineConstants>NET461;NETFULL</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <!-- Conditionally obtain references for the .NET Framework 4.6.1 target -->
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <!-- .NET Standard 2.0 references, compilation flags and build options -->
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.5" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Services\Voronoi\BeanTopologie\**" />
+    <EmbeddedResource Remove="Services\Voronoi\BeanTopologie\**" />
+    <None Remove="Services\Voronoi\BeanTopologie\**" />
+    <None Include="..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath>
+      </PackagePath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologie.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologieArc.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologieArcComposant.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologieArcComposite.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologieIlot.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\BeanTopologieVertex.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\enumTopologie.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\ITopologieService.cs" />
+    <Compile Include="Services\Voronoi\BeanTopologie\TopologieService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BitMiracle.LibTiff.NET" Version="2.4.639" />
+    <PackageReference Include="DotSpatial.Projections.NetStandard" Version="1.0.0" />
+    <PackageReference Include="GeoAPI.CoordinateSystems" Version="1.7.5" />
+    <PackageReference Include="GeoAPI.Core" Version="1.7.5" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NetTopologySuite" Version="1.15.3" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.5" />
+    <PackageReference Include="NetTopologySuite.Diagnostics.Tracing" Version="0.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="SDSCore" Version="1.2.0" />
+    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0007" />
+    <PackageReference Include="SixLabors.Shapes" Version="1.0.0-beta0009" />
+    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\Voronoi\FortuneVoronoi\" />
+    <Folder Include="Model\IntervisibilityReport\" />
+    <Folder Include="Helpers\System\" />
+    <Folder Include="Services\Geometry\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DEMnet_64.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <StandardHeader IncludeInNewFiles="True" Text="${FileName}&#xA;&#xA;Author:&#xA;      ${AuthorName}&#xA;&#xA;Copyright (c) ${Year} ${CopyrightHolder}&#xA;&#xA;Permission is hereby granted, free of charge, to any person obtaining a copy&#xA;of this software and associated documentation files (the &quot;Software&quot;), to deal&#xA;in the Software without restriction, including without limitation the right&#xA;to use, copy, modify, merge, publish, distribute, sublicense, and/or sell&#xA;copies of the Software, and to permit persons to whom the Software is&#xA;furnished to do so, subject to the following conditions:&#xA;&#xA;The above copyright notice and this permission notice shall be included in&#xA;all copies or substantial portions of the Software.&#xA;&#xA;THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR&#xA;IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,&#xA;FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE&#xA;AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER&#xA;LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,&#xA;OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN&#xA;THE SOFTWARE." />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>
