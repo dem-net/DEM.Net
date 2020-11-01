@@ -119,7 +119,8 @@ namespace DEM.Net.Core
 
             heightMap.BoundingBox = new BoundingBox(bbox.xMin - xOriginOffset, bbox.xMax - xOriginOffset
                                                     , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset
-                                                    , 0, bbox.zMax - bbox.zMin);
+                                                    , 0, bbox.zMax - bbox.zMin)
+            { SRID = bbox.SRID };
             return heightMap;
         }
 

@@ -25,6 +25,7 @@
 
 using DEM.Net.Core.Tesselation;
 using Microsoft.Extensions.Logging;
+using NetTopologySuite.IO;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -464,7 +465,210 @@ namespace DEM.Net.Core
 
             return triangulation;
         }
+        public TriangulationList<Vector3> Tesselate(IEnumerable<Vector3> outerRingPoints, IEnumerable<IEnumerable<Vector3>> innerRingsPoints)
+        {
+            TriangulationList<Vector3> triangulation = new TriangulationList<Vector3>();
 
+            var data = new List<double>();
+            var holeIndices = new List<int>();
+
+            foreach (var p in outerRingPoints)
+            {
+                triangulation.Positions.Add(p);
+
+                data.Add(p.X);
+                data.Add(p.Y);
+
+            }
+            if (innerRingsPoints != null)
+            {
+                foreach (var ring in innerRingsPoints)
+                {
+                    holeIndices.Add(triangulation.Positions.Count);
+                    foreach (var p in ring)
+                    {
+                        triangulation.Positions.Add(p);
+
+                        data.Add(p.X);
+                        data.Add(p.Y);
+
+                    }
+                }
+            }
+            var trianglesIndices = Earcut.Tessellate(data, holeIndices);
+
+            triangulation.Indices = trianglesIndices;
+
+            return triangulation;
+        }
+        public TriangulationList<Vector3> Tesselate(Polygon<Vector3> polygon)
+        {
+            return Tesselate(polygon.ExteriorRing, polygon.InteriorRings);
+        }
+        public TriangulationList<Vector3> Extrude(List<Polygon<Vector3>> polygons)
+        {
+            TriangulationList<Vector3> triangulation = new TriangulationList<Vector3>();
+            foreach (var polygon in polygons)
+            {
+                triangulation += Extrude(polygon);
+            }
+            return triangulation;
+        }
+        public TriangulationList<Vector3> Extrude(Polygon<Vector3> polygon, float depth = 10f)
+        {
+            
+            //==========================
+            // Footprint triangulation
+            //
+            var footPrintOutline = polygon.ExteriorRing; 
+            var footPrintInnerRingsFlattened = polygon.InteriorRings == null ? null : polygon.InteriorRings;
+
+            TriangulationList<Vector3> triangulation = this.Tesselate(footPrintOutline, footPrintInnerRingsFlattened);
+            int numFootPrintIndices = triangulation.Indices.Count;
+            /////
+
+            // Now extrude it (build the sides)
+            // Algo
+            // First triangulate the foot print (with inner rings if existing)
+            // This triangulation is the roof top if polygon is flat
+            int totalPoints = polygon.NumPoints;
+
+            // Triangulate wall for each ring
+            // (We add floor indices before copying the vertices, they will be duplicated and z shifted later on)
+            List<int> numVerticesPerRing = new List<int>();
+            numVerticesPerRing.Add(polygon.ExteriorRing.Count);
+            numVerticesPerRing.AddRange(polygon.InteriorRings.Select(r => r.Count));
+            triangulation = this.TriangulateRingsWalls(triangulation, numVerticesPerRing, totalPoints);
+
+            // Roof
+            // polygon has real elevations
+
+            // Create floor vertices by copying roof vertices and setting their z
+            var floorVertices = triangulation.Positions.Select(pt => new Vector3(pt.X, pt.Y, pt.Z + depth)).ToList();
+            triangulation.Positions.AddRange(floorVertices);
+
+            // duplicate tesselation for extruded back face
+            triangulation.Indices.AddRange(triangulation.Indices.Take(numFootPrintIndices).Select(i => i + totalPoints).ToList());
+
+            //==========================
+            // Colors: assume all vertices have the same color, otherwise look at code done for buildings            
+            Vector4 DefaultColor = Vector4.One;
+            // assign wall or default color to all vertices
+            triangulation.Colors = triangulation.Positions.Select(p => DefaultColor).ToList();
+
+            Debug.Assert(triangulation.Colors.Count == 0 || triangulation.Colors.Count == triangulation.Positions.Count);
+
+            return triangulation;
+        }
+        private TriangulationList<Vector3> TriangulateRingsWalls(TriangulationList<Vector3> triangulation, List<int> numVerticesPerRing, int totalPoints)
+        {
+            int offset = numVerticesPerRing.Sum();
+
+            Debug.Assert(totalPoints == offset);
+
+            int ringOffset = 0;
+            foreach (var numRingVertices in numVerticesPerRing)
+            {
+                int i = 0;
+                do
+                {
+                    triangulation.Indices.Add(ringOffset + i);
+                    triangulation.Indices.Add(ringOffset + i + offset);
+                    triangulation.Indices.Add(ringOffset + i + 1);
+
+                    triangulation.Indices.Add(ringOffset + i + offset);
+                    triangulation.Indices.Add(ringOffset + i + offset + 1);
+                    triangulation.Indices.Add(ringOffset + i + 1);
+
+                    i++;
+                }
+                while (i < numRingVertices - 1);
+
+                // Connect last vertices to start vertices
+                triangulation.Indices.Add(ringOffset + i);
+                triangulation.Indices.Add(ringOffset + i + offset);
+                triangulation.Indices.Add(ringOffset + 0);
+
+                triangulation.Indices.Add(ringOffset + i + offset);
+                triangulation.Indices.Add(ringOffset + 0 + offset);
+                triangulation.Indices.Add(ringOffset + 0);
+
+                ringOffset += numRingVertices;
+
+            }
+            return triangulation;
+        }
+
+        public TriangulationList<Vector3> CreateWaterSurface(Vector3 bottomLeft, Vector3 topRight, Vector3 topLeft, Vector3 bottomRight, float minZ, Vector4 color)
+        {
+            TriangulationList<Vector3> triangulation = new TriangulationList<Vector3>();
+
+            // base
+            triangulation.Positions.Add(bottomLeft);
+            triangulation.Positions.Add(topLeft);
+            triangulation.Positions.Add(topRight);
+            triangulation.Positions.Add(bottomRight);
+
+            triangulation.Positions.Add(bottomLeft.AtZ(minZ));
+            triangulation.Positions.Add(topLeft.AtZ(minZ));
+            triangulation.Positions.Add(topRight.AtZ(minZ));
+            triangulation.Positions.Add(bottomRight.AtZ(minZ));
+
+            // base at min Z
+            triangulation.Indices.AddRange(new[] { 0, 2, 1 });
+            triangulation.Indices.AddRange(new[] { 0, 3, 2 });
+
+            // sides
+            triangulation.Indices.AddRange(new[] { 0, 1, 5 });
+            triangulation.Indices.AddRange(new[] { 0, 5, 4 });
+
+            triangulation.Indices.AddRange(new[] { 1, 2, 6 });
+            triangulation.Indices.AddRange(new[] { 1, 6, 5 });
+
+            triangulation.Indices.AddRange(new[] { 2, 3, 7 });
+            triangulation.Indices.AddRange(new[] { 2, 7, 6 });
+
+            triangulation.Indices.AddRange(new[] { 3, 0, 4 });
+            triangulation.Indices.AddRange(new[] { 3, 4, 7 });
+
+            //triangulation.Colors = new List<Vector4>();
+            //triangulation.Colors.Add(VectorsExtensions.CreateColor(255, 0, 0));
+            //triangulation.Colors.Add(VectorsExtensions.CreateColor(0, 255, 0));
+            //triangulation.Colors.Add(VectorsExtensions.CreateColor(0, 0, 255));
+            //triangulation.Colors.Add(VectorsExtensions.CreateColor(255,255, 255));
+
+            // add color for each position
+            triangulation.Colors = triangulation.Positions.Select(p => color).ToList();
+            return triangulation;
+        }
+        public TriangulationList<Vector3> CreatePlane(Vector3 bottomLeft, Vector3 topRight, Vector3 topLeft, Vector3 bottomRight, Vector4 color)
+        {
+            TriangulationList<Vector3> triangulation = new TriangulationList<Vector3>();
+
+            // base
+            triangulation.Positions.Add(bottomLeft);
+            triangulation.Positions.Add(topLeft);
+            triangulation.Positions.Add(topRight);
+            triangulation.Positions.Add(bottomRight);
+
+
+            triangulation.Indices.Add(0);
+            triangulation.Indices.Add(2);
+            triangulation.Indices.Add(1);
+            triangulation.Indices.Add(0);
+            triangulation.Indices.Add(3);
+            triangulation.Indices.Add(2);
+
+            //triangulation.Colors = new List<Vector4>();
+            //triangulation.Colors.Add(VectorsExtensions.CreateColor(255, 0, 0));
+            //triangulation.Colors.Add(VectorsExtensions.CreateColor(0, 255, 0));
+            //triangulation.Colors.Add(VectorsExtensions.CreateColor(0, 0, 255));
+            //triangulation.Colors.Add(VectorsExtensions.CreateColor(255,255, 255));
+
+            // add color for each position
+            triangulation.Colors = triangulation.Positions.Select(p => color).ToList();
+            return triangulation;
+        }
 
         /// <summary>
         /// Create a cylinder where the base center is at position (height is in Z direction)
@@ -616,5 +820,20 @@ namespace DEM.Net.Core
 
             return axis;
         }
+
+        public TriangulationList<Vector3> CreateArrow(float radius = 0.05f, float length = 0.75f, float tipRadius = 0.1f, float tipLength = 0.25f, int segmentCount = 30)
+        {
+            TriangulationList<Vector3> arrow = new TriangulationList<Vector3>();
+
+            var white = VectorsExtensions.CreateColor(255, 255, 255, 255);
+
+            // Z axis
+            arrow += CreateCylinder(Vector3.Zero, radius, length, white, segmentCount);
+            arrow += CreateCone(Vector3.UnitZ * length, tipRadius, tipLength, white, segmentCount);
+
+            return arrow;
+        }
+
+
     }
 }

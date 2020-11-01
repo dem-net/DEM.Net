@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>DEM.Net.glTF</PackageId>
-    <Version>0.2.7.4</Version>
+    <Version>0.2.8.0</Version>
     <Authors>Xavier Fischer</Authors>
     <Copyright>Xavier Fischer and Contributors</Copyright>
     <Owners>Xavier Fischer</Owners>
@@ -51,7 +51,7 @@
   <ItemGroup>
     <None Include="..\LICENSE.md" Link="LICENSE.md">
       <PackagePath>
-            </PackagePath>
+      </PackagePath>
       <Pack>True</Pack>
     </None>
     <None Include="DEMnet_64.png" Pack="true" PackagePath="\" />

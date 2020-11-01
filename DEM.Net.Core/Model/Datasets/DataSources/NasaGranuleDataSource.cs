@@ -17,7 +17,6 @@ namespace DEM.Net.Core.Datasets
         }
         public string IndexFilePath { get; }
         public string CollectionId { get; private set; }
-        public bool IsGlobalFile { get; } = false;
 
         public DEMDataSourceType DataSourceType => DEMDataSourceType.NasaEarthData;
 

@@ -93,6 +93,11 @@ namespace DEM.Net.Core
         {
             return new Vector4(r / 255f, g / 255f, b / 255f, a / 255f);
         }
+        public static Vector3 AtZ(this Vector3 vector3, float newZ)
+        {
+            vector3.Z = newZ;
+            return vector3;
+        }
         public static IEnumerable<Vector3> ToQuadPoints(this Vector3 vertex, float pointSize)
         {
             float halfSize = pointSize / 2f;
@@ -141,6 +146,9 @@ namespace DEM.Net.Core
             Matrix4x4 translate = Matrix4x4.CreateTranslation(vector);
             return Transform(triangulation, translate);
         }
+        public static TriangulationList<Vector3> RotateX(this TriangulationList<Vector3> triangulation, float radians) => Transform(triangulation, Matrix4x4.CreateRotationX(radians));
+        public static TriangulationList<Vector3> RotateY(this TriangulationList<Vector3> triangulation, float radians) => Transform(triangulation, Matrix4x4.CreateRotationY(radians));
+        public static TriangulationList<Vector3> RotateZ(this TriangulationList<Vector3> triangulation, float radians) => Transform(triangulation, Matrix4x4.CreateRotationZ(radians));
         public static TriangulationList<Vector3> Transform(this TriangulationList<Vector3> triangulation, Matrix4x4 matrix4x4)
         {
             for (int i = 0; i < triangulation.NumPositions; i++)
@@ -173,7 +181,26 @@ namespace DEM.Net.Core
 
             return triangulation;
         }
+        public static TriangulationList<Vector3> CenterOnOrigin(this TriangulationList<Vector3> triangulation)
+        {
+            return triangulation.CenterOnOrigin(triangulation.GetBoundingBox(), true);
+        }
 
+        public static BoundingBox GetBoundingBox(this TriangulationList<Vector3> triangulation)
+        {
+            var bbox = new BoundingBox() { zMin = double.MaxValue, zMax = double.MinValue };
+            for (int i = 0; i < triangulation.NumPositions; i++)
+            {
+                bbox.xMin = Math.Min(bbox.xMin, triangulation.Positions[i].X);
+                bbox.xMax = Math.Max(bbox.xMax, triangulation.Positions[i].X);
+                bbox.yMin = Math.Min(bbox.yMin, triangulation.Positions[i].Y);
+                bbox.yMax = Math.Max(bbox.yMax, triangulation.Positions[i].Y);
+                bbox.zMin = Math.Min(bbox.zMin, triangulation.Positions[i].Z);
+                bbox.zMax = Math.Max(bbox.zMax, triangulation.Positions[i].Z);
+            }
+
+            return bbox;
+        }
 
     }
 }

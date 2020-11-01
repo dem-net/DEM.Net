@@ -46,7 +46,7 @@ namespace DEM.Net.Core
 
             base.TransformPoints = points =>
             {
-                points = points.ReprojectTo(4326, _outputSrid);
+                points = points.ReprojectTo(bbox.SRID, _outputSrid);
                 if (_centerOnOrigin)
                 {
                     if (BoundingBox == null)
@@ -63,7 +63,7 @@ namespace DEM.Net.Core
 
             base.TransformHeightMap = hMap =>
             {
-                hMap = hMap.ReprojectTo(4326, _outputSrid);
+                hMap = hMap.ReprojectTo(bbox.SRID, _outputSrid);
 
                 if (_centerOnOrigin)
                 {

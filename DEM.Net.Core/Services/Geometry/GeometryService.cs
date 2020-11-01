@@ -470,6 +470,10 @@ namespace DEM.Net.Core
 
         public static IGeometry ToPolygon(this BoundingBox boundingBox)
         {
+            return new Polygon(boundingBox.ToRing(), _factory);
+        }
+        public static ILinearRing ToRing(this BoundingBox boundingBox)
+        {
             if (boundingBox == null)
                 throw new ArgumentNullException(nameof(boundingBox));
 
@@ -479,7 +483,7 @@ namespace DEM.Net.Core
                         new Coordinate(boundingBox.xMax, boundingBox.yMin),
                         new Coordinate(boundingBox.xMin, boundingBox.yMin),
                         new Coordinate(boundingBox.xMin, boundingBox.yMax)});
-            return new Polygon(ring, _factory);
+            return ring;
         }
 
         public static bool IsCovered(this BoundingBox bbox, IEnumerable<BoundingBox> bboxTiles)
@@ -488,11 +492,31 @@ namespace DEM.Net.Core
                 return false;
 
             IGeometry bboxPoly = bbox.ToPolygon();
-            IGeometry tilesPolygon = UnaryUnionOp.Union(bboxTiles.Select(GeometryService.ToPolygon).ToList());
+            IGeometry tilesPolygon = UnaryUnionOp.Union(bboxTiles.Select(t => t.ToPolygon()).ToList());
 
             var inside = tilesPolygon.Contains(bboxPoly);
-            return inside;
+
+            if (inside)
+                return inside;
+            else
+            {
+                tilesPolygon = UnaryUnionOp.Union(bboxTiles.Select(t => (IGeometry)(new LineString(t.ToRing().Coordinates))).ToList());
+
+                var dbgString = @"declare @b geometry = geometry::STGeomFromText('{bbox.WKT}',2154)
+                                select @b,'Bbox'";
+
+                var wkts = bboxTiles.Select(t => new Polygon(t.ToRing()).ToText());
+
+                dbgString = dbgString.Replace("{bbox.WKT}", bbox.WKT);
+                dbgString += string.Join(" ", wkts.Select(s => $"union all select geometry::STGeomFromText('{s}',2154) , 'Tiles'"));
+
+                System.Diagnostics.Debug.WriteLine(dbgString);
+                return inside;
+            }
+
+            
         }
+        
 
 
     }

@@ -29,8 +29,6 @@ namespace DEM.Net.Core.Datasets
     {
 		public string IndexFilePath { get; }
 
-        public bool IsGlobalFile { get; } = false;
-
         public DEMDataSourceType DataSourceType => DEMDataSourceType.GDALVrt;
 
         public VRTDataSource(string vrtFileUrl)

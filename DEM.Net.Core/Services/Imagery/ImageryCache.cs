@@ -23,6 +23,7 @@ namespace DEM.Net.Core.Services.Imagery
         private readonly IHttpClientFactory httpClientFactory;
         private readonly string _localDirectory;
         private readonly TimeSpan diskExpirationHours;
+        private readonly TimeSpan memoryExpirationMinutes;
 
         public ImageryCache(IMemoryCache cache,
             IOptions<DEMNetOptions> options,
@@ -32,6 +33,7 @@ namespace DEM.Net.Core.Services.Imagery
 
             this.options = options.Value;
             this.diskExpirationHours = TimeSpan.FromHours(options.Value.ImageryDiskCacheExpirationHours);
+            this.memoryExpirationMinutes = TimeSpan.FromMinutes(options.Value.ImageryCacheExpirationMinutes);
 
             this.httpClientFactory = clientFactory;
             this._localDirectory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), RasterService.APP_NAME, IMAGERY_DIR);
@@ -42,7 +44,7 @@ namespace DEM.Net.Core.Services.Imagery
         {
             var contentBytes = cache.GetOrCreate(tileUri, entry =>
             {
-                entry.SetSlidingExpiration(TimeSpan.FromMinutes(options.ImageryCacheExpirationMinutes));
+                entry.SetSlidingExpiration(memoryExpirationMinutes);
 
                 // Check if present on disk
                 if (options.UseImageryDiskCache)

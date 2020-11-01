@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -499,6 +500,7 @@ namespace DEM.Net.Core
 
             if (tiles.Count == 0)
             {
+                _logger.LogWarning("No coverage for points in dataset. Check extent or spatial reference id (projection)");
                 return null;
             }
             else
@@ -576,58 +578,151 @@ namespace DEM.Net.Core
                 bool covered = this.IsBoundingBoxCovered(bbox, bboxMetadata.Select(m => m.BoundingBox));
                 if (!covered)
                 {
-                    const string errorMessage = "Bounding box is partially covered by DEM dataset. Heightmap in its current state supports only full data tiles.";
-                    this._logger.LogWarning(errorMessage);
-                    throw new Exception(errorMessage);
-                }
-                else
-                {
+                    this._logger.LogWarning("Bounding box is partially covered by DEM dataset. Generating missing tiles as virtual with no_data.");
+                    // create missing metadata. Will be marked as "VirtalMetadata"
+                    var missingMetadata = CreateMissingTilesMetadata(bbox, dataSet, bboxMetadata);
 
-                    // get height map for each file at bbox
-                    List<HeightMap> tilesHeightMap = new List<HeightMap>(bboxMetadata.Count);
-                    foreach (FileMetadata metadata in bboxMetadata)
+                    Debug.Assert(missingMetadata.Select(t => t.Filename).Distinct().Count() == missingMetadata.Count, "Non unique tiles. This is BAD");
+                    bboxMetadata.AddRange(missingMetadata);
+                    Debug.Assert(this.IsBoundingBoxCovered(bbox, bboxMetadata.Select(m => m.BoundingBox)), "Still uncovered. Missing tiles generation failed");
+                }
+
+                // get height map for each file at bbox
+                List<HeightMap> tilesHeightMap = new List<HeightMap>(bboxMetadata.Count);
+                foreach (FileMetadata metadata in bboxMetadata)
+                {
+                    if (metadata.VirtualMetadata)
+                    {
+                        var hmap = _RasterService.GetVirtualHeightMapInBBox(bbox, metadata);
+                        hmap.BoundingBox.SRID = bbox.SRID;
+                        if (hmap.Count > 0)
+                        {
+                            tilesHeightMap.Add(hmap);
+                        }
+                    }
+                    else
                     {
                         using (IRasterFile raster = _RasterService.OpenFile(metadata.Filename, dataSet.FileFormat.Type))
                         {
                             var hmap = raster.GetHeightMapInBBox(bbox, metadata, NO_DATA_OUT);
+                            hmap.BoundingBox.SRID = bbox.SRID;
                             if (hmap.Count > 0)
                             {
                                 tilesHeightMap.Add(hmap);
                             }
                         }
                     }
-
-                    HeightMap heightMap;
-                    if (tilesHeightMap.Count == 1)
-                    {
-                        heightMap = tilesHeightMap.First();
-                        bbox = heightMap.BoundingBox;
-                    }
-                    else
-                    {
-                        // Merge height maps
-                        int totalHeight = tilesHeightMap.GroupBy(h => h.BoundingBox.xMin).Select(g => g.Sum(v => v.Height)).First();
-                        int totalWidth = tilesHeightMap.GroupBy(h => h.BoundingBox.yMin).Select(g => g.Sum(v => v.Width)).First();
-
-                        heightMap = new HeightMap(totalWidth, totalHeight);
-                        heightMap.BoundingBox = new BoundingBox(xmin: tilesHeightMap.Min(h => h.BoundingBox.xMin)
-                                                                , xmax: tilesHeightMap.Max(h => h.BoundingBox.xMax)
-                                                                , ymin: tilesHeightMap.Min(h => h.BoundingBox.yMin)
-                                                                , ymax: tilesHeightMap.Max(h => h.BoundingBox.yMax)
-                                                                , zmin: tilesHeightMap.Min(h => h.BoundingBox.zMin)
-                                                                , zmax: tilesHeightMap.Max(h => h.BoundingBox.zMax));
-                        bbox = heightMap.BoundingBox;
-                        heightMap.Coordinates = tilesHeightMap.SelectMany(hmap => hmap.Coordinates).Sort();
-                        heightMap.Count = totalWidth * totalHeight;
-                        heightMap.Minimum = tilesHeightMap.Min(hmap => hmap.Minimum);
-                        heightMap.Maximum = tilesHeightMap.Max(hmap => hmap.Maximum);
-                    }
-                    System.Diagnostics.Debug.Assert(heightMap.Count == tilesHeightMap.Sum(h => h.Count));
-
-
-                    return heightMap;
                 }
+
+                HeightMap heightMap;
+                if (tilesHeightMap.Count == 1)
+                {
+                    heightMap = tilesHeightMap.First();
+                    bbox = heightMap.BoundingBox;
+                }
+                else
+                {
+                    // Merge height maps
+                    int totalHeight = tilesHeightMap.GroupBy(h => h.BoundingBox.xMin).Select(g => g.Sum(v => v.Height)).First();
+                    int totalWidth = tilesHeightMap.GroupBy(h => h.BoundingBox.yMin).Select(g => g.Sum(v => v.Width)).First();
+
+                    heightMap = new HeightMap(totalWidth, totalHeight);
+                    heightMap.BoundingBox = new BoundingBox(xmin: tilesHeightMap.Min(h => h.BoundingBox.xMin)
+                                                            , xmax: tilesHeightMap.Max(h => h.BoundingBox.xMax)
+                                                            , ymin: tilesHeightMap.Min(h => h.BoundingBox.yMin)
+                                                            , ymax: tilesHeightMap.Max(h => h.BoundingBox.yMax)
+                                                            , zmin: tilesHeightMap.Min(h => h.BoundingBox.zMin)
+                                                            , zmax: tilesHeightMap.Max(h => h.BoundingBox.zMax))
+                    { SRID = bbox.SRID };
+                    bbox = heightMap.BoundingBox;
+                    heightMap.Coordinates = tilesHeightMap.SelectMany(hmap => hmap.Coordinates).Sort();
+                    heightMap.Count = totalWidth * totalHeight;
+                    heightMap.Minimum = tilesHeightMap.Min(hmap => hmap.Minimum);
+                    heightMap.Maximum = tilesHeightMap.Max(hmap => hmap.Maximum);
+                }
+                System.Diagnostics.Debug.Assert(heightMap.Count == tilesHeightMap.Sum(h => h.Count));
+
+
+                return heightMap;
+
             }
+
+        }
+
+        private List<FileMetadata> CreateMissingTilesMetadata(BoundingBox bbox, DEMDataSet dataSet, List<FileMetadata> bboxMetadata)
+        {
+            // Take the top left bbox point
+            // traverse bbox from left to right and top to bottom with metadata size increments
+            // check at each increment if we intersect a tile
+            // if no => construct missing tile metadata
+
+
+            // We suppose all tiles have equal dimensions, let's take the x/y min one to allow easier creation later on
+            var tilesBbox = bboxMetadata.BoundingBox();
+            FileMetadata templateTile = bboxMetadata.First();
+
+            // get x/y increments
+            double tileSizeX = templateTile.Width * templateTile.PixelScaleX;
+            double tileSizeY = templateTile.Height * templateTile.PixelScaleY;
+
+            // output list
+            HashSet<FileMetadata> missingTiles = new HashSet<FileMetadata>();
+
+            double x = bbox.xMin, y = bbox.yMin;
+            double currentX = x;
+            int i = 0, j = 0;
+            do
+            {
+                j = 0;
+                currentX = bbox.xMin + i * tileSizeX;
+                x = Math.Min(bbox.xMax, currentX);
+                y = bbox.yMin;
+                double currentY = y;
+                do
+                {
+                    currentY = bbox.yMin + j * tileSizeY;
+                    y = Math.Min(bbox.yMax, currentY);
+
+                    if (!bboxMetadata.Any(tile => IsPointInTile(tile, y, x)))
+                    {
+
+                        // filename must be unique so we use a Guid
+                        FileMetadata missingTile = templateTile.Clone();
+                        var xIndex = (int)Math.Floor((x - tilesBbox.xMin) / tileSizeX);
+                        var yIndex = (int)Math.Floor((y - tilesBbox.yMin) / tileSizeY);
+                        missingTile.Filename = $"[{xIndex}, {yIndex}]";
+
+                        // missing tile
+                        _logger.LogInformation($"Generating missing tile at x/y = {x:F5} {y:F5}, index = [{xIndex}, {yIndex}]");
+
+                        missingTile.DataStartLon = tilesBbox.xMin + tileSizeX * xIndex;
+                        missingTile.DataEndLon = tilesBbox.xMin + tileSizeX * (xIndex + 1);
+                        missingTile.DataStartLat = tilesBbox.yMin + tileSizeY * yIndex;
+                        missingTile.DataEndLat = tilesBbox.yMin + tileSizeY * (yIndex + 1);
+
+                        missingTile.PhysicalStartLon = missingTile.DataStartLon + (templateTile.PhysicalStartLon - templateTile.DataStartLon);
+                        missingTile.PhysicalStartLat = missingTile.DataStartLat + (templateTile.PhysicalStartLat - templateTile.DataStartLat);
+                        missingTile.PhysicalEndLon = missingTile.DataEndLon + (templateTile.PhysicalEndLon - templateTile.DataEndLon);
+                        missingTile.PhysicalEndLat = missingTile.DataEndLat + (templateTile.PhysicalEndLat - templateTile.DataEndLat);
+
+                        missingTile.VirtualMetadata = true;
+
+                        if (missingTiles.Contains(missingTile))
+                            _logger.LogWarning("Missing tiles already contains tile. Algo must be optimized...");
+                        else
+                            missingTiles.Add(missingTile);
+                    }
+                    j++;
+
+                }
+                while (currentY < bbox.yMax);
+
+                i++;
+
+            } while (currentX < bbox.xMax);
+
+            _logger.LogInformation($"{missingTiles.Count} missing tiles generated.");
+            return missingTiles.ToList();
 
         }
 
@@ -1164,7 +1259,7 @@ namespace DEM.Net.Core
             return GetElevationAtPoint(adjacentTiles[metadata], adjacentTiles, metadata, lat, lon, noDataElevation, interpolator ?? GetInterpolator(InterpolationMode.Bilinear), behavior);
 
         }
-        private float GetElevationAtPoint(IRasterFile mainRaster, RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float noDataElevation, IInterpolator interpolator, NoDataBehavior behavior)
+        public float GetElevationAtPoint(IRasterFile mainRaster, RasterFileDictionary adjacentTiles, FileMetadata metadata, double lat, double lon, float noDataElevation, IInterpolator interpolator, NoDataBehavior behavior)
         {
             float heightValue = 0;
             try
@@ -1317,7 +1412,11 @@ namespace DEM.Net.Core
                     }
                     else
                     {
-                        throw new Exception($"No adjacent tile found (adjacent tiles may not have been set). (x,y, tile) = ({x},{y},{mainTile})");
+                        _logger.LogWarning($"No adjacent tile found(adjacent tiles may not have been set). (x, y, tile) = ({ x},{ y},{ mainTile})");
+                        newX = xTileOffset == 0 ? x : xTileOffset > 0 ? x % mainTile.Width : (mainTile.Width + x) % mainTile.Width;
+                        newY = yTileOffset == 0 ? y : yTileOffset < 0 ? (mainTile.Height + y) % mainTile.Height : y % mainTile.Height;
+                        return mainTile;
+                        //
                     }
                 }
                 else
@@ -1370,6 +1469,8 @@ namespace DEM.Net.Core
                     this.DownloadMissingFiles(dataSet, elevationLine.GetBoundingBox());
 
                 var geoPoints = this.GetLineGeometryElevation(elevationLine, dataSet);
+                if (dataSet.SRID != Reprojection.SRID_GEODETIC)
+                    geoPoints = geoPoints.ReprojectTo(dataSet.SRID, Reprojection.SRID_GEODETIC).ToList();
 
                 var metrics = geoPoints.ComputeVisibilityMetrics(sourceVerticalOffset, targetVerticalOffset, dataSet.NoDataValue);
 

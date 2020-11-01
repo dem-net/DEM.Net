@@ -140,7 +140,7 @@ namespace DEM.Net.Core
 
             using (IRasterFile rasterFile = OpenFile(fileName, fileFormat.Type))
             {
-                metadata = rasterFile.ParseMetaData(fileFormat);
+                 metadata = rasterFile.ParseMetaData(fileFormat);
             }
 
             Uri fullPath = new Uri(metadata.Filename, UriKind.Absolute);
@@ -175,7 +175,7 @@ namespace DEM.Net.Core
                         string jsonContent = File.ReadAllText(file);
 
                         FileMetadata metadata = JsonConvert.DeserializeObject<FileMetadata>(jsonContent);
-
+                        metadata.BoundingBox.SRID = dataset.SRID;
                         if (metadata.Version != FileMetadata.FILEMETADATA_VERSION)
                         {
                             metadata = FileMetadataMigrations.Migrate(this, _logger, metadata, _localDirectory, dataset);
@@ -208,6 +208,7 @@ namespace DEM.Net.Core
             string directoryPath = GetLocalDEMPath(dataset);
             var files = Directory.EnumerateFiles(directoryPath, "*" + dataset.FileFormat.FileExtension, SearchOption.AllDirectories);
             ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = Math.Min(Environment.ProcessorCount, maxDegreeOfParallelism == 0 ? -1 : maxDegreeOfParallelism) };
+            //ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = 1 };
             Parallel.ForEach(files, options, file =>
              {
                  try
@@ -486,6 +487,71 @@ namespace DEM.Net.Core
                 }
             }
 
+        }
+
+
+        /// <summary>
+        /// Copy / paste from ASC similar function getHeightMap in bbox
+        /// Goal : generate Hmap fitted to bbox full of no data values
+        /// </summary>
+        /// <param name="bbox"></param>
+        /// <param name="metadata"></param>
+        /// <param name="noDataValue"></param>
+        /// <returns></returns>
+        internal HeightMap GetVirtualHeightMapInBBox(BoundingBox bbox, FileMetadata metadata)
+        {
+            
+            int registrationOffset = metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid ? 1 : 0;
+
+            int yNorth = (int)Math.Floor((bbox.yMax - metadata.PhysicalEndLat) / metadata.pixelSizeY);
+            int ySouth = (int)Math.Ceiling((bbox.yMin - metadata.PhysicalEndLat) / metadata.pixelSizeY);
+            int xWest = (int)Math.Floor((bbox.xMin - metadata.PhysicalStartLon) / metadata.pixelSizeX);
+            int xEast = (int)Math.Ceiling((bbox.xMax - metadata.PhysicalStartLon) / metadata.pixelSizeX);
+
+            xWest = Math.Max(0, xWest);
+            xEast = Math.Min(metadata.Width - 1 - registrationOffset, xEast);
+            yNorth = Math.Max(0, yNorth);
+            ySouth = Math.Min(metadata.Height - 1 - registrationOffset, ySouth);
+
+            HeightMap heightMap = new HeightMap(xEast - xWest + 1, ySouth - yNorth + 1);
+            heightMap.Count = heightMap.Width * heightMap.Height;
+            var coords = new List<GeoPoint>(heightMap.Count);
+            heightMap.BoundingBox = new BoundingBox(0, 0, 0, 0);
+
+            for (int y = yNorth; y <= ySouth; y++)
+            {
+                double latitude = metadata.DataEndLat + (metadata.pixelSizeY * y);
+
+                // bounding box
+                if (y == yNorth)
+                {
+                    heightMap.BoundingBox.yMax = latitude;
+                    heightMap.BoundingBox.xMin = metadata.DataStartLon + (metadata.pixelSizeX * xWest);
+                    heightMap.BoundingBox.xMax = metadata.DataStartLon + (metadata.pixelSizeX * xEast);
+                }
+                if (y == ySouth)
+                {
+                    heightMap.BoundingBox.yMin = latitude;
+                }
+
+                for (int x = xWest; x <= xEast; x++)
+                {
+                    double longitude = metadata.DataStartLon + (metadata.pixelSizeX * x);
+
+                    float heightValue = metadata.NoDataValueFloat;
+                    heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
+                    heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
+
+                    coords.Add(new GeoPoint(latitude, longitude, heightValue));
+
+                }
+            }
+            heightMap.BoundingBox.zMin = heightMap.Minimum;
+            heightMap.BoundingBox.zMax = heightMap.Maximum;
+            Debug.Assert(heightMap.Width * heightMap.Height == coords.Count);
+
+            heightMap.Coordinates = coords;
+            return heightMap;
         }
     }
 

@@ -59,7 +59,13 @@ namespace DEM.Net.Core
             this.Version = version;
         }
 
-
+        /// <summary>
+        /// Marks this metadata as virtual.
+        /// Used for GetHeightMap when bbox does not cover DEM tiles.
+        /// Virtual metadata data is then used to generate missing heightmaps
+        /// </summary>
+        [JsonIgnore]
+        public bool VirtualMetadata { get; set; }
         public string Version { get; set; }
         public string Filename { get; set; }
         public int Height { get; set; }
@@ -164,6 +170,14 @@ namespace DEM.Net.Core
                 }
                 return _boundingBox;
             }
+        }
+
+        public FileMetadata Clone()
+        {
+            FileMetadata clone = (FileMetadata)this.MemberwiseClone();
+            clone.Filename = Guid.NewGuid().ToString();
+            clone._boundingBox = null;
+            return clone;
         }
 
     }

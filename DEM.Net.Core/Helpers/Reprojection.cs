@@ -41,6 +41,7 @@ namespace DEM.Net.Core
         public const int SRID_GEODETIC = 4326;
         public const int SRID_PROJECTED_LAMBERT_93 = 2154;
         public const int SRID_PROJECTED_MERCATOR = 3857;
+        public const int SRID_NAD83 = 4269;
 
         public static HeightMap ReprojectGeodeticToCartesian(this HeightMap heightMap)
         {
@@ -141,6 +142,14 @@ namespace DEM.Net.Core
                 triangulation.Positions[i] = pos;
             }
             return triangulation;
+        }
+        public static TriangulationList<Vector3> Scale(this TriangulationList<Vector3> triangulation, float factor)
+        {
+            return triangulation.Transform(Matrix4x4.CreateScale(factor));
+        }
+        public static TriangulationList<Vector3> Scale(this TriangulationList<Vector3> triangulation, Vector3 scales)
+        {
+            return triangulation.Transform(Matrix4x4.CreateScale(scales));
         }
         public static TriangulationList<Vector3> ToGlTFSpace(this TriangulationList<Vector3> triangulation)
         {
