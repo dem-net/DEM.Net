@@ -1,4 +1,6 @@
-﻿using DEM.Net.Core.Model;
+﻿using DEM.Net.Core.Imagery;
+using DEM.Net.Core.Model;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,12 +15,71 @@ namespace DEM.Net.Core
     public class AdornmentsService
     {
         private readonly MeshService _meshService;
+        private readonly ILogger<AdornmentsService> _logger;
 
-        public AdornmentsService(MeshService meshService)
+        public AdornmentsService(MeshService meshService, ILogger<AdornmentsService> logger)
         {
             this._meshService = meshService;
+            this._logger = logger;
         }
-        public TriangulationList<Vector3> CreateScaleBar(float modelSize4326, float modelSizeProjected, float radius = 10f)
+
+        public TriangulationList<Vector3> CreateModelAdornments(DEMDataSet dataset, ImageryProvider imageryProvider, BoundingBox bboxDemSpace, BoundingBox bboxModelSpace)
+        {
+            var width = (float)new GeoPoint(latitude: bboxDemSpace.Center[1],
+                                     longitude: bboxDemSpace.Center[0] - bboxDemSpace.Width / 2f)
+                            .DistanceTo(
+                                new GeoPoint(latitude: bboxDemSpace.Center[1],
+                                    longitude: bboxDemSpace.Center[0] + bboxDemSpace.Width / 2f)
+                              );
+
+            // bbox size
+            float projHeight = (float)bboxModelSpace.Height;
+            float arrowSizeFactor = projHeight / 3f;
+            float zCenter = (float)bboxModelSpace.Center[2];
+            float projWidth = (float)bboxModelSpace.Width;
+            // 
+            float PI = (float)Math.PI;
+
+            // Arrow
+            TriangulationList<Vector3> adornments = _meshService.CreateArrow().ToGlTFSpace()
+                .Scale(arrowSizeFactor)
+                .Translate(new Vector3(-projWidth * 0.55f, 0, zCenter));
+
+            // North text 'N'
+            adornments += this.CreateText("N", VectorsExtensions.CreateColor(255, 255, 255)).ToGlTFSpace()
+                       .Scale(projHeight / 200f / 5f)
+                       .RotateX(-PI / 2)
+                       .Translate(new Vector3(-projWidth * 0.55f, arrowSizeFactor * 1.1f, zCenter));
+
+            // Scale bar
+            var scaleBar = this.CreateScaleBar(width, projWidth, radius: projHeight / 200f).ToGlTFSpace();
+            var scaleBarSize = scaleBar.GetBoundingBox().Height;
+            adornments += scaleBar
+                .RotateZ(PI / 2f)
+                .Translate(new Vector3(projWidth / 2, -projHeight / 2 - projHeight * 0.05f, zCenter));
+
+            var text = this.CreateText($"{dataset.Attribution.Subject}: {dataset.Attribution.Text}{Environment.NewLine}{ImageryProvider.MapBoxSatellite.Attribution.Subject}: {ImageryProvider.MapBoxSatellite.Attribution.Text}", VectorsExtensions.CreateColor(255, 255, 255)).ToGlTFSpace();
+            var scale = ((projWidth - scaleBarSize) * 0.9f) / text.GetBoundingBox().Width;
+
+            text = text.Scale((float)scale)
+                            .RotateX(-PI / 2)
+                            .Translate(new Vector3(-projWidth * 0.25f, -projHeight * 0.55f, zCenter));
+            adornments += text;
+
+            return adornments;
+
+        }
+
+        public TriangulationList<Vector3> CreateText(string text, Vector4 color)
+        {
+            List<Polygon<Vector3>> letterPolygons = GetTextPolygons(text);
+            TriangulationList<Vector3> triangulation = _meshService.Extrude(letterPolygons);
+            triangulation.Colors = triangulation.Positions.Select(p => color).ToList();
+            triangulation = triangulation.CenterOnOrigin();
+            return triangulation;
+        }
+
+        private TriangulationList<Vector3> CreateScaleBar(float modelSize4326, float modelSizeProjected, float radius = 10f)
         {
             int nSteps = 4;
             ScaleBarInfo scaleInfo = GetScaleBarWidth(modelSize4326, modelSizeProjected, scaleBarSizeRelativeToModel: 0.5f, nSteps);
@@ -45,7 +106,6 @@ namespace DEM.Net.Core
             return triangulation;
         }
 
-
         private ScaleBarInfo GetScaleBarWidth(float totalWidth, float modelSizeProjected, float scaleBarSizeRelativeToModel = 0.5f, int nSteps = 4)
         {
             // must be divisible by 4
@@ -70,15 +130,6 @@ namespace DEM.Net.Core
 
         }
 
-        public TriangulationList<Vector3> CreateText(string text, Vector4 color)
-        {
-            List<Polygon<Vector3>> letterPolygons = GetTextPolygons(text);
-            TriangulationList<Vector3> triangulation = _meshService.Extrude(letterPolygons);
-            triangulation.Colors = triangulation.Positions.Select(p => color).ToList();
-            triangulation = triangulation.CenterOnOrigin();
-            return triangulation;
-        }
-
         public List<Polygon<Vector3>> GetTextPolygons(string text)
         {
             Dictionary<int, Polygon<Vector3>> letterPolygons = new Dictionary<int, Polygon<Vector3>>();
@@ -86,7 +137,7 @@ namespace DEM.Net.Core
             using (Bitmap bmp = new Bitmap(400, 400))
             using (GraphicsPath gp = new GraphicsPath())
             using (Graphics g = Graphics.FromImage(bmp))
-            using (Font f = new Font("Tahoma", 40f))
+            using (Font f = new Font("Calibri", 40f))
             {
                 //g.ScaleTransform(4, 4);
                 gp.AddString(text, f.FontFamily, 0, 40f, new Point(0, 0), StringFormat.GenericDefault);
@@ -109,7 +160,12 @@ namespace DEM.Net.Core
                         for (int i = 0; i < gpi.SubpathCount; i++)
                         {
                             gpi.NextSubpath(gsubPath, out bool bClosedCurve);
-                            Debug.Assert(bClosedCurve, "Unclosed character. That's not possible");
+                            if (!bClosedCurve)
+                            {
+                                _logger.LogWarning("Unclosed text shape. Skipping.");
+                                continue;
+                            }
+                            //Debug.Assert(bClosedCurve, "Unclosed character. That's not possible");
 
                             var currentRing = gsubPath.PathPoints.Select(p => new Vector3(p.X, p.Y, 0)).ToList();
 
@@ -163,7 +219,6 @@ namespace DEM.Net.Core
                                         .ToList();
             return childs;
         }
-
 
         /// <summary>
         /// https://stackoverflow.com/questions/4243042/c-sharp-point-in-polygon
