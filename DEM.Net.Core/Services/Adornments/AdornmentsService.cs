@@ -58,7 +58,7 @@ namespace DEM.Net.Core
                 .RotateZ(PI / 2f)
                 .Translate(new Vector3(projWidth / 2, -projHeight / 2 - projHeight * 0.05f, zCenter));
 
-            var text = this.CreateText($"{dataset.Attribution.Subject}: {dataset.Attribution.Text}{Environment.NewLine}{ImageryProvider.MapBoxSatellite.Attribution.Subject}: {ImageryProvider.MapBoxSatellite.Attribution.Text}", VectorsExtensions.CreateColor(255, 255, 255)).ToGlTFSpace();
+            var text = this.CreateText($"{dataset.Attribution.Subject}: {dataset.Attribution.Text}{Environment.NewLine}{imageryProvider.Attribution.Subject}: {imageryProvider.Attribution.Text}", VectorsExtensions.CreateColor(255, 255, 255)).ToGlTFSpace();
             var scale = ((projWidth - scaleBarSize) * 0.9f) / text.GetBoundingBox().Width;
 
             text = text.Scale((float)scale)
