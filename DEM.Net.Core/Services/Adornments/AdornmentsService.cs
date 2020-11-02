@@ -59,11 +59,12 @@ namespace DEM.Net.Core
                 .Translate(new Vector3(projWidth / 2, -projHeight / 2 - projHeight * 0.05f, zCenter));
 
             var text = this.CreateText($"{dataset.Attribution.Subject}: {dataset.Attribution.Text}{Environment.NewLine}{imageryProvider.Attribution.Subject}: {imageryProvider.Attribution.Text}", VectorsExtensions.CreateColor(255, 255, 255)).ToGlTFSpace();
-            var scale = ((projWidth - scaleBarSize) * 0.9f) / text.GetBoundingBox().Width;
+            var textWidth = (float)text.GetBoundingBox().Width;
+            var scale = (float)(((projWidth - scaleBarSize) * 0.9f) / textWidth);
 
             text = text.Scale((float)scale)
                             .RotateX(-PI / 2)
-                            .Translate(new Vector3(-projWidth * 0.25f, -projHeight * 0.55f, zCenter));
+                            .Translate(new Vector3((-projWidth + textWidth * scale) / 2f, -projHeight * 0.55f, zCenter));
             adornments += text;
 
             return adornments;
