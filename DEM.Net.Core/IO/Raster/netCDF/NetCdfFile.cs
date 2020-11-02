@@ -106,6 +106,8 @@ namespace DEM.Net.Core
         {
             HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
             heightMap.Count = heightMap.Width * heightMap.Height;
+            heightMap.Minimum = 15000;
+            heightMap.Maximum = -15000;
             var coords = new List<GeoPoint>(heightMap.Count);
 
             MultipleDataResponse response = _dataset.GetMultipleData(
@@ -128,6 +130,8 @@ namespace DEM.Net.Core
                     float heightValue = (float)Convert.ChangeType(elevationsEnumerator.Current, typeof(float));
 
                     coords.Add(new GeoPoint(latitude, longitude, heightValue));
+                    heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
+                    heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
 
                     index++;
                 }
@@ -159,6 +163,8 @@ namespace DEM.Net.Core
 
                 heightMap = new HeightMap(xEast - xWest + 1, yNorth - ySouth + 1);
                 heightMap.Count = heightMap.Width * heightMap.Height;
+                heightMap.Minimum = 15000;
+                heightMap.Maximum = -15000;
 
                 // The netCDF storage is arranged as contiguous latitudinal bands.
                 MultipleDataResponse response = _dataset.GetMultipleData(
@@ -186,6 +192,8 @@ namespace DEM.Net.Core
                         float heightValue = (float)Convert.ChangeType(elevationsEnumerator.Current, typeof(float));
 
                         curRow.Add(new GeoPoint(latitude, longitude, heightValue));
+                        heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
+                        heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
 
                         index++;
                     }
