@@ -111,7 +111,7 @@ namespace DEM.Net.Core
                         {
                             _logger?.LogInformation($"Downloading index file from {dataSet.DataSource.IndexFilePath}... This file will be downloaded once and stored locally.");
 
-                            HttpClient client = _httpClientFactory.CreateClient();
+                            HttpClient client = _httpClientFactory == null ? new HttpClient() : _httpClientFactory.CreateClient();
 
                             using (HttpResponseMessage response = client.GetAsync(dataSet.DataSource.IndexFilePath).Result)
                             using (FileStream fs = new FileStream(vrtFileName, FileMode.Create, FileAccess.Write))
@@ -209,7 +209,7 @@ namespace DEM.Net.Core
             // Create directories if not existing
             new FileInfo(report.LocalName).Directory.Create();
 
-            HttpClient client = _httpClientFactory.CreateClient();
+            HttpClient client = _httpClientFactory == null ? new HttpClient() : _httpClientFactory.CreateClient();
 
             var contentbytes = client.GetByteArrayAsync(report.URL).Result;
             using (FileStream fs = new FileStream(report.LocalName, FileMode.Create, FileAccess.Write))
