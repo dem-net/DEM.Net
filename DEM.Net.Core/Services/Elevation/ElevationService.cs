@@ -449,7 +449,7 @@ namespace DEM.Net.Core
 
             if (tile == null)
             {
-                _logger?.LogWarning($"No coverage found matching provided point {geoPoint} for dataset {dataSet.Name}");
+                _logger?.LogDebug($"No coverage found matching provided point {geoPoint} for dataset {dataSet.Name}");
                 return null;
             }
             else
@@ -1205,7 +1205,7 @@ namespace DEM.Net.Core
 
             if (bboxMetadata.Count == 0)
             {
-                _logger?.LogWarning($"No coverage found matching provided point {geoPoint}.");
+                _logger?.LogDebug($"No coverage found matching provided point {geoPoint}.");
                 //throw new NoCoverageException(dataSet, lat, lon, $"No coverage found matching provided point {geoPoint}.");
             }
             else if (bboxMetadata.Count > 1)
@@ -1405,7 +1405,7 @@ namespace DEM.Net.Core
                     if (x == mainTile.Width
                         || y == mainTile.Height)
                     {
-                        _logger.LogWarning($"No adjacent tile found (adjacent tiles may not have been set). Returning main tile. (x,y, tile) = ({x},{y},{mainTile})");
+                        _logger.LogDebug($"No adjacent tile found (adjacent tiles may not have been set). Returning main tile. (x,y, tile) = ({x},{y},{mainTile})");
                         newX = x == mainTile.Width ? mainTile.Width - 1 : x;
                         newY = y == mainTile.Height ? mainTile.Height - 1 : y;
                         return mainTile;
