@@ -96,7 +96,7 @@ namespace DEM.Net.Core.Imagery
             // calculate the size of the full bbox at increasing zoom levels
             // until the full image would be greater than a tile
             int zoom = 0;
-                int maxSize = 256 * minTilesPerImage; /* fixed to 256px to limit number of tiles */
+            int maxSize = 256 * minTilesPerImage; /* fixed to 256px to limit number of tiles */
             do
             {
                 zoom++;
@@ -106,7 +106,7 @@ namespace DEM.Net.Core.Imagery
                 bottomRight = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMin, bbox.xMax), zoom, provider.TileSize);
                 mapBbox = new BoundingBox(topLeft.X, bottomRight.X, topLeft.Y, bottomRight.Y);
             } while (zoom < provider.MaxZoom
-                     && Math.Min(mapBbox.Width, mapBbox.Height) < maxSize );
+                     && Math.Min(mapBbox.Width, mapBbox.Height) < maxSize);
 
             // now we have the minimum zoom without image
             // we can know which tiles are needed
@@ -147,16 +147,27 @@ namespace DEM.Net.Core.Imagery
                 var parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism };
                 var range = tiles.TilesInfo.ToList();
                 _logger?.LogInformation($"Downloading {range.Count} tiles...");
-                Parallel.ForEach(range, parallelOptions, tile =>
+                try
+                {
+                    Parallel.ForEach(range, parallelOptions, (tile, state) =>
                     {
                         Uri tileUri = BuildUri(provider, tile.X, tile.Y, tile.Zoom);
 
                         var contentBytes = cache.GetTile(tileUri, provider, tile);
 
                         tiles.Add(new MapTile(contentBytes, provider.TileSize, tileUri, tile));
-
                     }
                 );
+                }
+                catch (AggregateException ex)
+                {
+                    throw ex.GetInnerMostException();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+
 
                 swDownload.Stop();
                 _logger?.LogInformation($"DownloadImages done in : {swDownload.Elapsed:g}");
