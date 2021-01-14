@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 
 namespace DEM.Net.Core.Voronoi
 {
@@ -9,7 +9,7 @@ namespace DEM.Net.Core.Voronoi
 	{
 		public int Arc_id { get; set; }
 		public bool ArcIsLine { get; set; }
-		public IGeometry Arc_geometry { get; set; }
+		public Geometry Arc_geometry { get; set; }
 		public string Arc_code_XY_pointOrigine { get; set; }
 		public string Arc_code_XY_pointFin { get; set; }
 
@@ -35,7 +35,7 @@ namespace DEM.Net.Core.Voronoi
 		public enumNatureDeLArcDansLaTopologieDIlots ArcNatureDansLaTopologieDIlots;
 
 		//
-		public BeanTopologieArc(int p_IdArc, IGeometry p_IGeometry)
+		public BeanTopologieArc(int p_IdArc, Geometry p_IGeometry)
 		{
 			if (new TopologieService().IsGeometryEnsembleDeLignes(p_IGeometry))
 			{

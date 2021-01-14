@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 
 namespace DEM.Net.Core.Voronoi
 {
@@ -15,12 +15,12 @@ namespace DEM.Net.Core.Voronoi
             throw new NotImplementedException();
         }
 
-        public IGeometry GetLineStringByCoord(double v_OrigX_Left, double v_OrigY_Left, double v_OrigX_Right, double v_OrigY_Right)
+        public Geometry GetLineStringByCoord(double v_OrigX_Left, double v_OrigY_Left, double v_OrigX_Right, double v_OrigY_Right)
         {
             throw new NotImplementedException();
         }
 
-        public BeanTopologie GetTopologie(Dictionary<int, IGeometry> v_DicoLignes)
+        public BeanTopologie GetTopologie(Dictionary<int, Geometry> v_DicoLignes)
         {
             throw new NotImplementedException();
         }
@@ -35,7 +35,7 @@ namespace DEM.Net.Core.Voronoi
             throw new NotImplementedException();
         }
 
-        public IGeometry GetUnPointIGeometryByCoordonneesXy(float v1, float v2)
+        public Geometry GetUnPointIGeometryByCoordonneesXy(float v1, float v2)
         {
             throw new NotImplementedException();
         }
@@ -55,7 +55,7 @@ namespace DEM.Net.Core.Voronoi
             throw new NotImplementedException();
         }
 
-        internal bool IsGeometryEnsembleDeLignes(IGeometry p_IGeometry)
+        internal bool IsGeometryEnsembleDeLignes(Geometry p_IGeometry)
         {
             throw new NotImplementedException();
         }

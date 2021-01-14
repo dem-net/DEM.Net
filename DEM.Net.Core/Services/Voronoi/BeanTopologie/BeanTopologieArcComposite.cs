@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 
 namespace DEM.Net.Core.Voronoi
 {
@@ -9,7 +9,7 @@ namespace DEM.Net.Core.Voronoi
 	public class BeanTopologieArcComposite
 	{
 		public int ArcsAssembles_id { get; set; }
-		public IGeometry ArcsAssembles_Geometry { get; set; }
+		public Geometry ArcsAssembles_Geometry { get; set; }
 
 		public enumModeAssemblageDesArcs TypeReseau { get; set; }
 

@@ -23,7 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
@@ -161,11 +161,11 @@ namespace DEM.Net.Core.Services.Lab
         }
 
         //
-        public IGeometry GetGeometryArc(BeanArc_internal p_arc, bool ifPt1AndPt2IqualReturnPointElseNull)
+        public Geometry GetGeometryArc(BeanArc_internal p_arc, bool ifPt1AndPt2IqualReturnPointElseNull)
         {
             return GetGeometryLine(p_arc.p11_pointDbt.p10_coord, p_arc.p12_pointFin.p10_coord, p_arc.p11_pointDbt.p11_srid, ifPt1AndPt2IqualReturnPointElseNull);
         }
-        public IGeometry GetGeometryLine(double[] p_coordPoint1, double[] p_coordPoint2, int p_srid,bool ifPt1AndPt2IqualReturnPointElseNull)
+        public Geometry GetGeometryLine(double[] p_coordPoint1, double[] p_coordPoint2, int p_srid,bool ifPt1AndPt2IqualReturnPointElseNull)
         {
             Geometry v_geomArc = null;
             try
@@ -194,7 +194,7 @@ namespace DEM.Net.Core.Services.Lab
             }
             return v_geomArc;
         }
-        public IGeometry GetGeometryPolygon(List<double[]> p_coordPointsDuContour, int p_srid)
+        public Geometry GetGeometryPolygon(List<double[]> p_coordPointsDuContour, int p_srid)
         {
             Polygon v_geomArc = null;
             try

@@ -1,6 +1,4 @@
 using DEM.Net.Core.Services.Lab;
-using GeoAPI.Geometries;
-using NetTopologySuite.Diagnostics.Tracing;
 using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
@@ -76,9 +74,9 @@ namespace DEM.Net.Core.Voronoi
             }
             return v_trOut;
         }
-        public Dictionary<int, IGeometry> GetArcsDelaunayGeometryByTriangulationDelaunay(BeanTriangulationDelaunay p_triangulationDelaunay)
+        public Dictionary<int, Geometry> GetArcsDelaunayGeometryByTriangulationDelaunay(BeanTriangulationDelaunay p_triangulationDelaunay)
         {
-            Dictionary<int, IGeometry> v_arcs = new Dictionary<int, IGeometry>();
+            Dictionary<int, Geometry> v_arcs = new Dictionary<int, Geometry>();
             try
             {
                 int v_index = 0;
@@ -175,7 +173,7 @@ namespace DEM.Net.Core.Voronoi
                             if (v_BeanAlimentationVoronoi.p53_xMax < (double)v_point.Value.Coordinate.X) { v_BeanAlimentationVoronoi.p53_xMax = (double)v_point.Value.Coordinate.X; }
                             if (v_BeanAlimentationVoronoi.p54_yMax < (double)v_point.Value.Coordinate.Y) { v_BeanAlimentationVoronoi.p54_yMax = (double)v_point.Value.Coordinate.Y; }
                         }
-                    }//Si le IGeometry n'est pas un point (FIN if (v_point.Value.STGeometryType() == OpenGisGeographyType.Point.ToString())
+                    }//Si le Geometry n'est pas un point (FIN if (v_point.Value.STGeometryType() == OpenGisGeographyType.Point.ToString())
                     else
                     {
                         v_BeanAlimentationVoronoi.p24_pointsInvalidesSaufSuperposes.Add(v_point.Key);
@@ -188,7 +186,7 @@ namespace DEM.Net.Core.Voronoi
 
            
                 //Injection dans les listes
-                Dictionary<int, IGeometry> v_newListePoint = new Dictionary<int, IGeometry>();
+                Dictionary<int, Geometry> v_newListePoint = new Dictionary<int, Geometry>();
 
                 ITopologieService v_topologieService = new TopologieService();
                 foreach (KeyValuePair<int, Double[]> v_pointSup in v_dicoPointscadres)
@@ -464,7 +462,7 @@ namespace DEM.Net.Core.Voronoi
 
                 //Géométrie:
                 List<int> v_idFacettes = v_topologie.p13_facettesById.Keys.ToList();
-                IGeometry v_geomFacette;
+                Geometry v_geomFacette;
                 BeanFacette_internal v_facettePourGeom;
                 foreach(int v_idFac in v_idFacettes)
                 {
@@ -507,7 +505,7 @@ namespace DEM.Net.Core.Voronoi
         //        double v_CorrectionY = 0;
 
         //        ITopologieService v_topologieService = new TopologieService();
-        //        IGeometry v_line;
+        //        Geometry v_line;
         //        String v_CodeXYPointGauche;
         //        String v_CodeXYPointDroit;
         //        int v_KeyPointGauche;

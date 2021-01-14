@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 using DEM.Net.Core.Voronoi;
 using NetTopologySuite.Geometries;
 using Point = NetTopologySuite.Geometries.Point;

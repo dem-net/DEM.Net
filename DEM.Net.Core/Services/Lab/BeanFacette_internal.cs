@@ -23,7 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +41,7 @@ namespace DEM.Net.Core.Services.Lab
         public List<BeanPoint_internal> p01_pointsDeFacette { get; set; }
         public List<BeanArc_internal> p02_arcs { get; set; }
         public bool p03_estVerticale_vf { get; set; }
-        public IGeometry p04_geomFacette { get; set; }
+        public Geometry p04_geomFacette { get; set; }
         //
         public List<BeanPoint_internal> p10_pointsInclus { get; set; }
         //  
