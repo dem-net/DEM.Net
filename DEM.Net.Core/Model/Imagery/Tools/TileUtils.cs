@@ -350,6 +350,33 @@ namespace DEM.Net.Core.Imagery
         }
 
         /// <summary>
+        /// Calculates the tile quadkey strings that are within a bounding box at a specific zoom level.
+        /// </summary>
+        /// <param name="bounds">A bounding box defined as an array of numbers in the format of [west, south, east, north].</param>
+        /// <param name="zoom">Zoom level to calculate tiles for.</param>
+        /// <param name="tileSize">The size of the tiles in the tile pyramid.</param>
+        /// <returns>A list of quadkey strings.</returns>
+        public static IEnumerable<MapTileInfo> GetTilesInBoundingBox(BoundingBox bounds, int zoom, int tileSize)
+        {
+            var keys = new System.Collections.Generic.List<string>();
+
+            if (bounds != null)
+            {
+                PositionToTileXY(new LatLong(bounds.yMax, bounds.xMin), zoom, tileSize, out int tlX, out int tlY);
+                PositionToTileXY(new LatLong(bounds.yMin, bounds.xMax), zoom, tileSize, out int brX, out int brY);
+
+                for (int x = tlX; x <= brX; x++)
+                {
+                    for (int y = tlY; y <= brY; y++)
+                    {
+                        yield return new MapTileInfo(x, y, zoom, tileSize);
+                    }
+                }
+            }
+
+        }
+
+        /// <summary>
         /// Calculates the bounding box of a tile.
         /// </summary>
         /// <param name="tileX">Tile X coordinate</param>

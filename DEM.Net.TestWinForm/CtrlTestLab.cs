@@ -13,10 +13,10 @@ using DEM.Net.glTF;
 using System.Numerics;
 using DEM.Net.Core;
 using DEM.Net.Core.Services.VisualisationServices;
-using NetTopologySuite.Diagnostics.Tracing;
-using GeoAPI.Geometries;
+//using NetTopologySuite.Diagnostics.Tracing;
 using Microsoft.Extensions.Logging;
 using DEM.Net.glTF.SharpglTF;
+using NetTopologySuite.Geometries;
 
 namespace DEM.Net.TestWinForm
 {
@@ -146,16 +146,16 @@ namespace DEM.Net.TestWinForm
             v_label = "CH";
             FServicesApplicatifs.createVisuSpatialTrace().GetVisuPoints2D(v_pointConvexHull, v_label, 10);
 
-            SpatialTrace.Enable();
-            IGeometry v_ligneCh;
+            //SpatialTrace.Enable();
+            Geometry v_ligneCh;
             for (int v_indexPt = 0; v_indexPt < v_pointConvexHull.Count - 1; v_indexPt++)
             {
                 v_ligneCh = FLabServices.createUtilitaires().GetGeometryLine(v_pointConvexHull[v_indexPt].p10_coord, v_pointConvexHull[v_indexPt + 1].p10_coord, 2154, true);
-                SpatialTrace.TraceGeometry(v_ligneCh, "CH arc: " + v_indexPt, "CH arc: " + v_indexPt);
+                //SpatialTrace.TraceGeometry(v_ligneCh, "CH arc: " + v_indexPt, "CH arc: " + v_indexPt);
             }
             v_ligneCh = FLabServices.createUtilitaires().GetGeometryLine(v_pointConvexHull[v_pointConvexHull.Count - 1].p10_coord, v_pointConvexHull[0].p10_coord, 2154, true);
-            SpatialTrace.TraceGeometry(v_ligneCh, "CH arc: " + (v_pointConvexHull.Count - 1), "CH arc: " + (v_pointConvexHull.Count - 1));
-            SpatialTrace.Disable();
+            //SpatialTrace.TraceGeometry(v_ligneCh, "CH arc: " + (v_pointConvexHull.Count - 1), "CH arc: " + (v_pointConvexHull.Count - 1));
+            //SpatialTrace.Disable();
             FVisualisationServices.createVisualisationSpatialTraceServices().AfficheVisu();
             //
             MessageBox.Show("Traitement terminé.");
@@ -190,9 +190,9 @@ namespace DEM.Net.TestWinForm
 
         private void btn_clearSpatialTrace_Click(object sender, EventArgs e)
         {
-            SpatialTrace.Enable();
-            SpatialTrace.Clear();
-            SpatialTrace.Disable();
+            //SpatialTrace.Enable();
+            //SpatialTrace.Clear();
+            //SpatialTrace.Disable();
         }
 
         private void btn_genererPointsReels_Click(object sender, EventArgs e)
