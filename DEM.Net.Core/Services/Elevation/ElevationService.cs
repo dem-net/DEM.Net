@@ -1237,9 +1237,10 @@ namespace DEM.Net.Core
         {
             BoundingBox tileBbox = tileMetadata.BoundingBox;
 
-            bool isInsideX = (tileBbox.xMax >= lon && tileBbox.xMin <= lon);
-            bool isInsideY = (tileBbox.yMax >= lat && tileBbox.yMin <= lat);
-            return isInsideX && isInsideY;
+            return 
+                (tileBbox.xMax >= lon && tileBbox.xMin <= lon) // isInsideX
+              && (tileBbox.yMax >= lat && tileBbox.yMin <= lat); // isInsideY
+            
         }
         // is the tile a tile just next to the tile the point is in ?
         private bool IsPointInAdjacentTile(FileMetadata tile, GeoPoint point)
