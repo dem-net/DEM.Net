@@ -162,11 +162,11 @@ namespace DEM.Net.Core
             {
                 if (_boundingBox == null)
                 {
-                    double xmin = Math.Min(DataStartLon, DataEndLon);
-                    double xmax = Math.Max(DataStartLon, DataEndLon);
-                    double ymin = Math.Min(DataStartLat, DataEndLat);
-                    double ymax = Math.Max(DataStartLat, DataEndLat);
-                    _boundingBox = new BoundingBox(xmin, xmax, ymin, ymax);
+                    _boundingBox = new BoundingBox(
+                                Math.Min(DataStartLon, DataEndLon),
+                                Math.Max(DataStartLon, DataEndLon),
+                                Math.Min(DataStartLat, DataEndLat),
+                                Math.Max(DataStartLat, DataEndLat));
                 }
                 return _boundingBox;
             }

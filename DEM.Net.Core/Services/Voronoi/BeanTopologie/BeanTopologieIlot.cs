@@ -1,4 +1,4 @@
-﻿using GeoAPI.Geometries;
+﻿using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 
@@ -7,7 +7,7 @@ namespace DEM.Net.Core.Voronoi
 	public class BeanTopologieIlot 
 	{
 		public int IlotId { get; set; }
-		public IGeometry IlotGeometry { get; set; }
+		public Geometry IlotGeometry { get; set; }
 		public List<BeanTopologieArc> IlotArcsBordiers { get; set; }
 		public List<BeanTopologieArc> IlotArcsInclus { get; set; }
 		public enumQualiteContoursIlot IlotQualificationContours { get; set; }

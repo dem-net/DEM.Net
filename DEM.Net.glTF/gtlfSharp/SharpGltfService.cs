@@ -257,6 +257,22 @@ namespace DEM.Net.glTF.SharpglTF
         }
         public ModelRoot AddLines(ModelRoot model, string nodeName, IEnumerable<(IEnumerable<GeoPoint> points, float trailWidthMeters)> lines, Vector4 color, Matrix4x4 transform = default)
         {
+            List<Vector3> positions = new List<Vector3>();
+            List<int> indices = new List<int>();
+
+            foreach (var line in lines)
+            {
+                TriangulationList<Vector3> triangulation = _meshService.GenerateTriangleMesh_Line(line.points, line.trailWidthMeters, transform);
+
+                indices.AddRange(triangulation.Indices.Select(i => i + positions.Count)); // offset indices, adding last positions count
+                positions.AddRange(triangulation.Positions);
+            }
+            if (positions.Count == 0)
+            {
+                _logger.LogWarning($"Lines triangulation has 0 positions. No data written to model");
+                return model;
+            }
+
             var scene = model.UseScene(TERRAIN_SCENE_NAME);
             var rnode = scene.FindNode(n => n.Name == nodeName);
             if (rnode == null)
@@ -269,17 +285,6 @@ namespace DEM.Net.glTF.SharpglTF
               .WithDoubleSide(true);
             material.Alpha = SharpGLTF.Schema2.AlphaMode.BLEND;
 
-
-            List<Vector3> positions = new List<Vector3>();
-            List<int> indices = new List<int>();
-
-            foreach (var line in lines)
-            {
-                TriangulationList<Vector3> triangulation = _meshService.GenerateTriangleMesh_Line(line.points, line.trailWidthMeters, transform);
-
-                indices.AddRange(triangulation.Indices.Select(i => i + positions.Count)); // offset indices, adding last positions count
-                positions.AddRange(triangulation.Positions);
-            }
 
             var normals = _meshService.ComputeMeshNormals(positions, indices);
 

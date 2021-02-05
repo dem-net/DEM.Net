@@ -28,7 +28,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GeoAPI.Geometries;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using NetTopologySuite.Operation.Union;
@@ -45,7 +44,7 @@ namespace DEM.Net.Core
         private const double RADIAN = Math.PI / 180;
 
         private static WKTReader _wktReader;
-        private static IGeometryFactory _factory;
+        private static GeometryFactory _factory;
 
         static GeometryService()
         {
@@ -58,10 +57,10 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="geomWKT">Geometry Well Known Text</param>
         /// <param name="srid">SRID of geomtery (defaults to 4326)</param>
-        /// <returns>NetTopology IGeometry instance</returns>
-        public static IGeometry ParseWKTAsGeometry(string geomWKT, int srid = WGS84_SRID)
+        /// <returns>NetTopology Geometry instance</returns>
+        public static Geometry ParseWKTAsGeometry(string geomWKT, int srid = WGS84_SRID)
         {
-            IGeometry geometry = _wktReader.Read(geomWKT);
+            Geometry geometry = _wktReader.Read(geomWKT);
             geometry.SRID = srid;
             return geometry;
         }
@@ -72,15 +71,15 @@ namespace DEM.Net.Core
         /// <returns><see cref="BoundingBox"/></returns>
         public static BoundingBox GetBoundingBox(string geomWKT)
         {
-            IGeometry geom = ParseWKTAsGeometry(geomWKT);
+            Geometry geom = ParseWKTAsGeometry(geomWKT);
             return geom.GetBoundingBox();
         }
         /// <summary>
         /// Extension method. Returns the bounding box for a geometry instance
         /// </summary>
-        /// <param name="geom">NetTopology IGeometry instance</param>
+        /// <param name="geom">NetTopology Geometry instance</param>
         /// <returns></returns>
-        public static BoundingBox GetBoundingBox(this IGeometry geom)
+        public static BoundingBox GetBoundingBox(this Geometry geom)
         {
             Envelope envelope = geom.EnvelopeInternal;
 
@@ -137,11 +136,11 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="points"></param>
         /// <returns></returns>
-        public static IGeometry ParseGeoPointAsGeometryLine(IEnumerable<GeoPoint> points)
+        public static Geometry ParseGeoPointAsGeometryLine(IEnumerable<GeoPoint> points)
         {
             return new LineString(points.Select(pt => new Coordinate(pt.Longitude, pt.Latitude)).ToArray()) { SRID = WGS84_SRID };
         }
-        public static IGeometry ParseGeoPointAsGeometryLine(params GeoPoint[] points)
+        public static Geometry ParseGeoPointAsGeometryLine(params GeoPoint[] points)
         {
             return new LineString(points.Select(pt => new Coordinate(pt.Longitude, pt.Latitude)).ToArray()) { SRID = WGS84_SRID };
         }
@@ -410,7 +409,7 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="geom"></param>
         /// <returns></returns>
-        public static IEnumerable<IGeometry> Geometries(this IGeometry geom)
+        public static IEnumerable<Geometry> Geometries(this Geometry geom)
         {
             for (int i = 0; i < geom.NumGeometries; i++)
             {
@@ -424,7 +423,7 @@ namespace DEM.Net.Core
         /// <param name="lineGeom"></param>
         /// <returns></returns>
         /// <remarks>Only iterates if geometry is a line string</remarks>
-        public static IEnumerable<GeoSegment> Segments(this IGeometry lineGeom)
+        public static IEnumerable<GeoSegment> Segments(this Geometry lineGeom)
         {
 
             if (lineGeom == null || lineGeom.IsEmpty)
@@ -468,11 +467,11 @@ namespace DEM.Net.Core
             return new GeoPoint(coord.Y, coord.X);
         }
 
-        public static IGeometry ToPolygon(this BoundingBox boundingBox)
+        public static Geometry ToPolygon(this BoundingBox boundingBox)
         {
             return new Polygon(boundingBox.ToRing(), _factory);
         }
-        public static ILinearRing ToRing(this BoundingBox boundingBox)
+        public static LinearRing ToRing(this BoundingBox boundingBox)
         {
             if (boundingBox == null)
                 throw new ArgumentNullException(nameof(boundingBox));
@@ -491,8 +490,8 @@ namespace DEM.Net.Core
             if (bboxTiles == null || !bboxTiles.Any())
                 return false;
 
-            IGeometry bboxPoly = bbox.ToPolygon();
-            IGeometry tilesPolygon = UnaryUnionOp.Union(bboxTiles.Select(t => t.ToPolygon()).ToList());
+            Geometry bboxPoly = bbox.ToPolygon();
+            Geometry tilesPolygon = UnaryUnionOp.Union(bboxTiles.Select(t => t.ToPolygon()).ToList());
 
             var inside = tilesPolygon.Contains(bboxPoly);
 
@@ -500,7 +499,7 @@ namespace DEM.Net.Core
                 return inside;
             else
             {
-                tilesPolygon = UnaryUnionOp.Union(bboxTiles.Select(t => (IGeometry)(new LineString(t.ToRing().Coordinates))).ToList());
+                tilesPolygon = UnaryUnionOp.Union(bboxTiles.Select(t => (Geometry)(new LineString(t.ToRing().Coordinates))).ToList());
 
                 var dbgString = @"declare @b geometry = geometry::STGeomFromText('{bbox.WKT}',2154)
                                 select @b,'Bbox'";

@@ -23,7 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 using NetTopologySuite.Geometries;
 using System.Collections.Generic;
 
@@ -39,9 +39,9 @@ namespace DEM.Net.Core.Services.Lab
         string GethCodeGeogSegment(double[] p_coord1, double[] p_coord2, int p_nbreDecimales = 2, char p_separateur = '_');
         Dictionary<string, List<BeanPoint_internal>> GetPointsRegroupesParHCode(List<BeanPoint_internal> p_dataPointsTests);
         //
-        IGeometry GetGeometryArc(BeanArc_internal p_arc, bool ifPt1AndPt2IqualReturnPointElseNull);
-        IGeometry GetGeometryLine(double[] p_coordPoint1, double[] p_coordPoint2, int p_srid, bool ifPt1AndPt2IqualReturnPointElseNull);
-        IGeometry GetGeometryPolygon(List<double[]> p_coordPointsDuContour, int p_srid);
+        Geometry GetGeometryArc(BeanArc_internal p_arc, bool ifPt1AndPt2IqualReturnPointElseNull);
+        Geometry GetGeometryLine(double[] p_coordPoint1, double[] p_coordPoint2, int p_srid, bool ifPt1AndPt2IqualReturnPointElseNull);
+        Geometry GetGeometryPolygon(List<double[]> p_coordPointsDuContour, int p_srid);
         NetTopologySuite.Geometries.Point ConstructPoint(double x, double y, int srid);
     }
 }

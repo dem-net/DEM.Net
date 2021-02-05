@@ -1,4 +1,4 @@
-﻿using GeoAPI.Geometries;
+﻿using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,7 @@ namespace DEM.Net.Core.Voronoi
 		public double[] p21_coordPoint1 { get; set; }
 		public double[] p22_coordPoint2 { get; set; }
 
-		public IGeometry p30_arcDelaunay { get; set; }
+		public Geometry p30_arcDelaunay { get; set; }
 
 		public BeanArcDelaunay()
 		{

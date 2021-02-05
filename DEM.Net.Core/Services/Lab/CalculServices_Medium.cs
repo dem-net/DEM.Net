@@ -24,7 +24,7 @@
 // THE SOFTWARE.
 
 using DEM.Net.Core.Services.VisualisationServices;
-using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -2028,9 +2028,9 @@ namespace DEM.Net.Core.Services.Lab
             }
         }
 
-        public IGeometry GetGeometryPolygoneFacetteEtOrdonnePointsFacette(ref BeanFacette_internal p_facette, ref BeanTopologieFacettes p_topologieFacette)
+        public Geometry GetGeometryPolygoneFacetteEtOrdonnePointsFacette(ref BeanFacette_internal p_facette, ref BeanTopologieFacettes p_topologieFacette)
         {
-            IGeometry v_geom = null;
+            Geometry v_geom = null;
             try
             {
                 if(p_facette.p02_arcs==null || p_facette.p02_arcs.Count<3)

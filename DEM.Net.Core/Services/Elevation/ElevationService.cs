@@ -34,8 +34,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using DEM.Net.Core.Interpolation;
-using GeoAPI.Geometries;
 using Microsoft.Extensions.Logging;
+using NetTopologySuite.Geometries;
 
 namespace DEM.Net.Core
 {
@@ -169,7 +169,7 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public List<GeoPoint> GetLineGeometryElevation(string lineWKT, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
         {
-            IGeometry geom = GeometryService.ParseWKTAsGeometry(lineWKT);
+            Geometry geom = GeometryService.ParseWKTAsGeometry(lineWKT);
 
             if (geom.OgcGeometryType == OgcGeometryType.MultiLineString)
             {
@@ -188,7 +188,7 @@ namespace DEM.Net.Core
         /// <param name="behavior">Action to use when no data is found in dataset</param>
         /// <remarks>Output can be BIG, as all elevations will be returned.</remarks>
         /// <returns></returns>
-        public List<GeoPoint> GetLineGeometryElevation(IGeometry lineStringGeometry, DEMDataSet dataSet, List<FileMetadata> segTiles, List<GeoSegment> nsLines, List<GeoSegment> weLines, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
+        public List<GeoPoint> GetLineGeometryElevation(Geometry lineStringGeometry, DEMDataSet dataSet, List<FileMetadata> segTiles, List<GeoSegment> nsLines, List<GeoSegment> weLines, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
         {
             if (lineStringGeometry == null || lineStringGeometry.IsEmpty)
                 return null;
@@ -257,7 +257,7 @@ namespace DEM.Net.Core
         /// <param name="behavior">Action to use when no data is found in dataset</param>
         /// <remarks>Output can be BIG, as all elevations will be returned.</remarks>
         /// <returns></returns>
-        public List<GeoPoint> GetLineGeometryElevation(IGeometry lineStringGeometry, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
+        public List<GeoPoint> GetLineGeometryElevation(Geometry lineStringGeometry, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
         {
             if (lineStringGeometry == null || lineStringGeometry.IsEmpty)
                 return null;
@@ -330,7 +330,7 @@ namespace DEM.Net.Core
             if (lineGeoPoints == null)
                 throw new ArgumentNullException(nameof(lineGeoPoints), "Point list is null");
 
-            IGeometry geometry = GeometryService.ParseGeoPointAsGeometryLine(lineGeoPoints);
+            Geometry geometry = GeometryService.ParseGeoPointAsGeometryLine(lineGeoPoints);
 
             return GetLineGeometryElevation(geometry, dataSet, interpolationMode, behavior);
         }
@@ -346,7 +346,7 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public Dictionary<TKey, List<GeoPoint>> GetLinesGeometryElevation<TKey>(Dictionary<TKey, List<GeoPoint>> lineGeoPoints, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
         {
-            List<IGeometry> geoLines = lineGeoPoints.Select(l => GeometryService.ParseGeoPointAsGeometryLine(l.Value)).ToList();
+            List<Geometry> geoLines = lineGeoPoints.Select(l => GeometryService.ParseGeoPointAsGeometryLine(l.Value)).ToList();
             var bbox = GeometryService.GetBoundingBox(geoLines.First());
             foreach (var linePts in geoLines.Skip(1))
             {
@@ -362,14 +362,14 @@ namespace DEM.Net.Core
             //Dictionary<TKey, List<GeoPoint>> outLines = new Dictionary<TKey, List<GeoPoint>>(lineGeoPoints.Count);
             //foreach (var linePts in lineGeoPoints)
             //{
-            //    IGeometry geometry = GeometryService.ParseGeoPointAsGeometryLine(linePts.Value);
+            //    Geometry geometry = GeometryService.ParseGeoPointAsGeometryLine(linePts.Value);
 
             //    outLines.Add(linePts.Key, GetLineGeometryElevation(geometry, dataSet, tiles, nsLines, weLines, interpolationMode, behavior));
             //}
             ConcurrentDictionary<TKey, List<GeoPoint>> outLines = new ConcurrentDictionary<TKey, List<GeoPoint>>();
             Parallel.ForEach(lineGeoPoints, linePts =>
             {
-                IGeometry geometry = GeometryService.ParseGeoPointAsGeometryLine(linePts.Value);
+                Geometry geometry = GeometryService.ParseGeoPointAsGeometryLine(linePts.Value);
 
                 if (!outLines.TryAdd(linePts.Key, GetLineGeometryElevation(geometry, dataSet, tiles, nsLines, weLines, interpolationMode, behavior)))
                 {
@@ -1237,9 +1237,10 @@ namespace DEM.Net.Core
         {
             BoundingBox tileBbox = tileMetadata.BoundingBox;
 
-            bool isInsideX = (tileBbox.xMax >= lon && tileBbox.xMin <= lon);
-            bool isInsideY = (tileBbox.yMax >= lat && tileBbox.yMin <= lat);
-            return isInsideX && isInsideY;
+            return 
+                (tileBbox.xMax >= lon && tileBbox.xMin <= lon) // isInsideX
+              && (tileBbox.yMax >= lat && tileBbox.yMin <= lat); // isInsideY
+            
         }
         // is the tile a tile just next to the tile the point is in ?
         private bool IsPointInAdjacentTile(FileMetadata tile, GeoPoint point)
