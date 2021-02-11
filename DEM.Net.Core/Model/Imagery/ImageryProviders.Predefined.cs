@@ -6,6 +6,15 @@
 #if DEBUG
         public static readonly ImageryProvider DebugProvider = new TileDebugProvider(null);
 #endif
+        public static readonly ImageryProvider MapTilerSatellite = new ImageryProvider
+        {
+            Name = "MapTiler-Satellite",
+            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapTiler Cloud Satellite", "https://www.maptiler.com", "© MapTiler- © OpenStreetMap and contributors"),
+            UrlModel = new UrlModel("https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key={t}", null),
+            TokenUserSecretsKey = "MapTilerKey",
+            TileSize = 256,
+            MaxZoom = 20
+        };
         public static readonly ImageryProvider MapBoxSatellite = new ImageryProvider
         {
             Name = "MapBox-Satellite",
