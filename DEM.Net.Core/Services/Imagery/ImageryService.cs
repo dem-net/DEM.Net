@@ -427,6 +427,18 @@ namespace DEM.Net.Core.Imagery
         public TextureInfo GenerateHeightMap(HeightMap heightMap, string outputDirectory,
             string fileName = "heightmap.png")
         {
+            return GenerateHeightMap(heightMap, System.IO.Path.Combine(outputDirectory, fileName));
+        }
+
+        /// <summary>
+        /// Generate height map texture from height map, as a 16 bit grayscale PNG image. Grayscale is mapped from local min (black) to local highest point (white)
+        /// Note : heightMap should be in projected coordinates (see ReprojectToCartesian())
+        /// </summary>
+        /// <param name="heightMap">heightMap in projected coordinates</param>
+        /// <param name="outputDirectory"></param>
+        /// <returns></returns>
+        public TextureInfo GenerateHeightMap(HeightMap heightMap, string outputFileName)
+        {
             using (Image<Gray16> outputImage = new Image<Gray16>(heightMap.Width, heightMap.Height))
             {
                 int hMapIndex = 0;
@@ -443,10 +455,10 @@ namespace DEM.Net.Core.Imagery
                     hMapIndex++;
                 }
 
-                outputImage.Save(System.IO.Path.Combine(outputDirectory, fileName));
+                outputImage.Save(outputFileName);
             }
 
-            TextureInfo normal = new TextureInfo(System.IO.Path.Combine(outputDirectory, fileName), TextureImageFormat.image_png,
+            TextureInfo normal = new TextureInfo(outputFileName, TextureImageFormat.image_png,
                 heightMap.Width, heightMap.Height);
             return normal;
         }
