@@ -120,9 +120,24 @@ namespace DEM.Net.Core
 
         public string GetLocalDEMPath(DEMDataSet dataset)
         {
-            return dataset.DataSource.DataSourceType == Datasets.DEMDataSourceType.LocalFileSystem ?
-                        Path.GetFullPath(dataset.DataSource.IndexFilePath)
-                        : Path.Combine(_localDirectory, dataset.Name);
+            string path = null;
+            if (dataset.DataSource.DataSourceType == Datasets.DEMDataSourceType.LocalFileSystem)
+            {
+                if (Path.IsPathRooted(dataset.DataSource.IndexFilePath))
+                {
+                    path = dataset.DataSource.IndexFilePath;
+                }
+                else
+                {
+                    path = Path.Combine(_localDirectory, dataset.Name);
+                }                
+            }
+            else
+            {
+                path = Path.Combine(_localDirectory, dataset.Name);
+            }            
+
+            return path;
         }
         public string GetLocalDEMFilePath(DEMDataSet dataset, string fileTitle)
         {
