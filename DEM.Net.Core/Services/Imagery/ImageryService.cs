@@ -48,6 +48,7 @@ using SixLabors.ImageSharp.Processing;
 using SixLabors.Shapes;
 using SixLabors.Primitives;
 using DEM.Net.Core.Services.Imagery;
+using SixLabors.ImageSharp.Formats.Png;
 
 namespace DEM.Net.Core.Imagery
 {
@@ -455,11 +456,43 @@ namespace DEM.Net.Core.Imagery
                     hMapIndex++;
                 }
 
-                outputImage.Save(outputFileName);
+                outputImage.Save(outputFileName, new PngEncoder() { BitDepth = PngBitDepth.Bit16 });
             }
 
             TextureInfo normal = new TextureInfo(outputFileName, TextureImageFormat.image_png,
                 heightMap.Width, heightMap.Height);
+            return normal;
+        }
+        public TextureInfo GenerateHeightMap(IEnumerable<GeoPoint> heightMap, int width, int height, string outputFileName)
+        {
+            double min = double.MaxValue;
+            double max = double.MinValue;
+            foreach (var coord in heightMap)
+            {
+                min = Math.Min(min, coord.Elevation.GetValueOrDefault(0));
+                max = Math.Max(max, coord.Elevation.GetValueOrDefault(0));
+            }
+            using (Image<Gray16> outputImage = new Image<Gray16>(width, height))
+            {
+                int hMapIndex = 0;
+                foreach (var coord in heightMap)
+                {
+                    // index is i + (j * heightMap.Width);
+                    var j = hMapIndex / width;
+                    var i = hMapIndex - j * width;
+
+                    float gray = MathHelper.Map((float)min, (float)max, 0, ushort.MaxValue, (float)(coord.Elevation ?? 0f), true);
+
+                    outputImage[i, j] = new Gray16((ushort)Math.Round(gray, 0));
+
+                    hMapIndex++;
+                }
+
+                outputImage.Save(outputFileName, new PngEncoder() { BitDepth = PngBitDepth.Bit16 });
+            }
+
+            TextureInfo normal = new TextureInfo(outputFileName, TextureImageFormat.image_png,
+                width, height);
             return normal;
         }
 
