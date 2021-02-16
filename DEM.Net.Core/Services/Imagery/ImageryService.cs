@@ -463,7 +463,7 @@ namespace DEM.Net.Core.Imagery
                 heightMap.Width, heightMap.Height);
             return normal;
         }
-        public TextureInfo GenerateHeightMap(IEnumerable<GeoPoint> heightMap, int width, int height, string outputFileName)
+        public TextureInfo GenerateHeightMap(List<GeoPoint> heightMap, int width, int height, string outputFileName)
         {
             double min = double.MaxValue;
             double max = double.MinValue;
