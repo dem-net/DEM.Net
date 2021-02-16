@@ -105,6 +105,8 @@ namespace DEM.Net.Core.Imagery
         public int NumCols => End.X - Start.X + 1;
         public int NumRows => End.Y - Start.Y + 1;
         public int Count => NumCols * NumRows;
+        public int Width => NumCols * TileSize;
+        public int Height => NumRows * TileSize;
 
         public int Zoom => Start.Zoom;
 
