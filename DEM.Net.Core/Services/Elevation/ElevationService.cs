@@ -593,7 +593,7 @@ namespace DEM.Net.Core
                 {
                     if (metadata.VirtualMetadata)
                     {
-                        var hmap = _RasterService.GetVirtualHeightMapInBBox(bbox, metadata);
+                        var hmap = _RasterService.GetVirtualHeightMapInBBox(bbox, metadata, NO_DATA_OUT);
                         hmap.BoundingBox.SRID = bbox.SRID;
                         if (hmap.Count > 0)
                         {
@@ -649,6 +649,18 @@ namespace DEM.Net.Core
 
         }
 
+        private (List<GeoPoint> coords, int width, int height) MergeHeightMapCoords(List<HeightMap> tilesHeightMap)
+        {
+            HashSet<double> lats = new HashSet<double>();
+            HashSet<double> longs = new HashSet<double>();
+            var coords = tilesHeightMap.SelectMany(hmap => hmap.Coordinates)
+                           .OrderByDescending(pt => { lats.Add(pt.Latitude); return pt.Latitude; })
+                           .ThenBy(pt => { longs.Add(pt.Longitude); return pt.Longitude; })
+                           .ToList();
+
+            return (coords, longs.Count, lats.Count);
+        }
+
         private List<FileMetadata> CreateMissingTilesMetadata(BoundingBox bbox, DEMDataSet dataSet, List<FileMetadata> bboxMetadata)
         {
             // Take the top left bbox point
@@ -661,9 +673,18 @@ namespace DEM.Net.Core
             var tilesBbox = bboxMetadata.BoundingBox();
             FileMetadata templateTile = bboxMetadata.First();
 
+            int registrationOffset = dataSet.FileFormat.Registration == DEMFileRegistrationMode.Grid ? 1 : 0;
+
+            //xWest = Math.Max(0, xWest);
+            //xEast = Math.Min(metadata.Width - 1 - registrationOffset, xEast);
+            //yNorth = Math.Max(0, yNorth);
+            //ySouth = Math.Min(metadata.Height - 1 - registrationOffset, ySouth);
+
+
+
             // get x/y increments
-            double tileSizeX = templateTile.Width * templateTile.PixelScaleX;
-            double tileSizeY = templateTile.Height * templateTile.PixelScaleY;
+            double tileSizeX = ((double)templateTile.Width - registrationOffset) * templateTile.PixelScaleX;
+            double tileSizeY = ((double)templateTile.Height - registrationOffset) * templateTile.PixelScaleY;
 
             // output list
             HashSet<FileMetadata> missingTiles = new HashSet<FileMetadata>();
@@ -1237,10 +1258,10 @@ namespace DEM.Net.Core
         {
             BoundingBox tileBbox = tileMetadata.BoundingBox;
 
-            return 
+            return
                 (tileBbox.xMax >= lon && tileBbox.xMin <= lon) // isInsideX
               && (tileBbox.yMax >= lat && tileBbox.yMin <= lat); // isInsideY
-            
+
         }
         // is the tile a tile just next to the tile the point is in ?
         private bool IsPointInAdjacentTile(FileMetadata tile, GeoPoint point)

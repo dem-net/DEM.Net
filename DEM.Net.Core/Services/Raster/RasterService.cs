@@ -513,7 +513,7 @@ namespace DEM.Net.Core
         /// <param name="metadata"></param>
         /// <param name="noDataValue"></param>
         /// <returns></returns>
-        internal HeightMap GetVirtualHeightMapInBBox(BoundingBox bbox, FileMetadata metadata)
+        internal HeightMap GetVirtualHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float? noDataValue)
         {
             
             int registrationOffset = metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid ? 1 : 0;
@@ -524,9 +524,9 @@ namespace DEM.Net.Core
             int xEast = (int)Math.Ceiling((bbox.xMax - metadata.PhysicalStartLon) / metadata.pixelSizeX);
 
             xWest = Math.Max(0, xWest);
-            xEast = Math.Min(metadata.Width - 1 - registrationOffset, xEast);
+            xEast = Math.Min(metadata.Width - 1 , xEast) - registrationOffset;
             yNorth = Math.Max(0, yNorth);
-            ySouth = Math.Min(metadata.Height - 1 - registrationOffset, ySouth);
+            ySouth = Math.Min(metadata.Height - 1 , ySouth) - registrationOffset;
 
             HeightMap heightMap = new HeightMap(xEast - xWest + 1, ySouth - yNorth + 1);
             heightMap.Count = heightMap.Width * heightMap.Height;
@@ -553,7 +553,7 @@ namespace DEM.Net.Core
                 {
                     double longitude = metadata.DataStartLon + (metadata.pixelSizeX * x);
 
-                    float heightValue = metadata.NoDataValueFloat;
+                    float heightValue = noDataValue ?? metadata.NoDataValueFloat;
                     heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
                     heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
 
