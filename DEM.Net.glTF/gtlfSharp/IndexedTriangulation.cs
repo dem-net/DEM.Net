@@ -1,4 +1,5 @@
 ﻿using DEM.Net.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -46,6 +47,17 @@ namespace DEM.Net.glTF.SharpglTF
             }
 
 
+        }
+
+        internal void Clear()
+        {
+            Positions?.Clear();
+            Indices?.Clear();
+            Colors?.Clear();
+
+            Positions = null;
+            Indices = null;
+            Colors = null;
         }
     }
 }

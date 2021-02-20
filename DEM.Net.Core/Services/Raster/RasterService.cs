@@ -323,7 +323,7 @@ namespace DEM.Net.Core
         public string GenerateReportAsString()
         {
             StringBuilder sb = new StringBuilder();
-            var reports = GenerateReportAsync().GetAwaiter().GetResult();
+            var reports = GenerateReport();
 
             // Get report for downloaded files
             foreach (var report in reports)
@@ -353,6 +353,22 @@ namespace DEM.Net.Core
             var reports = await Task.WhenAll(tasks.ToArray());
 
             return reports.ToList();
+        }
+        /// <summary>
+        /// Generates a full report of all datasets to check size and number of downloaded tiles
+        /// </summary>
+        /// <returns>
+        /// A string containing the report
+        /// </returns>
+        public IEnumerable<DatasetReport> GenerateReport()
+        {
+            StringBuilder sb = new StringBuilder();
+            
+            // Get report for downloaded files
+            foreach (DEMDataSet dataset in DEMDataSet.RegisteredDatasets)
+            {
+                yield return GenerateReportSummary(dataset);
+            }
         }
         private DatasetReport GenerateReportSummary(DEMDataSet dataset)
         {

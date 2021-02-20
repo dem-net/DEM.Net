@@ -40,6 +40,7 @@ namespace DEM.Net.Core
         public Triangulation() : base() { }
         public Triangulation(IEnumerable<GeoPoint> positions, IEnumerable<int> indices)
              : base(positions, indices) { }
+
     }
     public class TriangulationNormals : Triangulation<Vector3>
     {
