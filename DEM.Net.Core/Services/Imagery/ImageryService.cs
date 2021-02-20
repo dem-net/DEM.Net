@@ -118,8 +118,24 @@ namespace DEM.Net.Core.Imagery
             return tiles;
         }
 
+        public TileRange ComputeBoundingBoxTileRangeForZoomLevel(BoundingBox bbox, ImageryProvider provider, int zoom)
+        {
+            TileRange tiles = new TileRange(provider);
+            Point<double> topLeft = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMax, bbox.xMin), zoom, provider.TileSize);
+            Point<double> bottomRight = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMin, bbox.xMax), zoom, provider.TileSize);
+            BoundingBox mapBbox = new BoundingBox(topLeft.X, bottomRight.X, topLeft.Y, bottomRight.Y);
+
+            tiles.Start = new MapTileInfo(TileUtils.GlobalPixelToTileXY(topLeft.X, topLeft.Y, provider.TileSize), zoom, provider.TileSize);
+            tiles.End = new MapTileInfo(TileUtils.GlobalPixelToTileXY(bottomRight.X, bottomRight.Y, provider.TileSize), zoom, provider.TileSize);
+            tiles.AreaOfInterest = mapBbox;
+
+            return tiles;
+        }
+
         public TileRange DownloadTiles(TileRange tiles, ImageryProvider provider)
         {
+            Stopwatch sw = Stopwatch.StartNew();
+            int intervalMs = 1000;
             if (provider is ITileGenerator generator)
             {
                 // download tiles
@@ -147,6 +163,7 @@ namespace DEM.Net.Core.Imagery
                 // Max download threads defined in provider
                 var parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism };
                 var range = tiles.TilesInfo.ToList();
+                int numTilesDownloaded = 0;
                 _logger?.LogInformation($"Downloading {range.Count} tiles...");
                 try
                 {
@@ -157,6 +174,14 @@ namespace DEM.Net.Core.Imagery
                         var contentBytes = cache.GetTile(tileUri, provider, tile);
 
                         tiles.Add(new MapTile(contentBytes, provider.TileSize, tileUri, tile));
+
+                        Interlocked.Increment(ref numTilesDownloaded);
+
+                        if (sw.ElapsedMilliseconds>intervalMs)
+                        {
+                            _logger.LogInformation($"{numTilesDownloaded:N0}/{range.Count:N0} tiles downloaded...");
+                            sw.Restart();
+                        }
                     }
                 );
                 }
@@ -184,7 +209,7 @@ namespace DEM.Net.Core.Imagery
             return this.DownloadTiles(tiles, provider);
         }
 
-        BoundingBox ConvertWorldToMap(BoundingBox bbox, int zoomLevel, int tileSize)
+        public BoundingBox ConvertWorldToMap(BoundingBox bbox, int zoomLevel, int tileSize)
         {
             var bboxTopLeft = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMax, bbox.xMin), zoomLevel, tileSize);
             var bboxBottomRight = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMin, bbox.xMax), zoomLevel, tileSize);
@@ -215,7 +240,7 @@ namespace DEM.Net.Core.Imagery
             //DrawDebugBmpBbox(tiles, localBbox, tilesBbox, fileName, mimeType);
             int tileSize = tiles.TileSize;
 
-            using (Image<Rgba32> outputImage = new Image<Rgba32>((int)projectedBbox.Width, (int)projectedBbox.Height))
+            using (Image<Rgba32> outputImage = new Image<Rgba32>((int)Math.Ceiling(projectedBbox.Width), (int)Math.Ceiling(projectedBbox.Height)))
             {
                 int xOffset = (int)(tilesBbox.xMin - projectedBbox.xMin);
                 int yOffset = (int)(tilesBbox.yMin - projectedBbox.yMin);
@@ -251,9 +276,8 @@ namespace DEM.Net.Core.Imagery
                 outputImage.Save(fileName);
             }
 
-            return new TextureInfo(fileName, mimeType, (int)projectedBbox.Width, (int)projectedBbox.Height, zoomLevel,
+            return new TextureInfo(fileName, mimeType, (int)Math.Ceiling(projectedBbox.Width), (int)Math.Ceiling(projectedBbox.Height), zoomLevel,
                 projectedBbox, tiles.Count);
-            //return new TextureInfo(fileName, format, (int)tilesBbox.Width, (int)tilesBbox.Height);
         }
 
         public TextureInfo ConstructTextureWithGpxTrack(TileRange tiles, BoundingBox bbox, string fileName,
