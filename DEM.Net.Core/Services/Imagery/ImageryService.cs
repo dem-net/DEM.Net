@@ -118,6 +118,20 @@ namespace DEM.Net.Core.Imagery
             return tiles;
         }
 
+        public TileRange ComputeBoundingBoxTileRangeForTargetResolution(BoundingBox bbox, ImageryProvider imageryProvider, int width, int height)
+        {
+            TileRange tiles = new TileRange(imageryProvider);
+            TileUtils.BestMapView(new double[] { bbox.xMin, bbox.yMin, bbox.xMax, bbox.yMax }, width, height, 0, imageryProvider.TileSize, out double _, out double _, out double zoom);
+            zoom = Math.Round(zoom, 0);
+            var topLeft = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMax, bbox.xMin), (int)zoom, imageryProvider.TileSize);
+            var bottomRight = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMin, bbox.xMax), (int)zoom, imageryProvider.TileSize);
+            var mapBbox = new BoundingBox(topLeft.X, bottomRight.X, topLeft.Y, bottomRight.Y);
+            tiles.Start = new MapTileInfo(TileUtils.GlobalPixelToTileXY(topLeft.X, topLeft.Y, imageryProvider.TileSize), (int)zoom, imageryProvider.TileSize);
+            tiles.End = new MapTileInfo(TileUtils.GlobalPixelToTileXY(bottomRight.X, bottomRight.Y, imageryProvider.TileSize), (int)zoom, imageryProvider.TileSize);
+            tiles.AreaOfInterest = mapBbox;
+            return tiles;
+        }
+
         public TileRange ComputeBoundingBoxTileRangeForZoomLevel(BoundingBox bbox, ImageryProvider provider, int zoom)
         {
             TileRange tiles = new TileRange(provider);
