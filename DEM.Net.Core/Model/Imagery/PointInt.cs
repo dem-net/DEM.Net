@@ -47,5 +47,10 @@ namespace DEM.Net.Core.Imagery
         {
             return $"x={X}, y={Y}";
         }
+
+        public static bool IsDefault(Point<T> point)
+        {
+            return point.X.Equals(default(T)) && point.Y.Equals(default(T));
+        }
     }
 }
