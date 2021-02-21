@@ -177,7 +177,7 @@ namespace DEM.Net.Core.Imagery
 
                         Interlocked.Increment(ref numTilesDownloaded);
 
-                        if (sw.ElapsedMilliseconds>intervalMs)
+                        if (sw.ElapsedMilliseconds > intervalMs)
                         {
                             _logger.LogInformation($"{numTilesDownloaded:N0}/{range.Count:N0} tiles downloaded...");
                             sw.Restart();
@@ -273,11 +273,28 @@ namespace DEM.Net.Core.Imagery
                 //IImageEncoder encoder = ConvertFormat(mimeType);
                 //outputImage.Save(fileName, encoder);
 
-                outputImage.Save(fileName);
+                SaveImage(outputImage, fileName);
             }
 
             return new TextureInfo(fileName, mimeType, (int)Math.Ceiling(projectedBbox.Width), (int)Math.Ceiling(projectedBbox.Height), zoomLevel,
                 projectedBbox, tiles.Count);
+        }
+
+        private void SaveImage(Image outputImage, string fileName)
+        {
+            IImageEncoder imageEncoder = GetEncoder(fileName);
+            
+            outputImage.Save(fileName, imageEncoder);
+        }
+
+        private IImageEncoder GetEncoder(string fileName)
+        {
+            var fileExtension = System.IO.Path.GetExtension(fileName).ToLower();
+            if (fileExtension.EndsWith("jpg"))
+                return new JpegEncoder { Quality = 98, Subsample = JpegSubsample.Ratio444 };
+            else if (fileExtension.EndsWith("png"))
+                return new PngEncoder();
+            else return null;
         }
 
         public TextureInfo ConstructTextureWithGpxTrack(TileRange tiles, BoundingBox bbox, string fileName,
