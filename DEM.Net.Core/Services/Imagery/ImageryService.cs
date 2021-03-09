@@ -297,7 +297,7 @@ namespace DEM.Net.Core.Imagery
         private void SaveImage(Image outputImage, string fileName)
         {
             IImageEncoder imageEncoder = GetEncoder(fileName);
-            
+
             outputImage.Save(fileName, imageEncoder);
         }
 
@@ -396,6 +396,7 @@ namespace DEM.Net.Core.Imagery
             url = url.Replace("{x}", x.ToString());
             url = url.Replace("{y}", y.ToString());
             url = url.Replace("{z}", zoom.ToString());
+            url = url.Replace("{quadkey}", TileUtils.TileXYToQuadKey(x, y, zoom));
             if (url.Contains("{t}"))
             {
                 var token = GetToken(provider);
