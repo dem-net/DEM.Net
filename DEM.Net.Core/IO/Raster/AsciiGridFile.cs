@@ -140,6 +140,7 @@ namespace DEM.Net.Core
                     double longitude = metadata.DataStartLon + (metadata.pixelSizeX * x);
 
                     float heightValue = float.Parse(_data[y][x], CultureInfo.InvariantCulture);
+                    if (heightValue == metadata.NoDataValueFloat) heightValue = noDataValue;
                     heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
                     heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
 

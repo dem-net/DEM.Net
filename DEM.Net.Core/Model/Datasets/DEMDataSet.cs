@@ -133,7 +133,7 @@ namespace DEM.Net.Core
                 FileFormat = new DEMFileDefinition("Esri Ascii Grid", DEMFileType.ASCIIGrid, ".asc", DEMFileRegistrationMode.Cell),
                 ResolutionMeters = 5,
                 PointsPerDegree = 21600,
-                NoDataValue = -9999,
+                NoDataValue = -99999,
                 SRID = 2154,
                 Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN", "https://ign.fr"
                     , "TO BE DEFINED")
@@ -147,7 +147,7 @@ namespace DEM.Net.Core
                 FileFormat = new DEMFileDefinition("Esri Ascii Grid", DEMFileType.ASCIIGrid, ".asc", DEMFileRegistrationMode.Cell),
                 ResolutionMeters = 1,
                 PointsPerDegree = 108000,
-                NoDataValue = -9999,
+                NoDataValue = -99999,
                 SRID = 2154,
                 Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN", "https://ign.fr"
                     , "TO BE DEFINED")
