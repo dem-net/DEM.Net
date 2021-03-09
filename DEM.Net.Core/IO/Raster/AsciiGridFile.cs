@@ -68,7 +68,7 @@ namespace DEM.Net.Core
             _data = new List<List<string>>(metadata.Height);
             while (!_streamReader.EndOfStream)
             {
-                var line = _streamReader.ReadLine();
+                var line = _streamReader.ReadLine().Trim();
 
                 var values = new List<string>(metadata.Width);
                 var current = string.Empty;
@@ -85,7 +85,7 @@ namespace DEM.Net.Core
                     }
                 }
                 values.Add(current);
-                Debug.Assert(values.Count == metadata.Width);
+                //Debug.Assert(values.Count == metadata.Width);
                 _data.Add(values);
             }
             _tempCache[_filename] = _data;
@@ -232,7 +232,7 @@ namespace DEM.Net.Core
             DEMFileRegistrationMode xModeFromFile = xRegFromFile.ToLower().EndsWith("corner") ? DEMFileRegistrationMode.Grid : DEMFileRegistrationMode.Cell;
             DEMFileRegistrationMode yModeFromFile = yRegFromFile.ToLower().EndsWith("corner") ? DEMFileRegistrationMode.Grid : DEMFileRegistrationMode.Cell;
 
-            Debug.Assert(registration == xModeFromFile && registration == yModeFromFile, "Registration mode mismatch between file and dataset.");
+            //Debug.Assert(registration == xModeFromFile && registration == yModeFromFile, "Registration mode mismatch between file and dataset.");
 
         }
 

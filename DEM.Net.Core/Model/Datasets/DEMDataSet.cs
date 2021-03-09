@@ -124,6 +124,34 @@ namespace DEM.Net.Core
                 Attribution = new Attribution(ATTRIBUTION_SUBJECT, "ETOPO1 - NOAA", "https://www.ngdc.noaa.gov/mgg/global/"
                     , "Amante, C. and B.W. Eakins, 2009. ETOPO1 1 Arc-Minute Global Relief Model: Procedures, Data Sources and Analysis. NOAA Technical Memorandum NESDIS NGDC-24. National Geophysical Data Center, NOAA. doi:10.7289/V5C8276M")
             });
+            datasets.Add("IGN_5m", new DEMDataSet()
+            {
+                Name = nameof(IGN_5m),
+                Description = "IGN RGE Alti 5 meter",
+                PublicUrl = "https://ign.fr",
+                DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "IGN_5m")),
+                FileFormat = new DEMFileDefinition("Esri Ascii Grid", DEMFileType.ASCIIGrid, ".asc", DEMFileRegistrationMode.Cell),
+                ResolutionMeters = 5,
+                PointsPerDegree = 21600,
+                NoDataValue = -9999,
+                SRID = 2154,
+                Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN", "https://ign.fr"
+                    , "TO BE DEFINED")
+            });
+            datasets.Add("IGN_1m", new DEMDataSet()
+            {
+                Name = nameof(IGN_1m),
+                Description = "IGN RGE Alti 1 meter",
+                PublicUrl = "https://ign.fr",
+                DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "IGN_1m")),
+                FileFormat = new DEMFileDefinition("Esri Ascii Grid", DEMFileType.ASCIIGrid, ".asc", DEMFileRegistrationMode.Cell),
+                ResolutionMeters = 1,
+                PointsPerDegree = 108000,
+                NoDataValue = -9999,
+                SRID = 2154,
+                Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN", "https://ign.fr"
+                    , "TO BE DEFINED")
+            });
             datasets.Add("ASTER_GDEMV3", new DEMDataSet()
             {
                 Name = nameof(ASTER_GDEMV3),
@@ -229,6 +257,11 @@ namespace DEM.Net.Core
         /// API: https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html
         /// </summary>
         public static DEMDataSet NASADEM => Datasets.Value[nameof(NASADEM)];
+        public static DEMDataSet IGN_5m => Datasets.Value[nameof(IGN_5m)];
+        public static DEMDataSet IGN_1m => Datasets.Value[nameof(IGN_1m)];
+
+
+
 
 
     }
