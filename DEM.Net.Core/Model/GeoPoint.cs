@@ -55,7 +55,7 @@ namespace DEM.Net.Core
         {
             this.Latitude = latitude;
             this.Longitude = longitude;
-            this.Elevation = altitude;
+            this.Elevation = (altitude.HasValue && double.IsNaN(altitude.Value)) ? null : altitude;
             this.DistanceFromOriginMeters = null;
         }
 
