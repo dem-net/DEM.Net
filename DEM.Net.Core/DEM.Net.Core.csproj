@@ -2,13 +2,38 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>DEM.Net.Core</PackageId>
-    <Version>0.2.9.0</Version>
+    <Version>0.3.0.0</Version>
     <Authors>Xavier Fischer, Frédéric Aubin</Authors>
     <Copyright>Xavier Fischer, Frédéric Aubin and Contributors</Copyright>
     <Owners>Xavier Fischer</Owners>
     <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
-    <PackageReleaseNotes>- ASC Grid Y axis upwards
-    - Uncovered points and tiles logged as debug</PackageReleaseNotes>
+    <PackageReleaseNotes>
+		b3d755f - Upgraded NTS (removed GeoAPI, and SpatialTrace)
+		46c8546 - Merge branch 'dev'
+		d1cb413 - geopoint check for NaN values
+		424fe4c - fix nodata values for ASC files
+		233d169 - IGN RGE Alti predefined datasets for 5m and 1m
+		b4cfc7a - bingmaps imagery support
+		10dbcc8 - ComputeBoundingBoxTileRangeForTargetResolution
+		e1b3ca3 - point isdefault
+		bbde263 - jpg encoding with better quality
+		51bf603 - various fixes
+		816b918 - tiles download log reports every second
+		da4c894 - fix virtual tiles for geotiff Tiled dataset (SRTM)
+		4777078 - skip bake coords if IList
+		c25ebfd - wip height map image generation
+		699d55f - tilerange width and height
+		2d3d5ac - reprojections to tilesystem for image warping
+		0091fb5 - fixed file size estimation
+		0b2f700 - gebco 2020 and file based datasets with custom location
+		87d6a20 - overload for gen height map image
+		1c989b7 - added MapTiler Satellite
+		0df845f - Merge branch 'dev'
+		d4dab24 - perf fixes
+		58a85e8 - early empty checks
+		442ff5c - opentopography updated SRTM to tif files
+		a2c89bf - switched to NTS
+	</PackageReleaseNotes>
     <PackageTags>DEM, Terrain, Elevation</PackageTags>
     <Title>DEM.Net</Title>
     <Product>DEM.Net</Product>
@@ -20,8 +45,8 @@
     </PackageLicenseExpression>
     <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
     <PackageIcon>DEMnet_64.png</PackageIcon>
-    <AssemblyVersion>0.2.9.0</AssemblyVersion>
-    <FileVersion>0.2.9.0</FileVersion>
+    <AssemblyVersion>0.3.0.0</AssemblyVersion>
+    <FileVersion>0.3.0.0</FileVersion>
     <UserSecretsId>a9a5d6e1-3bb8-4dfd-ac6a-861f60dada50</UserSecretsId>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
