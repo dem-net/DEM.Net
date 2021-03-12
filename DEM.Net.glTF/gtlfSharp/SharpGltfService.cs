@@ -89,7 +89,12 @@ namespace DEM.Net.glTF.SharpglTF
         {
             Triangulation triangulation = _meshService.TriangulateHeightMap(heightMap);
 
-            return AddTerrainMesh(model, triangulation, textures);
+            model = AddTerrainMesh(model, triangulation, textures);
+
+            triangulation = null;
+
+            return model;
+
         }
         public ModelRoot CreateTerrainMesh(Triangulation triangulation, PBRTexture textures, bool doubleSided = true)
         { return AddTerrainMesh(CreateNewModel(), triangulation, textures, doubleSided); }
@@ -97,7 +102,11 @@ namespace DEM.Net.glTF.SharpglTF
         {
             var indexedTriangulation = new IndexedTriangulation(triangulation);
             var normals = _meshService.ComputeMeshNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
-            return AddMesh(model, TERRAIN_NODE_NAME, indexedTriangulation, normals, textures, doubleSided);
+            model = AddMesh(model, TERRAIN_NODE_NAME, indexedTriangulation, normals, textures, doubleSided);
+
+            indexedTriangulation.Clear();
+            indexedTriangulation = null;
+            return model;
         }
         public ModelRoot AddMesh(ModelRoot model, string nodeName, IndexedTriangulation indexedTriangulation, IEnumerable<Vector3> normals, PBRTexture textures, bool doubleSided = true)
         {

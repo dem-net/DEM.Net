@@ -43,7 +43,8 @@ namespace DEM.Net.Core
 
         public IEnumerable<DEMFileSource> GetFileSources(DEMDataSet dataset)
         {
-            foreach (var file in Directory.GetFiles(dataset.DataSource.IndexFilePath, "*" + dataset.FileFormat.FileExtension, SearchOption.AllDirectories))
+            string datasetPath = _rasterService.GetLocalDEMPath(dataset);
+            foreach (var file in Directory.GetFiles(datasetPath, "*" + dataset.FileFormat.FileExtension, SearchOption.AllDirectories))
             {
                 var metadataPath = Path.Combine(Path.GetDirectoryName(file), RasterService.MANIFEST_DIR, Path.ChangeExtension(Path.GetFileName(file), ".json"));
                 if (!File.Exists(metadataPath))

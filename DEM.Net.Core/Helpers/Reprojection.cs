@@ -49,6 +49,12 @@ namespace DEM.Net.Core
             heightMap.BoundingBox = heightMap.BoundingBox.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR);
             return heightMap;
         }
+        public static HeightMap ReprojectGeodeticToTileSystem(this HeightMap heightMap, int zoomLevel, int tileSize)
+        {
+            heightMap.Coordinates = heightMap.Coordinates.ReprojectGeodeticToTileSystem(zoomLevel, tileSize);
+            heightMap.BoundingBox = heightMap.BoundingBox.ReprojectToTileSystem(zoomLevel, tileSize);
+            return heightMap;
+        }
 
         public static HeightMap ReprojectTo(this HeightMap heightMap, int sourceEpsgCode, int destinationEpsgCode)
         {
@@ -59,6 +65,16 @@ namespace DEM.Net.Core
             heightMap.BoundingBox = heightMap.BoundingBox.ReprojectTo(sourceEpsgCode, destinationEpsgCode);
 
             return heightMap;
+        }
+
+        public static IEnumerable<GeoPoint> ReprojectGeodeticToTileSystem(this IEnumerable<GeoPoint> points, int zoomLevel, int tileSize)
+        {
+            foreach (var p in points)
+            {
+                var newPt = TileUtils.PositionToGlobalPixel(new LatLong(p.Latitude, p.Longitude), zoomLevel, tileSize);
+
+                yield return new GeoPoint(newPt.Y, newPt.X, p.Elevation);
+            }
         }
 
         public static IEnumerable<GeoPoint> ReprojectGeodeticToCartesian(this IEnumerable<GeoPoint> points, int? count = null)
@@ -234,6 +250,26 @@ namespace DEM.Net.Core
             outBbox.zMin = bbox.zMin;
             outBbox.zMax = bbox.zMax;
             outBbox.SRID = destinationEpsgCode;
+
+            return outBbox;
+
+        }
+        public static BoundingBox ReprojectToTileSystem(this BoundingBox bbox, int zoomLevel, int tileSize)
+        {
+
+            var minmin = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMin, bbox.xMin), zoomLevel, tileSize);
+            var minmax = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMin, bbox.xMax), zoomLevel, tileSize);
+            var maxmax = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMax, bbox.xMax), zoomLevel, tileSize);
+            var maxmin = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMax, bbox.xMin), zoomLevel, tileSize);
+
+            var outBbox = GeometryService.GetBoundingBox(new GeoPoint[] { new GeoPoint(minmin.Y, minmin.X),
+                new GeoPoint(minmax.Y,minmax.X), 
+                new GeoPoint(maxmax.Y,maxmax.X),
+                new GeoPoint(maxmin.Y,maxmin.X)
+            });
+            outBbox.zMin = bbox.zMin;
+            outBbox.zMax = bbox.zMax;
+            outBbox.SRID = 3857;
 
             return outBbox;
 

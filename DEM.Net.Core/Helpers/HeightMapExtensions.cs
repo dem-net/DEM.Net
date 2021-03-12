@@ -26,6 +26,7 @@
 using DEM.Net.Core.Gpx;
 using SixLabors.ImageSharp.ColorSpaces;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -211,8 +212,10 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public static HeightMap BakeCoordinates(this HeightMap heightMap)
         {
-            heightMap.Coordinates = heightMap.Coordinates.ToList();
+            if (heightMap.Coordinates is IList)
+                return heightMap;
 
+            heightMap.Coordinates = heightMap.Coordinates.ToList();
             return heightMap;
         }
 

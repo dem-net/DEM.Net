@@ -48,6 +48,7 @@ using SixLabors.ImageSharp.Processing;
 using SixLabors.Shapes;
 using SixLabors.Primitives;
 using DEM.Net.Core.Services.Imagery;
+using SixLabors.ImageSharp.Formats.Png;
 
 namespace DEM.Net.Core.Imagery
 {
@@ -117,8 +118,38 @@ namespace DEM.Net.Core.Imagery
             return tiles;
         }
 
+        public TileRange ComputeBoundingBoxTileRangeForTargetResolution(BoundingBox bbox, ImageryProvider imageryProvider, int width, int height)
+        {
+            TileRange tiles = new TileRange(imageryProvider);
+            TileUtils.BestMapView(new double[] { bbox.xMin, bbox.yMin, bbox.xMax, bbox.yMax }, width, height, 0, imageryProvider.TileSize, out double _, out double _, out double zoom);
+            zoom = Math.Round(zoom, 0);
+            var topLeft = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMax, bbox.xMin), (int)zoom, imageryProvider.TileSize);
+            var bottomRight = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMin, bbox.xMax), (int)zoom, imageryProvider.TileSize);
+            var mapBbox = new BoundingBox(topLeft.X, bottomRight.X, topLeft.Y, bottomRight.Y);
+            tiles.Start = new MapTileInfo(TileUtils.GlobalPixelToTileXY(topLeft.X, topLeft.Y, imageryProvider.TileSize), (int)zoom, imageryProvider.TileSize);
+            tiles.End = new MapTileInfo(TileUtils.GlobalPixelToTileXY(bottomRight.X, bottomRight.Y, imageryProvider.TileSize), (int)zoom, imageryProvider.TileSize);
+            tiles.AreaOfInterest = mapBbox;
+            return tiles;
+        }
+
+        public TileRange ComputeBoundingBoxTileRangeForZoomLevel(BoundingBox bbox, ImageryProvider provider, int zoom)
+        {
+            TileRange tiles = new TileRange(provider);
+            Point<double> topLeft = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMax, bbox.xMin), zoom, provider.TileSize);
+            Point<double> bottomRight = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMin, bbox.xMax), zoom, provider.TileSize);
+            BoundingBox mapBbox = new BoundingBox(topLeft.X, bottomRight.X, topLeft.Y, bottomRight.Y);
+
+            tiles.Start = new MapTileInfo(TileUtils.GlobalPixelToTileXY(topLeft.X, topLeft.Y, provider.TileSize), zoom, provider.TileSize);
+            tiles.End = new MapTileInfo(TileUtils.GlobalPixelToTileXY(bottomRight.X, bottomRight.Y, provider.TileSize), zoom, provider.TileSize);
+            tiles.AreaOfInterest = mapBbox;
+
+            return tiles;
+        }
+
         public TileRange DownloadTiles(TileRange tiles, ImageryProvider provider)
         {
+            Stopwatch sw = Stopwatch.StartNew();
+            int intervalMs = 1000;
             if (provider is ITileGenerator generator)
             {
                 // download tiles
@@ -146,6 +177,7 @@ namespace DEM.Net.Core.Imagery
                 // Max download threads defined in provider
                 var parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism };
                 var range = tiles.TilesInfo.ToList();
+                int numTilesDownloaded = 0;
                 _logger?.LogInformation($"Downloading {range.Count} tiles...");
                 try
                 {
@@ -156,6 +188,14 @@ namespace DEM.Net.Core.Imagery
                         var contentBytes = cache.GetTile(tileUri, provider, tile);
 
                         tiles.Add(new MapTile(contentBytes, provider.TileSize, tileUri, tile));
+
+                        Interlocked.Increment(ref numTilesDownloaded);
+
+                        if (sw.ElapsedMilliseconds > intervalMs)
+                        {
+                            _logger.LogInformation($"{numTilesDownloaded:N0}/{range.Count:N0} tiles downloaded...");
+                            sw.Restart();
+                        }
                     }
                 );
                 }
@@ -183,7 +223,7 @@ namespace DEM.Net.Core.Imagery
             return this.DownloadTiles(tiles, provider);
         }
 
-        BoundingBox ConvertWorldToMap(BoundingBox bbox, int zoomLevel, int tileSize)
+        public BoundingBox ConvertWorldToMap(BoundingBox bbox, int zoomLevel, int tileSize)
         {
             var bboxTopLeft = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMax, bbox.xMin), zoomLevel, tileSize);
             var bboxBottomRight = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMin, bbox.xMax), zoomLevel, tileSize);
@@ -214,7 +254,7 @@ namespace DEM.Net.Core.Imagery
             //DrawDebugBmpBbox(tiles, localBbox, tilesBbox, fileName, mimeType);
             int tileSize = tiles.TileSize;
 
-            using (Image<Rgba32> outputImage = new Image<Rgba32>((int)projectedBbox.Width, (int)projectedBbox.Height))
+            using (Image<Rgba32> outputImage = new Image<Rgba32>((int)Math.Ceiling(projectedBbox.Width), (int)Math.Ceiling(projectedBbox.Height)))
             {
                 int xOffset = (int)(tilesBbox.xMin - projectedBbox.xMin);
                 int yOffset = (int)(tilesBbox.yMin - projectedBbox.yMin);
@@ -247,12 +287,28 @@ namespace DEM.Net.Core.Imagery
                 //IImageEncoder encoder = ConvertFormat(mimeType);
                 //outputImage.Save(fileName, encoder);
 
-                outputImage.Save(fileName);
+                SaveImage(outputImage, fileName);
             }
 
-            return new TextureInfo(fileName, mimeType, (int)projectedBbox.Width, (int)projectedBbox.Height, zoomLevel,
+            return new TextureInfo(fileName, mimeType, (int)Math.Ceiling(projectedBbox.Width), (int)Math.Ceiling(projectedBbox.Height), zoomLevel,
                 projectedBbox, tiles.Count);
-            //return new TextureInfo(fileName, format, (int)tilesBbox.Width, (int)tilesBbox.Height);
+        }
+
+        private void SaveImage(Image outputImage, string fileName)
+        {
+            IImageEncoder imageEncoder = GetEncoder(fileName);
+
+            outputImage.Save(fileName, imageEncoder);
+        }
+
+        private IImageEncoder GetEncoder(string fileName)
+        {
+            var fileExtension = System.IO.Path.GetExtension(fileName).ToLower();
+            if (fileExtension.EndsWith("jpg"))
+                return new JpegEncoder { Quality = 98, Subsample = JpegSubsample.Ratio444 };
+            else if (fileExtension.EndsWith("png"))
+                return new PngEncoder();
+            else return null;
         }
 
         public TextureInfo ConstructTextureWithGpxTrack(TileRange tiles, BoundingBox bbox, string fileName,
@@ -340,6 +396,7 @@ namespace DEM.Net.Core.Imagery
             url = url.Replace("{x}", x.ToString());
             url = url.Replace("{y}", y.ToString());
             url = url.Replace("{z}", zoom.ToString());
+            url = url.Replace("{quadkey}", TileUtils.TileXYToQuadKey(x, y, zoom));
             if (url.Contains("{t}"))
             {
                 var token = GetToken(provider);
@@ -427,6 +484,18 @@ namespace DEM.Net.Core.Imagery
         public TextureInfo GenerateHeightMap(HeightMap heightMap, string outputDirectory,
             string fileName = "heightmap.png")
         {
+            return GenerateHeightMap(heightMap, System.IO.Path.Combine(outputDirectory, fileName));
+        }
+
+        /// <summary>
+        /// Generate height map texture from height map, as a 16 bit grayscale PNG image. Grayscale is mapped from local min (black) to local highest point (white)
+        /// Note : heightMap should be in projected coordinates (see ReprojectToCartesian())
+        /// </summary>
+        /// <param name="heightMap">heightMap in projected coordinates</param>
+        /// <param name="outputDirectory"></param>
+        /// <returns></returns>
+        public TextureInfo GenerateHeightMap(HeightMap heightMap, string outputFileName)
+        {
             using (Image<Gray16> outputImage = new Image<Gray16>(heightMap.Width, heightMap.Height))
             {
                 int hMapIndex = 0;
@@ -443,11 +512,43 @@ namespace DEM.Net.Core.Imagery
                     hMapIndex++;
                 }
 
-                outputImage.Save(System.IO.Path.Combine(outputDirectory, fileName));
+                outputImage.Save(outputFileName, new PngEncoder() { BitDepth = PngBitDepth.Bit16 });
             }
 
-            TextureInfo normal = new TextureInfo(System.IO.Path.Combine(outputDirectory, fileName), TextureImageFormat.image_png,
+            TextureInfo normal = new TextureInfo(outputFileName, TextureImageFormat.image_png,
                 heightMap.Width, heightMap.Height);
+            return normal;
+        }
+        public TextureInfo GenerateHeightMap(List<GeoPoint> heightMap, int width, int height, string outputFileName)
+        {
+            double min = double.MaxValue;
+            double max = double.MinValue;
+            foreach (var coord in heightMap)
+            {
+                min = Math.Min(min, coord.Elevation.GetValueOrDefault(0));
+                max = Math.Max(max, coord.Elevation.GetValueOrDefault(0));
+            }
+            using (Image<Gray16> outputImage = new Image<Gray16>(width, height))
+            {
+                int hMapIndex = 0;
+                foreach (var coord in heightMap)
+                {
+                    // index is i + (j * heightMap.Width);
+                    var j = hMapIndex / width;
+                    var i = hMapIndex - j * width;
+
+                    float gray = MathHelper.Map((float)min, (float)max, 0, ushort.MaxValue, (float)(coord.Elevation ?? 0f), true);
+
+                    outputImage[i, j] = new Gray16((ushort)Math.Round(gray, 0));
+
+                    hMapIndex++;
+                }
+
+                outputImage.Save(outputFileName, new PngEncoder() { BitDepth = PngBitDepth.Bit16 });
+            }
+
+            TextureInfo normal = new TextureInfo(outputFileName, TextureImageFormat.image_png,
+                width, height);
             return normal;
         }
 

@@ -26,8 +26,8 @@ namespace DEM.Net.Core
         private readonly string _filename;
         private static char[] SEPARATOR = new char[] { ' ' };
 
-        List<List<float>> _data = null;
-        private static Dictionary<string, List<List<float>>> _tempCache = new Dictionary<string, List<List<float>>>();
+        List<List<string>> _data = null;
+        private static Dictionary<string, List<List<string>>> _tempCache = new Dictionary<string, List<List<string>>>();
 
         public ASCIIGridFile(string fileName)
         {
@@ -42,18 +42,20 @@ namespace DEM.Net.Core
                 ReadAllFile(metadata);
             }
 
-            float elevation = _data[y][x];
+            string strXValue = _data[y][x];
+
+            float elevation = float.Parse(strXValue, CultureInfo.InvariantCulture);
             return elevation;
 
         }
 
         private void ReadAllFile(FileMetadata metadata)
         {
-            //if (_tempCache.ContainsKey(_filename))
-            //{
-            //    _data = _tempCache[_filename];
-            //    return;
-            //}
+            if (_tempCache.ContainsKey(_filename))
+            {
+                _data = _tempCache[_filename];
+                return;
+            }
             string curLine = null;
             _fileStream.Seek(0, SeekOrigin.Begin);
 
@@ -63,21 +65,18 @@ namespace DEM.Net.Core
                 curLine = _streamReader.ReadLine();
             }
 
-            _data = new List<List<float>>(metadata.Height);
+            _data = new List<List<string>>(metadata.Height);
             while (!_streamReader.EndOfStream)
             {
-                var line = _streamReader.ReadLine();
+                var line = _streamReader.ReadLine().Trim();
 
-                var values = new List<float>(metadata.Width);
+                var values = new List<string>(metadata.Width);
                 var current = string.Empty;
                 foreach (char c in line)
                 {
                     if (c == ' ')
                     {
-                        if (current != string.Empty)
-                        {
-                            values.Add(float.Parse(current, CultureInfo.InvariantCulture));
-                        }                        
+                        values.Add(current);
                         current = string.Empty;
                     }
                     else
@@ -85,11 +84,11 @@ namespace DEM.Net.Core
                         current += c;
                     }
                 }
-                values.Add(float.Parse(current, CultureInfo.InvariantCulture));
-                Debug.Assert(values.Count == metadata.Width);
+                values.Add(current);
+                //Debug.Assert(values.Count == metadata.Width);
                 _data.Add(values);
             }
-            //_tempCache[_filename] = _data;
+            _tempCache[_filename] = _data;
         }
 
         public HeightMap GetHeightMap(FileMetadata metadata)
@@ -140,7 +139,8 @@ namespace DEM.Net.Core
                 {
                     double longitude = metadata.DataStartLon + (metadata.pixelSizeX * x);
 
-                    float heightValue = _data[y][x];
+                    float heightValue = float.Parse(_data[y][x], CultureInfo.InvariantCulture);
+                    if (heightValue == metadata.NoDataValueFloat) heightValue = noDataValue;
                     heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
                     heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
 
@@ -183,7 +183,7 @@ namespace DEM.Net.Core
                 metadata.PixelScaleX = cellsize;
                 metadata.PixelScaleY = cellsize;
                 metadata.pixelSizeX = cellsize;
-                metadata.pixelSizeY = cellsize; // Y direction here (may be detected somehow)
+                metadata.pixelSizeY = -cellsize;
 
                 if (fileFormat.Registration == DEMFileRegistrationMode.Grid)
                 {
@@ -233,7 +233,7 @@ namespace DEM.Net.Core
             DEMFileRegistrationMode xModeFromFile = xRegFromFile.ToLower().EndsWith("corner") ? DEMFileRegistrationMode.Grid : DEMFileRegistrationMode.Cell;
             DEMFileRegistrationMode yModeFromFile = yRegFromFile.ToLower().EndsWith("corner") ? DEMFileRegistrationMode.Grid : DEMFileRegistrationMode.Cell;
 
-            Debug.Assert(registration == xModeFromFile && registration == yModeFromFile, "Registration mode mismatch between file and dataset.");
+            //Debug.Assert(registration == xModeFromFile && registration == yModeFromFile, "Registration mode mismatch between file and dataset.");
 
         }
 
@@ -246,8 +246,8 @@ namespace DEM.Net.Core
             {
                 if (disposing)
                 {
-                    _data?.Clear();
-                    _data = null;
+                    //_data?.Clear();
+                    //_data = null;
                     _streamReader?.Dispose();
                     _fileStream?.Dispose();
                 }

@@ -120,9 +120,24 @@ namespace DEM.Net.Core
 
         public string GetLocalDEMPath(DEMDataSet dataset)
         {
-            return dataset.DataSource.DataSourceType == Datasets.DEMDataSourceType.LocalFileSystem ?
-                        Path.GetFullPath(dataset.DataSource.IndexFilePath)
-                        : Path.Combine(_localDirectory, dataset.Name);
+            string path = null;
+            if (dataset.DataSource.DataSourceType == Datasets.DEMDataSourceType.LocalFileSystem)
+            {
+                if (Path.IsPathRooted(dataset.DataSource.IndexFilePath))
+                {
+                    path = dataset.DataSource.IndexFilePath;
+                }
+                else
+                {
+                    path = Path.Combine(_localDirectory, dataset.Name);
+                }                
+            }
+            else
+            {
+                path = Path.Combine(_localDirectory, dataset.Name);
+            }            
+
+            return path;
         }
         public string GetLocalDEMFilePath(DEMDataSet dataset, string fileTitle)
         {
@@ -308,7 +323,7 @@ namespace DEM.Net.Core
         public string GenerateReportAsString()
         {
             StringBuilder sb = new StringBuilder();
-            var reports = GenerateReportAsync().GetAwaiter().GetResult();
+            var reports = GenerateReport();
 
             // Get report for downloaded files
             foreach (var report in reports)
@@ -339,6 +354,22 @@ namespace DEM.Net.Core
 
             return reports.ToList();
         }
+        /// <summary>
+        /// Generates a full report of all datasets to check size and number of downloaded tiles
+        /// </summary>
+        /// <returns>
+        /// A string containing the report
+        /// </returns>
+        public IEnumerable<DatasetReport> GenerateReport()
+        {
+            StringBuilder sb = new StringBuilder();
+            
+            // Get report for downloaded files
+            foreach (DEMDataSet dataset in DEMDataSet.RegisteredDatasets)
+            {
+                yield return GenerateReportSummary(dataset);
+            }
+        }
         private DatasetReport GenerateReportSummary(DEMDataSet dataset)
         {
             List<DemFileReport> report = GenerateReport(dataset);
@@ -348,12 +379,12 @@ namespace DEM.Net.Core
             int isnotMetadataGeneratedCount = report.Count(rpt => !rpt.IsMetadataGenerated);
 
             var fileSizeBytes = FileSystem.GetDirectorySize(GetLocalDEMPath(dataset), "*" + dataset.FileFormat.FileExtension);
-            var fileSizeMB = Math.Round(fileSizeBytes / 1000f / 1000f, 2);
+            var fileSizeMB = Math.Round(fileSizeBytes / 1024f / 1024f, 2);
 
             // rule of 3 to evaluate total size
 
-            var totalfileSizeGB = Math.Round((totalFiles * fileSizeMB / downloadedCount) / 1000f, 2);
-            var remainingfileSizeGB = Math.Round(totalfileSizeGB - fileSizeMB / 1000f, 2);
+            var totalfileSizeGB = Math.Round((totalFiles * fileSizeMB / downloadedCount) / 1024f, 2);
+            var remainingfileSizeGB = Math.Round(totalfileSizeGB - fileSizeMB / 1024f, 2);
 
             DatasetReport reportSummary = new DatasetReport()
             {
@@ -498,7 +529,7 @@ namespace DEM.Net.Core
         /// <param name="metadata"></param>
         /// <param name="noDataValue"></param>
         /// <returns></returns>
-        internal HeightMap GetVirtualHeightMapInBBox(BoundingBox bbox, FileMetadata metadata)
+        internal HeightMap GetVirtualHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float? noDataValue)
         {
             
             int registrationOffset = metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid ? 1 : 0;
@@ -509,9 +540,9 @@ namespace DEM.Net.Core
             int xEast = (int)Math.Ceiling((bbox.xMax - metadata.PhysicalStartLon) / metadata.pixelSizeX);
 
             xWest = Math.Max(0, xWest);
-            xEast = Math.Min(metadata.Width - 1 - registrationOffset, xEast);
+            xEast = Math.Min(metadata.Width - 1 , xEast) - registrationOffset;
             yNorth = Math.Max(0, yNorth);
-            ySouth = Math.Min(metadata.Height - 1 - registrationOffset, ySouth);
+            ySouth = Math.Min(metadata.Height - 1 , ySouth) - registrationOffset;
 
             HeightMap heightMap = new HeightMap(xEast - xWest + 1, ySouth - yNorth + 1);
             heightMap.Count = heightMap.Width * heightMap.Height;
@@ -538,7 +569,7 @@ namespace DEM.Net.Core
                 {
                     double longitude = metadata.DataStartLon + (metadata.pixelSizeX * x);
 
-                    float heightValue = metadata.NoDataValueFloat;
+                    float heightValue = noDataValue ?? metadata.NoDataValueFloat;
                     heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
                     heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
 

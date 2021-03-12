@@ -88,6 +88,21 @@ namespace DEM.Net.Core.Services.Imagery
             return Path.Combine(xDir, string.Concat(tileInfo.Y, ".png"));
         }
 
+        public string GetReport()
+        {
+            int numFiles = 0;
+            double totalSizeMB = 0;
+            foreach (var entry in Directory.EnumerateFileSystemEntries(_localDirectory, "*.*", SearchOption.AllDirectories))
+            {
+                if (Directory.Exists(entry))
+                    continue;
+                numFiles += 1;
+                totalSizeMB += new FileInfo(entry).Length / 1024d / 1024d;
+            }
+
+            return $"{numFiles:N0} files, total size {totalSizeMB:N1} MB";
+        }
+
         private void CreateDirectoryIfNotExists(string directory)
         {
             if (!Directory.Exists(directory))
