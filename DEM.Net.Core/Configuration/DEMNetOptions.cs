@@ -16,5 +16,7 @@ namespace DEM.Net.Core.Configuration
         public float ImageryDiskCacheExpirationHours { get; set; } = 5f;
 
         public float ImageryCacheExpirationMinutes { get; set; } = 5f;
+
+        public bool PowerOfTwoImages { get; set; } = false;
     }
 }

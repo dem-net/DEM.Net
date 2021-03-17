@@ -269,6 +269,11 @@ namespace DEM.Net.Core.Imagery
                         if (x >= projectedBbox.Width || y >= projectedBbox.Height)
                             continue;
 
+                        if (tile.Image.Length == 0)
+                        {
+                            _logger.LogWarning($"Tile {tile.Uri} is empty. Skipping.");
+                            continue;
+                        }
                         using (Image<Rgba32> tileImg = Image.Load(tile.Image))
                         {
                             outputImage.Mutate(o => o
@@ -288,9 +293,11 @@ namespace DEM.Net.Core.Imagery
                 //outputImage.Save(fileName, encoder);
 
                 // Make image power of two dimensions
-                int nearestPowerOf2 = ToNextNearestPowerOf2(Math.Max(outputImage.Width, outputImage.Height));
-                outputImage.Mutate(o => o.Resize(nearestPowerOf2, nearestPowerOf2));
-
+                if (options.PowerOfTwoImages)
+                {
+                    int nearestPowerOf2 = ToNextNearestPowerOf2(Math.Max(outputImage.Width, outputImage.Height));
+                    outputImage.Mutate(o => o.Resize(nearestPowerOf2, nearestPowerOf2));
+                }
 
                 SaveImage(outputImage, fileName);
             }
