@@ -18,6 +18,7 @@ namespace DEM.Net.Core
         {
             services.AddMemoryCache();
             services.AddHttpClient();
+            services.AddOptions();
 
             services.AddSingleton<GDALVRTFileService>();
             services.AddSingleton<LocalFileSystemIndex>();
