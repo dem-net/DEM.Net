@@ -496,7 +496,7 @@ namespace DEM.Net.Core
             {
                 DownloadMissingFiles(dataSet, bbox);
             }
-            List<FileMetadata> tiles = this.GetCoveringFiles(bbox, dataSet);
+            List<FileMetadata> tiles = this.GetCoveringFiles(bbox.ReprojectTo(4326,dataSet.SRID), dataSet);
 
             if (tiles.Count == 0)
             {
@@ -512,7 +512,7 @@ namespace DEM.Net.Core
                 {
 
                     // Get elevation for each point
-                    pointsWithElevation = this.GetElevationData(points, adjacentRasters, tiles, interpolator, NoDataBehavior.SetToZero);
+                    pointsWithElevation = this.GetElevationData(points.ReprojectTo(4326,dataSet.SRID), adjacentRasters, tiles, interpolator, NoDataBehavior.SetToZero);
 
                     //Debug.WriteLine(adjacentRasters.Count);
                 }  // Ensures all rasters are properly closed
@@ -1203,7 +1203,7 @@ namespace DEM.Net.Core
             List<FileMetadata> metadataCatalog = subSet ?? _RasterService.LoadManifestMetadata(dataSet, false);
 
             // Find files matching coords
-            List<FileMetadata> bboxMetadata = new List<FileMetadata>(metadataCatalog.Where(m => IsBboxIntersectingTile(m, bbox)));
+            List<FileMetadata> bboxMetadata = new List<FileMetadata>(metadataCatalog.Where(m => IsBboxIntersectingTile(m, bbox)).Distinct());
 
             if (bboxMetadata.Count == 0)
             {
