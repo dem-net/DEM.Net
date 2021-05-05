@@ -143,5 +143,27 @@ namespace DEM.Net.Test
             Assert.Equal(expectedObstacles, report.ObstacleCount, 0);
             Assert.Equal(expectedObstacles, report.Metrics.Obstacles.Count, 0);
         }
+
+        [Theory()]
+        [InlineData(nameof(DEMDataSet.SRTM_GL1), 44.9171006, 37.5636956, 9139.53, 44.4888189, 39.2923105, 7182.78, 0)]
+        public void TestIntervisibilityWithInitialAltitude(string dataSetName, double latStart, double lonStart, double altitudeStart
+            , double latEnd, double lonEnd, double altitudeEnd, double expectedObstacles)
+        {
+            DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+            Assert.NotNull(dataSet);
+
+            var sourcePoint = new GeoPoint(latStart, lonStart);
+            var targetPoint = new GeoPoint(latEnd, lonEnd);
+            var startElevation = _elevationService.GetPointElevation(sourcePoint, dataSet).Elevation ?? 0;
+            var endElevation = _elevationService.GetPointElevation(targetPoint, dataSet).Elevation ?? 0;
+
+            IntervisibilityReport report = _elevationService.GetIntervisibilityReport(sourcePoint, targetPoint, dataSet, downloadMissingFiles: true, altitudeStart-startElevation, altitudeEnd-endElevation);
+
+
+            Assert.NotNull(report);
+            Assert.Equal(expectedObstacles, report.ObstacleCount, 0);
+            Assert.Equal(expectedObstacles, report.Metrics.Obstacles.Count, 0);
+
+        }
     }
 }

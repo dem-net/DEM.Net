@@ -35,6 +35,7 @@ namespace DEM.Net.Test
             .AddDemNetglTF();
 
             services.Configure<AppSecrets>(builder.GetSection(nameof(AppSecrets)));
+            services.Configure<DEMNetOptions>(builder.GetSection(nameof(DEMNetOptions)));
 
             ServiceProvider = services.BuildServiceProvider();
 
