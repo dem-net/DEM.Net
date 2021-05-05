@@ -9,14 +9,14 @@ namespace DEM.Net.Core.Imagery
         public static readonly ImageryProvider DebugProvider = new TileDebugProvider(null);
 #endif
         //https://t0.tiles.virtualearth.net/tiles/a1202221311130.jpeg?g=990&mkt=en-us&n=z
-        public static readonly ImageryProvider BingMapsSatellite = new ImageryProvider
-        {
-            Name = "MapTiler-Satellite",
-            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Bing Maps", "https://www.microsoft.com/en-us/maps/product/terms-april-2011", "© Bing Maps"),
-            UrlModel = new UrlModel("https://t{s}.tiles.virtualearth.net/tiles/a{quadkey}.jpeg?g=990&mkt=en-us&n=z", new[] { "0", "1", "2", "3", "4", "5", "6", "7" }),
-            TileSize = 256,
-            MaxZoom = 19
-        };
+        //public static readonly ImageryProvider BingMapsSatellite = new ImageryProvider
+        //{
+        //    Name = "BingMaps-Satellite",
+        //    Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Bing Maps", "https://www.microsoft.com/en-us/maps/product/terms-april-2011", "© Bing Maps"),
+        //    UrlModel = new UrlModel("https://t{s}.tiles.virtualearth.net/tiles/a{quadkey}.jpeg?g=990&mkt=en-us&n=z", new[] { "0", "1", "2", "3", "4", "5", "6", "7" }),
+        //    TileSize = 256,
+        //    MaxZoom = 19
+        //};
         public static readonly ImageryProvider MapTilerSatellite = new ImageryProvider
         {
             Name = "MapTiler-Satellite",
