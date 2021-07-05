@@ -88,10 +88,12 @@ namespace DEM.Net.Core
         {
             return xMin < xMax
                     && yMin < yMax
+                    && ((SRID == 4326 
                     && GpsLocation.IsValidLongitude(xMin)
                     && GpsLocation.IsValidLongitude(xMax)
                     && GpsLocation.IsValidLatitude(yMin)
-                    && GpsLocation.IsValidLatitude(yMax);
+                    && GpsLocation.IsValidLatitude(yMax))
+                    || SRID != 4326);
         }
         public void UnionWith(double x, double y, double z)
         {
