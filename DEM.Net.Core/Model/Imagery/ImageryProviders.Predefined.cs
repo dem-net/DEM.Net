@@ -135,6 +135,13 @@ namespace DEM.Net.Core.Imagery
             TokenUserSecretsKey = "ThunderForestApiKey",
             MaxZoom = 22
         };
+        public static readonly ImageryProvider OrtoIGNes = new ImageryProvider
+        {
+            Name = "OrtoIGNes",
+            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN.es", "https://www.ign.es", "ign.es"),
+            UrlModel = new UrlModel("http://www.ign.es/wmts/pnoa-ma?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=OI.OrthoimageCoverage&FORMAT=image/jpeg&TILEMATRIXSET=GoogleMapsCompatible&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}", null),
+            MaxZoom = 20
+        };
 
     }
 }

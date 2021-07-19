@@ -242,7 +242,7 @@ namespace DEM.Net.Core.Imagery
         }
 
         public TextureInfo ConstructTexture(TileRange tiles, BoundingBox bbox, string fileName,
-            TextureImageFormat mimeType)
+            TextureImageFormat mimeType, float quality = 0.98f)
         {
             // where is the bbox in the final image ?
 
@@ -299,7 +299,7 @@ namespace DEM.Net.Core.Imagery
                     outputImage.Mutate(o => o.Resize(nearestPowerOf2, nearestPowerOf2));
                 }
 
-                SaveImage(outputImage, fileName);
+                SaveImage(outputImage, fileName, quality);
             }
 
             return new TextureInfo(fileName, mimeType, (int)Math.Ceiling(projectedBbox.Width), (int)Math.Ceiling(projectedBbox.Height), zoomLevel,
@@ -316,18 +316,18 @@ namespace DEM.Net.Core.Imagery
             x |= x >> 16;
             return x + 1;
         }
-        private void SaveImage(Image outputImage, string fileName)
+        private void SaveImage(Image outputImage, string fileName, float quality = 0.98f)
         {
-            IImageEncoder imageEncoder = GetEncoder(fileName);
+            IImageEncoder imageEncoder = GetEncoder(fileName, quality);
 
             outputImage.Save(fileName, imageEncoder);
         }
 
-        private IImageEncoder GetEncoder(string fileName)
+        private IImageEncoder GetEncoder(string fileName, float quality = 0.98f)
         {
             var fileExtension = System.IO.Path.GetExtension(fileName).ToLower();
             if (fileExtension.EndsWith("jpg"))
-                return new JpegEncoder { Quality = 98, Subsample = JpegSubsample.Ratio444 };
+                return new JpegEncoder { Quality = (int)(quality * 100F), Subsample = JpegSubsample.Ratio444 };
             else if (fileExtension.EndsWith("png"))
                 return new PngEncoder();
             else return null;
