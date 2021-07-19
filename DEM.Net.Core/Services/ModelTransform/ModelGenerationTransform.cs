@@ -53,7 +53,7 @@ namespace DEM.Net.Core
                     {
                         throw new ArgumentNullException($"Bouding box must be set when using {nameof(GeoTransformPipeline)}.{nameof(TransformPoints)} with center on origin");
                     }
-                    points = points.CenterOnOrigin(this.BoundingBox.ReprojectTo(datasetSrid, _outputSrid));
+                    points = points.CenterOnOrigin(this.BoundingBox.ReprojectTo(this.BoundingBox.SRID, _outputSrid));
                 }
 
                 points = points.ZScale(_zFactor);
@@ -67,7 +67,7 @@ namespace DEM.Net.Core
 
                 if (_centerOnOrigin)
                 {
-                    hMap = hMap.CenterOnOrigin(this.BoundingBox.ReprojectTo(datasetSrid, _outputSrid), _centerOnZOrigin);
+                    hMap = hMap.CenterOnOrigin(this.BoundingBox.ReprojectTo(this.BoundingBox.SRID, _outputSrid), _centerOnZOrigin);
                 }
 
                 hMap = hMap.ZScale(_zFactor);
