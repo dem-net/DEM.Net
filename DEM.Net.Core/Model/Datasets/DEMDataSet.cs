@@ -99,7 +99,7 @@ namespace DEM.Net.Core
                 Name = nameof(AW3D30),
                 Description = "ALOS World 3D - 30m (nicest but contain void areas)",
                 PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTALOS.112016.4326.2",
-                DataSource = new VRTDataSource("https://opentopography.s3.sdsc.edu/raster/AW3D30/AW3D30_alos.vrt"),
+                DataSource = new VRTDataSource("https://opentopography.s3.sdsc.edu/raster/AW3D30/AW3D30_global.vrt"),
                 FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Cell),
                 ResolutionMeters = 30,
                 ResolutionArcSeconds = 1,

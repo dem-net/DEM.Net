@@ -113,7 +113,7 @@ namespace DEM.Net.Core
 
                             HttpClient client = _httpClientFactory == null ? new HttpClient() : _httpClientFactory.CreateClient();
 
-                            using (HttpResponseMessage response = client.GetAsync(dataSet.DataSource.IndexFilePath).Result)
+                            //using (HttpResponseMessage response = client.GetAsync(dataSet.DataSource.IndexFilePath).Result)
                             using (FileStream fs = new FileStream(vrtFileName, FileMode.Create, FileAccess.Write))
                             {
                                 var contentbytes = client.GetByteArrayAsync(dataSet.DataSource.IndexFilePath).Result;
