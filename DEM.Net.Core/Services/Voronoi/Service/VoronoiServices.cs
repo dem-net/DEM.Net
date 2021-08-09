@@ -45,7 +45,7 @@ namespace DEM.Net.Core.Voronoi
             }
             catch (Exception v_ex)
             {
-                throw v_ex;
+                throw;
             }
             return v_topol;
         }
@@ -70,7 +70,7 @@ namespace DEM.Net.Core.Voronoi
             }
             catch (Exception v_ex)
             {
-                throw v_ex;
+                throw;
             }
             return v_trOut;
         }
@@ -112,7 +112,7 @@ namespace DEM.Net.Core.Voronoi
             }
             catch (Exception v_ex)
             {
-                throw v_ex;
+                throw;
             }
             return v_BeanAlimentationVoronoi;
         }
@@ -236,7 +236,7 @@ namespace DEM.Net.Core.Voronoi
             }
             catch (Exception v_ex)
             {
-                throw v_ex;
+                throw;
             }
             return v_BeanAlimentationVoronoi;
         }
@@ -285,7 +285,7 @@ namespace DEM.Net.Core.Voronoi
             }
             catch (Exception v_ex)
             {
-                throw v_ex;
+                throw;
             }
             return v_voronoiGraph;
         }
@@ -473,7 +473,7 @@ namespace DEM.Net.Core.Voronoi
             }
             catch (Exception v_ex)
             {
-                throw v_ex;
+                throw;
             }
             return v_topologie;
         }
@@ -679,7 +679,7 @@ namespace DEM.Net.Core.Voronoi
             }
             catch (Exception v_ex)
             {
-                throw v_ex;
+                throw;
             }
             return v_triangulationDelaunay;
         }
@@ -718,7 +718,7 @@ namespace DEM.Net.Core.Voronoi
             }
             catch (Exception v_ex)
             {
-                throw v_ex;
+                throw;
             }
             return v_dicoPointsCadres;
         }

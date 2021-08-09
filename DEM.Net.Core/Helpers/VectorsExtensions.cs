@@ -70,6 +70,10 @@ namespace DEM.Net.Core
         {
             return new Vector3((float)geoPoint.Longitude, (float)geoPoint.Latitude, (float)(geoPoint.Elevation ?? 0D));
         }
+        public static GeoPoint AsGeoPoint(this Vector3 vector3)
+        {
+            return new GeoPoint(vector3.Y, vector3.X, vector3.Z);
+        }
         public static Vector3 ToGlTFSpace(this Vector3 vector3)
         {
             return new Vector3(vector3.X, vector3.Z, -vector3.Y);
