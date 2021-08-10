@@ -18,14 +18,16 @@ namespace DEM.Net.glTF.SharpglTF
     {
         private readonly ILogger<SharpGltfService> _logger;
         private MeshService _meshService;
+        private MeshReducer _meshReducer;
         private const string TERRAIN_NODE_NAME = "TerrainNode";
         private const string TERRAIN_SCENE_NAME = "TerrainScene";
         private const string TERRAIN_MESH_NAME = "TerrainMesh";
 
-        public SharpGltfService(MeshService meshService, ILogger<SharpGltfService> logger = null)
+        public SharpGltfService(MeshService meshService, MeshReducer meshReducer, ILogger<SharpGltfService> logger = null)
         {
             _logger = logger;
             _meshService = meshService;
+            _meshReducer = meshReducer;
         }
 
         public ModelRoot CreateNewModel()
@@ -56,6 +58,7 @@ namespace DEM.Net.glTF.SharpglTF
                 triangulation = _meshService.TriangulateHeightMap(heightMap);
             }
 
+            triangulation = _meshReducer.Decimate(triangulation);
 
             // create a basic scene
             var model = CreateNewModel();
@@ -83,11 +86,61 @@ namespace DEM.Net.glTF.SharpglTF
             return model;
         }
 
+        public ModelRoot CloneWithMesh(ModelRoot inputModel, IndexedTriangulation indexedTriangulation)
+        {
+            var model = CreateNewModel();
+            var rnode = model.LogicalScenes.First().CreateNode(TERRAIN_NODE_NAME);
+            var rmesh = rnode.Mesh = FindOrCreateMesh(model, string.Concat(rnode.Name, "Mesh"));
+
+            MaterialBuilder b = new MaterialBuilder();
+            inputModel.LogicalMaterials.First().CopyTo(b);
+            var material = Toolkit.CreateMaterial(model, b);
+
+            // create mesh primitive
+            MeshPrimitive primitive = rmesh.CreatePrimitive();
+
+            if (indexedTriangulation.Colors != null && indexedTriangulation.Colors.Any())
+            {
+                primitive = primitive.WithVertexAccessor("POSITION", indexedTriangulation.Positions);
+                primitive = primitive.WithVertexAccessor("COLOR_0", indexedTriangulation.Colors);
+            }
+            else
+            {
+                primitive = primitive.WithVertexAccessor("POSITION", indexedTriangulation.Positions);
+            }
+            var normals = _meshService.ComputeMeshNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
+            primitive = primitive.WithVertexAccessor("NORMAL", normals.ToList());
+            primitive = primitive.WithIndicesAccessor(PrimitiveType.TRIANGLES, indexedTriangulation.Indices);
+
+
+
+            (Vector3 Min, Vector3 Max) coordBounds = CalculateBounds(indexedTriangulation.Positions);
+
+            var coordSets = indexedTriangulation.Positions.Select(pos => new Vector2(
+                MathHelper.Map(coordBounds.Min.X, coordBounds.Max.X, 0, 1, pos.X, true)
+                , MathHelper.Map(coordBounds.Min.Z, coordBounds.Max.Z, 0, 1, pos.Z, true)
+                ));
+
+            primitive = primitive
+                .WithVertexAccessor("TEXCOORD_0", coordSets.ToList());
+
+
+            primitive = primitive.WithMaterial(material);
+            return model;
+        }
+        public ModelRoot CloneGlbWithMesh(SharpGLTF.Schema2.ModelRoot inputModel, Triangulation outTriangulation)
+        {
+            ModelRoot outputModel = CloneWithMesh(inputModel, new IndexedTriangulation(outTriangulation));
+            return outputModel;
+        }
+
         public ModelRoot CreateTerrainMesh(HeightMap heightMap, PBRTexture textures)
         { return AddTerrainMesh(CreateNewModel(), heightMap, textures); }
         public ModelRoot AddTerrainMesh(ModelRoot model, HeightMap heightMap, PBRTexture textures)
         {
             Triangulation triangulation = _meshService.TriangulateHeightMap(heightMap);
+
+            triangulation = _meshReducer.Decimate(triangulation);
 
             model = AddTerrainMesh(model, triangulation, textures);
 
@@ -171,7 +224,6 @@ namespace DEM.Net.glTF.SharpglTF
             Triangulation triangulation = new Triangulation(points, indices);
             return CreateTerrainMesh(triangulation, textures);
         }
-
         private (Vector3 min, Vector3 max) CalculateBounds(List<Vector3> positions)
         {
             Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
