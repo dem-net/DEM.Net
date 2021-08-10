@@ -36,7 +36,7 @@ namespace DEM.Net.Core
         private readonly bool _centerOnZOrigin;
 
        
-        public ModelGenerationTransform(BoundingBox bbox, int outputSrid, bool centerOnOrigin, float zFactor, bool centerOnZOrigin)
+        public ModelGenerationTransform(BoundingBox bbox, int datasetSrid, int outputSrid, bool centerOnOrigin, float zFactor, bool centerOnZOrigin)
         {
             this.BoundingBox = bbox;
             _outputSrid = outputSrid;
@@ -46,7 +46,7 @@ namespace DEM.Net.Core
 
             base.TransformPoints = points =>
             {
-                points = points.ReprojectTo(bbox.SRID, _outputSrid);
+                points = points.ReprojectTo(datasetSrid, _outputSrid);
                 if (_centerOnOrigin)
                 {
                     if (BoundingBox == null)

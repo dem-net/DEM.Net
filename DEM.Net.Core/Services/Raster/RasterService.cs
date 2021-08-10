@@ -23,9 +23,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using DEM.Net.Core.Configuration;
 using DEM.Net.Core.Helpers;
 using DEM.Net.Core.Model;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -56,14 +58,17 @@ namespace DEM.Net.Core
             get { return _localDirectory; }
         }
 
-        public RasterService(RasterIndexServiceResolver rasterResolver, ILogger<RasterService> logger = null)
+        public RasterService(RasterIndexServiceResolver rasterResolver, IOptions<DEMNetOptions> options, ILogger<RasterService> logger = null)
         {
             this._logger = logger;
             this._rasterIndexServiceResolver = rasterResolver;
-            //_localDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), APP_NAME);
-            _localDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), APP_NAME);
+            string directoryFromOptions = options?.Value?.LocalDirectory;
+            _localDirectory = string.IsNullOrWhiteSpace(directoryFromOptions) ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), APP_NAME)
+                : directoryFromOptions;
             if (!Directory.Exists(_localDirectory))
                 Directory.CreateDirectory(_localDirectory);
+
+            _logger.LogInformation($"Local data directory : {_localDirectory}");
 
             _metadataCatalogCache = new ConcurrentDictionary<string, List<FileMetadata>>();
         }
@@ -130,12 +135,12 @@ namespace DEM.Net.Core
                 else
                 {
                     path = Path.Combine(_localDirectory, dataset.Name);
-                }                
+                }
             }
             else
             {
                 path = Path.Combine(_localDirectory, dataset.Name);
-            }            
+            }
 
             return path;
         }
@@ -155,7 +160,7 @@ namespace DEM.Net.Core
 
             using (IRasterFile rasterFile = OpenFile(fileName, fileFormat.Type))
             {
-                 metadata = rasterFile.ParseMetaData(fileFormat);
+                metadata = rasterFile.ParseMetaData(fileFormat);
             }
 
             Uri fullPath = new Uri(metadata.Filename, UriKind.Absolute);
@@ -363,7 +368,7 @@ namespace DEM.Net.Core
         public IEnumerable<DatasetReport> GenerateReport()
         {
             StringBuilder sb = new StringBuilder();
-            
+
             // Get report for downloaded files
             foreach (DEMDataSet dataset in DEMDataSet.RegisteredDatasets)
             {
@@ -416,7 +421,7 @@ namespace DEM.Net.Core
         /// <returns>A Dictionnary</returns>
         public List<DemFileReport> GenerateReport(DEMDataSet dataSet, BoundingBox bbox = null)
         {
-            List<DemFileReport> statusByFile = new List<DemFileReport>(); 
+            List<DemFileReport> statusByFile = new List<DemFileReport>();
 
             var indexService = this._rasterIndexServiceResolver(dataSet.DataSource.DataSourceType);
             indexService.Setup(dataSet, GetLocalDEMPath(dataSet));
@@ -531,7 +536,7 @@ namespace DEM.Net.Core
         /// <returns></returns>
         internal HeightMap GetVirtualHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float? noDataValue)
         {
-            
+
             int registrationOffset = metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid ? 1 : 0;
 
             int yNorth = (int)Math.Floor((bbox.yMax - metadata.PhysicalEndLat) / metadata.pixelSizeY);
@@ -540,9 +545,9 @@ namespace DEM.Net.Core
             int xEast = (int)Math.Ceiling((bbox.xMax - metadata.PhysicalStartLon) / metadata.pixelSizeX);
 
             xWest = Math.Max(0, xWest);
-            xEast = Math.Min(metadata.Width - 1 , xEast) - registrationOffset;
+            xEast = Math.Min(metadata.Width - 1, xEast) - registrationOffset;
             yNorth = Math.Max(0, yNorth);
-            ySouth = Math.Min(metadata.Height - 1 , ySouth) - registrationOffset;
+            ySouth = Math.Min(metadata.Height - 1, ySouth) - registrationOffset;
 
             HeightMap heightMap = new HeightMap(xEast - xWest + 1, ySouth - yNorth + 1);
             heightMap.Count = heightMap.Width * heightMap.Height;

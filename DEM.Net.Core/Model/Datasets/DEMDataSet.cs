@@ -99,7 +99,7 @@ namespace DEM.Net.Core
                 Name = nameof(AW3D30),
                 Description = "ALOS World 3D - 30m (nicest but contain void areas)",
                 PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTALOS.112016.4326.2",
-                DataSource = new VRTDataSource("https://opentopography.s3.sdsc.edu/raster/AW3D30/AW3D30_alos.vrt"),
+                DataSource = new VRTDataSource("https://opentopography.s3.sdsc.edu/raster/AW3D30/AW3D30_global.vrt"),
                 FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Cell),
                 ResolutionMeters = 30,
                 ResolutionArcSeconds = 1,
@@ -197,21 +197,21 @@ namespace DEM.Net.Core
                                                 "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2019/gebco_2019_info.html",
                                                 "GEBCO Compilation Group (2019) GEBCO 2019 Grid (doi:10.5285/836f016a-33be-6ddc-e053-6c86abc0788e)")
             });
-            datasets.Add("GEBCO_2020", new DEMDataSet()
-            {
-                Name = nameof(GEBCO_2020),
-                Description = "GEBCO’s gridded bathymetric data set, a global terrain model for ocean and land at 15 arc-second intervals",
-                PublicUrl = "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2020/",
-                DataSource = new LocalFileSystem(localDirectory: "GEBCO_2020"),
-                FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Grid),
-                ResolutionMeters = 464,
-                ResolutionArcSeconds = 15,
-                PointsPerDegree = 240,
-                NoDataValue = -9999,
-                Attribution = new Attribution(ATTRIBUTION_SUBJECT, "GEBCO Compilation Group (2020) GEBCO 2020 Grid (doi:10.5285/a29c5465-b138-234d-e053-6c86abc040b9)",
-                                                 "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2020/",
-                                                 "GEBCO Compilation Group (2020) GEBCO 2020 Grid (doi:10.5285/a29c5465-b138-234d-e053-6c86abc040b9)")
-            });
+            //datasets.Add("GEBCO_2020", new DEMDataSet()
+            //{
+            //    Name = nameof(GEBCO_2020),
+            //    Description = "GEBCO’s gridded bathymetric data set, a global terrain model for ocean and land at 15 arc-second intervals",
+            //    PublicUrl = "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2020/",
+            //    DataSource = new LocalFileSystem(localDirectory: "GEBCO_2020"),
+            //    FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Grid),
+            //    ResolutionMeters = 464,
+            //    ResolutionArcSeconds = 15,
+            //    PointsPerDegree = 240,
+            //    NoDataValue = -9999,
+            //    Attribution = new Attribution(ATTRIBUTION_SUBJECT, "GEBCO Compilation Group (2020) GEBCO 2020 Grid (doi:10.5285/a29c5465-b138-234d-e053-6c86abc040b9)",
+            //                                     "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2020/",
+            //                                     "GEBCO Compilation Group (2020) GEBCO 2020 Grid (doi:10.5285/a29c5465-b138-234d-e053-6c86abc040b9)")
+            //});
 
             return datasets;
         }

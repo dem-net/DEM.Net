@@ -330,7 +330,7 @@ namespace DEM.Net.Core
             // Add other information about the data
             metadata.SampleFormat = sampleFormat[0].Value.ToString();
             // TODO: Read this from tiff metadata or determine after parsing
-            metadata.NoDataValue = "-10000";
+            metadata.NoDataValue = "-32767";
 
             metadata.WorldUnits = "meter";
 
@@ -356,7 +356,7 @@ namespace DEM.Net.Core
                 xStart = (int)Math.Floor((bbox.xMin - metadata.DataStartLon) / metadata.pixelSizeX);
                 xEnd = (int)Math.Ceiling((bbox.xMax - metadata.DataStartLon) / metadata.pixelSizeX);
             }
-            
+
 
             // Tiled geotiffs like aster have overlapping 1px borders
             int overlappingPixel = this.IsTiled ? 1 : 0;
@@ -422,10 +422,9 @@ namespace DEM.Net.Core
                             heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
                         }
 
-                        else
-                        {
-                            heightValue = (float)noDataValue;
-                        }
+                        if (heightValue < -15000 || heightValue > 10000)
+                            heightValue = noDataValue;
+
                         coords.Add(new GeoPoint(latitude, longitude, heightValue));
 
                     }
@@ -480,21 +479,13 @@ namespace DEM.Net.Core
                             default:
                                 throw new Exception("Sample format unsupported.");
                         }
-                        if (heightValue <= 0)
-                        {
-                            heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
-                            heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
-                        }
-                        else if (heightValue < 32768)
-                        {
-                            heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
-                            heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
-                        }
 
-                        else
-                        {
-                            heightValue = (float)noDataValue;
-                        }
+                        if (heightValue < -15000 || heightValue > 10000)
+                            heightValue = noDataValue;
+                        heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
+                        heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
+
+
                         coords.Add(new GeoPoint(latitude, longitude, heightValue));
 
                     }

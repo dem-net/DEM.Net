@@ -9,14 +9,14 @@ namespace DEM.Net.Core.Imagery
         public static readonly ImageryProvider DebugProvider = new TileDebugProvider(null);
 #endif
         //https://t0.tiles.virtualearth.net/tiles/a1202221311130.jpeg?g=990&mkt=en-us&n=z
-        public static readonly ImageryProvider BingMapsSatellite = new ImageryProvider
-        {
-            Name = "MapTiler-Satellite",
-            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Bing Maps", "https://www.microsoft.com/en-us/maps/product/terms-april-2011", "© Bing Maps"),
-            UrlModel = new UrlModel("https://t{s}.tiles.virtualearth.net/tiles/a{quadkey}.jpeg?g=990&mkt=en-us&n=z", new[] { "0", "1", "2", "3", "4", "5", "6", "7" }),
-            TileSize = 256,
-            MaxZoom = 19
-        };
+        //public static readonly ImageryProvider BingMapsSatellite = new ImageryProvider
+        //{
+        //    Name = "BingMaps-Satellite",
+        //    Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Bing Maps", "https://www.microsoft.com/en-us/maps/product/terms-april-2011", "© Bing Maps"),
+        //    UrlModel = new UrlModel("https://t{s}.tiles.virtualearth.net/tiles/a{quadkey}.jpeg?g=990&mkt=en-us&n=z", new[] { "0", "1", "2", "3", "4", "5", "6", "7" }),
+        //    TileSize = 256,
+        //    MaxZoom = 19
+        //};
         public static readonly ImageryProvider MapTilerSatellite = new ImageryProvider
         {
             Name = "MapTiler-Satellite",
@@ -134,6 +134,13 @@ namespace DEM.Net.Core.Imagery
             UrlModel = new UrlModel("https://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey={t}", null),
             TokenUserSecretsKey = "ThunderForestApiKey",
             MaxZoom = 22
+        };
+        public static readonly ImageryProvider OrtoIGNes = new ImageryProvider
+        {
+            Name = "OrtoIGNes",
+            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN.es", "https://www.ign.es", "ign.es"),
+            UrlModel = new UrlModel("http://www.ign.es/wmts/pnoa-ma?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=OI.OrthoimageCoverage&FORMAT=image/jpeg&TILEMATRIXSET=GoogleMapsCompatible&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}", null),
+            MaxZoom = 20
         };
 
     }

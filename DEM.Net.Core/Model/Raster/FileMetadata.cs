@@ -144,7 +144,7 @@ namespace DEM.Net.Core
         }
         public override int GetHashCode()
         {
-            return Filename.GetHashCode();
+            return Path.GetFileName(Filename).GetHashCode();
         }
 
         public bool Equals(FileMetadata other)

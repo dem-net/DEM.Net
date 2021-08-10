@@ -15,6 +15,7 @@ namespace DEM.Net.glTF
         {
             services
                     .AddTransient<SharpGltfService>()
+                    .AddTransient<MeshReducer>()
                     .AddTransient<ISTLExportService, STLExportService>();
 
             return services;

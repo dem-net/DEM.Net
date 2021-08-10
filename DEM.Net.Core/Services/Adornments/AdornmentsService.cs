@@ -58,14 +58,17 @@ namespace DEM.Net.Core
                 .RotateZ(PI / 2f)
                 .Translate(new Vector3(projWidth / 2, -projHeight / 2 - projHeight * 0.05f, zCenter));
 
-            var text = this.CreateText($"{dataset.Attribution.Subject}: {dataset.Attribution.Text}{Environment.NewLine}{imageryProvider.Attribution.Subject}: {imageryProvider.Attribution.Text}", VectorsExtensions.CreateColor(255, 255, 255)).ToGlTFSpace();
-            var textWidth = (float)text.GetBoundingBox().Width;
+            var text = $"{dataset.Attribution.Subject}: {dataset.Attribution.Text}";
+            if (imageryProvider != null)
+                text = string.Concat(text, $"{Environment.NewLine}{imageryProvider.Attribution.Subject}: {imageryProvider.Attribution.Text}");
+            var text3D = this.CreateText(text, VectorsExtensions.CreateColor(255, 255, 255)).ToGlTFSpace();
+            var textWidth = (float)text3D.GetBoundingBox().Width;
             var scale = (float)(((projWidth - scaleBarSize) * 0.9f) / textWidth);
 
-            text = text.Scale((float)scale)
+            text3D = text3D.Scale((float)scale)
                             .RotateX(-PI / 2)
                             .Translate(new Vector3((-projWidth + textWidth * scale) / 2f, -projHeight * 0.55f, zCenter));
-            adornments += text;
+            adornments += text3D;
 
             return adornments;
 

@@ -27,7 +27,7 @@ namespace DEM.Net.TestWinForm
                             throw new KeyNotFoundException(); // or maybe return null, up to you
                     }
                 };
-                RasterService v_rasterService = new RasterService(rasterIndexServiceResolver);
+                RasterService v_rasterService = new RasterService(rasterIndexServiceResolver, null);
                 ElevationService v_elevationService = new ElevationService(v_rasterService, null);
                 BoundingBox v_bbox = GeometryService.GetBoundingBox(p_bbox);
                 v_elevationService.DownloadMissingFiles(dataset, v_bbox);

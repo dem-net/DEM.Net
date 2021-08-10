@@ -18,5 +18,10 @@ namespace DEM.Net.Core.Configuration
         public float ImageryCacheExpirationMinutes { get; set; } = 5f;
 
         public bool PowerOfTwoImages { get; set; } = false;
+
+        public string LocalDirectory { get; set; } = null;
+
+        // Set to true for ensure tiles stitch correctly when tiling
+        public bool ReduceMeshPreserveEdges { get; set; } = false;
     }
 }

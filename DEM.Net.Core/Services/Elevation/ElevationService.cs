@@ -269,7 +269,7 @@ namespace DEM.Net.Core
             {
                 throw new Exception("Geometry SRID must be set to 4326 (WGS 84)");
             }
-
+            
             BoundingBox bbox = lineStringGeometry.GetBoundingBox();
             List<FileMetadata> tiles = this.GetCoveringFiles(bbox, dataSet);
 
@@ -449,7 +449,7 @@ namespace DEM.Net.Core
 
             if (tile == null)
             {
-                _logger?.LogWarning($"No coverage found matching provided point {geoPoint} for dataset {dataSet.Name}");
+                _logger?.LogDebug($"No coverage found matching provided point {geoPoint} for dataset {dataSet.Name}");
                 return null;
             }
             else
@@ -496,7 +496,7 @@ namespace DEM.Net.Core
             {
                 DownloadMissingFiles(dataSet, bbox);
             }
-            List<FileMetadata> tiles = this.GetCoveringFiles(bbox, dataSet);
+            List<FileMetadata> tiles = this.GetCoveringFiles(bbox.ReprojectTo(4326,dataSet.SRID), dataSet);
 
             if (tiles.Count == 0)
             {
@@ -512,7 +512,7 @@ namespace DEM.Net.Core
                 {
 
                     // Get elevation for each point
-                    pointsWithElevation = this.GetElevationData(points, adjacentRasters, tiles, interpolator, NoDataBehavior.SetToZero);
+                    pointsWithElevation = this.GetElevationData(points.ReprojectTo(4326,dataSet.SRID), adjacentRasters, tiles, interpolator, behavior);
 
                     //Debug.WriteLine(adjacentRasters.Count);
                 }  // Ensures all rasters are properly closed
@@ -556,7 +556,7 @@ namespace DEM.Net.Core
         /// <param name="bbox">Bounding box. Passed as ref: it will be updated to reflect data source real points bounding box</param>
         /// <param name="dataSet"></param>
         /// <returns></returns>
-        public HeightMap GetHeightMap(ref BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles = true)
+        public HeightMap GetHeightMap(ref BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles = true, bool generateMissingData = true)
         {
             if (downloadMissingFiles)
             {
@@ -576,7 +576,7 @@ namespace DEM.Net.Core
             {
                 // Check if bounding box is fully covered (will result in invalid models without any error being thrown)
                 bool covered = this.IsBoundingBoxCovered(bbox, bboxMetadata.Select(m => m.BoundingBox));
-                if (!covered)
+                if (!covered && generateMissingData)
                 {
                     this._logger.LogWarning("Bounding box is partially covered by DEM dataset. Generating missing tiles as virtual with no_data.");
                     // create missing metadata. Will be marked as "VirtalMetadata"
@@ -805,7 +805,6 @@ namespace DEM.Net.Core
                                         AdjacentTiles = segTiles.Where(t => this.IsPointInAdjacentTile(t, point)).ToList()
                                     }
                                     group pointTile by pointTile.Tile into pointsByTile
-                                    where pointsByTile.Key != null
                                     select pointsByTile;
 
             float lastElevation = 0;
@@ -819,18 +818,28 @@ namespace DEM.Net.Core
             {
                 // Get the tile
                 FileMetadata mainTile = tilePoints.Key;
-
-
-                // We open rasters first, then we iterate
-                PopulateRasterFileDictionary(adjacentRasters, mainTile, _RasterService, tilePoints.SelectMany(tp => tp.AdjacentTiles));
-
-
-                foreach (var pointile in tilePoints)
+                if (mainTile == null)
                 {
-                    GeoPoint current = pointile.Point;
-                    lastElevation = this.GetElevationAtPoint(adjacentRasters, mainTile, current.Latitude, current.Longitude, lastElevation, interpolator, behavior);
-                    current.Elevation = lastElevation;
-                    yield return current;
+                    foreach (var pointile in tilePoints)
+                    {
+                        GeoPoint current = pointile.Point;
+                        current.Elevation = 0;
+                        yield return current;
+                    }
+                }
+                else
+                {
+                    // We open rasters first, then we iterate
+                    PopulateRasterFileDictionary(adjacentRasters, mainTile, _RasterService, tilePoints.SelectMany(tp => tp.AdjacentTiles));
+
+
+                    foreach (var pointile in tilePoints)
+                    {
+                        GeoPoint current = pointile.Point;
+                        lastElevation = this.GetElevationAtPoint(adjacentRasters, mainTile, current.Latitude, current.Longitude, lastElevation, interpolator, behavior);
+                        current.Elevation = lastElevation;
+                        yield return current;
+                    }
                 }
             }
         }
@@ -1203,7 +1212,7 @@ namespace DEM.Net.Core
             List<FileMetadata> metadataCatalog = subSet ?? _RasterService.LoadManifestMetadata(dataSet, false);
 
             // Find files matching coords
-            List<FileMetadata> bboxMetadata = new List<FileMetadata>(metadataCatalog.Where(m => IsBboxIntersectingTile(m, bbox)));
+            List<FileMetadata> bboxMetadata = new List<FileMetadata>(metadataCatalog.Where(m => IsBboxIntersectingTile(m, bbox)).Distinct());
 
             if (bboxMetadata.Count == 0)
             {
@@ -1226,7 +1235,7 @@ namespace DEM.Net.Core
 
             if (bboxMetadata.Count == 0)
             {
-                _logger?.LogWarning($"No coverage found matching provided point {geoPoint}.");
+                _logger?.LogDebug($"No coverage found matching provided point {geoPoint}.");
                 //throw new NoCoverageException(dataSet, lat, lon, $"No coverage found matching provided point {geoPoint}.");
             }
             else if (bboxMetadata.Count > 1)
@@ -1427,7 +1436,7 @@ namespace DEM.Net.Core
                     if (x == mainTile.Width
                         || y == mainTile.Height)
                     {
-                        _logger.LogWarning($"No adjacent tile found (adjacent tiles may not have been set). Returning main tile. (x,y, tile) = ({x},{y},{mainTile})");
+                        _logger.LogDebug($"No adjacent tile found (adjacent tiles may not have been set). Returning main tile. (x,y, tile) = ({x},{y},{mainTile})");
                         newX = x == mainTile.Width ? mainTile.Width - 1 : x;
                         newY = y == mainTile.Height ? mainTile.Height - 1 : y;
                         return mainTile;
