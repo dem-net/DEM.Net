@@ -1,7 +1,9 @@
 ﻿using DEM.Net.Core;
+using DEM.Net.Core.Configuration;
 using DEM.Net.glTF.SharpglTF;
 using g3;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using SharpGLTF.Schema2;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,10 +15,13 @@ namespace DEM.Net.glTF
     {
         private readonly ILogger<MeshReducer> _logger;
         private readonly SharpGltfService _sharpGltfService;
-        public MeshReducer(ILogger<MeshReducer> logger, SharpGltfService sharpGltfService)
+        private readonly DEMNetOptions _options;
+
+        public MeshReducer(ILogger<MeshReducer> logger, SharpGltfService sharpGltfService, IOptions<DEMNetOptions> options)
         {
             _logger = logger;
             _sharpGltfService = sharpGltfService;
+            _options = options?.Value;
         }
         public ModelRoot Decimate(ModelRoot inputModel, float quality = 0.5F)
         {
@@ -104,10 +109,11 @@ namespace DEM.Net.glTF
         {
             Reducer r = new Reducer(mesh);
 
-            //DMeshAABBTree3 tree = new DMeshAABBTree3(new DMesh3(mesh));
-            //tree.Build();
-            r.SetExternalConstraints(new MeshConstraints());
-            MeshConstraintUtil.FixAllBoundaryEdges(r.Constraints, mesh);
+            if (_options.ReduceMeshPreserveEdges)
+            {
+                r.SetExternalConstraints(new MeshConstraints());
+                MeshConstraintUtil.FixAllBoundaryEdges(r.Constraints, mesh);
+            }
             r.ReduceToTriangleCount(targetCount);
 
             return mesh;
