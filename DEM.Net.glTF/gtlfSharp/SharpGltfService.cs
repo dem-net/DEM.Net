@@ -42,7 +42,7 @@ namespace DEM.Net.glTF.SharpglTF
 
             return model;
         }
-        public ModelRoot CreateTerrainMesh(HeightMap heightMap, GenOptions options = GenOptions.None, Matrix4x4 vectorTransform = default, bool doubleSided = true)
+        public ModelRoot CreateTerrainMesh(HeightMap heightMap, GenOptions options = GenOptions.None, Matrix4x4 vectorTransform = default, bool doubleSided = true, float meshReduceFactor = 0.5f)
         {
             Triangulation triangulation = default;
             if (options.HasFlag(GenOptions.BoxedBaseElevation0))
@@ -58,7 +58,7 @@ namespace DEM.Net.glTF.SharpglTF
                 triangulation = _meshService.TriangulateHeightMap(heightMap);
             }
 
-            triangulation = _meshReducer.Decimate(triangulation);
+            triangulation = _meshReducer.Decimate(triangulation, meshReduceFactor);
 
             // create a basic scene
             var model = CreateNewModel();
@@ -134,13 +134,13 @@ namespace DEM.Net.glTF.SharpglTF
             return outputModel;
         }
 
-        public ModelRoot CreateTerrainMesh(HeightMap heightMap, PBRTexture textures)
-        { return AddTerrainMesh(CreateNewModel(), heightMap, textures); }
-        public ModelRoot AddTerrainMesh(ModelRoot model, HeightMap heightMap, PBRTexture textures)
+        public ModelRoot CreateTerrainMesh(HeightMap heightMap, PBRTexture textures, float reduceFactor)
+        { return AddTerrainMesh(CreateNewModel(), heightMap, textures, reduceFactor); }
+        public ModelRoot AddTerrainMesh(ModelRoot model, HeightMap heightMap, PBRTexture textures, float reduceFactor)
         {
             Triangulation triangulation = _meshService.TriangulateHeightMap(heightMap);
 
-            triangulation = _meshReducer.Decimate(triangulation);
+            triangulation = _meshReducer.Decimate(triangulation, reduceFactor);
 
             model = AddTerrainMesh(model, triangulation, textures);
 
