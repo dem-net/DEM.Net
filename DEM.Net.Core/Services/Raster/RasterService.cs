@@ -115,7 +115,8 @@ namespace DEM.Net.Core
             {
                 case DEMFileType.GEOTIFF: return new GeoTiff(filePath);
                 case DEMFileType.SRTM_HGT: return new HGTFile(filePath);
-                case DEMFileType.ASCIIGrid: return new ASCIIGridFile(filePath);
+                case DEMFileType.ASCIIGrid: return new ASCIIGridFile(filePath, gzip: false);
+                case DEMFileType.ASCIIGridGzip: return new ASCIIGridFile(filePath, gzip: true);
                 case DEMFileType.CF_NetCDF: return new NetCdfFile(filePath);
                 default:
                     throw new NotImplementedException($"{fileFormat} file format not implemented.");

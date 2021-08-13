@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 
@@ -23,17 +24,26 @@ namespace DEM.Net.Core
     {
         private FileStream _fileStream;
         private StreamReader _streamReader;
+        private GZipStream _gzipStream;
         private readonly string _filename;
         private static char[] SEPARATOR = new char[] { ' ' };
 
         List<List<string>> _data = null;
         private static Dictionary<string, List<List<string>>> _tempCache = new Dictionary<string, List<List<string>>>();
 
-        public ASCIIGridFile(string fileName)
+        public ASCIIGridFile(string fileName, bool gzip)
         {
             this._filename = fileName;
             _fileStream = new FileStream(_filename, FileMode.Open, FileAccess.Read, FileShare.Read);
-            _streamReader = new StreamReader(_fileStream, Encoding.ASCII);
+            if (gzip)
+            {
+                _gzipStream = new GZipStream(_fileStream, CompressionMode.Decompress);
+                _streamReader = new StreamReader(_gzipStream, Encoding.ASCII);
+            }
+            else
+            {
+                _streamReader = new StreamReader(_fileStream, Encoding.ASCII);
+            }
         }
         public float GetElevationAtPoint(FileMetadata metadata, int x, int y)
         {
@@ -250,6 +260,7 @@ namespace DEM.Net.Core
                     //_data = null;
                     _streamReader?.Dispose();
                     _fileStream?.Dispose();
+                    _gzipStream?.Dispose();
                 }
 
                 disposedValue = true;

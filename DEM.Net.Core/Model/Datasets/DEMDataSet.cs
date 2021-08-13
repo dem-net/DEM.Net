@@ -124,6 +124,19 @@ namespace DEM.Net.Core
                 Attribution = new Attribution(ATTRIBUTION_SUBJECT, "ETOPO1 - NOAA", "https://www.ngdc.noaa.gov/mgg/global/"
                     , "Amante, C. and B.W. Eakins, 2009. ETOPO1 1 Arc-Minute Global Relief Model: Procedures, Data Sources and Analysis. NOAA Technical Memorandum NESDIS NGDC-24. National Geophysical Data Center, NOAA. doi:10.7289/V5C8276M")
             });
+            datasets.Add("IGN_5m", new DEMDataSet()
+            {
+                Name = nameof(IGN_5m),
+                Description = "IGN RGE Alti 5 meter (France only)",
+                PublicUrl = "https://ign.fr",
+                DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "IGN_5m_GZip")),
+                FileFormat = new DEMFileDefinition("Esri Ascii Grid (GZipped)", DEMFileType.ASCIIGridGzip, ".asc.gz", DEMFileRegistrationMode.Cell),
+                ResolutionMeters = 5,
+                PointsPerDegree = 21600,
+                NoDataValue = -99999,
+                SRID = 2154,
+                Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN", "https://ign.fr", "https://www.etalab.gouv.fr/licence-ouverte-open-licence")
+            });
             //datasets.Add("IGN_5m", new DEMDataSet()
             //{
             //    Name = nameof(IGN_5m),
@@ -185,7 +198,7 @@ namespace DEM.Net.Core
             datasets.Add("GEBCO_2019", new DEMDataSet()
             {
                 Name = nameof(GEBCO_2019),
-                Description = "GEBCO’s gridded bathymetric data set, a global terrain model for ocean and land at 15 arc-second intervals",
+                Description = "400m with bathymetry",
                 PublicUrl = "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2019/gebco_2019_info.html",
                 DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "GEBCO_2019")),
                 FileFormat = new DEMFileDefinition("netCDF file", DEMFileType.CF_NetCDF, ".nc", DEMFileRegistrationMode.Cell),

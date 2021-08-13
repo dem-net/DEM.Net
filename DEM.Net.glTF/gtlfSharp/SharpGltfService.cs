@@ -140,7 +140,7 @@ namespace DEM.Net.glTF.SharpglTF
         {
             Triangulation triangulation = _meshService.TriangulateHeightMap(heightMap);
 
-            triangulation = _meshReducer.Decimate(triangulation, reduceFactor);
+            triangulation = reduceFactor < 1f ? _meshReducer.Decimate(triangulation, reduceFactor) : triangulation;
 
             model = AddTerrainMesh(model, triangulation, textures);
 

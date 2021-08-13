@@ -44,5 +44,10 @@ namespace DEM.Net.Core
         /// </summary>
         /// <remarks>See https://en.wikipedia.org/wiki/Esri_grid</remarks>
         ASCIIGrid,
+        /// <summary>
+        /// ESRI ARC/INFO ASCII GRID
+        /// </summary>
+        /// <remarks>See https://en.wikipedia.org/wiki/Esri_grid</remarks>
+        ASCIIGridGzip,
     }
 }
