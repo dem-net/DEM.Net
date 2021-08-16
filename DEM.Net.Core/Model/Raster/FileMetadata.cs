@@ -25,6 +25,7 @@
 
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,6 +39,7 @@ namespace DEM.Net.Core
     /// Metadata file generated on the fly.
     /// Extracts necessary data in order to index files for querying without actually open them (which is costly)
     /// </summary>
+    [ProtoContract]
     public class FileMetadata : IEquatable<FileMetadata>
     {
         #region Versioning
@@ -47,10 +49,13 @@ namespace DEM.Net.Core
          *  2.1 : file name are relative to data directory
          *  2.2 : [Metadata regneration required] file format is now mapped to DEMFileDefinition, lat/lon bounds names changed for clarity, file format changed from DEMFileFormat (name + file extenstion)
          */
-
+        [ProtoMember(1)]
         public const string FILEMETADATA_VERSION = "2.2";
         #endregion
 
+        internal FileMetadata()
+        {
+        }
 
         public FileMetadata(string filename, DEMFileDefinition fileFormat, string version = FILEMETADATA_VERSION)
         {
@@ -66,50 +71,75 @@ namespace DEM.Net.Core
         /// </summary>
         [JsonIgnore]
         public bool VirtualMetadata { get; set; }
+
+        [ProtoMember(2)]
         public string Version { get; set; }
+        [ProtoMember(3)]
         public string Filename { get; set; }
+        [ProtoMember(4)]
         public int Height { get; set; }
+        [ProtoMember(5)]
         public int Width { get; set; }
+        [ProtoMember(6)]
         public double PixelScaleX { get; set; }
+        [ProtoMember(7)]
         public double PixelScaleY { get; set; }
         /// <summary>
         /// Data point start latitude (used for bbox)
         /// Image may be grid centered, with lat less than data start, but the data resides in the next overlapping tile
         /// </summary>
+        [ProtoMember(8)]
         public double DataStartLat { get; set; }
         /// <summary>
         /// Data point start longitude (used for bbox)
         /// Image may be grid centered, with long less than data start, but the data resides in the next overlapping tile
         /// </summary>
+        [ProtoMember(9)]
         public double DataStartLon { get; set; }
         /// <summary>
         /// Data point end latitude (used for bbox)
         /// </summary>
+        [ProtoMember(10)] 
         public double DataEndLat { get; set; }
         /// <summary>
         /// Data point end longitude (used for bbox)
         /// </summary>
+        [ProtoMember(11)] 
         public double DataEndLon { get; set; }
+        [ProtoMember(12)]
         public int BitsPerSample { get; set; }
+        [ProtoMember(13)]
         public string WorldUnits { get; set; }
+        [ProtoMember(14)]
         public string SampleFormat { get; set; }
+        [ProtoMember(15)]
         public string NoDataValue { get; set; }
+        [ProtoMember(16)]
         public int ScanlineSize { get; set; }
         /// <summary>
         /// Origin longitude of physical image (for cell centered images this can be offset by 1px)
         /// </summary>
+        [ProtoMember(17)]
         public double PhysicalStartLon { get; set; }
         ///
         /// Origin latitude of physical image (for cell centered images this can be offset by 1px)
+        [ProtoMember(18)]
         public double PhysicalStartLat { get; set; }
+        [ProtoMember(19)]
         public double PhysicalEndLon { get; set; }
+        [ProtoMember(20)]
         public double PhysicalEndLat { get; set; }
+        [ProtoMember(21)]
         public double pixelSizeX { get; set; }
+        [ProtoMember(22)]
         public double pixelSizeY { get; set; }
+        [ProtoMember(23)]
         public DEMFileDefinition FileFormat { get; set; }
+        [ProtoMember(24)]
         public float MinimumAltitude { get; set; }
+        [ProtoMember(25)]
         public float MaximumAltitude { get; set; }
-       
+
 
         private float _noDataValue;
         private bool _noDataValueSet = false;

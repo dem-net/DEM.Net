@@ -35,10 +35,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using ProtoBuf;
 
 namespace DEM.Net.Core
 {
@@ -174,6 +173,7 @@ namespace DEM.Net.Core
         public List<FileMetadata> LoadManifestMetadata(DEMDataSet dataset, bool force, bool logTimeSpent = false)
         {
             string localPath = GetLocalDEMPath(dataset);
+            var globalManifestPath = Path.Combine(localPath, "globalmanifest.bin");
 
             if (force && _metadataCatalogCache.ContainsKey(localPath))
             {
@@ -183,6 +183,16 @@ namespace DEM.Net.Core
 
             if (_metadataCatalogCache.ContainsKey(localPath) == false)
             {
+                if (File.Exists(globalManifestPath))
+                {
+                    using (var inStream = new FileStream(globalManifestPath, FileMode.Open, FileAccess.Read))
+                    {
+                        _logger.LogInformation($"{dataset.Name} metadata read from protobuf index");
+                        _metadataCatalogCache[localPath] = Serializer.Deserialize<List<FileMetadata>>(inStream);
+                        return _metadataCatalogCache[localPath];
+                    }
+                }
+
                 var manifestDirectories = Directory.EnumerateDirectories(localPath, MANIFEST_DIR, SearchOption.AllDirectories);
 
                 ConcurrentBag<FileMetadata> metaList = new ConcurrentBag<FileMetadata>();
@@ -207,8 +217,13 @@ namespace DEM.Net.Core
                     );
 
                 }
-                _metadataCatalogCache[localPath] = metaList.ToList();
 
+                _metadataCatalogCache[localPath] = metaList.ToList();        
+                using (var outStream = new FileStream(globalManifestPath, FileMode.Create, FileAccess.Write))
+                {
+                    Serializer.Serialize(outStream, _metadataCatalogCache[localPath]);
+                    _logger.LogInformation($"{dataset.Name} metadata written to protobuf index");
+                }
             }
 
             if (logTimeSpent) // we avoid logging each time the data is requested, only needed on preload
@@ -254,7 +269,6 @@ namespace DEM.Net.Core
                          throw;
                      }
                  }
-
              });
         }
 
@@ -313,7 +327,7 @@ namespace DEM.Net.Core
                 Trace.TraceInformation($"Generating manifest for file {rasterFileName}.");
 
                 FileMetadata metadata = this.ParseMetadata(rasterFileName, fileFormat);
-                File.WriteAllText(jsonPath, JsonConvert.SerializeObject(metadata, Formatting.Indented));
+                File.WriteAllText(jsonPath, JsonConvert.SerializeObject(metadata, Formatting.Indented));                
 
                 Trace.TraceInformation($"Manifest generated for file {rasterFileName}.");
             }
