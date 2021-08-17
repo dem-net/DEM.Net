@@ -38,6 +38,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ProtoBuf;
+using System.Threading;
 
 namespace DEM.Net.Core
 {
@@ -242,14 +243,21 @@ namespace DEM.Net.Core
         public void GenerateDirectoryMetadata(DEMDataSet dataset, bool force, bool deleteOnError = false, int maxDegreeOfParallelism = -1)
         {
             string directoryPath = GetLocalDEMPath(dataset);
-            var files = Directory.EnumerateFiles(directoryPath, "*" + dataset.FileFormat.FileExtension, SearchOption.AllDirectories);
+            var files = Directory.GetFiles(directoryPath, "*" + dataset.FileFormat.FileExtension, SearchOption.AllDirectories);
             ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = Math.Min(Environment.ProcessorCount, maxDegreeOfParallelism == 0 ? -1 : maxDegreeOfParallelism) };
             //ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = 1 };
+            int count = 0;
             Parallel.ForEach(files, options, file =>
              {
                  try
                  {
                      GenerateFileMetadata(file, dataset.FileFormat, force);
+                     Interlocked.Increment(ref count);
+
+                     if (count % 100 == 0)
+                     {
+                         _logger?.LogInformation($"Generating metadata {count}/{files.Length} ({count * 1d / files.Length:P1})");
+                     }
                  }
                  catch (Exception exFile)
                  {
@@ -270,6 +278,8 @@ namespace DEM.Net.Core
                      }
                  }
              });
+
+            LoadManifestMetadata(dataset, force);
         }
 
         private string GetMetadataFileName(string rasterFileName, string outDirPath, string extension = ".json")
@@ -299,7 +309,6 @@ namespace DEM.Net.Core
             if (!File.Exists(rasterFileName))
                 throw new FileNotFoundException($"File {rasterFileName} does not exists !");
             string outDirPath = GetManifestDirectory(rasterFileName);
-            string bmpPath = GetMetadataFileName(rasterFileName, outDirPath, ".bmp");
             string jsonPath = GetMetadataFileName(rasterFileName, outDirPath, ".json");
 
 
@@ -314,10 +323,6 @@ namespace DEM.Net.Core
                 if (File.Exists(jsonPath))
                 {
                     File.Delete(jsonPath);
-                }
-                if (File.Exists(bmpPath))
-                {
-                    File.Delete(bmpPath);
                 }
             }
 

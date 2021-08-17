@@ -129,10 +129,23 @@ namespace DEM.Net.Core
                 Name = nameof(IGN_5m),
                 Description = "IGN RGE Alti 5 meter (France only)",
                 PublicUrl = "https://ign.fr",
-                DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "IGN_5m_GZip")),
+                DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "IGN_5m")),
                 FileFormat = new DEMFileDefinition("Esri Ascii Grid (GZipped)", DEMFileType.ASCIIGridGzip, ".asc.gz", DEMFileRegistrationMode.Cell),
                 ResolutionMeters = 5,
                 PointsPerDegree = 21600,
+                NoDataValue = -99999,
+                SRID = 2154,
+                Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN", "https://ign.fr", "https://www.etalab.gouv.fr/licence-ouverte-open-licence")
+            });
+            datasets.Add("IGN_1m", new DEMDataSet()
+            {
+                Name = nameof(IGN_1m),
+                Description = "IGN RGE Alti 1 meter (France only)",
+                PublicUrl = "https://ign.fr",
+                DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "IGN_1m")),
+                FileFormat = new DEMFileDefinition("Esri Ascii Grid (GZipped)", DEMFileType.ASCIIGridGzip, ".asc.gz", DEMFileRegistrationMode.Cell),
+                ResolutionMeters = 1,
+                PointsPerDegree = 108000,
                 NoDataValue = -99999,
                 SRID = 2154,
                 Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN", "https://ign.fr", "https://www.etalab.gouv.fr/licence-ouverte-open-licence")
