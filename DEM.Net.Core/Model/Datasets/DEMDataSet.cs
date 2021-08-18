@@ -30,6 +30,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DEM.Net.Core.Datasets;
+using DEM.Net.Core.Stac;
 
 namespace DEM.Net.Core
 {
@@ -150,34 +151,6 @@ namespace DEM.Net.Core
                 SRID = 2154,
                 Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN", "https://ign.fr", "https://www.etalab.gouv.fr/licence-ouverte-open-licence")
             });
-            //datasets.Add("IGN_5m", new DEMDataSet()
-            //{
-            //    Name = nameof(IGN_5m),
-            //    Description = "IGN RGE Alti 5 meter",
-            //    PublicUrl = "https://ign.fr",
-            //    DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "IGN_5m")),
-            //    FileFormat = new DEMFileDefinition("Esri Ascii Grid", DEMFileType.ASCIIGrid, ".asc", DEMFileRegistrationMode.Cell),
-            //    ResolutionMeters = 5,
-            //    PointsPerDegree = 21600,
-            //    NoDataValue = -99999,
-            //    SRID = 2154,
-            //    Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN", "https://ign.fr"
-            //        , "TO BE DEFINED")
-            //});
-            //datasets.Add("IGN_1m", new DEMDataSet()
-            //{
-            //    Name = nameof(IGN_1m),
-            //    Description = "IGN RGE Alti 1 meter",
-            //    PublicUrl = "https://ign.fr",
-            //    DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "IGN_1m")),
-            //    FileFormat = new DEMFileDefinition("Esri Ascii Grid", DEMFileType.ASCIIGrid, ".asc", DEMFileRegistrationMode.Cell),
-            //    ResolutionMeters = 1,
-            //    PointsPerDegree = 108000,
-            //    NoDataValue = -99999,
-            //    SRID = 2154,
-            //    Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN", "https://ign.fr"
-            //        , "TO BE DEFINED")
-            //});
             //datasets.Add("ASTER_GDEMV3", new DEMDataSet()
             //{
             //    Name = nameof(ASTER_GDEMV3),
@@ -207,6 +180,23 @@ namespace DEM.Net.Core
                 Attribution = new Attribution(ATTRIBUTION_SUBJECT, "NASADEM",
                                                 "https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001",
                                                 "NASA JPL. NASADEM Merged DEM Global 1 arc second V001. 2020, distributed by NASA EOSDIS Land Processes DAAC, https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001. Accessed 2020-03-06.")
+            });
+            datasets.Add(nameof(swissALTI3D2m), new DEMDataSet()
+            {
+                Name = "swissALTI3D 2m",
+                Description = "swissALTI3D is an extremely precise digital elevation model which describes the surface of Switzerland and the Principality of Liechtenstein without vegetation and development. It is updated in an cycle of 6 years.",
+                PublicUrl = "https://www.swisstopo.admin.ch/de/geodata/height/alti3d.html",
+                DataSource = new StacDataSource(url: "https://data.geo.admin.ch/api/stac/v0.9", indexFilePath: "swissALTI3D2m.json", collection: "ch.swisstopo.swissalti3d",
+                 filter: (Asset a) => a.Type == AssetType.ImageTiffApplicationGeotiffProfileCloudOptimized && a.EoGsd == 2.0),
+                FileFormat = new DEMFileDefinition("GeoTIFF", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Grid),
+                ResolutionMeters = 2,
+                ResolutionArcSeconds = 1,
+                PointsPerDegree = 55660,
+                NoDataValue = -9999,
+                SRID = 2056,
+                Attribution = new Attribution(ATTRIBUTION_SUBJECT, "swisstopo",
+                                                "https://www.swisstopo.admin.ch/en/home/meta/conditions/geodata/ogd.html",
+                                                "Office of Topography swisstopo, ©swisstopo")
             });
             datasets.Add("GEBCO_2019", new DEMDataSet()
             {
@@ -274,6 +264,9 @@ namespace DEM.Net.Core
         public static DEMDataSet NASADEM => Datasets.Value[nameof(NASADEM)];
         public static DEMDataSet IGN_5m => Datasets.Value[nameof(IGN_5m)];
         public static DEMDataSet IGN_1m => Datasets.Value[nameof(IGN_1m)];
+
+        public static DEMDataSet swissALTI3D2m => Datasets.Value[nameof(swissALTI3D2m)]; 
+        
 
 
 

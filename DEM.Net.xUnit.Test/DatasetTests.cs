@@ -24,10 +24,9 @@ namespace DEM.Net.Test
 
 
         [Theory(), TestPriority(1)]
-        [InlineData(nameof(DEMDataSet.SRTM_GL1))]
         [InlineData(nameof(DEMDataSet.SRTM_GL3))]
         [InlineData(nameof(DEMDataSet.AW3D30))]
-        [InlineData(nameof(DEMDataSet.ASTER_GDEMV3))]
+        [InlineData(nameof(DEMDataSet.NASADEM))]
         public void DatasetTest(string datasetName)
         {
             var datasets = DEMDataSet.RegisteredDatasets;
@@ -64,10 +63,8 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
-        [InlineData(nameof(DEMDataSet.SRTM_GL1))]
         [InlineData(nameof(DEMDataSet.SRTM_GL3))]
         [InlineData(nameof(DEMDataSet.AW3D30))]
-        [InlineData(nameof(DEMDataSet.ASTER_GDEMV3))]
         public void DownloadTile_BBox(string datasetName)
         {
             var datasets = DEMDataSet.RegisteredDatasets;
