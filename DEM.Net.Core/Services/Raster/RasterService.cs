@@ -179,6 +179,10 @@ namespace DEM.Net.Core
             if (force && _metadataCatalogCache.ContainsKey(localPath))
             {
                 _metadataCatalogCache.TryRemove(localPath, out List<FileMetadata> removed);
+                if (File.Exists(globalManifestPath))
+                {
+                    File.Delete(globalManifestPath);
+                }
             }
             Stopwatch stopwatch = Stopwatch.StartNew();
 

@@ -46,6 +46,9 @@ namespace DEM.Net.glTF
         }
         public Triangulation Decimate(Triangulation triangulation, float quality = 0.5F)
         {
+            if (quality >= 1)
+                return triangulation;
+
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             var originalMesh = LoadTriangulation(triangulation);

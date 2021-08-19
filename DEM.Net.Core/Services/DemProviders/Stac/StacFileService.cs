@@ -170,7 +170,7 @@ namespace DEM.Net.Core.Stac
         {
             foreach (DEMFileSource source in this.GetFileSources(dataset))
             {
-                if (bbox == null || source.BBox.Intersects(bbox))
+                if (bbox == null || source.BBox.ReprojectTo(source.BBox.SRID, dataset.SRID).Intersects(bbox))
                 {
                     yield return source;
                 }
