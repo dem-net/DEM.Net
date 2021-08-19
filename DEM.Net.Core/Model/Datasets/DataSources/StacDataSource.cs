@@ -1,4 +1,5 @@
 ﻿using DEM.Net.Core.Stac;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,6 +18,8 @@ namespace DEM.Net.Core.Datasets
         public string Url { get; }
         public string IndexFilePath { get; }
         public string Collection { get; private set; }
+        
+        [JsonIgnore]
         public Predicate<Asset> Filter { get; }
 
         public DEMDataSourceType DataSourceType => DEMDataSourceType.Stac;

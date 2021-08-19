@@ -141,7 +141,7 @@ namespace DEM.Net.Core
                             _RasterService.DownloadRasterFile(file, dataSet);
                         }
                     );
-
+                     
                     _RasterService.GenerateDirectoryMetadata(dataSet, false, false);
                     _RasterService.LoadManifestMetadata(dataSet, true);
 
