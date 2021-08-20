@@ -137,11 +137,27 @@ namespace DEM.Net.Core.Imagery
         };
         public static readonly ImageryProvider OrtoIGNes = new ImageryProvider
         {
-            Name = "OrtoIGNes",
+            Name = "OrtoIGNes (Spain only)",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN.es", "https://www.ign.es", "ign.es"),
             UrlModel = new UrlModel("http://www.ign.es/wmts/pnoa-ma?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=OI.OrthoimageCoverage&FORMAT=image/jpeg&TILEMATRIXSET=GoogleMapsCompatible&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}", null),
             MaxZoom = 20
         };
+        public static readonly ImageryProvider SwissImage = new ImageryProvider
+        {
+            Name = "SwissImage (Switzerland only)",
+            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "swisstopo", "https://www.swisstopo.admin.ch", "ign.es"),
+            UrlModel = new UrlModel("https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg", null),
+            MaxZoom = 20
+        };
+        public static readonly ImageryProvider OrtoIGNfr = new ImageryProvider
+        {
+            Name = "Orthophoto IGN (France only)",
+            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN.fr", "https://geoservices.ign.fr", "Ign.fr"),
+            UrlModel = new UrlModel("https://wxs.ign.fr/ortho/geoportail/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIXSET=PM&TILEMATRIX={z}&TILECOL={x}&TILEROW={y}&STYLE=normal&FORMAT=image/jpeg", null),
+            MaxZoom = 20
+        };
+        
+        
 
     }
 }
