@@ -58,7 +58,7 @@ namespace DEM.Net.glTF
             float t1 = stopwatch.ElapsedMilliseconds;
 
             originalMesh = Decimate(originalMesh, targetCount);
-            PrintMeshInfo("Input", originalMesh.VertexCount, originalMesh.TriangleCount);
+            PrintMeshInfo("Output", originalMesh.VertexCount, originalMesh.TriangleCount);
             float t2 = stopwatch.ElapsedMilliseconds - t1;
 
             Triangulation outTriangulation = SaveTriangulation(originalMesh);
