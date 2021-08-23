@@ -154,7 +154,7 @@ namespace DEM.Net.Core.Imagery
             Name = "Orthophoto IGN (France only)",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN.fr", "https://geoservices.ign.fr", "Ign.fr"),
             UrlModel = new UrlModel("https://wxs.ign.fr/ortho/geoportail/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIXSET=PM&TILEMATRIX={z}&TILECOL={x}&TILEROW={y}&STYLE=normal&FORMAT=image/jpeg", null),
-            MaxZoom = 20
+            MaxZoom = 19
         };
         
         
