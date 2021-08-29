@@ -122,7 +122,13 @@ namespace DEM.Net.Core.EarthData
 
                 var link = entry.Links.FirstOrDefault(l => l.Type == TypeEnum.ApplicationZip);
                 if (link == null)
-                    throw new ArgumentNullException(nameof(link), "ApplicationZip Link is mandatory.");
+                {
+                    // fallack for LPCLOUD datasets (see https://cmr.earthdata.nasa.gov/search/granules.json?collection_concept_id=C1711961296-LPCLOUD&page_num=1&page_size=2000&sort_key=-entry_title)
+                    link = entry.Links.FirstOrDefault(l => l.Href.AbsolutePath.EndsWith("_dem.tif"));
+                    if (link == null)
+                        throw new Exception("Cannot find Zip entry or dem.tif entry");
+                }
+
 
                 return new NasaDemFile(entry.ProducerGranuleId, entry.Boxes.First(), link.Href.AbsoluteUri);
             }
@@ -192,28 +198,35 @@ namespace DEM.Net.Core.EarthData
             try
             {
                 // Download file
-                var zipFileName = Path.Combine(Path.GetDirectoryName(report.LocalName), report.Source.SourceFileName);
-                rasterDownloader.Download(report.URL, zipFileName);
-
-                // Post action
-                // - Unzip file 
-                // - Keep only _dem.tif file
-                // - rename it as .tif
-                // - suppress other files
-
-                using (var archive = ZipFile.Open(zipFileName, ZipArchiveMode.Read))
+                if (report.LocalName.EndsWith(".zip"))
                 {
-                    var geoTiffFile = archive.Entries.FirstOrDefault(e => e.Name.ToLower().EndsWith(dataset.FileFormat.FileExtension));
-                    if (geoTiffFile == null)
+                    var zipFileName = Path.Combine(Path.GetDirectoryName(report.LocalName), report.Source.SourceFileName);
+                    rasterDownloader.Download(report.URL, zipFileName);
+
+                    // Post action
+                    // - Unzip file 
+                    // - Keep only _dem.tif file
+                    // - rename it as .tif
+                    // - suppress other files
+
+                    using (var archive = ZipFile.Open(zipFileName, ZipArchiveMode.Read))
                     {
-                        this.logger.LogError($"Cannot find any {dataset.FileFormat.FileExtension} file into archive {report.LocalName}");
+                        var geoTiffFile = archive.Entries.FirstOrDefault(e => e.Name.ToLower().EndsWith(dataset.FileFormat.FileExtension));
+                        if (geoTiffFile == null)
+                        {
+                            this.logger.LogError($"Cannot find any {dataset.FileFormat.FileExtension} file into archive {report.LocalName}");
+                        }
+                        else
+                        {
+                            geoTiffFile.ExtractToFile(report.LocalName, true);
+                        }
                     }
-                    else
-                    {
-                        geoTiffFile.ExtractToFile(report.LocalName, true);
-                    }
+                    File.Delete(zipFileName);
                 }
-                File.Delete(zipFileName);
+                else
+                {
+                    rasterDownloader.Download(report.URL, report.LocalName);
+                }
 
             }
             catch (Exception ex)

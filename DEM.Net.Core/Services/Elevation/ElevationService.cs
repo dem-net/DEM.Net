@@ -444,7 +444,7 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public GeoPoint GetPointElevation(double lat, double lon, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
-            GeoPoint geoPoint = new GeoPoint(lat, lon);
+            GeoPoint geoPoint = new GeoPoint(lat, lon).ReprojectTo(Reprojection.SRID_GEODETIC, dataSet.SRID);
             FileMetadata tile = this.GetCoveringFile(lat, lon, dataSet);
 
             if (tile == null)
