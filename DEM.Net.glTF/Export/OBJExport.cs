@@ -19,7 +19,7 @@ namespace DEM.Net.glTF.Export
         {
             _logger = logger;
         }
-        public void ExportGlTFModelToWaveFrontObj(ModelRoot model, string directory, string fileName, bool overwrite = false, bool zip = false)
+        public string ExportGlTFModelToWaveFrontObj(ModelRoot model, string directory, string fileName, bool overwrite = false, bool zip = false)
         {
             if (Directory.Exists(directory))
             {
@@ -30,7 +30,7 @@ namespace DEM.Net.glTF.Export
             }
             Directory.CreateDirectory(directory);
 
-            fileName = Path.Combine(directory, Path.GetFileName(fileName));
+            fileName = Path.Combine(directory, Path.GetFileName(fileName)) + ".obj";
             string fileTitle = Path.GetFileNameWithoutExtension(fileName);
 
             string materialFile = Path.Combine(directory, $"{fileTitle}.mtl");
@@ -94,7 +94,14 @@ namespace DEM.Net.glTF.Export
                 if (File.Exists(fileTitle + ".zip"))
                     File.Delete(fileTitle + ".zip");
 
-                ZipFile.CreateFromDirectory(directory, fileTitle + ".zip", compressionLevel: CompressionLevel.Fastest, false);
+                string outputFileName = Path.Combine(new DirectoryInfo(directory).Parent.FullName, fileTitle + ".zip");
+                ZipFile.CreateFromDirectory(directory, outputFileName, compressionLevel: CompressionLevel.Fastest, false);
+                Directory.Delete(directory, recursive: true);
+                return outputFileName;
+            }
+            else
+            {
+                return fileName;
             }
         }
 
