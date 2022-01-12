@@ -211,7 +211,7 @@ namespace DEM.Net.Core
             GeoPoint start = new GeoPoint(ptStart.Y, ptStart.X);
             GeoPoint end = new GeoPoint(ptEnd.Y, ptEnd.X);
             double lengthMeters = start.DistanceTo(end);
-            int demResolution = dataSet.ResolutionMeters;
+            float demResolution = dataSet.ResolutionMeters;
             int totalCapacity = 2 * (int)(lengthMeters / demResolution);
             double registrationOffset = dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell ? 0 : 0.5;
 
@@ -281,7 +281,7 @@ namespace DEM.Net.Core
             GeoPoint start = new GeoPoint(ptStart.Y, ptStart.X);
             GeoPoint end = new GeoPoint(ptEnd.Y, ptEnd.X);
             double lengthMeters = start.DistanceTo(end);
-            int demResolution = dataSet.ResolutionMeters;
+            float demResolution = dataSet.ResolutionMeters;
             int totalCapacity = 2 * (int)(lengthMeters / demResolution);
             double registrationOffset = dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell ? 0 : 0.5;
 

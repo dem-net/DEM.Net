@@ -44,7 +44,7 @@ namespace DEM.Net.Core
         /// <summary>
         /// Approximate meters resolution calculated at equator (no distortion)
         /// </summary>
-        public int ResolutionMeters { get; set; }
+        public float ResolutionMeters { get; set; }
         public float ResolutionArcSeconds { get; set; }
         public int NoDataValue { get; set; }
         public DEMFileDefinition FileFormat { get; set; }
@@ -53,7 +53,7 @@ namespace DEM.Net.Core
         public int PointsPerDegree { get; private set; }
         public int SRID { get; set; } = Reprojection.SRID_GEODETIC;
         public bool IsListed { get; set; } = true;
-        
+
         // null means global
         public string ExtentInfo { get; set; } = "Global";
 
@@ -207,6 +207,24 @@ namespace DEM.Net.Core
                                                 "https://www.swisstopo.admin.ch/en/home/meta/conditions/geodata/ogd.html",
                                                 "Office of Topography swisstopo, ©swisstopo")
             });
+            datasets.Add(nameof(swissALTI3D50cm), new DEMDataSet()
+            {
+                Name = "swissALTI3D 50cm",
+                ExtentInfo = "Switzerland",
+                Description = "swissALTI3D is an extremely precise digital elevation model which describes the surface of Switzerland and the Principality of Liechtenstein without vegetation and development. It is updated in an cycle of 6 years.",
+                PublicUrl = "https://www.swisstopo.admin.ch/de/geodata/height/alti3d.html",
+                DataSource = new StacDataSource(url: "https://data.geo.admin.ch/api/stac/v0.9", indexFilePath: "swissALTI3D50cm.json", collection: "ch.swisstopo.swissalti3d",
+                 filter: asset => swissAlti50cmFilter(asset)),
+                FileFormat = new DEMFileDefinition("GeoTIFF", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Cell),
+                ResolutionMeters = 0.5f,
+                ResolutionArcSeconds = 1,
+                PointsPerDegree = 160000,
+                NoDataValue = -9999,
+                SRID = 2056,
+                Attribution = new Attribution(ATTRIBUTION_SUBJECT, "swisstopo",
+                                                "https://www.swisstopo.admin.ch/en/home/meta/conditions/geodata/ogd.html",
+                                                "Office of Topography swisstopo, ©swisstopo")
+            });
             datasets.Add("GEBCO_2019", new DEMDataSet()
             {
                 Name = nameof(GEBCO_2019),
@@ -240,6 +258,21 @@ namespace DEM.Net.Core
             //});
 
             return datasets;
+        }
+
+        private static bool swissAlti50cmFilter(Asset asset)
+        {
+            if (asset.Type == AssetType.ImageTiffApplicationGeotiffProfileCloudOptimized)
+            {
+                if (asset.EoGsd < 2)
+                {
+                    if (asset.EoGsd == 0.5)
+                        return true;
+                    else
+                        return false;
+                }
+            }
+            return false;
         }
 
 
@@ -277,6 +310,7 @@ namespace DEM.Net.Core
         public static DEMDataSet IGN_1m => Datasets.Value[nameof(IGN_1m)];
 
         public static DEMDataSet swissALTI3D2m => Datasets.Value[nameof(swissALTI3D2m)];
+        public static DEMDataSet swissALTI3D50cm => Datasets.Value[nameof(swissALTI3D50cm)];
 
 
 
