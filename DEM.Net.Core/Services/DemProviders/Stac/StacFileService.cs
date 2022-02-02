@@ -132,7 +132,7 @@ namespace DEM.Net.Core.Stac
         {
             try
             {
-                logger.LogInformation($"Downloading {report.URL}...");
+                //logger.LogInformation($"Downloading {report.URL}...");
 
                 var dirName = Path.GetDirectoryName(report.LocalName);
                 if (!Directory.Exists(dirName))

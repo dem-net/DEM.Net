@@ -248,7 +248,7 @@ namespace DEM.Net.Core
         {
             string directoryPath = GetLocalDEMPath(dataset);
             var files = Directory.GetFiles(directoryPath, "*" + dataset.FileFormat.FileExtension, SearchOption.AllDirectories);
-            ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = Math.Min(Environment.ProcessorCount, maxDegreeOfParallelism == 0 ? -1 : maxDegreeOfParallelism) };
+            ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
             //ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = 1 };
             int count = 0;
             Parallel.ForEach(files, options, file =>
@@ -539,7 +539,7 @@ namespace DEM.Net.Core
             {
                 if (!File.Exists(report.LocalName))
                 {
-                    _logger?.LogInformation($"Downloading file {report.URL}...");
+                    //_logger?.LogInformation($"Downloading file {report.URL}...");
 
                     downloader.DownloadRasterFile(report, dataset);
 

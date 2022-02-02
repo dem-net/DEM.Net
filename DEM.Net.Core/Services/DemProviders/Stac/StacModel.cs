@@ -114,7 +114,7 @@ namespace DEM.Net.Core.Stac
     public enum GeometryType { Polygon };
 
     public enum Rel { Collection, Next, Parent, Root, Self,
-        Previous
+        Previous, Alternate
     }
     public enum StacVersion { The090 };
 
@@ -280,6 +280,8 @@ namespace DEM.Net.Core.Stac
                     return Rel.Root;
                 case "self":
                     return Rel.Self;
+                case "alternate":
+                    return Rel.Alternate;
             }
             throw new Exception("Cannot unmarshal type Rel");
         }

@@ -31,6 +31,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using DEM.Net.Core.Interpolation;
 using Microsoft.Extensions.Logging;
@@ -120,10 +121,17 @@ namespace DEM.Net.Core
         private void DownloadMissingFiles_FromReport(IEnumerable<DemFileReport> report, DEMDataSet dataSet)
         {
             // Generate metadata files if missing
-            foreach (var file in report.Where(r => r.IsMetadataGenerated == false && r.IsExistingLocally == true))
+            var missingMedata = report.Where(r => r.IsMetadataGenerated == false && r.IsExistingLocally == true).ToList();
+            int fileCount = missingMedata.Count;
+            int doneFileCount = 0;
+            Parallel.ForEach(missingMedata, new ParallelOptions { MaxDegreeOfParallelism = 4 }, file =>
             {
+                Interlocked.Increment(ref doneFileCount);
                 _RasterService.GenerateFileMetadata(file.LocalName, dataSet.FileFormat, false);
-            }
+
+                if (doneFileCount % 10 == 0)
+                    _logger.LogInformation($"Generating medata {doneFileCount:N0}/{fileCount:N0} ({(float)doneFileCount/fileCount:P0})");
+            });
             List<DemFileReport> filesToDownload = new List<DemFileReport>(report.Where(kvp => kvp.IsExistingLocally == false));
 
             if (filesToDownload.Count == 0)
@@ -137,9 +145,12 @@ namespace DEM.Net.Core
                 try
                 {
                     int parallelism = 2;
+                    int numFiles = 0;
                     Parallel.ForEach(filesToDownload, new ParallelOptions { MaxDegreeOfParallelism = parallelism }, file =>
                         {
+                            Interlocked.Increment(ref numFiles);
                             _RasterService.DownloadRasterFile(file, dataSet);
+                            _logger.LogInformation($"Download progress: {numFiles:N0}/{filesToDownload.Count:N0} ({(float)numFiles/filesToDownload.Count:P0})");
                         }
                     );
 
@@ -269,7 +280,7 @@ namespace DEM.Net.Core
             {
                 throw new Exception("Geometry SRID must be set to 4326 (WGS 84)");
             }
-            
+
             BoundingBox bbox = lineStringGeometry.GetBoundingBox();
             List<FileMetadata> tiles = this.GetCoveringFiles(bbox, dataSet);
 
@@ -496,7 +507,7 @@ namespace DEM.Net.Core
             {
                 DownloadMissingFiles(dataSet, bbox);
             }
-            List<FileMetadata> tiles = this.GetCoveringFiles(bbox.ReprojectTo(4326,dataSet.SRID), dataSet);
+            List<FileMetadata> tiles = this.GetCoveringFiles(bbox.ReprojectTo(4326, dataSet.SRID), dataSet);
 
             if (tiles.Count == 0)
             {
@@ -512,7 +523,7 @@ namespace DEM.Net.Core
                 {
 
                     // Get elevation for each point
-                    pointsWithElevation = this.GetElevationData(points.ReprojectTo(4326,dataSet.SRID), adjacentRasters, tiles, interpolator, behavior);
+                    pointsWithElevation = this.GetElevationData(points.ReprojectTo(4326, dataSet.SRID), adjacentRasters, tiles, interpolator, behavior);
 
                     //Debug.WriteLine(adjacentRasters.Count);
                 }  // Ensures all rasters are properly closed
