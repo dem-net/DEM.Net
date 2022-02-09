@@ -456,7 +456,7 @@ namespace DEM.Net.Core
         public GeoPoint GetPointElevation(double lat, double lon, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
             GeoPoint geoPoint = new GeoPoint(lat, lon).ReprojectTo(Reprojection.SRID_GEODETIC, dataSet.SRID);
-            FileMetadata tile = this.GetCoveringFile(lat, lon, dataSet);
+            FileMetadata tile = this.GetCoveringFile(geoPoint.Latitude, geoPoint.Longitude, dataSet);
 
             if (tile == null)
             {
@@ -470,7 +470,7 @@ namespace DEM.Net.Core
                 if (dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell)
                 {
                     // construct a bbox around the location
-                    adjacentRasters = this.GetCoveringFiles(BoundingBox.AroundPoint(lat, lon, Math.Abs(tile.PixelScaleX)), dataSet);
+                    adjacentRasters = this.GetCoveringFiles(BoundingBox.AroundPoint(geoPoint.Latitude, geoPoint.Longitude, Math.Abs(tile.PixelScaleX)), dataSet);
                 }
                 // Init interpolator
                 IInterpolator interpolator = GetInterpolator(interpolationMode);
@@ -480,7 +480,7 @@ namespace DEM.Net.Core
                 {
                     PopulateRasterFileDictionary(tileCache, tile, _RasterService, adjacentRasters);
 
-                    geoPoint.Elevation = GetElevationAtPoint(tileCache, tile, lat, lon, 0, interpolator, NoDataBehavior.SetToZero);
+                    geoPoint.Elevation = GetElevationAtPoint(tileCache, tile, geoPoint.Latitude, geoPoint.Longitude, 0, interpolator, NoDataBehavior.SetToZero);
 
 
                     //Debug.WriteLine(adjacentRasters.Count);
