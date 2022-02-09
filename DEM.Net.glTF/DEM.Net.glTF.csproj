@@ -67,12 +67,12 @@
   <ItemGroup>
     <PackageReference Include="geometry3Sharp" Version="1.0.324" />
     <PackageReference Include="IxMilia.Stl" Version="0.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.5" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0021" />
+    <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0022" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>

@@ -146,7 +146,7 @@ namespace DEM.Net.glTF.Export
 
             foreach (var v in texCoords)
             {
-                sw.WriteLine($"{prefix} {v.X.ToString(c)} {v.Y.ToString(c)}");
+                sw.WriteLine($"{prefix} {v.X.ToString(c)} {(1f-v.Y).ToString(c)}");
             }
             sw.WriteLine();
         }
