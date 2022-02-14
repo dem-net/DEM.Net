@@ -178,17 +178,33 @@ namespace DEM.Net.Core
             {
                 Name = nameof(NASADEM),
                 Description = "NASADEM MEaSUREs Merged DEM Global 1 arc second (30m)",
-                PublicUrl = "https://lpdaac.usgs.gov/products/nasadem_hgtv001/",
-                DataSource = new NasaGranuleDataSource(indexFilePath: "NASADEM.json", collectionId: "C1546314043-LPDAAC_ECS"),
-                FileFormat = new DEMFileDefinition("Nasa SRTM HGT", DEMFileType.SRTM_HGT, ".hgt", DEMFileRegistrationMode.Grid),
+                PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTALOS.112016.4326.2",
+                DataSource = new VRTDataSource("https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be.vrt"),
+                FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Cell),
                 ResolutionMeters = 30,
                 ResolutionArcSeconds = 1,
                 PointsPerDegree = 3600,
                 NoDataValue = -9999,
                 Attribution = new Attribution(ATTRIBUTION_SUBJECT, "NASADEM",
-                                                "https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001",
-                                                "NASA JPL. NASADEM Merged DEM Global 1 arc second V001. 2020, distributed by NASA EOSDIS Land Processes DAAC, https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001. Accessed 2020-03-06.")
+                                            "https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001",
+                                            "NASA JPL. NASADEM Merged DEM Global 1 arc second V001. 2020, distributed by NASA EOSDIS Land Processes DAAC, https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001. Accessed 2020-03-06.")
             });
+        //datasets.Add("NASADEM", new DEMDataSet()
+        //{
+        //    Name = nameof(NASADEM),
+        //    Description = "NASADEM MEaSUREs Merged DEM Global 1 arc second (30m)",
+        //    PublicUrl = "https://lpdaac.usgs.gov/products/nasadem_hgtv001/",
+        //    DataSource = new NasaGranuleDataSource(indexFilePath: "NASADEM.json", collectionId: "C1546314043-LPDAAC_ECS"),
+        //    FileFormat = new DEMFileDefinition("Nasa SRTM HGT", DEMFileType.SRTM_HGT, ".hgt", DEMFileRegistrationMode.Grid),
+        //    ResolutionMeters = 30,
+        //    ResolutionArcSeconds = 1,
+        //    PointsPerDegree = 3600,
+        //    NoDataValue = -9999,
+        //    Attribution = new Attribution(ATTRIBUTION_SUBJECT, "NASADEM",
+        //                                    "https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001",
+        //                                    "NASA JPL. NASADEM Merged DEM Global 1 arc second V001. 2020, distributed by NASA EOSDIS Land Processes DAAC, https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001. Accessed 2020-03-06.")
+        //});
+        
             datasets.Add(nameof(swissALTI3D2m), new DEMDataSet()
             {
                 Name = "swissALTI3D 2m",

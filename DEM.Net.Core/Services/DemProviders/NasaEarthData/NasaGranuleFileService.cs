@@ -95,7 +95,7 @@ namespace DEM.Net.Core.EarthData
                 }
                 if (_cacheByDemName.ContainsKey(dataSet.Name) == false)
                 {
-                    _cacheByDemName[dataSet.Name] = this.GetSources(dataSet, indexFileName);
+                    _cacheByDemName[dataSet.Name] = GetSources(dataSet, indexFileName);
                 }
 
             }
@@ -140,12 +140,12 @@ namespace DEM.Net.Core.EarthData
 
         }
 
-        private List<DEMFileSource> GetSources(DEMDataSet dataSet, string indexFileName)
+        private static List<DEMFileSource> GetSources(DEMDataSet dataSet, string indexFileName)
         {
             List<NasaDemFile> nasaDemFiles = JsonConvert.DeserializeObject<List<NasaDemFile>>(File.ReadAllText(indexFileName));
             var dataSetLocalDir = Path.GetDirectoryName(indexFileName);
 
-            BoundingBox GetBBox(string box)
+            static BoundingBox GetBBox(string box)
             {
                 // box is ymin xmin ymax xmax
                 var coords = box.Split(' ').Select(s => float.Parse(s, CultureInfo.InvariantCulture)).ToArray();
@@ -158,7 +158,7 @@ namespace DEM.Net.Core.EarthData
                 BBox = GetBBox(file.Box),
                 SourceFileName = file.GranuleId,
                 SourceFileNameAbsolute = file.ZipFileLink,
-                LocalFileName = Path.Combine(dataSetLocalDir, "Granules", this.FileNameFromGranuleId(file.GranuleId, dataSet))
+                LocalFileName = Path.Combine(dataSetLocalDir, "Granules", FileNameFromGranuleId(file.GranuleId, dataSet))
             }).ToList();
         }
 
@@ -237,7 +237,7 @@ namespace DEM.Net.Core.EarthData
 
         }
 
-        private string FileNameFromGranuleId(string granuleId, DEMDataSet dataSet)
+        private static string FileNameFromGranuleId(string granuleId, DEMDataSet dataSet)
         {
             var fileName = string.Concat(Path.GetFileNameWithoutExtension(granuleId), dataSet.FileFormat.FileExtension);
             return fileName;
