@@ -116,6 +116,20 @@ namespace DEM.Net.Core
                     "T.Tadono, H.Ishida, F.Oda, S.Naito, K.Minakawa, H.Iwamoto : Precise Global DEM Generation By ALOS PRISM, ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences, pp.71 - 76, Vol.II - 4, 2014. [http://www.isprs-ann-photogramm-remote-sens-spatial-inf-sci.net/II-4/71/2014/isprsannals-II-4-71-2014.pdf]" + Environment.NewLine +
                     "https://doi.org/10.5069/G94M92HB")
             });
+            datasets.Add("FABDEM", new DEMDataSet()
+            {
+                Name = nameof(FABDEM),
+                Description = "Forest And Buildings removed Copernicus DEM",
+                PublicUrl = "https://data.bris.ac.uk/data/dataset/25wfy0f9ukoge2gs7a5mqpq2j7",
+                DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "FABDEM")),
+                FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Cell),
+                ResolutionMeters = 30,
+                ResolutionArcSeconds = 1,
+                PointsPerDegree = 3600,
+                NoDataValue = -9999,
+                Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Laurence Hawker, Jeffrey Neal (2021): FABDEM", "https://data.bris.ac.uk/data/dataset/25wfy0f9ukoge2gs7a5mqpq2j7"
+                               , "Non-Commercial Government Licence for public sector information")
+            });
             datasets.Add("ETOPO1", new DEMDataSet()
             {
                 Name = nameof(ETOPO1),
@@ -141,6 +155,7 @@ namespace DEM.Net.Core
                 ResolutionMeters = 5,
                 PointsPerDegree = 21600,
                 NoDataValue = -99999,
+                IsListed= true,
                 SRID = 2154,
                 Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN", "https://ign.fr", "https://www.etalab.gouv.fr/licence-ouverte-open-licence")
             });
@@ -155,6 +170,7 @@ namespace DEM.Net.Core
                 ResolutionMeters = 1,
                 PointsPerDegree = 108000,
                 NoDataValue = -99999,
+                IsListed= false,
                 SRID = 2154,
                 Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN", "https://ign.fr", "https://www.etalab.gouv.fr/licence-ouverte-open-licence")
             });
@@ -294,6 +310,7 @@ namespace DEM.Net.Core
         /// Global low res coverage with bathymetry (1km resolution)
         /// </summary>
         public static DEMDataSet ETOPO1 => Datasets.Value[nameof(ETOPO1)];
+        public static DEMDataSet FABDEM => Datasets.Value[nameof(FABDEM)];
 
         /// <summary>
         /// Global medium res coverage with bathymetry (500m resolution)
