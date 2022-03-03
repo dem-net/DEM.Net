@@ -30,7 +30,7 @@ namespace DEM.Net.glTF.Export
             }
             Directory.CreateDirectory(directory);
 
-            fileName = Path.Combine(directory, Path.GetFileName(fileName)) + ".obj";
+            fileName = Path.ChangeExtension(Path.Combine(directory, Path.GetFileName(fileName)), ".obj");
             string fileTitle = Path.GetFileNameWithoutExtension(fileName);
 
             string materialFile = Path.Combine(directory, $"{fileTitle}.mtl");
@@ -42,7 +42,12 @@ namespace DEM.Net.glTF.Export
                 WriteHeader(model, sw, $"{fileTitle}.mtl");
 
                 int materialIndex = 0;
-                int indexOffset = 1;
+                int indexOffsetVertices = 1;
+                int indexOffsetTexCoords = 1;
+                int indexOffsetNormals = 1;
+                int nbVertices = 0;
+                int nbTexCoords = 0;
+                int nbNormals = 0;
                 foreach (var logicalMesh in model.LogicalMeshes)
                 {
                     sw.WriteLine($"o {logicalMesh.Name}");
@@ -53,15 +58,22 @@ namespace DEM.Net.glTF.Export
 
                         var vertices = meshPrimitive.GetVertices("POSITION").AsVector3Array();
                         WriteVectors(sw, vertices, "v");
+                        nbVertices = vertices.Count;
 
                         bool hasTexture = accessors.ContainsKey("TEXCOORD_0");
                         if (hasTexture)
                         {
                             var texCoords = meshPrimitive.GetVertices("TEXCOORD_0").AsVector2Array();
                             WriteVectors(sw, texCoords, "vt");
+                            nbTexCoords = texCoords.Count;
                         }
-                        var normals = meshPrimitive.GetVertices("NORMAL").AsVector3Array();
-                        WriteVectors(sw, normals, "vn");
+                        bool hasNormals = accessors.ContainsKey("NORMAL");
+                        if (hasNormals)
+                        {
+                            var normals = meshPrimitive.GetVertices("NORMAL").AsVector3Array();
+                            WriteVectors(sw, normals, "vn");
+                            nbNormals = normals.Count;
+                        }
 
                         string materialName = $"Material_{materialIndex:000}";
                         if (hasTexture)
@@ -71,8 +83,10 @@ namespace DEM.Net.glTF.Export
                         }
 
                         var indices = meshPrimitive.GetIndices();
-                        WriteFaces(sw, indices, "f", indexOffset, hasTexture);
-                        indexOffset += vertices.Count;
+                        WriteFaces(sw, indices, "f", indexOffsetVertices, indexOffsetTexCoords, indexOffsetNormals, hasTexture);
+                        indexOffsetVertices += nbVertices;
+                        indexOffsetNormals += nbNormals;
+                        indexOffsetTexCoords += nbTexCoords;
 
                         var matChannel = meshPrimitive.Material.FindChannel("BaseColor").Value;
                         if (matChannel.Texture != null)
@@ -95,6 +109,11 @@ namespace DEM.Net.glTF.Export
                     File.Delete(fileTitle + ".zip");
 
                 string outputFileName = Path.Combine(new DirectoryInfo(directory).Parent.FullName, fileTitle + ".zip");
+                if (File.Exists(outputFileName))
+                {
+                    if (overwrite)
+                        File.Delete(outputFileName);
+                }
                 ZipFile.CreateFromDirectory(directory, outputFileName, compressionLevel: CompressionLevel.Fastest, false);
                 Directory.Delete(directory, recursive: true);
                 return outputFileName;
@@ -119,22 +138,24 @@ namespace DEM.Net.glTF.Export
             swMtl.WriteLine();
         }
 
-        void WriteFaces(StreamWriter sw, IList<uint> indices, string prefix, int indexOffset, bool hasTexture)
+        void WriteFaces(StreamWriter sw, IList<uint> indices, string prefix, int indexOffsetVertices, int indexOffsetTexCoords, int indexOffsetNormals, bool hasTexture)
         {
-            var c = CultureInfo.InvariantCulture;
-
             if (hasTexture)
             {
                 for (var i = 0; i < indices.Count; i += 3)
                 {
-                    sw.WriteLine($"{prefix} {indices[i] + indexOffset}/{indices[i] + indexOffset}/{indices[i] + indexOffset} {indices[i + 1] + indexOffset}/{indices[i + 1] + indexOffset}/{indices[i + 1] + indexOffset} {indices[i + 2] + indexOffset}/{indices[i + 2] + indexOffset}/{indices[i + 2] + indexOffset}");
+                    sw.WriteLine($"{prefix} {indices[i] + indexOffsetVertices}/{indices[i] + indexOffsetTexCoords}/{indices[i] + indexOffsetNormals} " +
+                                            $"{indices[i + 1] + indexOffsetVertices}/{indices[i + 1] + indexOffsetTexCoords}/{indices[i + 1] + indexOffsetNormals} " +
+                                            $"{indices[i + 2] + indexOffsetVertices}/{indices[i + 2] + indexOffsetTexCoords}/{indices[i + 2] + indexOffsetNormals}");
                 }
             }
             else
             {
                 for (var i = 0; i < indices.Count; i += 3)
                 {
-                    sw.WriteLine($"{prefix} {indices[i] + indexOffset}//{indices[i] + indexOffset} {indices[i + 1] + indexOffset}//{indices[i + 1] + indexOffset} {indices[i + 2] + indexOffset}//{indices[i + 2] + indexOffset}");
+                    sw.WriteLine($"{prefix} {indices[i] + indexOffsetVertices}//{indices[i] + indexOffsetNormals} " +
+                                            $"{indices[i + 1] + indexOffsetVertices}//{indices[i + 1] + indexOffsetNormals} " +
+                                            $"{indices[i + 2] + indexOffsetVertices}//{indices[i + 2] + indexOffsetNormals}");
                 }
             }
             sw.WriteLine();
@@ -146,7 +167,7 @@ namespace DEM.Net.glTF.Export
 
             foreach (var v in texCoords)
             {
-                sw.WriteLine($"{prefix} {v.X.ToString(c)} {(1f-v.Y).ToString(c)}");
+                sw.WriteLine($"{prefix} {v.X.ToString(c)} {(1f - v.Y).ToString(c)}");
             }
             sw.WriteLine();
         }

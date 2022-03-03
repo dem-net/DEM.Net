@@ -111,22 +111,20 @@ namespace DEM.Net.Core
                 filePath = Path.Combine(_localDirectory, filePath);
             }
 
-            switch (fileFormat)
+            return fileFormat switch
             {
-                case DEMFileType.GEOTIFF: return new GeoTiff(filePath);
-                case DEMFileType.SRTM_HGT: return new HGTFile(filePath);
-                case DEMFileType.ASCIIGrid: return new ASCIIGridFile(filePath, gzip: false);
-                case DEMFileType.ASCIIGridGzip: return new ASCIIGridFile(filePath, gzip: true);
-                case DEMFileType.CF_NetCDF: return new NetCdfFile(filePath);
-                default:
-                    throw new NotImplementedException($"{fileFormat} file format not implemented.");
-            }
-
+                DEMFileType.GEOTIFF => new GeoTiff(filePath),
+                DEMFileType.SRTM_HGT => new HGTFile(filePath),
+                DEMFileType.ASCIIGrid => new ASCIIGridFile(filePath, gzip: false),
+                DEMFileType.ASCIIGridGzip => new ASCIIGridFile(filePath, gzip: true),
+                DEMFileType.CF_NetCDF => new NetCdfFile(filePath),
+                _ => throw new NotImplementedException($"{fileFormat} file format not implemented."),
+            };
         }
 
         public string GetLocalDEMPath(DEMDataSet dataset)
         {
-            string path = null;
+            string path;
             if (dataset.DataSource.DataSourceType == Datasets.DEMDataSourceType.LocalFileSystem)
             {
                 if (Path.IsPathRooted(dataset.DataSource.IndexFilePath))
@@ -149,7 +147,7 @@ namespace DEM.Net.Core
         {
             return Path.Combine(GetLocalDEMPath(dataset), fileTitle);
         }
-        public FileMetadata ParseMetadata(IRasterFile rasterFile, DEMFileDefinition format)
+        public static FileMetadata ParseMetadata(IRasterFile rasterFile, DEMFileDefinition format)
         {
             return rasterFile.ParseMetaData(format);
         }
@@ -243,8 +241,7 @@ namespace DEM.Net.Core
         /// <param name="dataset">Dataset</param>
         /// <param name="deleteOnError">Deletes raster files on error</param>
         /// <param name="force">If true, force regeneration of all files. If false, only missing files will be generated.</param>
-        /// <param name="maxDegreeOfParallelism">Set to 1 to force single thread execution (for debug purposes)</param>
-        public void GenerateDirectoryMetadata(DEMDataSet dataset, bool force, bool deleteOnError = false, int maxDegreeOfParallelism = -1)
+        public void GenerateDirectoryMetadata(DEMDataSet dataset, bool force, bool deleteOnError = false)
         {
             string directoryPath = GetLocalDEMPath(dataset);
             var files = Directory.GetFiles(directoryPath, "*" + dataset.FileFormat.FileExtension, SearchOption.AllDirectories);
@@ -286,16 +283,16 @@ namespace DEM.Net.Core
             LoadManifestMetadata(dataset, force);
         }
 
-        private string GetMetadataFileName(string rasterFileName, string outDirPath, string extension = ".json")
+        private static string GetMetadataFileName(string rasterFileName, string outDirPath, string extension = ".json")
         {
             var fileTitle = Path.GetFileNameWithoutExtension(rasterFileName);
             return Path.Combine(outDirPath, fileTitle + extension);
         }
-        private string GetManifestDirectory(string rasterFileName)
+        private static string GetManifestDirectory(string rasterFileName)
         {
             return Path.Combine(Path.GetDirectoryName(rasterFileName), MANIFEST_DIR);
         }
-        private string GetMetadataFileName(string rasterFileName, string extension = ".json")
+        private static string GetMetadataFileName(string rasterFileName, string extension = ".json")
         {
             string outDirPath = GetManifestDirectory(rasterFileName);
             return GetMetadataFileName(rasterFileName, outDirPath, extension);
@@ -391,8 +388,6 @@ namespace DEM.Net.Core
         /// </returns>
         public IEnumerable<DatasetReport> GenerateReport()
         {
-            StringBuilder sb = new StringBuilder();
-
             // Get report for downloaded files
             foreach (DEMDataSet dataset in DEMDataSet.RegisteredDatasets)
             {
@@ -558,7 +553,7 @@ namespace DEM.Net.Core
         /// <param name="metadata"></param>
         /// <param name="noDataValue"></param>
         /// <returns></returns>
-        internal HeightMap GetVirtualHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float? noDataValue)
+        internal static HeightMap GetVirtualHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float? noDataValue)
         {
 
             int registrationOffset = metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid ? 1 : 0;
