@@ -304,14 +304,16 @@ namespace DEM.Net.glTF.SharpglTF
 
 
             var triangulation = _meshService.GenerateTriangleMesh_Line(gpxPointsElevated, trailWidthMeters, transform);
-            var normals = _meshService.ComputeMeshNormals(triangulation.Positions, triangulation.Indices);
+            var decimatedTriangulation = _meshReducer.Decimate(triangulation, 0.1f);
+
+            var normals = _meshService.ComputeMeshNormals(decimatedTriangulation.Positions, decimatedTriangulation.Indices);
 
 
             // create mesh primitive
             var primitive = rmesh.CreatePrimitive()
-                .WithVertexAccessor("POSITION", triangulation.Positions)
+                .WithVertexAccessor("POSITION", decimatedTriangulation.Positions)
                 .WithVertexAccessor("NORMAL", normals.ToList())
-                .WithIndicesAccessor(PrimitiveType.TRIANGLES, triangulation.Indices);
+                .WithIndicesAccessor(PrimitiveType.TRIANGLES, decimatedTriangulation.Indices);
 
             primitive = primitive.WithMaterial(material);
             return model;
