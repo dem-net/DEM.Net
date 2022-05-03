@@ -228,7 +228,7 @@ namespace DEM.Net.Core
                 Description = "swissALTI3D is an extremely precise digital elevation model which describes the surface of Switzerland and the Principality of Liechtenstein without vegetation and development. It is updated in an cycle of 6 years.",
                 PublicUrl = "https://www.swisstopo.admin.ch/de/geodata/height/alti3d.html",
                 DataSource = new StacDataSource(url: "https://data.geo.admin.ch/api/stac/v0.9", indexFilePath: "swissALTI3D2m.json", collection: "ch.swisstopo.swissalti3d",
-                 filter: (Asset a) => a.Type == AssetType.ImageTiffApplicationGeotiffProfileCloudOptimized && a.EoGsd == 2.0),
+                 filter: (Asset a) => a.Type == AssetType.ImageTiffApplicationGeotiffProfileCloudOptimized && a.EoGsd == 2.0),       
                 FileFormat = new DEMFileDefinition("GeoTIFF", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Cell),
                 ResolutionMeters = 2,
                 ResolutionArcSeconds = 1,

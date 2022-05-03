@@ -44,7 +44,7 @@ namespace DEM.Net.Core.Stac
 
                 bool download = !File.Exists(indexFileName);
 
-                List<StacDemFile> links = null;
+                Dictionary<StacDemFile, StacDemFile> links = null;
                 if (download)
                 {
                     Uri baseUrl = new Uri(dataSource.Url);
@@ -54,7 +54,7 @@ namespace DEM.Net.Core.Stac
                     bool hasData = true;
                     int pageIndex = 0;
                     string initialUrl = string.Concat(baseUrl, $"/collections/{dataSource.Collection}/items");
-                    links = new List<StacDemFile>(30000);
+                    links = new Dictionary<StacDemFile, StacDemFile>(30000);
                     var httpClient = httpClientFactory.CreateClient();
                     do
                     {
@@ -70,7 +70,21 @@ namespace DEM.Net.Core.Stac
                             if (hasData)
                             {
                                 // Only retrieve bbox and dem file link (zip file)
-                                links.AddRange(result.Features.Select(_ => GetStacDemFile(dataSource, _)).Where(file => file != null));
+                                var newFiles = result.Features.Select(_ => GetStacDemFile(dataSource, _)).Where(file => file != null);
+                                foreach (var newFile in newFiles)
+                                {
+                                    if (links.ContainsKey(newFile))
+                                    {
+                                        if (links[newFile].DateTime.CompareTo(newFile.DateTime)<0)
+                                        {
+                                            links[newFile] = newFile;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        links.Add(newFile, newFile);
+                                    }
+                                }
                             }
 
                             initialUrl = result.Links.FirstOrDefault(l => l.Rel == Rel.Next)?.Href?.ToString();
@@ -79,7 +93,7 @@ namespace DEM.Net.Core.Stac
                     }
                     while (hasData);
 
-                    File.WriteAllText(indexFileName, JsonConvert.SerializeObject(links, Formatting.Indented));
+                    File.WriteAllText(indexFileName, JsonConvert.SerializeObject(links.Keys, Formatting.Indented));
                     logger.LogInformation($"{links.Count} entries written to index file {indexFileName}");
                 }
 
@@ -122,10 +136,10 @@ namespace DEM.Net.Core.Stac
             {
                 if (dataSource.Filter(asset.Value))
                 {
-                    return new StacDemFile(asset.Key, f.Bbox, asset.Value.Href.ToString());
-                }                
+                    return new StacDemFile(asset.Key, f.Bbox, asset.Value.Href.ToString(), f.Properties.Datetime);
+                }
             }
-            return null;            
+            return null;
         }
 
         public void DownloadRasterFile(DemFileReport report, DEMDataSet dataset)
