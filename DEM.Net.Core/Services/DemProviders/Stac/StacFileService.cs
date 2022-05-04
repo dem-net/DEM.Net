@@ -93,7 +93,7 @@ namespace DEM.Net.Core.Stac
                     }
                     while (hasData);
 
-                    File.WriteAllText(indexFileName, JsonConvert.SerializeObject(links.Keys, Formatting.Indented));
+                    File.WriteAllText(indexFileName, JsonConvert.SerializeObject(links.Values, Formatting.Indented));
                     logger.LogInformation($"{links.Count} entries written to index file {indexFileName}");
                 }
 
