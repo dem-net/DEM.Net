@@ -15,8 +15,7 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
-        [InlineData(nameof(DEMDataSet.SRTM_GL1))]
-        [InlineData(nameof(DEMDataSet.ASTER_GDEMV3))]
+        [InlineData(nameof(DEMDataSet.SRTM_GL3))]
         public void BoudingBoxConservationTest(string datasetName)
         {
 
@@ -57,7 +56,7 @@ namespace DEM.Net.Test
             Assert.NotNull(bbox);
             Assert.Equal(bboxWKT, bbox.WKT);
 
-            HeightMap heightMap = _elevationService.GetHeightMap(ref bbox, DEMDataSet.SRTM_GL1);
+            HeightMap heightMap = _elevationService.GetHeightMap(ref bbox, DEMDataSet.SRTM_GL3);
 
             Assert.False(object.ReferenceEquals(bbox, null));
             Assert.NotNull(heightMap.Coordinates.GetBoundingBox());

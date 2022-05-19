@@ -17,6 +17,7 @@ using DEM.Net.Core.Services.VisualisationServices;
 using Microsoft.Extensions.Logging;
 using DEM.Net.glTF.SharpglTF;
 using NetTopologySuite.Geometries;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace DEM.Net.TestWinForm
 {
@@ -99,9 +100,6 @@ namespace DEM.Net.TestWinForm
             FServicesApplicatifs.createVisuSpatialTrace().AfficheVisu();
 
         }
-
-
-
 
         private IEnumerable<GeoPoint> FromBeanPoint_internalToGeoPoint(List<BeanPoint_internal> dataPointsTests)
         {
@@ -225,10 +223,6 @@ namespace DEM.Net.TestWinForm
             {
                 dataSet = DEMDataSet.SRTM_GL3;
             }
-            else if (rdSRTMGL1.Checked)
-            {
-                dataSet = DEMDataSet.SRTM_GL1;
-            }
             else
             {
                 dataSet = DEMDataSet.AW3D30;
@@ -275,7 +269,7 @@ namespace DEM.Net.TestWinForm
                 }
             }
             //
-            SharpGltfService glTFService = new SharpGltfService(new MeshService());
+            SharpGltfService glTFService = new SharpGltfService(new MeshService(), new MeshReducer(NullLogger<MeshReducer>.Instance, null ));
             var model = glTFService.GenerateTriangleMesh(v_beanToVisu3d.p00_geoPoint, v_beanToVisu3d.p01_listeIndexPointsfacettes.SelectMany(c => c).ToList(), null);
 
             
@@ -284,15 +278,12 @@ namespace DEM.Net.TestWinForm
             {
                 v_nomFichierOut += "SRTM_GL3";
             }
-            else if (rdSRTMGL1.Checked)
-            {
-                v_nomFichierOut += "SRTM_GL1";
-            }
             else
             {
                 v_nomFichierOut += "AW3D30";
             }
             v_nomFichierOut += "_p" + tb_precisionEnM.Text;
+            Directory.CreateDirectory("Test3D");
             model.SaveGLB(Path.Combine("Test3D", v_nomFichierOut + ".glb"));
             MessageBox.Show("Traitement terminé =>"+ v_nomFichierOut);
         }

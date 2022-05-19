@@ -48,9 +48,7 @@ namespace DEM.Net.xUnit.Test
         }
 
         [Theory()]
-        [InlineData(nameof(DEMDataSet.ASTER_GDEMV3), 46, 10, "ASTGTMV003_N45E009_dem.tif", "ASTGTMV003_N45E010_dem.tif", "ASTGTMV003_N46E009_dem.tif", "ASTGTMV003_N46E010_dem.tif")]
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 46, 10, "N45E009.hgt", "N45E010.hgt", "N46E009.hgt", "N46E010.hgt")]
-        [InlineData(nameof(DEMDataSet.SRTM_GL1), 46, 10, "N45E009.hgt", "N45E010.hgt", "N46E009.hgt", "N46E010.hgt")]
         [InlineData(nameof(DEMDataSet.AW3D30), 46, 10, "N045E009_AVE_DSM.tif", "N045E010_AVE_DSM.tif", "N046E009_AVE_DSM.tif", "N046E010_AVE_DSM.tif")]
         void TestEdges(string dataSetName, double lat, double lon
             , string rasterSouthWestName, string rasterSouthEastName
@@ -152,7 +150,6 @@ namespace DEM.Net.xUnit.Test
 
         [Theory()]
         [InlineData(nameof(DEMDataSet.SRTM_GL3))]
-        [InlineData(nameof(DEMDataSet.ASTER_GDEMV3))]
         public void BoudingBoxConservationTest(string datasetName)
         {
 

@@ -83,7 +83,6 @@
             this.txtSRID = new System.Windows.Forms.TextBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.rdAW3D30 = new System.Windows.Forms.RadioButton();
-            this.rdSRTMGL1 = new System.Windows.Forms.RadioButton();
             this.rdSRTMGL3 = new System.Windows.Forms.RadioButton();
             this.btn_pentesTin_visuST = new System.Windows.Forms.Button();
             this.label22 = new System.Windows.Forms.Label();
@@ -630,7 +629,6 @@
             // groupBox5
             // 
             this.groupBox5.Controls.Add(this.rdAW3D30);
-            this.groupBox5.Controls.Add(this.rdSRTMGL1);
             this.groupBox5.Controls.Add(this.rdSRTMGL3);
             this.groupBox5.Location = new System.Drawing.Point(127, 244);
             this.groupBox5.Name = "groupBox5";
@@ -648,16 +646,6 @@
             this.rdAW3D30.TabIndex = 2;
             this.rdAW3D30.Text = "AW3D30 (30m)";
             this.rdAW3D30.UseVisualStyleBackColor = true;
-            // 
-            // rdSRTMGL1
-            // 
-            this.rdSRTMGL1.AutoSize = true;
-            this.rdSRTMGL1.Location = new System.Drawing.Point(20, 42);
-            this.rdSRTMGL1.Name = "rdSRTMGL1";
-            this.rdSRTMGL1.Size = new System.Drawing.Size(111, 17);
-            this.rdSRTMGL1.TabIndex = 1;
-            this.rdSRTMGL1.Text = "SRTM_GL1 (30m)";
-            this.rdSRTMGL1.UseVisualStyleBackColor = true;
             // 
             // rdSRTMGL3
             // 
@@ -894,7 +882,6 @@
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.RadioButton rdSRTMGL3;
         private System.Windows.Forms.RadioButton rdAW3D30;
-        private System.Windows.Forms.RadioButton rdSRTMGL1;
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.TextBox txtSRID;
         private System.Windows.Forms.GroupBox groupBox6;

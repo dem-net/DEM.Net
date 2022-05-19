@@ -38,9 +38,7 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
-        [InlineData(nameof(DEMDataSet.ASTER_GDEMV3), 45.179337, 5.721421, 222)]
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.179337, 5.721421, 217)]
-        [InlineData(nameof(DEMDataSet.SRTM_GL1), 45.179337, 5.721421, 217)]
         [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 221)]
         public void TestElevationSinglePoint(string dataSetName, double lat, double lon, double expectedElevation)
         {
@@ -56,7 +54,6 @@ namespace DEM.Net.Test
 
         [Theory()]
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.00000000000004, 10.000000000000007, 1748)]
-        [InlineData(nameof(DEMDataSet.SRTM_GL1), 46.00000000000004, 10.000000000000007, 1744)]
         [InlineData(nameof(DEMDataSet.AW3D30), 46.00000000000004, 10.000000000000007, 1741)]
         public void TestElevationSinglePoint_TileEdges(string dataSetName, double lat, double lon, double expectedElevation)
         {
@@ -78,9 +75,7 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
-        [InlineData(nameof(DEMDataSet.ASTER_GDEMV3), 45.179337, 5.721421, 45.212278, 5.468857, 1031, 2837.678, -2878.576, 172.776, 1648.313)]
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.179337, 5.721421, 45.212278, 5.468857, 344, 2586.41, -2617.292, 178.271, 1654.438)]
-        [InlineData(nameof(DEMDataSet.SRTM_GL1), 45.179337, 5.721421, 45.212278, 5.468857, 1031, 2755.597, -2789.424, 178, 1655.313)]
         [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 45.212278, 5.468857, 911, 2973.321, -3012.14, 177.845, 1653.103)]
         public void TestElevationLine(string dataSetName, double latStart, double lonStart, double latEnd, double lonEnd,
             double expectedPointCount, double expectedClimb, double expectedDescent, double expectedMin, double expectedMax)
@@ -129,8 +124,6 @@ namespace DEM.Net.Test
 
         [Theory()]
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 39.97052612249965, 20.178894102573395, 40.16242159876657, 20.476635396480564, 3)]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), 39.97052612249965, 20.178894102573395, 40.16242159876657, 20.476635396480564, 3)]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), 39.97052612249965, 20.178894102573395, 40.16242159876657, 20.476635396480564, 3)]
         public void TestIntervisibility(string dataSetName, double latStart, double lonStart
             , double latEnd, double lonEnd, double expectedObstacles)
         {
@@ -145,7 +138,7 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
-        [InlineData(nameof(DEMDataSet.SRTM_GL1), 44.9171006, 37.5636956, 9139.53, 44.4888189, 39.2923105, 7182.78, 0)]
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 44.9171006, 37.5636956, 9139.53, 44.4888189, 39.2923105, 7182.78, 0)]
         public void TestIntervisibilityWithInitialAltitude(string dataSetName, double latStart, double lonStart, double altitudeStart
             , double latEnd, double lonEnd, double altitudeEnd, double expectedObstacles)
         {
