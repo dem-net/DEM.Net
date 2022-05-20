@@ -100,6 +100,11 @@ namespace DEM.Net.Core
         {
             return new TriangulationList<T>(new List<T>(Positions), new List<Vector4>(Colors), new List<int>(Indices));
         }
+
+        public Triangulation<T> AsTriangulation()
+        {
+            return new Triangulation<T>(this.Positions, this.Indices);
+        }
     }
 
     public class Triangulation<T>

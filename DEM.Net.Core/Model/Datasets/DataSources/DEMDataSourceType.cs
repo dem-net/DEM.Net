@@ -17,6 +17,10 @@ namespace DEM.Net.Core.Datasets
         /// <summary>
         /// Data comes from NASA EarthData Common Metadata Repository (CMR) API at https://earthdata.nasa.gov/
         /// </summary>
-        NasaEarthData = 3
+        NasaEarthData = 3,
+        /// <summary>
+        /// Data comes from Spatio Temporal Asset Catalogs (STAC) https://stacspec.org
+        /// </summary>
+        Stac = 4
     }
 }

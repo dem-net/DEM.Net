@@ -2,6 +2,7 @@
 using DEM.Net.Core.EarthData;
 using DEM.Net.Core.Imagery;
 using DEM.Net.Core.Services.Imagery;
+using DEM.Net.Core.Stac;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -24,6 +25,7 @@ namespace DEM.Net.Core
             services.AddSingleton<LocalFileSystemIndex>();
             services.AddSingleton<NasaGranuleFileService>();
             services.AddSingleton<EarthdataLoginConnector>();
+            services.AddSingleton<StacFileService>();
 
             services.AddTransient<RasterIndexServiceResolver>(serviceProvider => dataSourceType =>
             {
@@ -33,6 +35,8 @@ namespace DEM.Net.Core
                         return serviceProvider.GetService<GDALVRTFileService>();
                     case Datasets.DEMDataSourceType.NasaEarthData:
                         return serviceProvider.GetService<NasaGranuleFileService>();
+                    case Datasets.DEMDataSourceType.Stac:
+                        return serviceProvider.GetService<StacFileService>();
                     case Datasets.DEMDataSourceType.LocalFileSystem:
                         return serviceProvider.GetService<LocalFileSystemIndex>();
                     default:

@@ -30,8 +30,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using DEM.Net.Core.Interpolation;
 using Microsoft.Extensions.Logging;
@@ -121,10 +121,17 @@ namespace DEM.Net.Core
         private void DownloadMissingFiles_FromReport(IEnumerable<DemFileReport> report, DEMDataSet dataSet)
         {
             // Generate metadata files if missing
-            foreach (var file in report.Where(r => r.IsMetadataGenerated == false && r.IsExistingLocally == true))
+            var missingMedata = report.Where(r => r.IsMetadataGenerated == false && r.IsExistingLocally == true).ToList();
+            int fileCount = missingMedata.Count;
+            int doneFileCount = 0;
+            Parallel.ForEach(missingMedata, new ParallelOptions { MaxDegreeOfParallelism = 4 }, file =>
             {
+                Interlocked.Increment(ref doneFileCount);
                 _RasterService.GenerateFileMetadata(file.LocalName, dataSet.FileFormat, false);
-            }
+
+                if (doneFileCount % 10 == 0)
+                    _logger.LogInformation($"Generating medata {doneFileCount:N0}/{fileCount:N0} ({(float)doneFileCount/fileCount:P0})");
+            });
             List<DemFileReport> filesToDownload = new List<DemFileReport>(report.Where(kvp => kvp.IsExistingLocally == false));
 
             if (filesToDownload.Count == 0)
@@ -137,9 +144,13 @@ namespace DEM.Net.Core
 
                 try
                 {
-                    Parallel.ForEach(filesToDownload, new ParallelOptions { MaxDegreeOfParallelism = 2 }, file =>
+                    int parallelism = 2;
+                    int numFiles = 0;
+                    Parallel.ForEach(filesToDownload, new ParallelOptions { MaxDegreeOfParallelism = parallelism }, file =>
                         {
+                            Interlocked.Increment(ref numFiles);
                             _RasterService.DownloadRasterFile(file, dataSet);
+                            _logger.LogInformation($"Download progress: {numFiles:N0}/{filesToDownload.Count:N0} ({(float)numFiles/filesToDownload.Count:P0})");
                         }
                     );
 
@@ -211,7 +222,7 @@ namespace DEM.Net.Core
             GeoPoint start = new GeoPoint(ptStart.Y, ptStart.X);
             GeoPoint end = new GeoPoint(ptEnd.Y, ptEnd.X);
             double lengthMeters = start.DistanceTo(end);
-            int demResolution = dataSet.ResolutionMeters;
+            float demResolution = dataSet.ResolutionMeters;
             int totalCapacity = 2 * (int)(lengthMeters / demResolution);
             double registrationOffset = dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell ? 0 : 0.5;
 
@@ -269,7 +280,7 @@ namespace DEM.Net.Core
             {
                 throw new Exception("Geometry SRID must be set to 4326 (WGS 84)");
             }
-            
+
             BoundingBox bbox = lineStringGeometry.GetBoundingBox();
             List<FileMetadata> tiles = this.GetCoveringFiles(bbox, dataSet);
 
@@ -281,7 +292,7 @@ namespace DEM.Net.Core
             GeoPoint start = new GeoPoint(ptStart.Y, ptStart.X);
             GeoPoint end = new GeoPoint(ptEnd.Y, ptEnd.X);
             double lengthMeters = start.DistanceTo(end);
-            int demResolution = dataSet.ResolutionMeters;
+            float demResolution = dataSet.ResolutionMeters;
             int totalCapacity = 2 * (int)(lengthMeters / demResolution);
             double registrationOffset = dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell ? 0 : 0.5;
 
@@ -444,8 +455,8 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public GeoPoint GetPointElevation(double lat, double lon, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
-            GeoPoint geoPoint = new GeoPoint(lat, lon);
-            FileMetadata tile = this.GetCoveringFile(lat, lon, dataSet);
+            GeoPoint geoPoint = new GeoPoint(lat, lon).ReprojectTo(Reprojection.SRID_GEODETIC, dataSet.SRID);
+            FileMetadata tile = this.GetCoveringFile(geoPoint.Latitude, geoPoint.Longitude, dataSet);
 
             if (tile == null)
             {
@@ -459,7 +470,7 @@ namespace DEM.Net.Core
                 if (dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell)
                 {
                     // construct a bbox around the location
-                    adjacentRasters = this.GetCoveringFiles(BoundingBox.AroundPoint(lat, lon, Math.Abs(tile.PixelScaleX)), dataSet);
+                    adjacentRasters = this.GetCoveringFiles(BoundingBox.AroundPoint(geoPoint.Latitude, geoPoint.Longitude, Math.Abs(tile.PixelScaleX)), dataSet);
                 }
                 // Init interpolator
                 IInterpolator interpolator = GetInterpolator(interpolationMode);
@@ -469,7 +480,7 @@ namespace DEM.Net.Core
                 {
                     PopulateRasterFileDictionary(tileCache, tile, _RasterService, adjacentRasters);
 
-                    geoPoint.Elevation = GetElevationAtPoint(tileCache, tile, lat, lon, 0, interpolator, NoDataBehavior.SetToZero);
+                    geoPoint.Elevation = GetElevationAtPoint(tileCache, tile, geoPoint.Latitude, geoPoint.Longitude, 0, interpolator, NoDataBehavior.SetToZero);
 
 
                     //Debug.WriteLine(adjacentRasters.Count);
@@ -496,7 +507,7 @@ namespace DEM.Net.Core
             {
                 DownloadMissingFiles(dataSet, bbox);
             }
-            List<FileMetadata> tiles = this.GetCoveringFiles(bbox.ReprojectTo(4326,dataSet.SRID), dataSet);
+            List<FileMetadata> tiles = this.GetCoveringFiles(bbox.ReprojectTo(4326, dataSet.SRID), dataSet);
 
             if (tiles.Count == 0)
             {
@@ -512,7 +523,7 @@ namespace DEM.Net.Core
                 {
 
                     // Get elevation for each point
-                    pointsWithElevation = this.GetElevationData(points.ReprojectTo(4326,dataSet.SRID), adjacentRasters, tiles, interpolator, behavior);
+                    pointsWithElevation = this.GetElevationData(points.ReprojectTo(4326, dataSet.SRID), adjacentRasters, tiles, interpolator, behavior);
 
                     //Debug.WriteLine(adjacentRasters.Count);
                 }  // Ensures all rasters are properly closed
@@ -593,7 +604,7 @@ namespace DEM.Net.Core
                 {
                     if (metadata.VirtualMetadata)
                     {
-                        var hmap = _RasterService.GetVirtualHeightMapInBBox(bbox, metadata, NO_DATA_OUT);
+                        var hmap = RasterService.GetVirtualHeightMapInBBox(bbox, metadata, NO_DATA_OUT);
                         hmap.BoundingBox.SRID = bbox.SRID;
                         if (hmap.Count > 0)
                         {

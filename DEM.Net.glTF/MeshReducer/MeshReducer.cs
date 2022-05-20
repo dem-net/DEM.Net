@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 
 namespace DEM.Net.glTF
 {
@@ -46,6 +47,9 @@ namespace DEM.Net.glTF
         }
         public Triangulation Decimate(Triangulation triangulation, float quality = 0.5F)
         {
+            if (quality >= 1)
+                return triangulation;
+
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             var originalMesh = LoadTriangulation(triangulation);
@@ -55,7 +59,7 @@ namespace DEM.Net.glTF
             float t1 = stopwatch.ElapsedMilliseconds;
 
             originalMesh = Decimate(originalMesh, targetCount);
-            PrintMeshInfo("Input", originalMesh.VertexCount, originalMesh.TriangleCount);
+            PrintMeshInfo("Output", originalMesh.VertexCount, originalMesh.TriangleCount);
             float t2 = stopwatch.ElapsedMilliseconds - t1;
 
             Triangulation outTriangulation = SaveTriangulation(originalMesh);
@@ -66,11 +70,44 @@ namespace DEM.Net.glTF
 
             return outTriangulation;
         }
+        public TriangulationList<System.Numerics.Vector3> Decimate(TriangulationList<System.Numerics.Vector3> triangulation, float quality = 0.5F)
+        {
+            if (quality >= 1)
+                return triangulation;
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            var originalMesh = LoadTriangulation(triangulation);
+            int targetCount = (int)(quality * originalMesh.TriangleCount);
+
+            PrintMeshInfo("Input", originalMesh.VertexCount, originalMesh.TriangleCount);
+            float t1 = stopwatch.ElapsedMilliseconds;
+
+            originalMesh = Decimate(originalMesh, targetCount);
+            PrintMeshInfo("Output", originalMesh.VertexCount, originalMesh.TriangleCount);
+            float t2 = stopwatch.ElapsedMilliseconds - t1;
+
+            TriangulationList<System.Numerics.Vector3> outTriangulation = SaveTriangulationVector3(originalMesh);
+            float t3 = stopwatch.ElapsedMilliseconds - t2;
+
+
+            _logger.LogInformation($"QEM Execution details [ms]: Overall time: {t1 + t2 + t3}, Loading: {t1}, QEM Algorithm: {t2}, Saving: {t3}");
+
+            return outTriangulation;
+        }
+
+        private DMesh3 LoadTriangulation(TriangulationList<Vector3> triangulation)
+        {
+            var mesh = DMesh3Builder.Build<Vector3d, int, Vector3d>(triangulation.Positions.Select(v => new Vector3d(v.X, v.Y, v.Z)), triangulation.Indices);
+
+            return mesh;
+        }
+
         private void PrintMeshInfo(string header, int verts, int currentTrisCount)
         {
             _logger.LogInformation($"{header} | Vertices: {verts}, Tris: {currentTrisCount}");
         }
-       
+
         private DMesh3 LoadTriangulation(Triangulation triangulation)
         {
             var mesh = DMesh3Builder.Build<Vector3d, int, Vector3d>(triangulation.Positions.Select(p => p.AsVector3()).Select(v => new Vector3d(v.X, v.Y, v.Z)), triangulation.Indices);
@@ -80,9 +117,20 @@ namespace DEM.Net.glTF
 
         private Triangulation SaveTriangulation(DMesh3 mesh)
         {
-            mesh.CompactInPlace();           
+            mesh.CompactInPlace();
 
             return new Triangulation(GetMeshPositions(mesh), GetMeshIndices(mesh));
+        }
+        private TriangulationList<System.Numerics.Vector3> SaveTriangulationVector3(DMesh3 mesh)
+        {
+            mesh.CompactInPlace();
+
+            return new TriangulationList<System.Numerics.Vector3>(GetMeshPositionsVector3(mesh), GetMeshIndices(mesh).ToList());
+        }
+
+        private List<Vector3> GetMeshPositionsVector3(DMesh3 mesh)
+        {
+            return mesh.Vertices().Select(v => new Vector3((float)v.x, (float)v.y, (float)v.z)).ToList();
         }
 
         private IEnumerable<GeoPoint> GetMeshPositions(DMesh3 mesh)
@@ -99,7 +147,7 @@ namespace DEM.Net.glTF
                 yield return index.c;
             }
         }
-       
+
         private DMesh3 Decimate(DMesh3 mesh, int targetCount)
         {
             Reducer r = new Reducer(mesh);

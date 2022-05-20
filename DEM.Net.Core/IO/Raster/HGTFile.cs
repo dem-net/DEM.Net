@@ -55,8 +55,7 @@ namespace DEM.Net.Core
         }
         public float GetElevationAtPoint(FileMetadata metadata, int x, int y)
         {
-            float value = -32768;
-            value = GetHGTValue(metadata, x, y);
+            float value = GetHGTValue(metadata, x, y);
 
             return value;
         }
@@ -70,9 +69,9 @@ namespace DEM.Net.Core
 
             _hgtStream.Seek(metadata.ScanlineSize * y, SeekOrigin.Begin);
             _hgtStream.Read(byteScanline, 0, metadata.ScanlineSize);
-
-            float heightValue = 0;
             byte[] heightBytes = new byte[bytesPerSample];
+
+            float heightValue;
             if (BitConverter.IsLittleEndian)
             {
                 // reverse bytes
@@ -80,37 +79,23 @@ namespace DEM.Net.Core
                 {
                     heightBytes[i] = byteScanline[x * bytesPerSample + bytesPerSample - i - 1];
                 }
-                switch (metadata.SampleFormat)
+                heightValue = metadata.SampleFormat switch
                 {
-                    case RasterSampleFormat.FLOATING_POINT:
-                        heightValue = BitConverter.ToSingle(heightBytes, 0);
-                        break;
-                    case RasterSampleFormat.INTEGER:
-                        heightValue = BitConverter.ToInt16(heightBytes, 0);
-                        break;
-                    case RasterSampleFormat.UNSIGNED_INTEGER:
-                        heightValue = BitConverter.ToUInt16(heightBytes, 0);
-                        break;
-                    default:
-                        throw new Exception("Sample format unsupported.");
-                }
+                    RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(heightBytes, 0),
+                    RasterSampleFormat.INTEGER => BitConverter.ToInt16(heightBytes, 0),
+                    RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(heightBytes, 0),
+                    _ => throw new Exception("Sample format unsupported."),
+                };
             }
             else
             {
-                switch (metadata.SampleFormat)
+                heightValue = metadata.SampleFormat switch
                 {
-                    case RasterSampleFormat.FLOATING_POINT:
-                        heightValue = BitConverter.ToSingle(byteScanline, x * bytesPerSample);
-                        break;
-                    case RasterSampleFormat.INTEGER:
-                        heightValue = BitConverter.ToInt16(byteScanline, x * bytesPerSample);
-                        break;
-                    case RasterSampleFormat.UNSIGNED_INTEGER:
-                        heightValue = BitConverter.ToUInt16(byteScanline, x * bytesPerSample);
-                        break;
-                    default:
-                        throw new Exception("Sample format unsupported.");
-                }
+                    RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(byteScanline, x * bytesPerSample),
+                    RasterSampleFormat.INTEGER => BitConverter.ToInt16(byteScanline, x * bytesPerSample),
+                    RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(byteScanline, x * bytesPerSample),
+                    _ => throw new Exception("Sample format unsupported."),
+                };
             }
 
             return heightValue;
@@ -249,7 +234,7 @@ namespace DEM.Net.Core
                     double longitude = metadata.DataStartLon + (metadata.pixelSizeX * x);
 
                     byte[] heightBytes = new byte[bytesPerSample];
-                    float heightValue = 0;
+                    float heightValue;
                     if (BitConverter.IsLittleEndian)
                     {
                         // reverse bytes
@@ -257,37 +242,23 @@ namespace DEM.Net.Core
                         {
                             heightBytes[i] = byteScanline[x * bytesPerSample + bytesPerSample - i - 1];
                         }
-                        switch (metadata.SampleFormat)
+                        heightValue = metadata.SampleFormat switch
                         {
-                            case RasterSampleFormat.FLOATING_POINT:
-                                heightValue = BitConverter.ToSingle(heightBytes, 0);
-                                break;
-                            case RasterSampleFormat.INTEGER:
-                                heightValue = BitConverter.ToInt16(heightBytes, 0);
-                                break;
-                            case RasterSampleFormat.UNSIGNED_INTEGER:
-                                heightValue = BitConverter.ToUInt16(heightBytes, 0);
-                                break;
-                            default:
-                                throw new Exception("Sample format unsupported.");
-                        }
+                            RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(heightBytes, 0),
+                            RasterSampleFormat.INTEGER => BitConverter.ToInt16(heightBytes, 0),
+                            RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(heightBytes, 0),
+                            _ => throw new Exception("Sample format unsupported."),
+                        };
                     }
                     else
                     {
-                        switch (metadata.SampleFormat)
+                        heightValue = metadata.SampleFormat switch
                         {
-                            case RasterSampleFormat.FLOATING_POINT:
-                                heightValue = BitConverter.ToSingle(byteScanline, x * bytesPerSample);
-                                break;
-                            case RasterSampleFormat.INTEGER:
-                                heightValue = BitConverter.ToInt16(byteScanline, x * bytesPerSample);
-                                break;
-                            case RasterSampleFormat.UNSIGNED_INTEGER:
-                                heightValue = BitConverter.ToUInt16(byteScanline, x * bytesPerSample);
-                                break;
-                            default:
-                                throw new Exception("Sample format unsupported.");
-                        }
+                            RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(byteScanline, x * bytesPerSample),
+                            RasterSampleFormat.INTEGER => BitConverter.ToInt16(byteScanline, x * bytesPerSample),
+                            RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(byteScanline, x * bytesPerSample),
+                            _ => throw new Exception("Sample format unsupported."),
+                        };
                     }
 
                     if (heightValue < -10)
@@ -338,9 +309,9 @@ namespace DEM.Net.Core
                 for (int x = 0; x < metadata.Width; x++)
                 {
                     double longitude = metadata.PhysicalStartLon + (metadata.pixelSizeX * x);
-
-                    float heightValue = 0;
                     byte[] heightBytes = new byte[bytesPerSample]; ;
+
+                    float heightValue;
                     if (BitConverter.IsLittleEndian)
                     {
                         // reverse bytes
@@ -348,37 +319,23 @@ namespace DEM.Net.Core
                         {
                             heightBytes[i] = byteScanline[x * bytesPerSample + bytesPerSample - i - 1];
                         }
-                        switch (metadata.SampleFormat)
+                        heightValue = metadata.SampleFormat switch
                         {
-                            case RasterSampleFormat.FLOATING_POINT:
-                                heightValue = BitConverter.ToSingle(heightBytes, 0);
-                                break;
-                            case RasterSampleFormat.INTEGER:
-                                heightValue = BitConverter.ToInt16(heightBytes, 0);
-                                break;
-                            case RasterSampleFormat.UNSIGNED_INTEGER:
-                                heightValue = BitConverter.ToUInt16(heightBytes, 0);
-                                break;
-                            default:
-                                throw new Exception("Sample format unsupported.");
-                        }
+                            RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(heightBytes, 0),
+                            RasterSampleFormat.INTEGER => BitConverter.ToInt16(heightBytes, 0),
+                            RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(heightBytes, 0),
+                            _ => throw new Exception("Sample format unsupported."),
+                        };
                     }
                     else
                     {
-                        switch (metadata.SampleFormat)
+                        heightValue = metadata.SampleFormat switch
                         {
-                            case RasterSampleFormat.FLOATING_POINT:
-                                heightValue = BitConverter.ToSingle(byteScanline, x * bytesPerSample);
-                                break;
-                            case RasterSampleFormat.INTEGER:
-                                heightValue = BitConverter.ToInt16(byteScanline, x * bytesPerSample);
-                                break;
-                            case RasterSampleFormat.UNSIGNED_INTEGER:
-                                heightValue = BitConverter.ToUInt16(byteScanline, x * bytesPerSample);
-                                break;
-                            default:
-                                throw new Exception("Sample format unsupported.");
-                        }
+                            RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(byteScanline, x * bytesPerSample),
+                            RasterSampleFormat.INTEGER => BitConverter.ToInt16(byteScanline, x * bytesPerSample),
+                            RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(byteScanline, x * bytesPerSample),
+                            _ => throw new Exception("Sample format unsupported."),
+                        };
                     }
                     if (heightValue < 32768)
                     {
@@ -428,8 +385,6 @@ namespace DEM.Net.Core
         {
             // Ne modifiez pas ce code. Placez le code de nettoyage dans Dispose(bool disposing) ci-dessus.
             Dispose(true);
-            // TODO: supprimer les marques de commentaire pour la ligne suivante si le finaliseur est remplacé ci-dessus.
-            // GC.SuppressFinalize(this);
         }
 
 

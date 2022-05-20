@@ -88,7 +88,7 @@ namespace DEM.Net.Core
         {
             return xMin < xMax
                     && yMin < yMax
-                    && ((SRID == 4326 
+                    && ((SRID == 4326
                     && GpsLocation.IsValidLongitude(xMin)
                     && GpsLocation.IsValidLongitude(xMax)
                     && GpsLocation.IsValidLatitude(yMin)
@@ -141,9 +141,11 @@ namespace DEM.Net.Core
         }
         public BoundingBox Scale(double scaleX, double scaleY, double scaleZ)
         {
-            return new BoundingBox(xMin - Width * scaleX, xMax + Width * scaleX
-                , yMin - Height * scaleY, yMax + Height * scaleY
-                , zMin - Depth * scaleZ, zMax + Depth * scaleZ)
+            scaleX *= 0.5; scaleY *= 0.5; scaleZ *= 0.5;
+            var center = Center;
+            return new BoundingBox(center[0] - Width * scaleX, center[0] + Width * scaleX
+                , center[1] - Height * scaleY, center[1] + Height * scaleY
+                , center[2] - Depth * scaleZ, center[2] + Depth * scaleZ)
             { SRID = this.SRID };
         }
 

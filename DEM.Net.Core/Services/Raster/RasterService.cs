@@ -35,10 +35,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using ProtoBuf;
+using System.Threading;
 
 namespace DEM.Net.Core
 {
@@ -111,22 +111,20 @@ namespace DEM.Net.Core
                 filePath = Path.Combine(_localDirectory, filePath);
             }
 
-            switch (fileFormat)
+            return fileFormat switch
             {
-                case DEMFileType.GEOTIFF: return new GeoTiff(filePath);
-                case DEMFileType.SRTM_HGT: return new HGTFile(filePath);
-                case DEMFileType.ASCIIGrid: return new ASCIIGridFile(filePath, gzip: false);
-                case DEMFileType.ASCIIGridGzip: return new ASCIIGridFile(filePath, gzip: true);
-                case DEMFileType.CF_NetCDF: return new NetCdfFile(filePath);
-                default:
-                    throw new NotImplementedException($"{fileFormat} file format not implemented.");
-            }
-
+                DEMFileType.GEOTIFF => new GeoTiff(filePath),
+                DEMFileType.SRTM_HGT => new HGTFile(filePath),
+                DEMFileType.ASCIIGrid => new ASCIIGridFile(filePath, gzip: false),
+                DEMFileType.ASCIIGridGzip => new ASCIIGridFile(filePath, gzip: true),
+                DEMFileType.CF_NetCDF => new NetCdfFile(filePath),
+                _ => throw new NotImplementedException($"{fileFormat} file format not implemented."),
+            };
         }
 
         public string GetLocalDEMPath(DEMDataSet dataset)
         {
-            string path = null;
+            string path;
             if (dataset.DataSource.DataSourceType == Datasets.DEMDataSourceType.LocalFileSystem)
             {
                 if (Path.IsPathRooted(dataset.DataSource.IndexFilePath))
@@ -149,7 +147,7 @@ namespace DEM.Net.Core
         {
             return Path.Combine(GetLocalDEMPath(dataset), fileTitle);
         }
-        public FileMetadata ParseMetadata(IRasterFile rasterFile, DEMFileDefinition format)
+        public static FileMetadata ParseMetadata(IRasterFile rasterFile, DEMFileDefinition format)
         {
             return rasterFile.ParseMetaData(format);
         }
@@ -174,15 +172,30 @@ namespace DEM.Net.Core
         public List<FileMetadata> LoadManifestMetadata(DEMDataSet dataset, bool force, bool logTimeSpent = false)
         {
             string localPath = GetLocalDEMPath(dataset);
+            var globalManifestPath = Path.Combine(localPath, "globalmanifest.bin");
 
             if (force && _metadataCatalogCache.ContainsKey(localPath))
             {
                 _metadataCatalogCache.TryRemove(localPath, out List<FileMetadata> removed);
+                if (File.Exists(globalManifestPath))
+                {
+                    File.Delete(globalManifestPath);
+                }
             }
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             if (_metadataCatalogCache.ContainsKey(localPath) == false)
             {
+                if (File.Exists(globalManifestPath))
+                {
+                    using (var inStream = new FileStream(globalManifestPath, FileMode.Open, FileAccess.Read))
+                    {
+                        _logger.LogInformation($"{dataset.Name} metadata read from protobuf index");
+                        _metadataCatalogCache[localPath] = Serializer.Deserialize<List<FileMetadata>>(inStream);
+                        return _metadataCatalogCache[localPath];
+                    }
+                }
+
                 var manifestDirectories = Directory.EnumerateDirectories(localPath, MANIFEST_DIR, SearchOption.AllDirectories);
 
                 ConcurrentBag<FileMetadata> metaList = new ConcurrentBag<FileMetadata>();
@@ -207,8 +220,13 @@ namespace DEM.Net.Core
                     );
 
                 }
-                _metadataCatalogCache[localPath] = metaList.ToList();
 
+                _metadataCatalogCache[localPath] = metaList.ToList();        
+                using (var outStream = new FileStream(globalManifestPath, FileMode.Create, FileAccess.Write))
+                {
+                    Serializer.Serialize(outStream, _metadataCatalogCache[localPath]);
+                    _logger.LogInformation($"{dataset.Name} metadata written to protobuf index");
+                }
             }
 
             if (logTimeSpent) // we avoid logging each time the data is requested, only needed on preload
@@ -223,18 +241,24 @@ namespace DEM.Net.Core
         /// <param name="dataset">Dataset</param>
         /// <param name="deleteOnError">Deletes raster files on error</param>
         /// <param name="force">If true, force regeneration of all files. If false, only missing files will be generated.</param>
-        /// <param name="maxDegreeOfParallelism">Set to 1 to force single thread execution (for debug purposes)</param>
-        public void GenerateDirectoryMetadata(DEMDataSet dataset, bool force, bool deleteOnError = false, int maxDegreeOfParallelism = -1)
+        public void GenerateDirectoryMetadata(DEMDataSet dataset, bool force, bool deleteOnError = false)
         {
             string directoryPath = GetLocalDEMPath(dataset);
-            var files = Directory.EnumerateFiles(directoryPath, "*" + dataset.FileFormat.FileExtension, SearchOption.AllDirectories);
-            ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = Math.Min(Environment.ProcessorCount, maxDegreeOfParallelism == 0 ? -1 : maxDegreeOfParallelism) };
+            var files = Directory.GetFiles(directoryPath, "*" + dataset.FileFormat.FileExtension, SearchOption.AllDirectories);
+            ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
             //ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = 1 };
+            int count = 0;
             Parallel.ForEach(files, options, file =>
              {
                  try
                  {
                      GenerateFileMetadata(file, dataset.FileFormat, force);
+                     Interlocked.Increment(ref count);
+
+                     if (count % 100 == 0)
+                     {
+                         _logger?.LogInformation($"Generating metadata {count}/{files.Length} ({count * 1d / files.Length:P1})");
+                     }
                  }
                  catch (Exception exFile)
                  {
@@ -254,20 +278,21 @@ namespace DEM.Net.Core
                          throw;
                      }
                  }
-
              });
+
+            LoadManifestMetadata(dataset, force);
         }
 
-        private string GetMetadataFileName(string rasterFileName, string outDirPath, string extension = ".json")
+        private static string GetMetadataFileName(string rasterFileName, string outDirPath, string extension = ".json")
         {
             var fileTitle = Path.GetFileNameWithoutExtension(rasterFileName);
             return Path.Combine(outDirPath, fileTitle + extension);
         }
-        private string GetManifestDirectory(string rasterFileName)
+        private static string GetManifestDirectory(string rasterFileName)
         {
             return Path.Combine(Path.GetDirectoryName(rasterFileName), MANIFEST_DIR);
         }
-        private string GetMetadataFileName(string rasterFileName, string extension = ".json")
+        private static string GetMetadataFileName(string rasterFileName, string extension = ".json")
         {
             string outDirPath = GetManifestDirectory(rasterFileName);
             return GetMetadataFileName(rasterFileName, outDirPath, extension);
@@ -285,7 +310,6 @@ namespace DEM.Net.Core
             if (!File.Exists(rasterFileName))
                 throw new FileNotFoundException($"File {rasterFileName} does not exists !");
             string outDirPath = GetManifestDirectory(rasterFileName);
-            string bmpPath = GetMetadataFileName(rasterFileName, outDirPath, ".bmp");
             string jsonPath = GetMetadataFileName(rasterFileName, outDirPath, ".json");
 
 
@@ -301,10 +325,6 @@ namespace DEM.Net.Core
                 {
                     File.Delete(jsonPath);
                 }
-                if (File.Exists(bmpPath))
-                {
-                    File.Delete(bmpPath);
-                }
             }
 
             // Json manifest
@@ -313,7 +333,7 @@ namespace DEM.Net.Core
                 Trace.TraceInformation($"Generating manifest for file {rasterFileName}.");
 
                 FileMetadata metadata = this.ParseMetadata(rasterFileName, fileFormat);
-                File.WriteAllText(jsonPath, JsonConvert.SerializeObject(metadata, Formatting.Indented));
+                File.WriteAllText(jsonPath, JsonConvert.SerializeObject(metadata, Formatting.Indented));                
 
                 Trace.TraceInformation($"Manifest generated for file {rasterFileName}.");
             }
@@ -368,8 +388,6 @@ namespace DEM.Net.Core
         /// </returns>
         public IEnumerable<DatasetReport> GenerateReport()
         {
-            StringBuilder sb = new StringBuilder();
-
             // Get report for downloaded files
             foreach (DEMDataSet dataset in DEMDataSet.RegisteredDatasets)
             {
@@ -516,7 +534,7 @@ namespace DEM.Net.Core
             {
                 if (!File.Exists(report.LocalName))
                 {
-                    _logger?.LogInformation($"Downloading file {report.URL}...");
+                    //_logger?.LogInformation($"Downloading file {report.URL}...");
 
                     downloader.DownloadRasterFile(report, dataset);
 
@@ -535,7 +553,7 @@ namespace DEM.Net.Core
         /// <param name="metadata"></param>
         /// <param name="noDataValue"></param>
         /// <returns></returns>
-        internal HeightMap GetVirtualHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float? noDataValue)
+        internal static HeightMap GetVirtualHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float? noDataValue)
         {
 
             int registrationOffset = metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid ? 1 : 0;
