@@ -6,6 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using DEM.Net.Core;
 using DEM.Net.Core.Datasets;
+using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
+using DEM.Net.Core.Configuration;
 
 namespace DEM.Net.TestWinForm
 {
@@ -27,7 +30,7 @@ namespace DEM.Net.TestWinForm
                             throw new KeyNotFoundException(); // or maybe return null, up to you
                     }
                 };
-                RasterService v_rasterService = new RasterService(rasterIndexServiceResolver, null);
+                RasterService v_rasterService = new RasterService(rasterIndexServiceResolver,null, NullLogger<RasterService>.Instance);
                 ElevationService v_elevationService = new ElevationService(v_rasterService, null);
                 BoundingBox v_bbox = GeometryService.GetBoundingBox(p_bbox);
                 v_elevationService.DownloadMissingFiles(dataset, v_bbox);

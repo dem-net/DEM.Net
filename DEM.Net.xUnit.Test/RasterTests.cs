@@ -30,7 +30,7 @@ namespace DEM.Net.Test
 
             if (!File.Exists(fileName))
             {
-                ZipFile.ExtractToDirectory(sourceFile, ".", true);
+                ZipFile.ExtractToDirectory(sourceFile, ".");
             }
 
             Assert.True(File.Exists(fileName), "Unzip failed.");
@@ -62,7 +62,7 @@ namespace DEM.Net.Test
 
             if (!File.Exists(fileName))
             {
-                ZipFile.ExtractToDirectory(sourceFile, ".", true);
+                ZipFile.ExtractToDirectory(sourceFile, ".");
             }
 
             Assert.True(File.Exists(fileName), "Unzip failed.");
@@ -93,7 +93,7 @@ namespace DEM.Net.Test
 
             if (!File.Exists(fileName))
             {
-                ZipFile.ExtractToDirectory(sourceFile, ".", true);
+                ZipFile.ExtractToDirectory(sourceFile, ".");
             }
 
             Assert.True(File.Exists(fileName), "Unzip failed.");

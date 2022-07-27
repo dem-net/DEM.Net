@@ -102,7 +102,7 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), -26, -25, 37, 38, true)] // fully covered
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), -26, -25, 37, 38, false)] // fully covered
         [InlineData(nameof(DEMDataSet.SRTM_GL3), -26.659806263787523, -25.729350373606543, 37.73596920859053, 38.39764411353181, false)] // 1 tile missing
         [InlineData(nameof(DEMDataSet.SRTM_GL3), -37.43596931765545, -37.13861749268079, 50.33844888725473, 50.51342652633956, false)] // not covered at all
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 1.5, 2.5, 44.5, 45.5, true)] // fully covered by 4 tiles
@@ -125,8 +125,6 @@ namespace DEM.Net.Test
 
         [Theory()]
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 39.97052612249965, 20.178894102573395, 40.16242159876657, 20.476635396480564, 3)]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), 39.97052612249965, 20.178894102573395, 40.16242159876657, 20.476635396480564, 3)]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), 39.97052612249965, 20.178894102573395, 40.16242159876657, 20.476635396480564, 3)]
         public void TestIntervisibility(string dataSetName, double latStart, double lonStart
             , double latEnd, double lonEnd, double expectedObstacles)
         {
@@ -140,6 +138,29 @@ namespace DEM.Net.Test
             Assert.Equal(expectedObstacles, report.Metrics.Obstacles.Count, 0);
         }
 
-        
+        [Theory()]
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 44.9171006, 37.5636956, 9139.53, 44.4888189, 39.2923105, 7182.78, 0)]
+        public void TestIntervisibilityWithInitialAltitude(string dataSetName, double latStart, double lonStart, double altitudeStart
+            , double latEnd, double lonEnd, double altitudeEnd, double expectedObstacles)
+        {
+            DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+            Assert.NotNull(dataSet);
+
+            BoundingBox bbox = new BoundingBox(lonStart, lonEnd,latStart, latEnd);
+            _elevationService.DownloadMissingFiles(dataSet, bbox);
+                        
+            var sourcePoint = new GeoPoint(latStart, lonStart);
+            var targetPoint = new GeoPoint(latEnd, lonEnd);
+            var startElevation = _elevationService.GetPointElevation(sourcePoint, dataSet).Elevation ?? 0;
+            var endElevation = _elevationService.GetPointElevation(targetPoint, dataSet).Elevation ?? 0;
+
+            IntervisibilityReport report = _elevationService.GetIntervisibilityReport(sourcePoint, targetPoint, dataSet, downloadMissingFiles: true, altitudeStart-startElevation, altitudeEnd-endElevation);
+
+
+            Assert.NotNull(report);
+            Assert.Equal(expectedObstacles, report.ObstacleCount, 0);
+            Assert.Equal(expectedObstacles, report.Metrics.Obstacles.Count, 0);
+
+        }
     }
 }

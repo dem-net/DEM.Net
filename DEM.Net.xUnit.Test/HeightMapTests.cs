@@ -16,7 +16,6 @@ namespace DEM.Net.Test
 
         [Theory()]
         [InlineData(nameof(DEMDataSet.SRTM_GL3))]
-        [InlineData(nameof(DEMDataSet.NASADEM))]
         public void BoudingBoxConservationTest(string datasetName)
         {
 
