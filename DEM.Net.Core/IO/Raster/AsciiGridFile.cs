@@ -96,7 +96,39 @@ namespace DEM.Net.Core
 
         public HeightMap GetHeightMap(FileMetadata metadata)
         {
-            throw new NotImplementedException();
+            var noDataValue = 0;
+            if (_data == null)
+            {
+                ReadAllFile(metadata);
+            }
+            int registrationOffset = metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid ? 1 : 0;
+
+            HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
+            heightMap.Count = heightMap.Width * heightMap.Height;
+            var coords = new List<GeoPoint>(heightMap.Count);
+
+
+            for (int y = 0; y < metadata.Height; y++)
+            {
+                double latitude = metadata.DataEndLat + (metadata.pixelSizeY * y);
+
+                for (int x = 0; x < metadata.Width; x++)
+                {
+                    double longitude = metadata.DataStartLon + (metadata.pixelSizeX * x);
+
+                    float heightValue = float.Parse(_data[y][x], CultureInfo.InvariantCulture);
+                    if (heightValue == metadata.NoDataValueFloat) heightValue = noDataValue;
+                    heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
+                    heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
+
+                    coords.Add(new GeoPoint(latitude, longitude, heightValue));
+
+                }
+            }
+            Debug.Assert(heightMap.Width * heightMap.Height == coords.Count);
+
+            heightMap.Coordinates = coords;
+            return heightMap;
         }
 
         public HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = float.MinValue)
