@@ -151,9 +151,9 @@ namespace DEM.Net.glTF.SharpglTF
         }
         public ModelRoot CreateTerrainMesh(Triangulation triangulation, PBRTexture textures, bool doubleSided = true)
         { return AddTerrainMesh(CreateNewModel(), triangulation, textures, doubleSided); }
-        public ModelRoot AddTerrainMesh(ModelRoot model, Triangulation triangulation, PBRTexture textures, bool doubleSided = true)
+        public ModelRoot AddTerrainMesh(ModelRoot model, Triangulation triangulation, PBRTexture textures, bool doubleSided = true, Matrix4x4 matrix = default)
         {
-            var indexedTriangulation = new IndexedTriangulation(triangulation);
+            var indexedTriangulation = new IndexedTriangulation(triangulation, matrix);
             var normals = _meshService.ComputeMeshNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
             model = AddMesh(model, TERRAIN_NODE_NAME, indexedTriangulation, normals, textures, doubleSided);
 
