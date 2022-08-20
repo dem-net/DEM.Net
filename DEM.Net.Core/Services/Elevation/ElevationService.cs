@@ -66,7 +66,7 @@ namespace DEM.Net.Core
         /// <param name="bbox">Bounding box, <see cref="GeometryService.GetBoundingBox(string)"/></param>
         /// <remarks>VRT file is downloaded once. It will be cached in local for 30 days.
         /// </remarks>
-        public void DownloadMissingFiles(DEMDataSet dataSet, BoundingBox bbox = null)
+        public async void DownloadMissingFilesAsync(DEMDataSet dataSet, BoundingBox bbox = null)
         {
             var report = _RasterService.GenerateReport(dataSet, bbox);
 
@@ -76,7 +76,7 @@ namespace DEM.Net.Core
                 return;
             }
 
-            DownloadMissingFiles_FromReport(report, dataSet);
+            await DownloadMissingFiles_FromReportAsync(report, dataSet);
 
         }
 
@@ -89,7 +89,7 @@ namespace DEM.Net.Core
         /// <param name="lon">Longitude of location</param>
         /// <remarks>VRT file is downloaded once. It will be cached in local for 30 days.
         /// </remarks>
-        public void DownloadMissingFiles(DEMDataSet dataSet, double lat, double lon)
+        public async Task DownloadMissingFilesAsync(DEMDataSet dataSet, double lat, double lon)
         {
             var report = _RasterService.GenerateReportForLocation(dataSet, lat, lon);
 
@@ -99,7 +99,7 @@ namespace DEM.Net.Core
                 return;
             }
 
-            DownloadMissingFiles_FromReport(report, dataSet);
+            await DownloadMissingFiles_FromReportAsync(report, dataSet);
 
         }
 
@@ -116,21 +116,21 @@ namespace DEM.Net.Core
             if (geoPoint == null)
                 return;
 
-            DownloadMissingFiles(dataSet, geoPoint.Latitude, geoPoint.Longitude);
+            DownloadMissingFilesAsync(dataSet, geoPoint.Latitude, geoPoint.Longitude);
         }
-        private void DownloadMissingFiles_FromReport(IEnumerable<DemFileReport> report, DEMDataSet dataSet)
+        private async Task DownloadMissingFiles_FromReportAsync(IEnumerable<DemFileReport> report, DEMDataSet dataSet)
         {
             // Generate metadata files if missing
             var missingMedata = report.Where(r => r.IsMetadataGenerated == false && r.IsExistingLocally == true).ToList();
             int fileCount = missingMedata.Count;
             int doneFileCount = 0;
-            Parallel.ForEach(missingMedata, new ParallelOptions { MaxDegreeOfParallelism = 4 }, file =>
+            Parallel.ForEach(missingMedata, new ParallelOptions { MaxDegreeOfParallelism = 1 }, file =>
             {
                 Interlocked.Increment(ref doneFileCount);
                 _RasterService.GenerateFileMetadata(file.LocalName, dataSet.FileFormat, false);
 
                 if (doneFileCount % 10 == 0)
-                    _logger.LogInformation($"Generating medata {doneFileCount:N0}/{fileCount:N0} ({(float)doneFileCount/fileCount:P0})");
+                    _logger.LogInformation($"Generating medata {doneFileCount:N0}/{fileCount:N0} ({(float)doneFileCount / fileCount:P0})");
             });
             List<DemFileReport> filesToDownload = new List<DemFileReport>(report.Where(kvp => kvp.IsExistingLocally == false));
 
@@ -144,15 +144,17 @@ namespace DEM.Net.Core
 
                 try
                 {
+                    
                     int parallelism = 2;
                     int numFiles = 0;
-                    Parallel.ForEach(filesToDownload, new ParallelOptions { MaxDegreeOfParallelism = parallelism }, file =>
-                        {
-                            Interlocked.Increment(ref numFiles);
-                            _RasterService.DownloadRasterFile(file, dataSet);
-                            _logger.LogInformation($"Download progress: {numFiles:N0}/{filesToDownload.Count:N0} ({(float)numFiles/filesToDownload.Count:P0})");
-                        }
-                    );
+                    foreach(var file in filesToDownload)
+                    //await Parallel.ForEachAsync(filesToDownload, new ParallelOptions { MaxDegreeOfParallelism = parallelism }, async (file,token) =>
+                       {
+                           Interlocked.Increment(ref numFiles);
+                           await _RasterService.DownloadRasterFileAsync(file, dataSet);
+                           _logger.LogInformation($"Download progress: {numFiles:N0}/{filesToDownload.Count:N0} ({(float)numFiles / filesToDownload.Count:P0})");
+                       }
+                    //);
 
                     _RasterService.GenerateDirectoryMetadata(dataSet, false, false);
                     _RasterService.LoadManifestMetadata(dataSet, true);
@@ -505,7 +507,7 @@ namespace DEM.Net.Core
             BoundingBox bbox = points.GetBoundingBox();
             if (downloadMissingFiles)
             {
-                DownloadMissingFiles(dataSet, bbox);
+                DownloadMissingFilesAsync(dataSet, bbox);
             }
             List<FileMetadata> tiles = this.GetCoveringFiles(bbox.ReprojectTo(4326, dataSet.SRID), dataSet);
 
@@ -571,7 +573,7 @@ namespace DEM.Net.Core
         {
             if (downloadMissingFiles)
             {
-                DownloadMissingFiles(dataSet, bbox);
+                DownloadMissingFilesAsync(dataSet, bbox);
             }
 
             // Locate which files are needed
@@ -1508,7 +1510,7 @@ namespace DEM.Net.Core
                 var elevationLine = GeometryService.ParseGeoPointAsGeometryLine(source, target);
 
                 if (downloadMissingFiles)
-                    this.DownloadMissingFiles(dataSet, elevationLine.GetBoundingBox());
+                    this.DownloadMissingFilesAsync(dataSet, elevationLine.GetBoundingBox());
 
                 var geoPoints = this.GetLineGeometryElevation(elevationLine, dataSet);
                 if (dataSet.SRID != Reprojection.SRID_GEODETIC)

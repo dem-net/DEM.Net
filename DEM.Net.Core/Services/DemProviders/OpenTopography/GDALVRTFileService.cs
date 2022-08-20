@@ -204,20 +204,26 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="report">Report item return by GenerateReport methods</param>
         /// <param name="dataset"></param>
-        public void DownloadRasterFile(DemFileReport report, DEMDataSet dataset)
+        public async Task DownloadRasterFileAsync(DemFileReport report, DEMDataSet dataset)
         {
             // Create directories if not existing
             new FileInfo(report.LocalName).Directory.Create();
 
             HttpClient client = _httpClientFactory == null ? new HttpClient() : _httpClientFactory.CreateClient();
-
-            var contentbytes = client.GetByteArrayAsync(report.URL).Result;
-            using (FileStream fs = new FileStream(report.LocalName, FileMode.Create, FileAccess.Write))
+            try
             {
-                fs.Write(contentbytes, 0, contentbytes.Length);
+                var contentbytes = await client.GetByteArrayAsync(report.URL);
+                using (FileStream fs = new FileStream(report.LocalName, FileMode.Create, FileAccess.Write))
+            {
+                await fs.WriteAsync(contentbytes, 0, contentbytes.Length);
             }
-
-
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            
+            
         }
 
         private IEnumerable<DEMFileSource> GetSources(DEMDataSet dataSet, string vrtFileName)

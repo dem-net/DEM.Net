@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DEM.Net.Core.Stac
 {
@@ -16,12 +17,12 @@ namespace DEM.Net.Core.Stac
     {
         private readonly ILogger<StacFileService> logger;
         private ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName;
-        private readonly IHttpClientFactory httpClientFactory;
+        private readonly IHttpClientFactory _httpClientFactory;
 
         public StacFileService(ILogger<StacFileService> logger, IHttpClientFactory httpClientFactory)
         {
             this.logger = logger;
-            this.httpClientFactory = httpClientFactory;
+            this._httpClientFactory = httpClientFactory;
         }
         public void Setup(DEMDataSet dataSet, string dataSetLocalDir)
         {
@@ -55,7 +56,7 @@ namespace DEM.Net.Core.Stac
                     int pageIndex = 0;
                     string initialUrl = string.Concat(baseUrl, $"/collections/{dataSource.Collection}/items");
                     links = new Dictionary<StacDemFile, StacDemFile>(30000);
-                    var httpClient = httpClientFactory.CreateClient();
+                    var httpClient = _httpClientFactory.CreateClient();
                     do
                     {
                         pageIndex++;
@@ -142,7 +143,7 @@ namespace DEM.Net.Core.Stac
             return null;
         }
 
-        public void DownloadRasterFile(DemFileReport report, DEMDataSet dataset)
+        public async Task DownloadRasterFileAsync(DemFileReport report, DEMDataSet dataset)
         {
             try
             {
@@ -154,23 +155,12 @@ namespace DEM.Net.Core.Stac
                     Directory.CreateDirectory(dirName);
                 }
                 // Execute the request
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(report.URL);
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                
+                HttpClient client = _httpClientFactory == null ? new HttpClient() : _httpClientFactory.CreateClient();
+                var contentbytes = await client.GetByteArrayAsync(report.URL);
+                using (FileStream fs = new FileStream(report.LocalName, FileMode.Create, FileAccess.Write))
                 {
-                    // Now access the data
-                    long length = response.ContentLength;
-                    string type = response.ContentType;
-                    using (Stream stream = response.GetResponseStream())
-                    {
-                        // Process the stream data (e.g. save to file)
-                        using (FileStream fs = new FileStream(report.LocalName, FileMode.Create, FileAccess.Write))
-                        {
-                            stream.CopyTo(fs);
-                            fs.Close();
-                        }
-                        stream.Close();
-                    }
-                    response.Close();
+                    await fs.WriteAsync(contentbytes, 0, contentbytes.Length);
                 }
             }
             catch (Exception ex)

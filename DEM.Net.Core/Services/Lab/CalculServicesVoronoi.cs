@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using NetTopologySuite.Geometries;
 using DEM.Net.Core.Voronoi;
-using NetTopologySuite.Geometries;
 using Point = NetTopologySuite.Geometries.Point;
 
 namespace DEM.Net.Core.Services.Lab

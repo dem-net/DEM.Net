@@ -5,6 +5,8 @@ using Microsoft.Extensions.Options;
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace DEM.Net.Core.EarthData
 {
@@ -19,11 +21,13 @@ namespace DEM.Net.Core.EarthData
         bool isInitialized = false;
         private readonly ILogger<EarthdataLoginConnector> logger;
         private readonly AppSecrets secretOptions;
+        private readonly IHttpClientFactory httpClientFactory;
 
-        public EarthdataLoginConnector(IOptions<AppSecrets> secretOptions, ILogger<EarthdataLoginConnector> logger)
+        public EarthdataLoginConnector(IHttpClientFactory httpClientFactory, IOptions<AppSecrets> secretOptions, ILogger<EarthdataLoginConnector> logger)
         {
             this.logger = logger;
             this.secretOptions = secretOptions.Value;
+            this.httpClientFactory = httpClientFactory;
 
         }
         public void Setup()
@@ -43,7 +47,7 @@ namespace DEM.Net.Core.EarthData
             isInitialized = true;
         }
 
-        public void Download(string url, string localFileName)
+        public async Task DownloadAsync(string url, string localFileName)
         {
             try
             {
@@ -58,28 +62,24 @@ namespace DEM.Net.Core.EarthData
                     Directory.CreateDirectory(dirName);
                 }
                 // Execute the request
-                HttpWebRequest request = this.CreateWebRequest(url);
-               
-
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                var baseAddress = new Uri(url);
+                using (var handler = new HttpClientHandler()
                 {
-                    // Now access the data
-                    long length = response.ContentLength;
-                    string type = response.ContentType;
-                    using (Stream stream = response.GetResponseStream())
+                    CookieContainer = cookieContainer,
+                    Credentials = credentialCache,
+                    PreAuthenticate = false,
+                    AllowAutoRedirect = true
+                })
+                {
+                    var httpClient = new HttpClient(handler) { BaseAddress = baseAddress };
+                    var contentbytes = await httpClient.GetByteArrayAsync(url);
+                    using (FileStream fs = new FileStream(localFileName, FileMode.Create, FileAccess.Write))
                     {
-                        // Process the stream data (e.g. save to file)
-                        using (FileStream fs = new FileStream(localFileName, FileMode.Create, FileAccess.Write))
-                        {
-                            stream.CopyTo(fs);
-                            fs.Close();
-                        }
-                        stream.Close();
+                        await fs.WriteAsync(contentbytes, 0, contentbytes.Length);
                     }
-                    response.Close();
-                }
 
-                
+
+                }
             }
             catch (Exception ex)
             {
@@ -88,15 +88,5 @@ namespace DEM.Net.Core.EarthData
             }
         }
 
-        private HttpWebRequest CreateWebRequest(string url)
-        {
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "GET";
-            request.Credentials = credentialCache;
-            request.CookieContainer = cookieContainer;
-            request.PreAuthenticate = false;
-            request.AllowAutoRedirect = true;
-            return request;
-        }
     }
 }

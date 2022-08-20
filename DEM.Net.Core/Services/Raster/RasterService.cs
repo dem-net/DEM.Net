@@ -221,7 +221,7 @@ namespace DEM.Net.Core
 
                 }
 
-                _metadataCatalogCache[localPath] = metaList.ToList();        
+                _metadataCatalogCache[localPath] = metaList.ToList();
                 using (var outStream = new FileStream(globalManifestPath, FileMode.Create, FileAccess.Write))
                 {
                     Serializer.Serialize(outStream, _metadataCatalogCache[localPath]);
@@ -333,7 +333,7 @@ namespace DEM.Net.Core
                 Trace.TraceInformation($"Generating manifest for file {rasterFileName}.");
 
                 FileMetadata metadata = this.ParseMetadata(rasterFileName, fileFormat);
-                File.WriteAllText(jsonPath, JsonConvert.SerializeObject(metadata, Formatting.Indented));                
+                File.WriteAllText(jsonPath, JsonConvert.SerializeObject(metadata, Formatting.Indented));
 
                 Trace.TraceInformation($"Manifest generated for file {rasterFileName}.");
             }
@@ -526,24 +526,18 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="report">Report item return by GenerateReport methods</param>
         /// <param name="dataset"></param>
-        public void DownloadRasterFile(DemFileReport report, DEMDataSet dataset)
+        public async Task DownloadRasterFileAsync(DemFileReport report, DEMDataSet dataset)
         {
             var downloader = _rasterIndexServiceResolver(dataset.DataSource.DataSourceType);
 
-            lock (monitor[report.URL])
+            if (!File.Exists(report.LocalName))
             {
-                if (!File.Exists(report.LocalName))
-                {
-                    //_logger?.LogInformation($"Downloading file {report.URL}...");
+                //_logger?.LogInformation($"Downloading file {report.URL}...");
 
-                    downloader.DownloadRasterFile(report, dataset);
-
-                    this.GenerateFileMetadata(report.LocalName, dataset.FileFormat, false);
-                }
+                await downloader.DownloadRasterFileAsync(report, dataset);
+                this.GenerateFileMetadata(report.LocalName, dataset.FileFormat, false);
             }
-
         }
-
 
         /// <summary>
         /// Copy / paste from ASC similar function getHeightMap in bbox

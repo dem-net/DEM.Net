@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DEM.Net.Core
 {
@@ -25,9 +26,9 @@ namespace DEM.Net.Core
         }
 
 
-        public void DownloadRasterFile(DemFileReport report, DEMDataSet dataset)
+        public Task DownloadRasterFileAsync(DemFileReport report, DEMDataSet dataset)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public IEnumerable<DEMFileSource> GetCoveredFileSources(DEMDataSet dataset, BoundingBox bbox)

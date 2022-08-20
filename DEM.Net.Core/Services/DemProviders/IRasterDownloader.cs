@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DEM.Net.Core
 {
     public interface IRasterDownloader
     {
-        void DownloadRasterFile(DemFileReport report, DEMDataSet dataset);
+        Task DownloadRasterFileAsync(DemFileReport report, DEMDataSet dataset);
     }
 }

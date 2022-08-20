@@ -193,7 +193,7 @@ namespace DEM.Net.Core.EarthData
         {
         }
 
-        public void DownloadRasterFile(DemFileReport report, DEMDataSet dataset)
+        public async Task DownloadRasterFileAsync(DemFileReport report, DEMDataSet dataset)
         {
             try
             {
@@ -201,7 +201,7 @@ namespace DEM.Net.Core.EarthData
                 if (report.LocalName.EndsWith(".zip"))
                 {
                     var zipFileName = Path.Combine(Path.GetDirectoryName(report.LocalName), report.Source.SourceFileName);
-                    rasterDownloader.Download(report.URL, zipFileName);
+                    await rasterDownloader.DownloadAsync(report.URL, zipFileName);
 
                     // Post action
                     // - Unzip file 
@@ -225,7 +225,7 @@ namespace DEM.Net.Core.EarthData
                 }
                 else
                 {
-                    rasterDownloader.Download(report.URL, report.LocalName);
+                    await rasterDownloader.DownloadAsync(report.URL, report.LocalName);
                 }
 
             }

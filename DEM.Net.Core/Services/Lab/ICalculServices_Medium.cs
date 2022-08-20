@@ -24,7 +24,6 @@
 // THE SOFTWARE.
 
 using NetTopologySuite.Geometries;
-using NetTopologySuite.Geometries;
 using System.Collections.Generic;
 
 namespace DEM.Net.Core.Services.Lab
