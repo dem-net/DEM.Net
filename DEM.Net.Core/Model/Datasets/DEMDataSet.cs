@@ -170,7 +170,7 @@ namespace DEM.Net.Core
                 ResolutionMeters = 1,
                 PointsPerDegree = 108000,
                 NoDataValue = -99999,
-                IsListed= false,
+                IsListed= true,
                 SRID = 2154,
                 Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN", "https://ign.fr", "https://www.etalab.gouv.fr/licence-ouverte-open-licence")
             });
