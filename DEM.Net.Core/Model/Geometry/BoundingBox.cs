@@ -113,6 +113,39 @@ namespace DEM.Net.Core
             zMin = Math.Min(zMin, bbox.zMin);
             zMax = Math.Max(zMax, bbox.zMax);
         }
+        public void IntersectWith(BoundingBox bbox)
+        {
+
+            // gives bottom-left point
+            // of intersection rectangle
+            var x5 = Math.Max(xMin, bbox.xMin);
+            var y5 = Math.Max(yMin, bbox.yMin);
+
+            // gives top-right point
+            // of intersection rectangle
+            var x6 = Math.Min(xMax, bbox.xMax);
+            var y6 = Math.Min(yMax, bbox.yMax);
+
+            // no intersection
+            if (x5 > x6 || y5 > y6)
+            {
+                return;
+            }
+            // gives top-left point
+            // of intersection rectangle
+            xMin = x5;
+            yMax = y6;
+
+            // gives bottom-right point
+            // of intersection rectangle
+            xMax= x6;
+            yMin= y5;
+
+
+            zMin = Math.Min(zMin, bbox.zMin);
+            zMax = Math.Max(zMax, bbox.zMax);
+        }
+
 
         /// <summary>
         /// Reorders min / max and returns a new BoundingBox

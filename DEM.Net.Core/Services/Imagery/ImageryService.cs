@@ -626,6 +626,7 @@ namespace DEM.Net.Core.Imagery
                     hMapIndex++;
                 }
 
+                Directory.CreateDirectory(outputDirectory);
                 outputImage.Save(System.IO.Path.Combine(outputDirectory, fileName));
             }
         }

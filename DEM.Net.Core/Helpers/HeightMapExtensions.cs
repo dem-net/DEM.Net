@@ -441,5 +441,81 @@ namespace DEM.Net.Core
             }
         }
 
+        public static IEnumerable<GeoPoint> WarpHeightMap(IEnumerable<GeoPoint> coords, int sourceWidth, int sourceHeight, int destWidth, int destHeight)
+        {
+            // But parcourir chaque pixel de l'image source (coords)
+            // attribuer aux pixels de destination la valeur interpolée
+
+            int numPoints = destWidth * destHeight;
+            List<List<double>> outPoints = Enumerable.Range(1, numPoints).Select(_ => new List<double>()).ToList();
+            var enume = coords.GetEnumerator();
+            double lastXz = 0, lastYz = 0;
+            for (int y = 0; y < sourceHeight; y++)
+            {
+                for (int x = 0; x < sourceWidth; x++)
+                {
+                    enume.MoveNext();
+                    GeoPoint sourcePt = enume.Current;// coords[x + y * sourceWidth];
+
+                    if (lastXz == 0 && lastYz == 0)
+                    {
+                        lastXz = sourcePt.Elevation ?? 0;
+                        lastYz = sourcePt.Elevation ?? 0;
+                    }
+
+                    double sourceX = sourcePt.Longitude;
+                    double sourceY = sourcePt.Latitude;
+                    int outXmin = (int)Math.Floor(sourceX);
+                    int outYmin = (int)Math.Floor(sourceY);
+                    int outXmax = (int)Math.Ceiling(sourceX);
+                    int outYmax = (int)Math.Ceiling(sourceY);
+
+                    double currentZ = sourcePt.Elevation ?? 0;
+                    int slopeX = Math.Sign(currentZ - lastXz);
+                    int slopeY = Math.Sign(currentZ - lastYz);
+
+                    int indexX0Y0 = outXmin + outYmin * destWidth;
+                    int indexX1Y0 = outXmax + outYmin * destWidth;
+                    int indexX0Y1 = outXmin + outYmax * destWidth;
+                    int indexX1Y1 = outXmax + outYmax * destWidth;
+                    if (indexX0Y0 < numPoints && outXmin < destWidth)
+                    {
+                        outPoints[indexX0Y0].Add(slopeX > 0
+                            ? MathHelper.Map(0, 1, lastXz, currentZ, sourceX - outXmin, true)
+                            : MathHelper.Map(0, 1, lastXz, currentZ, 1 - (sourceX - outXmin), true));
+                    }
+                    if (indexX1Y0 < numPoints && outXmax < destWidth)
+                    {
+                        outPoints[indexX0Y0].Add(slopeX < 0
+                            ? MathHelper.Map(0, 1, lastXz, currentZ, sourceX - outXmin, true)
+                            : MathHelper.Map(0, 1, lastXz, currentZ, 1 - (sourceX - outXmin), true));
+                    }
+                    if (indexX0Y1 < numPoints && outYmin < destHeight)
+                    {
+                        outPoints[indexX0Y1].Add(slopeY > 0
+                            ? MathHelper.Map(0, 1, lastYz, currentZ, sourceY - outYmin, true)
+                            : MathHelper.Map(0, 1, lastYz, currentZ, 1 - (sourceY - outYmin), true));
+                    }
+
+
+                    lastXz = sourcePt.Elevation ?? 0;
+                    lastYz = lastXz;
+                }
+            }
+
+            for (int y = 0; y < destHeight; y++)
+            {
+                for (int x = 0; x < destWidth; x++)
+                {
+                    var pts = outPoints[x + y * destWidth];
+                    GeoPoint outPt = new GeoPoint(y, x, 0);
+                    if (pts.Count > 0)
+                        outPt.Elevation = pts.Average();
+
+                    yield return outPt;
+                }
+
+            }
+        }
     }
 }

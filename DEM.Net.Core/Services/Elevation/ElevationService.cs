@@ -589,13 +589,20 @@ namespace DEM.Net.Core
                 bool covered = this.IsBoundingBoxCovered(bbox, bboxMetadata.Select(m => m.BoundingBox));
                 if (!covered && generateMissingData)
                 {
-                    this._logger.LogWarning("Bounding box is partially covered by DEM dataset. Generating missing tiles as virtual with no_data.");
-                    // create missing metadata. Will be marked as "VirtalMetadata"
-                    var missingMetadata = CreateMissingTilesMetadata(bbox, dataSet, bboxMetadata);
+                    if (!dataSet.AllowMissingDataGeneration)
+                    {
+                        bbox.IntersectWith(bboxMetadata.BoundingBox());
+                    }
+                    else
+                    {
+                        this._logger.LogWarning("Bounding box is partially covered by DEM dataset. Generating missing tiles as virtual with no_data.");
+                        // create missing metadata. Will be marked as "VirtalMetadata"
+                        var missingMetadata = CreateMissingTilesMetadata(bbox, dataSet, bboxMetadata);
 
-                    Debug.Assert(missingMetadata.Select(t => t.Filename).Distinct().Count() == missingMetadata.Count, "Non unique tiles. This is BAD");
-                    bboxMetadata.AddRange(missingMetadata);
-                    Debug.Assert(this.IsBoundingBoxCovered(bbox, bboxMetadata.Select(m => m.BoundingBox)), "Still uncovered. Missing tiles generation failed");
+                        Debug.Assert(missingMetadata.Select(t => t.Filename).Distinct().Count() == missingMetadata.Count, "Non unique tiles. This is BAD");
+                        bboxMetadata.AddRange(missingMetadata);
+                        Debug.Assert(this.IsBoundingBoxCovered(bbox, bboxMetadata.Select(m => m.BoundingBox)), "Still uncovered. Missing tiles generation failed");
+                    }
                 }
 
                 // get height map for each file at bbox
@@ -679,6 +686,12 @@ namespace DEM.Net.Core
             // check at each increment if we intersect a tile
             // if no => construct missing tile metadata
 
+            // debug
+            //var metadata = bboxMetadata.First();
+            //using (IRasterFile raster = _RasterService.OpenFile(metadata.Filename, dataSet.FileFormat.Type))
+            //{
+            //    var test = raster.ParseMetaData(dataSet.FileFormat);
+            //}
 
             // We suppose all tiles have equal dimensions, let's take the x/y min one to allow easier creation later on
             var tilesBbox = bboxMetadata.BoundingBox();
@@ -687,11 +700,9 @@ namespace DEM.Net.Core
             int registrationOffset = dataSet.FileFormat.Registration == DEMFileRegistrationMode.Grid ? 1 : 0;
 
             //xWest = Math.Max(0, xWest);
-            //xEast = Math.Min(metadata.Width - 1 - registrationOffset, xEast);
+            //xEast = Math.Min(missingTile.Width - 1 - registrationOffset, xEast);
             //yNorth = Math.Max(0, yNorth);
-            //ySouth = Math.Min(metadata.Height - 1 - registrationOffset, ySouth);
-
-
+            //ySouth = Math.Min(missingTile.Height - 1 - registrationOffset, ySouth);
 
             // get x/y increments
             double tileSizeX = ((double)templateTile.Width - registrationOffset) * templateTile.PixelScaleX;
@@ -727,15 +738,42 @@ namespace DEM.Net.Core
                         // missing tile
                         _logger.LogInformation($"Generating missing tile at x/y = {x:F5} {y:F5}, index = [{xIndex}, {yIndex}]");
 
-                        missingTile.DataStartLon = tilesBbox.xMin + tileSizeX * xIndex;
-                        missingTile.DataEndLon = tilesBbox.xMin + tileSizeX * (xIndex + 1);
-                        missingTile.DataStartLat = tilesBbox.yMin + tileSizeY * yIndex;
-                        missingTile.DataEndLat = tilesBbox.yMin + tileSizeY * (yIndex + 1);
 
-                        missingTile.PhysicalStartLon = missingTile.DataStartLon + (templateTile.PhysicalStartLon - templateTile.DataStartLon);
-                        missingTile.PhysicalStartLat = missingTile.DataStartLat + (templateTile.PhysicalStartLat - templateTile.DataStartLat);
-                        missingTile.PhysicalEndLon = missingTile.DataEndLon + (templateTile.PhysicalEndLon - templateTile.DataEndLon);
-                        missingTile.PhysicalEndLat = missingTile.DataEndLat + (templateTile.PhysicalEndLat - templateTile.DataEndLat);
+
+                        missingTile.DataStartLon = tilesBbox.xMin + tileSizeX * xIndex;
+                        missingTile.DataEndLat = tilesBbox.yMin + tileSizeY * yIndex; // suppose origin is NW
+
+
+                        missingTile.DataEndLon = missingTile.DataStartLon + (missingTile.Width-registrationOffset) * missingTile.pixelSizeX;
+                        missingTile.DataStartLat = missingTile.DataEndLat - (missingTile.Height-registrationOffset) * missingTile.pixelSizeY;
+
+                        if (missingTile.DataStartLon > missingTile.DataEndLon)
+                        {
+                            double temp = missingTile.DataStartLon;
+                            missingTile.DataStartLon = missingTile.DataEndLon;
+                            missingTile.DataEndLon = temp;
+                        }
+                        if (missingTile.DataStartLat > missingTile.DataEndLat)
+                        {
+                            double temp = missingTile.DataStartLat;
+                            missingTile.DataStartLat = missingTile.DataEndLat;
+                            missingTile.DataEndLat = temp;
+                        }
+
+                        if (templateTile.FileFormat.Registration == DEMFileRegistrationMode.Grid)
+                        {
+                            missingTile.PhysicalStartLat = Math.Round(missingTile.DataStartLat - (missingTile.PixelScaleY / 2.0), 10);
+                            missingTile.PhysicalStartLon = Math.Round(missingTile.DataStartLon - (missingTile.PixelScaleY / 2.0), 10);
+                            missingTile.PhysicalEndLat = Math.Round(missingTile.DataEndLat + (missingTile.PixelScaleY / 2.0), 10);
+                            missingTile.PhysicalEndLon = Math.Round(missingTile.DataEndLon + (missingTile.PixelScaleY / 2.0), 10);
+                        }
+                        else
+                        {
+                            missingTile.PhysicalStartLat = missingTile.DataStartLat;
+                            missingTile.PhysicalStartLon = missingTile.DataStartLon;
+                            missingTile.PhysicalEndLat = missingTile.DataEndLat;
+                            missingTile.PhysicalEndLon = missingTile.DataEndLon;
+                        }
 
                         missingTile.VirtualMetadata = true;
 
@@ -1227,7 +1265,7 @@ namespace DEM.Net.Core
 
             if (bboxMetadata.Count == 0)
             {
-                _logger?.LogWarning($"No coverage found matching provided bounding box { bbox}.");
+                _logger?.LogWarning($"No coverage found matching provided bounding box {bbox}.");
                 //throw new NoCoverageException(dataSet, bbox, $"No coverage found matching provided bounding box {bbox}.");
             }
 
@@ -1454,7 +1492,7 @@ namespace DEM.Net.Core
                     }
                     else
                     {
-                        _logger.LogWarning($"No adjacent tile found(adjacent tiles may not have been set). (x, y, tile) = ({ x},{ y},{ mainTile})");
+                        _logger.LogWarning($"No adjacent tile found(adjacent tiles may not have been set). (x, y, tile) = ({x},{y},{mainTile})");
                         newX = xTileOffset == 0 ? x : xTileOffset > 0 ? x % mainTile.Width : (mainTile.Width + x) % mainTile.Width;
                         newY = yTileOffset == 0 ? y : yTileOffset < 0 ? (mainTile.Height + y) % mainTile.Height : y % mainTile.Height;
                         return mainTile;

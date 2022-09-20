@@ -31,6 +31,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DEM.Net.Core.Datasets;
 using DEM.Net.Core.Stac;
+using static System.Net.WebRequestMethods;
 
 namespace DEM.Net.Core
 {
@@ -53,6 +54,7 @@ namespace DEM.Net.Core
         public int PointsPerDegree { get; private set; }
         public int SRID { get; set; } = Reprojection.SRID_GEODETIC;
         public bool IsListed { get; set; } = true;
+        public bool AllowMissingDataGeneration { get; set; } = true;
 
         // null means global
         public string ExtentInfo { get; set; } = "Global";
@@ -137,6 +139,7 @@ namespace DEM.Net.Core
                 PublicUrl = "https://www.ngdc.noaa.gov/mgg/global/",
                 DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "ETOPO1")),
                 FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Grid),
+                AllowMissingDataGeneration = false,
                 ResolutionMeters = 1800,
                 ResolutionArcSeconds = 60,
                 PointsPerDegree = 60,
@@ -205,22 +208,24 @@ namespace DEM.Net.Core
                                             "https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001",
                                             "NASA JPL. NASADEM Merged DEM Global 1 arc second V001. 2020, distributed by NASA EOSDIS Land Processes DAAC, https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001. Accessed 2020-03-06.")
             });
-        //datasets.Add("NASADEM", new DEMDataSet()
-        //{
-        //    Name = nameof(NASADEM),
-        //    Description = "NASADEM MEaSUREs Merged DEM Global 1 arc second (30m)",
-        //    PublicUrl = "https://lpdaac.usgs.gov/products/nasadem_hgtv001/",
-        //    DataSource = new NasaGranuleDataSource(indexFilePath: "NASADEM.json", collectionId: "C1546314043-LPDAAC_ECS"),
-        //    FileFormat = new DEMFileDefinition("Nasa SRTM HGT", DEMFileType.SRTM_HGT, ".hgt", DEMFileRegistrationMode.Grid),
-        //    ResolutionMeters = 30,
-        //    ResolutionArcSeconds = 1,
-        //    PointsPerDegree = 3600,
-        //    NoDataValue = -9999,
-        //    Attribution = new Attribution(ATTRIBUTION_SUBJECT, "NASADEM",
-        //                                    "https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001",
-        //                                    "NASA JPL. NASADEM Merged DEM Global 1 arc second V001. 2020, distributed by NASA EOSDIS Land Processes DAAC, https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001. Accessed 2020-03-06.")
-        //});
-        
+            datasets.Add("CopernicusEUDEM", new DEMDataSet()
+            {
+                Name = nameof(CopernicusEUDEM),
+                Description = "European Digital Elevation Model (EU-DEM), version 1.1",
+                PublicUrl = "http://land.copernicus.eu/pan-european/satellite-derived-products/eu-dem/eu-dem-v1.1/view",
+                DataSource =  new LocalFileSystem(localDirectory: Path.Combine("Data", "CopernicusEUDEM")),
+                FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Cell),
+                ResolutionMeters = 25,
+                ResolutionArcSeconds = 1,
+                PointsPerDegree = 3600,
+                NoDataValue = -9999,
+                IsListed = false,
+                SRID= 3035,
+                Attribution = new Attribution(ATTRIBUTION_SUBJECT, "CopernicusEUDEM",
+                                            "https://land.copernicus.eu/imagery-in-situ/eu-dem/eu-dem-v1.1",
+                                            "European Environment Agency (EEA) under the framework of the Copernicus programme - copernicus@eea.europa.eu")
+            });
+
             datasets.Add(nameof(swissALTI3D2m), new DEMDataSet()
             {
                 Name = "swissALTI3D 2m",
@@ -228,7 +233,7 @@ namespace DEM.Net.Core
                 Description = "swissALTI3D is an extremely precise digital elevation model which describes the surface of Switzerland and the Principality of Liechtenstein without vegetation and development. It is updated in an cycle of 6 years.",
                 PublicUrl = "https://www.swisstopo.admin.ch/de/geodata/height/alti3d.html",
                 DataSource = new StacDataSource(url: "https://data.geo.admin.ch/api/stac/v0.9", indexFilePath: "swissALTI3D2m.json", collection: "ch.swisstopo.swissalti3d",
-                 filter: (Asset a) => a.Type == AssetType.ImageTiffApplicationGeotiffProfileCloudOptimized && a.EoGsd == 2.0),       
+                 filter: (Asset a) => a.Type == AssetType.ImageTiffApplicationGeotiffProfileCloudOptimized && a.EoGsd == 2.0),
                 FileFormat = new DEMFileDefinition("GeoTIFF", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Cell),
                 ResolutionMeters = 2,
                 ResolutionArcSeconds = 1,
@@ -265,6 +270,7 @@ namespace DEM.Net.Core
                 PublicUrl = "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2019/gebco_2019_info.html",
                 DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "GEBCO_2019")),
                 FileFormat = new DEMFileDefinition("netCDF file", DEMFileType.CF_NetCDF, ".nc", DEMFileRegistrationMode.Cell),
+                AllowMissingDataGeneration = false,
                 ResolutionMeters = 464,
                 ResolutionArcSeconds = 15,
                 PointsPerDegree = 240,
@@ -344,6 +350,8 @@ namespace DEM.Net.Core
 
         public static DEMDataSet swissALTI3D2m => Datasets.Value[nameof(swissALTI3D2m)];
         public static DEMDataSet swissALTI3D50cm => Datasets.Value[nameof(swissALTI3D50cm)];
+
+        public static DEMDataSet CopernicusEUDEM => Datasets.Value[nameof(CopernicusEUDEM)]; 
 
 
 
