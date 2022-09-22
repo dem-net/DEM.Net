@@ -602,7 +602,7 @@ namespace DEM.Net.Core.Imagery
 
         }
 
-        public unsafe void GenerateTerrainRGB(float[] heightMap, int width, int height, float minHeight, float maxHeight, string outputDirectory,
+        public unsafe void GenerateTerrainRGB(IReadOnlyList<float> heightMap, int width, int height, float minHeight, float maxHeight, string outputDirectory,
             string fileName = "terrainRGB.png")
         {
             byte[] bytes = new byte[4];
@@ -641,11 +641,11 @@ namespace DEM.Net.Core.Imagery
         /// <param name="height"></param>
         /// <param name="margin"></param>
         /// <returns></returns>
-        public float[] ResizeHeightMap_RTIN(HeightMap heightMap, int width, int height, int margin)
+        public List<float> ResizeHeightMap_RTIN(HeightMap heightMap, int width, int height, int margin)
         {
             return ResizeHeightMap_RTIN(heightMap.Coordinates.Select(c => (float)(c.Elevation ?? 0)), heightMap.Width, heightMap.Height, width, height, heightMap.Minimum, heightMap.Maximum, margin);
         }
-        public float[] ResizeHeightMap_RTIN(GeoPoint[] heightMap, int sourceWidth, int sourceHeight, int destWidth, int destHeight, float minElevation, float maxElevation, int margin)
+        public List<float> ResizeHeightMap_RTIN(GeoPoint[] heightMap, int sourceWidth, int sourceHeight, int destWidth, int destHeight, float minElevation, float maxElevation, int margin)
         {
             return ResizeHeightMap_RTIN(heightMap.Select(c => (float)(c.Elevation ?? 0)), sourceWidth, sourceHeight, destWidth, destHeight, minElevation, maxElevation, margin);
         }
@@ -683,10 +683,10 @@ namespace DEM.Net.Core.Imagery
 
         //    return outMap;
         //}
-        public float[] ResizeHeightMap_RTIN(IEnumerable<float> heightMap, int sourceWidth, int sourceHeight, int destWidth, int destHeight, float minElevation, float maxElevation, int margin)
+        public List<float> ResizeHeightMap_RTIN(IEnumerable<float> heightMap, int sourceWidth, int sourceHeight, int destWidth, int destHeight, float minElevation, float maxElevation, int margin)
         {
 
-            float[] outMap = new float[(destWidth + margin) * (destHeight + margin)];
+            List<float> outMap = new List<float>((destWidth + margin) * (destHeight + margin));
 
             using (Image<Gray16> outputImage = new Image<Gray16>(sourceWidth, sourceHeight))
             {
@@ -718,10 +718,10 @@ namespace DEM.Net.Core.Imagery
 
             return outMap;
         }
-        public unsafe float[] ResizeHeightMap_RGB_RTIN(IEnumerable<float> heightMap, int sourceWidth, int sourceHeight, int destWidth, int destHeight, float minElevation, float maxElevation, int margin)
+        public unsafe List<float> ResizeHeightMap_RGB_RTIN(IEnumerable<float> heightMap, int sourceWidth, int sourceHeight, int destWidth, int destHeight, float minElevation, float maxElevation, int margin)
         {
 
-            float[] outMap = new float[(destWidth + margin) * (destHeight + margin)];
+            List<float> outMap = new List<float>((destWidth + margin) * (destHeight + margin));
             byte[] bytes = new byte[4];
 
             using (Image<Rgb24> outputImage = new Image<Rgb24>(sourceWidth, sourceHeight))

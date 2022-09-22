@@ -508,7 +508,7 @@ namespace DEM.Net.Core
                 for (int x = 0; x < destWidth; x++)
                 {
                     var pts = outPoints[x + y * destWidth];
-                    GeoPoint outPt = new GeoPoint(y, x, 0);
+                    GeoPoint outPt = new GeoPoint(id: y, y, x, 0);
                     if (pts.Count > 0)
                         outPt.Elevation = pts.Average();
 
