@@ -120,7 +120,23 @@ namespace DEM.Net.Core.Imagery
 
         public int Zoom => Start.Zoom;
 
-        public BoundingBox AreaOfInterest { get; internal set; }
+        private BoundingBox _areaOfInterest;
+        public BoundingBox AreaOfInterest 
+        {
+            get
+            {
+                if (_areaOfInterest == null)
+                {
+                    _areaOfInterest = this.Start.BoundingBox;
+                    _areaOfInterest.UnionWith(this.End.BoundingBox);
+                }
+                return _areaOfInterest;
+            }
+            set
+            {
+                _areaOfInterest = value;
+            }
+        }
 
     }
 }
