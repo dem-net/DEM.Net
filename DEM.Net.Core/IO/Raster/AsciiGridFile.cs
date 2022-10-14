@@ -43,6 +43,7 @@ namespace DEM.Net.Core
             {
                 _streamReader = new StreamReader(_fileStream, Encoding.ASCII);
             }
+            
         }
         public float GetElevationAtPoint(FileMetadata metadata, int x, int y)
         {
@@ -58,7 +59,7 @@ namespace DEM.Net.Core
 
         }
 
-        private void ReadAllFile(FileMetadata metadata)
+        public void ReadAllFile(FileMetadata metadata)
         {
             string curLine = null;
             _fileStream.Seek(0, SeekOrigin.Begin);

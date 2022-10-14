@@ -478,23 +478,31 @@ namespace DEM.Net.Core
                     int indexX1Y0 = outXmax + outYmin * destWidth;
                     int indexX0Y1 = outXmin + outYmax * destWidth;
                     int indexX1Y1 = outXmax + outYmax * destWidth;
-                    if (indexX0Y0 < numPoints && outXmin < destWidth)
+
+                    if (indexX0Y0<0 ||indexX0Y1<0)
                     {
-                        outPoints[indexX0Y0].Add(slopeX > 0
-                            ? MathHelper.Map(0, 1, lastXz, currentZ, sourceX - outXmin, true)
-                            : MathHelper.Map(0, 1, lastXz, currentZ, 1 - (sourceX - outXmin), true));
+                        // should not happen
                     }
-                    if (indexX1Y0 < numPoints && outXmax < destWidth)
+                    else
                     {
-                        outPoints[indexX0Y0].Add(slopeX < 0
-                            ? MathHelper.Map(0, 1, lastXz, currentZ, sourceX - outXmin, true)
-                            : MathHelper.Map(0, 1, lastXz, currentZ, 1 - (sourceX - outXmin), true));
-                    }
-                    if (indexX0Y1 < numPoints && outYmin < destHeight)
-                    {
-                        outPoints[indexX0Y1].Add(slopeY > 0
-                            ? MathHelper.Map(0, 1, lastYz, currentZ, sourceY - outYmin, true)
-                            : MathHelper.Map(0, 1, lastYz, currentZ, 1 - (sourceY - outYmin), true));
+                        if (indexX0Y0 < numPoints && outXmin < destWidth)
+                        {
+                            outPoints[indexX0Y0].Add(slopeX > 0
+                                ? MathHelper.Map(0, 1, lastXz, currentZ, sourceX - outXmin, true)
+                                : MathHelper.Map(0, 1, lastXz, currentZ, 1 - (sourceX - outXmin), true));
+                        }
+                        if (indexX1Y0 < numPoints && outXmax < destWidth)
+                        {
+                            outPoints[indexX0Y0].Add(slopeX < 0
+                                ? MathHelper.Map(0, 1, lastXz, currentZ, sourceX - outXmin, true)
+                                : MathHelper.Map(0, 1, lastXz, currentZ, 1 - (sourceX - outXmin), true));
+                        }
+                        if (indexX0Y1 < numPoints && outYmin < destHeight)
+                        {
+                            outPoints[indexX0Y1].Add(slopeY > 0
+                                ? MathHelper.Map(0, 1, lastYz, currentZ, sourceY - outYmin, true)
+                                : MathHelper.Map(0, 1, lastYz, currentZ, 1 - (sourceY - outYmin), true));
+                        }
                     }
 
 

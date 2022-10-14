@@ -34,6 +34,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DEM.Net.Core.Interpolation;
+using LazyCache;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using NetTopologySuite.Geometries;
 
@@ -45,11 +47,13 @@ namespace DEM.Net.Core
         private const double EPSILON = 1E-10;
         private readonly RasterService _RasterService;
         private readonly ILogger<ElevationService> _logger;
+        private readonly IAppCache _memCache;
 
-        public ElevationService(RasterService rasterService, ILogger<ElevationService> logger = null)
+        public ElevationService(RasterService rasterService, IAppCache memCache, ILogger<ElevationService> logger = null)
         {
             _RasterService = rasterService;
             _logger = logger;
+            _memCache = memCache;
         }
 
 
@@ -620,8 +624,16 @@ namespace DEM.Net.Core
                     }
                     else
                     {
-                        using (IRasterFile raster = _RasterService.OpenFile(metadata.Filename, dataSet.FileFormat.Type))
+                        if (dataSet.FileFormat.Type == DEMFileType.ASCIIGridGzip)
                         {
+                            IRasterFile raster = _memCache.GetOrAdd<IRasterFile>(metadata.Filename, () =>
+                            {
+                                var r = _RasterService.OpenFile(metadata.Filename, dataSet.FileFormat.Type);
+                                if (r is ASCIIGridFile asc)
+                                    asc.ReadAllFile(metadata);
+
+                                return r;
+                            }, DateTimeOffset.Now + TimeSpan.FromSeconds(180), ExpirationMode.ImmediateEviction);
                             var hmap = raster.GetHeightMapInBBox(bbox, metadata, NO_DATA_OUT);
                             hmap.BoundingBox.SRID = bbox.SRID;
                             if (hmap.Count > 0)
@@ -629,6 +641,20 @@ namespace DEM.Net.Core
                                 tilesHeightMap.Add(hmap);
                             }
                         }
+                        else
+                        {
+                            using (IRasterFile raster = _RasterService.OpenFile(metadata.Filename, dataSet.FileFormat.Type))
+                            {
+                                var hmap = raster.GetHeightMapInBBox(bbox, metadata, NO_DATA_OUT);
+                                hmap.BoundingBox.SRID = bbox.SRID;
+                                if (hmap.Count > 0)
+                                {
+                                    tilesHeightMap.Add(hmap);
+                                }
+                            }
+                        }
+
+
                     }
                 }
 
@@ -658,7 +684,7 @@ namespace DEM.Net.Core
                     heightMap.Minimum = tilesHeightMap.Min(hmap => hmap.Minimum);
                     heightMap.Maximum = tilesHeightMap.Max(hmap => hmap.Maximum);
                 }
-                System.Diagnostics.Debug.Assert(heightMap.Count == tilesHeightMap.Sum(h => h.Count));
+                //System.Diagnostics.Debug.Assert(heightMap.Count == tilesHeightMap.Sum(h => h.Count));
 
 
                 return heightMap;

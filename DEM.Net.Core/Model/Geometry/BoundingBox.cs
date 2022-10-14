@@ -208,9 +208,9 @@ namespace DEM.Net.Core
         public BoundingBox Pad(double paddingX, double paddingY, double paddingZ)
         {
             return new BoundingBox(
-                xMin - paddingX, xMax + paddingX,
-                yMax + paddingY, yMin - paddingY,
-                zMax + paddingZ, zMin - paddingZ)
+                    xMin - paddingX, xMax + paddingX,
+                    yMin - paddingY, yMax + paddingY,
+                    zMin - paddingZ, zMax + paddingZ)
             { SRID = this.SRID };
         }
         public BoundingBox ScaleAbsolute(double scaleX, double scaleY, double scaleZ = 1)
