@@ -27,15 +27,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DEM.Net.Core.Datasets;
 using DEM.Net.Core.Stac;
-using static System.Net.WebRequestMethods;
 
 namespace DEM.Net.Core
 {
-    public class DEMDataSet
+    public partial class DEMDataSet
     {
         private const string ATTRIBUTION_SUBJECT = "Digital Elevation Model";
 
@@ -51,7 +48,7 @@ namespace DEM.Net.Core
         public DEMFileDefinition FileFormat { get; set; }
         public Attribution Attribution { get; set; }
         public IDEMDataSource DataSource { get; set; }
-        public int PointsPerDegree { get; private set; }
+        public int PointsPerDegree { get; set; }
         public int SRID { get; set; } = Reprojection.SRID_GEODETIC;
         public bool IsListed { get; set; } = true;
         public bool AllowMissingDataGeneration { get; set; } = true;
