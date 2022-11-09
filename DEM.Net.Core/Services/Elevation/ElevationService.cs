@@ -590,7 +590,7 @@ namespace DEM.Net.Core
             else
             {
                 // Check if bounding box is fully covered (will result in invalid models without any error being thrown)
-                bool covered = this.IsBoundingBoxCovered(bbox, bboxMetadata.Select(m => m.BoundingBox));
+                bool covered = this.IsBoundingBoxCovered(bbox, bboxMetadata);
                 if (!covered && generateMissingData)
                 {
                     if (!dataSet.AllowMissingDataGeneration)
@@ -615,7 +615,7 @@ namespace DEM.Net.Core
                 {
                     if (metadata.VirtualMetadata)
                     {
-                        var hmap = RasterService.GetVirtualHeightMapInBBox(bbox, metadata, NO_DATA_OUT);
+                        var hmap = RasterService.GetVirtualHeightMapInBBox(bbox, metadata, dataSet.NoDataValue);
                         hmap.BoundingBox.SRID = bbox.SRID;
                         if (hmap.Count > 0)
                         {
@@ -634,7 +634,7 @@ namespace DEM.Net.Core
 
                                 return r;
                             }, DateTimeOffset.Now + TimeSpan.FromSeconds(180), ExpirationMode.ImmediateEviction);
-                            var hmap = raster.GetHeightMapInBBox(bbox, metadata, NO_DATA_OUT);
+                            var hmap = raster.GetHeightMapInBBox(bbox, metadata, dataSet.NoDataValue);
                             hmap.BoundingBox.SRID = bbox.SRID;
                             if (hmap.Count > 0)
                             {
@@ -645,7 +645,7 @@ namespace DEM.Net.Core
                         {
                             using (IRasterFile raster = _RasterService.OpenFile(metadata.Filename, dataSet.FileFormat.Type))
                             {
-                                var hmap = raster.GetHeightMapInBBox(bbox, metadata, NO_DATA_OUT);
+                                var hmap = raster.GetHeightMapInBBox(bbox, metadata, dataSet.NoDataValue);
                                 hmap.BoundingBox.SRID = bbox.SRID;
                                 if (hmap.Count > 0)
                                 {
@@ -832,6 +832,10 @@ namespace DEM.Net.Core
         public bool IsBoundingBoxCovered(BoundingBox bbox, IEnumerable<BoundingBox> bboxTiles)
         {
             return GeometryService.IsCovered(bbox, bboxTiles);
+        }
+        public bool IsBoundingBoxCovered(BoundingBox bbox, IEnumerable<FileMetadata> bboxMetadata)
+        {
+            return this.IsBoundingBoxCovered(bbox, bboxMetadata.Select(m => m.BoundingBox));
         }
 
         public HeightMap GetHeightMap(BoundingBox bbox, string rasterFilePath, DEMFileDefinition format)
