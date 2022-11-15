@@ -314,8 +314,8 @@ namespace DEM.Net.Core
             }
             else
             {
-                metadata.DataEndLon = metadata.DataStartLon + metadata.Width * pixelSizeX;
-                metadata.DataEndLat = metadata.DataStartLat + metadata.Height * pixelSizeY;
+                metadata.DataEndLon = metadata.DataStartLon + (metadata.Width -1) * pixelSizeX;
+                metadata.DataEndLat = metadata.DataStartLat + (metadata.Height -1)* pixelSizeY;
 
                 if (metadata.DataStartLon > metadata.DataEndLon)
                 {
@@ -330,10 +330,10 @@ namespace DEM.Net.Core
                     metadata.DataEndLat = temp;
                 }
 
-                metadata.PhysicalStartLat = metadata.DataStartLat;
-                metadata.PhysicalStartLon = metadata.DataStartLon;
-                metadata.PhysicalEndLat = metadata.DataEndLat;
-                metadata.PhysicalEndLon = metadata.DataEndLon;
+                metadata.PhysicalStartLat = metadata.DataStartLat + metadata.pixelSizeY / 2d;
+                metadata.PhysicalStartLon = metadata.DataStartLon - metadata.pixelSizeX / 2d;
+                metadata.PhysicalEndLat = metadata.DataEndLat - metadata.pixelSizeY / 2d;
+                metadata.PhysicalEndLon = metadata.DataEndLon + metadata.pixelSizeX / 2d;
             }
             var scanline = new byte[TiffFile.ScanlineSize()];
             metadata.ScanlineSize = TiffFile.ScanlineSize();
