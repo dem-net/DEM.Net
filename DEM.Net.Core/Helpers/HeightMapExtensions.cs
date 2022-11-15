@@ -28,6 +28,7 @@ using SixLabors.ImageSharp.ColorSpaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing.Text;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -446,6 +447,77 @@ namespace DEM.Net.Core
             // But parcourir chaque pixel de l'image source (coords)
             // attribuer aux pixels de destination la valeur interpolée
 
+            // Algo : Add weighted elevation destination points
+
+            int numPoints = destWidth * destHeight;
+            var enume = coords.GetEnumerator();
+            double radius = 1.4;
+            List<List<(double Elevation, double Weight)>> outPoints = Enumerable.Range(1, numPoints).Select(_ => new List<(double elevation, double weight)>()).ToList();
+            for (int y = 0; y < sourceHeight; y++)
+            {
+                for (int x = 0; x < sourceWidth; x++)
+                {
+                    // where in dest ?
+                    enume.MoveNext();
+                    GeoPoint sourcePt = enume.Current;// coords[x + y * sourceWidth];
+                    double sourceZ = sourcePt.Elevation ?? 0;
+                    double sourceX = sourcePt.Longitude+0.5;
+                    double sourceY = sourcePt.Latitude+0.5;
+
+                    int outX = (int)Math.Floor(sourceX);
+                    int outY = (int)Math.Floor(sourceY);
+                    int outXEast = (int)Math.Ceiling(sourceX);
+                    int outYSouth = (int)Math.Ceiling(sourceY);
+
+                    AddData(sourceZ, outX, outY, sourceX, sourceY, radius, destWidth, destHeight);
+                    AddData(sourceZ, outXEast, outY, sourceX, sourceY, radius, destWidth, destHeight);
+                    AddData(sourceZ, outXEast, outYSouth, sourceX, sourceY, radius, destWidth, destHeight);
+                    AddData(sourceZ, outX, outYSouth, sourceX, sourceY, radius, destWidth, destHeight);
+                }
+            }
+
+            for (int y = 0; y < destHeight; y++)
+            {
+                for (int x = 0; x < destWidth; x++)
+                {
+                    var pts = outPoints[x + y * destWidth];
+                    GeoPoint outPt = new GeoPoint(id: y, y, x, 0);
+                    if (pts.Count > 0)
+                    {
+                        double outVal = 0;
+                        double weights = 0;
+                        foreach (var pt in pts)
+                        {
+                            outVal += pt.Elevation * pt.Weight;
+                            weights += pt.Weight;
+                        }
+                        outPt.Elevation = outVal / weights;
+                    }
+
+                    yield return outPt;
+                }
+
+            }
+
+            void AddData(double elevation, int x, int y, double x1, double y1, double radius, int width, int height)
+            {
+                if (x<width && y < height)
+                {
+                    int index = x + y * width;
+                    var w = WeightedDistance(x1, x, y1, y, radius);
+                    outPoints[index].Add((elevation, w));
+                }
+            }
+            double WeightedDistance(double x1, double x2, double y1, double y2, double radius)
+                => (radius - Distance(x1, x2, y1, y2))/radius;
+            double Distance(double x1, double x2, double y1, double y2)
+                => Math.Sqrt((x2 - x1) * (x2 - x1)+ (y2 - y1) * (y2 - y1));
+        }
+        public static IEnumerable<GeoPoint> WarpHeightMapOld(IReadOnlyList<GeoPoint> coords, int sourceWidth, int sourceHeight, int destWidth, int destHeight)
+        {
+            // But parcourir chaque pixel de l'image source (coords)
+            // attribuer aux pixels de destination la valeur interpolée
+
             int numPoints = destWidth * destHeight;
             List<List<double>> outPoints = Enumerable.Range(1, numPoints).Select(_ => new List<double>()).ToList();
             var enume = coords.GetEnumerator();
@@ -518,7 +590,8 @@ namespace DEM.Net.Core
                     var pts = outPoints[x + y * destWidth];
                     GeoPoint outPt = new GeoPoint(id: y, y, x, 0);
                     if (pts.Count > 0)
-                        outPt.Elevation = pts.Average();
+                        outPt.Elevation = pts.Average();// (pts.Max() - pts.Min())/2+pts.Min();
+                    //outPt.Elevation = pts.Average();
 
                     yield return outPt;
                 }
