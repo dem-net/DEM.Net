@@ -2,12 +2,9 @@
 using DEM.Net.Core.Imagery;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using SixLabors.Shapes;
 using System;
 using System.IO;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using Path = System.IO.Path;
 
 namespace DEM.Net.Core.Services.Imagery
