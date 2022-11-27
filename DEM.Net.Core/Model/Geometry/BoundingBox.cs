@@ -284,6 +284,11 @@ namespace DEM.Net.Core
             return hashCode;
         }
 
+        public BoundingBox Clone()
+        {
+            return (BoundingBox)this.MemberwiseClone();
+        }
+
         public static bool operator ==(BoundingBox a, BoundingBox b)
         {
             if (Object.ReferenceEquals(a, null))

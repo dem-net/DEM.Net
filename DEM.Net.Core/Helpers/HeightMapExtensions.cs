@@ -460,19 +460,22 @@ namespace DEM.Net.Core
                     // where in dest ?
                     enume.MoveNext();
                     GeoPoint sourcePt = enume.Current;// coords[x + y * sourceWidth];
+                    // Warning : sourcePt is GridRegistered. It sits at the center of a 4 pixel grid.
+                    // Value must be spread across those pixels
+
                     double sourceZ = sourcePt.Elevation ?? 0;
-                    double sourceX = sourcePt.Longitude+0.5;
-                    double sourceY = sourcePt.Latitude+0.5;
+                    double sourceX = sourcePt.Longitude-0.5;
+                    double sourceY = sourcePt.Latitude-0.5;
 
-                    int outX = (int)Math.Floor(sourceX);
-                    int outY = (int)Math.Floor(sourceY);
-                    int outXEast = (int)Math.Ceiling(sourceX);
-                    int outYSouth = (int)Math.Ceiling(sourceY);
+                    int xWest = (int)Math.Floor(sourceX);
+                    int yNorth = (int)Math.Floor(sourceY);
+                    int xEast = xWest+1;
+                    int ySouth = yNorth+1;
 
-                    AddData(sourceZ, outX, outY, sourceX, sourceY, radius, destWidth, destHeight);
-                    AddData(sourceZ, outXEast, outY, sourceX, sourceY, radius, destWidth, destHeight);
-                    AddData(sourceZ, outXEast, outYSouth, sourceX, sourceY, radius, destWidth, destHeight);
-                    AddData(sourceZ, outX, outYSouth, sourceX, sourceY, radius, destWidth, destHeight);
+                    AddData(sourceZ, xWest, yNorth, sourceX, sourceY, radius, destWidth, destHeight);
+                    AddData(sourceZ, xEast, yNorth, sourceX, sourceY, radius, destWidth, destHeight);
+                    AddData(sourceZ, xEast, ySouth, sourceX, sourceY, radius, destWidth, destHeight);
+                    AddData(sourceZ, xWest, ySouth, sourceX, sourceY, radius, destWidth, destHeight);
                 }
             }
 
@@ -501,17 +504,19 @@ namespace DEM.Net.Core
 
             void AddData(double elevation, int x, int y, double x1, double y1, double radius, int width, int height)
             {
-                if (x<width && y < height)
+                if (x < width && y < height && x >= 0 && y >= 0)
                 {
                     int index = x + y * width;
-                    var w = WeightedDistance(x1, x, y1, y, radius);
+
+                    var w = (1-Math.Abs(x1-x) + 1-Math.Abs(y1-y)) / 2d;
+                    //var w = WeightedDistance(x1, x, y1, y, radius);
                     outPoints[index].Add((elevation, w));
                 }
             }
-            double WeightedDistance(double x1, double x2, double y1, double y2, double radius)
-                => (radius - Distance(x1, x2, y1, y2))/radius;
-            double Distance(double x1, double x2, double y1, double y2)
-                => Math.Sqrt((x2 - x1) * (x2 - x1)+ (y2 - y1) * (y2 - y1));
+            //double WeightedDistance(double x1, double x2, double y1, double y2, double radius)
+            //    => (radius - Distance(x1, x2, y1, y2))/radius;
+            //double Distance(double x1, double x2, double y1, double y2)
+            //    => Math.Sqrt((x2 - x1) * (x2 - x1)+ (y2 - y1) * (y2 - y1));
         }
         public static IEnumerable<GeoPoint> WarpHeightMapOld(IReadOnlyList<GeoPoint> coords, int sourceWidth, int sourceHeight, int destWidth, int destHeight)
         {

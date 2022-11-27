@@ -598,13 +598,21 @@ namespace DEM.Net.Core.Imagery
 
         }
 
-        public unsafe void GenerateTerrainRGB(IReadOnlyList<float> heightMap, int width, int height, float minHeight, float maxHeight, string outputDirectory,
+        public void GenerateTerrainRGB(IEnumerable<float> heightMap, int width, int height, string outputDirectory,
             string fileName = "terrainRGB.png")
+        {
+            using (Image<Rgb24> outputImage = GenerateTerrainRGB(heightMap, width, height))
+            {
+                Directory.CreateDirectory(outputDirectory);
+                outputImage.Save(System.IO.Path.Combine(outputDirectory, fileName));
+            }
+        }
+        public unsafe Image<Rgb24> GenerateTerrainRGB(IEnumerable<float> heightMap, int width, int height)
         {
             byte[] bytes = new byte[4];
 
-            using (Image<Rgb24> outputImage = new Image<Rgb24>(width, height))
-            {
+            Image<Rgb24> outputImage = new Image<Rgb24>(width, height);
+            
                 int hMapIndex = 0;
                 foreach (var coord in heightMap)
                 {
@@ -622,9 +630,7 @@ namespace DEM.Net.Core.Imagery
                     hMapIndex++;
                 }
 
-                Directory.CreateDirectory(outputDirectory);
-                outputImage.Save(System.IO.Path.Combine(outputDirectory, fileName));
-            }
+            return outputImage;
         }
 
         /// <summary>
