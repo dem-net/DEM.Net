@@ -442,7 +442,7 @@ namespace DEM.Net.Core
             }
         }
 
-        public static IEnumerable<GeoPoint> WarpHeightMap(IEnumerable<GeoPoint> coords, int sourceWidth, int sourceHeight, int destWidth, int destHeight)
+        public static IEnumerable<(GeoPoint point, List<GeoPoint> source)> WarpHeightMap(IEnumerable<GeoPoint> coords, int sourceWidth, int sourceHeight, int destWidth, int destHeight)
         {
             // But parcourir chaque pixel de l'image source (coords)
             // attribuer aux pixels de destination la valeur interpolée
@@ -452,7 +452,7 @@ namespace DEM.Net.Core
             int numPoints = destWidth * destHeight;
             var enume = coords.GetEnumerator();
             double radius = 1.4;
-            List<List<(double Elevation, double Weight)>> outPoints = Enumerable.Range(1, numPoints).Select(_ => new List<(double elevation, double weight)>()).ToList();
+            List<List<(double Elevation, double Weight, GeoPoint source)>> outPoints = Enumerable.Range(1, numPoints).Select(_ => new List<(double elevation, double weigh, GeoPoint sourcet)>()).ToList();
             for (int y = 0; y < sourceHeight; y++)
             {
                 for (int x = 0; x < sourceWidth; x++)
@@ -464,18 +464,18 @@ namespace DEM.Net.Core
                     // Value must be spread across those pixels
 
                     double sourceZ = sourcePt.Elevation ?? 0;
-                    double sourceX = sourcePt.Longitude-0.5;
-                    double sourceY = sourcePt.Latitude-0.5;
+                    double sourceX = sourcePt.Longitude - 0.5;
+                    double sourceY = sourcePt.Latitude - 0.5;
 
                     int xWest = (int)Math.Floor(sourceX);
                     int yNorth = (int)Math.Floor(sourceY);
                     int xEast = xWest+1;
                     int ySouth = yNorth+1;
 
-                    AddData(sourceZ, xWest, yNorth, sourceX, sourceY, radius, destWidth, destHeight);
-                    AddData(sourceZ, xEast, yNorth, sourceX, sourceY, radius, destWidth, destHeight);
-                    AddData(sourceZ, xEast, ySouth, sourceX, sourceY, radius, destWidth, destHeight);
-                    AddData(sourceZ, xWest, ySouth, sourceX, sourceY, radius, destWidth, destHeight);
+                    AddData(sourceZ, xWest, yNorth, sourceX, sourceY, radius, destWidth, destHeight, sourcePt);
+                    AddData(sourceZ, xEast, yNorth, sourceX, sourceY, radius, destWidth, destHeight, sourcePt);
+                    AddData(sourceZ, xEast, ySouth, sourceX, sourceY, radius, destWidth, destHeight, sourcePt);
+                    AddData(sourceZ, xWest, ySouth, sourceX, sourceY, radius, destWidth, destHeight, sourcePt);
                 }
             }
 
@@ -484,7 +484,7 @@ namespace DEM.Net.Core
                 for (int x = 0; x < destWidth; x++)
                 {
                     var pts = outPoints[x + y * destWidth];
-                    GeoPoint outPt = new GeoPoint(id: y, y, x, 0);
+                    (GeoPoint point, List<GeoPoint> source) outPt =  (new GeoPoint(id: y, y, x, 0), new List<GeoPoint>());
                     if (pts.Count > 0)
                     {
                         double outVal = 0;
@@ -493,8 +493,9 @@ namespace DEM.Net.Core
                         {
                             outVal += pt.Elevation * pt.Weight;
                             weights += pt.Weight;
+                            outPt.source.Add(pt.source);
                         }
-                        outPt.Elevation = outVal / weights;
+                        outPt.point.Elevation = outVal / weights;
                     }
 
                     yield return outPt;
@@ -502,7 +503,7 @@ namespace DEM.Net.Core
 
             }
 
-            void AddData(double elevation, int x, int y, double x1, double y1, double radius, int width, int height)
+            void AddData(double elevation, int x, int y, double x1, double y1, double radius, int width, int height, GeoPoint sourcePt)
             {
                 if (x < width && y < height && x >= 0 && y >= 0)
                 {
@@ -510,7 +511,7 @@ namespace DEM.Net.Core
 
                     var w = (1-Math.Abs(x1-x) + 1-Math.Abs(y1-y)) / 2d;
                     //var w = WeightedDistance(x1, x, y1, y, radius);
-                    outPoints[index].Add((elevation, w));
+                    outPoints[index].Add((elevation, w, sourcePt));
                 }
             }
             //double WeightedDistance(double x1, double x2, double y1, double y2, double radius)
