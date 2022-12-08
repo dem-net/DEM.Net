@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -71,8 +72,22 @@ namespace DEM.Net.Core
         /// <returns><see cref="BoundingBox"/></returns>
         public static BoundingBox GetBoundingBox(string geomWKT)
         {
-            Geometry geom = ParseWKTAsGeometry(geomWKT);
-            return geom.GetBoundingBox();
+            if (geomWKT.StartsWith("POLYGON", StringComparison.OrdinalIgnoreCase))
+            {
+                Geometry geom = ParseWKTAsGeometry(geomWKT);
+                return geom.GetBoundingBox();
+            }
+            else
+            {
+                // try parse xmin,xmax,ymin,ymax format
+                var parts = geomWKT.Split(',').Select(s => float.Parse(s, CultureInfo.InvariantCulture)).ToList();
+                if (parts.Count >= 4)
+                {
+                    return new BoundingBox(Math.Min(parts[0], parts[1]), Math.Max(parts[0], parts[1]),
+                        Math.Min(parts[2], parts[3]), Math.Max(parts[2], parts[3]));
+                }
+                throw new InvalidCastException("Cannot parse bbox");
+            }
         }
         /// <summary>
         /// Extension method. Returns the bounding box for a geometry instance
@@ -513,9 +528,20 @@ namespace DEM.Net.Core
                 return inside;
             }
 
-            
+
         }
-        
+
+        public static HeightMap ApplyGeometryMask(this HeightMap heightMap, string bbox)
+        {
+            var geom = ParseWKTAsGeometry(bbox);
+            heightMap.Coordinates = heightMap.Coordinates.Select(pt =>
+            {
+                pt.Elevation = geom.Contains(new Point(pt.Longitude, pt.Latitude)) ? pt.Elevation : 0;
+                return pt;
+            });
+            return heightMap;
+        }
+
 
 
     }

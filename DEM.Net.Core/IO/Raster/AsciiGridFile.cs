@@ -29,7 +29,6 @@ namespace DEM.Net.Core
         private static char[] SEPARATOR = new char[] { ' ' };
 
         List<List<string>> _data = null;
-        private static Dictionary<string, List<List<string>>> _tempCache = new Dictionary<string, List<List<string>>>();
 
         public ASCIIGridFile(string fileName, bool gzip)
         {
@@ -61,11 +60,6 @@ namespace DEM.Net.Core
 
         private void ReadAllFile(FileMetadata metadata)
         {
-            if (_tempCache.ContainsKey(_filename))
-            {
-                _data = _tempCache[_filename];
-                return;
-            }
             string curLine = null;
             _fileStream.Seek(0, SeekOrigin.Begin);
 
@@ -98,12 +92,43 @@ namespace DEM.Net.Core
                 //Debug.Assert(values.Count == metadata.Width);
                 _data.Add(values);
             }
-            _tempCache[_filename] = _data;
         }
 
         public HeightMap GetHeightMap(FileMetadata metadata)
         {
-            throw new NotImplementedException();
+            var noDataValue = 0;
+            if (_data == null)
+            {
+                ReadAllFile(metadata);
+            }
+            int registrationOffset = metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid ? 1 : 0;
+
+            HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
+            heightMap.Count = heightMap.Width * heightMap.Height;
+            var coords = new List<GeoPoint>(heightMap.Count);
+
+
+            for (int y = 0; y < metadata.Height; y++)
+            {
+                double latitude = metadata.DataEndLat + (metadata.pixelSizeY * y);
+
+                for (int x = 0; x < metadata.Width; x++)
+                {
+                    double longitude = metadata.DataStartLon + (metadata.pixelSizeX * x);
+
+                    float heightValue = float.Parse(_data[y][x], CultureInfo.InvariantCulture);
+                    if (heightValue == metadata.NoDataValueFloat) heightValue = noDataValue;
+                    heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
+                    heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
+
+                    coords.Add(new GeoPoint(latitude, longitude, heightValue));
+
+                }
+            }
+            Debug.Assert(heightMap.Width * heightMap.Height == coords.Count);
+
+            heightMap.Coordinates = coords;
+            return heightMap;
         }
 
         public HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = float.MinValue)
@@ -261,6 +286,9 @@ namespace DEM.Net.Core
                     _streamReader?.Dispose();
                     _fileStream?.Dispose();
                     _gzipStream?.Dispose();
+                    _data?.ForEach(l => l.Clear());
+                    _data?.Clear();
+                    _data = null;
                 }
 
                 disposedValue = true;

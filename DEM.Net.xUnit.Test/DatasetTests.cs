@@ -26,6 +26,7 @@ namespace DEM.Net.Test
         [Theory(), TestPriority(1)]
         [InlineData(nameof(DEMDataSet.SRTM_GL3))]
         [InlineData(nameof(DEMDataSet.AW3D30))]
+        [InlineData(nameof(DEMDataSet.NASADEM))]
         public void DatasetTest(string datasetName)
         {
             var datasets = DEMDataSet.RegisteredDatasets;

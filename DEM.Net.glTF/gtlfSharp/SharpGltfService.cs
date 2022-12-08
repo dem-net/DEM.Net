@@ -140,7 +140,7 @@ namespace DEM.Net.glTF.SharpglTF
         {
             Triangulation triangulation = _meshService.TriangulateHeightMap(heightMap);
 
-            triangulation = reduceFactor < 1f ? _meshReducer.Decimate(triangulation, reduceFactor) : triangulation;
+            triangulation = _meshReducer.Decimate(triangulation, reduceFactor);
 
             model = AddTerrainMesh(model, triangulation, textures);
 
@@ -151,9 +151,9 @@ namespace DEM.Net.glTF.SharpglTF
         }
         public ModelRoot CreateTerrainMesh(Triangulation triangulation, PBRTexture textures, bool doubleSided = true)
         { return AddTerrainMesh(CreateNewModel(), triangulation, textures, doubleSided); }
-        public ModelRoot AddTerrainMesh(ModelRoot model, Triangulation triangulation, PBRTexture textures, bool doubleSided = true)
+        public ModelRoot AddTerrainMesh(ModelRoot model, Triangulation triangulation, PBRTexture textures, bool doubleSided = true, Matrix4x4 matrix = default)
         {
-            var indexedTriangulation = new IndexedTriangulation(triangulation);
+            var indexedTriangulation = new IndexedTriangulation(triangulation, matrix);
             var normals = _meshService.ComputeMeshNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
             model = AddMesh(model, TERRAIN_NODE_NAME, indexedTriangulation, normals, textures, doubleSided);
 
@@ -304,14 +304,16 @@ namespace DEM.Net.glTF.SharpglTF
 
 
             var triangulation = _meshService.GenerateTriangleMesh_Line(gpxPointsElevated, trailWidthMeters, transform);
-            var normals = _meshService.ComputeMeshNormals(triangulation.Positions, triangulation.Indices);
+            var decimatedTriangulation = _meshReducer.Decimate(triangulation, 0.1f);
+
+            var normals = _meshService.ComputeMeshNormals(decimatedTriangulation.Positions, decimatedTriangulation.Indices);
 
 
             // create mesh primitive
             var primitive = rmesh.CreatePrimitive()
-                .WithVertexAccessor("POSITION", triangulation.Positions)
+                .WithVertexAccessor("POSITION", decimatedTriangulation.Positions)
                 .WithVertexAccessor("NORMAL", normals.ToList())
-                .WithIndicesAccessor(PrimitiveType.TRIANGLES, triangulation.Indices);
+                .WithIndicesAccessor(PrimitiveType.TRIANGLES, decimatedTriangulation.Indices);
 
             primitive = primitive.WithMaterial(material);
             return model;

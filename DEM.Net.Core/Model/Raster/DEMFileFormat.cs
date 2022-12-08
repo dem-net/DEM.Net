@@ -25,6 +25,7 @@
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,7 @@ namespace DEM.Net.Core
     /// File specification for a given dataset. Used in raster services to handle properly different cases of files encountered
     /// Here is defined the format of raster file (extension, raster type, grid registration)
     /// </summary>
+    [ProtoContract]
 	public class DEMFileDefinition
     {
         public DEMFileDefinition(string name, DEMFileType format, string extension, DEMFileRegistrationMode registration)
@@ -61,15 +63,18 @@ namespace DEM.Net.Core
         /// <summary>
         /// Common name
         /// </summary>
+        [ProtoMember(1)]
         public string Name { get; set; }
         /// <summary>
         /// Physical raster files extension (format: ".ext")
         /// </summary>
-		public string FileExtension { get; set; }
-        
+		[ProtoMember(2)]
+        public string FileExtension { get; set; }
+
         /// <summary>
         /// Physical file format enumeration
         /// </summary>
+        [ProtoMember(3)]
         public DEMFileType Type { get; set; }
 
         /// <summary>
@@ -77,6 +82,7 @@ namespace DEM.Net.Core
         /// Cell/pixel-registered: cell edges are along lines of latitude and longitude.
         /// Good explanation here : https://www.ngdc.noaa.gov/mgg/global/gridregistration.html
         /// </summary>
+        [ProtoMember(4)]
         public DEMFileRegistrationMode Registration { get; set; }
 
         public override string ToString()

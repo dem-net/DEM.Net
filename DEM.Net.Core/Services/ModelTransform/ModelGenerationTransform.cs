@@ -63,7 +63,7 @@ namespace DEM.Net.Core
 
             base.TransformHeightMap = hMap =>
             {
-                hMap = hMap.ReprojectTo(bbox.SRID, _outputSrid);
+                hMap = hMap.ReprojectTo(BoundingBox.SRID, _outputSrid);
 
                 if (_centerOnOrigin)
                 {

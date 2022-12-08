@@ -30,6 +30,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DEM.Net.Core.Datasets;
+using DEM.Net.Core.Stac;
 
 namespace DEM.Net.Core
 {
@@ -43,7 +44,7 @@ namespace DEM.Net.Core
         /// <summary>
         /// Approximate meters resolution calculated at equator (no distortion)
         /// </summary>
-        public int ResolutionMeters { get; set; }
+        public float ResolutionMeters { get; set; }
         public float ResolutionArcSeconds { get; set; }
         public int NoDataValue { get; set; }
         public DEMFileDefinition FileFormat { get; set; }
@@ -51,6 +52,10 @@ namespace DEM.Net.Core
         public IDEMDataSource DataSource { get; set; }
         public int PointsPerDegree { get; private set; }
         public int SRID { get; set; } = Reprojection.SRID_GEODETIC;
+        public bool IsListed { get; set; } = true;
+
+        // null means global
+        public string ExtentInfo { get; set; } = "Global";
 
         public override string ToString()
         {
@@ -61,6 +66,7 @@ namespace DEM.Net.Core
 
         public static IEnumerable<DEMDataSet> RegisteredDatasets => DEMDataSet.Datasets.Value.Values;
         public static IEnumerable<DEMDataSet> RegisteredNonLocalDatasets => RegisteredDatasets.Where(d => d.DataSource.DataSourceType != DEMDataSourceType.LocalFileSystem);
+        public static IEnumerable<DEMDataSet> RegisteredListedDatasets => RegisteredDatasets.Where(d => d.IsListed);
 
         private static Dictionary<string, DEMDataSet> GetRegisteredDatasets()
         {
@@ -110,6 +116,20 @@ namespace DEM.Net.Core
                     "T.Tadono, H.Ishida, F.Oda, S.Naito, K.Minakawa, H.Iwamoto : Precise Global DEM Generation By ALOS PRISM, ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences, pp.71 - 76, Vol.II - 4, 2014. [http://www.isprs-ann-photogramm-remote-sens-spatial-inf-sci.net/II-4/71/2014/isprsannals-II-4-71-2014.pdf]" + Environment.NewLine +
                     "https://doi.org/10.5069/G94M92HB")
             });
+            datasets.Add("FABDEM", new DEMDataSet()
+            {
+                Name = nameof(FABDEM),
+                Description = "Forest And Buildings removed Copernicus DEM",
+                PublicUrl = "https://data.bris.ac.uk/data/dataset/25wfy0f9ukoge2gs7a5mqpq2j7",
+                DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "FABDEM")),
+                FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Cell),
+                ResolutionMeters = 30,
+                ResolutionArcSeconds = 1,
+                PointsPerDegree = 3600,
+                NoDataValue = -9999,
+                Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Laurence Hawker, Jeffrey Neal (2021): FABDEM", "https://data.bris.ac.uk/data/dataset/25wfy0f9ukoge2gs7a5mqpq2j7"
+                               , "Non-Commercial Government Licence for public sector information")
+            });
             datasets.Add("ETOPO1", new DEMDataSet()
             {
                 Name = nameof(ETOPO1),
@@ -128,76 +148,119 @@ namespace DEM.Net.Core
             {
                 Name = nameof(IGN_5m),
                 Description = "IGN RGE Alti 5 meter (France only)",
+                ExtentInfo = "France",
                 PublicUrl = "https://ign.fr",
-                DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "IGN_5m_GZip")),
+                DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "IGN_5m")),
                 FileFormat = new DEMFileDefinition("Esri Ascii Grid (GZipped)", DEMFileType.ASCIIGridGzip, ".asc.gz", DEMFileRegistrationMode.Cell),
                 ResolutionMeters = 5,
                 PointsPerDegree = 21600,
                 NoDataValue = -99999,
+                IsListed= true,
                 SRID = 2154,
                 Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN", "https://ign.fr", "https://www.etalab.gouv.fr/licence-ouverte-open-licence")
             });
-            //datasets.Add("IGN_5m", new DEMDataSet()
-            //{
-            //    Name = nameof(IGN_5m),
-            //    Description = "IGN RGE Alti 5 meter",
-            //    PublicUrl = "https://ign.fr",
-            //    DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "IGN_5m")),
-            //    FileFormat = new DEMFileDefinition("Esri Ascii Grid", DEMFileType.ASCIIGrid, ".asc", DEMFileRegistrationMode.Cell),
-            //    ResolutionMeters = 5,
-            //    PointsPerDegree = 21600,
-            //    NoDataValue = -99999,
-            //    SRID = 2154,
-            //    Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN", "https://ign.fr"
-            //        , "TO BE DEFINED")
-            //});
-            //datasets.Add("IGN_1m", new DEMDataSet()
-            //{
-            //    Name = nameof(IGN_1m),
-            //    Description = "IGN RGE Alti 1 meter",
-            //    PublicUrl = "https://ign.fr",
-            //    DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "IGN_1m")),
-            //    FileFormat = new DEMFileDefinition("Esri Ascii Grid", DEMFileType.ASCIIGrid, ".asc", DEMFileRegistrationMode.Cell),
-            //    ResolutionMeters = 1,
-            //    PointsPerDegree = 108000,
-            //    NoDataValue = -99999,
-            //    SRID = 2154,
-            //    Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN", "https://ign.fr"
-            //        , "TO BE DEFINED")
-            //});
-            //datasets.Add("ASTER_GDEMV3", new DEMDataSet()
-            //{
-            //    Name = nameof(ASTER_GDEMV3),
-            //    Description = "ASTER Global Digital Elevation Model 1 arc second (30m)",
-            //    PublicUrl = "https://lpdaac.usgs.gov/products/astgtmv003",
-            //    DataSource = new NasaGranuleDataSource(indexFilePath: "ASTGTM.003.json", collectionId: "C1575726572-LPDAAC_ECS"),
-            //    FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, "_dem.tif", DEMFileRegistrationMode.Grid),
-            //    ResolutionMeters = 30,
-            //    ResolutionArcSeconds = 1,
-            //    PointsPerDegree = 3600,
-            //    NoDataValue = -9999,
-            //    Attribution = new Attribution(ATTRIBUTION_SUBJECT, "ASTER_GDEMV3",
-            //                                    "https://doi.org/10.5067/ASTER/ASTGTM.003",
-            //                                    "NASA/METI/AIST/Japan Spacesystems, and U.S./Japan ASTER Science Team. ASTER Global Digital Elevation Model V003. 2018, distributed by NASA EOSDIS Land Processes DAAC")
-            //});
+            datasets.Add("IGN_1m", new DEMDataSet()
+            {
+                Name = nameof(IGN_1m),
+                Description = "IGN RGE Alti 1 meter (France only)",
+                ExtentInfo = "France",
+                PublicUrl = "https://ign.fr",
+                DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "IGN_1m")),
+                FileFormat = new DEMFileDefinition("Esri Ascii Grid (GZipped)", DEMFileType.ASCIIGridGzip, ".asc.gz", DEMFileRegistrationMode.Cell),
+                ResolutionMeters = 1,
+                PointsPerDegree = 108000,
+                NoDataValue = -99999,
+                IsListed= true,
+                SRID = 2154,
+                Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN", "https://ign.fr", "https://www.etalab.gouv.fr/licence-ouverte-open-licence")
+            });
+            datasets.Add("ASTER_GDEMV3", new DEMDataSet()
+            {
+                Name = nameof(ASTER_GDEMV3),
+                IsListed = false,
+                Description = "ASTER Global Digital Elevation Model 1 arc second (30m)",
+                PublicUrl = "https://lpdaac.usgs.gov/products/astgtmv003",
+                DataSource = new NasaGranuleDataSource(indexFilePath: "ASTGTM.003.json", collectionId: "C1711961296-LPCLOUD"),
+                FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, "_dem.tif", DEMFileRegistrationMode.Grid),
+                ResolutionMeters = 30,
+                ResolutionArcSeconds = 1,
+                PointsPerDegree = 3600,
+                NoDataValue = -9999,
+                Attribution = new Attribution(ATTRIBUTION_SUBJECT, "ASTER_GDEMV3",
+                                                "https://doi.org/10.5067/ASTER/ASTGTM.003",
+                                                "NASA/METI/AIST/Japan Spacesystems, and U.S./Japan ASTER Science Team. ASTER Global Digital Elevation Model V003. 2018, distributed by NASA EOSDIS Land Processes DAAC")
+            });
             datasets.Add("NASADEM", new DEMDataSet()
             {
                 Name = nameof(NASADEM),
                 Description = "NASADEM MEaSUREs Merged DEM Global 1 arc second (30m)",
-                PublicUrl = "https://lpdaac.usgs.gov/products/nasadem_hgtv001/",
-                DataSource = new NasaGranuleDataSource(indexFilePath: "NASADEM.json", collectionId: "C1546314043-LPDAAC_ECS"),
-                FileFormat = new DEMFileDefinition("Nasa SRTM HGT", DEMFileType.SRTM_HGT, ".hgt", DEMFileRegistrationMode.Grid),
+                PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTALOS.112016.4326.2",
+                DataSource = new VRTDataSource("https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be.vrt"),
+                FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Grid),
                 ResolutionMeters = 30,
                 ResolutionArcSeconds = 1,
                 PointsPerDegree = 3600,
                 NoDataValue = -9999,
                 Attribution = new Attribution(ATTRIBUTION_SUBJECT, "NASADEM",
-                                                "https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001",
-                                                "NASA JPL. NASADEM Merged DEM Global 1 arc second V001. 2020, distributed by NASA EOSDIS Land Processes DAAC, https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001. Accessed 2020-03-06.")
+                                            "https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001",
+                                            "NASA JPL. NASADEM Merged DEM Global 1 arc second V001. 2020, distributed by NASA EOSDIS Land Processes DAAC, https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001. Accessed 2020-03-06.")
+            });
+        //datasets.Add("NASADEM", new DEMDataSet()
+        //{
+        //    Name = nameof(NASADEM),
+        //    Description = "NASADEM MEaSUREs Merged DEM Global 1 arc second (30m)",
+        //    PublicUrl = "https://lpdaac.usgs.gov/products/nasadem_hgtv001/",
+        //    DataSource = new NasaGranuleDataSource(indexFilePath: "NASADEM.json", collectionId: "C1546314043-LPDAAC_ECS"),
+        //    FileFormat = new DEMFileDefinition("Nasa SRTM HGT", DEMFileType.SRTM_HGT, ".hgt", DEMFileRegistrationMode.Grid),
+        //    ResolutionMeters = 30,
+        //    ResolutionArcSeconds = 1,
+        //    PointsPerDegree = 3600,
+        //    NoDataValue = -9999,
+        //    Attribution = new Attribution(ATTRIBUTION_SUBJECT, "NASADEM",
+        //                                    "https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001",
+        //                                    "NASA JPL. NASADEM Merged DEM Global 1 arc second V001. 2020, distributed by NASA EOSDIS Land Processes DAAC, https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001. Accessed 2020-03-06.")
+        //});
+        
+            datasets.Add(nameof(swissALTI3D2m), new DEMDataSet()
+            {
+                Name = "swissALTI3D 2m",
+                ExtentInfo = "Switzerland",
+                Description = "swissALTI3D is an extremely precise digital elevation model which describes the surface of Switzerland and the Principality of Liechtenstein without vegetation and development. It is updated in an cycle of 6 years.",
+                PublicUrl = "https://www.swisstopo.admin.ch/de/geodata/height/alti3d.html",
+                DataSource = new StacDataSource(url: "https://data.geo.admin.ch/api/stac/v0.9", indexFilePath: "swissALTI3D2m.json", collection: "ch.swisstopo.swissalti3d",
+                 filter: (Asset a) => a.Type == AssetType.ImageTiffApplicationGeotiffProfileCloudOptimized && a.EoGsd == 2.0),       
+                FileFormat = new DEMFileDefinition("GeoTIFF", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Cell),
+                ResolutionMeters = 2,
+                ResolutionArcSeconds = 1,
+                PointsPerDegree = 40000,
+                NoDataValue = -9999,
+                SRID = 2056,
+                Attribution = new Attribution(ATTRIBUTION_SUBJECT, "swisstopo",
+                                                "https://www.swisstopo.admin.ch/en/home/meta/conditions/geodata/ogd.html",
+                                                "Office of Topography swisstopo, ©swisstopo")
+            });
+            datasets.Add(nameof(swissALTI3D50cm), new DEMDataSet()
+            {
+                Name = "swissALTI3D 50cm",
+                ExtentInfo = "Switzerland",
+                Description = "swissALTI3D is an extremely precise digital elevation model which describes the surface of Switzerland and the Principality of Liechtenstein without vegetation and development. It is updated in an cycle of 6 years.",
+                PublicUrl = "https://www.swisstopo.admin.ch/de/geodata/height/alti3d.html",
+                DataSource = new StacDataSource(url: "https://data.geo.admin.ch/api/stac/v0.9", indexFilePath: "swissALTI3D50cm.json", collection: "ch.swisstopo.swissalti3d",
+                 filter: asset => swissAlti50cmFilter(asset)),
+                FileFormat = new DEMFileDefinition("GeoTIFF", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Cell),
+                ResolutionMeters = 0.5f,
+                ResolutionArcSeconds = 1,
+                PointsPerDegree = 160000,
+                NoDataValue = -9999,
+                SRID = 2056,
+                Attribution = new Attribution(ATTRIBUTION_SUBJECT, "swisstopo",
+                                                "https://www.swisstopo.admin.ch/en/home/meta/conditions/geodata/ogd.html",
+                                                "Office of Topography swisstopo, ©swisstopo")
             });
             datasets.Add("GEBCO_2019", new DEMDataSet()
             {
                 Name = nameof(GEBCO_2019),
+                ExtentInfo = "Global + oceans",
                 Description = "400m with bathymetry",
                 PublicUrl = "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2019/gebco_2019_info.html",
                 DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "GEBCO_2019")),
@@ -229,6 +292,21 @@ namespace DEM.Net.Core
             return datasets;
         }
 
+        private static bool swissAlti50cmFilter(Asset asset)
+        {
+            if (asset.Type == AssetType.ImageTiffApplicationGeotiffProfileCloudOptimized)
+            {
+                if (asset.EoGsd < 2)
+                {
+                    if (asset.EoGsd == 0.5)
+                        return true;
+                    else
+                        return false;
+                }
+            }
+            return false;
+        }
+
 
         // Examples datasets
         // Add any new dataset
@@ -237,6 +315,7 @@ namespace DEM.Net.Core
         /// Shuttle Radar Topography Mission (SRTM GL3) Global 90m
         /// </summary>
         public static DEMDataSet SRTM_GL3 => Datasets.Value[nameof(SRTM_GL3)];
+        public static DEMDataSet ASTER_GDEMV3 => Datasets.Value[nameof(ASTER_GDEMV3)];
 
         /// <summary>
         /// ALOS World 3D - 30m
@@ -247,6 +326,7 @@ namespace DEM.Net.Core
         /// Global low res coverage with bathymetry (1km resolution)
         /// </summary>
         public static DEMDataSet ETOPO1 => Datasets.Value[nameof(ETOPO1)];
+        public static DEMDataSet FABDEM => Datasets.Value[nameof(FABDEM)];
 
         /// <summary>
         /// Global medium res coverage with bathymetry (500m resolution)
@@ -261,6 +341,10 @@ namespace DEM.Net.Core
         public static DEMDataSet NASADEM => Datasets.Value[nameof(NASADEM)];
         public static DEMDataSet IGN_5m => Datasets.Value[nameof(IGN_5m)];
         public static DEMDataSet IGN_1m => Datasets.Value[nameof(IGN_1m)];
+
+        public static DEMDataSet swissALTI3D2m => Datasets.Value[nameof(swissALTI3D2m)];
+        public static DEMDataSet swissALTI3D50cm => Datasets.Value[nameof(swissALTI3D50cm)];
+
 
 
 

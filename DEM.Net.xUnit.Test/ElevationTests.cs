@@ -38,8 +38,9 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.179337, 5.721421, 219)]
-        [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 223)]
+        [InlineData(nameof(DEMDataSet.NASADEM), 45.179337, 5.721421, 222)]
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.179337, 5.721421, 217)]
+        [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 221)]
         public void TestElevationSinglePoint(string dataSetName, double lat, double lon, double expectedElevation)
         {
             DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
@@ -53,8 +54,8 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.00000000000004, 10.000000000000007, 1768)]
-        [InlineData(nameof(DEMDataSet.AW3D30), 46.00000000000004, 10.000000000000007, 1629)]
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.00000000000004, 10.000000000000007, 1748)]
+        [InlineData(nameof(DEMDataSet.AW3D30), 46.00000000000004, 10.000000000000007, 1741)]
         public void TestElevationSinglePoint_TileEdges(string dataSetName, double lat, double lon, double expectedElevation)
         {
             DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
@@ -75,8 +76,8 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.179337, 5.721421, 45.212278, 5.468857, 345, 2575.902, -2603.597, 178.164, 1652.264)]
-        [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 45.212278, 5.468857, 911, 2973.754, -3012.573, 179.845, 1655.103)]
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.179337, 5.721421, 45.212278, 5.468857, 344, 2586.41, -2617.292, 178.271, 1654.438)]
+        [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 45.212278, 5.468857, 911, 2973.321, -3012.14, 177.845, 1653.103)]
         public void TestElevationLine(string dataSetName, double latStart, double lonStart, double latEnd, double lonEnd,
             double expectedPointCount, double expectedClimb, double expectedDescent, double expectedMin, double expectedMax)
         {
