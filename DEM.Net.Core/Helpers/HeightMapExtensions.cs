@@ -234,6 +234,16 @@ namespace DEM.Net.Core
 
             return heightMap;
         }
+
+        public static HeightMap ZClamp(this HeightMap heightMap, float? min, float? max)
+        {
+            heightMap.Coordinates = heightMap.Coordinates.ZClamp(min, max);
+            heightMap.Minimum = MathHelper.Clamp(heightMap.Minimum, min ?? float.MinValue, max ?? float.MaxValue);
+            heightMap.Maximum = MathHelper.Clamp(heightMap.Maximum, min ?? float.MinValue, max ?? float.MaxValue);
+
+            return heightMap;
+        }
+
         /// <summary>
         /// Scale height map
         /// </summary>
@@ -288,6 +298,15 @@ namespace DEM.Net.Core
         {
             return points.Scale(1, 1, zFactor);
         }
+        public static IEnumerable<GeoPoint> ZClamp(this IEnumerable<GeoPoint> points, float? min, float? max)
+        {
+            return points.Select(pt =>
+            {
+                pt.Elevation = MathHelper.Clamp(pt.Elevation ?? 0, min ?? float.MinValue, max ?? float.MaxValue);
+                return pt;
+            });
+        }
+        
         public static List<Gpx.GpxTrackPoint> ZScale(this List<Gpx.GpxTrackPoint> points, float zFactor = 1f)
         {
             points.ForEach(p => p.Elevation *= zFactor);

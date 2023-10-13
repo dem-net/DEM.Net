@@ -258,6 +258,23 @@ namespace DEM.Net.Core
                 Attribution = new Attribution(ATTRIBUTION_SUBJECT, "swisstopo",
                                                 "https://www.swisstopo.admin.ch/en/home/meta/conditions/geodata/ogd.html",
                                                 "Office of Topography swisstopo, ©swisstopo")
+            }); 
+            datasets.Add(nameof(TINItaly), new DEMDataSet()
+            {
+                Name = "TINItaly10m",
+                ExtentInfo = "Italy",
+                Description = "A seamless digital elevation model (DEM) of the whole Italian territory, originally named TINITALY/01 (also known as the \"TINITALY\" DEM, in short), was presented in 2007 (Tarquini et al. 2007*).",
+                PublicUrl = "https://tinitaly.pi.ingv.it/",
+                DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "TINItaly10m")),
+                FileFormat = new DEMFileDefinition("GeoTIFF", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Grid),
+                ResolutionMeters = 10,
+                ResolutionArcSeconds = 0.45f,
+                PointsPerDegree = 10800,
+                NoDataValue = -9999,
+                SRID = 32632,
+                Attribution = new Attribution(ATTRIBUTION_SUBJECT, "TIN Italy",
+                                                "https://doi.org/10.13127/tinitaly/1.1",
+                                                "arquini S., I. Isola, M. Favalli, A. Battistini, G. Dotta (2023). TINITALY, a digital elevation model of Italy with a 10 meters cell size (Version 1.1). Istituto Nazionale di Geofisica e Vulcanologia (INGV). https://doi.org/10.13127/tinitaly/1.1.")
             });
             datasets.Add("GEBCO_2019", new DEMDataSet()
             {
@@ -348,7 +365,8 @@ namespace DEM.Net.Core
         public static DEMDataSet swissALTI3D2m => Datasets.Value[nameof(swissALTI3D2m)];
         public static DEMDataSet swissALTI3D50cm => Datasets.Value[nameof(swissALTI3D50cm)];
 
-        public static DEMDataSet CopernicusEUDEM => Datasets.Value[nameof(CopernicusEUDEM)]; 
+        public static DEMDataSet CopernicusEUDEM => Datasets.Value[nameof(CopernicusEUDEM)];
+        public static DEMDataSet TINItaly => Datasets.Value[nameof(TINItaly)];
 
 
 

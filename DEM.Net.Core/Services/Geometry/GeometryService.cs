@@ -531,6 +531,17 @@ namespace DEM.Net.Core
 
         }
 
+        public static HeightMap ApplyGeometryMask(this HeightMap heightMap, string bbox)
+        {
+            var geom = ParseWKTAsGeometry(bbox);
+            heightMap.Coordinates = heightMap.Coordinates.Select(pt =>
+            {
+                pt.Elevation = geom.Contains(new Point(pt.Longitude, pt.Latitude)) ? pt.Elevation : 0;
+                return pt;
+            });
+            return heightMap;
+        }
+
 
 
     }

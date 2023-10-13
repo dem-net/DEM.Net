@@ -38,6 +38,20 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
+        [InlineData(nameof(DEMDataSet.AW3D30),  47.132563, -86.818075,  0)]
+        public void TestUS(string dataSetName, double lat, double lon, double expectedElevation)
+        {
+            DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+            Assert.NotNull(dataSet);
+
+            _elevationService.DownloadMissingFiles(dataSet, lat, lon);
+            GeoPoint point = _elevationService.GetPointElevation(lat, lon, dataSet);
+            double elevation = point.Elevation.GetValueOrDefault(0);
+
+            Assert.Equal(expectedElevation, elevation, 0);
+        }
+
+        [Theory()]
         [InlineData(nameof(DEMDataSet.NASADEM), 45.179337, 5.721421, 222)]
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.179337, 5.721421, 217)]
         [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 221)]
