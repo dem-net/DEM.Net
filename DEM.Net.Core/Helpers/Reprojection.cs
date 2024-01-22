@@ -117,7 +117,7 @@ namespace DEM.Net.Core
                     if (inputPoints == null)
                     {
                         inputPoints = points.SelectMany(pt => new double[] { pt.Longitude, pt.Latitude }).ToArray();
-                        Reproject.ReprojectPoints(inputPoints, null, pSource, pTarget, 0, pointCount.Value);
+                        Reproject.ReprojectPoints(inputPoints, null, pSource, pTarget, 0, inputPoints.Length / 2);
                     }
                     var pout = p.Clone();
                     pout.Longitude = inputPoints[2 * index];
@@ -148,7 +148,7 @@ namespace DEM.Net.Core
             double[] inputPoints = triangulation.Positions.SelectMany(pt => new double[] { pt.X, pt.Y }).ToArray();
             Reproject.ReprojectPoints(inputPoints, null, pSource, pTarget, 0, triangulation.NumPositions);
 
-            for (int i = 0; i< triangulation.NumPositions; i++)
+            for (int i = 0; i < triangulation.NumPositions; i++)
             {
                 triangulation.Positions[i] = new Vector3((float)inputPoints[2 * i], (float)inputPoints[2 * i + 1], triangulation.Positions[i].Z);
             }

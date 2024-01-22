@@ -32,7 +32,7 @@ using DEM.Net.Core.Stac;
 
 namespace DEM.Net.Core
 {
-    public partial class DEMDataSet
+    public partial class DEMDataSet : ICloneable
     {
         private const string ATTRIBUTION_SUBJECT = "Digital Elevation Model";
 
@@ -60,6 +60,8 @@ namespace DEM.Net.Core
         {
             return Name;
         }
+
+        
 
         private static readonly Lazy<Dictionary<string, DEMDataSet>> Datasets = new Lazy<Dictionary<string, DEMDataSet>>(GetRegisteredDatasets, true);
 
@@ -325,6 +327,11 @@ namespace DEM.Net.Core
                 }
             }
             return false;
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
 
 
