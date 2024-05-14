@@ -4,7 +4,6 @@ using SixLabors.ImageSharp.Processing;
 using SixLabors.Primitives;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using SixLabors.Fonts;
 using DEM.Net.Core.Gpx;

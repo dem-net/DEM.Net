@@ -49,8 +49,9 @@ namespace DEM.Net.Core
 
         static GeometryService()
         {
-            _factory = GeometryFactory.Default;
-            _wktReader = new WKTReader(_factory);
+            var ntsGeometryServices = new NetTopologySuite.NtsGeometryServices();
+            _factory = ntsGeometryServices.CreateGeometryFactory();
+            _wktReader = new WKTReader(ntsGeometryServices);
         }
 
         /// <summary>

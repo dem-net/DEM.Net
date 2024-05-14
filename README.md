@@ -1,9 +1,3 @@
-[![](https://github.com/xscode-resources/promotion-materials/blob/master/assets/xscode-banner-s.svg?raw=true)](https://xscode.com/xfischer/DEM.Net)
-
-
-[![xscode](https://img.shields.io/badge/Available%20on-xs%3Acode-blue?style=?style=plastic&logo=appveyor&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF////////VXz1bAAAAAJ0Uk5T/wDltzBKAAAAlUlEQVR42uzXSwqAMAwE0Mn9L+3Ggtgkk35QwcnSJo9S+yGwM9DCooCbgn4YrJ4CIPUcQF7/XSBbx2TEz4sAZ2q1RAECBAiYBlCtvwN+KiYAlG7UDGj59MViT9hOwEqAhYCtAsUZvL6I6W8c2wcbd+LIWSCHSTeSAAECngN4xxIDSK9f4B9t377Wd7H5Nt7/Xz8eAgwAvesLRjYYPuUAAAAASUVORK5CYII=)](https://xscode.com/xfischer/DEM.Net)
-[![Build Status](https://dev.azure.com/dem-net/elevationapi/_apis/build/status/DEM.Net%20Core?branchName=master)](https://dev.azure.com/dem-net/elevationapi/_build/latest?definitionId=4&branchName=master)
-[![Board Status](https://dev.azure.com/dem-net/fb0d4f55-28ad-4931-91c1-3be40dc42d96/97ece37c-c459-4aa0-a394-99b37b2af215/_apis/work/boardbadge/5f246f28-ee97-4849-bc40-654c06ec1bc1)](https://dev.azure.com/dem-net/fb0d4f55-28ad-4931-91c1-3be40dc42d96/_boards/board/t/97ece37c-c459-4aa0-a394-99b37b2af215/Microsoft.RequirementCategory) 
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/mdem-net/DEM.Net/graphs/commit-activity) 
 [![Twitter Follow](https://img.shields.io/twitter/follow/elevationapi.svg?style=social&label=Follow)](https://twitter.com/elevationapi)
 
@@ -23,7 +17,7 @@ Digital Elevation Model library in C#
 
 See samples [here](https://github.com/dem-net/Samples)
 
-Supported by [![JetBrainSupport](https://raw.githubusercontent.com/dem-net/Resources/master/images/ext/jetbrains-variant-2.svg?sanitize=true)](https://www.jetbrains.com/?from=DemNetElevationAPI)
+Check article on Sketchfab [API Spotlight : Elevation API](https://sketchfab.com/blogs/community/api-spotlight-elevation-api/)
 
  ![3D model](https://raw.githubusercontent.com/dem-net/Resources/master/videos/GPX_3D_big.gif)
 
@@ -37,7 +31,7 @@ Supported by [![JetBrainSupport](https://raw.githubusercontent.com/dem-net/Resou
 - STL
 
 # Current dev status
-- All incoming features are listed in the project board here : https://dev.azure.com/dem-net/elevationapi/_workitems/recentlyupdated/.
+
 - Feel free to suggest any idea you'd like to see covered here in the issues : https://github.com/dem-net/DEM.Net/issues.
 
 # SampleApp 
