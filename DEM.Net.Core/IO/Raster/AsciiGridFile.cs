@@ -43,6 +43,7 @@ namespace DEM.Net.Core
             {
                 _streamReader = new StreamReader(_fileStream, Encoding.ASCII);
             }
+            
         }
         public float GetElevationAtPoint(FileMetadata metadata, int x, int y)
         {
@@ -58,7 +59,7 @@ namespace DEM.Net.Core
 
         }
 
-        private void ReadAllFile(FileMetadata metadata)
+        public void ReadAllFile(FileMetadata metadata)
         {
             string curLine = null;
             _fileStream.Seek(0, SeekOrigin.Begin);
@@ -133,9 +134,12 @@ namespace DEM.Net.Core
 
         public HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = float.MinValue)
         {
+            Stopwatch sw = Stopwatch.StartNew();
             if (_data == null)
             {
                 ReadAllFile(metadata);
+
+                Console.WriteLine($"ReadAllFile in {sw.ElapsedMilliseconds:N2} ms");sw.Restart();
             }
             int registrationOffset = metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid ? 1 : 0;
 
@@ -188,6 +192,7 @@ namespace DEM.Net.Core
             Debug.Assert(heightMap.Width * heightMap.Height == coords.Count);
 
             heightMap.Coordinates = coords;
+            Console.WriteLine($"GetHeightmap in {sw.ElapsedMilliseconds:N2} ms");
             return heightMap;
         }
 

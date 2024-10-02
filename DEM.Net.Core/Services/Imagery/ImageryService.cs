@@ -27,7 +27,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -35,20 +34,17 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using DEM.Net.Core.Configuration;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
-using Path = SixLabors.Shapes.Path;
-using Microsoft.Extensions.Caching.Memory;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.Shapes;
-using SixLabors.Primitives;
 using DEM.Net.Core.Services.Imagery;
 using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.Drawing;
 
 namespace DEM.Net.Core.Imagery
 {
@@ -274,7 +270,7 @@ namespace DEM.Net.Core.Imagery
                             _logger.LogWarning($"Tile {tile.Uri} is empty. Skipping.");
                             continue;
                         }
-                        using (Image<Rgba32> tileImg = Image.Load(tile.Image))
+                        using (Image<Rgba32> tileImg = Image.Load<Rgba32>(tile.Image))
                         {
                             outputImage.Mutate(o => o
                                 .DrawImage(tileImg, new Point(x, y), 1f)
@@ -327,7 +323,7 @@ namespace DEM.Net.Core.Imagery
         {
             var fileExtension = System.IO.Path.GetExtension(fileName).ToLower();
             if (fileExtension.EndsWith("jpg"))
-                return new JpegEncoder { Quality = (int)(quality * 100F), Subsample = JpegSubsample.Ratio444 };
+                return new JpegEncoder() { Quality = (int)(quality * 100F), ColorType = JpegEncodingColor.YCbCrRatio444};
             else if (fileExtension.EndsWith("png"))
                 return new PngEncoder();
             else return null;
@@ -358,7 +354,7 @@ namespace DEM.Net.Core.Imagery
             {
                 foreach (var tile in tiles.Tiles)
                 {
-                    using (Image<Rgba32> tileImg = Image.Load(tile.Image))
+                    using (Image<Rgba32> tileImg = Image.Load<Rgba32>(tile.Image))
                     {
                         int x = (tile.TileInfo.X - tiles.Start.X) * tileSize + xOffset;
                         int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize + yOffset;
@@ -370,13 +366,13 @@ namespace DEM.Net.Core.Imagery
                 }
 
                 outputImage.Mutate(o => o
-                    .DrawLines(color == default(Rgba32) ? new Rgba32(1, 0, 0, 1f) : color, lineWidth, pointsOnTexture.ToArray())
+                    .DrawLine(color == default(Rgba32) ? new Rgba32(1, 0, 0, 1f) : color, lineWidth, pointsOnTexture.ToArray())
                 );
 
                 if (drawGpxVertices)
                 {
                     PathCollection pc = new PathCollection(pointsOnTexture.Select(p => new EllipsePolygon(p, new SizeF(10f, 10f))));
-                    outputImage.Mutate(o => o.Draw(GraphicsOptions.Default, Pens.Solid(Rgba32.Violet, 3), pc));
+                    outputImage.Mutate(o => o.Draw(Pens.Solid(Color.Violet, 3), pc));
                 }
 
                 // with encoder
@@ -395,11 +391,11 @@ namespace DEM.Net.Core.Imagery
             ImageFormatManager imageFormatManager = new ImageFormatManager();
             IImageFormat imageFormat = null;
             if (format == TextureImageFormat.image_jpeg)
-                imageFormat = imageFormatManager.FindFormatByFileExtension(".jpg");
+                imageFormatManager.TryFindFormatByFileExtension(".jpg", out imageFormat);
             else
-                imageFormat = imageFormatManager.FindFormatByFileExtension(".png");
+                imageFormatManager.TryFindFormatByFileExtension(".png", out imageFormat);
 
-            return imageFormatManager.FindEncoder(imageFormat);
+            return imageFormatManager.GetEncoder(imageFormat);
         }
 
 
@@ -518,7 +514,7 @@ namespace DEM.Net.Core.Imagery
         /// <returns></returns>
         public TextureInfo GenerateHeightMap(HeightMap heightMap, string outputFileName)
         {
-            using (Image<Gray16> outputImage = new Image<Gray16>(heightMap.Width, heightMap.Height))
+            using (Image<L16> outputImage = new Image<L16>(heightMap.Width, heightMap.Height))
             {
                 int hMapIndex = 0;
                 foreach (var coord in heightMap.Coordinates)
@@ -529,7 +525,7 @@ namespace DEM.Net.Core.Imagery
 
                     float gray = MathHelper.Map(heightMap.Minimum, heightMap.Maximum, 0, ushort.MaxValue, (float)(coord.Elevation ?? 0f), true);
 
-                    outputImage[i, j] = new Gray16((ushort)Math.Round(gray, 0));
+                    outputImage[i, j] = new L16((ushort)Math.Round(gray, 0));
 
                     hMapIndex++;
                 }
@@ -550,7 +546,7 @@ namespace DEM.Net.Core.Imagery
                 min = Math.Min(min, coord.Elevation.GetValueOrDefault(0));
                 max = Math.Max(max, coord.Elevation.GetValueOrDefault(0));
             }
-            using (Image<Gray16> outputImage = new Image<Gray16>(width, height))
+            using (Image<L16> outputImage = new Image<L16>(width, height))
             {
                 int hMapIndex = 0;
                 foreach (var coord in heightMap)
@@ -561,7 +557,7 @@ namespace DEM.Net.Core.Imagery
 
                     float gray = MathHelper.Map((float)min, (float)max, 0, ushort.MaxValue, (float)(coord.Elevation ?? 0f), true);
 
-                    outputImage[i, j] = new Gray16((ushort)Math.Round(gray, 0));
+                    outputImage[i, j] = new L16((ushort)Math.Round(gray, 0));
 
                     hMapIndex++;
                 }
@@ -577,7 +573,7 @@ namespace DEM.Net.Core.Imagery
         public TextureInfo GenerateHeightMap(float[] heightMap, int width, int height, float minHeight, float maxHeight, string outputDirectory,
             string fileName = "heightmap.png")
         {
-            using (Image<Gray16> outputImage = new Image<Gray16>(width, height))
+            using (Image<L16> outputImage = new Image<L16>(width, height))
             {
                 int hMapIndex = 0;
                 foreach (var coord in heightMap)
@@ -588,7 +584,7 @@ namespace DEM.Net.Core.Imagery
 
                     float gray = MathHelper.Map(minHeight, maxHeight, 0, ushort.MaxValue, coord, true);
 
-                    outputImage[i, j] = new Gray16((ushort)Math.Round(gray, 0));
+                    outputImage[i, j] = new L16((ushort)Math.Round(gray, 0));
 
                     hMapIndex++;
                 }
@@ -602,13 +598,21 @@ namespace DEM.Net.Core.Imagery
 
         }
 
-        public unsafe void GenerateTerrainRGB(float[] heightMap, int width, int height, float minHeight, float maxHeight, string outputDirectory,
+        public void GenerateTerrainRGB(IEnumerable<float> heightMap, int width, int height, string outputDirectory,
             string fileName = "terrainRGB.png")
+        {
+            using (Image<Rgb24> outputImage = GenerateTerrainRGB(heightMap, width, height))
+            {
+                Directory.CreateDirectory(outputDirectory);
+                outputImage.Save(System.IO.Path.Combine(outputDirectory, fileName));
+            }
+        }
+        public unsafe Image<Rgb24> GenerateTerrainRGB(IEnumerable<float> heightMap, int width, int height)
         {
             byte[] bytes = new byte[4];
 
-            using (Image<Rgb24> outputImage = new Image<Rgb24>(width, height))
-            {
+            Image<Rgb24> outputImage = new Image<Rgb24>(width, height);
+            
                 int hMapIndex = 0;
                 foreach (var coord in heightMap)
                 {
@@ -626,8 +630,7 @@ namespace DEM.Net.Core.Imagery
                     hMapIndex++;
                 }
 
-                outputImage.Save(System.IO.Path.Combine(outputDirectory, fileName));
-            }
+            return outputImage;
         }
 
         /// <summary>
@@ -640,11 +643,11 @@ namespace DEM.Net.Core.Imagery
         /// <param name="height"></param>
         /// <param name="margin"></param>
         /// <returns></returns>
-        public float[] ResizeHeightMap_RTIN(HeightMap heightMap, int width, int height, int margin)
+        public List<float> ResizeHeightMap_RTIN(HeightMap heightMap, int width, int height, int margin)
         {
             return ResizeHeightMap_RTIN(heightMap.Coordinates.Select(c => (float)(c.Elevation ?? 0)), heightMap.Width, heightMap.Height, width, height, heightMap.Minimum, heightMap.Maximum, margin);
         }
-        public float[] ResizeHeightMap_RTIN(GeoPoint[] heightMap, int sourceWidth, int sourceHeight, int destWidth, int destHeight, float minElevation, float maxElevation, int margin)
+        public List<float> ResizeHeightMap_RTIN(GeoPoint[] heightMap, int sourceWidth, int sourceHeight, int destWidth, int destHeight, float minElevation, float maxElevation, int margin)
         {
             return ResizeHeightMap_RTIN(heightMap.Select(c => (float)(c.Elevation ?? 0)), sourceWidth, sourceHeight, destWidth, destHeight, minElevation, maxElevation, margin);
         }
@@ -652,7 +655,7 @@ namespace DEM.Net.Core.Imagery
 
         //    float[] outMap = new float[(width + margin) * (height + margin)];
 
-        //    using (Image<Gray16> outputImage = new Image<Gray16>(heightMap.Width, heightMap.Height))
+        //    using (Image<L16> outputImage = new Image<L16>(heightMap.Width, heightMap.Height))
         //    {
 
         //        int hMapIndex = 0;
@@ -663,7 +666,7 @@ namespace DEM.Net.Core.Imagery
 
         //            float gray = MathHelper.Map(heightMap.Minimum, heightMap.Maximum, 0, (float)ushort.MaxValue, (float)(coord.Elevation ?? 0f), true);
 
-        //            outputImage[i, j] = new Gray16((ushort)Math.Round(gray, 0));
+        //            outputImage[i, j] = new L16((ushort)Math.Round(gray, 0));
 
         //            hMapIndex++;
         //        }
@@ -675,19 +678,19 @@ namespace DEM.Net.Core.Imagery
         //        for (int j = 0; j < height + margin; j++)
         //            for (int i = 0; i < width + margin; i++)
         //            {
-        //                Gray16 color = outputImage[Math.Min(i, width - 1), Math.Min(j, height - 1)];
+        //                L16 color = outputImage[Math.Min(i, width - 1), Math.Min(j, height - 1)];
         //                outMap[i + (j * width)] = FromColorToHeight(color, heightMap.Minimum, heightMap.Maximum);
         //            }
         //    }
 
         //    return outMap;
         //}
-        public float[] ResizeHeightMap_RTIN(IEnumerable<float> heightMap, int sourceWidth, int sourceHeight, int destWidth, int destHeight, float minElevation, float maxElevation, int margin)
+        public List<float> ResizeHeightMap_RTIN(IEnumerable<float> heightMap, int sourceWidth, int sourceHeight, int destWidth, int destHeight, float minElevation, float maxElevation, int margin)
         {
 
-            float[] outMap = new float[(destWidth + margin) * (destHeight + margin)];
+            List<float> outMap = new List<float>((destWidth + margin) * (destHeight + margin));
 
-            using (Image<Gray16> outputImage = new Image<Gray16>(sourceWidth, sourceHeight))
+            using (Image<L16> outputImage = new Image<L16>(sourceWidth, sourceHeight))
             {
 
                 int hMapIndex = 0;
@@ -698,7 +701,7 @@ namespace DEM.Net.Core.Imagery
 
                     float gray = MathHelper.Map(minElevation, maxElevation, 0, (float)ushort.MaxValue, coord, true);
 
-                    outputImage[i, j] = new Gray16((ushort)Math.Round(gray, 0));
+                    outputImage[i, j] = new L16((ushort)Math.Round(gray, 0));
 
                     hMapIndex++;
                 }
@@ -710,17 +713,17 @@ namespace DEM.Net.Core.Imagery
                 for (int j = 0; j < destHeight + margin; j++)
                     for (int i = 0; i < destWidth + margin; i++)
                     {
-                        Gray16 color = outputImage[Math.Min(i, destWidth - 1), Math.Min(j, destHeight - 1)];
+                        L16 color = outputImage[Math.Min(i, destWidth - 1), Math.Min(j, destHeight - 1)];
                         outMap[i + (j * destWidth)] = FromColorToHeight(color, minElevation, maxElevation);
                     }
             }
 
             return outMap;
         }
-        public unsafe float[] ResizeHeightMap_RGB_RTIN(IEnumerable<float> heightMap, int sourceWidth, int sourceHeight, int destWidth, int destHeight, float minElevation, float maxElevation, int margin)
+        public unsafe List<float> ResizeHeightMap_RGB_RTIN(IEnumerable<float> heightMap, int sourceWidth, int sourceHeight, int destWidth, int destHeight, float minElevation, float maxElevation, int margin)
         {
 
-            float[] outMap = new float[(destWidth + margin) * (destHeight + margin)];
+            List<float> outMap = new List<float>((destWidth + margin) * (destHeight + margin));
             byte[] bytes = new byte[4];
 
             using (Image<Rgb24> outputImage = new Image<Rgb24>(sourceWidth, sourceHeight))
@@ -759,19 +762,19 @@ namespace DEM.Net.Core.Imagery
 
 
 
-        private Gray16 FromGeoPointToHeightMapColor(GeoPoint point, float min, float max)
+        private L16 FromGeoPointToHeightMapColor(GeoPoint point, float min, float max)
         {
             float gray = MathHelper.Map(min, max, 0, (float)ushort.MaxValue, (float)(point.Elevation ?? 0f), true);
             ushort height = (ushort)Math.Round(gray, 0);
-            return new Gray16(height);
+            return new L16(height);
         }
-        private Gray16 FromElevationToHeightMapColor(float elevation, float min, float max)
+        private L16 FromElevationToHeightMapColor(float elevation, float min, float max)
         {
             float gray = MathHelper.Map(min, max, 0, (float)ushort.MaxValue, elevation, true);
             ushort height = (ushort)Math.Round(gray, 0);
-            return new Gray16(height);
+            return new L16(height);
         }
-        private float FromColorToHeight(Gray16 color, float min, float max)
+        private float FromColorToHeight(L16 color, float min, float max)
         {
             float height = MathHelper.Map(0, (float)ushort.MaxValue, min, max, color.PackedValue, true);
             return height;

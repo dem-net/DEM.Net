@@ -76,6 +76,12 @@ namespace DEM.Net.Core
                 yield return new GeoPoint(newPt.Y, newPt.X, p.Elevation);
             }
         }
+        public static GeoPoint ReprojectGeodeticToTileSystem(this GeoPoint p, int zoomLevel, int tileSize)
+        {
+            var newPt = TileUtils.PositionToGlobalPixel(new LatLong(p.Latitude, p.Longitude), zoomLevel, tileSize);
+
+            return new GeoPoint(newPt.Y, newPt.X, p.Elevation);
+        }
 
         public static IEnumerable<GeoPoint> ReprojectGeodeticToCartesian(this IEnumerable<GeoPoint> points, int? count = null)
         {
@@ -111,7 +117,7 @@ namespace DEM.Net.Core
                     if (inputPoints == null)
                     {
                         inputPoints = points.SelectMany(pt => new double[] { pt.Longitude, pt.Latitude }).ToArray();
-                        Reproject.ReprojectPoints(inputPoints, null, pSource, pTarget, 0, pointCount.Value);
+                        Reproject.ReprojectPoints(inputPoints, null, pSource, pTarget, 0, inputPoints.Length / 2);
                     }
                     var pout = p.Clone();
                     pout.Longitude = inputPoints[2 * index];
@@ -142,7 +148,7 @@ namespace DEM.Net.Core
             double[] inputPoints = triangulation.Positions.SelectMany(pt => new double[] { pt.X, pt.Y }).ToArray();
             Reproject.ReprojectPoints(inputPoints, null, pSource, pTarget, 0, triangulation.NumPositions);
 
-            for(int i = 0; i< triangulation.NumPositions; i++)
+            for (int i = 0; i < triangulation.NumPositions; i++)
             {
                 triangulation.Positions[i] = new Vector3((float)inputPoints[2 * i], (float)inputPoints[2 * i + 1], triangulation.Positions[i].Z);
             }
@@ -263,7 +269,7 @@ namespace DEM.Net.Core
             var maxmin = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMax, bbox.xMin), zoomLevel, tileSize);
 
             var outBbox = GeometryService.GetBoundingBox(new GeoPoint[] { new GeoPoint(minmin.Y, minmin.X),
-                new GeoPoint(minmax.Y,minmax.X), 
+                new GeoPoint(minmax.Y,minmax.X),
                 new GeoPoint(maxmax.Y,maxmax.X),
                 new GeoPoint(maxmin.Y,maxmin.X)
             });

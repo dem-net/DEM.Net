@@ -53,7 +53,7 @@ namespace DEM.Net.Core
                     .AddTransient<ImageryCache>()
                     .AddSingleton<ImageryService>();
 
-
+            services.AddLazyCache();
             return services;
         }
     }

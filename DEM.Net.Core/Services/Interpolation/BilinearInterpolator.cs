@@ -56,7 +56,7 @@ namespace DEM.Net.Core.Interpolation
             // bilinear
             double ha = MathHelper.Lerp(nw, sw, y);
             double hb = MathHelper.Lerp(ne, se, y);
-            double hi_linear = MathHelper.Lerp(MathHelper.Lerp(nw, sw, y), MathHelper.Lerp(ne, se, y), x);
+            double hi_linear = MathHelper.Lerp(ha, hb, x);
 
             return hi_linear;
         }
