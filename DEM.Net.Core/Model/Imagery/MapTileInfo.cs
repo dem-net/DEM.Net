@@ -71,7 +71,7 @@ namespace DEM.Net.Core.Imagery
 
             TileUtils.QuadKeyToTileXY(string.Concat(TileUtils.TileXYToQuadKey(X, Y, Zoom), quadIndex), out int x0, out int y0, out int z0);
             return new MapTileInfo(x0, y0, z0, this.TileSize);
-        }
+        }      
         public MapTileInfo ZoomOut()
         {
             if (Zoom == 1) return this;
@@ -79,6 +79,16 @@ namespace DEM.Net.Core.Imagery
             var quadKey = TileUtils.TileXYToQuadKey(X, Y, Zoom);
             TileUtils.QuadKeyToTileXY(quadKey.Substring(0, quadKey.Length - 1), out int x0, out int y0, out int z0);
             return new MapTileInfo(x0, y0, z0, this.TileSize);
+        }
+        public MapTileInfo ZoomOut(int targetZoom)
+        {
+            var tile = this.MemberwiseClone() as MapTileInfo;
+            while (tile.Zoom>targetZoom)
+            {
+                tile = tile.ZoomOut();
+                if (tile.Zoom == 1) return tile;
+            }
+            return tile;
         }
 
         public override string ToString()
@@ -93,8 +103,8 @@ namespace DEM.Net.Core.Imagery
                 var bboxTopLeft = TileUtils.TileXYToGlobalPixel(this.X, this.Y, this.TileSize);
                 var bboxBottomRight = TileUtils.TileXYToGlobalPixel(this.X + 1, this.Y + 1, this.TileSize);
                 var coordTopLeft = TileUtils.GlobalPixelToPosition(bboxTopLeft, Zoom, this.TileSize);
-                var coordBottomRight= TileUtils.GlobalPixelToPosition(new Point<double>(bboxBottomRight.X-1, bboxBottomRight.Y-1), Zoom, this.TileSize);
-                
+                var coordBottomRight = TileUtils.GlobalPixelToPosition(new Point<double>(bboxBottomRight.X-1, bboxBottomRight.Y-1), Zoom, this.TileSize);
+
                 return new BoundingBox(coordTopLeft.Long, coordBottomRight.Long, coordBottomRight.Lat, coordTopLeft.Lat);
             }
         }

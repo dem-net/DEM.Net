@@ -113,6 +113,39 @@ namespace DEM.Net.Core
             zMin = Math.Min(zMin, bbox.zMin);
             zMax = Math.Max(zMax, bbox.zMax);
         }
+        public void IntersectWith(BoundingBox bbox)
+        {
+
+            // gives bottom-left point
+            // of intersection rectangle
+            var x5 = Math.Max(xMin, bbox.xMin);
+            var y5 = Math.Max(yMin, bbox.yMin);
+
+            // gives top-right point
+            // of intersection rectangle
+            var x6 = Math.Min(xMax, bbox.xMax);
+            var y6 = Math.Min(yMax, bbox.yMax);
+
+            // no intersection
+            if (x5 > x6 || y5 > y6)
+            {
+                return;
+            }
+            // gives top-left point
+            // of intersection rectangle
+            xMin = x5;
+            yMax = y6;
+
+            // gives bottom-right point
+            // of intersection rectangle
+            xMax= x6;
+            yMin= y5;
+
+
+            zMin = Math.Min(zMin, bbox.zMin);
+            zMax = Math.Max(zMax, bbox.zMax);
+        }
+
 
         /// <summary>
         /// Reorders min / max and returns a new BoundingBox
@@ -175,9 +208,9 @@ namespace DEM.Net.Core
         public BoundingBox Pad(double paddingX, double paddingY, double paddingZ)
         {
             return new BoundingBox(
-                xMin - paddingX, xMax + paddingX,
-                yMax + paddingY, yMin - paddingY,
-                zMax + paddingZ, zMin - paddingZ)
+                    xMin - paddingX, xMax + paddingX,
+                    yMin - paddingY, yMax + paddingY,
+                    zMin - paddingZ, zMax + paddingZ)
             { SRID = this.SRID };
         }
         public BoundingBox ScaleAbsolute(double scaleX, double scaleY, double scaleZ = 1)
@@ -249,6 +282,11 @@ namespace DEM.Net.Core
             hashCode = hashCode * -1521134295 + yMin.GetHashCode();
             hashCode = hashCode * -1521134295 + yMax.GetHashCode();
             return hashCode;
+        }
+
+        public BoundingBox Clone()
+        {
+            return (BoundingBox)this.MemberwiseClone();
         }
 
         public static bool operator ==(BoundingBox a, BoundingBox b)

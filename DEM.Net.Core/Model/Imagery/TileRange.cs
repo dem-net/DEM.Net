@@ -91,6 +91,16 @@ namespace DEM.Net.Core.Imagery
 
             return new TileRange(Start.ZoomIn("0"), End.ZoomIn("3"), this.TileSize);
         }
+        public TileRange ZoomIn(int targetZoom)
+        {
+            var tileRange = this;
+            while (tileRange.Zoom<targetZoom)
+            {
+                tileRange = tileRange.ZoomIn();
+                if (tileRange.Zoom == 23) return tileRange;
+            }
+            return tileRange;
+        }
 
         public TileRange ZoomOut()
         {
@@ -110,7 +120,23 @@ namespace DEM.Net.Core.Imagery
 
         public int Zoom => Start.Zoom;
 
-        public BoundingBox AreaOfInterest { get; internal set; }
+        private BoundingBox _areaOfInterest;
+        public BoundingBox AreaOfInterest 
+        {
+            get
+            {
+                if (_areaOfInterest == null)
+                {
+                    _areaOfInterest = this.Start.BoundingBox;
+                    _areaOfInterest.UnionWith(this.End.BoundingBox);
+                }
+                return _areaOfInterest;
+            }
+            set
+            {
+                _areaOfInterest = value;
+            }
+        }
 
     }
 }

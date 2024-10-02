@@ -118,6 +118,7 @@ namespace DEM.Net.Core
                 DEMFileType.ASCIIGrid => new ASCIIGridFile(filePath, gzip: false),
                 DEMFileType.ASCIIGridGzip => new ASCIIGridFile(filePath, gzip: true),
                 DEMFileType.CF_NetCDF => new NetCdfFile(filePath),
+                DEMFileType.TerrainRGB => new TerrainRGBFile(filePath),
                 _ => throw new NotImplementedException($"{fileFormat} file format not implemented."),
             };
         }

@@ -48,8 +48,8 @@ namespace DEM.Net.xUnit.Test
         }
 
         [Theory()]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), 46, 10, "N45E009.hgt", "N45E010.hgt", "N46E009.hgt", "N46E010.hgt")]
-        [InlineData(nameof(DEMDataSet.AW3D30), 46, 10, "N045E009_AVE_DSM.tif", "N045E010_AVE_DSM.tif", "N046E009_AVE_DSM.tif", "N046E010_AVE_DSM.tif")]
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 46, 10, "N45E009.tif", "N45E010.tif", "N46E009.tif", "N46E010.tif")]
+        [InlineData(nameof(DEMDataSet.AW3D30), 46, 10, "ALPSMLC30_N045E009_DSM.tif", "ALPSMLC30_N045E010_DSM.tif", "ALPSMLC30_N046E009_DSM.tif", "ALPSMLC30_N046E010_DSM.tif")]
         void TestEdges(string dataSetName, double lat, double lon
             , string rasterSouthWestName, string rasterSouthEastName
             , string rasterNorthWestName, string rasterNorthEastName)

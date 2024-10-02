@@ -49,5 +49,6 @@ namespace DEM.Net.Core
         /// </summary>
         /// <remarks>See https://en.wikipedia.org/wiki/Esri_grid</remarks>
         ASCIIGridGzip,
+        TerrainRGB,
     }
 }

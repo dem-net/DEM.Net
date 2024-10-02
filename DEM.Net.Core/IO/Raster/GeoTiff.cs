@@ -287,39 +287,53 @@ namespace DEM.Net.Core
             byte[] modelTransformation = modelTiepointTag[1].GetBytes();
             metadata.DataStartLon = BitConverter.ToDouble(modelTransformation, 24);
             metadata.DataStartLat = BitConverter.ToDouble(modelTransformation, 32);
-            metadata.DataEndLon = metadata.DataStartLon + metadata.Width * pixelSizeX;
-            metadata.DataEndLat = metadata.DataStartLat + metadata.Height * pixelSizeY;
-
-            if (metadata.DataStartLon > metadata.DataEndLon)
-            {
-                double temp = metadata.DataStartLon;
-                metadata.DataStartLon = metadata.DataEndLon;
-                metadata.DataEndLon = temp;
-            }
-            if (metadata.DataStartLat > metadata.DataEndLat)
-            {
-                double temp = metadata.DataStartLat;
-                metadata.DataStartLat = metadata.DataEndLat;
-                metadata.DataEndLat = temp;
-            }
 
             if (format.Registration == DEMFileRegistrationMode.Grid)
             {
-                metadata.PhysicalStartLat = metadata.DataStartLat;
-                metadata.PhysicalStartLon = metadata.DataStartLon;
-                metadata.PhysicalEndLat = metadata.DataEndLat;
-                metadata.PhysicalEndLon = metadata.DataEndLon;
-                metadata.DataStartLat = Math.Round(metadata.DataStartLat + (metadata.PixelScaleY / 2.0), 10);
-                metadata.DataStartLon = Math.Round(metadata.DataStartLon + (metadata.PixelScaleX / 2.0), 10);
-                metadata.DataEndLat = Math.Round(metadata.DataEndLat - (metadata.PixelScaleY / 2.0), 10);
-                metadata.DataEndLon = Math.Round(metadata.DataEndLon - (metadata.PixelScaleX / 2.0), 10);
+                metadata.DataEndLon = metadata.DataStartLon + (metadata.Width - 1) * pixelSizeX;
+                metadata.DataEndLat = metadata.DataStartLat + (metadata.Height - 1) * pixelSizeY;
+
+                if (metadata.DataStartLon > metadata.DataEndLon)
+                {
+                    double temp = metadata.DataStartLon;
+                    metadata.DataStartLon = metadata.DataEndLon;
+                    metadata.DataEndLon = temp;
+                }
+                if (metadata.DataStartLat > metadata.DataEndLat)
+                {
+                    double temp = metadata.DataStartLat;
+                    metadata.DataStartLat = metadata.DataEndLat;
+                    metadata.DataEndLat = temp;
+                }
+
+                metadata.PhysicalStartLat = Math.Round(metadata.DataStartLat - (metadata.PixelScaleY / 2.0), 10);
+                metadata.PhysicalStartLon = Math.Round(metadata.DataStartLon - (metadata.PixelScaleY / 2.0), 10);
+                metadata.PhysicalEndLat = Math.Round(metadata.DataEndLat + (metadata.PixelScaleY / 2.0), 10);
+                metadata.PhysicalEndLon = Math.Round(metadata.DataEndLon + (metadata.PixelScaleY / 2.0), 10);
+
             }
             else
             {
-                metadata.PhysicalStartLat = metadata.DataStartLat;
-                metadata.PhysicalStartLon = metadata.DataStartLon;
-                metadata.PhysicalEndLat = metadata.DataEndLat;
-                metadata.PhysicalEndLon = metadata.DataEndLon;
+                metadata.DataEndLon = metadata.DataStartLon + (metadata.Width -1) * pixelSizeX;
+                metadata.DataEndLat = metadata.DataStartLat + (metadata.Height -1)* pixelSizeY;
+
+                if (metadata.DataStartLon > metadata.DataEndLon)
+                {
+                    double temp = metadata.DataStartLon;
+                    metadata.DataStartLon = metadata.DataEndLon;
+                    metadata.DataEndLon = temp;
+                }
+                if (metadata.DataStartLat > metadata.DataEndLat)
+                {
+                    double temp = metadata.DataStartLat;
+                    metadata.DataStartLat = metadata.DataEndLat;
+                    metadata.DataEndLat = temp;
+                }
+
+                metadata.PhysicalStartLat = metadata.DataStartLat + metadata.pixelSizeY / 2d;
+                metadata.PhysicalStartLon = metadata.DataStartLon - metadata.pixelSizeX / 2d;
+                metadata.PhysicalEndLat = metadata.DataEndLat - metadata.pixelSizeY / 2d;
+                metadata.PhysicalEndLon = metadata.DataEndLon + metadata.pixelSizeX / 2d;
             }
             var scanline = new byte[TiffFile.ScanlineSize()];
             metadata.ScanlineSize = TiffFile.ScanlineSize();

@@ -28,6 +28,7 @@ using SixLabors.ImageSharp.ColorSpaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing.Text;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -460,5 +461,167 @@ namespace DEM.Net.Core
             }
         }
 
+        public static IEnumerable<(GeoPoint point, List<GeoPoint> source)> WarpHeightMap(IEnumerable<GeoPoint> coords, int sourceWidth, int sourceHeight, int destWidth, int destHeight)
+        {
+            // But parcourir chaque pixel de l'image source (coords)
+            // attribuer aux pixels de destination la valeur interpolée
+
+            // Algo : Add weighted elevation destination points
+
+            int numPoints = destWidth * destHeight;
+            var enume = coords.GetEnumerator();
+            double radius = 1.4;
+            List<List<(double Elevation, double Weight, GeoPoint source)>> outPoints = Enumerable.Range(1, numPoints).Select(_ => new List<(double elevation, double weigh, GeoPoint sourcet)>()).ToList();
+            for (int y = 0; y < sourceHeight; y++)
+            {
+                for (int x = 0; x < sourceWidth; x++)
+                {
+                    // where in dest ?
+                    enume.MoveNext();
+                    GeoPoint sourcePt = enume.Current;// coords[x + y * sourceWidth];
+                    // Warning : sourcePt is GridRegistered. It sits at the center of a 4 pixel grid.
+                    // Value must be spread across those pixels
+
+                    double sourceZ = sourcePt.Elevation ?? 0;
+                    double sourceX = sourcePt.Longitude - 0.5;
+                    double sourceY = sourcePt.Latitude - 0.5;
+
+                    int xWest = (int)Math.Floor(sourceX);
+                    int yNorth = (int)Math.Floor(sourceY);
+                    int xEast = xWest+1;
+                    int ySouth = yNorth+1;
+
+                    AddData(sourceZ, xWest, yNorth, sourceX, sourceY, radius, destWidth, destHeight, sourcePt);
+                    AddData(sourceZ, xEast, yNorth, sourceX, sourceY, radius, destWidth, destHeight, sourcePt);
+                    AddData(sourceZ, xEast, ySouth, sourceX, sourceY, radius, destWidth, destHeight, sourcePt);
+                    AddData(sourceZ, xWest, ySouth, sourceX, sourceY, radius, destWidth, destHeight, sourcePt);
+                }
+            }
+
+            for (int y = 0; y < destHeight; y++)
+            {
+                for (int x = 0; x < destWidth; x++)
+                {
+                    var pts = outPoints[x + y * destWidth];
+                    (GeoPoint point, List<GeoPoint> source) outPt =  (new GeoPoint(id: y, y, x, 0), new List<GeoPoint>());
+                    if (pts.Count > 0)
+                    {
+                        double outVal = 0;
+                        double weights = 0;
+                        foreach (var pt in pts)
+                        {
+                            outVal += pt.Elevation * pt.Weight;
+                            weights += pt.Weight;
+                            outPt.source.Add(pt.source);
+                        }
+                        outPt.point.Elevation = outVal / weights;
+                    }
+
+                    yield return outPt;
+                }
+
+            }
+
+            void AddData(double elevation, int x, int y, double x1, double y1, double radius, int width, int height, GeoPoint sourcePt)
+            {
+                if (x < width && y < height && x >= 0 && y >= 0)
+                {
+                    int index = x + y * width;
+
+                    var w = (1-Math.Abs(x1-x) + 1-Math.Abs(y1-y)) / 2d;
+                    //var w = WeightedDistance(x1, x, y1, y, radius);
+                    outPoints[index].Add((elevation, w, sourcePt));
+                }
+            }
+            //double WeightedDistance(double x1, double x2, double y1, double y2, double radius)
+            //    => (radius - Distance(x1, x2, y1, y2))/radius;
+            //double Distance(double x1, double x2, double y1, double y2)
+            //    => Math.Sqrt((x2 - x1) * (x2 - x1)+ (y2 - y1) * (y2 - y1));
+        }
+        public static IEnumerable<GeoPoint> WarpHeightMapOld(IReadOnlyList<GeoPoint> coords, int sourceWidth, int sourceHeight, int destWidth, int destHeight)
+        {
+            // But parcourir chaque pixel de l'image source (coords)
+            // attribuer aux pixels de destination la valeur interpolée
+
+            int numPoints = destWidth * destHeight;
+            List<List<double>> outPoints = Enumerable.Range(1, numPoints).Select(_ => new List<double>()).ToList();
+            var enume = coords.GetEnumerator();
+            double lastXz = 0, lastYz = 0;
+            for (int y = 0; y < sourceHeight; y++)
+            {
+                for (int x = 0; x < sourceWidth; x++)
+                {
+                    enume.MoveNext();
+                    GeoPoint sourcePt = enume.Current;// coords[x + y * sourceWidth];
+
+                    if (lastXz == 0 && lastYz == 0)
+                    {
+                        lastXz = sourcePt.Elevation ?? 0;
+                        lastYz = sourcePt.Elevation ?? 0;
+                    }
+
+                    double sourceX = sourcePt.Longitude;
+                    double sourceY = sourcePt.Latitude;
+                    int outXmin = (int)Math.Floor(sourceX);
+                    int outYmin = (int)Math.Floor(sourceY);
+                    int outXmax = (int)Math.Ceiling(sourceX);
+                    int outYmax = (int)Math.Ceiling(sourceY);
+
+                    double currentZ = sourcePt.Elevation ?? 0;
+                    int slopeX = Math.Sign(currentZ - lastXz);
+                    int slopeY = Math.Sign(currentZ - lastYz);
+
+                    int indexX0Y0 = outXmin + outYmin * destWidth;
+                    int indexX1Y0 = outXmax + outYmin * destWidth;
+                    int indexX0Y1 = outXmin + outYmax * destWidth;
+                    int indexX1Y1 = outXmax + outYmax * destWidth;
+
+                    if (indexX0Y0<0 ||indexX0Y1<0)
+                    {
+                        // should not happen
+                    }
+                    else
+                    {
+                        if (indexX0Y0 < numPoints && outXmin < destWidth)
+                        {
+                            outPoints[indexX0Y0].Add(slopeX > 0
+                                ? MathHelper.Map(0, 1, lastXz, currentZ, sourceX - outXmin, true)
+                                : MathHelper.Map(0, 1, lastXz, currentZ, 1 - (sourceX - outXmin), true));
+                        }
+                        if (indexX1Y0 < numPoints && outXmax < destWidth)
+                        {
+                            outPoints[indexX0Y0].Add(slopeX < 0
+                                ? MathHelper.Map(0, 1, lastXz, currentZ, sourceX - outXmin, true)
+                                : MathHelper.Map(0, 1, lastXz, currentZ, 1 - (sourceX - outXmin), true));
+                        }
+                        if (indexX0Y1 < numPoints && outYmin < destHeight)
+                        {
+                            outPoints[indexX0Y1].Add(slopeY > 0
+                                ? MathHelper.Map(0, 1, lastYz, currentZ, sourceY - outYmin, true)
+                                : MathHelper.Map(0, 1, lastYz, currentZ, 1 - (sourceY - outYmin), true));
+                        }
+                    }
+
+
+                    lastXz = sourcePt.Elevation ?? 0;
+                    lastYz = lastXz;
+                }
+            }
+
+            for (int y = 0; y < destHeight; y++)
+            {
+                for (int x = 0; x < destWidth; x++)
+                {
+                    var pts = outPoints[x + y * destWidth];
+                    GeoPoint outPt = new GeoPoint(id: y, y, x, 0);
+                    if (pts.Count > 0)
+                        outPt.Elevation = pts.Average();// (pts.Max() - pts.Min())/2+pts.Min();
+                    //outPt.Elevation = pts.Average();
+
+                    yield return outPt;
+                }
+
+            }
+        }
     }
 }
