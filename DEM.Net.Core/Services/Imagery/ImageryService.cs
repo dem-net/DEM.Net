@@ -323,7 +323,7 @@ namespace DEM.Net.Core.Imagery
         {
             var fileExtension = System.IO.Path.GetExtension(fileName).ToLower();
             if (fileExtension.EndsWith("jpg"))
-                return new JpegEncoder() { Quality = (int)(quality * 100F), ColorType = JpegColorType.YCbCrRatio444 };
+                return new JpegEncoder() { Quality = (int)(quality * 100F), ColorType = JpegEncodingColor.YCbCrRatio444};
             else if (fileExtension.EndsWith("png"))
                 return new PngEncoder();
             else return null;
@@ -366,7 +366,7 @@ namespace DEM.Net.Core.Imagery
                 }
 
                 outputImage.Mutate(o => o
-                    .DrawLines(color == default(Rgba32) ? new Rgba32(1, 0, 0, 1f) : color, lineWidth, pointsOnTexture.ToArray())
+                    .DrawLine(color == default(Rgba32) ? new Rgba32(1, 0, 0, 1f) : color, lineWidth, pointsOnTexture.ToArray())
                 );
 
                 if (drawGpxVertices)
@@ -391,11 +391,11 @@ namespace DEM.Net.Core.Imagery
             ImageFormatManager imageFormatManager = new ImageFormatManager();
             IImageFormat imageFormat = null;
             if (format == TextureImageFormat.image_jpeg)
-                imageFormat = imageFormatManager.FindFormatByFileExtension(".jpg");
+                imageFormatManager.TryFindFormatByFileExtension(".jpg", out imageFormat);
             else
-                imageFormat = imageFormatManager.FindFormatByFileExtension(".png");
+                imageFormatManager.TryFindFormatByFileExtension(".png", out imageFormat);
 
-            return imageFormatManager.FindEncoder(imageFormat);
+            return imageFormatManager.GetEncoder(imageFormat);
         }
 
 

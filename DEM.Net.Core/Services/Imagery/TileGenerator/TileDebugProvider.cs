@@ -58,9 +58,9 @@ namespace DEM.Net.Core.Imagery
                         var basex = TileUtils.TileXYToGlobalPixel(x, y, TileSize);
                         var ptLoc = new PointF((float)(testPixel.X - basex.X), (float)(testPixel.Y - basex.Y));
                         outputImage.Mutate(o =>
-                            o.DrawLines(Color.Blue, 1f,
+                            o.DrawLine(Color.Blue, 1f,
                                 new PointF[] { new PointF(ptLoc.X - 10, ptLoc.Y - 10), new PointF(ptLoc.X + 10, ptLoc.Y + 10) })
-                                .DrawLines(Color.Blue, 1f,
+                                .DrawLine(Color.Blue, 1f,
                                     new PointF[] { new PointF(ptLoc.X - 10, ptLoc.Y + 10), new PointF(ptLoc.X + 10, ptLoc.Y - 10) }));
 
                     }
@@ -86,7 +86,7 @@ namespace DEM.Net.Core.Imagery
                 var xpos = pt.X - corner.X;
                 var start = new PointF((float)xpos, 0);
                 var end = new PointF((float)xpos, TileSize);
-                img.DrawLines(Color.Gray, 1f, new PointF[] { start, end });
+                img.DrawLine(Color.Gray, 1f, new PointF[] { start, end });
                 try
                 {
                     if (xpos < TileSize - 10)
@@ -108,7 +108,7 @@ namespace DEM.Net.Core.Imagery
                 var ypos = pt.Y - corner.Y;
                 var start = new PointF(0, (float)ypos);
                 var end = new PointF(TileSize, (float)ypos);
-                img.DrawLines(Color.Gray, 1f, new PointF[] { start, end });
+                img.DrawLine(Color.Gray, 1f, new PointF[] { start, end });
                 try
                 {
                     img.DrawText(Math.Round(loc.Lat, 4).ToString(), font, Color.Black, new PointF(50, (float)ypos));
