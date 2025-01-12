@@ -1,0 +1,43 @@
+<Project>
+  
+  <ItemGroup>
+     <PackageVersion Include="BitMiracle.LibTiff.NET" Version="2.4.660" />
+	  <PackageVersion Include="DotSpatial.Projections.NetStandard" Version="1.0.0" />
+	  <PackageVersion Include="GeoAPI.CoordinateSystems" Version="1.7.5" />
+	  <PackageVersion Include="GeoAPI.Core" Version="1.7.5" />
+	  <PackageVersion Include="LazyCache" Version="2.4.0" />
+	  <PackageVersion Include="LazyCache.AspNetCore" Version="2.4.0" />
+	  <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageVersion>
+	  <PackageVersion Include="NetTopologySuite" Version="2.5.0" />
+	  <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+	  <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="9.0.0" />
+	  <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.0" />
+	  <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+	  <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
+	  <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.0" />
+	  <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.0" />
+	  <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
+	  <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
+	  <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="9.0.0" />
+	  <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.0" />
+	  <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
+	  <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />
+	  <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.0" />
+	  <PackageVersion Include="Microsoft.Extensions.Configuration.Extensions.Options" Version="9.0.0" />
+	  <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+	  <PackageVersion Include="protobuf-net" Version="3.2.45" />
+	  <PackageVersion Include="geometry3Sharp" Version="1.0.324" />
+	  <PackageVersion Include="SDSCore" Version="1.2.0" />
+	  <PackageVersion Include="SharpGLTF.Toolkit" Version="1.0.3" />
+	  <PackageVersion Include="SixLabors.Fonts" Version="2.0.9" />
+	  <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.6" />
+	  <PackageVersion Include="SixLabors.ImageSharp.Drawing" Version="2.1.5" />
+	  <PackageVersion Include="System.Drawing.Common" Version="9.0.0" />
+	  <PackageVersion Include="System.Numerics.Vectors" Version="4.6.0" />
+	  <PackageVersion Include="xunit" Version="2.9.2" />
+	  <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+</Project>
