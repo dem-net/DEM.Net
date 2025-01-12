@@ -55,7 +55,8 @@ namespace DEM.Net.Core.Services.Imagery
 
                     HttpClient httpClient = httpClientFactory.CreateClient();
                     var bytes = httpClient.GetByteArrayAsync(tileUri).GetAwaiter().GetResult();
-                    File.WriteAllBytes(tileFile, bytes);
+                    if (bytes.Length > 0)
+                        File.WriteAllBytes(tileFile, bytes);
 
                     return bytes;
                 }

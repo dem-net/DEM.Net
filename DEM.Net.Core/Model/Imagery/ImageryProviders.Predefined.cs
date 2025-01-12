@@ -21,19 +21,19 @@ namespace DEM.Net.Core.Imagery
         {
             Name = "MapTiler-Satellite",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapTiler Cloud Satellite", "https://www.maptiler.com", "© MapTiler- © OpenStreetMap and contributors"),
-            UrlModel = new UrlModel("https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key={t}", null),
+            UrlModel = new UrlModel("https://api.maptiler.com/tiles/satellite-v2/{z}/{x}/{y}@2x.jpg?key={t}", null),
             TokenUserSecretsKey = "MapTilerKey",
-            TileSize = 256,
+            TileSize = 512,
             MaxZoom = 20
         };
         public static readonly ImageryProvider MapBoxSatellite = new ImageryProvider
         {
             Name = "MapBox-Satellite",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Satellite", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
-            UrlModel = new UrlModel("https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token={t}", null),
+            UrlModel = new UrlModel("https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.jpg?access_token={t}", null),
             //UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token={t}", null),
             TokenUserSecretsKey = "MapBoxToken",
-            TileSize = 256,
+            TileSize = 512,
             MaxZoom = 23
         };
         public static readonly ImageryProvider MapBoxSatelliteStreet = new ImageryProvider
@@ -41,7 +41,7 @@ namespace DEM.Net.Core.Imagery
             Name = "MapBox-SatelliteStreet",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Satellite Street", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
             TokenUserSecretsKey = "MapBoxToken",
-            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}?access_token={t}", null),
+            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}@2x?access_token={t}", null),
             TileSize = 512,
             MaxZoom = 23
         };
@@ -50,17 +50,8 @@ namespace DEM.Net.Core.Imagery
             Name = "MapBox-Streets",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Streets", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
             TokenUserSecretsKey = "MapBoxToken",
-            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={t}", null),
+            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token={t}", null),
             TileSize = 512,
-            MaxZoom = 23
-        };
-        public static readonly ImageryProvider MapBoxOutdoors = new ImageryProvider
-        {
-            Name = "MapBox-Outdoors",
-            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Outdoors", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
-            TokenUserSecretsKey = "MapBoxToken",
-            UrlModel = new UrlModel("https://api.mapbox.com/v4/mapbox.outdoors/{z}/{x}/{y}.png?access_token={t}", null),
-            //UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/256/{z}/{x}/{y}?access_token={t}", null),
             MaxZoom = 23
         };
         public static readonly ImageryProvider MapBoxLight = new ImageryProvider
@@ -68,7 +59,7 @@ namespace DEM.Net.Core.Imagery
             Name = "MapBox-Light",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Light", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
             TokenUserSecretsKey = "MapBoxToken",
-            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/{z}/{x}/{y}?access_token={t}", null),
+            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/{z}/{x}/{y}@2x?access_token={t}", null),
             TileSize = 512,
             MaxZoom = 23
         };
@@ -77,23 +68,46 @@ namespace DEM.Net.Core.Imagery
             Name = "MapBox-Dark",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Dark", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
             TokenUserSecretsKey = "MapBoxToken",
-            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/{z}/{x}/{y}?access_token={t}", null),
+            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/{z}/{x}/{y}@2x?access_token={t}", null),
             TileSize = 512,
             MaxZoom = 23
         };
+        private static string StadiaAttribution = "&copy; <a href=\"https://stadiamaps.com/\" target=\"_blank\">Stadia Maps</a> &copy; <a href=\"https://openmaptiles.org/\" target=\"_blank\">OpenMapTiles</a> &copy; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\">OpenStreetMap</a>";
         public static readonly ImageryProvider StamenToner = new ImageryProvider
         {
-            Name = "Stamen-Toner",
-            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Stamen Toner", "https://stamen.com/", "Map tiles by <a href=\"http://stamen.com\">Stamen Design</a>, under <a href=\"http://creativecommons.org/licenses/by/3.0\">CC BY 3.0</a>. Data by <a href=\"http://openstreetmap.org\">OpenStreetMap</a>, under <a href=\"http://www.openstreetmap.org/copyright\">ODbL</a>."),
-            UrlModel = new UrlModel("http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png", new[] { "a", "b", "c", "d" }),
-            MaxZoom = 18
+            Name = "Stadia-Stamen-Toner",
+            TokenUserSecretsKey = "StadiaMapsApiKey",
+            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Stamen Toner", "https://stadiamaps.com/", StadiaAttribution),
+            UrlModel = new UrlModel("https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}@2x.png?api_key={t}", null),
+            TileSize = 512,
+            MaxZoom = 20
         };
         public static readonly ImageryProvider StamenWaterColor = new ImageryProvider
         {
-            Name = "Stamen-Watercolor",
-            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Stamen Watercolor", "https://stamen.com/", "Map tiles by <a href=\"http://stamen.com\">Stamen Design</a>, under <a href=\"http://creativecommons.org/licenses/by/3.0\">CC BY 3.0</a>. Data by <a href=\"http://openstreetmap.org\">OpenStreetMap</a>, under <a href=\"http://creativecommons.org/licenses/by-sa/3.0\">CC BY SA</a>."),
-            UrlModel = new UrlModel("http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg", new[] { "a", "b", "c", "d" }),
-            MaxZoom = 18
+            Name = "Stadia-Stamen-Watercolor",
+            TokenUserSecretsKey = "StadiaMapsApiKey",
+            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Stamen Watercolor", "https://stadiamaps.com/", StadiaAttribution),
+            UrlModel = new UrlModel("https://tiles.stadiamaps.com/data/stamen_watercolor_v1/{z}/{x}/{y}.jpg?api_key={t}", null),
+            TileSize = 256,
+            MaxZoom = 20
+        };
+        public static readonly ImageryProvider StamenTerrain = new ImageryProvider
+        {
+            Name = "Stadia-Stamen-Terrain",
+            TokenUserSecretsKey = "StadiaMapsApiKey",
+            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Stamen Terrain", "https://stadiamaps.com/", StadiaAttribution),
+            UrlModel = new UrlModel("https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}@2x.png?api_key={t}", null),
+            TileSize = 512,
+            MaxZoom = 20
+        };
+        public static readonly ImageryProvider StadiaOutdoors = new ImageryProvider
+        {
+            Name = "Stadia-Stamen-Outdoors",
+            TokenUserSecretsKey = "StadiaMapsApiKey",
+            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Stadia Outdoors", "https://stadiamaps.com/", StadiaAttribution),
+            UrlModel = new UrlModel("https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}@2x.png?api_key={t}", null),
+            TileSize = 512,
+            MaxZoom = 20
         };
         public static readonly ImageryProvider OpenTopoMap = new ImageryProvider
         {
@@ -153,7 +167,7 @@ namespace DEM.Net.Core.Imagery
         {
             Name = "Orthophoto IGN (France only)",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN.fr", "https://geoservices.ign.fr", "Ign.fr"),
-            UrlModel = new UrlModel("https://wxs.ign.fr/ortho/geoportail/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIXSET=PM&TILEMATRIX={z}&TILECOL={x}&TILEROW={y}&STYLE=normal&FORMAT=image/jpeg", null),
+            UrlModel = new UrlModel("https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIXSET=PM&TILEMATRIX={z}&TILECOL={x}&TILEROW={y}&STYLE=normal&FORMAT=image/jpeg", null),
             MaxZoom = 19
         };
         
