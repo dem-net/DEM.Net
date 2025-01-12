@@ -12,6 +12,7 @@ namespace DEM.Net.Core.Configuration
         public string MapTilerKey { get; set; }
         public string SketchFabToken { get; set; }
         public string ThunderForestApiKey { get; set; }
+        public string StadiaMapsApiKey { get; set; }
     }
 
 }

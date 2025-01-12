@@ -76,7 +76,7 @@ namespace DEM.Net.Core
             {
                 Name = nameof(SRTM_GL3),
                 Description = "Shuttle Radar Topography Mission (SRTM GL3) Global 90m",
-                PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTSRTM.042013.4326.1",
+                PublicUrl = "http://opentopography.sdsc.edu/raster?opentopoID=OTSRTM.042013.4326.1",
                 DataSource = new VRTDataSource("https://opentopography.s3.sdsc.edu/raster/SRTM_GL3/SRTM_GL3_srtm.vrt"),
                 FileFormat = new DEMFileDefinition("Nasa SRTM HGT", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Grid),
                 ResolutionMeters = 90,
@@ -93,7 +93,7 @@ namespace DEM.Net.Core
             //{
             //    Name = nameof(SRTM_GL1),
             //    Description = "Shuttle Radar Topography Mission (SRTM GL1) Global 30m",
-            //    PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTSRTM.082015.4326.1",
+            //    PublicUrl = "http://opentopography.sdsc.edu/raster?opentopoID=OTSRTM.082015.4326.1",
             //    DataSource = new VRTDataSource("https://opentopography.s3.sdsc.edu/raster/SRTM_GL1/SRTM_GL1_srtm.vrt"),
             //    FileFormat = new DEMFileDefinition("Nasa SRTM HGT", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Grid),
             //    ResolutionMeters = 30,
@@ -105,7 +105,7 @@ namespace DEM.Net.Core
             {
                 Name = nameof(AW3D30),
                 Description = "ALOS World 3D - 30m (nicest but contain void areas)",
-                PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTALOS.112016.4326.2",
+                PublicUrl = "http://opentopography.sdsc.edu/raster?opentopoID=OTALOS.112016.4326.2",
                 DataSource = new VRTDataSource("https://opentopography.s3.sdsc.edu/raster/AW3D30/AW3D30_global.vrt"),
                 FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Cell),
                 ResolutionMeters = 30,
@@ -196,7 +196,7 @@ namespace DEM.Net.Core
             {
                 Name = nameof(NASADEM),
                 Description = "NASADEM MEaSUREs Merged DEM Global 1 arc second (30m)",
-                PublicUrl = "http://opentopo.sdsc.edu/raster?opentopoID=OTALOS.112016.4326.2",
+                PublicUrl = "http://opentopography.sdsc.edu/raster?opentopoID=OTALOS.112016.4326.2",
                 DataSource = new VRTDataSource("https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be.vrt"),
                 FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Cell),
                 ResolutionMeters = 30,
