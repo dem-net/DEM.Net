@@ -224,7 +224,7 @@ namespace DEM.Net.glTF.SharpglTF
             Triangulation triangulation = new Triangulation(points, indices);
             return CreateTerrainMesh(triangulation, textures);
         }
-        private (Vector3 min, Vector3 max) CalculateBounds(List<Vector3> positions)
+        private (Vector3 min, Vector3 max) CalculateBounds(IReadOnlyList<Vector3> positions)
         {
             Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
             Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);

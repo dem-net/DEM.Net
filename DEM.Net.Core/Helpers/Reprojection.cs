@@ -49,6 +49,11 @@ namespace DEM.Net.Core
             heightMap.BoundingBox = heightMap.BoundingBox.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR);
             return heightMap;
         }
+        public static HeightMap ReprojectRelativeToObserver(this HeightMap heightMap, GeoPoint observer, double maxDistanceMeters)
+        {
+            heightMap.Coordinates = heightMap.Coordinates.Select(p => p.HaversineTranslate(observer, maxDistanceMeters));
+            return heightMap;
+        }
         public static HeightMap ReprojectGeodeticToTileSystem(this HeightMap heightMap, int zoomLevel, int tileSize)
         {
             heightMap.Coordinates = heightMap.Coordinates.ReprojectGeodeticToTileSystem(zoomLevel, tileSize);

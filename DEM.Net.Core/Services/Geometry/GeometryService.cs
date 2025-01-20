@@ -32,6 +32,7 @@ using System.Threading.Tasks;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using NetTopologySuite.Operation.Union;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace DEM.Net.Core
 {
@@ -390,6 +391,36 @@ namespace DEM.Net.Core
                 return v_ret;
             }
         }
+        public static double HaversineDistanceTo(this GeoPoint pt1, GeoPoint pt2)
+        {
+            if ((pt1 == null) || (pt2 == null))
+                return 0;
+            else
+            {
+                var p1 = pt1.Latitude * RADIAN;
+                var p2 = pt2.Latitude * RADIAN;
+                var dp = p2 - p1;
+                var dd = (pt2.Longitude - pt1.Longitude) * RADIAN;
+
+                var a = Math.Sin(dp / 2) * Math.Sin(dp / 2) +
+                          Math.Cos(p1) * Math.Cos(p2) *
+                          Math.Sin(dd / 2) * Math.Sin(dd / 2);
+                var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+
+                var d = EARTH_RADIUS * c; // in metres
+
+                return d;
+            }
+        }
+        public static GeoPoint HaversineTranslate(this GeoPoint target, GeoPoint observer, double maxDistanceMeters)
+        {
+            var ptSameLon = new GeoPoint(target.Latitude, observer.Longitude);
+            var ptSameLat = new GeoPoint(observer.Latitude, target.Longitude);
+
+            var dx = observer.HaversineDistanceTo(ptSameLat);
+            var dy = observer.HaversineDistanceTo(ptSameLon) * Math.Sign(target.Latitude - observer.Latitude);
+            return new GeoPoint(dy, dx, target.Elevation);
+        }
 
         /// <summary>
         /// Computes the total length of a line
@@ -416,7 +447,6 @@ namespace DEM.Net.Core
             }
             return total;
         }
-
 
         #region Enumerators
 
@@ -544,6 +574,22 @@ namespace DEM.Net.Core
         }
 
 
+        // Formulas from https://www.movable-type.co.uk/scripts/latlong.html
+        public static GeoPoint GetDestinationPointFromPointAndBearing(this GeoPoint start, double bearingDegreesClockwiseFromNorth, double distanceMeters)
+        {
+            double lat = start.Latitude * RADIAN;
+            double lon = start.Longitude * RADIAN;
+            double brng = bearingDegreesClockwiseFromNorth * RADIAN;
+            double angularDistance = distanceMeters / EARTH_RADIUS;
+            double cosDR = Math.Cos(angularDistance);
+            double sinDR = Math.Sin(angularDistance);
 
+            double latEnd = Math.Asin(Math.Sin(lat) * cosDR +
+                      Math.Cos(lat) * sinDR * Math.Cos(brng));
+            double lonEnd = lon + Math.Atan2(Math.Sin(brng) * sinDR * Math.Cos(lat),
+                                       cosDR - Math.Sin(lat) * Math.Sin(latEnd));
+
+            return new GeoPoint(latEnd / RADIAN, lonEnd / RADIAN);
+        }
     }
 }
