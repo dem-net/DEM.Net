@@ -21,7 +21,7 @@ namespace DEM.Net.Core
         public AdornmentsService(MeshService meshService, ILogger<AdornmentsService> logger)
         {
 
-            if ( RuntimeInformation.IsOSPlatform( OSPlatform.Windows ) )
+            if ( !RuntimeInformation.IsOSPlatform( OSPlatform.Windows ) )
               throw new PlatformNotSupportedException( "AdornmentsService is only supported on Windows platform." );
 
             this._meshService = meshService;
