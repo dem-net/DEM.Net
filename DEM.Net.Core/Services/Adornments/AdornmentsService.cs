@@ -8,7 +8,10 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Text;
+
+#pragma warning disable CA1416
 
 namespace DEM.Net.Core
 {
@@ -19,6 +22,10 @@ namespace DEM.Net.Core
 
         public AdornmentsService(MeshService meshService, ILogger<AdornmentsService> logger)
         {
+
+            if ( !RuntimeInformation.IsOSPlatform( OSPlatform.Windows ) )
+              throw new PlatformNotSupportedException( "AdornmentsService is only supported on Windows platform." );
+
             this._meshService = meshService;
             this._logger = logger;
         }
@@ -251,3 +258,5 @@ namespace DEM.Net.Core
 
     }
 }
+
+#pragma warning restore CA1416
