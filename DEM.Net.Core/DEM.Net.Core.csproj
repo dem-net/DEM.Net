@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>DEM.Net.Core</PackageId>
-    <Version>8.0.0-beta01</Version>
+    <Version>8.0.0-beta02</Version>
     <Authors>Xavier Fischer, Frédéric Aubin</Authors>
     <Copyright>Xavier Fischer, Frédéric Aubin and Contributors</Copyright>
     <Owners>Xavier Fischer</Owners>
