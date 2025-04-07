@@ -1,0 +1,31 @@
+<Project>
+	<PropertyGroup>
+		<VersionPrefix>8.0.0</VersionPrefix>
+		<LangVersion>latest</LangVersion>
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<AnalysisLevel>latest</AnalysisLevel>
+		<Authors>Xavier Fischer, Frédéric Aubin</Authors>
+		<PackageTags>elevation, dem, heightmap, stl, gltf, terrain</PackageTags>
+		<SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
+		<Copyright>Xavier Fischer, Frédéric Aubin and Contributors</Copyright>
+		<Company>DEM.Net Elevation API</Company>
+		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+		<PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<PackageIcon>DEMnet_64.png</PackageIcon>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="$(MSBuildThisFileDirectory)DEMnet_64.png" Pack="true" PackagePath="" />
+		<None Include="..\LICENSE.md" Pack="true" Link="LICENSE.md" PackagePath="\" />
+		<None Include="..\README.md" Link="README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+</Project>

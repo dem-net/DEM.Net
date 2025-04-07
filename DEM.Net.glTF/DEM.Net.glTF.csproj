@@ -1,45 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<PackageId>DEM.Net.glTF</PackageId>
-		<Version>8.0.0-beta01</Version>
-		<Authors>Xavier Fischer</Authors>
-		<Copyright>Xavier Fischer and Contributors</Copyright>
-		<Owners>Xavier Fischer</Owners>
-		<PackageProjectUrl>https://github.com/dem-net/DEM.Net.glTF</PackageProjectUrl>
-		<PackageReleaseNotes>
-		</PackageReleaseNotes>
-		<PackageTags>DEM, Terrain, Elevation, Mesh, 3D, glTF, Map, STL</PackageTags>
-		<Title>DEM.Net</Title>
-		<Product>DEM.Net Elevation API</Product>
-		<Description>glTF3D and STL exporters for DEM.Net</Description>
-		<Summary>glTF3D and STL exporters for DEM.Net</Summary>
-		<RepositoryUrl>https://github.com/dem-net/DEM.Net.glTF</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
-		<PackageLicenseExpression>
-		</PackageLicenseExpression>
-		<PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
-		<PackageIcon>DEMnet_64.png</PackageIcon>
-		<AssemblyVersion>8.0.0.0</AssemblyVersion>
-		<TargetFrameworks>net8.0</TargetFrameworks>
-		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<EmbedUntrackedSources>true</EmbedUntrackedSources>
-		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-	</PropertyGroup>
-	<!-- Build package only in Release -->
-	<PropertyGroup Condition=" '$(Configuration)' == 'Release'">
-		<IncludeSymbols>true</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	</PropertyGroup>
-	<!-- Build package only in Release -->
-	<PropertyGroup Condition=" '$(Configuration)' == 'Debug'">
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<GenerateDocumentationFile>false</GenerateDocumentationFile>
-	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="BitMiracle.LibTiff.NET" />
 		<PackageReference Include="geometry3Sharp" />
@@ -47,14 +7,6 @@
 		<PackageReference Include="Microsoft.SourceLink.GitHub" />
 		<PackageReference Include="SharpGLTF.Toolkit" />
 		<PackageReference Include="System.Numerics.Vectors" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="..\LICENSE.md" Link="LICENSE.md">
-			<PackagePath>
-			</PackagePath>
-			<Pack>True</Pack>
-		</None>
-		<None Include="DEMnet_64.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\DEM.Net.Core\DEM.Net.Core.csproj" />
