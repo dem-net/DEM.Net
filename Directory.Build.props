@@ -23,7 +23,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="$(MSBuildThisFileDirectory)DEMnet_64.png" Pack="true" PackagePath="" />
+		<None Include="..\DEMnet_64.png" Pack="true" PackagePath="" />
 		<None Include="..\LICENSE.md" Pack="true" Link="LICENSE.md" PackagePath="\" />
 		<None Include="..\README.md" Link="README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>

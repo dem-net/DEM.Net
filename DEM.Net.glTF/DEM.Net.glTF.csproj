@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<ItemGroup>
+	  <None Remove="C:\dev\perso\repos\DEM.Net\DEMnet_64.png" />
+	</ItemGroup>
+	<ItemGroup>
 		<PackageReference Include="BitMiracle.LibTiff.NET" />
 		<PackageReference Include="geometry3Sharp" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />

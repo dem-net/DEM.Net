@@ -18,6 +18,9 @@
     <None Remove="Services\Voronoi\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="C:\dev\perso\repos\DEM.Net\DEMnet_64.png" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="BitMiracle.LibTiff.NET" />
     <PackageReference Include="DotSpatial.Projections.NetStandard" />
     <PackageReference Include="LazyCache" />
