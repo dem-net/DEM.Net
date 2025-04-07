@@ -1,0 +1,94 @@
+name: Publish to NuGet
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+      - 'v*.*.*-*' # Trigger on tags matching vX.Y.Z or vX.Y.Z-prerelease
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release
+
+#    - name: Test
+#      run: dotnet test --configuration Release --no-build --verbosity normal
+
+  pack:
+    name: Pack
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x' # Ensure this matches the build job
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release
+
+    - name: Determine version
+      id: version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+    - name: Pack
+      run: dotnet pack --configuration Release --output . --include-symbols /p:Version=${{ steps.version.outputs.VERSION }}
+
+    - name: Upload NuGet package artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: nuget-package
+        path: '*.nupkg'
+
+  publish:
+    name: Publish to NuGet.org
+    needs: pack
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+    - name: Download NuGet package artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: nuget-package
+        path: .
+
+    - name: Determine if prerelease
+      id: prerelease
+      run: |
+        VERSION="${GITHUB_REF#refs/tags/}"
+        if [[ "$VERSION" == *"-"* ]]; then
+          echo "IS_PRERELEASE=true" >> $GITHUB_OUTPUT
+        else
+          echo "IS_PRERELEASE=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Publish to NuGet.org
+      if: steps.prerelease.outputs.IS_PRERELEASE == 'true'
+      run: dotnet nuget push "*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --prerelease
+
+    - name: Publish release to NuGet.org
+      if: steps.prerelease.outputs.IS_PRERELEASE == 'false'
+      run: dotnet nuget push "*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
