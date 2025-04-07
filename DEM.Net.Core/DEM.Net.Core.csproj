@@ -1,72 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <PackageId>DEM.Net.Core</PackageId>
-    <Version>0.4.0.0-beta02</Version>
-    <Authors>Xavier Fischer, Frédéric Aubin</Authors>
-    <Copyright>Xavier Fischer, Frédéric Aubin and Contributors</Copyright>
-    <Owners>Xavier Fischer</Owners>
-    <PackageProjectUrl>https://github.com/dem-net/DEM.Net</PackageProjectUrl>
-    <PackageReleaseNotes>
-		LocalDirectory is configuration in DEMNetOptions
-	</PackageReleaseNotes>
-    <PackageTags>DEM, Terrain, Elevation</PackageTags>
-    <Title>DEM.Net</Title>
-    <Product>DEM.Net</Product>
-    <Description>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Description>
-    <Summary>Digital Elevation Model library for .Net. Elevation, Heightmaps, STL, glTF</Summary>
-    <RepositoryUrl>https://github.com/dem-net/DEM.Net</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageLicenseExpression>
-    </PackageLicenseExpression>
-    <PackageIconUrl>https://raw.githubusercontent.com/dem-net/Resources/master/images/DEMnet_512.png</PackageIconUrl>
-    <PackageIcon>DEMnet_64.png</PackageIcon>
-    <AssemblyVersion>0.4.0.0</AssemblyVersion>
-    <FileVersion>0.4.0.0</FileVersion>
     <UserSecretsId>a9a5d6e1-3bb8-4dfd-ac6a-861f60dada50</UserSecretsId>
-    <TargetFrameworks>net8.0</TargetFrameworks>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-	  <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-  </PropertyGroup>
-  <!-- Build package only in Release -->
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release'">
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-  </PropertyGroup>
-  <!-- Build package only in Release -->
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug'">
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <GenerateDocumentationFile>false</GenerateDocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-	  <None Include="..\LICENSE.md" Link="LICENSE.md">
-		  <PackagePath>
-		  </PackagePath>
-		  <Pack>True</Pack>
-	  </None>
+    <Compile Remove="Services\CourbesNiveau\**" />
+    <Compile Remove="Services\Lab\**" />
+    <Compile Remove="Services\VisualisationServices\**" />
+    <Compile Remove="Services\Voronoi\**" />
+    <EmbeddedResource Remove="Services\CourbesNiveau\**" />
+    <EmbeddedResource Remove="Services\Lab\**" />
+    <EmbeddedResource Remove="Services\VisualisationServices\**" />
+    <EmbeddedResource Remove="Services\Voronoi\**" />
+    <None Remove="Services\CourbesNiveau\**" />
+    <None Remove="Services\Lab\**" />
+    <None Remove="Services\VisualisationServices\**" />
+    <None Remove="Services\Voronoi\**" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BitMiracle.LibTiff.NET" />
     <PackageReference Include="DotSpatial.Projections.NetStandard" />
     <PackageReference Include="LazyCache" />
     <PackageReference Include="LazyCache.AspNetCore" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" >
+    <PackageReference Include="Microsoft.SourceLink.GitHub">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="NetTopologySuite" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory"/>
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Http" />
@@ -80,9 +41,6 @@
 	<PackageReference Include="SixLabors.ImageSharp.Drawing" />
 	<PackageReference Include="System.Drawing.Common" />
 	<PackageReference Include="System.Numerics.Vectors" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DEMnet_64.png" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

@@ -1,5 +1,4 @@
 ﻿using DEM.Net.Core;
-using DEM.Net.Core.Services.VisualisationServices;
 using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
