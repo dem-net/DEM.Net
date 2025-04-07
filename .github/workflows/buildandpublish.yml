@@ -86,9 +86,4 @@ jobs:
         fi
 
     - name: Publish to NuGet.org
-      if: steps.prerelease.outputs.IS_PRERELEASE == 'true'
-      run: dotnet nuget push "*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --prerelease
-
-    - name: Publish release to NuGet.org
-      if: steps.prerelease.outputs.IS_PRERELEASE == 'false'
       run: dotnet nuget push "*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
