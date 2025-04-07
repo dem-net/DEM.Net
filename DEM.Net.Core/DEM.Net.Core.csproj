@@ -18,12 +18,6 @@
 		<None Remove="Services\Voronoi\**" />
 	</ItemGroup>
 	<ItemGroup>
-		<None Update="DEMnet_64.png">
-			<Pack>True</Pack>
-			<PackagePath>/</PackagePath>
-		</None>
-	</ItemGroup>
-	<ItemGroup>
 		<PackageReference Include="BitMiracle.LibTiff.NET" />
 		<PackageReference Include="DotSpatial.Projections.NetStandard" />
 		<PackageReference Include="LazyCache" />
