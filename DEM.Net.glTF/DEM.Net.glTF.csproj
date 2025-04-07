@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<ItemGroup>
-	  <None Remove="C:\dev\perso\repos\DEM.Net\DEMnet_64.png" />
+		<None Update="DEMnet_64.png">
+			<Pack>True</Pack>
+			<PackagePath>/</PackagePath>
+		</None>
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="BitMiracle.LibTiff.NET" />
