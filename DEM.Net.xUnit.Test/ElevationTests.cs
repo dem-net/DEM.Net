@@ -176,5 +176,47 @@ namespace DEM.Net.Test
             Assert.Equal(expectedObstacles, report.Metrics.Obstacles.Count, 0);
 
         }
+
+        [Fact]
+        public void IntervisibilityTest()
+        {
+            var boundingBox = new BoundingBox(-114.81670660619355, -114.79753117282172, 50.887605382989769, 50.8997005129077);
+            var dataSet = DEMDataSet.RegisteredNonLocalDatasets.First(x => x.Name == "AW3D30");
+            _elevationService.DownloadMissingFiles(dataSet, boundingBox);
+
+            var start = new GeoPoint
+            {
+                Elevation = 1876.8404541015625,
+                Latitude = 50.89365334058617,
+                Longitude = -114.80711764454496
+            };
+
+            var end = new GeoPoint
+            {
+                Elevation = 2111.0537109375,
+                Latitude = 50.885127771762058,
+                Longitude = -114.80711764454496,
+                DistanceFromOriginMeters = 949.06197559241423
+            };
+
+            var result = _elevationService.GetIntervisibilityReport(new List<GeoPoint> { start, end }, 0, 0);
+
+        }
+
+        [Theory()]
+        [InlineData(nameof(DEMDataSet.AW3D30), 50.89365334058617, -114.80711764454496, 50.885127771762058, -114.80711764454496, 1)]
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 50.89365334058617, -114.80711764454496, 50.885127771762058, -114.80711764454496, 1)]
+        public void TestIntervisibility2(string dataSetName, double latStart, double lonStart
+            , double latEnd, double lonEnd, double expectedObstacles)
+        {
+            DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+            Assert.NotNull(dataSet);
+
+            IntervisibilityReport report = _elevationService.GetIntervisibilityReport(new GeoPoint(latStart, lonStart), new GeoPoint(latEnd, lonEnd), dataSet);
+
+            Assert.NotNull(report);
+            Assert.Equal(expectedObstacles, report.ObstacleCount, 0);
+            Assert.Equal(expectedObstacles, report.Metrics.Obstacles.Count, 0);
+        }
     }
 }

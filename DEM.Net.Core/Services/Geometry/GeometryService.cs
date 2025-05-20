@@ -27,12 +27,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using NetTopologySuite.Operation.Union;
-using SixLabors.ImageSharp.PixelFormats;
 
 namespace DEM.Net.Core
 {
