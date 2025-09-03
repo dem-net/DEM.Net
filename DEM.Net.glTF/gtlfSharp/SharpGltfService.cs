@@ -42,6 +42,7 @@ namespace DEM.Net.glTF.SharpglTF
 
             return model;
         }
+
         public ModelRoot CreateTerrainMesh(HeightMap heightMap, GenOptions options = GenOptions.None, Matrix4x4 vectorTransform = default, bool doubleSided = true, float meshReduceFactor = 0.5f)
         {
             Triangulation triangulation = default;
@@ -53,11 +54,21 @@ namespace DEM.Net.glTF.SharpglTF
             {
                 triangulation = _meshService.GenerateTriangleMesh_Boxed(heightMap, BoxBaseThickness.FromMinimumPoint, 5);
             }
+            else if (options.HasFlag(GenOptions.CropToNonEmpty))
+            {
+                triangulation = _meshService.TriangulateHeightMapFiltered(heightMap);
+            }
             else
             {
                 triangulation = _meshService.TriangulateHeightMap(heightMap);
             }
 
+            return CreateTerrainMesh(triangulation, options, vectorTransform, doubleSided, meshReduceFactor);
+        }
+
+        public ModelRoot CreateTerrainMesh(Triangulation triangulation, GenOptions options = GenOptions.None, Matrix4x4 vectorTransform = default, bool doubleSided = true, float meshReduceFactor = 0.5f)
+        {
+            
             triangulation = _meshReducer.Decimate(triangulation, meshReduceFactor);
 
             // create a basic scene

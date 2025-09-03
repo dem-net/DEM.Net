@@ -11,6 +11,6 @@ namespace DEM.Net.glTF.SharpglTF
         Normals =               0b001,
         BoxedBaseElevation0 =   0b010,
         BoxedBaseElevationMin = 0b100,
-
+        CropToNonEmpty =       0b1000,
     }
 }

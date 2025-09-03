@@ -44,6 +44,7 @@ namespace DEM.Net.Core
         {
             _logger = logger;
         }
+        
         /// <summary>
         /// Triangulate a regular set of points
         /// </summary>
@@ -64,6 +65,114 @@ namespace DEM.Net.Core
 
             return triangulationResult;
         }
+
+        public Triangulation TriangulateHeightMapFiltered(HeightMap heightMap, bool regularTriangulation = true)
+        {
+            // Step 1: Mark valid points
+            var validMask = new bool[heightMap.Width, heightMap.Height];
+            var visited = new bool[heightMap.Width, heightMap.Height];
+            var coords = heightMap.Coordinates.ToList();
+
+            for (int y = 0; y < heightMap.Height; y++)
+            {
+                for (int x = 0; x < heightMap.Width; x++)
+                {
+                    int idx = x + y * heightMap.Width;
+                    var elev = coords[idx].Elevation;
+                    validMask[x, y] = elev.HasValue && elev.Value != 0;
+                }
+            }
+
+            // Step 2: Remove contiguous regions of invalid points (flood fill)
+            void FloodFill(int startX, int startY)
+            {
+                var queue = new Queue<(int x, int y)>();
+                queue.Enqueue((startX, startY));
+                visited[startX, startY] = true;
+
+                while (queue.Count > 0)
+                {
+                    var (x, y) = queue.Dequeue();
+
+                    foreach (var (nx, ny) in new[] { (x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1) })
+                    {
+                        if (nx >= 0 && nx < heightMap.Width && ny >= 0 && ny < heightMap.Height)
+                        {
+                            if (!validMask[nx, ny] && !visited[nx, ny])
+                            {
+                                visited[nx, ny] = true;
+                                queue.Enqueue((nx, ny));
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Find and flood fill all contiguous invalid regions
+            for (int y = 0; y < heightMap.Height; y++)
+            {
+                for (int x = 0; x < heightMap.Width; x++)
+                {
+                    if (!validMask[x, y] && !visited[x, y])
+                    {
+                        FloodFill(x, y);
+                    }
+                }
+            }
+
+            // Step 3: Triangulate only valid points
+            var filteredCoords = new List<GeoPoint>();
+            var indexMap = new int[heightMap.Width, heightMap.Height];
+            int newIdx = 0;
+            for (int y = 0; y < heightMap.Height; y++)
+            {
+                for (int x = 0; x < heightMap.Width; x++)
+                {
+                    if (validMask[x, y])
+                    {
+                        int idx = x + y * heightMap.Width;
+                        filteredCoords.Add(coords[idx]);
+                        indexMap[x, y] = newIdx++;
+                    }
+                    else
+                    {
+                        indexMap[x, y] = -1;
+                    }
+                }
+            }
+
+            var indices = new List<int>();
+            for (int y = 0; y < heightMap.Height - 1; y++)
+            {
+                for (int x = 0; x < heightMap.Width - 1; x++)
+                {
+                    int i00 = indexMap[x, y];
+                    int i01 = indexMap[x, y + 1];
+                    int i10 = indexMap[x + 1, y];
+                    int i11 = indexMap[x + 1, y + 1];
+
+                    // Only add triangles if all three vertices are valid
+                    if (i00 != -1 && i01 != -1 && i10 != -1)
+                    {
+                        indices.Add(i00);
+                        indices.Add(i01);
+                        indices.Add(i10);
+                    }
+                    if (i10 != -1 && i01 != -1 && i11 != -1)
+                    {
+                        indices.Add(i10);
+                        indices.Add(i01);
+                        indices.Add(i11);
+                    }
+                }
+            }
+
+            var triangulationResult = new Triangulation(filteredCoords, indices);
+            triangulationResult.NumPositions = filteredCoords.Count;
+            triangulationResult.NumIndices = indices.Count;
+            return triangulationResult;
+        }
+
         private IEnumerable<int> TriangulateHeightMap_Internal(HeightMap heightMap, bool regularTriangulation = true)
         {
             for (int y = 0; y < heightMap.Height; y++)
@@ -840,5 +949,6 @@ namespace DEM.Net.Core
         }
 
 
+        
     }
 }
