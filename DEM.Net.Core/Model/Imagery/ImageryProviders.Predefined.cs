@@ -21,7 +21,7 @@ namespace DEM.Net.Core.Imagery
         {
             Name = "MapTiler-Satellite",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapTiler Cloud Satellite", "https://www.maptiler.com", "© MapTiler- © OpenStreetMap and contributors"),
-            UrlModel = new UrlModel("https://api.maptiler.com/tiles/satellite-v2/{z}/{x}/{y}@2x.jpg?key={t}", null),
+            UrlModel = new UrlModel("https://api.maptiler.com/tiles/satellite-v2/{z}/{x}/{y}.jpg?key={t}", null),
             TokenUserSecretsKey = "MapTilerKey",
             TileSize = 512,
             MaxZoom = 20
