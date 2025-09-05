@@ -562,9 +562,21 @@ namespace DEM.Net.Core
         public static HeightMap ApplyGeometryMask(this HeightMap heightMap, string bbox)
         {
             var geom = ParseWKTAsGeometry(bbox);
+            var ntsPoint = new Point(0, 0);
             heightMap.Coordinates = heightMap.Coordinates.Select(pt =>
             {
-                pt.Elevation = geom.Contains(new Point(pt.Longitude, pt.Latitude)) ? pt.Elevation : 0;
+                ntsPoint.X = pt.Longitude;
+                ntsPoint.Y = pt.Latitude;
+                if (geom.Contains(ntsPoint))
+                {
+                    pt.Elevation=0;
+                }
+#if DEBUG // for breakpoints
+                else
+                {
+                    pt.Elevation = pt.Elevation;
+                }
+#endif
                 return pt;
             });
             return heightMap;
