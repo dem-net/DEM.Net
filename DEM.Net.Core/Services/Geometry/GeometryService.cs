@@ -559,22 +559,24 @@ namespace DEM.Net.Core
 
         }
 
-        public static HeightMap ApplyGeometryMask(this HeightMap heightMap, string bbox)
+        public static HeightMap ApplyGeometryMask(this HeightMap heightMap, string bbox, int srid = 4326)
         {
             var geom = ParseWKTAsGeometry(bbox);
-            var ntsPoint = new Point(0, 0);
+            var ntsPoint = new Point(0, 0) { SRID = srid };
             heightMap.Coordinates = heightMap.Coordinates.Select(pt =>
             {
                 ntsPoint.X = pt.Longitude;
                 ntsPoint.Y = pt.Latitude;
-                if (geom.Contains(ntsPoint))
+                ntsPoint.GeometryChanged();
+                //if (geom.Contains(new Point(pt.Longitude, pt.Latitude) { SRID = geom.SRID }))
+                if (geom.Distance(ntsPoint) < double.Epsilon)
                 {
-                    pt.Elevation=0;
+                    pt.Elevation = pt.Elevation;
                 }
 #if DEBUG // for breakpoints
                 else
                 {
-                    pt.Elevation = pt.Elevation;
+                    pt.Elevation = null;
                 }
 #endif
                 return pt;

@@ -134,7 +134,7 @@ namespace DEM.Net.Core
                 _RasterService.GenerateFileMetadata(file.LocalName, dataSet.FileFormat, false);
 
                 if (doneFileCount % 10 == 0)
-                    _logger.LogInformation($"Generating medata {doneFileCount:N0}/{fileCount:N0} ({(float)doneFileCount/fileCount:P0})");
+                    _logger.LogInformation($"Generating medata {doneFileCount:N0}/{fileCount:N0} ({(float)doneFileCount / fileCount:P0})");
             });
             List<DemFileReport> filesToDownload = new List<DemFileReport>(report.Where(kvp => kvp.IsExistingLocally == false));
 
@@ -154,7 +154,7 @@ namespace DEM.Net.Core
                         {
                             Interlocked.Increment(ref numFiles);
                             _RasterService.DownloadRasterFile(file, dataSet);
-                            _logger.LogInformation($"Download progress: {numFiles:N0}/{filesToDownload.Count:N0} ({(float)numFiles/filesToDownload.Count:P0})");
+                            _logger.LogInformation($"Download progress: {numFiles:N0}/{filesToDownload.Count:N0} ({(float)numFiles / filesToDownload.Count:P0})");
                         }
                     );
 
@@ -666,23 +666,56 @@ namespace DEM.Net.Core
                 }
                 else
                 {
-                    // Merge height maps
-                    int totalHeight = tilesHeightMap.GroupBy(h => h.BoundingBox.xMin).Select(g => g.Sum(v => v.Height)).First();
-                    int totalWidth = tilesHeightMap.GroupBy(h => h.BoundingBox.yMin).Select(g => g.Sum(v => v.Width)).First();
+                    if (dataSet == DEMDataSet.TINItaly)
+                    {
+                        var coords = tilesHeightMap.SelectMany(hmap => hmap.Coordinates).Distinct().Sort().ToList();
 
-                    heightMap = new HeightMap(totalWidth, totalHeight);
-                    heightMap.BoundingBox = new BoundingBox(xmin: tilesHeightMap.Min(h => h.BoundingBox.xMin)
-                                                            , xmax: tilesHeightMap.Max(h => h.BoundingBox.xMax)
-                                                            , ymin: tilesHeightMap.Min(h => h.BoundingBox.yMin)
-                                                            , ymax: tilesHeightMap.Max(h => h.BoundingBox.yMax)
-                                                            , zmin: tilesHeightMap.Min(h => h.BoundingBox.zMin)
-                                                            , zmax: tilesHeightMap.Max(h => h.BoundingBox.zMax))
-                    { SRID = bbox.SRID };
-                    bbox = heightMap.BoundingBox;
-                    heightMap.Coordinates = tilesHeightMap.SelectMany(hmap => hmap.Coordinates).Sort();
-                    heightMap.Count = totalWidth * totalHeight;
-                    heightMap.Minimum = tilesHeightMap.Min(hmap => hmap.Minimum);
-                    heightMap.Maximum = tilesHeightMap.Max(hmap => hmap.Maximum);
+                        HashSet<double> xBucket = new();
+                        HashSet<double> yBucket = new();
+                        foreach (var c in coords)
+                        {
+                            xBucket.Add(c.Longitude);
+                            yBucket.Add(c.Latitude);
+                        }
+
+                        int totalHeight = yBucket.Count;
+                        int totalWidth = xBucket.Count;
+
+                        heightMap = new HeightMap(totalWidth, totalHeight);
+                        heightMap.BoundingBox = new BoundingBox(xmin: tilesHeightMap.Min(h => h.BoundingBox.xMin)
+                                                                , xmax: tilesHeightMap.Max(h => h.BoundingBox.xMax)
+                                                                , ymin: tilesHeightMap.Min(h => h.BoundingBox.yMin)
+                                                                , ymax: tilesHeightMap.Max(h => h.BoundingBox.yMax)
+                                                                , zmin: tilesHeightMap.Min(h => h.BoundingBox.zMin)
+                                                                , zmax: tilesHeightMap.Max(h => h.BoundingBox.zMax))
+                        { SRID = bbox.SRID };
+                        bbox = heightMap.BoundingBox;
+                        heightMap.Coordinates = coords;
+                        heightMap.Count = totalWidth * totalHeight;
+                        heightMap.Minimum = tilesHeightMap.Min(hmap => hmap.Minimum);
+                        heightMap.Maximum = tilesHeightMap.Max(hmap => hmap.Maximum);
+
+                    }
+                    else
+                    {
+                        // Merge height maps
+                        int totalHeight = tilesHeightMap.GroupBy(h => h.BoundingBox.xMin).Select(g => g.Sum(v => v.Height)).First();
+                        int totalWidth = tilesHeightMap.GroupBy(h => h.BoundingBox.yMin).Select(g => g.Sum(v => v.Width)).First();
+
+                        heightMap = new HeightMap(totalWidth, totalHeight);
+                        heightMap.BoundingBox = new BoundingBox(xmin: tilesHeightMap.Min(h => h.BoundingBox.xMin)
+                                                                , xmax: tilesHeightMap.Max(h => h.BoundingBox.xMax)
+                                                                , ymin: tilesHeightMap.Min(h => h.BoundingBox.yMin)
+                                                                , ymax: tilesHeightMap.Max(h => h.BoundingBox.yMax)
+                                                                , zmin: tilesHeightMap.Min(h => h.BoundingBox.zMin)
+                                                                , zmax: tilesHeightMap.Max(h => h.BoundingBox.zMax))
+                        { SRID = bbox.SRID };
+                        bbox = heightMap.BoundingBox;
+                        heightMap.Coordinates = tilesHeightMap.SelectMany(hmap => hmap.Coordinates).Sort();
+                        heightMap.Count = totalWidth * totalHeight;
+                        heightMap.Minimum = tilesHeightMap.Min(hmap => hmap.Minimum);
+                        heightMap.Maximum = tilesHeightMap.Max(hmap => hmap.Maximum);
+                    }
                 }
                 //System.Diagnostics.Debug.Assert(heightMap.Count == tilesHeightMap.Sum(h => h.Count));
 
@@ -770,8 +803,8 @@ namespace DEM.Net.Core
                         missingTile.DataEndLat = tilesBbox.yMin + tileSizeY * yIndex; // suppose origin is NW
 
 
-                        missingTile.DataEndLon = missingTile.DataStartLon + (missingTile.Width-registrationOffset) * missingTile.pixelSizeX;
-                        missingTile.DataStartLat = missingTile.DataEndLat - (missingTile.Height-registrationOffset) * missingTile.pixelSizeY;
+                        missingTile.DataEndLon = missingTile.DataStartLon + (missingTile.Width - registrationOffset) * missingTile.pixelSizeX;
+                        missingTile.DataStartLat = missingTile.DataEndLat - (missingTile.Height - registrationOffset) * missingTile.pixelSizeY;
 
                         if (missingTile.DataStartLon > missingTile.DataEndLon)
                         {
