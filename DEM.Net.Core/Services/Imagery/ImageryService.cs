@@ -323,7 +323,7 @@ namespace DEM.Net.Core.Imagery
         {
             var fileExtension = System.IO.Path.GetExtension(fileName).ToLower();
             if (fileExtension.EndsWith("jpg"))
-                return new JpegEncoder() { Quality = (int)(quality * 100F), ColorType = JpegEncodingColor.YCbCrRatio444};
+                return new JpegEncoder() { Quality = (int)(quality * 100F), ColorType = JpegEncodingColor.YCbCrRatio444 };
             else if (fileExtension.EndsWith("png"))
                 return new PngEncoder();
             else return null;
@@ -374,6 +374,59 @@ namespace DEM.Net.Core.Imagery
                     PathCollection pc = new PathCollection(pointsOnTexture.Select(p => new EllipsePolygon(p, new SizeF(10f, 10f))));
                     outputImage.Mutate(o => o.Draw(Pens.Solid(Color.Violet, 3), pc));
                 }
+
+                // with encoder
+                //IImageEncoder encoder = ConvertFormat(mimeType);
+                //outputImage.Save(fileName, encoder);
+
+                outputImage.Save(fileName);
+            }
+
+            return new TextureInfo(fileName, mimeType, (int)projectedBbox.Width, (int)projectedBbox.Height, zoomLevel,
+                projectedBbox);
+        }
+
+        public TextureInfo ConstructTextureWithPolygonMask(TileRange tiles, BoundingBox bbox, string fileName,
+            TextureImageFormat mimeType, IEnumerable<GeoPoint> outerRing)
+        {
+            // where is the bbox in the final image ?
+
+            // get pixel in full map
+            int zoomLevel = tiles.Tiles.First().TileInfo.Zoom;
+            var projectedBbox = ConvertWorldToMap(bbox, zoomLevel, tiles.TileSize);
+            var tilesBbox = GetTilesBoundingBox(tiles);
+            int xOffset = (int)(tilesBbox.xMin - projectedBbox.xMin);
+            int yOffset = (int)(tilesBbox.yMin - projectedBbox.yMin);
+
+
+            //DrawDebugBmpBbox(tiles, localBbox, tilesBbox, fileName, mimeType);
+            int tileSize = tiles.TileSize;
+
+            var pointsOnTexture = outerRing
+                .Select(pt => TileUtils.PositionToGlobalPixel(new LatLong(pt.Latitude, pt.Longitude), zoomLevel, tiles.TileSize))
+                .Select(pt => new PointF((float)(pt.X - (int)projectedBbox.xMin), (float)(pt.Y - (int)projectedBbox.yMin)));
+
+            
+
+            using (Image<Rgba32> outputImage = new Image<Rgba32>((int)projectedBbox.Width, (int)projectedBbox.Height))
+            {
+                foreach (var tile in tiles.Tiles)
+                {
+                    using (Image<Rgba32> tileImg = new Image<Rgba32>(tile.PixelSize, tile.PixelSize))
+                    {
+                        int x = (tile.TileInfo.X - tiles.Start.X) * tileSize + xOffset;
+                        int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize + yOffset;
+
+                        outputImage.Mutate(o => o
+                            .FillPolygon(Color.Black, new PointF(x, y), new PointF(x + tileSize, y), new PointF(x + tileSize, y + tileSize), new PointF(x, y + tileSize), new PointF(x, y))
+                        );
+                    }
+                }
+
+                var poly = new Polygon(pointsOnTexture.ToArray());
+                outputImage.Mutate(o => o
+                    .Fill(Color.White, poly)
+                );
 
                 // with encoder
                 //IImageEncoder encoder = ConvertFormat(mimeType);
@@ -612,23 +665,23 @@ namespace DEM.Net.Core.Imagery
             byte[] bytes = new byte[4];
 
             Image<Rgb24> outputImage = new Image<Rgb24>(width, height);
-            
-                int hMapIndex = 0;
-                foreach (var coord in heightMap)
-                {
-                    // index is i + (j * heightMap.Width);
-                    var j = hMapIndex / width;
-                    var i = hMapIndex - j * height;
 
-                    int data = (int)Math.Round((coord + 10000) * 10, 0);
+            int hMapIndex = 0;
+            foreach (var coord in heightMap)
+            {
+                // index is i + (j * heightMap.Width);
+                var j = hMapIndex / width;
+                var i = hMapIndex - j * height;
 
-                    fixed (byte* b = bytes)
-                        *((int*)b) = data;
+                int data = (int)Math.Round((coord + 10000) * 10, 0);
 
-                    outputImage[i, j] = new Rgb24(bytes[2], bytes[1], bytes[0]);
+                fixed (byte* b = bytes)
+                    *((int*)b) = data;
 
-                    hMapIndex++;
-                }
+                outputImage[i, j] = new Rgb24(bytes[2], bytes[1], bytes[0]);
+
+                hMapIndex++;
+            }
 
             return outputImage;
         }
