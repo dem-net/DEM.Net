@@ -41,7 +41,7 @@ namespace DEM.Net.Core.Imagery
             Name = "MapBox-SatelliteStreet",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Satellite Street", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
             TokenUserSecretsKey = "MapBoxToken",
-            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}@2x?access_token={t}", null),
+            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}@2x?access_token={t}", null),
             TileSize = 512,
             MaxZoom = 23
         };
