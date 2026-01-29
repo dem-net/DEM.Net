@@ -21,7 +21,16 @@ namespace DEM.Net.Core.Imagery
         {
             Name = "MapTiler-Satellite",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapTiler Cloud Satellite", "https://www.maptiler.com", "© MapTiler- © OpenStreetMap and contributors"),
-            UrlModel = new UrlModel("https://api.maptiler.com/tiles/satellite-v2/{z}/{x}/{y}.jpg?key={t}", null),
+            UrlModel = new UrlModel("https://api.maptiler.com/maps/satellite-v4/{z}/{x}/{y}.jpg?key={t}", null),
+            TokenUserSecretsKey = "MapTilerKey",
+            TileSize = 512,
+            MaxZoom = 20
+        };
+        public static readonly ImageryProvider MapTilerSatelliteHybrid = new ImageryProvider
+        {
+            Name = "MapTiler-Satellite-Hybrid",
+            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapTiler Cloud Satellite Hybrid", "https://www.maptiler.com", "© MapTiler- © OpenStreetMap and contributors"),
+            UrlModel = new UrlModel("https://api.maptiler.com/maps/hybrid-v4/{z}/{x}/{y}.jpg?key={t}", null),
             TokenUserSecretsKey = "MapTilerKey",
             TileSize = 512,
             MaxZoom = 20
@@ -41,7 +50,7 @@ namespace DEM.Net.Core.Imagery
             Name = "MapBox-SatelliteStreet",
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Satellite Street", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
             TokenUserSecretsKey = "MapBoxToken",
-            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}@2x?access_token={t}", null),
+            UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}?access_token={t}", null),
             TileSize = 512,
             MaxZoom = 23
         };
