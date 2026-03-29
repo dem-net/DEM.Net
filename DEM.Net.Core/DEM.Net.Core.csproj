@@ -2,6 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<UserSecretsId>a9a5d6e1-3bb8-4dfd-ac6a-861f60dada50</UserSecretsId>
+		<TargetFramework>net10.0</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Remove="Services\CourbesNiveau\**" />
@@ -40,6 +41,7 @@
 		<PackageReference Include="SixLabors.ImageSharp" />
 		<PackageReference Include="SixLabors.ImageSharp.Drawing" />
 		<PackageReference Include="System.Drawing.Common" />
+		<PackageReference Include="System.IO.Hashing" />
 		<PackageReference Include="System.Numerics.Vectors" />
 	</ItemGroup>
 	<ProjectExtensions>

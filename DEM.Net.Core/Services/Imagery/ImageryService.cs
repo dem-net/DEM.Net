@@ -23,28 +23,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using DEM.Net.Core.Configuration;
+using DEM.Net.Core.Services.Imagery;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing;
+using SixLabors.ImageSharp.Drawing.Processing;
+using PathAlias = System.IO.Path;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.Memory;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
-using DEM.Net.Core.Configuration;
-using Microsoft.Extensions.Options;
-using System.Collections.Concurrent;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.Formats.Jpeg;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
-using DEM.Net.Core.Services.Imagery;
-using SixLabors.ImageSharp.Formats.Png;
-using SixLabors.ImageSharp.Drawing.Processing;
-using SixLabors.ImageSharp.Drawing;
+using System.Threading.Tasks;
 
 namespace DEM.Net.Core.Imagery
 {
@@ -384,6 +386,24 @@ namespace DEM.Net.Core.Imagery
 
             return new TextureInfo(fileName, mimeType, (int)projectedBbox.Width, (int)projectedBbox.Height, zoomLevel,
                 projectedBbox);
+        }
+
+        public TextureInfo ConstructTexture_Massive(TileRange tiles, BoundingBox bbox, string fileName,
+            TextureImageFormat mimeType, float quality = 0.98f)
+        {
+            // This implementation writes tiles to a temporary folder using the expected layout:
+            // {root}/tiles/{zoom}/{x}/{y}.png and then calls MassiveMapGenerator to stitch them.
+            int zoomLevel = tiles.Tiles.First().TileInfo.Zoom;
+
+            // projected bbox and size for the texture info
+            var projectedBbox = ConvertWorldToMap(bbox, zoomLevel, tiles.TileSize);
+
+            // Use in-memory tiles directly (avoid writing to disk for performance)
+            var generator = new MassiveMapGenerator();
+            generator.Generate(fileName, string.Empty, tiles);
+
+            return new TextureInfo(fileName, mimeType, (int)projectedBbox.Width, (int)projectedBbox.Height, zoomLevel,
+                projectedBbox, tiles.Count);
         }
 
         public TextureInfo ConstructTextureWithPolygonMask(TileRange tiles, BoundingBox bbox, string fileName,
