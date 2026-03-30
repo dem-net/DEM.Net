@@ -65,4 +65,61 @@ public class PngScanlineStitcher
             ArrayPool<byte>.Shared.Return(scanlineBuffer);
         }
     }
+
+    /// <summary>
+    /// Writes a single cropped scanline from a row of decoded tiles.
+    /// </summary>
+    /// <param name="decodedTiles">Decoded tile buffers for the row (length = tilesAcross).</param>
+    /// <param name="tilesAcross">Number of tiles in the decodedTiles array.</param>
+    /// <param name="zlibStream">Destination compressed stream.</param>
+    /// <param name="cropPixelStart">Start pixel (in full image coords) of the crop.</param>
+    /// <param name="cropWidth">Width in pixels of the crop.</param>
+    /// <param name="yInTile">The scanline index inside the tile (0..TileSize-1).</param>
+    public void ProcessTileRowCroppedScanline(byte[][] decodedTiles, int firstTileIndex, Stream zlibStream, int cropPixelStart, int cropWidth, int yInTile)
+    {
+        int bytesPerPixel = BytesPerPixel;
+        int tileRowBytes = TileSize * bytesPerPixel;
+
+        int startTile = cropPixelStart / TileSize;
+        int startOffsetPixels = cropPixelStart % TileSize;
+        int endPixel = cropPixelStart + cropWidth; // exclusive end
+        int endTile = (endPixel - 1) / TileSize;
+        int endOffsetPixels = (endPixel - 1) % TileSize;
+
+        int scanlineLength = (cropWidth * bytesPerPixel) + 1;
+        byte[] scanlineBuffer = ArrayPool<byte>.Shared.Rent(scanlineLength);
+        try
+        {
+            Span<byte> scanlineSpan = scanlineBuffer.AsSpan(0, scanlineLength);
+            scanlineSpan[0] = 0; // filter byte
+
+            int destOffset = 1;
+            for (int tileIdx = startTile; tileIdx <= endTile; tileIdx++)
+            {
+                int srcPixelOffset = (tileIdx == startTile) ? startOffsetPixels : 0;
+                int pixelsToCopy = (tileIdx == startTile ? TileSize - startOffsetPixels : TileSize);
+                if (tileIdx == endTile)
+                {
+                    pixelsToCopy = (endOffsetPixels + 1) - (tileIdx == startTile ? startOffsetPixels : 0);
+                }
+
+                int srcOffset = yInTile * tileRowBytes + srcPixelOffset * bytesPerPixel;
+                int copyBytes = pixelsToCopy * bytesPerPixel;
+
+                // decodedTiles[0] corresponds to firstTileIndex
+                int decodedIndex = tileIdx - firstTileIndex;
+                var srcSlice = decodedTiles[decodedIndex].AsSpan(srcOffset, copyBytes);
+                var destSlice = scanlineSpan.Slice(destOffset, copyBytes);
+                srcSlice.CopyTo(destSlice);
+
+                destOffset += copyBytes;
+            }
+
+            zlibStream.Write(scanlineSpan);
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(scanlineBuffer);
+        }
+    }
 }

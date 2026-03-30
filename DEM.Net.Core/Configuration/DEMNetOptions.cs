@@ -18,6 +18,7 @@ namespace DEM.Net.Core.Configuration
         public float ImageryCacheExpirationMinutes { get; set; } = 5f;
 
         public bool PowerOfTwoImages { get; set; } = false;
+        public bool MassiveImageGenerator { get; set; } = false;
 
         public string LocalDirectory { get; set; } = null;
 

@@ -3,21 +3,19 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Collections.Generic;
+using SixLabors.ImageSharp;
 
 namespace DEM.Net.Core.Imagery;
 
 public class MassiveMapGenerator
 {
-    public void Generate(string outputPath, string imageryZoomRootPath, TileRange tileRange)
+    public void Generate(string outputPath, TileRange tileRange, Rectangle cropRect)
     {
-        int finalWidth = tileRange.Width;
-        int finalHeight = tileRange.Height;
-
         // 1. Open the raw file stream on disk
         using var fileStream = new FileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 65536);
 
         // 2. Write the PNG Signature and IHDR
-        PngWriter.WriteHeader(fileStream, finalWidth, finalHeight);
+        PngWriter.WriteHeader(fileStream, cropRect.Width, cropRect.Height);
 
         // 3. Wrap the file stream in our IDAT chunker
         using (var idatStream = new IdatChunkStream(fileStream))
@@ -25,10 +23,10 @@ public class MassiveMapGenerator
             // 4. Wrap the IDAT chunker in a ZLib compression stream.
             // Note: Use CompressionLevel.Fastest or NoCompression for a 100k x 100k image
             // unless you want to wait hours/days for optimal Deflate compression.
-            using (var zlibStream = new ZLibStream(idatStream, CompressionLevel.Fastest, leaveOpen: true))
+            using (var zlibStream = new ZLibStream(idatStream, CompressionLevel.Optimal, leaveOpen: true))
             {
-                var decoder = new TileDecoder();         // From previous example (ImageSharp)
-                var stitcher = new PngScanlineStitcher(); // From previous example (Span<byte>)
+                var decoder = new TileDecoder();         
+                var stitcher = new PngScanlineStitcher(); 
 
                 // Build a fast lookup dictionary for tiles to avoid repeated linear scans
                 var tileDictionary = new Dictionary<(int X, int Y), MapTile>(tileRange.Count);
@@ -38,7 +36,7 @@ public class MassiveMapGenerator
                     {
                         tileDictionary[(t.TileInfo.X, t.TileInfo.Y)] = t;
                     }
-                }
+                }                
 
                 for (int y = 0; y < tileRange.NumRows; y++)
                 {
@@ -55,8 +53,16 @@ public class MassiveMapGenerator
                     // Decode tiles into rented memory arrays directly from bytes
                     byte[][] decodedTiles = decoder.DecodeTileRowFromBytes(rowBytes);
 
-                    // Stitch scanlines and push them through ZLib -> IDAT -> File
-                    stitcher.ProcessTileRow(decodedTiles, tileRange.NumCols, zlibStream);
+                    // For each scanline inside this tile row, determine cropped horizontal range and write only that portion
+                    for (int scanlineInTile = 0; scanlineInTile < tileRange.TileSize; scanlineInTile++)
+                    {
+                        int globalScanlineY = y * tileRange.TileSize + scanlineInTile;
+                        if (globalScanlineY < cropRect.Y || globalScanlineY >= cropRect.Y + cropRect.Height)
+                            continue; // outside crop vertical area
+
+                        // Determine which horizontal pixels to copy for this scanline
+                        stitcher.ProcessTileRowCroppedScanline(decodedTiles, 0, zlibStream, cropRect.X, cropRect.Width, scanlineInTile);
+                    }
 
                     // Clean up rented memory before the next row
                     decoder.ReturnBuffers(decodedTiles);

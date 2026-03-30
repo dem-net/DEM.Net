@@ -303,6 +303,34 @@ namespace DEM.Net.Core.Imagery
             return new TextureInfo(fileName, mimeType, (int)Math.Ceiling(projectedBbox.Width), (int)Math.Ceiling(projectedBbox.Height), zoomLevel,
                 projectedBbox, tiles.Count);
         }
+
+        public TextureInfo ConstructTexture_Massive(TileRange tiles, BoundingBox bbox, string fileName,
+            TextureImageFormat mimeType, float quality = 0.98f)
+        {
+            // This implementation writes tiles to a temporary folder using the expected layout:
+            // {root}/tiles/{zoom}/{x}/{y}.png and then calls MassiveMapGenerator to stitch them.
+            int zoomLevel = tiles.Tiles.First().TileInfo.Zoom;
+
+            // projected bbox and size for the texture info
+            var projectedBbox = ConvertWorldToMap(bbox, zoomLevel, tiles.TileSize);
+            var tilesBbox = GetTilesBoundingBox(tiles);
+
+            int cropStartX = (int)Math.Round(projectedBbox.xMin - tilesBbox.xMin);
+            int cropStartY = (int)Math.Round(projectedBbox.yMin - tilesBbox.yMin);
+            int cropWidth = (int)Math.Ceiling(projectedBbox.Width);
+            int cropHeight = (int)Math.Ceiling(projectedBbox.Height);
+            var cropRect = new Rectangle(cropStartX, cropStartY, cropWidth, cropHeight);
+
+            // Use in-memory tiles directly (avoid writing to disk for performance)
+
+            var generator = new MassiveMapGenerator();
+            // generate full image (size = tiles.Width x tiles.Height) and crop while generating
+            generator.Generate(fileName, tiles, cropRect);
+
+            return new TextureInfo(fileName, mimeType, cropWidth, cropHeight, zoomLevel,
+                projectedBbox, tiles.Count);
+        }
+
         int ToNextNearestPowerOf2(int x)
         {
             if (x < 0) { return 0; }
@@ -388,24 +416,6 @@ namespace DEM.Net.Core.Imagery
                 projectedBbox);
         }
 
-        public TextureInfo ConstructTexture_Massive(TileRange tiles, BoundingBox bbox, string fileName,
-            TextureImageFormat mimeType, float quality = 0.98f)
-        {
-            // This implementation writes tiles to a temporary folder using the expected layout:
-            // {root}/tiles/{zoom}/{x}/{y}.png and then calls MassiveMapGenerator to stitch them.
-            int zoomLevel = tiles.Tiles.First().TileInfo.Zoom;
-
-            // projected bbox and size for the texture info
-            var projectedBbox = ConvertWorldToMap(bbox, zoomLevel, tiles.TileSize);
-
-            // Use in-memory tiles directly (avoid writing to disk for performance)
-            var generator = new MassiveMapGenerator();
-            generator.Generate(fileName, string.Empty, tiles);
-
-            return new TextureInfo(fileName, mimeType, (int)projectedBbox.Width, (int)projectedBbox.Height, zoomLevel,
-                projectedBbox, tiles.Count);
-        }
-
         public TextureInfo ConstructTextureWithPolygonMask(TileRange tiles, BoundingBox bbox, string fileName,
             TextureImageFormat mimeType, IEnumerable<GeoPoint> outerRing)
         {
@@ -426,7 +436,7 @@ namespace DEM.Net.Core.Imagery
                 .Select(pt => TileUtils.PositionToGlobalPixel(new LatLong(pt.Latitude, pt.Longitude), zoomLevel, tiles.TileSize))
                 .Select(pt => new PointF((float)(pt.X - (int)projectedBbox.xMin), (float)(pt.Y - (int)projectedBbox.yMin)));
 
-            
+
 
             using (Image<Rgba32> outputImage = new Image<Rgba32>((int)projectedBbox.Width, (int)projectedBbox.Height))
             {
