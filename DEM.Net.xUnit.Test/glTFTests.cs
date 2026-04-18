@@ -35,7 +35,7 @@ namespace DEM.Net.Test
 
             if (!File.Exists(fileName))
             {
-                ZipFile.ExtractToDirectory(sourceFile, ".", true);
+                ZipFile.ExtractToDirectory(sourceFile, ".");
             }
 
 

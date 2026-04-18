@@ -293,6 +293,7 @@ namespace DEM.Net.TestWinForm
                 v_nomFichierOut += "AW3D30";
             }
             v_nomFichierOut += "_p" + tb_precisionEnM.Text;
+            Directory.CreateDirectory("Test3D");
             model.SaveGLB(Path.Combine("Test3D", v_nomFichierOut + ".glb"));
             MessageBox.Show("Traitement terminé =>"+ v_nomFichierOut);
         }
