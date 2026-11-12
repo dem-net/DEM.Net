@@ -69,6 +69,7 @@ For sea bed elevation : ETOPO1 Global Relief Model https://www.ngdc.noaa.gov/mgg
 - Andy9FromSpace : HGT file reader in https://github.com/Andy9FromSpace/map-elevation
 
 # Third party code and librairies
+- Image processing: Six Labors Image Sharp: https://sixlabors.com/products/imagesharp/
 - glTF : glTF2Loader and AssetGenerator : https://github.com/KhronosGroup/glTF
 - Tiff support : https://github.com/BitMiracle/libtiff.net
 - Serialization : https://github.com/neuecc/ZeroFormatter and https://github.com/JamesNK/Newtonsoft.Json
