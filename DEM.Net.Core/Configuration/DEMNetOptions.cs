@@ -19,6 +19,12 @@ namespace DEM.Net.Core.Configuration
 
         public bool PowerOfTwoImages { get; set; } = false;
 
+        /// <summary>
+        /// When true, PNG textures are streamed to disk tile row by tile row (low memory, faster)
+        /// instead of being composed in memory. JPEG textures and PowerOfTwoImages always use the in-memory path.
+        /// </summary>
+        public bool MassiveImageGenerator { get; set; } = true;
+
         public string LocalDirectory { get; set; } = null;
 
         // Set to true for ensure tiles stitch correctly when tiling

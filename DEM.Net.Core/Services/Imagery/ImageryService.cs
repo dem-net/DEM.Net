@@ -240,6 +240,15 @@ namespace DEM.Net.Core.Imagery
         public TextureInfo ConstructTexture(TileRange tiles, BoundingBox bbox, string fileName,
             TextureImageFormat mimeType, float quality = 0.98f)
         {
+            // The streaming generator only writes PNG and cannot resize: JPEG and power-of-two
+            // textures use the in-memory path below.
+            if (options?.MassiveImageGenerator == true
+                && options.PowerOfTwoImages == false
+                && System.IO.Path.GetExtension(fileName).EndsWith("png", StringComparison.OrdinalIgnoreCase))
+            {
+                return ConstructTextureStreamed(tiles, bbox, fileName, mimeType);
+            }
+
             // where is the bbox in the final image ?
 
             // get pixel in full map
@@ -301,6 +310,29 @@ namespace DEM.Net.Core.Imagery
             return new TextureInfo(fileName, mimeType, (int)Math.Ceiling(projectedBbox.Width), (int)Math.Ceiling(projectedBbox.Height), zoomLevel,
                 projectedBbox, tiles.Count);
         }
+
+        /// <summary>
+        /// Streams the texture to a PNG file one tile row at a time (see <see cref="MassiveMapGenerator"/>).
+        /// Produces the same pixels as the in-memory path of <see cref="ConstructTexture"/>.
+        /// </summary>
+        private TextureInfo ConstructTextureStreamed(TileRange tiles, BoundingBox bbox, string fileName,
+            TextureImageFormat mimeType)
+        {
+            int zoomLevel = tiles.Tiles.First().TileInfo.Zoom;
+            var projectedBbox = ConvertWorldToMap(bbox, zoomLevel, tiles.TileSize);
+            var tilesBbox = GetTilesBoundingBox(tiles);
+
+            // Same offset truncation as the in-memory path, so both produce identical images
+            int cropX = -(int)(tilesBbox.xMin - projectedBbox.xMin);
+            int cropY = -(int)(tilesBbox.yMin - projectedBbox.yMin);
+            int width = (int)Math.Ceiling(projectedBbox.Width);
+            int height = (int)Math.Ceiling(projectedBbox.Height);
+
+            new MassiveMapGenerator(_logger).Generate(fileName, tiles, new Rectangle(cropX, cropY, width, height));
+
+            return new TextureInfo(fileName, mimeType, width, height, zoomLevel, projectedBbox, tiles.Count);
+        }
+
         int ToNextNearestPowerOf2(int x)
         {
             if (x < 0) { return 0; }
