@@ -203,6 +203,10 @@ namespace DEM.Net.glTF.SharpglTF
             var material = model.CreateMaterial(string.Concat(nodeName, "Material"))
               .WithPBRMetallicRoughness(new Vector4(1, 1, 1, 0.8f), textures?.BaseColorTexture?.FilePath, null, 0.15f, 0.85f)
               .WithDoubleSide(doubleSided);
+            // Specular F0 = 0 (KHR_materials_specular): terrain is matte; the default 4 % dielectric
+            // reflection washes out the imagery at grazing angles. Read by three.js and Sketchfab.
+            material.InitializePBRMetallicRoughness("Specular");
+            material.FindChannel("SpecularFactor").Value.SetFactor("SpecularFactor", 0f);
             if (textures != null && textures.NormalTexture != null)
             {
                 material.WithChannelTexture("NORMAL", 0, textures.NormalTexture.FilePath);
