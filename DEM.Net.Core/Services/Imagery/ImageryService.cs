@@ -270,7 +270,7 @@ namespace DEM.Net.Core.Imagery
                             _logger.LogWarning($"Tile {tile.Uri} is empty. Skipping.");
                             continue;
                         }
-                        using (Image<Rgba32> tileImg = Image.Load<Rgba32>(tile.Image))
+                        using (Image<Rgba32> tileImg = Image.Load<Rgba32>(SafeImageDecoding.Options, tile.Image))
                         {
                             outputImage.Mutate(o => o
                                 .DrawImage(tileImg, new Point(x, y), 1f)
@@ -354,7 +354,7 @@ namespace DEM.Net.Core.Imagery
             {
                 foreach (var tile in tiles.Tiles)
                 {
-                    using (Image<Rgba32> tileImg = Image.Load<Rgba32>(tile.Image))
+                    using (Image<Rgba32> tileImg = Image.Load<Rgba32>(SafeImageDecoding.Options, tile.Image))
                     {
                         int x = (tile.TileInfo.X - tiles.Start.X) * tileSize + xOffset;
                         int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize + yOffset;
