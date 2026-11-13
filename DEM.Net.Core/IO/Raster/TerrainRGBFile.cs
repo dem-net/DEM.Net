@@ -32,7 +32,7 @@ namespace DEM.Net.Core
 
             pixelData = new Rgb24[tileSize * tileSize];
             
-            using (var image = Image.Load<Rgb24>(filePath))
+            using (var image = Image.Load<Rgb24>(SafeImageDecoding.Options, filePath))
             {
                 image.CopyPixelDataTo(pixelData);
             }
