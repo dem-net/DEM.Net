@@ -315,3 +315,6 @@ UnityExample/Assets/Plugins/MeshDecimator/MeshDecimator.xml
 *.SECRETS.config
 **/log.txt
 DEM.Net.xUnit.Test/secrets.json
+
+# Six Labors license (never commit)
+sixlabors.lic

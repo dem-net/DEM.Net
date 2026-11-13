@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 
 namespace DEM.Net.Core.EarthData
 {
@@ -16,6 +17,7 @@ namespace DEM.Net.Core.EarthData
         // Ideally the cookie container will be persisted to/from file
         private CookieContainer cookieContainer = new CookieContainer();
         private CredentialCache credentialCache = new CredentialCache();
+        private HttpClient httpClient;
         bool isInitialized = false;
         private readonly ILogger<EarthdataLoginConnector> logger;
         private readonly AppSecrets secretOptions;
@@ -40,6 +42,18 @@ namespace DEM.Net.Core.EarthData
             credentialCache = new CredentialCache();
             credentialCache.Add(new Uri(urs), "Basic", new NetworkCredential(secretOptions.NasaEarthDataLogin, secretOptions.NasaEarthDataPassword));
 
+            // Same behavior as the former HttpWebRequest: cookies kept across requests, credentials sent
+            // only when challenged (Earthdata Login redirect), redirects followed automatically.
+            httpClient?.Dispose();
+            httpClient = new HttpClient(new HttpClientHandler
+            {
+                CookieContainer = cookieContainer,
+                UseCookies = true,
+                Credentials = credentialCache,
+                PreAuthenticate = false,
+                AllowAutoRedirect = true
+            }, disposeHandler: true);
+
             isInitialized = true;
         }
 
@@ -58,45 +72,22 @@ namespace DEM.Net.Core.EarthData
                     Directory.CreateDirectory(dirName);
                 }
                 // Execute the request
-                HttpWebRequest request = this.CreateWebRequest(url);
-               
-
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+                using (HttpResponseMessage response = httpClient.Send(request, HttpCompletionOption.ResponseHeadersRead))
                 {
-                    // Now access the data
-                    long length = response.ContentLength;
-                    string type = response.ContentType;
-                    using (Stream stream = response.GetResponseStream())
+                    response.EnsureSuccessStatusCode();
+                    using (Stream stream = response.Content.ReadAsStream())
+                    using (FileStream fs = new FileStream(localFileName, FileMode.Create, FileAccess.Write))
                     {
-                        // Process the stream data (e.g. save to file)
-                        using (FileStream fs = new FileStream(localFileName, FileMode.Create, FileAccess.Write))
-                        {
-                            stream.CopyTo(fs);
-                            fs.Close();
-                        }
-                        stream.Close();
+                        stream.CopyTo(fs);
                     }
-                    response.Close();
                 }
-
-                
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, $"Error while downloading DEM file: {ex.Message}");
                 throw;
             }
-        }
-
-        private HttpWebRequest CreateWebRequest(string url)
-        {
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "GET";
-            request.Credentials = credentialCache;
-            request.CookieContainer = cookieContainer;
-            request.PreAuthenticate = false;
-            request.AllowAutoRedirect = true;
-            return request;
         }
     }
 }

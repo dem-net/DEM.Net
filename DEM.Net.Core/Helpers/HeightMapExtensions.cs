@@ -28,7 +28,6 @@ using SixLabors.ImageSharp.ColorSpaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing.Text;
 using System.Linq;
 using System.Numerics;
 using System.Text;

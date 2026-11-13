@@ -6,6 +6,13 @@ on:
       - '*.*.*'
       - '*.*.*-*' # Trigger on tags matching vX.Y.Z or vX.Y.Z-prerelease
 
+permissions:
+  contents: read
+
+env:
+  # Six Labors license key (ImageSharp >= 3.2 checks it at build time)
+  SixLaborsLicenseKey: ${{ secrets.SIXLABORS_LICENSE_KEY }}
+
 jobs:
   build:
     name: Build and Test
@@ -18,7 +25,7 @@ jobs:
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x'
+        dotnet-version: '10.0.x'
 
     - name: Restore dependencies
       run: dotnet restore
@@ -41,7 +48,7 @@ jobs:
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x' # Ensure this matches the build job
+        dotnet-version: '10.0.x' # Ensure this matches the build job
 
     - name: Restore dependencies
       run: dotnet restore

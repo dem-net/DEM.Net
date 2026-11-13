@@ -39,8 +39,7 @@
 		<PackageReference Include="SixLabors.Fonts" />
 		<PackageReference Include="SixLabors.ImageSharp" />
 		<PackageReference Include="SixLabors.ImageSharp.Drawing" />
-		<PackageReference Include="System.Drawing.Common" />
-		<PackageReference Include="System.Numerics.Vectors" />
+		<PackageReference Include="System.Security.Permissions" />
 	</ItemGroup>
 	<ProjectExtensions>
 		<MonoDevelop>

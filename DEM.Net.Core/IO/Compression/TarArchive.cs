@@ -70,14 +70,16 @@ namespace DEM.Net.Core
             var buffer = new byte[100];
             while (true)
             {
-                stream.Read(buffer, 0, 100);
+                // End of stream without trailing zero blocks: stop cleanly
+                if (stream.ReadAtLeast(buffer.AsSpan(0, 100), 100, throwOnEndOfStream: false) < 100)
+                    break;
 
                 var name = Encoding.ASCII.GetString(buffer).Trim('\0', ' ');
                 if (string.IsNullOrWhiteSpace(name))
                     break;
 
                 stream.Seek(24, SeekOrigin.Current);
-                stream.Read(buffer, 0, 12);
+                stream.ReadExactly(buffer, 0, 12);
 
                 long size;
 
@@ -93,7 +95,12 @@ namespace DEM.Net.Core
 
                 stream.Seek(376L, SeekOrigin.Current);
 
-                var output = Path.Combine(outputDir, name);
+                var output = Path.GetFullPath(Path.Combine(outputDir, name));
+                var outputRoot = Path.GetFullPath(outputDir);
+                if (!outputRoot.EndsWith(Path.DirectorySeparatorChar))
+                    outputRoot += Path.DirectorySeparatorChar;
+                if (!output.StartsWith(outputRoot, StringComparison.Ordinal))
+                    throw new InvalidDataException($"Tar entry '{name}' would be extracted outside of the output directory.");
 
                 if (size > 0) // ignores directory entries
                 {
@@ -108,7 +115,7 @@ namespace DEM.Net.Core
                         using (var fs = File.Open(output, FileMode.OpenOrCreate, FileAccess.Write))
                         {
                             var blob = new byte[size];
-                            stream.Read(blob, 0, blob.Length);
+                            stream.ReadExactly(blob, 0, blob.Length);
                             fs.Write(blob, 0, blob.Length);
                         }
                     }

@@ -44,7 +44,8 @@ namespace DEM.Net.Core.IO.SensorLog
         {
         }
 
-        public static void Plot(this SensorLog log, string outputFileName, int width = 1024, int height = 768)
+        /// <param name="mergedImage">When true, all series are drawn in a single image. Otherwise (default) one image per series is written, prefixed by the series name.</param>
+        public static void Plot(this SensorLog log, string outputFileName, int width = 1024, int height = 768, bool mergedImage = false)
         {
             GraphicsOptions graphicsOptions = new GraphicsOptions() { Antialias = true };
             DrawingOptions drawingOptions = new DrawingOptions { GraphicsOptions= graphicsOptions };
@@ -82,8 +83,7 @@ namespace DEM.Net.Core.IO.SensorLog
             var font = SixLabors.Fonts.SystemFonts.CreateFont("Arial", 12, FontStyle.Bold);
             float textSpacing = 3;
 
-            const bool MERGED_IMAGE = false;
-            if (MERGED_IMAGE)
+            if (mergedImage)
             {
                 using (Image<Rgba32> img = new Image<Rgba32>(width, height))
                 {
