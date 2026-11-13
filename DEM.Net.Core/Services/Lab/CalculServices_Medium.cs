@@ -775,11 +775,6 @@ namespace DEM.Net.Core.Services.Lab
                 //Si une des facettes est plate=>il faut inverser
                 bool v_isFacetteGauchePlate = IsTriangleEstPlatDansLePlanXY(v_arcToTest.p11_pointDbt, v_arcToTest.p12_pointFin, v_pointGaucheNewArc);
                 bool v_isFacetteDroitePlate = IsTriangleEstPlatDansLePlanXY(v_arcToTest.p11_pointDbt, v_arcToTest.p12_pointFin, v_pointDroitNewArc);
-                if (v_isFacetteGauchePlate || v_isFacetteDroitePlate)
-                {
-                    bool v_testToDebug_vf = true;
-                }
-
                if (!v_isFacetteGauchePlate && !v_isFacetteDroitePlate)
                 {//Sinon=>on poursuit le test
                     //=>On teste si les cercles circonscrits à l'un et l'autre triangle incluent "le 4ème point" (=celui appartenant à l'autre triangle et pas à l'arc) 

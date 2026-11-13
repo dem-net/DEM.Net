@@ -4,9 +4,8 @@
 		<PackageReference Include="BitMiracle.LibTiff.NET" />
 		<PackageReference Include="geometry3Sharp" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
 		<PackageReference Include="SharpGLTF.Toolkit" />
-		<PackageReference Include="System.Numerics.Vectors" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\DEM.Net.Core\DEM.Net.Core.csproj" />

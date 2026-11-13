@@ -154,23 +154,16 @@ namespace DEM.Net.Core.Stac
                     Directory.CreateDirectory(dirName);
                 }
                 // Execute the request
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(report.URL);
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                var client = httpClientFactory.CreateClient();
+                using (var request = new HttpRequestMessage(HttpMethod.Get, report.URL))
+                using (HttpResponseMessage response = client.Send(request, HttpCompletionOption.ResponseHeadersRead))
                 {
-                    // Now access the data
-                    long length = response.ContentLength;
-                    string type = response.ContentType;
-                    using (Stream stream = response.GetResponseStream())
+                    response.EnsureSuccessStatusCode();
+                    using (Stream stream = response.Content.ReadAsStream())
+                    using (FileStream fs = new FileStream(report.LocalName, FileMode.Create, FileAccess.Write))
                     {
-                        // Process the stream data (e.g. save to file)
-                        using (FileStream fs = new FileStream(report.LocalName, FileMode.Create, FileAccess.Write))
-                        {
-                            stream.CopyTo(fs);
-                            fs.Close();
-                        }
-                        stream.Close();
+                        stream.CopyTo(fs);
                     }
-                    response.Close();
                 }
             }
             catch (Exception ex)

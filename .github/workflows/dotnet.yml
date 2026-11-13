@@ -9,6 +9,13 @@ on:
   pull_request:
     branches: [ "master" ]
 
+permissions:
+  contents: read
+
+env:
+  # Six Labors license key (ImageSharp >= 3.2 checks it at build time)
+  SixLaborsLicenseKey: ${{ secrets.SIXLABORS_LICENSE_KEY }}
+
 jobs:
   build:
 
@@ -19,7 +26,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 10.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build

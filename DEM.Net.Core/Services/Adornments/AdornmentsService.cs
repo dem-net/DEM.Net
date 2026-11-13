@@ -4,12 +4,12 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
+using SixLabors.Fonts;
+using SixLabors.ImageSharp.Drawing;
 
 #pragma warning disable CA1416
 
@@ -141,74 +141,80 @@ namespace DEM.Net.Core
 
         }
 
+        // Preferred font first (historical GDI+ choice), then common cross-platform fallbacks.
+        private static readonly string[] PreferredFontFamilies = { "Calibri", "Arial", "Liberation Sans", "DejaVu Sans", "Helvetica", "Noto Sans" };
+        private static FontFamily? _textFontFamily;
+
+        private FontFamily GetTextFontFamily()
+        {
+            if (_textFontFamily.HasValue)
+                return _textFontFamily.Value;
+
+            foreach (var name in PreferredFontFamilies)
+            {
+                if (SystemFonts.TryGet(name, out FontFamily family))
+                {
+                    _textFontFamily = family;
+                    return family;
+                }
+            }
+
+            var any = SystemFonts.Families.FirstOrDefault();
+            if (string.IsNullOrEmpty(any.Name))
+                throw new InvalidOperationException("No system font found to render model adornment text. Install at least one TrueType font on the host.");
+
+            _logger.LogWarning("None of the preferred fonts ({Fonts}) found, using {Font}.", string.Join(", ", PreferredFontFamilies), any.Name);
+            _textFontFamily = any;
+            return any;
+        }
+
         public List<Polygon<Vector3>> GetTextPolygons(string text)
         {
             Dictionary<int, Polygon<Vector3>> letterPolygons = new Dictionary<int, Polygon<Vector3>>();
 
-            using (Bitmap bmp = new Bitmap(400, 400))
-            using (GraphicsPath gp = new GraphicsPath())
-            using (Graphics g = Graphics.FromImage(bmp))
-            using (Font f = new Font("Calibri", 40f))
+            // 40pt at 72 dpi = 40 px em size, same as the former GDI+ GraphicsPath.AddString(..., 40f, ...)
+            Font font = GetTextFontFamily().CreateFont(40f);
+            IPathCollection glyphPaths = TextBuilder.GenerateGlyphs(text, new TextOptions(font));
+
+            // Flatten curves into polylines: each simple path is one glyph contour (outer ring or hole)
+            int i = -1;
+            foreach (ISimplePath subPath in glyphPaths.SelectMany(p => p.Flatten()))
             {
-                //g.ScaleTransform(4, 4);
-                gp.AddString(text, f.FontFamily, 0, 40f, new Point(0, 0), StringFormat.GenericDefault);
-                g.DrawPath(Pens.Gray, gp);
-                gp.Flatten(new Matrix(), 0.1f);  // <<== *
-                //g.DrawPath(Pens.DarkSlateBlue, gp);
-                //gp.SetMarkers();
-
-                using (GraphicsPathIterator gpi = new GraphicsPathIterator(gp))
+                i++;
+                if (!subPath.IsClosed)
                 {
+                    _logger.LogWarning("Unclosed text shape. Skipping.");
+                    continue;
+                }
 
-                    gpi.Rewind();
+                var currentRing = new List<Vector3>(subPath.Points.Length);
+                foreach (var pt in subPath.Points.Span)
+                    currentRing.Add(new Vector3(pt.X, pt.Y, 0));
+                if (currentRing.Count < 3)
+                    continue;
 
-                    var triangulation = new TriangulationList<Vector3>();
-                    using (GraphicsPath gsubPath = new GraphicsPath())
+                List<int> childs = GetIncludedPolygons(currentRing, letterPolygons);
+                List<int> parents = GetContainerPolygons(currentRing, letterPolygons);
+                // contains other polygon ?
+                if (childs.Any())
+                {
+                    Polygon<Vector3> newPoly = new Polygon<Vector3>(currentRing);
+                    foreach (var key in childs)
                     {
-
-
-                        // Read all subpaths and their properties  
-                        for (int i = 0; i < gpi.SubpathCount; i++)
-                        {
-                            gpi.NextSubpath(gsubPath, out bool bClosedCurve);
-                            if (!bClosedCurve)
-                            {
-                                _logger.LogWarning("Unclosed text shape. Skipping.");
-                                continue;
-                            }
-                            //Debug.Assert(bClosedCurve, "Unclosed character. That's not possible");
-
-                            var currentRing = gsubPath.PathPoints.Select(p => new Vector3(p.X, p.Y, 0)).ToList();
-
-                            List<int> childs = GetIncludedPolygons(currentRing, letterPolygons);
-                            List<int> parents = GetContainerPolygons(currentRing, letterPolygons);
-                            // contains other polygon ?
-                            if (childs.Any())
-                            {
-                                Polygon<Vector3> newPoly = new Polygon<Vector3>(currentRing);
-                                foreach (var key in childs)
-                                {
-                                    var child = letterPolygons[key];
-                                    letterPolygons.Remove(key);
-                                    newPoly.InteriorRings.Add(child.ExteriorRing);
-                                }
-                                letterPolygons.Add(i, newPoly);
-                            }
-                            else if (parents.Any())
-                            {
-                                Debug.Assert(parents.Count == 1);
-                                letterPolygons[parents.First()].InteriorRings.Add(currentRing);
-                            }
-                            else
-                            {
-                                letterPolygons.Add(i, new Polygon<Vector3>(currentRing));
-                            }
-
-                            // triangulation += _meshService.Tesselate(currentLetterPoints, currentLetterPointsInt);
-
-                            gsubPath.Reset();
-                        }
+                        var child = letterPolygons[key];
+                        letterPolygons.Remove(key);
+                        newPoly.InteriorRings.Add(child.ExteriorRing);
                     }
+                    letterPolygons.Add(i, newPoly);
+                }
+                else if (parents.Any())
+                {
+                    Debug.Assert(parents.Count == 1);
+                    letterPolygons[parents.First()].InteriorRings.Add(currentRing);
+                }
+                else
+                {
+                    letterPolygons.Add(i, new Polygon<Vector3>(currentRing));
                 }
             }
 

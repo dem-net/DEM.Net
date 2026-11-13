@@ -68,7 +68,7 @@ namespace DEM.Net.Core
             byte[] byteScanline = new byte[metadata.ScanlineSize];
 
             _hgtStream.Seek(metadata.ScanlineSize * y, SeekOrigin.Begin);
-            _hgtStream.Read(byteScanline, 0, metadata.ScanlineSize);
+            _hgtStream.ReadExactly(byteScanline, 0, metadata.ScanlineSize);
             byte[] heightBytes = new byte[bytesPerSample];
 
             float heightValue;
@@ -213,7 +213,7 @@ namespace DEM.Net.Core
 
             for (int y = yNorth; y <= ySouth; y++)
             {
-                _hgtStream.Read(byteScanline, 0, metadata.ScanlineSize);
+                _hgtStream.ReadExactly(byteScanline, 0, metadata.ScanlineSize);
 
                 double latitude = metadata.DataEndLat + (metadata.pixelSizeY * y);
 
@@ -303,7 +303,7 @@ namespace DEM.Net.Core
 
             for (int y = 0; y < metadata.Height; y++)
             {
-                _hgtStream.Read(byteScanline, 0, metadata.ScanlineSize);
+                _hgtStream.ReadExactly(byteScanline, 0, metadata.ScanlineSize);
 
                 double latitude = metadata.PhysicalStartLat + (metadata.pixelSizeY * y);
                 for (int x = 0; x < metadata.Width; x++)

@@ -1,9 +1,9 @@
 <Project>
 	<PropertyGroup>
-		<VersionPrefix>8.0.1</VersionPrefix>
+		<VersionPrefix>10.0.0</VersionPrefix>
 		<LangVersion>latest</LangVersion>
 		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<AnalysisLevel>latest</AnalysisLevel>
 		<Authors>Xavier Fischer, Frédéric Aubin</Authors>
@@ -28,4 +28,12 @@
 		<None Include="..\README.md" Link="README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
+	<!--
+	  Six Labors (ImageSharp >= 3.2) validates a license at build time; Release builds fail without one.
+	  Provide it either via the SixLaborsLicenseKey environment variable (CI / server builds),
+	  or by dropping a sixlabors.lic file at the root of this repository (gitignored).
+	-->
+	<PropertyGroup Condition="'$(SixLaborsLicenseKey)' == '' and '$(SixLaborsLicenseFile)' == '' and Exists('$(MSBuildThisFileDirectory)sixlabors.lic')">
+		<SixLaborsLicenseFile>$(MSBuildThisFileDirectory)sixlabors.lic</SixLaborsLicenseFile>
+	</PropertyGroup>
 </Project>
