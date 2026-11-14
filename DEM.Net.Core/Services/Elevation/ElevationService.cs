@@ -141,6 +141,11 @@ namespace DEM.Net.Core
             if (filesToDownload.Count == 0)
             {
                 _logger?.LogTrace("No missing file(s).");
+
+                // New metadata files must reach the in-memory / protobuf catalog, otherwise these tiles stay invisible
+                // (e.g. adjacent tiles needed for interpolation) until some other download refreshes it.
+                if (missingMedata.Count > 0)
+                    _RasterService.LoadManifestMetadata(dataSet, true);
             }
             else
             {
@@ -1106,8 +1111,9 @@ namespace DEM.Net.Core
                 GeoPoint curPoint = new GeoPoint(left.DataEndLat, left.DataStartLon);
 
                 // For cell registered datasets, DataStart is not matching the start data point. Start data point is at cell center (0.5 pixel off)
+                // (pixelSizeY is negative: the first row center is half a pixel south of the north edge)
                 double endLat = left.FileFormat.Registration == DEMFileRegistrationMode.Cell
-                                ? left.DataEndLat + left.PixelScaleY / 2d
+                                ? left.DataEndLat + left.pixelSizeY / 2d
                                 : left.DataEndLat;
 
                 // Y Index in tile coords
@@ -1190,8 +1196,9 @@ namespace DEM.Net.Core
                 GeoPoint curPoint = new GeoPoint(left.DataEndLat, left.DataStartLon);
 
                 // For cell registered datasets, DataStart is not matching the start data point. Start data point is at cell center (0.5 pixel off)
+                // (pixelSizeY is negative: the first row center is half a pixel south of the north edge)
                 double endLat = left.FileFormat.Registration == DEMFileRegistrationMode.Cell
-                                ? left.DataEndLat + left.PixelScaleY / 2d
+                                ? left.DataEndLat + left.pixelSizeY / 2d
                                 : left.DataEndLat;
 
                 // Y Index in tile coords
@@ -1333,9 +1340,6 @@ namespace DEM.Net.Core
                         (metadata.DataEndLat - lat) / metadata.pixelSizeY
                         : (lat - metadata.DataEndLat) / metadata.pixelSizeY;
                     xPixel = (lon - metadata.DataStartLon) / metadata.pixelSizeX;
-                    // If at pixel center (ending by .5, .5), we are on the data point, so no need for adjacent raster checks
-                    xInterpolationAmount = (double)(xPixel) % 1d;
-                    yInterpolationAmount = (double)(yPixel) % 1d;
                 }
                 else
                 {
@@ -1345,11 +1349,12 @@ namespace DEM.Net.Core
                          ((metadata.PhysicalEndLat + metadata.pixelSizeY / 2) - lat) / metadata.pixelSizeY
                         : (lat - (metadata.PhysicalEndLat + metadata.pixelSizeY / 2)) / metadata.pixelSizeY;
                     xPixel = (lon - (metadata.PhysicalStartLon + metadata.pixelSizeX / 2)) / metadata.pixelSizeX;
-
-                    xInterpolationAmount = Math.Abs((double)(xPixel) % 1d);
-                    yInterpolationAmount = Math.Abs((double)(yPixel) % 1d);
-
                 }
+
+                // Weights relative to the north west data point (floor). Pixel coordinates are negative within
+                // half a pixel of the west / north edges of cell registered tiles: a modulo would mirror the weight.
+                xInterpolationAmount = xPixel - Math.Floor(xPixel);
+                yInterpolationAmount = yPixel - Math.Floor(yPixel);
 
 
                 bool xOnDataPoint = Math.Abs(xInterpolationAmount) < EPSILON;
@@ -1440,50 +1445,46 @@ namespace DEM.Net.Core
             }
             else
             {
-                int yScale = Math.Sign(mainTile.pixelSizeY);
+                // Locate the requested pixel center geographically, then find the adjacent tile holding that sample.
+                // (Comparing tile origins assumed 1° tiles and exact tie points, which fails on noisy tie points like
+                // AW3D30's 4.9999999999999964, and silently read pixels from the opposite side of the main tile.)
+                double lon = PixelCenterLon(mainTile, x);
+                double lat = PixelCenterLat(mainTile, y);
                 FileMetadata tile = null;
+                newX = newY = 0;
                 foreach (var t in tiles.Keys)
                 {
-                    var xOffset = Math.Abs(t.DataStartLon - mainTile.DataStartLon - xTileOffset);
-                    var yOffset = Math.Abs(t.DataStartLat - mainTile.DataStartLat - yScale * yTileOffset);
-                    if (xOffset < float.Epsilon && yOffset < float.Epsilon)
+                    if (t == mainTile) continue;
+                    int tx = (int)Math.Round((lon - PixelCenterLon(t, 0)) / t.pixelSizeX);
+                    int ty = (int)Math.Round((lat - PixelCenterLat(t, 0)) / t.pixelSizeY);
+                    if (tx >= 0 && tx < t.Width && ty >= 0 && ty < t.Height)
                     {
                         tile = t;
-                        break;
+                        newX = tx;
+                        newY = ty;
+                        return tile;
                     }
                 }
-                //FileMetadata tile = tiles.Keys.FirstOrDefault(
-                //    t => Math.Abs(t.DataStartLat - mainTile.DataStartLat + yScale * yTileOffset) < float.Epsilon
-                //    &&  < float.Epsilon);
 
-                if (tile == null)
-                {
-                    // No adjacent tile found (adjacent tiles may not have been set)
-                    if (x == mainTile.Width
-                        || y == mainTile.Height)
-                    {
-                        _logger.LogDebug($"No adjacent tile found (adjacent tiles may not have been set). Returning main tile. (x,y, tile) = ({x},{y},{mainTile})");
-                        newX = x == mainTile.Width ? mainTile.Width - 1 : x;
-                        newY = y == mainTile.Height ? mainTile.Height - 1 : y;
-                        return mainTile;
-                    }
-                    else
-                    {
-                        _logger.LogWarning($"No adjacent tile found(adjacent tiles may not have been set). (x, y, tile) = ({x},{y},{mainTile})");
-                        newX = xTileOffset == 0 ? x : xTileOffset > 0 ? x % mainTile.Width : (mainTile.Width + x) % mainTile.Width;
-                        newY = yTileOffset == 0 ? y : yTileOffset < 0 ? (mainTile.Height + y) % mainTile.Height : y % mainTile.Height;
-                        return mainTile;
-                        //
-                    }
-                }
-                else
-                {
-                    newX = xTileOffset > 0 ? x % mainTile.Width : (mainTile.Width + x) % mainTile.Width;
-                    newY = yTileOffset < 0 ? (mainTile.Height + y) % mainTile.Height : y % mainTile.Height;
-                    return tile;
-                }
+                // No adjacent tile loaded (dataset edge or missing tile): use the nearest pixel of the main tile.
+                // Wrapping the index around would read the opposite side of the tile.
+                _logger.LogDebug($"No adjacent tile found for pixel ({x},{y}) of {mainTile}, using nearest edge pixel.");
+                newX = Math.Clamp(x, 0, mainTile.Width - 1);
+                newY = Math.Clamp(y, 0, mainTile.Height - 1);
+                return mainTile;
             }
         }
+
+        // Pixel center coordinates, consistent with the pixel coordinates used for interpolation in GetElevationAtPoint
+        private static double PixelCenterLon(FileMetadata tile, int x)
+            => tile.FileFormat.Registration == DEMFileRegistrationMode.Cell
+                ? tile.PhysicalStartLon + (x + 0.5) * tile.pixelSizeX
+                : tile.DataStartLon + x * tile.pixelSizeX;
+
+        private static double PixelCenterLat(FileMetadata tile, int y)
+            => tile.FileFormat.Registration == DEMFileRegistrationMode.Cell
+                ? tile.PhysicalEndLat + (y + 0.5) * tile.pixelSizeY
+                : tile.DataEndLat + y * tile.pixelSizeY;
 
 
 

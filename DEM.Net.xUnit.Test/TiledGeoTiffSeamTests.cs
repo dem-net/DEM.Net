@@ -32,11 +32,11 @@ namespace DEM.Net.Test
             new object[] { nameof(DEMDataSet.AW3D30), 5.95, 6.05, 45.40, 45.50, 1 / 3600d, 0.5 },     // E-W seam at 6°
             new object[] { nameof(DEMDataSet.SRTM_GL3), 5.95, 6.05, 45.40, 45.50, 1 / 1200d, 0.0 },   // E-W seam at 6°
             new object[] { nameof(DEMDataSet.NASADEM), 5.95, 6.05, 45.40, 45.50, 1 / 3600d, 0.0 },    // E-W seam at 6°
-            new object[] { nameof(DEMDataSet.FABDEM), 8.223893, 8.35273, 49.964561, 50.042325, 1 / 3600d, 0.5 }, // N-S seam at 50°
+            new object[] { nameof(DEMDataSet.FABDEM), 8.223893, 8.35273, 49.964561, 50.042325, 1 / 3600d, 0.0 }, // N-S seam at 50° (PixelIsPoint, no overlap)
             new object[] { nameof(DEMDataSet.swissALTI3D2m), 2616501, 2617499, 1090501, 1091499, 2d, 0.5 },     // both seams (LV95)
             new object[] { nameof(DEMDataSet.SRTM_GL3), 1.95, 2.05, 44.95, 45.05, 1 / 1200d, 0.0 },   // 2x2 tiles corner at 45°N 2°E
             new object[] { nameof(DEMDataSet.SRTM_GL3), -25.05, -24.95, 36.95, 37.05, 1 / 1200d, 0.0 }, // Azores: N36W025 is ocean => virtual tile
-            new object[] { nameof(DEMDataSet.FABDEM), -6.05, -5.95, 48.40, 48.50, 1 / 3600d, 0.5 },   // Ouessant: N48W007 is ocean => virtual tile
+            new object[] { nameof(DEMDataSet.FABDEM), -6.05, -5.95, 48.40, 48.50, 1 / 3600d, 0.0 },   // Ouessant: N48W007 is ocean => virtual tile
         };
 
         [Theory]

@@ -48,9 +48,10 @@ namespace DEM.Net.Core
          * 
          *  2.1 : file name are relative to data directory
          *  2.2 : [Metadata regneration required] file format is now mapped to DEMFileDefinition, lat/lon bounds names changed for clarity, file format changed from DEMFileFormat (name + file extenstion)
+         *  2.3 : [Metadata regneration required] cell registered GeoTIFF physical bounds are the true pixel edges
          */
         [ProtoMember(1)]
-        public const string FILEMETADATA_VERSION = "2.2";
+        public const string FILEMETADATA_VERSION = "2.3";
         #endregion
 
         internal FileMetadata()
@@ -192,7 +193,16 @@ namespace DEM.Net.Core
             {
                 if (_boundingBox == null)
                 {
-                    _boundingBox = new BoundingBox(
+                    // Cell registered tiles cover their full physical extent (Data* bounds stop one pixel short of
+                    // the east/south edges, leaving uncovered bands between tiles). Grid registered tiles overlap
+                    // their neighbours by one pixel, their data bounds already cover the whole surface.
+                    _boundingBox = FileFormat?.Registration == DEMFileRegistrationMode.Cell
+                        ? new BoundingBox(
+                                Math.Min(PhysicalStartLon, PhysicalEndLon),
+                                Math.Max(PhysicalStartLon, PhysicalEndLon),
+                                Math.Min(PhysicalStartLat, PhysicalEndLat),
+                                Math.Max(PhysicalStartLat, PhysicalEndLat))
+                        : new BoundingBox(
                                 Math.Min(DataStartLon, DataEndLon),
                                 Math.Max(DataStartLon, DataEndLon),
                                 Math.Min(DataStartLat, DataEndLat),

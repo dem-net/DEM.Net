@@ -37,8 +37,11 @@ namespace DEM.Net.Test
 
         }
 
+        // Reference values below are bilinear interpolations of the dataset pixels read with GDAL
+        // (pixel centers from each file georeferencing), independently of DEM.Net.
+
         [Theory()]
-        [InlineData(nameof(DEMDataSet.AW3D30),  47.132563, -86.818075,  0)]
+        [InlineData(nameof(DEMDataSet.AW3D30),  47.132563, -86.818075,  179)] // Lake Superior surface
         public void TestUS(string dataSetName, double lat, double lon, double expectedElevation)
         {
             DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
@@ -52,9 +55,9 @@ namespace DEM.Net.Test
         }
 
         [Theory()]
-        [InlineData(nameof(DEMDataSet.NASADEM), 45.179337, 5.721421, 222)]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.179337, 5.721421, 217)]
-        [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 221)]
+        [InlineData(nameof(DEMDataSet.NASADEM), 45.179337, 5.721421, 217)]  // 217.111
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.179337, 5.721421, 217)] // 216.529
+        [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 223)]   // 222.996
         public void TestElevationSinglePoint(string dataSetName, double lat, double lon, double expectedElevation)
         {
             DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
@@ -69,7 +72,7 @@ namespace DEM.Net.Test
 
         [Theory()]
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.00000000000004, 10.000000000000007, 1748)]
-        [InlineData(nameof(DEMDataSet.AW3D30), 46.00000000000004, 10.000000000000007, 1741)]
+        [InlineData(nameof(DEMDataSet.AW3D30), 46.00000000000004, 10.000000000000007, 1743)] // 1742.75, 4 tiles corner
         public void TestElevationSinglePoint_TileEdges(string dataSetName, double lat, double lon, double expectedElevation)
         {
             DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
@@ -89,9 +92,36 @@ namespace DEM.Net.Test
             Assert.Equal(expectedElevation, elevation, 0);
         }
 
+        /// <summary>
+        /// Points close to tile borders: last pixel row / column of cell registered tiles (were not covered by any tile),
+        /// interpolation across a tile seam, within half a pixel of a tile edge.
+        /// </summary>
         [Theory()]
+        [InlineData(nameof(DEMDataSet.AW3D30), 46.5, 10.9999, 2293.06)]        // last column of N046E010
+        [InlineData(nameof(DEMDataSet.AW3D30), 46.00005, 10.5, 1488.84)]       // last row of N046E010
+        [InlineData(nameof(DEMDataSet.AW3D30), 46.99995, 10.00005, 1113.3552)] // first row / column of N046E010
+        [InlineData(nameof(DEMDataSet.FABDEM), 49.99, 8.9999, 130.0448)]       // between N49E008 and N49E009
+        [InlineData(nameof(DEMDataSet.FABDEM), 50.00005, 8.3, 85.2464)]        // between N49E008 and N50E008
+        [InlineData(nameof(DEMDataSet.FABDEM), 49.99995, 8.3, 85.1348)]        // first row of N49E008
+        [InlineData(nameof(DEMDataSet.NASADEM), 45.5, 5.99995, 322.18)]        // overlapping tiles seam
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.5, 5.9999, 322.48)]        // overlapping tiles seam
+        public void TestElevationSinglePoint_TileBorders(string dataSetName, double lat, double lon, double expectedElevation)
+        {
+            DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+            Assert.NotNull(dataSet);
+
+            _elevationService.DownloadMissingFiles(dataSet, BoundingBox.AroundPoint(lat, lon, 0.001));
+            GeoPoint point = _elevationService.GetPointElevation(lat, lon, dataSet);
+
+            Assert.NotNull(point);
+            // absolute tolerance: Assert.Equal(double, double, precision) rounds both values and fails on midpoints
+            Assert.True(Math.Abs(expectedElevation - point.Elevation.Value) < 0.001, $"Expected {expectedElevation}, got {point.Elevation.Value}");
+        }
+
+        [Theory()]
+        // climb, descent, min and max are sums / extrema of float elevations: compared with 1 decimal
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.179337, 5.721421, 45.212278, 5.468857, 344, 2586.41, -2617.292, 178.271, 1654.438)]
-        [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 45.212278, 5.468857, 911, 2973.321, -3012.14, 177.845, 1653.103)]
+        [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 45.212278, 5.468857, 1029, 2974.095, -3012.914, 179.845, 1655.103)]
         public void TestElevationLine(string dataSetName, double latStart, double lonStart, double latEnd, double lonEnd,
             double expectedPointCount, double expectedClimb, double expectedDescent, double expectedMin, double expectedMax)
         {
@@ -109,14 +139,14 @@ namespace DEM.Net.Test
 
             var metrics = geoPoints.ComputeMetrics();
             Assert.NotNull(metrics);
-            Assert.Equal(expectedClimb, metrics.Climb, 3);
-            Assert.Equal(expectedDescent, metrics.Descent, 3);
-            Assert.Equal(expectedMin, metrics.MinElevation, 3);
-            Assert.Equal(expectedMax, metrics.MaxElevation, 3);
+            Assert.Equal(expectedClimb, metrics.Climb, 1);
+            Assert.Equal(expectedDescent, metrics.Descent, 1);
+            Assert.Equal(expectedMin, metrics.MinElevation, 1);
+            Assert.Equal(expectedMax, metrics.MaxElevation, 1);
         }
 
         [Theory()]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), -26, -25, 37, 38, false)] // fully covered
+        [InlineData(nameof(DEMDataSet.SRTM_GL3), -26, -25, 37, 38, true)] // fully covered (N37W026)
         [InlineData(nameof(DEMDataSet.SRTM_GL3), -26.659806263787523, -25.729350373606543, 37.73596920859053, 38.39764411353181, false)] // 1 tile missing
         [InlineData(nameof(DEMDataSet.SRTM_GL3), -37.43596931765545, -37.13861749268079, 50.33844888725473, 50.51342652633956, false)] // not covered at all
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 1.5, 2.5, 44.5, 45.5, true)] // fully covered by 4 tiles

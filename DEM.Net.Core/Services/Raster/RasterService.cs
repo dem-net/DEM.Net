@@ -175,8 +175,9 @@ namespace DEM.Net.Core
             string localPath = GetLocalDEMPath(dataset);
             var globalManifestPath = Path.Combine(localPath, "globalmanifest.bin");
 
-            if (force && _metadataCatalogCache.ContainsKey(localPath))
+            if (force)
             {
+                // also when not loaded in memory yet: the protobuf index on disk may be stale
                 _metadataCatalogCache.TryRemove(localPath, out List<FileMetadata> removed);
                 if (File.Exists(globalManifestPath))
                 {
