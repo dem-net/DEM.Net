@@ -372,8 +372,9 @@ namespace DEM.Net.Core
             }
 
 
-            // Tiled geotiffs like aster have overlapping 1px borders
-            int overlappingPixel = this.IsTiled ? 1 : 0;
+            // Tiled grid-registered geotiffs like aster have overlapping 1px borders.
+            // Cell-registered tiles (FABDEM COGs, swissALTI3D) partition space: trimming would leave a 1px gap at each seam.
+            int overlappingPixel = this.IsTiled && metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid ? 1 : 0;
 
             xStart = Math.Max(0, xStart);
             xEnd = Math.Min(metadata.Width - 1, xEnd) - overlappingPixel;
@@ -394,15 +395,20 @@ namespace DEM.Net.Core
                 int tileSize = this.TileSize;
                 byte[] buffer;
 
+                // Cell registration: Data* bounds are pixel corners, sample at pixel centers (same as the scanline path below)
+                bool isCell = metadata.FileFormat.Registration == DEMFileRegistrationMode.Cell;
+                double endLat = isCell ? metadata.DataEndLat + metadata.pixelSizeY / 2d : metadata.DataEndLat;
+                double startLon = isCell ? metadata.DataStartLon + metadata.pixelSizeX / 2d : metadata.DataStartLon;
+
                 for (int y = yStart; y <= yEnd; y++)
                 {
-                    double latitude = metadata.DataEndLat + (metadata.pixelSizeY * y);
+                    double latitude = endLat + (metadata.pixelSizeY * y);
                     // bounding box
                     if (y == yStart)
                     {
                         heightMap.BoundingBox.yMax = latitude;
-                        heightMap.BoundingBox.xMin = metadata.DataStartLon + (metadata.pixelSizeX * xStart);
-                        heightMap.BoundingBox.xMax = metadata.DataStartLon + (metadata.pixelSizeX * xEnd);
+                        heightMap.BoundingBox.xMin = startLon + (metadata.pixelSizeX * xStart);
+                        heightMap.BoundingBox.xMax = startLon + (metadata.pixelSizeX * xEnd);
                     }
                     if (y == yEnd)
                     {
@@ -411,7 +417,7 @@ namespace DEM.Net.Core
 
                     for (int x = xStart; x <= xEnd; x++)
                     {
-                        double longitude = metadata.DataStartLon + (metadata.pixelSizeX * x);
+                        double longitude = startLon + (metadata.pixelSizeX * x);
                         var tileX = (x / tileWidth) * tileWidth;
                         var tileY = (y / tileHeight) * tileHeight;
 

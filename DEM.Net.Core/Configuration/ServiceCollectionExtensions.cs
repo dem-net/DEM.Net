@@ -3,6 +3,7 @@ using DEM.Net.Core.EarthData;
 using DEM.Net.Core.Imagery;
 using DEM.Net.Core.Services.Imagery;
 using DEM.Net.Core.Stac;
+using DEM.Net.Core.TileIndex;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -26,6 +27,7 @@ namespace DEM.Net.Core
             services.AddSingleton<NasaGranuleFileService>();
             services.AddSingleton<EarthdataLoginConnector>();
             services.AddSingleton<StacFileService>();
+            services.AddSingleton<TileIndexFileService>();
 
             services.AddTransient<RasterIndexServiceResolver>(serviceProvider => dataSourceType =>
             {
@@ -37,6 +39,8 @@ namespace DEM.Net.Core
                         return serviceProvider.GetService<NasaGranuleFileService>();
                     case Datasets.DEMDataSourceType.Stac:
                         return serviceProvider.GetService<StacFileService>();
+                    case Datasets.DEMDataSourceType.TileIndex:
+                        return serviceProvider.GetService<TileIndexFileService>();
                     case Datasets.DEMDataSourceType.LocalFileSystem:
                         return serviceProvider.GetService<LocalFileSystemIndex>();
                     default:

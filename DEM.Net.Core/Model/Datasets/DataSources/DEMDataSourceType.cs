@@ -21,6 +21,10 @@ namespace DEM.Net.Core.Datasets
         /// <summary>
         /// Data comes from Spatio Temporal Asset Catalogs (STAC) https://stacspec.org
         /// </summary>
-        Stac = 4
+        Stac = 4,
+        /// <summary>
+        /// Data comes from a GeoJSON tile index listing one downloadable raster per feature (e.g. FABDEM on Hugging Face)
+        /// </summary>
+        TileIndex = 5
     }
 }

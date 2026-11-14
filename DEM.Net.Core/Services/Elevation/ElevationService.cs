@@ -658,84 +658,15 @@ namespace DEM.Net.Core
                     }
                 }
 
-                HeightMap heightMap;
-                if (tilesHeightMap.Count == 1)
-                {
-                    heightMap = tilesHeightMap.First();
-                    bbox = heightMap.BoundingBox;
-                }
-                else
-                {
-                    if (dataSet == DEMDataSet.TINItaly)
-                    {
-                        var coords = tilesHeightMap.SelectMany(hmap => hmap.Coordinates).Distinct().Sort().ToList();
-
-                        HashSet<double> xBucket = new();
-                        HashSet<double> yBucket = new();
-                        foreach (var c in coords)
-                        {
-                            xBucket.Add(c.Longitude);
-                            yBucket.Add(c.Latitude);
-                        }
-
-                        int totalHeight = yBucket.Count;
-                        int totalWidth = xBucket.Count;
-
-                        heightMap = new HeightMap(totalWidth, totalHeight);
-                        heightMap.BoundingBox = new BoundingBox(xmin: tilesHeightMap.Min(h => h.BoundingBox.xMin)
-                                                                , xmax: tilesHeightMap.Max(h => h.BoundingBox.xMax)
-                                                                , ymin: tilesHeightMap.Min(h => h.BoundingBox.yMin)
-                                                                , ymax: tilesHeightMap.Max(h => h.BoundingBox.yMax)
-                                                                , zmin: tilesHeightMap.Min(h => h.BoundingBox.zMin)
-                                                                , zmax: tilesHeightMap.Max(h => h.BoundingBox.zMax))
-                        { SRID = bbox.SRID };
-                        bbox = heightMap.BoundingBox;
-                        heightMap.Coordinates = coords;
-                        heightMap.Count = totalWidth * totalHeight;
-                        heightMap.Minimum = tilesHeightMap.Min(hmap => hmap.Minimum);
-                        heightMap.Maximum = tilesHeightMap.Max(hmap => hmap.Maximum);
-
-                    }
-                    else
-                    {
-                        // Merge height maps
-                        int totalHeight = tilesHeightMap.GroupBy(h => h.BoundingBox.xMin).Select(g => g.Sum(v => v.Height)).First();
-                        int totalWidth = tilesHeightMap.GroupBy(h => h.BoundingBox.yMin).Select(g => g.Sum(v => v.Width)).First();
-
-                        heightMap = new HeightMap(totalWidth, totalHeight);
-                        heightMap.BoundingBox = new BoundingBox(xmin: tilesHeightMap.Min(h => h.BoundingBox.xMin)
-                                                                , xmax: tilesHeightMap.Max(h => h.BoundingBox.xMax)
-                                                                , ymin: tilesHeightMap.Min(h => h.BoundingBox.yMin)
-                                                                , ymax: tilesHeightMap.Max(h => h.BoundingBox.yMax)
-                                                                , zmin: tilesHeightMap.Min(h => h.BoundingBox.zMin)
-                                                                , zmax: tilesHeightMap.Max(h => h.BoundingBox.zMax))
-                        { SRID = bbox.SRID };
-                        bbox = heightMap.BoundingBox;
-                        heightMap.Coordinates = tilesHeightMap.SelectMany(hmap => hmap.Coordinates).Sort();
-                        heightMap.Count = totalWidth * totalHeight;
-                        heightMap.Minimum = tilesHeightMap.Min(hmap => hmap.Minimum);
-                        heightMap.Maximum = tilesHeightMap.Max(hmap => hmap.Maximum);
-                    }
-                }
-                //System.Diagnostics.Debug.Assert(heightMap.Count == tilesHeightMap.Sum(h => h.Count));
-
+                // Stitch tiles (also removes the overlapping seams of grid-registered tiles, e.g. TINItaly)
+                HeightMap heightMap = tilesHeightMap.MergeTiles();
+                heightMap.BoundingBox.SRID = bbox.SRID;
+                bbox = heightMap.BoundingBox;
 
                 return heightMap;
 
             }
 
-        }
-
-        private (List<GeoPoint> coords, int width, int height) MergeHeightMapCoords(List<HeightMap> tilesHeightMap)
-        {
-            HashSet<double> lats = new HashSet<double>();
-            HashSet<double> longs = new HashSet<double>();
-            var coords = tilesHeightMap.SelectMany(hmap => hmap.Coordinates)
-                           .OrderByDescending(pt => { lats.Add(pt.Latitude); return pt.Latitude; })
-                           .ThenBy(pt => { longs.Add(pt.Longitude); return pt.Longitude; })
-                           .ToList();
-
-            return (coords, longs.Count, lats.Count);
         }
 
         private List<FileMetadata> CreateMissingTilesMetadata(BoundingBox bbox, DEMDataSet dataSet, List<FileMetadata> bboxMetadata)
@@ -766,6 +697,10 @@ namespace DEM.Net.Core
             // get x/y increments
             double tileSizeX = ((double)templateTile.Width - registrationOffset) * templateTile.PixelScaleX;
             double tileSizeY = ((double)templateTile.Height - registrationOffset) * templateTile.PixelScaleY;
+
+            // template position in the tile index grid (relative to the covering tiles bbox)
+            int templateIndexX = (int)Math.Round((templateTile.BoundingBox.xMin - tilesBbox.xMin) / tileSizeX);
+            int templateIndexY = (int)Math.Round((templateTile.BoundingBox.yMin - tilesBbox.yMin) / tileSizeY);
 
             // output list
             HashSet<FileMetadata> missingTiles = new HashSet<FileMetadata>();
@@ -799,40 +734,19 @@ namespace DEM.Net.Core
 
 
 
-                        missingTile.DataStartLon = tilesBbox.xMin + tileSizeX * xIndex;
-                        missingTile.DataEndLat = tilesBbox.yMin + tileSizeY * yIndex; // suppose origin is NW
-
-
-                        missingTile.DataEndLon = missingTile.DataStartLon + (missingTile.Width - registrationOffset) * missingTile.pixelSizeX;
-                        missingTile.DataStartLat = missingTile.DataEndLat - (missingTile.Height - registrationOffset) * missingTile.pixelSizeY;
-
-                        if (missingTile.DataStartLon > missingTile.DataEndLon)
-                        {
-                            double temp = missingTile.DataStartLon;
-                            missingTile.DataStartLon = missingTile.DataEndLon;
-                            missingTile.DataEndLon = temp;
-                        }
-                        if (missingTile.DataStartLat > missingTile.DataEndLat)
-                        {
-                            double temp = missingTile.DataStartLat;
-                            missingTile.DataStartLat = missingTile.DataEndLat;
-                            missingTile.DataEndLat = temp;
-                        }
-
-                        if (templateTile.FileFormat.Registration == DEMFileRegistrationMode.Grid)
-                        {
-                            missingTile.PhysicalStartLat = Math.Round(missingTile.DataStartLat - (missingTile.PixelScaleY / 2.0), 10);
-                            missingTile.PhysicalStartLon = Math.Round(missingTile.DataStartLon - (missingTile.PixelScaleY / 2.0), 10);
-                            missingTile.PhysicalEndLat = Math.Round(missingTile.DataEndLat + (missingTile.PixelScaleY / 2.0), 10);
-                            missingTile.PhysicalEndLon = Math.Round(missingTile.DataEndLon + (missingTile.PixelScaleY / 2.0), 10);
-                        }
-                        else
-                        {
-                            missingTile.PhysicalStartLat = missingTile.DataStartLat;
-                            missingTile.PhysicalStartLon = missingTile.DataStartLon;
-                            missingTile.PhysicalEndLat = missingTile.DataEndLat;
-                            missingTile.PhysicalEndLon = missingTile.DataEndLon;
-                        }
+                        // The missing tile is the template tile translated by whole tiles: same internal layout
+                        // (data bounds span Width-1 pixels for cell registration, physical bounds...) so that its
+                        // samples fall on the same grid as the real tiles and can be stitched to them.
+                        double offsetX = tileSizeX * (xIndex - templateIndexX);
+                        double offsetY = tileSizeY * (yIndex - templateIndexY);
+                        missingTile.DataStartLon = templateTile.DataStartLon + offsetX;
+                        missingTile.DataEndLon = templateTile.DataEndLon + offsetX;
+                        missingTile.DataStartLat = templateTile.DataStartLat + offsetY;
+                        missingTile.DataEndLat = templateTile.DataEndLat + offsetY;
+                        missingTile.PhysicalStartLon = templateTile.PhysicalStartLon + offsetX;
+                        missingTile.PhysicalEndLon = templateTile.PhysicalEndLon + offsetX;
+                        missingTile.PhysicalStartLat = templateTile.PhysicalStartLat + offsetY;
+                        missingTile.PhysicalEndLat = templateTile.PhysicalEndLat + offsetY;
 
                         missingTile.VirtualMetadata = true;
 
