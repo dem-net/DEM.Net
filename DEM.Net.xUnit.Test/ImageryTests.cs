@@ -12,6 +12,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DEM.Net.xUnit.Test
 {
+    // Downloads datasets / tiles: excluded from CI (dotnet test --filter Category!=Network)
+    [Trait("Category", "Network")]
     public class ImageryTests : IClassFixture<DemNetFixture>
     {
         readonly ImageryService _imageryService;

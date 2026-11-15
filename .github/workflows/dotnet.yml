@@ -31,5 +31,15 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-#    - name: Test
-#      run: dotnet test --no-build --verbosity normal
+    # Tests tagged [Trait("Category", "Network")] download datasets or imagery: run them locally
+    - name: Test (offline)
+      run: dotnet test --no-build --filter "Category!=Network" --verbosity normal
+      env:
+        DEMNetOptions__LocalDirectory: ${{ runner.temp }}/DEM.Net
+    - name: Check for vulnerable packages
+      run: |
+        dotnet list package --vulnerable --include-transitive 2>&1 | tee vulnerable.txt
+        if grep -q "has the following vulnerable packages" vulnerable.txt; then
+          echo "::error::Vulnerable NuGet packages found (see above)"
+          exit 1
+        fi

@@ -7,6 +7,8 @@ using System.Collections.Generic;
 
 namespace DEM.Net.Test
 {
+    // Downloads datasets / tiles: excluded from CI (dotnet test --filter Category!=Network)
+    [Trait("Category", "Network")]
     public class ElevationTests : IClassFixture<DemNetFixture>
     {
         ElevationService _elevationService;

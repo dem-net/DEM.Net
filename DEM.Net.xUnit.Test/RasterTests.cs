@@ -105,7 +105,7 @@ namespace DEM.Net.Test
                 FileMetadata metaData = raster.ParseMetaData(new DEMFileDefinition(DEMFileType.SRTM_HGT, DEMFileRegistrationMode.Grid));
                 Assert.NotNull(metaData);
 
-                Assert.Throws<IndexOutOfRangeException>(() =>
+                Assert.Throws<ArgumentOutOfRangeException>(() =>
                {
                    float elevation = raster.GetElevationAtPoint(metaData, 10000, 10000);
                });

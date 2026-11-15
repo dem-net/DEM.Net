@@ -318,3 +318,6 @@ DEM.Net.xUnit.Test/secrets.json
 
 # Six Labors license (never commit)
 sixlabors.lic
+
+# BenchmarkDotNet results
+BenchmarkDotNet.Artifacts/

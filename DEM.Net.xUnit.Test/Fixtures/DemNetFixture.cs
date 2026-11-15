@@ -18,6 +18,8 @@ namespace DEM.Net.Test
            .SetBasePath(Directory.GetCurrentDirectory())
            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
            .AddJsonFile("secrets.json", optional: true, reloadOnChange: false)
+           // e.g. DEMNetOptions__LocalDirectory to download test data in a throwaway folder (CI)
+           .AddEnvironmentVariables()
            .Build();
 
             var services = new ServiceCollection();

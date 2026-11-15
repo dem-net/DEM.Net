@@ -9,6 +9,8 @@ using DEM.Net.Core.Interpolation;
 
 namespace DEM.Net.xUnit.Test
 {
+    // Downloads datasets / tiles: excluded from CI (dotnet test --filter Category!=Network)
+    [Trait("Category", "Network")]
     public class TileTests : IClassFixture<DemNetFixture>
     {
         readonly ElevationService _elevationService;

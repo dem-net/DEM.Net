@@ -22,6 +22,11 @@
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 	</PropertyGroup>
 
+	<!-- Async correctness analyzers (VSTHRD*: sync over async, async void, missing awaits...), not shipped to consumers -->
+	<ItemGroup>
+		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<None Include="..\DEMnet_64.png" Pack="true" PackagePath="" />
 		<None Include="..\LICENSE.md" Pack="true" Link="LICENSE.md" PackagePath="\" />

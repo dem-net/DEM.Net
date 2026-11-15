@@ -25,6 +25,7 @@
 		<PackageReference Include="BitMiracle.LibTiff.NET" />
 		<PackageReference Include="GeoAPI.CoordinateSystems" />
 		<PackageReference Include="GeoAPI.Core" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
 		<PackageReference Include="Microsoft.Extensions.Logging" />
