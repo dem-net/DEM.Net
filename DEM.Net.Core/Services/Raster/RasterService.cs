@@ -175,8 +175,9 @@ namespace DEM.Net.Core
             string localPath = GetLocalDEMPath(dataset);
             var globalManifestPath = Path.Combine(localPath, "globalmanifest.bin");
 
-            if (force && _metadataCatalogCache.ContainsKey(localPath))
+            if (force)
             {
+                // also when not loaded in memory yet: the protobuf index on disk may be stale
                 _metadataCatalogCache.TryRemove(localPath, out List<FileMetadata> removed);
                 if (File.Exists(globalManifestPath))
                 {
@@ -189,12 +190,22 @@ namespace DEM.Net.Core
             {
                 if (File.Exists(globalManifestPath))
                 {
+                    List<FileMetadata> indexedMetadata;
                     using (var inStream = new FileStream(globalManifestPath, FileMode.Open, FileAccess.Read))
                     {
+                        indexedMetadata = Serializer.Deserialize<List<FileMetadata>>(inStream);
+                    }
+
+                    if (indexedMetadata.All(m => !IsMetadataStale(m, dataset)))
+                    {
                         _logger.LogInformation($"{dataset.Name} metadata read from protobuf index");
-                        _metadataCatalogCache[localPath] = Serializer.Deserialize<List<FileMetadata>>(inStream);
+                        _metadataCatalogCache[localPath] = indexedMetadata;
                         return _metadataCatalogCache[localPath];
                     }
+
+                    // Bounds were computed with another registration mode: rebuild from the json manifests (migrated below)
+                    _logger.LogWarning($"{dataset.Name} protobuf index is out of date (dataset registration is {dataset.FileFormat.Registration}), rebuilding it.");
+                    File.Delete(globalManifestPath);
                 }
 
                 var manifestDirectories = Directory.EnumerateDirectories(localPath, MANIFEST_DIR, SearchOption.AllDirectories);
@@ -211,7 +222,7 @@ namespace DEM.Net.Core
 
                         FileMetadata metadata = JsonConvert.DeserializeObject<FileMetadata>(jsonContent);
                         metadata.BoundingBox.SRID = dataset.SRID;
-                        if (metadata.Version != FileMetadata.FILEMETADATA_VERSION)
+                        if (IsMetadataStale(metadata, dataset))
                         {
                             metadata = FileMetadataMigrations.Migrate(this, _logger, metadata, _localDirectory, dataset);
                             File.WriteAllText(file, JsonConvert.SerializeObject(metadata, Formatting.Indented));
@@ -235,6 +246,15 @@ namespace DEM.Net.Core
 
             return _metadataCatalogCache[localPath];
         }
+
+        /// <summary>
+        /// Metadata must be regenerated when its version is outdated, or when the dataset registration mode changed
+        /// (data bounds depend on it, see <see cref="GeoTiff.ParseMetaData"/>).
+        /// </summary>
+        private static bool IsMetadataStale(FileMetadata metadata, DEMDataSet dataset)
+            => metadata.Version != FileMetadata.FILEMETADATA_VERSION
+            || metadata.FileFormat == null
+            || metadata.FileFormat.Registration != dataset.FileFormat.Registration;
 
         /// <summary>
         /// Generate metadata files for fast in-memory indexing
@@ -574,16 +594,22 @@ namespace DEM.Net.Core
             var coords = new List<GeoPoint>(heightMap.Count);
             heightMap.BoundingBox = new BoundingBox(0, 0, 0, 0);
 
+            // Same sample positions as real tiles (GeoTiff.GetHeightMapInBBox): cell-registered rasters are sampled
+            // at pixel centers, otherwise virtual and real tiles are half a pixel apart and cannot be stitched.
+            bool isCell = metadata.FileFormat.Registration == DEMFileRegistrationMode.Cell;
+            double endLat = isCell ? metadata.DataEndLat + metadata.pixelSizeY / 2d : metadata.DataEndLat;
+            double startLon = isCell ? metadata.DataStartLon + metadata.pixelSizeX / 2d : metadata.DataStartLon;
+
             for (int y = yNorth; y <= ySouth; y++)
             {
-                double latitude = metadata.DataEndLat + (metadata.pixelSizeY * y);
+                double latitude = endLat + (metadata.pixelSizeY * y);
 
                 // bounding box
                 if (y == yNorth)
                 {
                     heightMap.BoundingBox.yMax = latitude;
-                    heightMap.BoundingBox.xMin = metadata.DataStartLon + (metadata.pixelSizeX * xWest);
-                    heightMap.BoundingBox.xMax = metadata.DataStartLon + (metadata.pixelSizeX * xEast);
+                    heightMap.BoundingBox.xMin = startLon + (metadata.pixelSizeX * xWest);
+                    heightMap.BoundingBox.xMax = startLon + (metadata.pixelSizeX * xEast);
                 }
                 if (y == ySouth)
                 {
@@ -592,7 +618,7 @@ namespace DEM.Net.Core
 
                 for (int x = xWest; x <= xEast; x++)
                 {
-                    double longitude = metadata.DataStartLon + (metadata.pixelSizeX * x);
+                    double longitude = startLon + (metadata.pixelSizeX * x);
 
                     float heightValue = noDataValue ?? metadata.NoDataValueFloat;
                     heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);

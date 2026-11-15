@@ -263,6 +263,33 @@ namespace DEM.Net.Core
             return heightValue;
         }
 
+        private const int GeoKeyDirectoryTag = 34735;
+        private const int GTRasterTypeGeoKey = 1025;
+        private const int RasterPixelIsArea = 1;
+        private const int RasterPixelIsPoint = 2;
+
+        /// <summary>
+        /// GTRasterTypeGeoKey value (1 = PixelIsArea, 2 = PixelIsPoint), or null when the file does not state it.
+        /// </summary>
+        private int? GetRasterTypeGeoKey()
+        {
+            FieldValue[] directory = TiffFile.GetField((TiffTag)GeoKeyDirectoryTag);
+            if (directory == null || directory.Length < 2) return null;
+
+            // header (version, revision, minor revision, number of keys), then 4 shorts per key:
+            // key id, tag location (0 = value stored in place), count, value
+            short[] keys = directory[1].ToShortArray();
+            if (keys == null || keys.Length < 4) return null;
+            int numKeys = keys[3];
+            for (int i = 0; i < numKeys && 4 + i * 4 + 3 < keys.Length; i++)
+            {
+                int k = 4 + i * 4;
+                if (keys[k] == GTRasterTypeGeoKey && keys[k + 1] == 0)
+                    return keys[k + 3];
+            }
+            return null;
+        }
+
         public FileMetadata ParseMetaData(DEMFileDefinition format)
         {
             FileMetadata metadata = new FileMetadata(FilePath, format);
@@ -287,6 +314,21 @@ namespace DEM.Net.Core
             byte[] modelTransformation = modelTiepointTag[1].GetBytes();
             metadata.DataStartLon = BitConverter.ToDouble(modelTransformation, 24);
             metadata.DataStartLat = BitConverter.ToDouble(modelTransformation, 32);
+
+            // The tie point is a pixel corner (PixelIsArea) or a pixel center (PixelIsPoint), whatever the dataset
+            // registration says. Registration modes expect a corner (Cell) or a center (Grid): normalize the tie point
+            // when the file explicitly states the other convention (e.g. FABDEM v1.2 COGs are PixelIsPoint without overlap).
+            switch (GetRasterTypeGeoKey())
+            {
+                case RasterPixelIsPoint when format.Registration == DEMFileRegistrationMode.Cell:
+                    metadata.DataStartLon -= pixelSizeX / 2d;
+                    metadata.DataStartLat -= pixelSizeY / 2d; // pixelSizeY < 0: corner is north of the first center
+                    break;
+                case RasterPixelIsArea when format.Registration == DEMFileRegistrationMode.Grid:
+                    metadata.DataStartLon += pixelSizeX / 2d;
+                    metadata.DataStartLat += pixelSizeY / 2d;
+                    break;
+            }
 
             if (format.Registration == DEMFileRegistrationMode.Grid)
             {
@@ -330,10 +372,12 @@ namespace DEM.Net.Core
                     metadata.DataEndLat = temp;
                 }
 
-                metadata.PhysicalStartLat = metadata.DataStartLat + metadata.pixelSizeY / 2d;
-                metadata.PhysicalStartLon = metadata.DataStartLon - metadata.pixelSizeX / 2d;
-                metadata.PhysicalEndLat = metadata.DataEndLat - metadata.pixelSizeY / 2d;
-                metadata.PhysicalEndLon = metadata.DataEndLon + metadata.pixelSizeX / 2d;
+                // Cell registration: the tie point is the outer corner of the first pixel, so Data* bounds are pixel corners
+                // (first pixel to last pixel) and the physical extent is Width x Height pixels from the tie point.
+                metadata.PhysicalStartLon = metadata.DataStartLon;
+                metadata.PhysicalEndLon = metadata.DataStartLon + metadata.Width * metadata.pixelSizeX;
+                metadata.PhysicalEndLat = metadata.DataEndLat;
+                metadata.PhysicalStartLat = metadata.DataEndLat + metadata.Height * metadata.pixelSizeY;
             }
             var scanline = new byte[TiffFile.ScanlineSize()];
             metadata.ScanlineSize = TiffFile.ScanlineSize();
@@ -372,8 +416,9 @@ namespace DEM.Net.Core
             }
 
 
-            // Tiled geotiffs like aster have overlapping 1px borders
-            int overlappingPixel = this.IsTiled ? 1 : 0;
+            // Tiled grid-registered geotiffs like aster have overlapping 1px borders.
+            // Cell-registered tiles (FABDEM COGs, swissALTI3D) partition space: trimming would leave a 1px gap at each seam.
+            int overlappingPixel = this.IsTiled && metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid ? 1 : 0;
 
             xStart = Math.Max(0, xStart);
             xEnd = Math.Min(metadata.Width - 1, xEnd) - overlappingPixel;
@@ -394,15 +439,20 @@ namespace DEM.Net.Core
                 int tileSize = this.TileSize;
                 byte[] buffer;
 
+                // Cell registration: Data* bounds are pixel corners, sample at pixel centers (same as the scanline path below)
+                bool isCell = metadata.FileFormat.Registration == DEMFileRegistrationMode.Cell;
+                double endLat = isCell ? metadata.DataEndLat + metadata.pixelSizeY / 2d : metadata.DataEndLat;
+                double startLon = isCell ? metadata.DataStartLon + metadata.pixelSizeX / 2d : metadata.DataStartLon;
+
                 for (int y = yStart; y <= yEnd; y++)
                 {
-                    double latitude = metadata.DataEndLat + (metadata.pixelSizeY * y);
+                    double latitude = endLat + (metadata.pixelSizeY * y);
                     // bounding box
                     if (y == yStart)
                     {
                         heightMap.BoundingBox.yMax = latitude;
-                        heightMap.BoundingBox.xMin = metadata.DataStartLon + (metadata.pixelSizeX * xStart);
-                        heightMap.BoundingBox.xMax = metadata.DataStartLon + (metadata.pixelSizeX * xEnd);
+                        heightMap.BoundingBox.xMin = startLon + (metadata.pixelSizeX * xStart);
+                        heightMap.BoundingBox.xMax = startLon + (metadata.pixelSizeX * xEnd);
                     }
                     if (y == yEnd)
                     {
@@ -411,7 +461,7 @@ namespace DEM.Net.Core
 
                     for (int x = xStart; x <= xEnd; x++)
                     {
-                        double longitude = metadata.DataStartLon + (metadata.pixelSizeX * x);
+                        double longitude = startLon + (metadata.pixelSizeX * x);
                         var tileX = (x / tileWidth) * tileWidth;
                         var tileY = (y / tileHeight) * tileHeight;
 

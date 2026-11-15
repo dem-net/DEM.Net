@@ -421,10 +421,133 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public static IEnumerable<GeoPoint> Sort(this IEnumerable<GeoPoint> coords)
         {
-            coords = coords.OrderByDescending(pt => pt.Latitude)
+            // Rows from adjacent tiles can differ by floating point noise (e.g. AW3D30 tie points like 46.00000000000003):
+            // compare latitudes with a tolerance so a row is never split and reordered east-then-west.
+            coords = coords.OrderByDescending(pt => RoundCoordinate(pt.Latitude))
                            .ThenBy(pt => pt.Longitude);
 
             return coords;
+        }
+
+        /// <summary>
+        /// Rounds a coordinate to absorb floating point noise between tiles (1e-9 ≈ 0.1 mm in degrees), far below any pixel size.
+        /// </summary>
+        internal static double RoundCoordinate(double value) => Math.Round(value, 9);
+
+        /// <summary>
+        /// Merges per-tile height maps into a single grid, in O(n) and without sorting.
+        /// Each tile must be a row-major grid (north to south, west to east), as returned by the raster readers.
+        /// Tiles are laid out as rows (by northern edge) of columns (by western edge); rows or columns that
+        /// repeat the neighbour's edge (overlapping grid-registered tiles) are skipped.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Tiles do not form a complete rectangular grid.</exception>
+        public static HeightMap MergeTiles(this IEnumerable<HeightMap> tiles)
+        {
+            var grids = tiles.Select(t => new TileGrid(t)).ToList();
+            if (grids.Count == 0) throw new ArgumentException("No height map to merge.", nameof(tiles));
+            if (grids.Count == 1) return grids[0].HeightMap;
+
+            List<TileGrid[]> tileRows = grids
+                .GroupBy(g => RoundCoordinate(g.North))
+                .OrderByDescending(g => g.Key)
+                .Select(g => g.OrderBy(t => t.West).ToArray())
+                .ToList();
+
+            // Skip overlapping columns (west edge repeating the previous tile's east edge) and rows (north edge repeating the row above)
+            for (int r = 0; r < tileRows.Count; r++)
+            {
+                var row = tileRows[r];
+                for (int c = 0; c < row.Length; c++)
+                {
+                    if (c > 0) row[c].SkipColumnsUpTo(row[c - 1].East);
+                    if (r > 0) row[c].SkipRowsDownTo(tileRows[r - 1][0].South);
+                }
+            }
+
+            int width = tileRows[0].Sum(t => t.Columns);
+            int height = tileRows.Sum(row => row[0].Rows);
+            foreach (var row in tileRows)
+            {
+                if (row.Any(t => t.Rows != row[0].Rows) || row.Sum(t => t.Columns) != width)
+                {
+                    throw new InvalidOperationException("Cannot merge height maps, tiles do not form a rectangular grid: "
+                        + string.Join(" | ", grids.Select(t => $"{t.HeightMap.Width}x{t.HeightMap.Height} [{t.West}, {t.South}, {t.East}, {t.North}]")));
+                }
+            }
+
+            var coords = new List<GeoPoint>(width * height);
+            foreach (var row in tileRows)
+            {
+                for (int y = row[0].FirstRow; y < row[0].FirstRow + row[0].Rows; y++)
+                {
+                    foreach (var tile in row)
+                    {
+                        int start = y * tile.HeightMap.Width + tile.FirstColumn;
+                        for (int x = 0; x < tile.Columns; x++)
+                            coords.Add(tile.Points[start + x]);
+                    }
+                }
+            }
+
+            var all = grids.Select(g => g.HeightMap).ToList();
+            return new HeightMap(width, height)
+            {
+                Coordinates = coords,
+                Count = coords.Count,
+                Minimum = all.Min(h => h.Minimum),
+                Maximum = all.Max(h => h.Maximum),
+                BoundingBox = new BoundingBox(xmin: all.Min(h => h.BoundingBox.xMin), xmax: all.Max(h => h.BoundingBox.xMax),
+                                              ymin: all.Min(h => h.BoundingBox.yMin), ymax: all.Max(h => h.BoundingBox.yMax),
+                                              zmin: all.Min(h => h.BoundingBox.zMin), zmax: all.Max(h => h.BoundingBox.zMax))
+                { SRID = all[0].BoundingBox.SRID },
+            };
+        }
+
+        private sealed class TileGrid
+        {
+            public TileGrid(HeightMap heightMap)
+            {
+                HeightMap = heightMap;
+                Points = heightMap.Coordinates as IList<GeoPoint> ?? heightMap.Coordinates.ToList();
+                if (Points.Count != heightMap.Width * heightMap.Height)
+                    throw new InvalidOperationException($"Height map has {Points.Count} points, expected {heightMap.Width}x{heightMap.Height}.");
+                Columns = heightMap.Width;
+                Rows = heightMap.Height;
+            }
+
+            public HeightMap HeightMap { get; }
+            public IList<GeoPoint> Points { get; }
+            public int FirstColumn { get; private set; }
+            public int FirstRow { get; private set; }
+            public int Columns { get; private set; }
+            public int Rows { get; private set; }
+
+            public double North => Points[FirstRow * HeightMap.Width].Latitude;
+            public double South => Points[(HeightMap.Height - 1) * HeightMap.Width].Latitude;
+            public double West => Points[FirstColumn].Longitude;
+            public double East => Points[HeightMap.Width - 1].Longitude;
+
+            // half a pixel: positions closer than that to the neighbour's edge are the same sample (1e-9 for single pixel tiles)
+            private double HalfStepX => HeightMap.Width > 1 ? Math.Abs(Points[1].Longitude - Points[0].Longitude) / 2 : 1e-9;
+            private double HalfStepY => HeightMap.Height > 1 ? Math.Abs(Points[0].Latitude - Points[HeightMap.Width].Latitude) / 2 : 1e-9;
+
+            public void SkipColumnsUpTo(double previousEast)
+            {
+                while (Columns > 0 && Points[FirstColumn].Longitude < previousEast + HalfStepX)
+                {
+                    FirstColumn++;
+                    Columns--;
+                }
+            }
+
+            public void SkipRowsDownTo(double previousSouth)
+            {
+                while (Rows > 0 && Points[FirstRow * HeightMap.Width].Latitude > previousSouth - HalfStepY)
+                {
+                    FirstRow++;
+                    Rows--;
+                }
+            }
         }
 
         /// <summary>

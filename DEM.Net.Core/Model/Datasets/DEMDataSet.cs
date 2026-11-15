@@ -107,7 +107,8 @@ namespace DEM.Net.Core
                 Description = "ALOS World 3D - 30m (nicest but contain void areas)",
                 PublicUrl = "http://opentopography.sdsc.edu/raster?opentopoID=OTALOS.112016.4326.2",
                 DataSource = new VRTDataSource("https://opentopography.s3.sdsc.edu/raster/AW3D30/AW3D30_global.vrt"),
-                FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Grid),
+                // 3600x3600 PixelIsArea tiles, no overlap
+                FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Cell),
                 ResolutionMeters = 30,
                 ResolutionArcSeconds = 1,
                 PointsPerDegree = 3600,
@@ -122,7 +123,13 @@ namespace DEM.Net.Core
                 Name = nameof(FABDEM),
                 Description = "Forest And Buildings removed Copernicus DEM",
                 PublicUrl = "https://data.bris.ac.uk/data/dataset/25wfy0f9ukoge2gs7a5mqpq2j7",
-                DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "FABDEM")),
+                // FABDEM v1.2 COGs hosted by Fondazione LINKS on Hugging Face (https://huggingface.co/datasets/links-ads/fabdem-v12).
+                // The "href" in the tile index points to the former dataset location (404): build the bucket URL instead.
+                DataSource = new TileIndexDataSource(
+                    indexUrl: "https://huggingface.co/datasets/links-ads/fabdem-v12/resolve/main/FABDEM_v1-2_tiles.geojson",
+                    indexFilePath: "FABDEM_v1-2_tiles.json",
+                    tileUrl: p => $"https://huggingface.co/buckets/links-ads/fabdem/resolve/tiles/{Path.GetFileNameWithoutExtension(p["zipfile_name"])}/{p["file_name_corrected"]}",
+                    tileFileName: p => p["file_name_corrected"]),
                 FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Cell),
                 ResolutionMeters = 30,
                 ResolutionArcSeconds = 1,
@@ -198,7 +205,8 @@ namespace DEM.Net.Core
                 Description = "NASADEM MEaSUREs Merged DEM Global 1 arc second (30m)",
                 PublicUrl = "http://opentopography.sdsc.edu/raster?opentopoID=OTALOS.112016.4326.2",
                 DataSource = new VRTDataSource("https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be.vrt"),
-                FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Cell),
+                // 3601x3601 PixelIsPoint tiles, 1px overlap
+                FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Grid),
                 ResolutionMeters = 30,
                 ResolutionArcSeconds = 1,
                 PointsPerDegree = 3600,

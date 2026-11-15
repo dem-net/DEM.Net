@@ -141,6 +141,11 @@ namespace DEM.Net.Core
             if (filesToDownload.Count == 0)
             {
                 _logger?.LogTrace("No missing file(s).");
+
+                // New metadata files must reach the in-memory / protobuf catalog, otherwise these tiles stay invisible
+                // (e.g. adjacent tiles needed for interpolation) until some other download refreshes it.
+                if (missingMedata.Count > 0)
+                    _RasterService.LoadManifestMetadata(dataSet, true);
             }
             else
             {
@@ -658,84 +663,15 @@ namespace DEM.Net.Core
                     }
                 }
 
-                HeightMap heightMap;
-                if (tilesHeightMap.Count == 1)
-                {
-                    heightMap = tilesHeightMap.First();
-                    bbox = heightMap.BoundingBox;
-                }
-                else
-                {
-                    if (dataSet == DEMDataSet.TINItaly)
-                    {
-                        var coords = tilesHeightMap.SelectMany(hmap => hmap.Coordinates).Distinct().Sort().ToList();
-
-                        HashSet<double> xBucket = new();
-                        HashSet<double> yBucket = new();
-                        foreach (var c in coords)
-                        {
-                            xBucket.Add(c.Longitude);
-                            yBucket.Add(c.Latitude);
-                        }
-
-                        int totalHeight = yBucket.Count;
-                        int totalWidth = xBucket.Count;
-
-                        heightMap = new HeightMap(totalWidth, totalHeight);
-                        heightMap.BoundingBox = new BoundingBox(xmin: tilesHeightMap.Min(h => h.BoundingBox.xMin)
-                                                                , xmax: tilesHeightMap.Max(h => h.BoundingBox.xMax)
-                                                                , ymin: tilesHeightMap.Min(h => h.BoundingBox.yMin)
-                                                                , ymax: tilesHeightMap.Max(h => h.BoundingBox.yMax)
-                                                                , zmin: tilesHeightMap.Min(h => h.BoundingBox.zMin)
-                                                                , zmax: tilesHeightMap.Max(h => h.BoundingBox.zMax))
-                        { SRID = bbox.SRID };
-                        bbox = heightMap.BoundingBox;
-                        heightMap.Coordinates = coords;
-                        heightMap.Count = totalWidth * totalHeight;
-                        heightMap.Minimum = tilesHeightMap.Min(hmap => hmap.Minimum);
-                        heightMap.Maximum = tilesHeightMap.Max(hmap => hmap.Maximum);
-
-                    }
-                    else
-                    {
-                        // Merge height maps
-                        int totalHeight = tilesHeightMap.GroupBy(h => h.BoundingBox.xMin).Select(g => g.Sum(v => v.Height)).First();
-                        int totalWidth = tilesHeightMap.GroupBy(h => h.BoundingBox.yMin).Select(g => g.Sum(v => v.Width)).First();
-
-                        heightMap = new HeightMap(totalWidth, totalHeight);
-                        heightMap.BoundingBox = new BoundingBox(xmin: tilesHeightMap.Min(h => h.BoundingBox.xMin)
-                                                                , xmax: tilesHeightMap.Max(h => h.BoundingBox.xMax)
-                                                                , ymin: tilesHeightMap.Min(h => h.BoundingBox.yMin)
-                                                                , ymax: tilesHeightMap.Max(h => h.BoundingBox.yMax)
-                                                                , zmin: tilesHeightMap.Min(h => h.BoundingBox.zMin)
-                                                                , zmax: tilesHeightMap.Max(h => h.BoundingBox.zMax))
-                        { SRID = bbox.SRID };
-                        bbox = heightMap.BoundingBox;
-                        heightMap.Coordinates = tilesHeightMap.SelectMany(hmap => hmap.Coordinates).Sort();
-                        heightMap.Count = totalWidth * totalHeight;
-                        heightMap.Minimum = tilesHeightMap.Min(hmap => hmap.Minimum);
-                        heightMap.Maximum = tilesHeightMap.Max(hmap => hmap.Maximum);
-                    }
-                }
-                //System.Diagnostics.Debug.Assert(heightMap.Count == tilesHeightMap.Sum(h => h.Count));
-
+                // Stitch tiles (also removes the overlapping seams of grid-registered tiles, e.g. TINItaly)
+                HeightMap heightMap = tilesHeightMap.MergeTiles();
+                heightMap.BoundingBox.SRID = bbox.SRID;
+                bbox = heightMap.BoundingBox;
 
                 return heightMap;
 
             }
 
-        }
-
-        private (List<GeoPoint> coords, int width, int height) MergeHeightMapCoords(List<HeightMap> tilesHeightMap)
-        {
-            HashSet<double> lats = new HashSet<double>();
-            HashSet<double> longs = new HashSet<double>();
-            var coords = tilesHeightMap.SelectMany(hmap => hmap.Coordinates)
-                           .OrderByDescending(pt => { lats.Add(pt.Latitude); return pt.Latitude; })
-                           .ThenBy(pt => { longs.Add(pt.Longitude); return pt.Longitude; })
-                           .ToList();
-
-            return (coords, longs.Count, lats.Count);
         }
 
         private List<FileMetadata> CreateMissingTilesMetadata(BoundingBox bbox, DEMDataSet dataSet, List<FileMetadata> bboxMetadata)
@@ -766,6 +702,10 @@ namespace DEM.Net.Core
             // get x/y increments
             double tileSizeX = ((double)templateTile.Width - registrationOffset) * templateTile.PixelScaleX;
             double tileSizeY = ((double)templateTile.Height - registrationOffset) * templateTile.PixelScaleY;
+
+            // template position in the tile index grid (relative to the covering tiles bbox)
+            int templateIndexX = (int)Math.Round((templateTile.BoundingBox.xMin - tilesBbox.xMin) / tileSizeX);
+            int templateIndexY = (int)Math.Round((templateTile.BoundingBox.yMin - tilesBbox.yMin) / tileSizeY);
 
             // output list
             HashSet<FileMetadata> missingTiles = new HashSet<FileMetadata>();
@@ -799,40 +739,19 @@ namespace DEM.Net.Core
 
 
 
-                        missingTile.DataStartLon = tilesBbox.xMin + tileSizeX * xIndex;
-                        missingTile.DataEndLat = tilesBbox.yMin + tileSizeY * yIndex; // suppose origin is NW
-
-
-                        missingTile.DataEndLon = missingTile.DataStartLon + (missingTile.Width - registrationOffset) * missingTile.pixelSizeX;
-                        missingTile.DataStartLat = missingTile.DataEndLat - (missingTile.Height - registrationOffset) * missingTile.pixelSizeY;
-
-                        if (missingTile.DataStartLon > missingTile.DataEndLon)
-                        {
-                            double temp = missingTile.DataStartLon;
-                            missingTile.DataStartLon = missingTile.DataEndLon;
-                            missingTile.DataEndLon = temp;
-                        }
-                        if (missingTile.DataStartLat > missingTile.DataEndLat)
-                        {
-                            double temp = missingTile.DataStartLat;
-                            missingTile.DataStartLat = missingTile.DataEndLat;
-                            missingTile.DataEndLat = temp;
-                        }
-
-                        if (templateTile.FileFormat.Registration == DEMFileRegistrationMode.Grid)
-                        {
-                            missingTile.PhysicalStartLat = Math.Round(missingTile.DataStartLat - (missingTile.PixelScaleY / 2.0), 10);
-                            missingTile.PhysicalStartLon = Math.Round(missingTile.DataStartLon - (missingTile.PixelScaleY / 2.0), 10);
-                            missingTile.PhysicalEndLat = Math.Round(missingTile.DataEndLat + (missingTile.PixelScaleY / 2.0), 10);
-                            missingTile.PhysicalEndLon = Math.Round(missingTile.DataEndLon + (missingTile.PixelScaleY / 2.0), 10);
-                        }
-                        else
-                        {
-                            missingTile.PhysicalStartLat = missingTile.DataStartLat;
-                            missingTile.PhysicalStartLon = missingTile.DataStartLon;
-                            missingTile.PhysicalEndLat = missingTile.DataEndLat;
-                            missingTile.PhysicalEndLon = missingTile.DataEndLon;
-                        }
+                        // The missing tile is the template tile translated by whole tiles: same internal layout
+                        // (data bounds span Width-1 pixels for cell registration, physical bounds...) so that its
+                        // samples fall on the same grid as the real tiles and can be stitched to them.
+                        double offsetX = tileSizeX * (xIndex - templateIndexX);
+                        double offsetY = tileSizeY * (yIndex - templateIndexY);
+                        missingTile.DataStartLon = templateTile.DataStartLon + offsetX;
+                        missingTile.DataEndLon = templateTile.DataEndLon + offsetX;
+                        missingTile.DataStartLat = templateTile.DataStartLat + offsetY;
+                        missingTile.DataEndLat = templateTile.DataEndLat + offsetY;
+                        missingTile.PhysicalStartLon = templateTile.PhysicalStartLon + offsetX;
+                        missingTile.PhysicalEndLon = templateTile.PhysicalEndLon + offsetX;
+                        missingTile.PhysicalStartLat = templateTile.PhysicalStartLat + offsetY;
+                        missingTile.PhysicalEndLat = templateTile.PhysicalEndLat + offsetY;
 
                         missingTile.VirtualMetadata = true;
 
@@ -1192,8 +1111,9 @@ namespace DEM.Net.Core
                 GeoPoint curPoint = new GeoPoint(left.DataEndLat, left.DataStartLon);
 
                 // For cell registered datasets, DataStart is not matching the start data point. Start data point is at cell center (0.5 pixel off)
+                // (pixelSizeY is negative: the first row center is half a pixel south of the north edge)
                 double endLat = left.FileFormat.Registration == DEMFileRegistrationMode.Cell
-                                ? left.DataEndLat + left.PixelScaleY / 2d
+                                ? left.DataEndLat + left.pixelSizeY / 2d
                                 : left.DataEndLat;
 
                 // Y Index in tile coords
@@ -1276,8 +1196,9 @@ namespace DEM.Net.Core
                 GeoPoint curPoint = new GeoPoint(left.DataEndLat, left.DataStartLon);
 
                 // For cell registered datasets, DataStart is not matching the start data point. Start data point is at cell center (0.5 pixel off)
+                // (pixelSizeY is negative: the first row center is half a pixel south of the north edge)
                 double endLat = left.FileFormat.Registration == DEMFileRegistrationMode.Cell
-                                ? left.DataEndLat + left.PixelScaleY / 2d
+                                ? left.DataEndLat + left.pixelSizeY / 2d
                                 : left.DataEndLat;
 
                 // Y Index in tile coords
@@ -1419,9 +1340,6 @@ namespace DEM.Net.Core
                         (metadata.DataEndLat - lat) / metadata.pixelSizeY
                         : (lat - metadata.DataEndLat) / metadata.pixelSizeY;
                     xPixel = (lon - metadata.DataStartLon) / metadata.pixelSizeX;
-                    // If at pixel center (ending by .5, .5), we are on the data point, so no need for adjacent raster checks
-                    xInterpolationAmount = (double)(xPixel) % 1d;
-                    yInterpolationAmount = (double)(yPixel) % 1d;
                 }
                 else
                 {
@@ -1431,11 +1349,12 @@ namespace DEM.Net.Core
                          ((metadata.PhysicalEndLat + metadata.pixelSizeY / 2) - lat) / metadata.pixelSizeY
                         : (lat - (metadata.PhysicalEndLat + metadata.pixelSizeY / 2)) / metadata.pixelSizeY;
                     xPixel = (lon - (metadata.PhysicalStartLon + metadata.pixelSizeX / 2)) / metadata.pixelSizeX;
-
-                    xInterpolationAmount = Math.Abs((double)(xPixel) % 1d);
-                    yInterpolationAmount = Math.Abs((double)(yPixel) % 1d);
-
                 }
+
+                // Weights relative to the north west data point (floor). Pixel coordinates are negative within
+                // half a pixel of the west / north edges of cell registered tiles: a modulo would mirror the weight.
+                xInterpolationAmount = xPixel - Math.Floor(xPixel);
+                yInterpolationAmount = yPixel - Math.Floor(yPixel);
 
 
                 bool xOnDataPoint = Math.Abs(xInterpolationAmount) < EPSILON;
@@ -1526,50 +1445,46 @@ namespace DEM.Net.Core
             }
             else
             {
-                int yScale = Math.Sign(mainTile.pixelSizeY);
+                // Locate the requested pixel center geographically, then find the adjacent tile holding that sample.
+                // (Comparing tile origins assumed 1° tiles and exact tie points, which fails on noisy tie points like
+                // AW3D30's 4.9999999999999964, and silently read pixels from the opposite side of the main tile.)
+                double lon = PixelCenterLon(mainTile, x);
+                double lat = PixelCenterLat(mainTile, y);
                 FileMetadata tile = null;
+                newX = newY = 0;
                 foreach (var t in tiles.Keys)
                 {
-                    var xOffset = Math.Abs(t.DataStartLon - mainTile.DataStartLon - xTileOffset);
-                    var yOffset = Math.Abs(t.DataStartLat - mainTile.DataStartLat - yScale * yTileOffset);
-                    if (xOffset < float.Epsilon && yOffset < float.Epsilon)
+                    if (t == mainTile) continue;
+                    int tx = (int)Math.Round((lon - PixelCenterLon(t, 0)) / t.pixelSizeX);
+                    int ty = (int)Math.Round((lat - PixelCenterLat(t, 0)) / t.pixelSizeY);
+                    if (tx >= 0 && tx < t.Width && ty >= 0 && ty < t.Height)
                     {
                         tile = t;
-                        break;
+                        newX = tx;
+                        newY = ty;
+                        return tile;
                     }
                 }
-                //FileMetadata tile = tiles.Keys.FirstOrDefault(
-                //    t => Math.Abs(t.DataStartLat - mainTile.DataStartLat + yScale * yTileOffset) < float.Epsilon
-                //    &&  < float.Epsilon);
 
-                if (tile == null)
-                {
-                    // No adjacent tile found (adjacent tiles may not have been set)
-                    if (x == mainTile.Width
-                        || y == mainTile.Height)
-                    {
-                        _logger.LogDebug($"No adjacent tile found (adjacent tiles may not have been set). Returning main tile. (x,y, tile) = ({x},{y},{mainTile})");
-                        newX = x == mainTile.Width ? mainTile.Width - 1 : x;
-                        newY = y == mainTile.Height ? mainTile.Height - 1 : y;
-                        return mainTile;
-                    }
-                    else
-                    {
-                        _logger.LogWarning($"No adjacent tile found(adjacent tiles may not have been set). (x, y, tile) = ({x},{y},{mainTile})");
-                        newX = xTileOffset == 0 ? x : xTileOffset > 0 ? x % mainTile.Width : (mainTile.Width + x) % mainTile.Width;
-                        newY = yTileOffset == 0 ? y : yTileOffset < 0 ? (mainTile.Height + y) % mainTile.Height : y % mainTile.Height;
-                        return mainTile;
-                        //
-                    }
-                }
-                else
-                {
-                    newX = xTileOffset > 0 ? x % mainTile.Width : (mainTile.Width + x) % mainTile.Width;
-                    newY = yTileOffset < 0 ? (mainTile.Height + y) % mainTile.Height : y % mainTile.Height;
-                    return tile;
-                }
+                // No adjacent tile loaded (dataset edge or missing tile): use the nearest pixel of the main tile.
+                // Wrapping the index around would read the opposite side of the tile.
+                _logger.LogDebug($"No adjacent tile found for pixel ({x},{y}) of {mainTile}, using nearest edge pixel.");
+                newX = Math.Clamp(x, 0, mainTile.Width - 1);
+                newY = Math.Clamp(y, 0, mainTile.Height - 1);
+                return mainTile;
             }
         }
+
+        // Pixel center coordinates, consistent with the pixel coordinates used for interpolation in GetElevationAtPoint
+        private static double PixelCenterLon(FileMetadata tile, int x)
+            => tile.FileFormat.Registration == DEMFileRegistrationMode.Cell
+                ? tile.PhysicalStartLon + (x + 0.5) * tile.pixelSizeX
+                : tile.DataStartLon + x * tile.pixelSizeX;
+
+        private static double PixelCenterLat(FileMetadata tile, int y)
+            => tile.FileFormat.Registration == DEMFileRegistrationMode.Cell
+                ? tile.PhysicalEndLat + (y + 0.5) * tile.pixelSizeY
+                : tile.DataEndLat + y * tile.pixelSizeY;
 
 
 
