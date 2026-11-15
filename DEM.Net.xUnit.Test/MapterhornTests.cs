@@ -148,6 +148,31 @@ namespace DEM.Net.Test
             Assert.InRange(hMap.Maximum, 4400, 4480);
         }
 
+        [Fact(DisplayName = "Mapterhorn elevations of points and lines exactly on a tile edge")]
+        public void ElevationOnTileEdge()
+        {
+            // OSM features from PMTiles are cut at z15 tile edges, which are also z14 edges: their vertices lie exactly
+            // on the edge, here between z14 tiles x=8523 and 8524 (Verbier, all above 1000 m)
+            var dataSet = DEMDataSet.GetMapterhorn(14);
+            double edgeLon = 8524 / 16384d * 360d - 180d;
+            var onEdge = new[] { new GeoPoint(46.04, edgeLon), new GeoPoint(46.045, edgeLon), new GeoPoint(46.05, edgeLon) };
+            _elevationService.DownloadMissingFiles(dataSet, new BoundingBox(edgeLon - 0.01, edgeLon + 0.01, 46.03, 46.06));
+
+            var points = _elevationService.GetPointsElevation(onEdge.Select(p => p.Clone()), dataSet)?.ToList();
+            Assert.NotNull(points);
+            Assert.All(points, p => Assert.InRange(p.Elevation.GetValueOrDefault(), 1000, 3500));
+
+            foreach (var (from, to) in new[] { (edgeLon, edgeLon + 0.003), (edgeLon - 0.003, edgeLon) })
+            {
+                var line = _elevationService.GetLineGeometryElevation(new[] { new GeoPoint(46.045, from), new GeoPoint(46.046, to) }, dataSet);
+                Assert.NotNull(line);
+                Assert.All(line, p => Assert.InRange(p.Elevation.GetValueOrDefault(), 1000, 3500));
+            }
+
+            // No points (an area without buildings): nothing to download, not the whole world
+            Assert.Empty(_elevationService.GetPointsElevation(Enumerable.Empty<GeoPoint>(), dataSet));
+        }
+
         [Fact(DisplayName = "Mapterhorn line elevation is sampled at dataset resolution, in WGS84")]
         public void LineElevation()
         {
