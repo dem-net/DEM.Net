@@ -185,12 +185,7 @@ namespace DEM.Net.Core
                     // metadata.BitsPerSample
                     // When 16 we have 2 bytes per sample
                     // When 32 we have 4 bytes per sample
-                    int bytesPerSample = metadata.BitsPerSample / 8;
-                    byte[] byteScanline = new byte[metadata.ScanlineSize];
-
-                    TiffFile.ReadScanline(byteScanline, y);
-
-                    heightValue = GetElevationAtPoint(metadata, x, byteScanline);
+                    heightValue = GetElevationAtPoint(metadata, x, GetScanline(metadata, y));
                 }
             }
             catch (Exception e)
@@ -198,6 +193,29 @@ namespace DEM.Net.Core
                 throw new Exception($"Error in ParseGeoDataAtPoint: {e.Message}");
             }
             return heightValue;
+        }
+
+        // The two last decoded rows: interpolating a point reads 2 rows, consecutive points mostly the same ones.
+        // Each row read decodes (and for compressed files decompresses) a whole scanline.
+        private int _row0 = -1, _row1 = -1;
+        private byte[] _scanline0, _scanline1;
+
+        private byte[] GetScanline(FileMetadata metadata, int y)
+        {
+            if (y == _row0) return _scanline0;
+            if (y == _row1)
+            {
+                (_row0, _row1) = (_row1, _row0);
+                (_scanline0, _scanline1) = (_scanline1, _scanline0);
+                return _scanline0;
+            }
+
+            // reuse the least recently used buffer
+            byte[] buffer = _scanline1 is { } old && old.Length == metadata.ScanlineSize ? old : new byte[metadata.ScanlineSize];
+            TiffFile.ReadScanline(buffer, y);
+            (_row1, _scanline1) = (_row0, _scanline0);
+            (_row0, _scanline0) = (y, buffer);
+            return buffer;
         }
 
         public float GetElevationAtPoint(FileMetadata metadata, int offset, byte[] buffer)

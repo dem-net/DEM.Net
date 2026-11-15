@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -44,7 +45,7 @@ namespace DEM.Net.Core
         public const int HGT3601 = 25934402; // 3601 lines of 3601 samples of 2 bytes
         public const int HGT1201 = 2884802; // 1201 lines of 1201 samples of 2 bytes
 
-        private Stream _hgtStream;
+        private FileStream _hgtStream;
         private readonly string _filename;
         private readonly long _fileBytesCount;
         public HGTFile(string filename)
@@ -66,44 +67,44 @@ namespace DEM.Net.Core
         }
 
 
+        // The two last rows read: interpolating a point reads 2 rows, consecutive points mostly the same ones.
+        // (Formerly a whole row was read and copied for each sample, ~7 KB per sample of an SRTM1 tile.)
+        private int _row0 = -1, _row1 = -1;
+        private byte[] _scanline0, _scanline1;
+
+        private ReadOnlySpan<byte> GetScanline(FileMetadata metadata, int y)
+        {
+            if (y == _row0) return _scanline0;
+            if (y == _row1)
+            {
+                (_row0, _row1) = (_row1, _row0);
+                (_scanline0, _scanline1) = (_scanline1, _scanline0);
+                return _scanline0;
+            }
+
+            // reuse the least recently used buffer
+            byte[] buffer = _scanline1 is { } old && old.Length == metadata.ScanlineSize ? old : new byte[metadata.ScanlineSize];
+            int read = RandomAccess.Read(_hgtStream.SafeFileHandle, buffer, (long)metadata.ScanlineSize * y);
+            if (read != buffer.Length)
+                throw new EndOfStreamException($"Cannot read row {y} of {_filename}.");
+            (_row1, _scanline1) = (_row0, _scanline0);
+            (_row0, _scanline0) = (y, buffer);
+            return buffer;
+        }
+
+        /// <summary>HGT files are raw big endian samples, row after row.</summary>
         private float GetHGTValue(FileMetadata metadata, int x, int y)
         {
-
             int bytesPerSample = metadata.BitsPerSample / 8;
-            byte[] byteScanline = new byte[metadata.ScanlineSize];
+            ReadOnlySpan<byte> sample = GetScanline(metadata, y).Slice(x * bytesPerSample, bytesPerSample);
 
-            _hgtStream.Seek(metadata.ScanlineSize * y, SeekOrigin.Begin);
-            _hgtStream.ReadExactly(byteScanline, 0, metadata.ScanlineSize);
-            byte[] heightBytes = new byte[bytesPerSample];
-
-            float heightValue;
-            if (BitConverter.IsLittleEndian)
+            return metadata.SampleFormat switch
             {
-                // reverse bytes
-                for (int i = 0; i < bytesPerSample; i++)
-                {
-                    heightBytes[i] = byteScanline[x * bytesPerSample + bytesPerSample - i - 1];
-                }
-                heightValue = metadata.SampleFormat switch
-                {
-                    RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(heightBytes, 0),
-                    RasterSampleFormat.INTEGER => BitConverter.ToInt16(heightBytes, 0),
-                    RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(heightBytes, 0),
-                    _ => throw new Exception("Sample format unsupported."),
-                };
-            }
-            else
-            {
-                heightValue = metadata.SampleFormat switch
-                {
-                    RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(byteScanline, x * bytesPerSample),
-                    RasterSampleFormat.INTEGER => BitConverter.ToInt16(byteScanline, x * bytesPerSample),
-                    RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(byteScanline, x * bytesPerSample),
-                    _ => throw new Exception("Sample format unsupported."),
-                };
-            }
-
-            return heightValue;
+                RasterSampleFormat.FLOATING_POINT => BinaryPrimitives.ReadSingleBigEndian(sample),
+                RasterSampleFormat.INTEGER => BinaryPrimitives.ReadInt16BigEndian(sample),
+                RasterSampleFormat.UNSIGNED_INTEGER => BinaryPrimitives.ReadUInt16BigEndian(sample),
+                _ => throw new NotSupportedException($"Sample format {metadata.SampleFormat} unsupported."),
+            };
         }
 
         public FileMetadata ParseMetaData(DEMFileDefinition format)

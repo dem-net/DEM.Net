@@ -99,6 +99,24 @@ namespace DEM.Net.Test
         }
 
         [Fact]
+        public void HgtSamplesAreReadAtTheirOffset()
+        {
+            string file = Directory.GetFiles(Path.Combine(_root, "tiles"), "*.hgt").Single();
+            byte[] raw = File.ReadAllBytes(file); // big endian int16 samples, row after row
+            var rasterService = _services.GetRequiredService<RasterService>();
+            var metadata = rasterService.ParseMetadata(file, _dataSet.FileFormat);
+
+            var random = new Random(7);
+            using var hgt = rasterService.OpenFile(file, DEMFileType.SRTM_HGT);
+            for (int i = 0; i < 2000; i++)
+            {
+                int x = random.Next(metadata.Width), y = random.Next(metadata.Height);
+                short expected = System.Buffers.Binary.BinaryPrimitives.ReadInt16BigEndian(raw.AsSpan((y * metadata.Width + x) * 2));
+                Assert.Equal(expected, hgt.GetElevationAtPoint(metadata, x, y));
+            }
+        }
+
+        [Fact]
         public async Task LocalDatasetsCannotDownload()
         {
             var report = new DemFileReport { LocalName = Path.Combine(_root, "missing.hgt") };
