@@ -25,6 +25,10 @@ namespace DEM.Net.Core.Datasets
         /// <summary>
         /// Data comes from a GeoJSON tile index listing one downloadable raster per feature (e.g. FABDEM on Hugging Face)
         /// </summary>
-        TileIndex = 5
+        TileIndex = 5,
+        /// <summary>
+        /// Data comes from a XYZ (slippy map) tile pyramid of encoded elevation images (e.g. Mapterhorn Terrarium tiles)
+        /// </summary>
+        XyzTiles = 6
     }
 }

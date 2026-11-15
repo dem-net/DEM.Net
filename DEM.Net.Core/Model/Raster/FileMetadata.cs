@@ -76,7 +76,15 @@ namespace DEM.Net.Core
         [ProtoMember(2)]
         public string Version { get; set; }
         [ProtoMember(3)]
-        public string Filename { get; set; }
+        public string Filename
+        {
+            get => _filename;
+            set { _filename = value; _fileNameOnly = null; }
+        }
+        private string _filename;
+        private string _fileNameOnly;
+        // Identity of the file: raster dictionaries look it up several times per interpolated point
+        private string FileNameOnly => _fileNameOnly ??= Path.GetFileName(_filename) ?? string.Empty;
         [ProtoMember(4)]
         public int Height { get; set; }
         [ProtoMember(5)]
@@ -175,14 +183,16 @@ namespace DEM.Net.Core
         }
         public override int GetHashCode()
         {
-            return Path.GetFileName(Filename).GetHashCode();
+            return FileNameOnly.GetHashCode();
         }
 
         public bool Equals(FileMetadata other)
         {
-            if (this == null || other == null)
+            if (other == null)
                 return false;
-            return this.GetHashCode().Equals(other.GetHashCode());
+            if (ReferenceEquals(this, other))
+                return true;
+            return string.Equals(FileNameOnly, other.FileNameOnly);
         }
 
         private BoundingBox _boundingBox;

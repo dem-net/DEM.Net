@@ -146,6 +146,14 @@ namespace DEM.Net.Core
                 // (e.g. adjacent tiles needed for interpolation) until some other download refreshes it.
                 if (missingMedata.Count > 0)
                     _RasterService.LoadManifestMetadata(dataSet, true);
+                else if (dataSet.DataSource.DataSourceType == Datasets.DEMDataSourceType.XyzTiles && report.Count() > 0)
+                {
+                    // On demand tile caches grow all the time: after an interrupted run the protobuf catalog can miss
+                    // tiles that are on disk with their metadata. Missing tiles would silently read as no data.
+                    var catalog = new HashSet<string>(_RasterService.LoadManifestMetadata(dataSet, false).Select(m => Path.GetFileName(m.Filename)));
+                    if (report.Any(r => !catalog.Contains(Path.GetFileName(r.LocalName))))
+                        _RasterService.LoadManifestMetadata(dataSet, true);
+                }
             }
             else
             {
@@ -289,6 +297,11 @@ namespace DEM.Net.Core
             {
                 throw new Exception("Geometry SRID must be set to 4326 (WGS 84)");
             }
+            if (dataSet.SRID != Reprojection.SRID_GEODETIC)
+            {
+                // Grid intersections below are computed in degrees: projected datasets are sampled instead
+                return GetProjectedLineElevation(lineStringGeometry, dataSet, interpolationMode, behavior);
+            }
 
             BoundingBox bbox = lineStringGeometry.GetBoundingBox();
             List<FileMetadata> tiles = this.GetCoveringFiles(bbox, dataSet);
@@ -345,6 +358,52 @@ namespace DEM.Net.Core
         /// <param name="behavior">Action to use when no data is found in dataset</param>
         /// <remarks>Output can be BIG, as all elevations will be returned.</remarks>
         /// <returns></returns>
+        private const int MaxProjectedLineSamples = 100_000;
+
+        /// <summary>
+        /// Line elevation for datasets not in WGS84 (e.g. Web Mercator tiles): the WGS84 line is sampled at the dataset
+        /// ground resolution and each sample is interpolated. Returned points are in WGS84.
+        /// </summary>
+        private List<GeoPoint> GetProjectedLineElevation(Geometry lineStringGeometry, DEMDataSet dataSet, InterpolationMode interpolationMode, NoDataBehavior behavior)
+        {
+            var segments = lineStringGeometry.Segments().ToList();
+            double totalMeters = segments.Sum(s => s.Start.DistanceTo(s.End));
+
+            double centerLat = lineStringGeometry.GetBoundingBox().Center[1];
+            double step = dataSet.SRID == Reprojection.SRID_PROJECTED_MERCATOR
+                ? dataSet.ResolutionMeters * Math.Cos(centerLat * Math.PI / 180d) // Web Mercator pixels shrink with latitude
+                : dataSet.ResolutionMeters;
+            step = Math.Max(step, totalMeters / MaxProjectedLineSamples);
+
+            var samples = new List<GeoPoint>();
+            int id = 0;
+            foreach (var segment in segments)
+            {
+                double length = segment.Start.DistanceTo(segment.End);
+                int n = Math.Max(1, (int)Math.Ceiling(length / step));
+                for (int i = samples.Count == 0 ? 0 : 1; i <= n; i++)
+                {
+                    double t = i / (double)n;
+                    samples.Add(new GeoPoint(id++,
+                        segment.Start.Latitude + (segment.End.Latitude - segment.Start.Latitude) * t,
+                        segment.Start.Longitude + (segment.End.Longitude - segment.Start.Longitude) * t));
+                }
+            }
+
+            var elevated = GetPointsElevation(samples, dataSet, interpolationMode, behavior, downloadMissingFiles: false);
+            if (elevated == null)
+                return new List<GeoPoint>();
+
+            // back to WGS84, in line order
+            var byId = elevated.ToDictionary(p => p.Id);
+            foreach (var sample in samples)
+            {
+                if (byId.TryGetValue(sample.Id, out var p))
+                    sample.Elevation = p.Elevation;
+            }
+            return samples;
+        }
+
         public List<GeoPoint> GetLineGeometryElevation(IEnumerable<GeoPoint> lineGeoPoints, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
         {
             if (lineGeoPoints == null)
@@ -496,6 +555,9 @@ namespace DEM.Net.Core
                 }  // Ensures all geotifs are properly closed
             }
 
+            // Location is returned as requested (WGS84), not in the dataset projection
+            geoPoint.Latitude = lat;
+            geoPoint.Longitude = lon;
             return geoPoint;
         }
 
@@ -828,12 +890,30 @@ namespace DEM.Net.Core
         public IEnumerable<GeoPoint> GetElevationData(IEnumerable<GeoPoint> intersections, RasterFileDictionary adjacentRasters, List<FileMetadata> segTiles, IInterpolator interpolator, NoDataBehavior behavior)
         {
             // Group by raster file for sequential and faster access
+            // Adjacent tiles are only needed near the tile edges: the search (one list per point) is skipped elsewhere
+            var noAdjacentTiles = new List<FileMetadata>(0);
+            FileMetadata lastTile = null;
+            FileMetadata FindTile(GeoPoint point)
+            {
+                if (lastTile != null && this.IsPointInTile(lastTile, point))
+                    return lastTile;
+                var tile = segTiles.FirstOrDefault(t => this.IsPointInTile(t, point));
+                if (tile != null) lastTile = tile;
+                return tile;
+            }
+            List<FileMetadata> FindAdjacentTiles(FileMetadata tile, GeoPoint point)
+            {
+                if (segTiles.Count == 1 || (tile != null && this.IsPointFarFromTileEdges(tile, point)))
+                    return noAdjacentTiles;
+                return segTiles.Where(t => this.IsPointInAdjacentTile(t, point)).ToList();
+            }
             var pointsByTileQuery = from point in intersections
+                                    let tile = FindTile(point)
                                     let pointTile = new
                                     {
                                         Point = point,
-                                        Tile = segTiles.FirstOrDefault(t => this.IsPointInTile(t, point)),
-                                        AdjacentTiles = segTiles.Where(t => this.IsPointInAdjacentTile(t, point)).ToList()
+                                        Tile = tile,
+                                        AdjacentTiles = FindAdjacentTiles(tile, point)
                                     }
                                     group pointTile by pointTile.Tile into pointsByTile
                                     select pointsByTile;
@@ -1305,6 +1385,16 @@ namespace DEM.Net.Core
               && (tileBbox.yMax >= lat && tileBbox.yMin <= lat); // isInsideY
 
         }
+        // Far enough from the edges for IsPointInAdjacentTile to only match the tile itself (twice its margin)
+        private bool IsPointFarFromTileEdges(FileMetadata tile, GeoPoint point)
+        {
+            double marginX = Math.Abs(tile.PixelScaleX) * 8d;
+            double marginY = Math.Abs(tile.PixelScaleY) * 4d;
+            BoundingBox tileBbox = tile.BoundingBox;
+            return point.Longitude - marginX > tileBbox.xMin && point.Longitude + marginX < tileBbox.xMax
+                && point.Latitude - marginY > tileBbox.yMin && point.Latitude + marginY < tileBbox.yMax;
+        }
+
         // is the tile a tile just next to the tile the point is in ?
         private bool IsPointInAdjacentTile(FileMetadata tile, GeoPoint point)
         {
@@ -1526,9 +1616,8 @@ namespace DEM.Net.Core
                 if (downloadMissingFiles)
                     this.DownloadMissingFiles(dataSet, elevationLine.GetBoundingBox());
 
+                // WGS84 points, whatever the dataset projection
                 var geoPoints = this.GetLineGeometryElevation(elevationLine, dataSet);
-                if (dataSet.SRID != Reprojection.SRID_GEODETIC)
-                    geoPoints = geoPoints.ReprojectTo(dataSet.SRID, Reprojection.SRID_GEODETIC).ToList();
 
                 var metrics = geoPoints.ComputeVisibilityMetrics(sourceVerticalOffset, targetVerticalOffset, dataSet.NoDataValue);
 

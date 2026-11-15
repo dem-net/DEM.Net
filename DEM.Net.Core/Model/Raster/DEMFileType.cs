@@ -50,5 +50,10 @@ namespace DEM.Net.Core
         /// <remarks>See https://en.wikipedia.org/wiki/Esri_grid</remarks>
         ASCIIGridGzip,
         TerrainRGB,
+        /// <summary>
+        /// Terrarium encoded elevation image tile (Web Mercator, height = R*256 + G + B/256 - 32768)
+        /// </summary>
+        /// <remarks>See https://github.com/tilezen/joerd/blob/master/docs/formats.md#terrarium</remarks>
+        Terrarium,
     }
 }
