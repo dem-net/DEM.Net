@@ -23,9 +23,6 @@ namespace DEM.Net.Core
         public AdornmentsService(MeshService meshService, ILogger<AdornmentsService> logger)
         {
 
-            if ( RuntimeInformation.IsOSPlatform( OSPlatform.Linux ) )
-              throw new PlatformNotSupportedException( "AdornmentsService is not supported on Linux platform." );
-
             this._meshService = meshService;
             this._logger = logger;
         }
