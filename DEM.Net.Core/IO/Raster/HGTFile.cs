@@ -55,6 +55,11 @@ namespace DEM.Net.Core
         }
         public float GetElevationAtPoint(FileMetadata metadata, int x, int y)
         {
+            ArgumentOutOfRangeException.ThrowIfNegative(x);
+            ArgumentOutOfRangeException.ThrowIfNegative(y);
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(x, metadata.Width);
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(y, metadata.Height);
+
             float value = GetHGTValue(metadata, x, y);
 
             return value;

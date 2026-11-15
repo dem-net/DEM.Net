@@ -60,6 +60,7 @@ namespace DEM.Net.Test
             
         }
 
+        [Trait("Category", "Network")]
         [Theory()]
         [InlineData(true)]
         [InlineData(false)]

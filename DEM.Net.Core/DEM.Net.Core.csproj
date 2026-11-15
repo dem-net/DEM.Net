@@ -4,20 +4,6 @@
 		<UserSecretsId>a9a5d6e1-3bb8-4dfd-ac6a-861f60dada50</UserSecretsId>
 	</PropertyGroup>
 	<ItemGroup>
-		<Compile Remove="Services\CourbesNiveau\**" />
-		<Compile Remove="Services\Lab\**" />
-		<Compile Remove="Services\VisualisationServices\**" />
-		<Compile Remove="Services\Voronoi\**" />
-		<EmbeddedResource Remove="Services\CourbesNiveau\**" />
-		<EmbeddedResource Remove="Services\Lab\**" />
-		<EmbeddedResource Remove="Services\VisualisationServices\**" />
-		<EmbeddedResource Remove="Services\Voronoi\**" />
-		<None Remove="Services\CourbesNiveau\**" />
-		<None Remove="Services\Lab\**" />
-		<None Remove="Services\VisualisationServices\**" />
-		<None Remove="Services\Voronoi\**" />
-	</ItemGroup>
-	<ItemGroup>
 		<PackageReference Include="BitMiracle.LibTiff.NET" />
 		<PackageReference Include="DotSpatial.Projections.NetStandard" />
 		<PackageReference Include="LazyCache" />

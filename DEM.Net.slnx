@@ -1,0 +1,28 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/License/">
+    <File Path="LICENSE - ThirdParty.md" />
+    <File Path="LICENSE.md" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="DEM.Net.Benchmarks/DEM.Net.Benchmarks.csproj" />
+  <Project Path="DEM.Net.Core/DEM.Net.Core.csproj" />
+  <Project Path="DEM.Net.glTF/DEM.Net.glTF.csproj" />
+  <Project Path="DEM.Net.xUnit.Test/DEM.Net.xUnit.Test.csproj" />
+  <Properties Name="MonoDevelopProperties">
+    <Property Name="$0.DotNetNamingPolicy" Value="$1" />
+    <Property Name="$0.StandardHeader" Value="$2" />
+    <Property Name="$0.VersionControlPolicy" Value="$3" />
+    <Property Name="$1.DirectoryNamespaceAssociation" Value="PrefixedHierarchical" />
+    <Property Name="description" Value="Elevation library for .Net Core" />
+    <Property Name="Policies" Value="$0" />
+  </Properties>
+</Solution>

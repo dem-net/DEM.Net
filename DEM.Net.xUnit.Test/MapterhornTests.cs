@@ -112,6 +112,7 @@ namespace DEM.Net.Test
             Assert.Equal(0.25f, quarter[1], 3); // u = 0.25
         }
 
+        [Trait("Category", "Network")]
         [Theory(DisplayName = "Mapterhorn point elevation")]
         [InlineData(12, 45.97637, 7.65861, 4440, 50)] // Matterhorn summit (19 m pixels smooth the peak)
         [InlineData(15, 45.179337, 5.721421, 217, 3)] // Grenoble
@@ -124,6 +125,7 @@ namespace DEM.Net.Test
             Assert.InRange(point.Elevation.GetValueOrDefault(), expected - tolerance, expected + tolerance);
         }
 
+        [Trait("Category", "Network")]
         [Fact(DisplayName = "Mapterhorn zoom 17 resolves the Matterhorn summit")]
         public void SummitAtMaxZoom()
         {
@@ -134,6 +136,7 @@ namespace DEM.Net.Test
             Assert.InRange(hMap.Maximum, 4470, 4480);
         }
 
+        [Trait("Category", "Network")]
         [Fact(DisplayName = "Mapterhorn height map spans tile seams without gaps")]
         public void HeightMapAcrossTiles()
         {
@@ -148,6 +151,7 @@ namespace DEM.Net.Test
             Assert.InRange(hMap.Maximum, 4400, 4480);
         }
 
+        [Trait("Category", "Network")]
         [Fact(DisplayName = "Mapterhorn elevations of points and lines exactly on a tile edge")]
         public void ElevationOnTileEdge()
         {
@@ -173,6 +177,7 @@ namespace DEM.Net.Test
             Assert.Empty(_elevationService.GetPointsElevation(Enumerable.Empty<GeoPoint>(), dataSet));
         }
 
+        [Trait("Category", "Network")]
         [Fact(DisplayName = "Mapterhorn line elevation is sampled at dataset resolution, in WGS84")]
         public void LineElevation()
         {
@@ -192,6 +197,7 @@ namespace DEM.Net.Test
             Assert.DoesNotContain(points, p => p.Elevation < 1500);
         }
 
+        [Trait("Category", "Network")]
         [Fact(DisplayName = "Missing high zoom tile is resampled from a lower zoom")]
         public void MissingTileFallback()
         {
@@ -211,6 +217,7 @@ namespace DEM.Net.Test
             Assert.Throws<InvalidOperationException>(() => _rasterService.GenerateReport(dataSet, bbox));
         }
 
+        [Trait("Category", "Network")]
         [Fact(DisplayName = "Mapterhorn max zoom from coverage index")]
         public void MaxZoom()
         {

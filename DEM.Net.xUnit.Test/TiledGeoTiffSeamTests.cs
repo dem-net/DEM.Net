@@ -13,6 +13,8 @@ namespace DEM.Net.Test
     /// whatever the dataset georeferencing (PixelIsArea / PixelIsPoint, overlapping or not).
     /// All these datasets are tiled GeoTIFFs. Downloads missing tiles on first run.
     /// </summary>
+    // Downloads datasets / tiles: excluded from CI (dotnet test --filter Category!=Network)
+    [Trait("Category", "Network")]
     public class TiledGeoTiffSeamTests : IClassFixture<DemNetFixture>
     {
         private readonly ElevationService _elevationService;
