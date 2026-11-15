@@ -55,9 +55,93 @@ namespace DEM.Net.Core
             {
                 if (_heights == null)
                 {
-                    _heights = Decode(File.ReadAllBytes(_filePath), out _size);
+                    (_heights, _size) = DecodedTiles.GetOrDecode(_filePath);
                 }
                 return _heights;
+            }
+        }
+
+        /// <summary>
+        /// Number of decoded tiles kept in memory, shared by all readers (about 1 MB each for 512 px tiles). Line
+        /// elevations (OSM roads, GPX) open the same tiles once per line: without it, each opening decodes the image again.
+        /// </summary>
+        public static int DecodedTileCacheCapacity
+        {
+            get => DecodedTiles.Capacity;
+            set => DecodedTiles.Capacity = value;
+        }
+
+        private static readonly DecodedTileCache DecodedTiles = new DecodedTileCache(128);
+
+        /// <summary>LRU of decoded heights by file path. Arrays are shared: they must not be modified.</summary>
+        private sealed class DecodedTileCache
+        {
+            private sealed class Entry
+            {
+                public string Path;
+                public DateTime LastWriteUtc;
+                public float[] Heights;
+                public int Size;
+            }
+
+            private readonly object _lock = new object();
+            private readonly Dictionary<string, LinkedListNode<Entry>> _byPath = new Dictionary<string, LinkedListNode<Entry>>(StringComparer.Ordinal);
+            private readonly LinkedList<Entry> _lru = new LinkedList<Entry>();
+            private int _capacity;
+
+            public DecodedTileCache(int capacity) => _capacity = capacity;
+
+            public int Capacity
+            {
+                get { lock (_lock) return _capacity; }
+                set { lock (_lock) { _capacity = Math.Max(0, value); Trim(); } }
+            }
+
+            public (float[] heights, int size) GetOrDecode(string path)
+            {
+                DateTime lastWrite = File.GetLastWriteTimeUtc(path);
+                lock (_lock)
+                {
+                    if (_byPath.TryGetValue(path, out var node))
+                    {
+                        if (node.Value.LastWriteUtc == lastWrite)
+                        {
+                            _lru.Remove(node);
+                            _lru.AddFirst(node);
+                            return (node.Value.Heights, node.Value.Size);
+                        }
+                        _lru.Remove(node);
+                        _byPath.Remove(path);
+                    }
+                }
+
+                // Decode outside the lock: concurrent requests may decode the same tile, the last one is kept
+                float[] heights = Decode(File.ReadAllBytes(path), out int size);
+                lock (_lock)
+                {
+                    if (_capacity > 0)
+                    {
+                        if (_byPath.TryGetValue(path, out var existing))
+                        {
+                            _lru.Remove(existing);
+                            _byPath.Remove(path);
+                        }
+                        var entry = new Entry { Path = path, LastWriteUtc = lastWrite, Heights = heights, Size = size };
+                        _byPath[path] = _lru.AddFirst(entry);
+                        Trim();
+                    }
+                }
+                return (heights, size);
+            }
+
+            private void Trim()
+            {
+                while (_lru.Count > _capacity)
+                {
+                    var last = _lru.Last;
+                    _lru.RemoveLast();
+                    _byPath.Remove(last.Value.Path);
+                }
             }
         }
 
