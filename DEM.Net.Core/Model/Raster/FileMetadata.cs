@@ -159,7 +159,10 @@ namespace DEM.Net.Core
             {
                 if (!_noDataValueSet)
                 {
-                    _noDataValue = float.Parse(NoDataValue);
+                    // written with the invariant culture; manifests from older versions may use the culture of the machine
+                    _noDataValue = float.TryParse(NoDataValue, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float value)
+                        ? value
+                        : float.Parse(NoDataValue, System.Globalization.CultureInfo.CurrentCulture);
                     _noDataValueSet = true;
                 }
                 return _noDataValue;

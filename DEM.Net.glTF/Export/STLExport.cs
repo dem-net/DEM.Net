@@ -51,7 +51,6 @@ namespace DEM.Net.glTF.Export
         {
             try
             {
-                CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
                 // ...
 
                 StlFile stlFile = new StlFile();

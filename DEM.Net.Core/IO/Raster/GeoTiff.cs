@@ -177,7 +177,7 @@ namespace DEM.Net.Core
                         TiffFile.ReadTile(buffer, 0, tileX, tileY, 0, 0);
                         tilesCache.Add(tileKey, buffer);
                     }
-                    var offset = x - tileX + (y - tileY) * tileHeight;
+                    var offset = x - tileX + (y - tileY) * tileWidth; // row stride of a tile is its width
                     heightValue = GetElevationAtPoint(metadata, offset, buffer);
                 }
                 else
@@ -473,7 +473,7 @@ namespace DEM.Net.Core
                             TiffFile.ReadTile(buffer, 0, tileX, tileY, 0, 0);
                             tilesCache.Add(tileKey, buffer);
                         }
-                        var offset = x - tileX + (y - tileY) * tileHeight;
+                        var offset = x - tileX + (y - tileY) * tileWidth; // row stride of a tile is its width
                         float heightValue = GetElevationAtPoint(metadata, offset, buffer);
                         if (heightValue <= 0)
                         {
@@ -566,7 +566,7 @@ namespace DEM.Net.Core
 
         public HeightMap GetHeightMap(FileMetadata metadata)
         {
-            if (this.isTiled)
+            if (this.IsTiled)
                 throw new NotImplementedException("Whole height map with tile geoTiff is not implemented");
 
             HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);

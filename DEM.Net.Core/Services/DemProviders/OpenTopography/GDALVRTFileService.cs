@@ -33,6 +33,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -45,9 +46,9 @@ namespace DEM.Net.Core
     public class GDALVRTFileService : IDEMDataSetIndex
     {
         private const int MAX_AGE_DAYS = 100;
-        private static readonly object DOWNLOAD_LOCKER = new object();
+        private readonly SingleFlight _setup = new SingleFlight(keepCompleted: false); // the result lives in _cacheByDemName
         private readonly ILogger<GDALVRTFileService> _logger;
-        private ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName;
+        private readonly ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName;
         private readonly IHttpClientFactory _httpClientFactory;
 
         public GDALVRTFileService(IHttpClientFactory httpClientFactory, ILogger<GDALVRTFileService> logger = null)
@@ -58,92 +59,64 @@ namespace DEM.Net.Core
         }
         public void Reset()
         {
-            _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
+            _cacheByDemName.Clear();
         }
 
         /// <summary>
         /// Ensures local directories are created and download VRT file if needed
         /// </summary>
-        void IDEMDataSetIndex.Setup(DEMDataSet dataSet, string dataSetLocalDir)
+        public Task SetupAsync(DEMDataSet dataSet, string dataSetLocalDir, CancellationToken cancellationToken = default)
         {
-            try
+            if (dataSet == null)
+                throw new ArgumentNullException(nameof(dataSet), "Dataset is null.");
+
+            if (_cacheByDemName.ContainsKey(dataSet.Name))
+                return Task.CompletedTask;
+
+            return _setup.RunAsync(dataSet.Name, async () =>
             {
-
-                if (dataSet == null)
-                    throw new ArgumentNullException(nameof(dataSet), "Dataset is null.");
-
-                if (_cacheByDemName.ContainsKey(dataSet.Name))
-                    return;
-
-                _logger?.LogInformation($"Setup for {dataSet.Name} dataset.");
-
-                if (!Directory.Exists(dataSetLocalDir))
+                try
                 {
+                    _logger?.LogInformation($"Setup for {dataSet.Name} dataset.");
                     Directory.CreateDirectory(dataSetLocalDir);
-                }
 
-                string vrtFileName = Path.Combine(dataSetLocalDir, UrlHelper.GetFileNameFromUrl(dataSet.DataSource.IndexFilePath));
+                    string vrtFileName = Path.Combine(dataSetLocalDir, UrlHelper.GetFileNameFromUrl(dataSet.DataSource.IndexFilePath));
 
-
-                bool download = true;
-                if (File.Exists(vrtFileName))
-                {
-                    // Download if too old file
-                    if ((DateTime.Now - File.GetLastWriteTime(vrtFileName)).TotalDays > MAX_AGE_DAYS)
+                    bool download = true;
+                    if (File.Exists(vrtFileName))
                     {
-                        _logger?.LogInformation("VRT file is too old.");
-                    }
-                    else if (IsCorrupted(dataSet, vrtFileName))
-                    {
-                        _logger?.LogInformation("VRT file is corrupted.");
-                    }
-                    else
-                    {
-                        download = false;
-                    }
-                }
-
-                if (download)
-                {
-                    lock (DOWNLOAD_LOCKER)
-                    {
-                        if (download)
+                        // Download if too old file
+                        if ((DateTime.Now - File.GetLastWriteTime(vrtFileName)).TotalDays > MAX_AGE_DAYS)
                         {
-                            _logger?.LogInformation($"Downloading index file from {dataSet.DataSource.IndexFilePath}... This file will be downloaded once and stored locally.");
-
-                            HttpClient client = _httpClientFactory == null ? new HttpClient() : _httpClientFactory.CreateClient();
-
-                            //using (HttpResponseMessage response = client.GetAsync(dataSet.DataSource.IndexFilePath).Result)
-                            using (FileStream fs = new FileStream(vrtFileName, FileMode.Create, FileAccess.Write))
-                            {
-                                var contentbytes = client.GetByteArrayAsync(dataSet.DataSource.IndexFilePath).Result;
-                                fs.Write(contentbytes, 0, contentbytes.Length);
-                            }
+                            _logger?.LogInformation("VRT file is too old.");
+                        }
+                        else if (IsCorrupted(dataSet, vrtFileName))
+                        {
+                            _logger?.LogInformation("VRT file is corrupted.");
+                        }
+                        else
+                        {
                             download = false;
                         }
                     }
-                }
 
-                // Cache
+                    if (download)
+                    {
+                        _logger?.LogInformation($"Downloading index file from {dataSet.DataSource.IndexFilePath}... This file will be downloaded once and stored locally.");
+                        await HttpDownload.DownloadToFileAsync(CreateClient(), dataSet.DataSource.IndexFilePath, vrtFileName, CancellationToken.None).ConfigureAwait(false);
+                    }
 
-                if (_cacheByDemName == null)
-                {
-                    _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
-                }
-                if (_cacheByDemName.ContainsKey(vrtFileName) == false)
-                {
                     _cacheByDemName[dataSet.Name] = this.GetSources(dataSet, vrtFileName).ToList();
                 }
-
-
-            }
-            catch (Exception ex)
-            {
-                _logger?.LogError("Unhandled exception: " + ex.Message);
-                _logger?.LogInformation(ex.ToString());
-                throw;
-            }
+                catch (Exception ex)
+                {
+                    _logger?.LogError(ex, $"Error while setting up {dataSet.Name} VRT index: {ex.Message}");
+                    throw;
+                }
+            }, cancellationToken);
         }
+
+        private HttpClient CreateClient() => _httpClientFactory == null ? new HttpClient() : _httpClientFactory.CreateClient();
 
         private bool IsCorrupted(DEMDataSet dataSet, string vrtFileName)
         {
@@ -168,18 +141,9 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public IEnumerable<DEMFileSource> GetFileSources(DEMDataSet dataSet)
         {
-            if (_cacheByDemName.ContainsKey(dataSet.Name))
-            {
-                foreach (var item in _cacheByDemName[dataSet.Name])
-                {
-                    yield return item;
-                }
-            }
-            else
-            {
-                throw new Exception("Must call Init(dataSet) first !");
-            }
-
+            if (!_cacheByDemName.TryGetValue(dataSet.Name, out var sources))
+                throw new InvalidOperationException($"{nameof(SetupAsync)} must be called for dataset {dataSet.Name} first.");
+            return sources;
         }
 
         /// <summary>
@@ -204,21 +168,8 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="report">Report item return by GenerateReport methods</param>
         /// <param name="dataset"></param>
-        public void DownloadRasterFile(DemFileReport report, DEMDataSet dataset)
-        {
-            // Create directories if not existing
-            new FileInfo(report.LocalName).Directory.Create();
-
-            HttpClient client = _httpClientFactory == null ? new HttpClient() : _httpClientFactory.CreateClient();
-
-            var contentbytes = client.GetByteArrayAsync(report.URL).Result;
-            using (FileStream fs = new FileStream(report.LocalName, FileMode.Create, FileAccess.Write))
-            {
-                fs.Write(contentbytes, 0, contentbytes.Length);
-            }
-
-
-        }
+        public Task DownloadRasterFileAsync(DemFileReport report, DEMDataSet dataset, CancellationToken cancellationToken = default)
+            => HttpDownload.DownloadToFileAsync(CreateClient(), report.URL, report.LocalName, cancellationToken);
 
         private IEnumerable<DEMFileSource> GetSources(DEMDataSet dataSet, string vrtFileName)
         {

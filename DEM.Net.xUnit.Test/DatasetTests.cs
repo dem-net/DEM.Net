@@ -1,4 +1,5 @@
-﻿using DEM.Net.Core;
+﻿using System.Threading.Tasks;
+using DEM.Net.Core;
 using DEM.Net.xUnit.Test;
 using System;
 using System.IO;
@@ -29,7 +30,7 @@ namespace DEM.Net.Test
         [InlineData(nameof(DEMDataSet.SRTM_GL3))]
         [InlineData(nameof(DEMDataSet.AW3D30))]
         [InlineData(nameof(DEMDataSet.NASADEM))]
-        public void DatasetTest(string datasetName)
+        public async Task DatasetTest(string datasetName)
         {
             var datasets = DEMDataSet.RegisteredDatasets;
 
@@ -41,22 +42,22 @@ namespace DEM.Net.Test
 
             var indexService = this._indexServiceResolver(dataset.DataSource.DataSourceType);
             Assert.NotNull(indexService);
-            indexService.Setup(dataset, _rasterService.GetLocalDEMPath(dataset));
+            await indexService.SetupAsync(dataset, _rasterService.GetLocalDEMPath(dataset));
 
             Assert.True(indexService.GetFileSources(dataset).Any());
         }
 
         [Fact]
-        public void DownloadTile_Location()
+        public async Task DownloadTile_Location()
         {
 
             double lat = 43.537854;
             double lon = 5.429993;
 
             DEMDataSet dataset = DEMDataSet.SRTM_GL3;
-            _elevationService.DownloadMissingFiles(dataset, lat, lon);
+            await _elevationService.DownloadMissingFilesAsync(dataset, lat, lon);
 
-            var report = _rasterService.GenerateReportForLocation(dataset, lat, lon);
+            var report = await _rasterService.GenerateReportForLocationAsync(dataset, lat, lon);
 
             Assert.NotNull(report);
             Assert.NotEmpty(report);
@@ -67,7 +68,7 @@ namespace DEM.Net.Test
         [Theory()]
         [InlineData(nameof(DEMDataSet.SRTM_GL3))]
         [InlineData(nameof(DEMDataSet.AW3D30))]
-        public void DownloadTile_BBox(string datasetName)
+        public async Task DownloadTile_BBox(string datasetName)
         {
             var datasets = DEMDataSet.RegisteredDatasets;
             Assert.True(datasets.Any(), "No datasets found");
@@ -79,8 +80,8 @@ namespace DEM.Net.Test
 
             BoundingBox bbox = GeometryService.GetBoundingBox(WKT_BBOX_AIX_PUYRICARD);
 
-            _elevationService.DownloadMissingFiles(dataset, bbox);
-            var report = _rasterService.GenerateReport(dataset, bbox);
+            await _elevationService.DownloadMissingFilesAsync(dataset, bbox);
+            var report = await _rasterService.GenerateReportAsync(dataset, bbox);
 
             Assert.NotNull(report);
             Assert.True(report.Count > 0);
@@ -89,17 +90,17 @@ namespace DEM.Net.Test
         }
 
         [Fact]
-        public void GDALVrtPerDataset_Test()
+        public async Task GDALVrtPerDataset_Test()
         {
             double lat = 46.537854;
             double lon = 10.429993;
 
             DEMDataSet dataset = DEMDataSet.SRTM_GL3;
-            var report_SRTM_GL3 = _rasterService.GenerateReportForLocation(dataset, lat, lon);
+            var report_SRTM_GL3 = await _rasterService.GenerateReportForLocationAsync(dataset, lat, lon);
 
             // now change the dataset
             dataset = DEMDataSet.AW3D30;
-            var report_AW3D30 = _rasterService.GenerateReportForLocation(dataset, lat, lon);
+            var report_AW3D30 = await _rasterService.GenerateReportForLocationAsync(dataset, lat, lon);
 
             Assert.NotNull(report_SRTM_GL3);
             Assert.True(report_SRTM_GL3.Count == 1);

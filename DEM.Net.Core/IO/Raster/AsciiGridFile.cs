@@ -254,7 +254,7 @@ namespace DEM.Net.Core
                 }
 
                 metadata.SampleFormat = RasterSampleFormat.FLOATING_POINT;
-                metadata.NoDataValue = NODATA_value.ToString();
+                metadata.NoDataValue = NODATA_value.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 return metadata;
 
             }

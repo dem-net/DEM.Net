@@ -142,81 +142,57 @@ namespace DEM.Net.Core.Imagery
             return tiles;
         }
 
-        public TileRange DownloadTiles(TileRange tiles, ImageryProvider provider)
+        public async Task<TileRange> DownloadTilesAsync(TileRange tiles, ImageryProvider provider, CancellationToken cancellationToken = default)
         {
-            Stopwatch sw = Stopwatch.StartNew();
-            int intervalMs = 1000;
+            var range = tiles.TilesInfo.ToList();
+            // Max download threads defined in provider
+            var parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism, CancellationToken = cancellationToken };
+
             if (provider is ITileGenerator generator)
             {
-                // download tiles
+                // generated tiles: CPU bound
                 using (TimeSpanBlock timer = new TimeSpanBlock("Tile generation", _logger))
                 {
-                    // Max download threads defined in provider
-                    var parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism };
-                    var range = tiles.TilesInfo.ToList();
                     _logger?.LogInformation($"Generating {range.Count} tiles with {provider.Name} generator...");
                     Parallel.ForEach(range, parallelOptions, tile =>
-                        {
-                            var contentbytes = generator.GenerateTile(tile.X, tile.Y, tile.Zoom);
-                            tiles.Add(new MapTile(contentbytes, provider.TileSize, null, tile));
-                        }
-                    );
-                }
-            }
-            else
-            {
-                // download tiles
-                Stopwatch swDownload = Stopwatch.StartNew();
-                _logger?.LogTrace("Starting images download");
-
-
-                // Max download threads defined in provider
-                var parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = provider.MaxDegreeOfParallelism };
-                var range = tiles.TilesInfo.ToList();
-                int numTilesDownloaded = 0;
-                _logger?.LogInformation($"Downloading {range.Count} tiles...");
-                try
-                {
-                    Parallel.ForEach(range, parallelOptions, (tile, state) =>
                     {
-                        Uri tileUri = BuildUri(provider, tile.X, tile.Y, tile.Zoom);
-
-                        var contentBytes = cache.GetTile(tileUri, provider, tile);
-
-                        tiles.Add(new MapTile(contentBytes, provider.TileSize, tileUri, tile));
-
-                        Interlocked.Increment(ref numTilesDownloaded);
-
-                        if (sw.ElapsedMilliseconds > intervalMs)
-                        {
-                            _logger.LogInformation($"{numTilesDownloaded:N0}/{range.Count:N0} tiles downloaded...");
-                            sw.Restart();
-                        }
-                    }
-                );
+                        var contentbytes = generator.GenerateTile(tile.X, tile.Y, tile.Zoom);
+                        tiles.Add(new MapTile(contentbytes, provider.TileSize, null, tile));
+                    });
                 }
-                catch (AggregateException ex)
-                {
-                    throw ex.GetInnerMostException();
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-
-
-                swDownload.Stop();
-                _logger?.LogInformation($"DownloadImages done in : {swDownload.Elapsed:g}");
+                return tiles;
             }
 
+            Stopwatch swDownload = Stopwatch.StartNew();
+            Stopwatch swProgress = Stopwatch.StartNew();
+            const int progressIntervalMs = 1000;
+            int numTilesDownloaded = 0;
+            _logger?.LogInformation($"Downloading {range.Count} tiles...");
 
+            await Parallel.ForEachAsync(range, parallelOptions, async (tile, ct) =>
+            {
+                Uri tileUri = BuildUri(provider, tile.X, tile.Y, tile.Zoom);
+
+                var contentBytes = await cache.GetTileAsync(tileUri, provider, tile, ct).ConfigureAwait(false);
+
+                tiles.Add(new MapTile(contentBytes, provider.TileSize, tileUri, tile));
+
+                int done = Interlocked.Increment(ref numTilesDownloaded);
+                if (swProgress.ElapsedMilliseconds > progressIntervalMs)
+                {
+                    _logger?.LogInformation($"{done:N0}/{range.Count:N0} tiles downloaded...");
+                    swProgress.Restart();
+                }
+            }).ConfigureAwait(false);
+
+            _logger?.LogInformation($"DownloadImages done in : {swDownload.Elapsed:g}");
             return tiles;
         }
 
-        public TileRange DownloadTiles(BoundingBox bbox, ImageryProvider provider, int minTilesPerImage = 4)
+        public Task<TileRange> DownloadTilesAsync(BoundingBox bbox, ImageryProvider provider, int minTilesPerImage = 4, CancellationToken cancellationToken = default)
         {
             TileRange tiles = this.ComputeBoundingBoxTileRange(bbox, provider, minTilesPerImage);
-            return this.DownloadTiles(tiles, provider);
+            return this.DownloadTilesAsync(tiles, provider, cancellationToken);
         }
 
         public BoundingBox ConvertWorldToMap(BoundingBox bbox, int zoomLevel, int tileSize)
@@ -490,8 +466,8 @@ namespace DEM.Net.Core.Imagery
             string server = string.Empty;
             if (serverNodes != null && serverNodes.Length > 0)
             {
-                _serverCycle = (_serverCycle + 1) % serverNodes.Length;
-                server = serverNodes[_serverCycle];
+                // round robin over the servers, shared by the parallel downloads
+                server = serverNodes[(int)((uint)Interlocked.Increment(ref _serverCycle) % (uint)serverNodes.Length)];
             }
 
             string url = provider.UrlModel.UrlFormat;

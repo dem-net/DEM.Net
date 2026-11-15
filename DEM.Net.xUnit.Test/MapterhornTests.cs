@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using System;
 using System.IO;
 using System.Linq;
@@ -116,10 +117,10 @@ namespace DEM.Net.Test
         [Theory(DisplayName = "Mapterhorn point elevation")]
         [InlineData(12, 45.97637, 7.65861, 4440, 50)] // Matterhorn summit (19 m pixels smooth the peak)
         [InlineData(15, 45.179337, 5.721421, 217, 3)] // Grenoble
-        public void PointElevation(int zoom, double lat, double lon, double expected, double tolerance)
+        public async Task PointElevation(int zoom, double lat, double lon, double expected, double tolerance)
         {
             var dataSet = DEMDataSet.GetMapterhorn(zoom);
-            _elevationService.DownloadMissingFiles(dataSet, lat, lon);
+            await _elevationService.DownloadMissingFilesAsync(dataSet, lat, lon);
             var point = _elevationService.GetPointElevation(lat, lon, dataSet);
             Assert.NotNull(point);
             Assert.InRange(point.Elevation.GetValueOrDefault(), expected - tolerance, expected + tolerance);
@@ -127,23 +128,23 @@ namespace DEM.Net.Test
 
         [Trait("Category", "Network")]
         [Fact(DisplayName = "Mapterhorn zoom 17 resolves the Matterhorn summit")]
-        public void SummitAtMaxZoom()
+        public async Task SummitAtMaxZoom()
         {
             var dataSet = DEMDataSet.GetMapterhorn(17);
             // ~100 m around the summit (official height 4478 m, swissALTI3D 4477.5 m)
             var bbox = BoundingBox.AroundPoint(45.97637, 7.65861, 0.0007).ReprojectTo(Reprojection.SRID_GEODETIC, dataSet.SRID);
-            var hMap = _elevationService.GetHeightMap(ref bbox, dataSet);
+            var hMap = await _elevationService.GetHeightMapAsync(bbox, dataSet);
             Assert.InRange(hMap.Maximum, 4470, 4480);
         }
 
         [Trait("Category", "Network")]
         [Fact(DisplayName = "Mapterhorn height map spans tile seams without gaps")]
-        public void HeightMapAcrossTiles()
+        public async Task HeightMapAcrossTiles()
         {
             var dataSet = DEMDataSet.GetMapterhorn(14);
             // straddles tile boundaries at zoom 14
             var bbox = new BoundingBox(7.64, 7.68, 45.96, 45.99).ReprojectTo(Reprojection.SRID_GEODETIC, dataSet.SRID);
-            var hMap = _elevationService.GetHeightMap(ref bbox, dataSet);
+            var hMap = await _elevationService.GetHeightMapAsync(bbox, dataSet);
 
             Assert.True(WebMercatorTiles.TileCount(bbox, 14) > 1);
             Assert.Equal(hMap.Width * hMap.Height, hMap.Coordinates.Count());
@@ -153,16 +154,16 @@ namespace DEM.Net.Test
 
         [Trait("Category", "Network")]
         [Fact(DisplayName = "Mapterhorn elevations of points and lines exactly on a tile edge")]
-        public void ElevationOnTileEdge()
+        public async Task ElevationOnTileEdge()
         {
             // OSM features from PMTiles are cut at z15 tile edges, which are also z14 edges: their vertices lie exactly
             // on the edge, here between z14 tiles x=8523 and 8524 (Verbier, all above 1000 m)
             var dataSet = DEMDataSet.GetMapterhorn(14);
             double edgeLon = 8524 / 16384d * 360d - 180d;
             var onEdge = new[] { new GeoPoint(46.04, edgeLon), new GeoPoint(46.045, edgeLon), new GeoPoint(46.05, edgeLon) };
-            _elevationService.DownloadMissingFiles(dataSet, new BoundingBox(edgeLon - 0.01, edgeLon + 0.01, 46.03, 46.06));
+            await _elevationService.DownloadMissingFilesAsync(dataSet, new BoundingBox(edgeLon - 0.01, edgeLon + 0.01, 46.03, 46.06));
 
-            var points = _elevationService.GetPointsElevation(onEdge.Select(p => p.Clone()), dataSet)?.ToList();
+            var points = await _elevationService.GetPointsElevationAsync(onEdge.Select(p => p.Clone()), dataSet);
             Assert.NotNull(points);
             Assert.All(points, p => Assert.InRange(p.Elevation.GetValueOrDefault(), 1000, 3500));
 
@@ -174,18 +175,18 @@ namespace DEM.Net.Test
             }
 
             // No points (an area without buildings): nothing to download, not the whole world
-            Assert.Empty(_elevationService.GetPointsElevation(Enumerable.Empty<GeoPoint>(), dataSet));
+            Assert.Empty(await _elevationService.GetPointsElevationAsync(Enumerable.Empty<GeoPoint>(), dataSet));
         }
 
         [Trait("Category", "Network")]
         [Fact(DisplayName = "Mapterhorn line elevation is sampled at dataset resolution, in WGS84")]
-        public void LineElevation()
+        public async Task LineElevation()
         {
             var dataSet = DEMDataSet.GetMapterhorn(14);
             var start = new GeoPoint(45.9763, 7.6586);
             var end = new GeoPoint(45.95, 7.70);
             var line = GeometryService.ParseGeoPointAsGeometryLine(start, end);
-            _elevationService.DownloadMissingFiles(dataSet, line.GetBoundingBox());
+            await _elevationService.DownloadMissingFilesAsync(dataSet, line.GetBoundingBox());
 
             var points = _elevationService.GetLineGeometryElevation(line, dataSet);
 
@@ -199,32 +200,32 @@ namespace DEM.Net.Test
 
         [Trait("Category", "Network")]
         [Fact(DisplayName = "Missing high zoom tile is resampled from a lower zoom")]
-        public void MissingTileFallback()
+        public async Task MissingTileFallback()
         {
             // Middle of the Pacific: no data above zoom 12
             var dataSet = DEMDataSet.GetMapterhorn(15);
             double lat = 0.5, lon = -150.5;
-            _elevationService.DownloadMissingFiles(dataSet, lat, lon);
+            await _elevationService.DownloadMissingFilesAsync(dataSet, lat, lon);
             var point = _elevationService.GetPointElevation(lat, lon, dataSet);
             Assert.NotNull(point);
         }
 
         [Fact(DisplayName = "Extents covering too many tiles are refused before any download")]
-        public void TooManyTilesRefused()
+        public async Task TooManyTilesRefused()
         {
             var dataSet = DEMDataSet.GetMapterhorn(17);
             var bbox = new BoundingBox(5.7, 7.7, 45.1, 46.0); // ~290 000 tiles at zoom 17
-            Assert.Throws<InvalidOperationException>(() => _rasterService.GenerateReport(dataSet, bbox));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => _rasterService.GenerateReportAsync(dataSet, bbox));
         }
 
         [Trait("Category", "Network")]
         [Fact(DisplayName = "Mapterhorn max zoom from coverage index")]
-        public void MaxZoom()
+        public async Task MaxZoom()
         {
             var swiss = DEMDataSet.GetMapterhorn(15);
-            _rasterService.GenerateReport(swiss, BoundingBox.AroundPoint(45.97637, 7.65861, 0.001)); // Setup
-            Assert.True(_xyzIndex.GetMaxZoom(swiss, BoundingBox.AroundPoint(45.97637, 7.65861, 0.001)) >= 16);
-            Assert.Equal(DEMDataSet.MapterhornDefaultZoom, _xyzIndex.GetMaxZoom(swiss, BoundingBox.AroundPoint(0.5, -150.5, 0.001)));
+            await _rasterService.GenerateReportAsync(swiss, BoundingBox.AroundPoint(45.97637, 7.65861, 0.001)); // Setup
+            Assert.True(await _xyzIndex.GetMaxZoomAsync(swiss, BoundingBox.AroundPoint(45.97637, 7.65861, 0.001)) >= 16);
+            Assert.Equal(DEMDataSet.MapterhornDefaultZoom, await _xyzIndex.GetMaxZoomAsync(swiss, BoundingBox.AroundPoint(0.5, -150.5, 0.001)));
         }
     }
 }

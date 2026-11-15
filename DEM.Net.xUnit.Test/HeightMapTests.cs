@@ -1,4 +1,5 @@
-﻿using DEM.Net.Core;
+﻿using System.Threading.Tasks;
+using DEM.Net.Core;
 using Xunit;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace DEM.Net.Test
 
         [Theory()]
         [InlineData(nameof(DEMDataSet.SRTM_GL3))]
-        public void BoudingBoxConservationTest(string datasetName)
+        public async Task BoudingBoxConservationTest(string datasetName)
         {
 
             var dataset = DEMDataSet.RegisteredDatasets.First(d => d.Name == datasetName);
@@ -31,7 +32,7 @@ namespace DEM.Net.Test
             Assert.NotNull(bbox);
             Assert.Equal(bboxWKT, bbox.WKT);
 
-            HeightMap heightMap = _elevationService.GetHeightMap(ref bbox, dataset);
+            HeightMap heightMap = await _elevationService.GetHeightMapAsync(bbox, dataset);
 
             heightMap = heightMap.ReprojectGeodeticToCartesian().BakeCoordinates();
             Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
@@ -48,7 +49,7 @@ namespace DEM.Net.Test
         }
 
         [Fact]
-        public void BoudingBoxEqualityTest()
+        public async Task BoudingBoxEqualityTest()
         {
 
             string bboxWKT = "POLYGON((5.54888 43.519525, 5.61209 43.519525, 5.61209 43.565225, 5.54888 43.565225, 5.54888 43.519525))";
@@ -58,7 +59,7 @@ namespace DEM.Net.Test
             Assert.NotNull(bbox);
             Assert.Equal(bboxWKT, bbox.WKT);
 
-            HeightMap heightMap = _elevationService.GetHeightMap(ref bbox, DEMDataSet.SRTM_GL3);
+            HeightMap heightMap = await _elevationService.GetHeightMapAsync(bbox, DEMDataSet.SRTM_GL3);
 
             Assert.False(object.ReferenceEquals(bbox, null));
             Assert.NotNull(heightMap.Coordinates.GetBoundingBox());

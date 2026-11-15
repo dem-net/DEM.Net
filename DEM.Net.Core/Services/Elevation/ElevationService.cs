@@ -70,18 +70,17 @@ namespace DEM.Net.Core
         /// <param name="bbox">Bounding box, <see cref="GeometryService.GetBoundingBox(string)"/></param>
         /// <remarks>VRT file is downloaded once. It will be cached in local for 30 days.
         /// </remarks>
-        public void DownloadMissingFiles(DEMDataSet dataSet, BoundingBox bbox = null)
+        public async Task DownloadMissingFilesAsync(DEMDataSet dataSet, BoundingBox bbox = null, CancellationToken cancellationToken = default)
         {
-            var report = _RasterService.GenerateReport(dataSet, bbox);
+            var report = await _RasterService.GenerateReportAsync(dataSet, bbox, cancellationToken).ConfigureAwait(false);
 
-            if (report == null || !report.Any())
+            if (report == null || report.Count == 0)
             {
                 _logger?.LogWarning($"No coverage for bbox {bbox} in {dataSet.Name} dataset.");
                 return;
             }
 
-            DownloadMissingFiles_FromReport(report, dataSet);
-
+            await DownloadMissingFilesFromReportAsync(report, dataSet, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -93,9 +92,9 @@ namespace DEM.Net.Core
         /// <param name="lon">Longitude of location</param>
         /// <remarks>VRT file is downloaded once. It will be cached in local for 30 days.
         /// </remarks>
-        public void DownloadMissingFiles(DEMDataSet dataSet, double lat, double lon)
+        public async Task DownloadMissingFilesAsync(DEMDataSet dataSet, double lat, double lon, CancellationToken cancellationToken = default)
         {
-            var report = _RasterService.GenerateReportForLocation(dataSet, lat, lon);
+            var report = await _RasterService.GenerateReportForLocationAsync(dataSet, lat, lon, cancellationToken).ConfigureAwait(false);
 
             if (report == null)
             {
@@ -103,8 +102,7 @@ namespace DEM.Net.Core
                 return;
             }
 
-            DownloadMissingFiles_FromReport(report, dataSet);
-
+            await DownloadMissingFilesFromReportAsync(report, dataSet, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -115,28 +113,29 @@ namespace DEM.Net.Core
         /// <param name="geoPoint">GeoPoint</param>
         /// <remarks>VRT file is downloaded once. It will be cached in local for 30 days.
         /// </remarks>
-        public void DownloadMissingFiles(DEMDataSet dataSet, GeoPoint geoPoint)
+        public Task DownloadMissingFilesAsync(DEMDataSet dataSet, GeoPoint geoPoint, CancellationToken cancellationToken = default)
         {
             if (geoPoint == null)
-                return;
+                return Task.CompletedTask;
 
-            DownloadMissingFiles(dataSet, geoPoint.Latitude, geoPoint.Longitude);
+            return DownloadMissingFilesAsync(dataSet, geoPoint.Latitude, geoPoint.Longitude, cancellationToken);
         }
-        private void DownloadMissingFiles_FromReport(IEnumerable<DemFileReport> report, DEMDataSet dataSet)
+
+        private async Task DownloadMissingFilesFromReportAsync(List<DemFileReport> report, DEMDataSet dataSet, CancellationToken cancellationToken)
         {
-            // Generate metadata files if missing
+            // Generate metadata files if missing (local files: CPU and disk bound)
             var missingMedata = report.Where(r => r.IsMetadataGenerated == false && r.IsExistingLocally == true).ToList();
             int fileCount = missingMedata.Count;
             int doneFileCount = 0;
-            Parallel.ForEach(missingMedata, new ParallelOptions { MaxDegreeOfParallelism = 4 }, file =>
+            Parallel.ForEach(missingMedata, new ParallelOptions { MaxDegreeOfParallelism = 4, CancellationToken = cancellationToken }, file =>
             {
-                Interlocked.Increment(ref doneFileCount);
+                int done = Interlocked.Increment(ref doneFileCount);
                 _RasterService.GenerateFileMetadata(file.LocalName, dataSet.FileFormat, false);
 
-                if (doneFileCount % 10 == 0)
-                    _logger.LogInformation($"Generating medata {doneFileCount:N0}/{fileCount:N0} ({(float)doneFileCount / fileCount:P0})");
+                if (done % 10 == 0)
+                    _logger?.LogInformation($"Generating medata {done:N0}/{fileCount:N0} ({(float)done / fileCount:P0})");
             });
-            List<DemFileReport> filesToDownload = new List<DemFileReport>(report.Where(kvp => kvp.IsExistingLocally == false));
+            List<DemFileReport> filesToDownload = report.Where(kvp => kvp.IsExistingLocally == false).ToList();
 
             if (filesToDownload.Count == 0)
             {
@@ -146,7 +145,7 @@ namespace DEM.Net.Core
                 // (e.g. adjacent tiles needed for interpolation) until some other download refreshes it.
                 if (missingMedata.Count > 0)
                     _RasterService.LoadManifestMetadata(dataSet, true);
-                else if (dataSet.DataSource.DataSourceType == Datasets.DEMDataSourceType.XyzTiles && report.Count() > 0)
+                else if (dataSet.DataSource.DataSourceType == Datasets.DEMDataSourceType.XyzTiles && report.Count > 0)
                 {
                     // On demand tile caches grow all the time: after an interrupted run the protobuf catalog can miss
                     // tiles that are on disk with their metadata. Missing tiles would silently read as no data.
@@ -154,35 +153,28 @@ namespace DEM.Net.Core
                     if (report.Any(r => !catalog.Contains(Path.GetFileName(r.LocalName))))
                         _RasterService.LoadManifestMetadata(dataSet, true);
                 }
+                return;
             }
-            else
+
+            _logger?.LogInformation($"Downloading {filesToDownload.Count} missing file(s).");
+            try
             {
-                _logger?.LogInformation($"Downloading {filesToDownload.Count} missing file(s).");
-
-                try
+                int numFiles = 0;
+                await Parallel.ForEachAsync(filesToDownload, new ParallelOptions { MaxDegreeOfParallelism = 2, CancellationToken = cancellationToken }, async (file, ct) =>
                 {
-                    int parallelism = 2;
-                    int numFiles = 0;
-                    Parallel.ForEach(filesToDownload, new ParallelOptions { MaxDegreeOfParallelism = parallelism }, file =>
-                        {
-                            Interlocked.Increment(ref numFiles);
-                            _RasterService.DownloadRasterFile(file, dataSet);
-                            _logger.LogInformation($"Download progress: {numFiles:N0}/{filesToDownload.Count:N0} ({(float)numFiles / filesToDownload.Count:P0})");
-                        }
-                    );
-
-                    _RasterService.GenerateDirectoryMetadata(dataSet, false, false);
-                    _RasterService.LoadManifestMetadata(dataSet, true);
-
-                }
-                catch (AggregateException ex)
-                {
-                    _logger?.LogError(ex, $"Error downloading missing files. Check internet connection or retry later. {ex.GetInnerMostException().Message}");
-                    throw;
-                }
-
-
+                    await _RasterService.DownloadRasterFileAsync(file, dataSet, ct).ConfigureAwait(false);
+                    int done = Interlocked.Increment(ref numFiles);
+                    _logger?.LogInformation($"Download progress: {done:N0}/{filesToDownload.Count:N0} ({(float)done / filesToDownload.Count:P0})");
+                }).ConfigureAwait(false);
             }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                _logger?.LogError(ex, $"Error downloading missing files. Check internet connection or retry later. {ex.Message}");
+                throw;
+            }
+
+            _RasterService.GenerateDirectoryMetadata(dataSet, false, false);
+            _RasterService.LoadManifestMetadata(dataSet, true);
         }
 
 
@@ -390,7 +382,7 @@ namespace DEM.Net.Core
                 }
             }
 
-            var elevated = GetPointsElevation(samples, dataSet, interpolationMode, behavior, downloadMissingFiles: false);
+            var elevated = GetPointsElevation(samples, dataSet, interpolationMode, behavior);
             if (elevated == null)
                 return new List<GeoPoint>();
 
@@ -562,47 +554,58 @@ namespace DEM.Net.Core
         }
 
         /// <summary>
-        /// High level method that retrieves elevation for each given point
+        /// High level method that retrieves elevation for each given point, downloading the missing files first
         /// </summary>
         /// <param name="points">List of points</param>
         /// <param name="dataSet">DEM dataset to use</param>
         /// <param name="interpolationMode">Interpolation mode</param>
-        /// <returns></returns>
-        public IEnumerable<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero, bool downloadMissingFiles = true)
+        /// <returns>The points with their elevation (the input points are updated), null when the dataset does not cover them</returns>
+        public async Task<List<GeoPoint>> GetPointsElevationAsync(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero, bool downloadMissingFiles = true, CancellationToken cancellationToken = default)
         {
             if (points == null)
                 return null;
-            IEnumerable<GeoPoint> pointsWithElevation;
-            BoundingBox bbox = points.GetBoundingBox();
-            if (!(bbox.xMin <= bbox.xMax && bbox.yMin <= bbox.yMax))
-                return Enumerable.Empty<GeoPoint>(); // no points: an empty bbox spans the world (too many tiles to download)
+            var pointList = points as IReadOnlyCollection<GeoPoint> ?? points.ToList(); // enumerated twice (bbox, then elevations)
             if (downloadMissingFiles)
             {
-                DownloadMissingFiles(dataSet, bbox);
+                BoundingBox bbox = pointList.GetBoundingBox();
+                if (bbox.xMin <= bbox.xMax && bbox.yMin <= bbox.yMax) // no points: an empty bbox spans the world (too many tiles to download)
+                    await DownloadMissingFilesAsync(dataSet, bbox, cancellationToken).ConfigureAwait(false);
             }
+            return GetPointsElevation(pointList, dataSet, interpolationMode, behavior);
+        }
+
+        /// <summary>
+        /// High level method that retrieves elevation for each given point, from the files already downloaded
+        /// (see <see cref="GetPointsElevationAsync"/> to download the missing files)
+        /// </summary>
+        /// <param name="points">List of points</param>
+        /// <param name="dataSet">DEM dataset to use</param>
+        /// <param name="interpolationMode">Interpolation mode</param>
+        /// <returns>The points with their elevation (the input points are updated), null when the dataset does not cover them</returns>
+        public List<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
+        {
+            if (points == null)
+                return null;
+            var pointList = points as IReadOnlyCollection<GeoPoint> ?? points.ToList(); // enumerated twice (bbox, then elevations)
+            BoundingBox bbox = pointList.GetBoundingBox();
+            if (!(bbox.xMin <= bbox.xMax && bbox.yMin <= bbox.yMax))
+                return new List<GeoPoint>(); // no points
             List<FileMetadata> tiles = this.GetCoveringFiles(bbox.ReprojectTo(4326, dataSet.SRID), dataSet);
 
             if (tiles.Count == 0)
             {
-                _logger.LogWarning("No coverage for points in dataset. Check extent or spatial reference id (projection)");
+                _logger?.LogWarning("No coverage for points in dataset. Check extent or spatial reference id (projection)");
                 return null;
             }
-            else
+
+            // Init interpolator
+            IInterpolator interpolator = GetInterpolator(interpolationMode);
+
+            using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
             {
-                // Init interpolator
-                IInterpolator interpolator = GetInterpolator(interpolationMode);
-
-                using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
-                {
-
-                    // Get elevation for each point
-                    pointsWithElevation = this.GetElevationData(points.ReprojectTo(4326, dataSet.SRID), adjacentRasters, tiles, interpolator, behavior);
-
-                    //Debug.WriteLine(adjacentRasters.Count);
-                }  // Ensures all rasters are properly closed
+                // Materialized before the rasters are closed: GetElevationData reads them lazily
+                return this.GetElevationData(pointList.ReprojectTo(4326, dataSet.SRID), adjacentRasters, tiles, interpolator, behavior).ToList();
             }
-
-            return pointsWithElevation;
         }
 
         public IInterpolator GetInterpolator(InterpolationMode interpolationMode)
@@ -635,17 +638,30 @@ namespace DEM.Net.Core
         }
 
         /// <summary>
-        /// Returns all elevations in given bbox
+        /// Returns all elevations in given bbox, downloading the missing files first
         /// </summary>
-        /// <param name="bbox">Bounding box. Passed as ref: it will be updated to reflect data source real points bounding box</param>
+        /// <param name="bbox">Bounding box (not modified)</param>
         /// <param name="dataSet"></param>
-        /// <returns></returns>
-        public HeightMap GetHeightMap(ref BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles = true, bool generateMissingData = true)
+        /// <returns>The height map. Its <see cref="HeightMap.BoundingBox"/> is the bounding box of the data source points.</returns>
+        public async Task<HeightMap> GetHeightMapAsync(BoundingBox bbox, DEMDataSet dataSet, bool downloadMissingFiles = true, bool generateMissingData = true, CancellationToken cancellationToken = default)
         {
             if (downloadMissingFiles)
             {
-                DownloadMissingFiles(dataSet, bbox);
+                await DownloadMissingFilesAsync(dataSet, bbox, cancellationToken).ConfigureAwait(false);
             }
+            return GetHeightMap(bbox, dataSet, generateMissingData);
+        }
+
+        /// <summary>
+        /// Returns all elevations in given bbox, from the files already downloaded
+        /// (see <see cref="GetHeightMapAsync"/> to download the missing files)
+        /// </summary>
+        /// <param name="bbox">Bounding box (not modified)</param>
+        /// <param name="dataSet"></param>
+        /// <returns>The height map. Its <see cref="HeightMap.BoundingBox"/> is the bounding box of the data source points.</returns>
+        public HeightMap GetHeightMap(BoundingBox bbox, DEMDataSet dataSet, bool generateMissingData = true)
+        {
+            bbox = bbox.Clone(); // may be shrunk to the dataset coverage below
 
             // Locate which files are needed
             // Find files matching coords
@@ -730,7 +746,6 @@ namespace DEM.Net.Core
                 // Stitch tiles (also removes the overlapping seams of grid-registered tiles, e.g. TINItaly)
                 HeightMap heightMap = tilesHeightMap.MergeTiles();
                 heightMap.BoundingBox.SRID = bbox.SRID;
-                bbox = heightMap.BoundingBox;
 
                 return heightMap;
 
@@ -1613,29 +1628,30 @@ namespace DEM.Net.Core
         /// <param name="interpolationMode">Interpolation mode</param>
         /// <remarks>Source and Target are interchangeable. Output can be BIG, as all elevations will be returned.</remarks>
         /// <returns>A report with all obstacles</returns>
-        public IntervisibilityReport GetIntervisibilityReport(GeoPoint source, GeoPoint target, DEMDataSet dataSet
+        public async Task<IntervisibilityReport> GetIntervisibilityReportAsync(GeoPoint source, GeoPoint target, DEMDataSet dataSet
             , bool downloadMissingFiles = true
             , double sourceVerticalOffset = 0d
             , double targetVerticalOffset = 0d
-            , InterpolationMode interpolationMode = InterpolationMode.Bilinear)
+            , InterpolationMode interpolationMode = InterpolationMode.Bilinear
+            , CancellationToken cancellationToken = default)
         {
             try
             {
                 var elevationLine = GeometryService.ParseGeoPointAsGeometryLine(source, target);
 
                 if (downloadMissingFiles)
-                    this.DownloadMissingFiles(dataSet, elevationLine.GetBoundingBox());
+                    await this.DownloadMissingFilesAsync(dataSet, elevationLine.GetBoundingBox(), cancellationToken).ConfigureAwait(false);
 
                 // WGS84 points, whatever the dataset projection
-                var geoPoints = this.GetLineGeometryElevation(elevationLine, dataSet);
+                var geoPoints = this.GetLineGeometryElevation(elevationLine, dataSet, interpolationMode);
 
                 var metrics = geoPoints.ComputeVisibilityMetrics(sourceVerticalOffset, targetVerticalOffset, dataSet.NoDataValue);
 
                 return new IntervisibilityReport(geoPoints, metrics, originVerticalOffset: sourceVerticalOffset, targetVerticalOffset: targetVerticalOffset);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                _logger.LogError($"{nameof(GetIntervisibilityReport)} error: {ex.Message}");
+                _logger?.LogError($"{nameof(GetIntervisibilityReportAsync)} error: {ex.Message}");
                 throw;
             }
 

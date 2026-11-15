@@ -24,7 +24,6 @@
 // THE SOFTWARE.
 
 using DEM.Net.Core.Configuration;
-using DEM.Net.Core.Helpers;
 using DEM.Net.Core.Model;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -48,7 +47,10 @@ namespace DEM.Net.Core
         internal const string MANIFEST_DIR = "manifest";
         private readonly RasterIndexServiceResolver _rasterIndexServiceResolver;
         private readonly ILogger<RasterService> _logger;
-        private readonly NamedMonitor monitor = new NamedMonitor();
+        // concurrent requests for the same missing file share one download
+        private readonly SingleFlight _downloads = new SingleFlight(keepCompleted: false);
+        // one manifest catalog build at a time per dataset directory
+        private readonly ConcurrentDictionary<string, Lock> _manifestLocks = new ConcurrentDictionary<string, Lock>(StringComparer.Ordinal);
 
         private string _localDirectory;
         private ConcurrentDictionary<string, List<FileMetadata>> _metadataCatalogCache = new ConcurrentDictionary<string, List<FileMetadata>>();
@@ -176,19 +178,27 @@ namespace DEM.Net.Core
             string localPath = GetLocalDEMPath(dataset);
             var globalManifestPath = Path.Combine(localPath, "globalmanifest.bin");
 
-            if (force)
-            {
-                // also when not loaded in memory yet: the protobuf index on disk may be stale
-                _metadataCatalogCache.TryRemove(localPath, out List<FileMetadata> removed);
-                if (File.Exists(globalManifestPath))
-                {
-                    File.Delete(globalManifestPath);
-                }
-            }
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            if (_metadataCatalogCache.ContainsKey(localPath) == false)
+            if (!force && _metadataCatalogCache.TryGetValue(localPath, out var cached))
+                return cached;
+
+            // Building the catalog reads (and may migrate) every manifest, then writes the protobuf index:
+            // concurrent builds would race on these files.
+            lock (_manifestLocks.GetOrAdd(localPath, _ => new Lock()))
             {
+                if (force)
+                {
+                    // also when not loaded in memory yet: the protobuf index on disk may be stale
+                    _metadataCatalogCache.TryRemove(localPath, out _);
+                    if (File.Exists(globalManifestPath))
+                    {
+                        File.Delete(globalManifestPath);
+                    }
+                }
+                else if (_metadataCatalogCache.TryGetValue(localPath, out cached))
+                    return cached;
+
                 if (File.Exists(globalManifestPath))
                 {
                     List<FileMetadata> indexedMetadata;
@@ -234,12 +244,15 @@ namespace DEM.Net.Core
 
                 }
 
-                _metadataCatalogCache[localPath] = metaList.ToList();        
-                using (var outStream = new FileStream(globalManifestPath, FileMode.Create, FileAccess.Write))
+                var catalog = metaList.ToList();
+                string tempIndexPath = HttpDownload.TempFileName(globalManifestPath);
+                using (var outStream = new FileStream(tempIndexPath, FileMode.Create, FileAccess.Write))
                 {
-                    Serializer.Serialize(outStream, _metadataCatalogCache[localPath]);
-                    _logger.LogInformation($"{dataset.Name} metadata written to protobuf index");
+                    Serializer.Serialize(outStream, catalog);
                 }
+                File.Move(tempIndexPath, globalManifestPath, overwrite: true);
+                _logger.LogInformation($"{dataset.Name} metadata written to protobuf index");
+                _metadataCatalogCache[localPath] = catalog;
             }
 
             if (logTimeSpent) // we avoid logging each time the data is requested, only needed on preload
@@ -355,7 +368,10 @@ namespace DEM.Net.Core
                 Trace.TraceInformation($"Generating manifest for file {rasterFileName}.");
 
                 FileMetadata metadata = this.ParseMetadata(rasterFileName, fileFormat);
-                File.WriteAllText(jsonPath, JsonConvert.SerializeObject(metadata, Formatting.Indented));                
+                // a concurrent catalog build must never read a partial manifest
+                string tempJsonPath = HttpDownload.TempFileName(jsonPath); // the same file may be indexed concurrently
+                File.WriteAllText(tempJsonPath, JsonConvert.SerializeObject(metadata, Formatting.Indented));
+                File.Move(tempJsonPath, jsonPath, overwrite: true);
 
                 Trace.TraceInformation($"Manifest generated for file {rasterFileName}.");
             }
@@ -368,13 +384,10 @@ namespace DEM.Net.Core
         /// <returns>
         /// A string containing the report
         /// </returns>
-        public string GenerateReportAsString()
+        public async Task<string> GenerateReportAsStringAsync(CancellationToken cancellationToken = default)
         {
             StringBuilder sb = new StringBuilder();
-            var reports = GenerateReport();
-
-            // Get report for downloaded files
-            foreach (var report in reports)
+            foreach (var report in await GenerateReportAsync(cancellationToken).ConfigureAwait(false))
             {
                 sb.AppendLine(report.ToString());
             }
@@ -384,41 +397,16 @@ namespace DEM.Net.Core
         /// <summary>
         /// Generates a full report of all datasets to check size and number of downloaded tiles
         /// </summary>
-        /// <returns>
-        /// A string containing the report
-        /// </returns>
-        public async Task<List<DatasetReport>> GenerateReportAsync()
+        public async Task<List<DatasetReport>> GenerateReportAsync(CancellationToken cancellationToken = default)
         {
-            StringBuilder sb = new StringBuilder();
-            var tasks = new List<Task<DatasetReport>>();
-
-            // Get report for downloaded files
-            foreach (DEMDataSet dataset in DEMDataSet.RegisteredDatasets)
-            {
-                tasks.Add(Task.Run(() => GenerateReportSummary(dataset)));
-            }
-
-            var reports = await Task.WhenAll(tasks.ToArray());
-
+            var reports = await Task.WhenAll(DEMDataSet.RegisteredDatasets
+                .Select(dataset => GenerateReportSummaryAsync(dataset, cancellationToken))).ConfigureAwait(false);
             return reports.ToList();
         }
-        /// <summary>
-        /// Generates a full report of all datasets to check size and number of downloaded tiles
-        /// </summary>
-        /// <returns>
-        /// A string containing the report
-        /// </returns>
-        public IEnumerable<DatasetReport> GenerateReport()
+
+        private async Task<DatasetReport> GenerateReportSummaryAsync(DEMDataSet dataset, CancellationToken cancellationToken)
         {
-            // Get report for downloaded files
-            foreach (DEMDataSet dataset in DEMDataSet.RegisteredDatasets)
-            {
-                yield return GenerateReportSummary(dataset);
-            }
-        }
-        private DatasetReport GenerateReportSummary(DEMDataSet dataset)
-        {
-            List<DemFileReport> report = GenerateReport(dataset);
+            List<DemFileReport> report = await GenerateReportAsync(dataset, null, cancellationToken).ConfigureAwait(false);
             int totalFiles = report.Count;
             int downloadedCount = report.Count(rpt => rpt.IsExistingLocally);
             int isMetadataGeneratedCount = report.Count(rpt => rpt.IsMetadataGenerated);
@@ -460,12 +448,11 @@ namespace DEM.Net.Core
         /// <param name="dataSet">DEM dataset information</param>
         /// <param name="bbox">Bbox for filtering</param>
         /// <returns>A Dictionnary</returns>
-        public List<DemFileReport> GenerateReport(DEMDataSet dataSet, BoundingBox bbox = null)
+        public async Task<List<DemFileReport>> GenerateReportAsync(DEMDataSet dataSet, BoundingBox bbox = null, CancellationToken cancellationToken = default)
         {
             List<DemFileReport> statusByFile = new List<DemFileReport>();
 
-            var indexService = this._rasterIndexServiceResolver(dataSet.DataSource.DataSourceType);
-            indexService.Setup(dataSet, GetLocalDEMPath(dataSet));
+            var indexService = await GetIndexServiceAsync(dataSet, cancellationToken).ConfigureAwait(false);
 
             if (bbox == null)
             {
@@ -503,11 +490,9 @@ namespace DEM.Net.Core
             return statusByFile;
         }
 
-        public List<DemFileReport> GenerateReportForLocation(DEMDataSet dataSet, double lat, double lon)
+        public async Task<List<DemFileReport>> GenerateReportForLocationAsync(DEMDataSet dataSet, double lat, double lon, CancellationToken cancellationToken = default)
         {
-
-            var indexService = this._rasterIndexServiceResolver(dataSet.DataSource.DataSourceType);
-            indexService.Setup(dataSet, GetLocalDEMPath(dataSet));
+            var indexService = await GetIndexServiceAsync(dataSet, cancellationToken).ConfigureAwait(false);
 
             if (dataSet.DataSource.DataSourceType == Datasets.DEMDataSourceType.XyzTiles)
             {
@@ -560,27 +545,35 @@ namespace DEM.Net.Core
         }
 
 
+        /// <summary>Index service of the dataset, set up (its remote index is downloaded once).</summary>
+        private async Task<IDEMDataSetIndex> GetIndexServiceAsync(DEMDataSet dataSet, CancellationToken cancellationToken)
+        {
+            var indexService = this._rasterIndexServiceResolver(dataSet.DataSource.DataSourceType);
+            await indexService.SetupAsync(dataSet, GetLocalDEMPath(dataSet), cancellationToken).ConfigureAwait(false);
+            return indexService;
+        }
+
         /// <summary>
-        /// Downloads a raster file using downloader configured for the dataset
+        /// Downloads a raster file using downloader configured for the dataset, and generates its metadata.
+        /// Concurrent calls for the same file share one download.
         /// </summary>
         /// <param name="report">Report item return by GenerateReport methods</param>
         /// <param name="dataset"></param>
-        public void DownloadRasterFile(DemFileReport report, DEMDataSet dataset)
+        public Task DownloadRasterFileAsync(DemFileReport report, DEMDataSet dataset, CancellationToken cancellationToken = default)
         {
-            var downloader = _rasterIndexServiceResolver(dataset.DataSource.DataSourceType);
+            if (File.Exists(report.LocalName))
+                return Task.CompletedTask;
 
-            lock (monitor[report.URL])
+            var downloader = _rasterIndexServiceResolver(dataset.DataSource.DataSourceType);
+            // the shared download is not cancelled by one caller: other requests may be waiting for the same file
+            return _downloads.RunAsync(report.LocalName, async () =>
             {
                 if (!File.Exists(report.LocalName))
                 {
-                    //_logger?.LogInformation($"Downloading file {report.URL}...");
-
-                    downloader.DownloadRasterFile(report, dataset);
-
+                    await downloader.DownloadRasterFileAsync(report, dataset, CancellationToken.None).ConfigureAwait(false);
                     this.GenerateFileMetadata(report.LocalName, dataset.FileFormat, false);
                 }
-            }
-
+            }, cancellationToken);
         }
 
 

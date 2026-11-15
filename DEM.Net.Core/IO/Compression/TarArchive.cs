@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Formats.Tar;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DEM.Net.Core
 {
@@ -28,25 +25,9 @@ namespace DEM.Net.Core
         /// <param name="outputDir">Output directory to write the files.</param>
         public static void ExtractTarGz(Stream stream, string outputDir)
         {
-            // A GZipStream is not seekable, so copy it first to a MemoryStream
+            // TarReader reads forward only: the archive is streamed, never buffered in memory
             using (var gzip = new GZipStream(stream, CompressionMode.Decompress))
-            {
-                const int chunk = 4096;
-                using (var ms = new MemoryStream())
-                {
-                    int read;
-                    var buffer = new byte[chunk];
-                    do
-                    {
-                        read = gzip.Read(buffer, 0, chunk);
-                        ms.Write(buffer, 0, read);
-                    }
-                    while (read == chunk);
-
-                    ms.Seek(0, SeekOrigin.Begin);
-                    ExtractTar(ms, outputDir);
-                }
-            }
+                ExtractTar(gzip, outputDir);
         }
 
         /// <summary>
@@ -54,6 +35,7 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="filename">The <i>.tar</i> to extract.</param>
         /// <param name="outputDir">Output directory to write the files.</param>
+        /// <param name="onlyExtensions">When set, only files ending with this extension are extracted.</param>
         public static void ExtractTar(string filename, string outputDir, string onlyExtensions = null)
         {
             using (var stream = File.OpenRead(filename))
@@ -65,69 +47,32 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="stream">The <i>.tar</i> to extract.</param>
         /// <param name="outputDir">Output directory to write the files.</param>
+        /// <param name="onlyExtensions">When set, only files ending with this extension are extracted.</param>
         public static void ExtractTar(Stream stream, string outputDir, string onlyExtensions = null)
         {
-            var buffer = new byte[100];
-            while (true)
+            var outputRoot = Path.GetFullPath(outputDir);
+            if (!outputRoot.EndsWith(Path.DirectorySeparatorChar))
+                outputRoot += Path.DirectorySeparatorChar;
+
+            using var reader = new TarReader(stream);
+            while (reader.GetNextEntry() is TarEntry entry)
             {
-                // End of stream without trailing zero blocks: stop cleanly
-                if (stream.ReadAtLeast(buffer.AsSpan(0, 100), 100, throwOnEndOfStream: false) < 100)
-                    break;
+                // directories are created with their files; links and other special entries are not extracted
+                if (entry.EntryType is not (TarEntryType.RegularFile or TarEntryType.V7RegularFile) || entry.DataStream == null)
+                    continue;
 
-                var name = Encoding.ASCII.GetString(buffer).Trim('\0', ' ');
-                if (string.IsNullOrWhiteSpace(name))
-                    break;
-
-                stream.Seek(24, SeekOrigin.Current);
-                stream.ReadExactly(buffer, 0, 12);
-
-                long size;
-
-                string hex = Encoding.ASCII.GetString(buffer, 0, 12).Trim('\0', ' ');
-                try
-                {
-                    size = Convert.ToInt64(hex, 8);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("Could not parse hex: " + hex, ex);
-                }
-
-                stream.Seek(376L, SeekOrigin.Current);
-
-                var output = Path.GetFullPath(Path.Combine(outputDir, name));
-                var outputRoot = Path.GetFullPath(outputDir);
-                if (!outputRoot.EndsWith(Path.DirectorySeparatorChar))
-                    outputRoot += Path.DirectorySeparatorChar;
+                var output = Path.GetFullPath(Path.Combine(outputRoot, entry.Name));
                 if (!output.StartsWith(outputRoot, StringComparison.Ordinal))
-                    throw new InvalidDataException($"Tar entry '{name}' would be extracted outside of the output directory.");
+                    throw new InvalidDataException($"Tar entry '{entry.Name}' would be extracted outside of the output directory.");
 
-                if (size > 0) // ignores directory entries
+                if (onlyExtensions != null && !output.EndsWith(onlyExtensions, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                Directory.CreateDirectory(Path.GetDirectoryName(output));
+                using (var fs = new FileStream(output, FileMode.Create, FileAccess.Write))
                 {
-                    if (onlyExtensions != null && !output.ToLower().EndsWith(onlyExtensions.ToLower()))
-                    {
-                        stream.Seek(size, SeekOrigin.Current);
-                    }
-                    else
-                    {
-                        Directory.CreateDirectory(Path.GetDirectoryName(output));
-
-                        using (var fs = File.Open(output, FileMode.OpenOrCreate, FileAccess.Write))
-                        {
-                            var blob = new byte[size];
-                            stream.ReadExactly(blob, 0, blob.Length);
-                            fs.Write(blob, 0, blob.Length);
-                        }
-                    }
+                    entry.DataStream.CopyTo(fs);
                 }
-
-                var pos = stream.Position;
-
-                var offset = 512 - (pos  % 512);
-                if (offset == 512)
-                    offset = 0;
-
-                stream.Seek(offset, SeekOrigin.Current);
             }
         }
     }

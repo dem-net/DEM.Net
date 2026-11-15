@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DEM.Net.Core
 {
@@ -25,10 +27,8 @@ namespace DEM.Net.Core
         }
 
 
-        public void DownloadRasterFile(DemFileReport report, DEMDataSet dataset)
-        {
-            throw new NotImplementedException();
-        }
+        public Task DownloadRasterFileAsync(DemFileReport report, DEMDataSet dataset, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException($"{dataset.Name} is a local dataset: its files cannot be downloaded ({report.LocalName} is missing).");
 
         public IEnumerable<DEMFileSource> GetCoveredFileSources(DEMDataSet dataset, BoundingBox bbox)
         {
@@ -72,7 +72,14 @@ namespace DEM.Net.Core
             _directoryPerDataset.Clear();
         }
 
-        public void Setup(DEMDataSet dataSet, string dataSetLocalDir)
+        /// <remarks>Local files only: runs synchronously.</remarks>
+        public Task SetupAsync(DEMDataSet dataSet, string dataSetLocalDir, CancellationToken cancellationToken = default)
+        {
+            Setup(dataSet, dataSetLocalDir);
+            return Task.CompletedTask;
+        }
+
+        private void Setup(DEMDataSet dataSet, string dataSetLocalDir)
         {
             try
             {

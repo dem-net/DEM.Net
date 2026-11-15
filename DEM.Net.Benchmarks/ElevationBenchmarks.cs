@@ -39,11 +39,14 @@ public class ElevationBenchmarks
             .ToList();
 
         // Warm up: generates and loads the file metadata (local dataset: nothing is downloaded), opens the raster once.
-        // The measured calls then skip DownloadMissingFiles (downloadMissingFiles: false) where the API allows it.
-        _elevation.DownloadMissingFiles(_data.DataSet, new BoundingBox(LocalHgtDataSet.West, LocalHgtDataSet.West + 1, LocalHgtDataSet.South, LocalHgtDataSet.South + 1));
+        // The measured calls use the synchronous APIs, which read the local files only.
+        // BenchmarkDotNet setup methods are synchronous
+#pragma warning disable VSTHRD002 // console host: no synchronization context to deadlock on
+        _elevation.DownloadMissingFilesAsync(_data.DataSet, new BoundingBox(LocalHgtDataSet.West, LocalHgtDataSet.West + 1, LocalHgtDataSet.South, LocalHgtDataSet.South + 1))
+            .GetAwaiter().GetResult();
+#pragma warning restore VSTHRD002
         _elevation.GetPointElevation(43.5, 5.5, _data.DataSet);
-        var bbox = Bbox;
-        _heightMap = _elevation.GetHeightMap(ref bbox, _data.DataSet, downloadMissingFiles: false);
+        _heightMap = _elevation.GetHeightMap(Bbox, _data.DataSet);
     }
 
     [GlobalCleanup]
@@ -60,7 +63,7 @@ public class ElevationBenchmarks
 
     [Benchmark(Description = "1 000 points elevation (batch)")]
     public int PointsElevationBatch()
-        => _elevation.GetPointsElevation(_points, _data.DataSet, downloadMissingFiles: false).Count();
+        => _elevation.GetPointsElevation(_points, _data.DataSet).Count;
 
     [Benchmark(Description = "Line elevation, 10 000 vertices")]
     public int LineElevation()
@@ -68,10 +71,7 @@ public class ElevationBenchmarks
 
     [Benchmark(Description = "Height map of a 0.2° bbox")]
     public int HeightMap()
-    {
-        var bbox = Bbox;
-        return _elevation.GetHeightMap(ref bbox, _data.DataSet, downloadMissingFiles: false).Count;
-    }
+        => _elevation.GetHeightMap(Bbox, _data.DataSet).Count;
 
     [Benchmark(Description = "Reproject height map to 3857, z-scale, center")]
     public int ReprojectHeightMap()

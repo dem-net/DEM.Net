@@ -9,13 +9,16 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DEM.Net.Core.Stac
 {
     public class StacFileService : IDEMDataSetIndex
     {
         private readonly ILogger<StacFileService> logger;
-        private ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName;
+        private readonly ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
+        private readonly SingleFlight _setup = new SingleFlight(keepCompleted: false); // the result lives in _cacheByDemName
         private readonly IHttpClientFactory httpClientFactory;
 
         public StacFileService(ILogger<StacFileService> logger, IHttpClientFactory httpClientFactory)
@@ -23,99 +26,75 @@ namespace DEM.Net.Core.Stac
             this.logger = logger;
             this.httpClientFactory = httpClientFactory;
         }
-        public void Setup(DEMDataSet dataSet, string dataSetLocalDir)
+        public Task SetupAsync(DEMDataSet dataSet, string dataSetLocalDir, CancellationToken cancellationToken = default)
         {
-            try
+            if (dataSet == null)
+                throw new ArgumentNullException(nameof(dataSet), "Dataset is null.");
+            if (dataSet.DataSource is not StacDataSource dataSource)
+                throw new ArgumentException($"Dataset source is {dataSet.DataSource.DataSourceType}, only {nameof(DEMDataSourceType.Stac)} sources are supported by {nameof(StacFileService)}.", nameof(dataSet));
+
+            if (_cacheByDemName.ContainsKey(dataSet.Name))
+                return Task.CompletedTask;
+
+            return _setup.RunAsync(dataSet.Name, async () =>
             {
-
-                if (dataSet == null)
-                    throw new ArgumentNullException(nameof(dataSet), "Dataset is null.");
-
-                StacDataSource dataSource = dataSet.DataSource as StacDataSource;
-                if (dataSource is null)
-                    throw new ArgumentException(nameof(dataSet), $"Dataset source is {dataSet.DataSource.DataSourceType}, only {nameof(DEMDataSourceType.Stac)} sources are supported by {nameof(StacFileService)} null.");
-
-                if (!Directory.Exists(dataSetLocalDir))
+                try
                 {
                     Directory.CreateDirectory(dataSetLocalDir);
-                }
+                    string indexFileName = Path.Combine(dataSetLocalDir, UrlHelper.GetFileNameFromUrl(dataSource.IndexFilePath));
 
-                string indexFileName = Path.Combine(dataSetLocalDir, UrlHelper.GetFileNameFromUrl(dataSource.IndexFilePath));
-
-                bool download = !File.Exists(indexFileName);
-
-                Dictionary<StacDemFile, StacDemFile> links = null;
-                if (download)
-                {
-                    Uri baseUrl = new Uri(dataSource.Url);
-                    // Fetch collection page by page until we have no result left
-                    //
-                    this.logger.LogInformation($"Fetching items from collection {dataSource.Collection} to disk... This will be done once.");
-                    bool hasData = true;
-                    int pageIndex = 0;
-                    string initialUrl = string.Concat(baseUrl, $"/collections/{dataSource.Collection}/items");
-                    links = new Dictionary<StacDemFile, StacDemFile>(30000);
-                    var httpClient = httpClientFactory.CreateClient();
-                    do
+                    if (!File.Exists(indexFileName))
                     {
-                        pageIndex++;
-                        logger.LogInformation($"Getting entries on page {pageIndex}... ({links.Count} assets collected so far)");
-
-                        var json = httpClient.GetStringAsync(initialUrl).GetAwaiter().GetResult();
-                        hasData = !string.IsNullOrWhiteSpace(json);
-                        if (hasData)
-                        {
-                            var result = CollectionItems.FromJson(json);
-                            hasData = result.Features.Count > 0;
-                            if (hasData)
-                            {
-                                // Only retrieve bbox and dem file link (zip file)
-                                var newFiles = result.Features.Select(_ => GetStacDemFile(dataSource, _)).Where(file => file != null);
-                                foreach (var newFile in newFiles)
-                                {
-                                    if (links.ContainsKey(newFile))
-                                    {
-                                        if (links[newFile].DateTime.CompareTo(newFile.DateTime)<0)
-                                        {
-                                            links[newFile] = newFile;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        links.Add(newFile, newFile);
-                                    }
-                                }
-                            }
-
-                            initialUrl = result.Links.FirstOrDefault(l => l.Rel == Rel.Next)?.Href?.ToString();
-                            hasData = initialUrl != null;
-                        }
+                        var links = await FetchCollectionAsync(dataSource).ConfigureAwait(false);
+                        // an interrupted run never leaves a truncated index
+                        await HttpDownload.WriteAllTextAtomicAsync(indexFileName, JsonConvert.SerializeObject(links.Values, Formatting.Indented), CancellationToken.None).ConfigureAwait(false);
+                        logger.LogInformation($"{links.Count} entries written to index file {indexFileName}");
                     }
-                    while (hasData);
 
-                    File.WriteAllText(indexFileName, JsonConvert.SerializeObject(links.Values, Formatting.Indented));
-                    logger.LogInformation($"{links.Count} entries written to index file {indexFileName}");
+                    _cacheByDemName[dataSet.Name] = GetSources(dataSet, indexFileName);
                 }
-
-
-                // Cache
-                if (_cacheByDemName == null)
+                catch (Exception ex)
                 {
-                    _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
+                    logger?.LogError(ex, $"Error while setting up {dataSet.Name} STAC index: {ex.Message}");
+                    throw;
                 }
-                if (_cacheByDemName.ContainsKey(dataSet.Name) == false)
-                {
-                    _cacheByDemName[dataSet.Name] = this.GetSources(dataSet, indexFileName);
-                }
-
-            }
-            catch (Exception ex)
-            {
-                this.logger?.LogError("Unhandled exception: " + ex.Message);
-                this.logger?.LogInformation(ex.ToString());
-                throw;
-            }
+            }, cancellationToken);
         }
+
+        /// <summary>Fetches the collection page by page until no result is left.</summary>
+        private async Task<Dictionary<StacDemFile, StacDemFile>> FetchCollectionAsync(StacDataSource dataSource)
+        {
+            logger.LogInformation($"Fetching items from collection {dataSource.Collection} to disk... This will be done once.");
+            Uri baseUrl = new Uri(dataSource.Url);
+            string url = string.Concat(baseUrl, $"/collections/{dataSource.Collection}/items");
+            var links = new Dictionary<StacDemFile, StacDemFile>(30000);
+            var httpClient = httpClientFactory.CreateClient();
+            int pageIndex = 0;
+            while (url != null)
+            {
+                pageIndex++;
+                logger.LogInformation($"Getting entries on page {pageIndex}... ({links.Count} assets collected so far)");
+
+                var json = await httpClient.GetStringAsync(url).ConfigureAwait(false);
+                if (string.IsNullOrWhiteSpace(json))
+                    break;
+
+                var result = CollectionItems.FromJson(json);
+                if (result.Features.Count == 0)
+                    break;
+
+                // Only retrieve bbox and dem file link (zip file), keep the most recent item of each file
+                foreach (var newFile in result.Features.Select(f => GetStacDemFile(dataSource, f)).Where(file => file != null))
+                {
+                    if (!links.TryGetValue(newFile, out var existing) || existing.DateTime.CompareTo(newFile.DateTime) < 0)
+                        links[newFile] = newFile;
+                }
+
+                url = result.Links.FirstOrDefault(l => l.Rel == Rel.Next)?.Href?.ToString();
+            }
+            return links;
+        }
+
         private List<DEMFileSource> GetSources(DEMDataSet dataSet, string indexFileName)
         {
             List<StacDemFile> stacDemFiles = JsonConvert.DeserializeObject<List<StacDemFile>>(File.ReadAllText(indexFileName));
@@ -142,33 +121,15 @@ namespace DEM.Net.Core.Stac
             return null;
         }
 
-        public void DownloadRasterFile(DemFileReport report, DEMDataSet dataset)
+        public async Task DownloadRasterFileAsync(DemFileReport report, DEMDataSet dataset, CancellationToken cancellationToken = default)
         {
             try
             {
-                //logger.LogInformation($"Downloading {report.URL}...");
-
-                var dirName = Path.GetDirectoryName(report.LocalName);
-                if (!Directory.Exists(dirName))
-                {
-                    Directory.CreateDirectory(dirName);
-                }
-                // Execute the request
-                var client = httpClientFactory.CreateClient();
-                using (var request = new HttpRequestMessage(HttpMethod.Get, report.URL))
-                using (HttpResponseMessage response = client.Send(request, HttpCompletionOption.ResponseHeadersRead))
-                {
-                    response.EnsureSuccessStatusCode();
-                    using (Stream stream = response.Content.ReadAsStream())
-                    using (FileStream fs = new FileStream(report.LocalName, FileMode.Create, FileAccess.Write))
-                    {
-                        stream.CopyTo(fs);
-                    }
-                }
+                await HttpDownload.DownloadToFileAsync(httpClientFactory.CreateClient(), report.URL, report.LocalName, cancellationToken).ConfigureAwait(false);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                logger.LogError(ex, $"Error while downloading DEM file: {ex.Message}");
+                logger.LogError(ex, $"Error while downloading DEM file {report.URL}: {ex.Message}");
                 throw;
             }
         }
@@ -186,22 +147,14 @@ namespace DEM.Net.Core.Stac
 
         public IEnumerable<DEMFileSource> GetFileSources(DEMDataSet dataset)
         {
-            if (_cacheByDemName.ContainsKey(dataset.Name))
-            {
-                foreach (var item in _cacheByDemName[dataset.Name])
-                {
-                    yield return item;
-                }
-            }
-            else
-            {
-                throw new Exception("Must call Init(dataSet) first !");
-            }
+            if (!_cacheByDemName.TryGetValue(dataset.Name, out var sources))
+                throw new InvalidOperationException($"{nameof(SetupAsync)} must be called for dataset {dataset.Name} first.");
+            return sources;
         }
 
         public void Reset()
         {
-            //throw new NotImplementedException();
+            _cacheByDemName.Clear();
         }
 
     }
