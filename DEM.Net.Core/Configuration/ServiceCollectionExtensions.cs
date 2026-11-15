@@ -4,6 +4,7 @@ using DEM.Net.Core.Imagery;
 using DEM.Net.Core.Services.Imagery;
 using DEM.Net.Core.Stac;
 using DEM.Net.Core.TileIndex;
+using DEM.Net.Core.XyzTiles;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -28,6 +29,7 @@ namespace DEM.Net.Core
             services.AddSingleton<EarthdataLoginConnector>();
             services.AddSingleton<StacFileService>();
             services.AddSingleton<TileIndexFileService>();
+            services.AddSingleton<XyzTileIndexService>();
 
             services.AddTransient<RasterIndexServiceResolver>(serviceProvider => dataSourceType =>
             {
@@ -41,6 +43,8 @@ namespace DEM.Net.Core
                         return serviceProvider.GetService<StacFileService>();
                     case Datasets.DEMDataSourceType.TileIndex:
                         return serviceProvider.GetService<TileIndexFileService>();
+                    case Datasets.DEMDataSourceType.XyzTiles:
+                        return serviceProvider.GetService<XyzTileIndexService>();
                     case Datasets.DEMDataSourceType.LocalFileSystem:
                         return serviceProvider.GetService<LocalFileSystemIndex>();
                     default:

@@ -119,6 +119,7 @@ namespace DEM.Net.Core
                 DEMFileType.ASCIIGridGzip => new ASCIIGridFile(filePath, gzip: true),
                 DEMFileType.CF_NetCDF => new NetCdfFile(filePath),
                 DEMFileType.TerrainRGB => new TerrainRGBFile(filePath),
+                DEMFileType.Terrarium => new TerrariumFile(filePath),
                 _ => throw new NotImplementedException($"{fileFormat} file format not implemented."),
             };
         }
@@ -507,6 +508,23 @@ namespace DEM.Net.Core
 
             var indexService = this._rasterIndexServiceResolver(dataSet.DataSource.DataSourceType);
             indexService.Setup(dataSet, GetLocalDEMPath(dataSet));
+
+            if (dataSet.DataSource.DataSourceType == Datasets.DEMDataSourceType.XyzTiles)
+            {
+                // Tile pyramids only list downloaded tiles: compute the tiles around the location instead
+                // (one pixel around, adjacent tiles are needed for interpolation at tile edges).
+                var pixelDegrees = 360d / ((1L << ((Datasets.XyzTileDataSource)dataSet.DataSource).Zoom) * ((Datasets.XyzTileDataSource)dataSet.DataSource).TileSize);
+                return indexService.GetCoveredFileSources(dataSet, BoundingBox.AroundPoint(lat, lon, pixelDegrees))
+                    .Select(source => new DemFileReport()
+                    {
+                        IsExistingLocally = File.Exists(source.LocalFileName),
+                        IsMetadataGenerated = File.Exists(GetMetadataFileName(source.LocalFileName, ".json")),
+                        LocalName = source.LocalFileName,
+                        URL = source.SourceFileNameAbsolute,
+                        Source = source
+                    })
+                    .ToList();
+            }
 
             if (dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell)
             {

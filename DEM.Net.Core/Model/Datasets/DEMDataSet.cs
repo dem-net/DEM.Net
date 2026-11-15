@@ -319,6 +319,8 @@ namespace DEM.Net.Core
             //                                     "GEBCO Compilation Group (2020) GEBCO 2020 Grid (doi:10.5285/a29c5465-b138-234d-e053-6c86abc040b9)")
             //});
 
+            AddMapterhornDatasets(datasets);
+
             return datasets;
         }
 
