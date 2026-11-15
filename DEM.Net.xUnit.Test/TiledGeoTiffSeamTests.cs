@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using DEM.Net.Core;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -43,12 +44,12 @@ namespace DEM.Net.Test
 
         [Theory]
         [MemberData(nameof(Cases))]
-        public void HeightMapAcrossTileSeamIsARegularGridOfPixelCenters(string datasetName, double xMin, double xMax, double yMin, double yMax, double pixelSize, double centerOffset)
+        public async Task HeightMapAcrossTileSeamIsARegularGridOfPixelCenters(string datasetName, double xMin, double xMax, double yMin, double yMax, double pixelSize, double centerOffset)
         {
             var dataset = (DEMDataSet)typeof(DEMDataSet).GetProperty(datasetName).GetValue(null);
             var bbox = new BoundingBox(xMin, xMax, yMin, yMax) { SRID = dataset.SRID };
 
-            HeightMap heightMap = _elevationService.GetHeightMap(ref bbox, dataset);
+            HeightMap heightMap = await _elevationService.GetHeightMapAsync(bbox, dataset);
             var points = heightMap.Coordinates.ToList();
 
             // column / row index of each coordinate, in pixels from the global origin
@@ -79,13 +80,13 @@ namespace DEM.Net.Test
         /// "SmallListSet.MoveTo: list at ... is empty" when tiles were missing).
         /// </summary>
         [Fact]
-        public void FabdemTerrainAcrossTileSeamCanBeDecimated()
+        public async Task FabdemTerrainAcrossTileSeamCanBeDecimated()
         {
             var gltf = _services.GetService<DEM.Net.glTF.SharpglTF.SharpGltfService>();
             var dataset = DEMDataSet.FABDEM;
             var bbox = new BoundingBox(8.223893, 8.35273, 49.964561, 50.042325) { SRID = dataset.SRID };
 
-            var heightMap = _elevationService.GetHeightMap(ref bbox, dataset)
+            var heightMap = (await _elevationService.GetHeightMapAsync(bbox, dataset))
                 .ReprojectGeodeticToCartesian()
                 .ZScale(1.5f);
             var model = gltf.CreateTerrainMesh(heightMap, meshReduceFactor: 0.5f);

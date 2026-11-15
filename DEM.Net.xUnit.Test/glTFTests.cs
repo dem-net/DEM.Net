@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Threading.Tasks;
+using System;
 using System.IO;
 using System.IO.Compression;
 using DEM.Net.Core;
@@ -64,7 +65,7 @@ namespace DEM.Net.Test
         [Theory()]
         [InlineData(true)]
         [InlineData(false)]
-        public void Test_GLB_Export_Bbox(bool exportAsBinary)
+        public async Task Test_GLB_Export_Bbox(bool exportAsBinary)
         {
 
             DEMDataSet dataset = DEMDataSet.SRTM_GL3;
@@ -73,7 +74,7 @@ namespace DEM.Net.Test
             // You can get your boox from https://geojson.net/ (save as WKT)
             string bboxWKT = "POLYGON((5.54888 43.519525, 5.61209 43.519525, 5.61209 43.565225, 5.54888 43.565225, 5.54888 43.519525))";
             var bbox = GeometryService.GetBoundingBox(bboxWKT);
-            var heightMap = _elevationService.GetHeightMap(ref bbox, dataset);
+            var heightMap = await _elevationService.GetHeightMapAsync(bbox, dataset);
                     
 
             // Triangulate height map

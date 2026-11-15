@@ -9,6 +9,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DEM.Net.Core.XyzTiles
 {
@@ -48,17 +50,19 @@ namespace DEM.Net.Core.XyzTiles
                 ?? throw new ArgumentException($"Dataset source is {dataSet.DataSource.DataSourceType}, only {nameof(DEMDataSourceType.XyzTiles)} sources are supported by {nameof(XyzTileIndexService)}.", nameof(dataSet));
         }
 
-        public void Setup(DEMDataSet dataSet, string dataSetLocalDir)
+        /// <remarks>No index to download: runs synchronously.</remarks>
+        public Task SetupAsync(DEMDataSet dataSet, string dataSetLocalDir, CancellationToken cancellationToken = default)
         {
             GetDataSource(dataSet);
             Directory.CreateDirectory(dataSetLocalDir);
             _localDirByDemName[dataSet.Name] = dataSetLocalDir;
+            return Task.CompletedTask;
         }
 
         private string GetLocalDir(DEMDataSet dataSet)
         {
             if (!_localDirByDemName.TryGetValue(dataSet.Name, out var dir))
-                throw new InvalidOperationException($"{nameof(Setup)} must be called for dataset {dataSet.Name} first.");
+                throw new InvalidOperationException($"{nameof(SetupAsync)} must be called for dataset {dataSet.Name} first.");
             return dir;
         }
 
@@ -118,82 +122,64 @@ namespace DEM.Net.Core.XyzTiles
             return sources;
         }
 
-        public void DownloadRasterFile(DemFileReport report, DEMDataSet dataset)
+        public async Task DownloadRasterFileAsync(DemFileReport report, DEMDataSet dataset, CancellationToken cancellationToken = default)
         {
             var source = GetDataSource(dataset);
             var (z, x, y) = TerrariumFile.ParseTileName(report.LocalName);
-            string tempFile = report.LocalName + ".download";
             try
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(report.LocalName));
-
-                byte[] bytes = TryDownload(report.URL);
-                if (bytes != null)
-                {
-                    File.WriteAllBytes(tempFile, bytes);
-                }
-                else
+                bool downloaded = await HttpDownload.DownloadToFileAsync(_httpClientFactory.CreateClient(), report.URL, report.LocalName, cancellationToken,
+                    SetUserAgent, notFoundIsMissing: true).ConfigureAwait(false);
+                if (!downloaded)
                 {
                     // No data at this zoom (e.g. no high resolution source here, or open ocean which only exists at low zoom)
                     _logger.LogInformation($"No tile at {z}/{x}/{y}, resampling from lower zoom.");
-                    float[] heights = ResampleFromAncestor(source, z, x, y, out int size);
-                    TerrariumFile.EncodeWebP(heights, size, tempFile);
-                }
+                    var (heights, size) = await ResampleFromAncestorAsync(source, z, x, y, cancellationToken).ConfigureAwait(false);
 
-                // a partial download must never look like a valid local tile
-                File.Move(tempFile, report.LocalName, overwrite: true);
+                    // a partial file must never look like a valid local tile
+                    string tempFile = HttpDownload.TempFileName(report.LocalName);
+                    try
+                    {
+                        TerrariumFile.EncodeWebP(heights, size, tempFile);
+                        File.Move(tempFile, report.LocalName, overwrite: true);
+                    }
+                    finally
+                    {
+                        if (File.Exists(tempFile)) File.Delete(tempFile);
+                    }
+                }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                if (File.Exists(tempFile)) File.Delete(tempFile);
                 _logger.LogError(ex, $"Error while downloading DEM tile {report.URL}: {ex.Message}");
                 throw;
             }
         }
 
-        /// <summary>Downloads a tile, returns null when it does not exist (404).</summary>
-        private byte[] TryDownload(string url)
-        {
-            var client = _httpClientFactory.CreateClient();
-            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
-            {
-                request.Headers.UserAgent.ParseAdd(UserAgent);
-                using (var response = client.Send(request))
-                {
-                    if (response.StatusCode == HttpStatusCode.NotFound)
-                        return null;
+        private static void SetUserAgent(HttpRequestMessage request) => request.Headers.UserAgent.ParseAdd(UserAgent);
 
-                    response.EnsureSuccessStatusCode();
-                    using (var stream = response.Content.ReadAsStream())
-                    using (var ms = new MemoryStream())
-                    {
-                        stream.CopyTo(ms);
-                        return ms.ToArray();
-                    }
-                }
-            }
-        }
+        /// <summary>Downloads a tile, returns null when it does not exist (404).</summary>
+        private Task<byte[]> TryDownloadAsync(string url, CancellationToken cancellationToken)
+            => HttpDownload.TryGetBytesAsync(_httpClientFactory.CreateClient(), url, cancellationToken, SetUserAgent);
 
         /// <summary>
         /// Heights of the closest available ancestor of a tile, cached in memory (sibling tiles share their ancestor).
         /// </summary>
-        private (float[] heights, int size, int zoom) GetAncestor(XyzTileDataSource source, int z, int x, int y)
+        private async Task<(float[] heights, int size, int zoom)> GetAncestorAsync(XyzTileDataSource source, int z, int x, int y, CancellationToken cancellationToken)
         {
             for (int d = 1; z - d >= 0; d++)
             {
                 int az = z - d, ax = x >> d, ay = y >> d;
                 string url = source.GetTileUrl(az, ax, ay);
-                var ancestor = _cache.GetOrCreate("xyz-ancestor:" + url, entry =>
+                string key = "xyz-ancestor:" + url;
+                if (!_cache.TryGetValue(key, out (float[] heights, int size) ancestor))
                 {
-                    entry.SlidingExpiration = AncestorCacheDuration;
-                    byte[] bytes = TryDownload(url);
-                    if (bytes == null)
-                        return ((float[])null, 0);
-                    var heights = TerrariumFile.Decode(bytes, out int size);
-                    return (heights, size);
-                });
-                if (ancestor.Item1 != null)
-                    return (ancestor.Item1, ancestor.Item2, az);
+                    byte[] bytes = await TryDownloadAsync(url, cancellationToken).ConfigureAwait(false);
+                    ancestor = bytes == null ? (null, 0) : (TerrariumFile.Decode(bytes, out int size), size);
+                    _cache.Set(key, ancestor, new MemoryCacheEntryOptions { SlidingExpiration = AncestorCacheDuration });
+                }
+                if (ancestor.heights != null)
+                    return (ancestor.heights, ancestor.size, az);
             }
             throw new FileNotFoundException($"No ancestor tile found for tile {z}/{x}/{y} ({source.UrlTemplate}).");
         }
@@ -202,18 +188,18 @@ namespace DEM.Net.Core.XyzTiles
         /// Bilinear resampling of the part of the closest ancestor tile covering tile z/x/y. Sample positions are
         /// pixel centers in both tiles (cell registration).
         /// </summary>
-        internal float[] ResampleFromAncestor(XyzTileDataSource source, int z, int x, int y, out int size)
+        internal async Task<(float[] heights, int size)> ResampleFromAncestorAsync(XyzTileDataSource source, int z, int x, int y, CancellationToken cancellationToken = default)
         {
-            var (ancestor, ancestorSize, az) = GetAncestor(source, z, x, y);
+            var (ancestor, ancestorSize, az) = await GetAncestorAsync(source, z, x, y, cancellationToken).ConfigureAwait(false);
             int d = z - az;
             int scale = 1 << d;
-            size = source.TileSize;
+            int size = source.TileSize;
 
             // child pixel (i + 0.5) / size spans [offset, offset + 1/scale] of the ancestor tile
             double offsetX = (x - ((x >> d) << d)) / (double)scale;
             double offsetY = (y - ((y >> d) << d)) / (double)scale;
 
-            return Resample(ancestor, ancestorSize, size, scale, offsetX, offsetY);
+            return (Resample(ancestor, ancestorSize, size, scale, offsetX, offsetY), size);
         }
 
         public static float[] Resample(float[] ancestor, int ancestorSize, int size, int scale, double offsetX, double offsetY)
@@ -247,10 +233,10 @@ namespace DEM.Net.Core.XyzTiles
         /// (<see cref="XyzTileDataSource.CoverageIndexUrl"/>). Falls back to <see cref="XyzTileDataSource.FullCoverageMaxZoom"/>.
         /// </summary>
         /// <param name="bbox">Bounding box, WGS84 or EPSG:3857 (see <see cref="BoundingBox.SRID"/>)</param>
-        public int GetMaxZoom(DEMDataSet dataset, BoundingBox bbox)
+        public async Task<int> GetMaxZoomAsync(DEMDataSet dataset, BoundingBox bbox, CancellationToken cancellationToken = default)
         {
             var source = GetDataSource(dataset);
-            var areas = GetCoverageAreas(source);
+            var areas = await GetCoverageAreasAsync(source, cancellationToken).ConfigureAwait(false);
             var mercator = WebMercatorTiles.ToMercator(bbox);
 
             int maxZoom = source.FullCoverageMaxZoom;
@@ -266,64 +252,69 @@ namespace DEM.Net.Core.XyzTiles
             while (maxZoom > source.FullCoverageMaxZoom)
             {
                 var (x, _, y, _) = WebMercatorTiles.TileRange(new BoundingBox(centerX, centerX, centerY, centerY) { SRID = Reprojection.SRID_PROJECTED_MERCATOR }, maxZoom);
-                if (TileExists(source.GetTileUrl(maxZoom, x, y)))
+                if (await TileExistsAsync(source.GetTileUrl(maxZoom, x, y), cancellationToken).ConfigureAwait(false))
                     break;
                 maxZoom--;
             }
             return maxZoom;
         }
 
-        private bool TileExists(string url)
+        private async Task<bool> TileExistsAsync(string url, CancellationToken cancellationToken)
         {
-            return _cache.GetOrCreate("xyz-exists:" + url, entry =>
+            string key = "xyz-exists:" + url;
+            if (_cache.TryGetValue(key, out bool exists))
+                return exists;
+
+            TimeSpan duration = CoverageCacheDuration;
+            try
             {
-                entry.AbsoluteExpirationRelativeToNow = CoverageCacheDuration;
-                try
+                var client = _httpClientFactory.CreateClient();
+                using var request = new HttpRequestMessage(HttpMethod.Head, url);
+                SetUserAgent(request);
+                using var response = await client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                    exists = false;
+                else
                 {
-                    var client = _httpClientFactory.CreateClient();
-                    using (var request = new HttpRequestMessage(HttpMethod.Head, url))
-                    {
-                        request.Headers.UserAgent.ParseAdd(UserAgent);
-                        using (var response = client.Send(request))
-                        {
-                            if (response.StatusCode == HttpStatusCode.NotFound)
-                                return false;
-                            response.EnsureSuccessStatusCode();
-                            return true;
-                        }
-                    }
+                    response.EnsureSuccessStatusCode();
+                    exists = true;
                 }
-                catch (Exception ex)
-                {
-                    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-                    _logger.LogWarning(ex, $"Cannot check tile {url}: {ex.Message}");
-                    return true; // keep the coverage index answer
-                }
-            });
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                duration = TimeSpan.FromMinutes(5);
+                _logger.LogWarning(ex, $"Cannot check tile {url}: {ex.Message}");
+                exists = true; // keep the coverage index answer
+            }
+            _cache.Set(key, exists, duration);
+            return exists;
         }
 
-        private IReadOnlyList<CoverageArea> GetCoverageAreas(XyzTileDataSource source)
+        private async Task<IReadOnlyList<CoverageArea>> GetCoverageAreasAsync(XyzTileDataSource source, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(source.CoverageIndexUrl))
                 return Array.Empty<CoverageArea>();
 
-            return _cache.GetOrCreate("xyz-coverage:" + source.CoverageIndexUrl, entry =>
+            string key = "xyz-coverage:" + source.CoverageIndexUrl;
+            if (_cache.TryGetValue(key, out IReadOnlyList<CoverageArea> areas))
+                return areas;
+
+            TimeSpan duration = CoverageCacheDuration;
+            try
             {
-                try
-                {
-                    entry.AbsoluteExpirationRelativeToNow = CoverageCacheDuration;
-                    byte[] bytes = TryDownload(source.CoverageIndexUrl)
-                        ?? throw new FileNotFoundException(source.CoverageIndexUrl);
-                    return ParseCoverageIndex(System.Text.Encoding.UTF8.GetString(bytes));
-                }
-                catch (Exception ex)
-                {
-                    // retry soon, meanwhile only the fully covered zoom levels are used
-                    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-                    _logger.LogWarning(ex, $"Cannot read tile coverage index {source.CoverageIndexUrl}: {ex.Message}");
-                    return (IReadOnlyList<CoverageArea>)Array.Empty<CoverageArea>();
-                }
-            });
+                byte[] bytes = await TryDownloadAsync(source.CoverageIndexUrl, cancellationToken).ConfigureAwait(false)
+                    ?? throw new FileNotFoundException(source.CoverageIndexUrl);
+                areas = ParseCoverageIndex(System.Text.Encoding.UTF8.GetString(bytes));
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                // retry soon, meanwhile only the fully covered zoom levels are used
+                duration = TimeSpan.FromMinutes(5);
+                _logger.LogWarning(ex, $"Cannot read tile coverage index {source.CoverageIndexUrl}: {ex.Message}");
+                areas = Array.Empty<CoverageArea>();
+            }
+            _cache.Set(key, areas, duration);
+            return areas;
         }
 
         /// <summary>Parses Mapterhorn download_urls.json: items with min_lon/min_lat/max_lon/max_lat/max_zoom.</summary>

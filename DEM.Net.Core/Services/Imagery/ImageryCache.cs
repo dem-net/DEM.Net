@@ -5,6 +5,8 @@ using Microsoft.Extensions.Options;
 using System;
 using System.IO;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using Path = System.IO.Path;
 
 namespace DEM.Net.Core.Services.Imagery
@@ -37,38 +39,30 @@ namespace DEM.Net.Core.Services.Imagery
             CreateDirectoryIfNotExists(_localDirectory);
         }
 
-        public byte[] GetTile(Uri tileUri, ImageryProvider provider, MapTileInfo tileInfo)
+        public async Task<byte[]> GetTileAsync(Uri tileUri, ImageryProvider provider, MapTileInfo tileInfo, CancellationToken cancellationToken = default)
         {
-            var contentBytes = cache.GetOrCreate(tileUri, entry =>
+            if (cache.TryGetValue(tileUri, out byte[] contentBytes))
+                return contentBytes;
+
+            string tileFile = options.UseImageryDiskCache ? GetTileDiskPath(provider, tileInfo) : null;
+            if (tileFile != null && File.Exists(tileFile) && (DateTime.Now - File.GetLastWriteTime(tileFile)) <= diskExpirationHours)
             {
-                entry.SetSlidingExpiration(memoryExpirationMinutes);
-
-                // Check if present on disk
-                if (options.UseImageryDiskCache)
+                contentBytes = await File.ReadAllBytesAsync(tileFile, cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                HttpClient httpClient = httpClientFactory.CreateClient();
+                contentBytes = await httpClient.GetByteArrayAsync(tileUri, cancellationToken).ConfigureAwait(false);
+                if (tileFile != null && contentBytes.Length > 0)
                 {
-                    var tileFile = GetTileDiskPath(provider, tileInfo);
-                    if (File.Exists(tileFile) && (DateTime.Now - File.GetLastWriteTime(tileFile)) <= diskExpirationHours)
-                    {
-                        return File.ReadAllBytes(tileFile);
-                    }
-
-
-                    HttpClient httpClient = httpClientFactory.CreateClient();
-                    var bytes = httpClient.GetByteArrayAsync(tileUri).GetAwaiter().GetResult();
-                    if (bytes.Length > 0)
-                        File.WriteAllBytes(tileFile, bytes);
-
-                    return bytes;
+                    // a concurrent reader never sees a partial tile
+                    string tempFile = HttpDownload.TempFileName(tileFile);
+                    await File.WriteAllBytesAsync(tempFile, contentBytes, cancellationToken).ConfigureAwait(false);
+                    File.Move(tempFile, tileFile, overwrite: true);
                 }
-                else
-                {
-                    HttpClient httpClient = httpClientFactory.CreateClient();
-                    return httpClient.GetByteArrayAsync(tileUri).GetAwaiter().GetResult();
-                }
+            }
 
-
-            });
-
+            cache.Set(tileUri, contentBytes, new MemoryCacheEntryOptions { SlidingExpiration = memoryExpirationMinutes });
             return contentBytes;
         }
 

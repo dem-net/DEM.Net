@@ -29,11 +29,11 @@ namespace DEM.Net.xUnit.Test
 
         [Theory()]
         [MemberData(nameof(ImageryProviders))]
-        public void ImageryProviderTest(ImageryProvider provider, MapTileInfo testTile)
+        public async Task ImageryProviderTest(ImageryProvider provider, MapTileInfo testTile)
         {
             Assert.NotNull(provider.UrlModel);
             testTile.TileSize = provider.TileSize;
-            var result = _imageryService.DownloadTiles(new TileRange(testTile, testTile, provider.TileSize), provider);
+            var result = await _imageryService.DownloadTilesAsync(new TileRange(testTile, testTile, provider.TileSize), provider);
 
             Assert.NotNull(result);
             Assert.Single(result.Tiles);

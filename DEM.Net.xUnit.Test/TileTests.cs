@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Threading.Tasks;
+using System;
 using System.Linq;
 using DEM.Net.Core;
 using DEM.Net.Test;
@@ -28,7 +29,7 @@ namespace DEM.Net.xUnit.Test
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.5, 10.5, "N46E010.tif")]
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.00000000000004, 10.000000000000007, "N46E010.tif")]
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.5, 10.000000000000007, "N46E010.tif")]
-        public void SourceBboxCheck(string dataSetName, double lat, double lon, string expectedFileName)
+        public async Task SourceBboxCheck(string dataSetName, double lat, double lon, string expectedFileName)
         {
             DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
             Assert.NotNull(dataSet);
@@ -36,10 +37,10 @@ namespace DEM.Net.xUnit.Test
             var indexService = _rasterResolver(dataSet.DataSource.DataSourceType);
             Assert.NotNull(dataSet);
 
-            indexService.Setup(dataSet, _rasterService.LocalDirectory);
+            await indexService.SetupAsync(dataSet, _rasterService.LocalDirectory);
             var intersectingTiles = indexService.GetFileSources(dataSet).Where(tile => tile.BBox.Intersects(lat, lon)).ToList();
 
-            var report = _rasterService.GenerateReportForLocation(dataSet, lat, lon);
+            var report = await _rasterService.GenerateReportForLocationAsync(dataSet, lat, lon);
 
             Assert.NotNull(report);
             Assert.True(report.Count == 1);
@@ -52,7 +53,7 @@ namespace DEM.Net.xUnit.Test
         [Theory()]
         [InlineData(nameof(DEMDataSet.SRTM_GL3), 46, 10, "N45E009.tif", "N45E010.tif", "N46E009.tif", "N46E010.tif")]
         [InlineData(nameof(DEMDataSet.AW3D30), 46, 10, "ALPSMLC30_N045E009_DSM.tif", "ALPSMLC30_N045E010_DSM.tif", "ALPSMLC30_N046E009_DSM.tif", "ALPSMLC30_N046E010_DSM.tif")]
-        void TestEdges(string dataSetName, double lat, double lon
+        async Task TestEdges(string dataSetName, double lat, double lon
             , string rasterSouthWestName, string rasterSouthEastName
             , string rasterNorthWestName, string rasterNorthEastName)
         {
@@ -68,8 +69,8 @@ namespace DEM.Net.xUnit.Test
             //                                        , force: true
             //                                        , deleteOnError: false
             //                                        , maxDegreeOfParallelism: 1);
-            _elevationService.DownloadMissingFiles(dataSet, lat, lon);
-            var tiles = _rasterService.GenerateReportForLocation(dataSet, lat, lon);
+            await _elevationService.DownloadMissingFilesAsync(dataSet, lat, lon);
+            var tiles = await _rasterService.GenerateReportForLocationAsync(dataSet, lat, lon);
             Assert.True(tiles.Count == 4);
             Assert.Single(tiles, t => string.Equals(Path.GetFileName(t.LocalName), rasterSouthWestName, StringComparison.OrdinalIgnoreCase));
             Assert.Single(tiles, t => string.Equals(Path.GetFileName(t.LocalName), rasterSouthEastName, StringComparison.OrdinalIgnoreCase));
@@ -154,8 +155,8 @@ namespace DEM.Net.xUnit.Test
         //    //                                        , force: true
         //    //                                        , deleteOnError: false
         //    //                                        , maxDegreeOfParallelism: 1);
-        //    _elevationService.DownloadMissingFiles(dataSet, lat, lon);
-        //    var tiles = _rasterService.GenerateReportForLocation(dataSet, lat, lon);
+        //    await _elevationService.DownloadMissingFilesAsync(dataSet, lat, lon);
+        //    var tiles = await _rasterService.GenerateReportForLocationAsync(dataSet, lat, lon);
         //    Assert.True(tiles.Count == 4);
         //    Assert.Single(tiles, t => string.Equals(Path.GetFileName(t.LocalName), rasterSouthWestName, StringComparison.OrdinalIgnoreCase));
         //    Assert.Single(tiles, t => string.Equals(Path.GetFileName(t.LocalName), rasterSouthEastName, StringComparison.OrdinalIgnoreCase));
@@ -238,7 +239,7 @@ namespace DEM.Net.xUnit.Test
 
         [Theory()]
         [InlineData(nameof(DEMDataSet.SRTM_GL3))]
-        public void BoudingBoxConservationTest(string datasetName)
+        public async Task BoudingBoxConservationTest(string datasetName)
         {
 
             var dataset = DEMDataSet.RegisteredDatasets.First(d => d.Name == datasetName);
@@ -251,7 +252,7 @@ namespace DEM.Net.xUnit.Test
             Assert.NotNull(bbox);
             Assert.Equal(bboxWKT, bbox.WKT);
 
-            HeightMap heightMap = _elevationService.GetHeightMap(ref bbox, dataset);
+            HeightMap heightMap = await _elevationService.GetHeightMapAsync(bbox, dataset);
 
             heightMap = heightMap.ReprojectGeodeticToCartesian().BakeCoordinates();
             Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());

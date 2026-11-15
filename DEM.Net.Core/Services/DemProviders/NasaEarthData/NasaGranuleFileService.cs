@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DEM.Net.Core.EarthData
@@ -18,7 +19,8 @@ namespace DEM.Net.Core.EarthData
     public class NasaGranuleFileService : IDEMDataSetIndex
     {
         private readonly ILogger<NasaGranuleFileService> logger;
-        private ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName;
+        private readonly ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
+        private readonly SingleFlight _setup = new SingleFlight(keepCompleted: false); // the result lives in _cacheByDemName
         private readonly IHttpClientFactory httpClientFactory;
         private readonly EarthdataLoginConnector rasterDownloader;
 
@@ -28,86 +30,64 @@ namespace DEM.Net.Core.EarthData
             this.rasterDownloader = rasterDownloader;
             this.httpClientFactory = httpClientFactory;
         }
-        public void Setup(DEMDataSet dataSet, string dataSetLocalDir)
+        public Task SetupAsync(DEMDataSet dataSet, string dataSetLocalDir, CancellationToken cancellationToken = default)
         {
-            try
+            if (dataSet == null)
+                throw new ArgumentNullException(nameof(dataSet), "Dataset is null.");
+            if (dataSet.DataSource is not NasaGranuleDataSource dataSource)
+                throw new ArgumentException($"Dataset source is {dataSet.DataSource.DataSourceType}, only {nameof(DEMDataSourceType.NasaEarthData)} sources are supported by {nameof(NasaGranuleFileService)}.", nameof(dataSet));
+
+            if (_cacheByDemName.ContainsKey(dataSet.Name))
+                return Task.CompletedTask;
+
+            return _setup.RunAsync(dataSet.Name, async () =>
             {
-
-                if (dataSet == null)
-                    throw new ArgumentNullException(nameof(dataSet), "Dataset is null.");
-
-                NasaGranuleDataSource dataSource = dataSet.DataSource as NasaGranuleDataSource;
-                if (dataSource is null)
-                    throw new ArgumentException(nameof(dataSet), $"Dataset source is {dataSet.DataSource.DataSourceType}, only {nameof(DEMDataSourceType.NasaEarthData)} sources are supported by {nameof(NasaGranuleFileService)} null.");
-
-                if (!Directory.Exists(dataSetLocalDir))
+                try
                 {
                     Directory.CreateDirectory(dataSetLocalDir);
-                }
+                    string indexFileName = Path.Combine(dataSetLocalDir, UrlHelper.GetFileNameFromUrl(dataSource.IndexFilePath));
 
-                string indexFileName = Path.Combine(dataSetLocalDir, UrlHelper.GetFileNameFromUrl(dataSource.IndexFilePath));
-
-                bool download = !File.Exists(indexFileName);
-
-
-                List<NasaDemFile> links = null;
-                if (download)
-                {
-                    // Fetch Earth data collection page by page until we have no result left
-                    //
-                    this.logger.LogInformation($"Fetching granules from collection {dataSource.CollectionId} to disk... This will be done once.");
-                    bool hasData = true;
-                    int pageIndex = 0;
-                    int PAGE_SIZE = 2000;
-                    links = new List<NasaDemFile>(30000);
-                    var httpClient = httpClientFactory.CreateClient();
-                    do
+                    if (!File.Exists(indexFileName))
                     {
-                        pageIndex++;
-                        logger.LogInformation($"Getting entries on page {pageIndex} with page size of {PAGE_SIZE} ({(pageIndex - 1) * PAGE_SIZE} entries so far)...");
-                        var url = dataSource.GetUrl(PAGE_SIZE, pageIndex);
-                        
-                        var json = httpClient.GetStringAsync(url).GetAwaiter().GetResult();
-                        hasData = !string.IsNullOrWhiteSpace(json);
-                        if (hasData)
-                        {
-                            var result = NasaCmrGranuleResult.FromJson(json);
-                            hasData = result.Feed.Entry.Any();
-                            if (hasData)
-                            {
-                                // Only retrieve bbox and dem file link (zip file)
-                                links.AddRange(result.Feed.Entry.Select(GetNasaDemFile).Where(file => file != null));
-                            }
-                        }
+                        var links = await FetchGranulesAsync(dataSource).ConfigureAwait(false);
+                        // an interrupted run never leaves a truncated index
+                        await HttpDownload.WriteAllTextAtomicAsync(indexFileName, JsonConvert.SerializeObject(links), CancellationToken.None).ConfigureAwait(false);
+                        logger.LogInformation($"{links.Count} entries written to index file {indexFileName}");
                     }
-                    while (hasData);
 
-                    var jsonResult = JsonConvert.SerializeObject(links);
-                    File.WriteAllText(indexFileName, JsonConvert.SerializeObject(links));
-                    logger.LogInformation($"{links.Count} entries written to index file {indexFileName}");
-                }
-
-
-                // Cache
-                if (_cacheByDemName == null)
-                {
-                    _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
-                }
-                if (_cacheByDemName.ContainsKey(dataSet.Name) == false)
-                {
                     _cacheByDemName[dataSet.Name] = GetSources(dataSet, indexFileName);
                 }
-
-            }
-            catch (Exception ex)
-            {
-                this.logger?.LogError("Unhandled exception: " + ex.Message);
-                this.logger?.LogInformation(ex.ToString());
-                throw;
-            }
+                catch (Exception ex)
+                {
+                    logger?.LogError(ex, $"Error while setting up {dataSet.Name} granule index: {ex.Message}");
+                    throw;
+                }
+            }, cancellationToken);
         }
 
+        /// <summary>Fetches the Earth data collection page by page until no result is left.</summary>
+        private async Task<List<NasaDemFile>> FetchGranulesAsync(NasaGranuleDataSource dataSource)
+        {
+            const int PAGE_SIZE = 2000;
+            logger.LogInformation($"Fetching granules from collection {dataSource.CollectionId} to disk... This will be done once.");
+            var links = new List<NasaDemFile>(30000);
+            var httpClient = httpClientFactory.CreateClient();
+            for (int pageIndex = 1; ; pageIndex++)
+            {
+                logger.LogInformation($"Getting entries on page {pageIndex} with page size of {PAGE_SIZE} ({(pageIndex - 1) * PAGE_SIZE} entries so far)...");
+                var json = await httpClient.GetStringAsync(dataSource.GetUrl(PAGE_SIZE, pageIndex)).ConfigureAwait(false);
+                if (string.IsNullOrWhiteSpace(json))
+                    break;
 
+                var result = NasaCmrGranuleResult.FromJson(json);
+                if (!result.Feed.Entry.Any())
+                    break;
+
+                // Only retrieve bbox and dem file link (zip file)
+                links.AddRange(result.Feed.Entry.Select(GetNasaDemFile).Where(file => file != null));
+            }
+            return links;
+        }
 
         private NasaDemFile GetNasaDemFile(Entry entry)
         {
@@ -175,66 +155,53 @@ namespace DEM.Net.Core.EarthData
 
         public IEnumerable<DEMFileSource> GetFileSources(DEMDataSet dataSet)
         {
-            if (_cacheByDemName.ContainsKey(dataSet.Name))
-            {
-                foreach (var item in _cacheByDemName[dataSet.Name])
-                {
-                    yield return item;
-                }
-            }
-            else
-            {
-                throw new Exception("Must call Init(dataSet) first !");
-            }
-
+            if (!_cacheByDemName.TryGetValue(dataSet.Name, out var sources))
+                throw new InvalidOperationException($"{nameof(SetupAsync)} must be called for dataset {dataSet.Name} first.");
+            return sources;
         }
 
         public void Reset()
         {
+            _cacheByDemName.Clear();
         }
 
-        public void DownloadRasterFile(DemFileReport report, DEMDataSet dataset)
+        public async Task DownloadRasterFileAsync(DemFileReport report, DEMDataSet dataset, CancellationToken cancellationToken = default)
         {
             try
             {
-                // Download file
-                if (report.LocalName.EndsWith(".zip"))
+                if (!report.LocalName.EndsWith(".zip"))
                 {
-                    var zipFileName = Path.Combine(Path.GetDirectoryName(report.LocalName), report.Source.SourceFileName);
-                    rasterDownloader.Download(report.URL, zipFileName);
+                    await rasterDownloader.DownloadAsync(report.URL, report.LocalName, cancellationToken).ConfigureAwait(false);
+                    return;
+                }
 
-                    // Post action
-                    // - Unzip file 
-                    // - Keep only _dem.tif file
-                    // - rename it as .tif
-                    // - suppress other files
-
-                    using (var archive = ZipFile.Open(zipFileName, ZipArchiveMode.Read))
+                // Zipped granule: keep only the DEM file of the archive (e.g. *_dem.tif), renamed as the local file
+                var zipFileName = Path.Combine(Path.GetDirectoryName(report.LocalName), report.Source.SourceFileName);
+                await rasterDownloader.DownloadAsync(report.URL, zipFileName, cancellationToken).ConfigureAwait(false);
+                try
+                {
+                    await using var archive = await ZipFile.OpenAsync(zipFileName, ZipArchiveMode.Read, cancellationToken).ConfigureAwait(false);
+                    var geoTiffFile = archive.Entries.FirstOrDefault(e => e.Name.EndsWith(dataset.FileFormat.FileExtension, StringComparison.OrdinalIgnoreCase));
+                    if (geoTiffFile == null)
                     {
-                        var geoTiffFile = archive.Entries.FirstOrDefault(e => e.Name.ToLower().EndsWith(dataset.FileFormat.FileExtension));
-                        if (geoTiffFile == null)
-                        {
-                            this.logger.LogError($"Cannot find any {dataset.FileFormat.FileExtension} file into archive {report.LocalName}");
-                        }
-                        else
-                        {
-                            geoTiffFile.ExtractToFile(report.LocalName, true);
-                        }
+                        this.logger.LogError($"Cannot find any {dataset.FileFormat.FileExtension} file into archive {report.LocalName}");
+                        return;
                     }
+                    // extracted next to the target first: a partial extraction never looks like a valid file
+                    string tempFile = HttpDownload.TempFileName(report.LocalName);
+                    await geoTiffFile.ExtractToFileAsync(tempFile, overwrite: true, cancellationToken).ConfigureAwait(false);
+                    File.Move(tempFile, report.LocalName, overwrite: true);
+                }
+                finally
+                {
                     File.Delete(zipFileName);
                 }
-                else
-                {
-                    rasterDownloader.Download(report.URL, report.LocalName);
-                }
-
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 this.logger.LogError(ex, $"Error while downloading raster {report.URL}: {ex.Message}");
                 throw;
             }
-
         }
 
         private static string FileNameFromGranuleId(string granuleId, DEMDataSet dataSet)

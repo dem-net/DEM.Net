@@ -9,6 +9,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DEM.Net.Core.TileIndex
 {
@@ -23,7 +25,7 @@ namespace DEM.Net.Core.TileIndex
         private readonly ILogger<TileIndexFileService> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
-        private readonly object _setupLock = new object();
+        private readonly SingleFlight _setup = new SingleFlight(keepCompleted: false); // the result lives in _cacheByDemName
 
         public TileIndexFileService(ILogger<TileIndexFileService> logger, IHttpClientFactory httpClientFactory)
         {
@@ -31,7 +33,7 @@ namespace DEM.Net.Core.TileIndex
             _httpClientFactory = httpClientFactory;
         }
 
-        public void Setup(DEMDataSet dataSet, string dataSetLocalDir)
+        public Task SetupAsync(DEMDataSet dataSet, string dataSetLocalDir, CancellationToken cancellationToken = default)
         {
             if (dataSet == null)
                 throw new ArgumentNullException(nameof(dataSet), "Dataset is null.");
@@ -39,13 +41,10 @@ namespace DEM.Net.Core.TileIndex
                 throw new ArgumentException($"Dataset source is {dataSet.DataSource.DataSourceType}, only {nameof(DEMDataSourceType.TileIndex)} sources are supported by {nameof(TileIndexFileService)}.", nameof(dataSet));
 
             if (_cacheByDemName.ContainsKey(dataSet.Name))
-                return;
+                return Task.CompletedTask;
 
-            lock (_setupLock)
+            return _setup.RunAsync(dataSet.Name, async () =>
             {
-                if (_cacheByDemName.ContainsKey(dataSet.Name))
-                    return;
-
                 try
                 {
                     Directory.CreateDirectory(dataSetLocalDir);
@@ -54,12 +53,11 @@ namespace DEM.Net.Core.TileIndex
                     if (!File.Exists(indexFileName))
                     {
                         _logger.LogInformation($"Downloading {dataSet.Name} tile index from {dataSource.IndexUrl}... This will be done once.");
-                        var entries = ParseGeoJsonIndex(DownloadString(dataSource.IndexUrl), dataSource);
+                        var client = _httpClientFactory.CreateClient();
+                        var entries = ParseGeoJsonIndex(await client.GetStringAsync(dataSource.IndexUrl).ConfigureAwait(false), dataSource);
 
-                        // write to a temp file first so an interrupted run never leaves a truncated index
-                        string tempFile = indexFileName + ".tmp";
-                        File.WriteAllText(tempFile, JsonConvert.SerializeObject(entries));
-                        File.Move(tempFile, indexFileName, overwrite: true);
+                        // an interrupted run never leaves a truncated index
+                        await HttpDownload.WriteAllTextAtomicAsync(indexFileName, JsonConvert.SerializeObject(entries), CancellationToken.None).ConfigureAwait(false);
                         _logger.LogInformation($"{entries.Count:N0} tiles written to index file {indexFileName}");
                     }
 
@@ -70,7 +68,7 @@ namespace DEM.Net.Core.TileIndex
                     _logger.LogError(ex, $"Error while setting up {dataSet.Name} tile index: {ex.Message}");
                     throw;
                 }
-            }
+            }, cancellationToken);
         }
 
         internal static List<TileIndexEntry> ParseGeoJsonIndex(string geoJson, TileIndexDataSource dataSource)
@@ -129,46 +127,15 @@ namespace DEM.Net.Core.TileIndex
             }).ToList();
         }
 
-        private string DownloadString(string url)
+        public async Task DownloadRasterFileAsync(DemFileReport report, DEMDataSet dataset, CancellationToken cancellationToken = default)
         {
-            var client = _httpClientFactory.CreateClient();
-            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
-            using (var response = client.Send(request))
-            {
-                response.EnsureSuccessStatusCode();
-                using (var reader = new StreamReader(response.Content.ReadAsStream()))
-                {
-                    return reader.ReadToEnd();
-                }
-            }
-        }
-
-        public void DownloadRasterFile(DemFileReport report, DEMDataSet dataset)
-        {
-            string tempFile = report.LocalName + ".download";
             try
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(report.LocalName));
-
                 _logger.LogInformation($"Downloading {report.URL}...");
-                var client = _httpClientFactory.CreateClient();
-                using (var request = new HttpRequestMessage(HttpMethod.Get, report.URL))
-                using (var response = client.Send(request, HttpCompletionOption.ResponseHeadersRead))
-                {
-                    response.EnsureSuccessStatusCode();
-                    using (var stream = response.Content.ReadAsStream())
-                    using (var fs = new FileStream(tempFile, FileMode.Create, FileAccess.Write))
-                    {
-                        stream.CopyTo(fs);
-                    }
-                }
-
-                // a partial download must never look like a valid local tile
-                File.Move(tempFile, report.LocalName, overwrite: true);
+                await HttpDownload.DownloadToFileAsync(_httpClientFactory.CreateClient(), report.URL, report.LocalName, cancellationToken).ConfigureAwait(false);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                if (File.Exists(tempFile)) File.Delete(tempFile);
                 _logger.LogError(ex, $"Error while downloading DEM file {report.URL}: {ex.Message}");
                 throw;
             }
@@ -186,7 +153,7 @@ namespace DEM.Net.Core.TileIndex
         public IEnumerable<DEMFileSource> GetFileSources(DEMDataSet dataset)
         {
             if (!_cacheByDemName.TryGetValue(dataset.Name, out var sources))
-                throw new InvalidOperationException($"{nameof(Setup)} must be called for dataset {dataset.Name} first.");
+                throw new InvalidOperationException($"{nameof(SetupAsync)} must be called for dataset {dataset.Name} first.");
             return sources;
         }
 

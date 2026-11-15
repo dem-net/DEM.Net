@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DEM.Net.Core
 {
     public interface IRasterDownloader
     {
-        void DownloadRasterFile(DemFileReport report, DEMDataSet dataset);
+        /// <summary>Downloads the raster file of the report to <see cref="DemFileReport.LocalName"/>.</summary>
+        Task DownloadRasterFileAsync(DemFileReport report, DEMDataSet dataset, CancellationToken cancellationToken = default);
     }
 }

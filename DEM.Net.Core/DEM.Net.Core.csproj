@@ -4,6 +4,10 @@
 		<UserSecretsId>a9a5d6e1-3bb8-4dfd-ac6a-861f60dada50</UserSecretsId>
 	</PropertyGroup>
 	<ItemGroup>
+		<InternalsVisibleTo Include="DEM.Net.xUnit.Test" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="BitMiracle.LibTiff.NET" />
 		<PackageReference Include="DotSpatial.Projections.NetStandard" />
 		<PackageReference Include="LazyCache" />
