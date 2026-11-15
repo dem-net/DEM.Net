@@ -574,6 +574,8 @@ namespace DEM.Net.Core
                 return null;
             IEnumerable<GeoPoint> pointsWithElevation;
             BoundingBox bbox = points.GetBoundingBox();
+            if (!(bbox.xMin <= bbox.xMax && bbox.yMin <= bbox.yMax))
+                return Enumerable.Empty<GeoPoint>(); // no points: an empty bbox spans the world (too many tiles to download)
             if (downloadMissingFiles)
             {
                 DownloadMissingFiles(dataSet, bbox);
@@ -1369,9 +1371,16 @@ namespace DEM.Net.Core
         public bool IsBboxIntersectingTile(FileMetadata tileMetadata, BoundingBox bbox)
         {
             BoundingBox tileBBox = tileMetadata.BoundingBox;
+            double tx = EdgeToleranceX(tileMetadata), ty = EdgeToleranceY(tileMetadata);
 
-            return (tileBBox.xMax >= bbox.xMin && tileBBox.xMin <= bbox.xMax) && (tileBBox.yMax >= bbox.yMin && tileBBox.yMin <= bbox.yMax);
+            return (tileBBox.xMax + tx >= bbox.xMin && tileBBox.xMin - tx <= bbox.xMax) && (tileBBox.yMax + ty >= bbox.yMin && tileBBox.yMin - ty <= bbox.yMax);
         }
+
+        // Adjacent tile bounds are computed independently and can leave a gap of a few ulps between them (Web Mercator
+        // tiles: 2e-9 m). A point on the shared edge, such as an OSM vertex cut at a tile edge, then belonged to no tile
+        // and got a 0 elevation. A millionth of a pixel closes the gap.
+        private static double EdgeToleranceX(FileMetadata tile) => Math.Abs(tile.PixelScaleX) * 1e-6;
+        private static double EdgeToleranceY(FileMetadata tile) => Math.Abs(tile.PixelScaleY) * 1e-6;
         public bool IsPointInTile(FileMetadata tileMetadata, GeoPoint point)
         {
             return IsPointInTile(tileMetadata, point.Latitude, point.Longitude);
@@ -1379,10 +1388,11 @@ namespace DEM.Net.Core
         public bool IsPointInTile(FileMetadata tileMetadata, double lat, double lon)
         {
             BoundingBox tileBbox = tileMetadata.BoundingBox;
+            double tx = EdgeToleranceX(tileMetadata), ty = EdgeToleranceY(tileMetadata);
 
             return
-                (tileBbox.xMax >= lon && tileBbox.xMin <= lon) // isInsideX
-              && (tileBbox.yMax >= lat && tileBbox.yMin <= lat); // isInsideY
+                (tileBbox.xMax + tx >= lon && tileBbox.xMin - tx <= lon) // isInsideX
+              && (tileBbox.yMax + ty >= lat && tileBbox.yMin - ty <= lat); // isInsideY
 
         }
         // Far enough from the edges for IsPointInAdjacentTile to only match the tile itself (twice its margin)
