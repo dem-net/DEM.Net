@@ -1014,10 +1014,10 @@ namespace DEM.Net.Core
 
             if (segTiles.Any())
             {
-                int estimatedCapacity = (segTiles.Select(t => t.DataStartLon).Distinct().Count() // num horizontal tiles * width
-                                        * segTiles.First().Width)
-                                        + (segTiles.Select(t => t.DataStartLat).Distinct().Count() // num vertical tiles * height
-                                        * segTiles.First().Height);
+                // grid lines crossed by the segment (the former estimate was a whole tile width + height per segment)
+                var firstTile = segTiles[0];
+                int estimatedCapacity = (int)Math.Min(int.MaxValue / 2,
+                    Math.Abs(endLon - startLon) / Math.Abs(firstTile.pixelSizeX) + Math.Abs(endLat - startLat) / Math.Abs(firstTile.pixelSizeY)) + 4;
                 segmentPointsWithDEMPoints = new List<GeoPoint>(estimatedCapacity);
                 bool yAxisDown = segTiles.First().pixelSizeY < 0;
                 if (yAxisDown == false)
@@ -1093,10 +1093,10 @@ namespace DEM.Net.Core
 
             if (segTiles.Any())
             {
-                int estimatedCapacity = (segTiles.Select(t => t.DataStartLon).Distinct().Count() // num horizontal tiles * width
-                                        * segTiles.First().Width)
-                                        + (segTiles.Select(t => t.DataStartLat).Distinct().Count() // num vertical tiles * height
-                                        * segTiles.First().Height);
+                // grid lines crossed by the segment (the former estimate was a whole tile width + height per segment)
+                var firstTile = segTiles[0];
+                int estimatedCapacity = (int)Math.Min(int.MaxValue / 2,
+                    Math.Abs(endLon - startLon) / Math.Abs(firstTile.pixelSizeX) + Math.Abs(endLat - startLat) / Math.Abs(firstTile.pixelSizeY)) + 4;
                 segmentPointsWithDEMPoints = new List<GeoPoint>(estimatedCapacity);
                 bool yAxisDown = segTiles.First().pixelSizeY < 0;
                 if (yAxisDown == false)
@@ -1174,6 +1174,16 @@ namespace DEM.Net.Core
                     : top.DataStartLon;
 
 
+                // Lines west of the segment cannot intersect it: start just before its western point instead of the
+                // tile edge (a segment used to walk up to a whole tile width of lines). The loop checks the previous
+                // line, so it is restored too: the lines yielded are the same as when walking from the edge.
+                int firstUsefulIndex = (int)Math.Floor((westernSegPoint.Longitude - startLon) / top.pixelSizeX) - 1;
+                if (firstUsefulIndex > curIndex)
+                {
+                    curIndex = firstUsefulIndex;
+                    curPoint.Longitude = startLon + (top.pixelSizeX * (curIndex - 1));
+                }
+
                 while (IsPointInTile(top, curPoint))
                 {
                     if (curIndex >= top.Width)
@@ -1215,6 +1225,14 @@ namespace DEM.Net.Core
 
                 // Y Index in tile coords
                 int curIndex = (int)Math.Floor((left.PhysicalEndLat - curPoint.Latitude) / left.PixelScaleY - -registrationOffsetPx);
+                // Lines north of the segment cannot intersect it: same shortcut as GetDEMNorthSouthLines
+                int firstUsefulIndex = (int)Math.Floor((northernSegPoint.Latitude - endLat) / left.pixelSizeY) - 1;
+                if (firstUsefulIndex > curIndex)
+                {
+                    curIndex = firstUsefulIndex;
+                    curPoint.Latitude = endLat + (left.pixelSizeY * (curIndex - 1));
+                }
+
                 while (IsPointInTile(left, curPoint))
                 {
                     if (curIndex >= left.Height)
@@ -1538,14 +1556,11 @@ namespace DEM.Net.Core
                 return nullValue;
             }
 
-            if (tiles.ContainsKey(goodTile))
+            if (tiles.TryGetValue(goodTile, out IRasterFile raster))
             {
-                return tiles[goodTile].GetElevationAtPoint(goodTile, xRemap, yRemap);
+                return raster.GetElevationAtPoint(goodTile, xRemap, yRemap);
             }
-            else
-            {
-                throw new Exception("Tile not found. Should not happen.");
-            }
+            throw new InvalidOperationException("Tile not found. Should not happen.");
         }
 
         private FileMetadata FindTile(FileMetadata mainTile, RasterFileDictionary tiles, int x, int y, out int newX, out int newY)
@@ -1604,17 +1619,16 @@ namespace DEM.Net.Core
 
 
 
-        private float GetAverageExceptForNoDataValue(float noData, float valueIfAllBad, params float[] values)
+        /// <summary>Average of the 4 corner values that are not no data (per interpolated point: no array, no LINQ).</summary>
+        private static float GetAverageExceptForNoDataValue(float noData, float valueIfAllBad, float a, float b, float c, float d)
         {
-            var withValues = values.Where(v => Math.Abs(v - noData) > float.Epsilon);
-            if (withValues.Any())
-            {
-                return withValues.Average();
-            }
-            else
-            {
-                return valueIfAllBad;
-            }
+            double sum = 0; // same accumulation as Enumerable.Average(IEnumerable<float>)
+            int count = 0;
+            if (Math.Abs(a - noData) > float.Epsilon) { sum += a; count++; }
+            if (Math.Abs(b - noData) > float.Epsilon) { sum += b; count++; }
+            if (Math.Abs(c - noData) > float.Epsilon) { sum += c; count++; }
+            if (Math.Abs(d - noData) > float.Epsilon) { sum += d; count++; }
+            return count == 0 ? valueIfAllBad : (float)(sum / count);
         }
 
         /// <summary>

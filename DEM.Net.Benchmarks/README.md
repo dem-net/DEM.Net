@@ -24,3 +24,25 @@ Before the async / `GeoPoint` / hot path work. `--job short`, Apple M1, .NET 10.
 | Height map of a 0.2° bbox                       |   6.592 ms |    6.29 MB |
 | Reproject height map to 3857, z-scale, center   |   5.341 ms |   17.07 MB |
 | glTF terrain mesh of the bbox, written as GLB   | 209.662 ms |  146.51 MB |
+
+## Hot paths (v11, before the `GeoPoint` struct)
+
+Same machine and job, 2026-11-15. Outputs are byte-identical to the baseline code (lines, points, height maps and
+reprojected height maps of the HGT and AW3D30 test tiles).
+
+| Method                                          | Mean       | Allocated  | vs baseline |
+|------------------------------------------------ |-----------:|-----------:|------------ |
+| 1 000 single point elevations                   |  18.691 ms |    6.39 MB | -58% memory |
+| 1 000 points elevation (batch)                  |   1.911 ms |    0.20 MB | -32% time, -98% memory |
+| Line elevation, 10 000 vertices                 | 318.429 ms |  129.20 MB | 3x faster, 36x less memory |
+| Height map of a 0.2° bbox                       |   6.491 ms |    6.29 MB | = |
+| Reproject height map to 3857, z-scale, center   |   4.391 ms |   14.81 MB | -18% time, -13% memory |
+| glTF terrain mesh of the bbox, written as GLB   | 216.092 ms |  142.01 MB | = |
+
+- HGT: a sample was read with a whole scanline copy (and a byte array per sample); the two last rows are now kept.
+- Non tiled GeoTIFF: same two-row cache (a scanline was allocated and decoded for each sample).
+- Line elevation: each segment walked the DEM grid lines from the tile edge (up to a tile width per segment);
+  it now starts at the segment bounds, and the intersection list is sized for the segment, not for a whole tile.
+- Interpolation: no array and LINQ per point to average the corners.
+- Reprojection: the source is enumerated once (it was enumerated twice, re-running lazy height map pipelines),
+  without one array per point; projections are parsed once per thread.

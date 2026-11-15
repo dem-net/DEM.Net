@@ -43,6 +43,18 @@ namespace DEM.Net.Core
         public const int SRID_PROJECTED_MERCATOR = 3857;
         public const int SRID_NAD83 = 4269;
 
+        // Parsing a projection costs more than reprojecting a few points (one parse per call before). Cached per thread:
+        // DotSpatial projections are not documented as thread safe.
+        [ThreadStatic] private static Dictionary<int, ProjectionInfo> t_projections;
+
+        private static ProjectionInfo GetProjection(int epsgCode)
+        {
+            var projections = t_projections ??= new Dictionary<int, ProjectionInfo>();
+            if (!projections.TryGetValue(epsgCode, out var projection))
+                projections[epsgCode] = projection = ProjectionInfo.FromEpsgCode(epsgCode);
+            return projection;
+        }
+
         public static HeightMap ReprojectGeodeticToCartesian(this HeightMap heightMap)
         {
             heightMap.Coordinates = heightMap.Coordinates.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR, heightMap.Count);
@@ -105,9 +117,9 @@ namespace DEM.Net.Core
 
 
             // Defines the starting coordiante system
-            ProjectionInfo pSource = ProjectionInfo.FromEpsgCode(sourceEpsgCode);
+            ProjectionInfo pSource = GetProjection(sourceEpsgCode);
             // Defines the starting coordiante system
-            ProjectionInfo pTarget = ProjectionInfo.FromEpsgCode(destinationEpsgCode);
+            ProjectionInfo pTarget = GetProjection(destinationEpsgCode);
 
             if (pointCount == null)
             {
@@ -115,27 +127,32 @@ namespace DEM.Net.Core
             }
             else
             {
-                double[] inputPoints = null;
+                return ReprojectBatch(points, pSource, pTarget);
+            }
+        }
 
-                return points.Select((p, index) =>
-                {
-                    if (inputPoints == null)
-                    {
-                        inputPoints = points.SelectMany(pt => new double[] { pt.Longitude, pt.Latitude }).ToArray();
-                        Reproject.ReprojectPoints(inputPoints, null, pSource, pTarget, 0, inputPoints.Length / 2);
-                    }
-                    var pout = p.Clone();
-                    pout.Longitude = inputPoints[2 * index];
-                    pout.Latitude = inputPoints[2 * index + 1];
+        /// <summary>
+        /// All points reprojected in one call, when enumerated. The source is enumerated once (it is often a lazy
+        /// height map pipeline: it used to run twice) into one coordinate array (it used to allocate one per point).
+        /// </summary>
+        private static IEnumerable<GeoPoint> ReprojectBatch(IEnumerable<GeoPoint> points, ProjectionInfo pSource, ProjectionInfo pTarget)
+        {
+            var source = points as IReadOnlyList<GeoPoint> ?? points.ToList();
+            var coords = new double[source.Count * 2];
+            for (int i = 0; i < source.Count; i++)
+            {
+                coords[2 * i] = source[i].Longitude;
+                coords[2 * i + 1] = source[i].Latitude;
+            }
+            if (source.Count > 0)
+                Reproject.ReprojectPoints(coords, null, pSource, pTarget, 0, source.Count);
 
-                    if (index == pointCount - 1)
-                    {
-                        inputPoints = null;
-                    }
-                    return pout;
-                });
-
-
+            for (int i = 0; i < source.Count; i++)
+            {
+                var pout = source[i].Clone();
+                pout.Longitude = coords[2 * i];
+                pout.Latitude = coords[2 * i + 1];
+                yield return pout;
             }
         }
         public static TriangulationList<Vector3> ReprojectTo(this TriangulationList<Vector3> triangulation, int sourceEpsgCode, int destinationEpsgCode)
@@ -145,12 +162,17 @@ namespace DEM.Net.Core
 
 
             // Defines the starting coordiante system
-            ProjectionInfo pSource = ProjectionInfo.FromEpsgCode(sourceEpsgCode);
+            ProjectionInfo pSource = GetProjection(sourceEpsgCode);
             // Defines the starting coordiante system
-            ProjectionInfo pTarget = ProjectionInfo.FromEpsgCode(destinationEpsgCode);
+            ProjectionInfo pTarget = GetProjection(destinationEpsgCode);
 
 
-            double[] inputPoints = triangulation.Positions.SelectMany(pt => new double[] { pt.X, pt.Y }).ToArray();
+            double[] inputPoints = new double[triangulation.NumPositions * 2];
+            for (int i = 0; i < triangulation.NumPositions; i++)
+            {
+                inputPoints[2 * i] = triangulation.Positions[i].X;
+                inputPoints[2 * i + 1] = triangulation.Positions[i].Y;
+            }
             Reproject.ReprojectPoints(inputPoints, null, pSource, pTarget, 0, triangulation.NumPositions);
 
             for (int i = 0; i < triangulation.NumPositions; i++)
@@ -194,9 +216,9 @@ namespace DEM.Net.Core
 
 
             // Defines the starting coordiante system
-            ProjectionInfo pSource = ProjectionInfo.FromEpsgCode(sourceEpsgCode);
+            ProjectionInfo pSource = GetProjection(sourceEpsgCode);
             // Defines the starting coordiante system
-            ProjectionInfo pTarget = ProjectionInfo.FromEpsgCode(destinationEpsgCode);
+            ProjectionInfo pTarget = GetProjection(destinationEpsgCode);
 
             return points.Select(pt => (pt.Key, ReprojectPoint(pt.Point, pSource, pTarget)));
 
@@ -208,9 +230,9 @@ namespace DEM.Net.Core
 
 
             // Defines the starting coordiante system
-            ProjectionInfo pSource = ProjectionInfo.FromEpsgCode(sourceEpsgCode);
+            ProjectionInfo pSource = GetProjection(sourceEpsgCode);
             // Defines the starting coordiante system
-            ProjectionInfo pTarget = ProjectionInfo.FromEpsgCode(destinationEpsgCode);
+            ProjectionInfo pTarget = GetProjection(destinationEpsgCode);
 
             if (pointCount == null)
             {
@@ -248,9 +270,9 @@ namespace DEM.Net.Core
 
 
             // Defines the starting coordiante system
-            ProjectionInfo pSource = ProjectionInfo.FromEpsgCode(sourceEpsgCode);
+            ProjectionInfo pSource = GetProjection(sourceEpsgCode);
             // Defines the starting coordiante system
-            ProjectionInfo pTarget = ProjectionInfo.FromEpsgCode(destinationEpsgCode);
+            ProjectionInfo pTarget = GetProjection(destinationEpsgCode);
 
             var minmin = ReprojectPoint(new GeoPoint(bbox.yMin, bbox.xMin), pSource, pTarget);
             var minmax = ReprojectPoint(new GeoPoint(bbox.yMin, bbox.xMax), pSource, pTarget);
@@ -292,9 +314,9 @@ namespace DEM.Net.Core
                 return point;
 
             // Defines the starting coordiante system
-            ProjectionInfo pSource = ProjectionInfo.FromEpsgCode(sourceEpsgCode);
+            ProjectionInfo pSource = GetProjection(sourceEpsgCode);
             // Defines the starting coordiante system
-            ProjectionInfo pTarget = ProjectionInfo.FromEpsgCode(destinationEpsgCode);
+            ProjectionInfo pTarget = GetProjection(destinationEpsgCode);
 
             var pointReproj = ReprojectPoint(point, pSource, pTarget);
 
