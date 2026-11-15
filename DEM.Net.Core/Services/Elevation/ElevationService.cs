@@ -890,12 +890,30 @@ namespace DEM.Net.Core
         public IEnumerable<GeoPoint> GetElevationData(IEnumerable<GeoPoint> intersections, RasterFileDictionary adjacentRasters, List<FileMetadata> segTiles, IInterpolator interpolator, NoDataBehavior behavior)
         {
             // Group by raster file for sequential and faster access
+            // Adjacent tiles are only needed near the tile edges: the search (one list per point) is skipped elsewhere
+            var noAdjacentTiles = new List<FileMetadata>(0);
+            FileMetadata lastTile = null;
+            FileMetadata FindTile(GeoPoint point)
+            {
+                if (lastTile != null && this.IsPointInTile(lastTile, point))
+                    return lastTile;
+                var tile = segTiles.FirstOrDefault(t => this.IsPointInTile(t, point));
+                if (tile != null) lastTile = tile;
+                return tile;
+            }
+            List<FileMetadata> FindAdjacentTiles(FileMetadata tile, GeoPoint point)
+            {
+                if (segTiles.Count == 1 || (tile != null && this.IsPointFarFromTileEdges(tile, point)))
+                    return noAdjacentTiles;
+                return segTiles.Where(t => this.IsPointInAdjacentTile(t, point)).ToList();
+            }
             var pointsByTileQuery = from point in intersections
+                                    let tile = FindTile(point)
                                     let pointTile = new
                                     {
                                         Point = point,
-                                        Tile = segTiles.FirstOrDefault(t => this.IsPointInTile(t, point)),
-                                        AdjacentTiles = segTiles.Where(t => this.IsPointInAdjacentTile(t, point)).ToList()
+                                        Tile = tile,
+                                        AdjacentTiles = FindAdjacentTiles(tile, point)
                                     }
                                     group pointTile by pointTile.Tile into pointsByTile
                                     select pointsByTile;
@@ -1367,6 +1385,16 @@ namespace DEM.Net.Core
               && (tileBbox.yMax >= lat && tileBbox.yMin <= lat); // isInsideY
 
         }
+        // Far enough from the edges for IsPointInAdjacentTile to only match the tile itself (twice its margin)
+        private bool IsPointFarFromTileEdges(FileMetadata tile, GeoPoint point)
+        {
+            double marginX = Math.Abs(tile.PixelScaleX) * 8d;
+            double marginY = Math.Abs(tile.PixelScaleY) * 4d;
+            BoundingBox tileBbox = tile.BoundingBox;
+            return point.Longitude - marginX > tileBbox.xMin && point.Longitude + marginX < tileBbox.xMax
+                && point.Latitude - marginY > tileBbox.yMin && point.Latitude + marginY < tileBbox.yMax;
+        }
+
         // is the tile a tile just next to the tile the point is in ?
         private bool IsPointInAdjacentTile(FileMetadata tile, GeoPoint point)
         {

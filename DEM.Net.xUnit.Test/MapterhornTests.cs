@@ -58,6 +58,32 @@ namespace DEM.Net.Test
             }
         }
 
+        [Fact(DisplayName = "Decoded tiles are shared, and decoded again when the file changes")]
+        public void TerrariumDecodedTileCache()
+        {
+            const int size = 8;
+            string file = Path.Combine(Path.GetTempPath(), $"12_2_{Guid.NewGuid().GetHashCode() & 0xFFFF}.webp");
+            try
+            {
+                TerrariumFile.EncodeWebP(Enumerable.Repeat(100f, size * size).ToArray(), size, file);
+                using (var first = new TerrariumFile(file))
+                using (var second = new TerrariumFile(file))
+                {
+                    Assert.Equal(100f, first.GetElevationAtPoint(null, 3, 3), 2);
+                    Assert.Equal(100f, second.GetElevationAtPoint(null, 3, 3), 2);
+                }
+
+                TerrariumFile.EncodeWebP(Enumerable.Repeat(250f, size * size).ToArray(), size, file);
+                File.SetLastWriteTimeUtc(file, DateTime.UtcNow.AddMinutes(1));
+                using (var updated = new TerrariumFile(file))
+                    Assert.Equal(250f, updated.GetElevationAtPoint(null, 3, 3), 2);
+            }
+            finally
+            {
+                File.Delete(file);
+            }
+        }
+
         [Fact(DisplayName = "Web Mercator tile math")]
         public void TileMath()
         {
