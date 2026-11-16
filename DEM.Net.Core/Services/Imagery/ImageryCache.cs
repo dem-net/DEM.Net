@@ -5,26 +5,25 @@ using System.Threading;
 using System.Threading.Tasks;
 using DEM.Net.Core.Configuration;
 using DEM.Net.Core.Imagery;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Path = System.IO.Path;
 
 namespace DEM.Net.Core.Services.Imagery;
 
 /// <summary>
-/// Two level cache : memory / disk
+/// Two level cache : memory (bounded, see <see cref="DEMNetOptions.TileMemoryCacheSizeMB"/>) / disk
 /// </summary>
 public class ImageryCache
 {
     public const string IMAGERY_DIR = "imagery";
-    private readonly IMemoryCache cache;
+    private readonly TileMemoryCache cache;
     private readonly DEMNetOptions options;
     private readonly IHttpClientFactory httpClientFactory;
     private readonly string _localDirectory;
     private readonly TimeSpan diskExpirationHours;
     private readonly TimeSpan memoryExpirationMinutes;
 
-    public ImageryCache(IMemoryCache cache,
+    public ImageryCache(TileMemoryCache cache,
         IOptions<DEMNetOptions> options,
         IHttpClientFactory clientFactory)
     {
@@ -62,7 +61,7 @@ public class ImageryCache
             }
         }
 
-        cache.Set(tileUri, contentBytes, new MemoryCacheEntryOptions { SlidingExpiration = memoryExpirationMinutes });
+        cache.Set(tileUri, contentBytes, contentBytes.Length, memoryExpirationMinutes);
         return contentBytes;
     }
 

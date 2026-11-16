@@ -36,6 +36,26 @@ public class ElevationTests(DemNetFixture fixture) : IClassFixture<DemNetFixture
 
     }
 
+    [Fact(DisplayName = "Batch points near a tile edge use the neighbor tile")]
+    public async Task BatchPointsNearATileEdgeMatchSinglePoints()
+    {
+        // AW3D30 is cell registered: a point less than half a pixel east of N46E010 west edge is interpolated
+        // with the last column of N46E009, which the points bbox alone does not cover
+        DEMDataSet dataSet = DEMDataSet.AW3D30;
+        double pixel = 1 / 3600d;
+        GeoPoint[] points = [.. Enumerable.Range(0, 20).Select(i => new GeoPoint(46.5 + i * 0.001, 10 + 0.2 * pixel))];
+
+        var batch = await _elevationService.GetPointsElevationAsync(points, dataSet);
+
+        Assert.NotNull(batch);
+        for (int i = 0; i < points.Length; i++)
+        {
+            await _elevationService.DownloadMissingFilesAsync(dataSet, points[i]);
+            var single = _elevationService.GetPointElevation(points[i].Latitude, points[i].Longitude, dataSet);
+            Assert.Equal(single.Elevation.Value, batch[i].Elevation.Value, 6);
+        }
+    }
+
     // Reference values below are bilinear interpolations of the dataset pixels read with GDAL
     // (pixel centers from each file georeferencing), independently of DEM.Net.
 

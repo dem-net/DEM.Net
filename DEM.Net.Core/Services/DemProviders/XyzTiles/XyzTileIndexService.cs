@@ -9,7 +9,6 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using DEM.Net.Core.Datasets;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
 namespace DEM.Net.Core.XyzTiles;
@@ -21,7 +20,7 @@ namespace DEM.Net.Core.XyzTiles;
 /// which only exists at low zoom levels): the tile is resampled (bilinear) from its closest available ancestor
 /// and stored as a regular tile, so that every dataset keeps a uniform resolution.
 /// </summary>
-public class XyzTileIndexService(ILogger<XyzTileIndexService> logger, IHttpClientFactory httpClientFactory, IMemoryCache cache) : IDEMDataSetIndex
+public class XyzTileIndexService(ILogger<XyzTileIndexService> logger, IHttpClientFactory httpClientFactory, TileMemoryCache cache) : IDEMDataSetIndex
 {
     private const string UserAgent = "DEM.Net (+https://github.com/dem-net/DEM.Net)";
     private static readonly TimeSpan AncestorCacheDuration = TimeSpan.FromMinutes(10);
@@ -32,7 +31,7 @@ public class XyzTileIndexService(ILogger<XyzTileIndexService> logger, IHttpClien
 
     private readonly ILogger<XyzTileIndexService> _logger = logger;
     private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
-    private readonly IMemoryCache _cache = cache;
+    private readonly TileMemoryCache _cache = cache;
     private readonly ConcurrentDictionary<string, string> _localDirByDemName = new();
 
     private static XyzTileDataSource GetDataSource(DEMDataSet dataSet)
@@ -169,7 +168,7 @@ public class XyzTileIndexService(ILogger<XyzTileIndexService> logger, IHttpClien
             {
                 byte[] bytes = await TryDownloadAsync(url, cancellationToken).ConfigureAwait(false);
                 ancestor = bytes == null ? (null, 0) : (TerrariumFile.Decode(bytes, out int size), size);
-                _cache.Set(key, ancestor, new MemoryCacheEntryOptions { SlidingExpiration = AncestorCacheDuration });
+                _cache.Set(key, ancestor, ancestor.heights == null ? TileMemoryCache.SmallEntrySize : ancestor.heights.Length * sizeof(float), AncestorCacheDuration);
             }
             if (ancestor.heights != null)
                 return (ancestor.heights, ancestor.size, az);
@@ -279,7 +278,7 @@ public class XyzTileIndexService(ILogger<XyzTileIndexService> logger, IHttpClien
             _logger.LogWarning(ex, $"Cannot check tile {url}: {ex.Message}");
             exists = true; // keep the coverage index answer
         }
-        _cache.Set(key, exists, duration);
+        _cache.SetAbsolute(key, exists, TileMemoryCache.SmallEntrySize, duration);
         return exists;
     }
 
@@ -306,7 +305,7 @@ public class XyzTileIndexService(ILogger<XyzTileIndexService> logger, IHttpClien
             _logger.LogWarning(ex, $"Cannot read tile coverage index {source.CoverageIndexUrl}: {ex.Message}");
             areas = Array.Empty<CoverageArea>();
         }
-        _cache.Set(key, areas, duration);
+        _cache.SetAbsolute(key, areas, TileMemoryCache.SmallEntrySize * (areas.Count + 1), duration);
         return areas;
     }
 

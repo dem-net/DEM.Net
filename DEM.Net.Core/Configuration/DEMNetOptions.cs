@@ -17,6 +17,12 @@ public class DEMNetOptions
 
     public float ImageryCacheExpirationMinutes { get; set; } = 5f;
 
+    /// <summary>
+    /// Maximum memory (MB) used by the downloaded tiles kept in memory: imagery tiles and the ancestor tiles of
+    /// tile pyramid datasets. Least recently used tiles are evicted first.
+    /// </summary>
+    public int TileMemoryCacheSizeMB { get; set; } = 256;
+
     public bool PowerOfTwoImages { get; set; } = false;
 
     /// <summary>
