@@ -29,12 +29,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Core.Imagery
-{
-    public enum TextureImageFormat
-    {
-        image_jpeg = 0,
-        image_png = 1
+namespace DEM.Net.Core.Imagery;
 
-    }
+public enum TextureImageFormat
+{
+    image_jpeg = 0,
+    image_png = 1
+
 }

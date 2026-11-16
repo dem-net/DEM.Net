@@ -1,32 +1,24 @@
-﻿using DEM.Net.Core.EarthData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using DEM.Net.Core.EarthData;
 
-namespace DEM.Net.Core.EarthData
+namespace DEM.Net.Core.EarthData;
+
+/// <summary>
+/// Extract of relevant granule information for DEM Net
+/// (whole granule is too big)
+/// </summary>
+public class NasaDemFile(string producerGranuleId, string box, string zipFileLink)
 {
-    /// <summary>
-    /// Extract of relevant granule information for DEM Net
-    /// (whole granule is too big)
-    /// </summary>
-    public class NasaDemFile
+    public string Box { get; set; } = box;
+
+    public string ZipFileLink { get; set; } = zipFileLink;
+
+    public string GranuleId { get; set; } = producerGranuleId;
+
+    [System.Text.Json.Serialization.JsonConstructor]
+    internal NasaDemFile() : this(string.Empty, string.Empty, string.Empty)
     {
-        public string Box { get; set; }
-
-        public string ZipFileLink { get; set; }
-
-        public string GranuleId { get; set; }
-
-        [System.Text.Json.Serialization.JsonConstructor]
-        internal NasaDemFile() : this(string.Empty, string.Empty, string.Empty)
-        {
-        }
-
-        public NasaDemFile(string producerGranuleId, string box, string zipFileLink)
-        {
-            this.Box = box;
-            this.ZipFileLink = zipFileLink;
-            this.GranuleId = producerGranuleId;
-        }
     }
 }

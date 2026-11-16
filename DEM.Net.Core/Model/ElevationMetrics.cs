@@ -25,27 +25,26 @@
 
 using System.Globalization;
 
-namespace DEM.Net.Core
+namespace DEM.Net.Core;
+
+public class ElevationMetrics
 {
-    public class ElevationMetrics
+    public double MinElevation { get; internal set; }
+    public double MaxElevation { get; internal set; }
+    public double Distance { get; internal set; }
+    public int NumPoints { get; internal set; }
+    public double Climb { get; internal set; }
+    public double Descent { get; internal set; }
+    public bool HasVoids { get; internal set; }
+    public int NumVoidPoints { get; internal set; }
+
+    public override string ToString()
     {
-        public double MinElevation { get; internal set; }
-        public double MaxElevation { get; internal set; }
-        public double Distance { get; internal set; }
-        public int NumPoints { get; internal set; }
-        public double Climb { get; internal set; }
-        public double Descent { get; internal set; }
-        public bool HasVoids { get; internal set; }
-        public int NumVoidPoints { get; internal set; }
+        return ToString("F2");
+    }
 
-        public override string ToString()
-        {
-            return ToString("F2");
-        }
-
-        public string ToString(string numberFormat = "F2")
-        {
-            return $"Min/Max: {MinElevation.ToString(numberFormat, CultureInfo.InvariantCulture)} / {MaxElevation.ToString(numberFormat, CultureInfo.InvariantCulture)}, Distance: {Distance.ToString(numberFormat, CultureInfo.InvariantCulture)} m, Climb/Descent: {Climb.ToString(numberFormat, CultureInfo.InvariantCulture)} / {Descent.ToString(numberFormat, CultureInfo.InvariantCulture)}";
-        }
+    public string ToString(string numberFormat = "F2")
+    {
+        return $"Min/Max: {MinElevation.ToString(numberFormat, CultureInfo.InvariantCulture)} / {MaxElevation.ToString(numberFormat, CultureInfo.InvariantCulture)}, Distance: {Distance.ToString(numberFormat, CultureInfo.InvariantCulture)} m, Climb/Descent: {Climb.ToString(numberFormat, CultureInfo.InvariantCulture)} / {Descent.ToString(numberFormat, CultureInfo.InvariantCulture)}";
     }
 }

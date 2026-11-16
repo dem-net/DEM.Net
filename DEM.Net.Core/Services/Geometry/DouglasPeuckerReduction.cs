@@ -29,8 +29,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Core
-{
+namespace DEM.Net.Core;
+
 	//
 	// Code from https://gist.github.com/oliverheilig/7777382
 	//
@@ -45,15 +45,16 @@ namespace DEM.Net.Core
 		public static List<GeoPoint> DouglasPeuckerReduction(IReadOnlyList<GeoPoint> Points, double Tolerance)
 		{
 			if (Points == null || Points.Count < 3)
-				return Points.ToList();
+				return [.. Points];
 
 			int firstPoint = 0;
 			int lastPoint = Points.Count - 1;
-			var pointIndexsToKeep = new List<int>();
-
-			//Add the first and last index to the keepers
-			pointIndexsToKeep.Add(firstPoint);
-			pointIndexsToKeep.Add(lastPoint);
+			var pointIndexsToKeep = new List<int>
+            {
+                //Add the first and last index to the keepers
+                firstPoint,
+                lastPoint
+            };
 
 			//The first and the last point can not be the same
 			while (Points[firstPoint].Equals(Points[lastPoint]))
@@ -106,31 +107,30 @@ namespace DEM.Net.Core
 			}
 		}
 
-        /// <summary>
-        /// The distance of a point from a line made from point1 and point2.
-        /// </summary>
-        /// <param name="pt1">The PT1.</param>
-        /// <param name="pt2">The PT2.</param>
-        /// <param name="p">The p.</param>
-        /// <returns></returns>
-        public static double PerpendicularDistance(GeoPoint Point1, GeoPoint Point2, GeoPoint Point)
-        {
-            //Area = |(1/2)(x1y2 + x2y3 + x3y1 - x2y1 - x3y2 - x1y3)|   *Area of triangle
-            //Base = √((x1-x2)²+(x1-x2)²)                               *Base of Triangle*
-            //Area = .5*Base*H                                          *Solve for height
-            //Height = Area/.5/Base
+    /// <summary>
+    /// The distance of a point from a line made from point1 and point2.
+    /// </summary>
+    /// <param name="pt1">The PT1.</param>
+    /// <param name="pt2">The PT2.</param>
+    /// <param name="p">The p.</param>
+    /// <returns></returns>
+    public static double PerpendicularDistance(GeoPoint Point1, GeoPoint Point2, GeoPoint Point)
+    {
+        //Area = |(1/2)(x1y2 + x2y3 + x3y1 - x2y1 - x3y2 - x1y3)|   *Area of triangle
+        //Base = √((x1-x2)²+(x1-x2)²)                               *Base of Triangle*
+        //Area = .5*Base*H                                          *Solve for height
+        //Height = Area/.5/Base
 
-            double area = Math.Abs(.5 * (Point1.DistanceFromOriginMeters.GetValueOrDefault(0) * Point2.Elevation.GetValueOrDefault(0)
-                                        + Point2.DistanceFromOriginMeters.GetValueOrDefault(0) * Point.Elevation.GetValueOrDefault(0)
-                                        + Point.DistanceFromOriginMeters.GetValueOrDefault(0) * Point1.Elevation.GetValueOrDefault(0)
-                                        - Point2.DistanceFromOriginMeters.GetValueOrDefault(0) * Point1.Elevation.GetValueOrDefault(0)
-                                        - Point.DistanceFromOriginMeters.GetValueOrDefault(0) * Point2.Elevation.GetValueOrDefault(0)
-                                        - Point1.DistanceFromOriginMeters.GetValueOrDefault(0) * Point.Elevation.GetValueOrDefault(0)));
-            double bottom = Math.Sqrt(Math.Pow(Point1.DistanceFromOriginMeters.GetValueOrDefault(0) - Point2.DistanceFromOriginMeters.GetValueOrDefault(0), 2)
-                + Math.Pow(Point1.Elevation.GetValueOrDefault(0) - Point2.Elevation.GetValueOrDefault(0), 2));
-            double height = area / bottom * 2;
+        double area = Math.Abs(.5 * (Point1.DistanceFromOriginMeters.GetValueOrDefault(0) * Point2.Elevation.GetValueOrDefault(0)
+                                    + Point2.DistanceFromOriginMeters.GetValueOrDefault(0) * Point.Elevation.GetValueOrDefault(0)
+                                    + Point.DistanceFromOriginMeters.GetValueOrDefault(0) * Point1.Elevation.GetValueOrDefault(0)
+                                    - Point2.DistanceFromOriginMeters.GetValueOrDefault(0) * Point1.Elevation.GetValueOrDefault(0)
+                                    - Point.DistanceFromOriginMeters.GetValueOrDefault(0) * Point2.Elevation.GetValueOrDefault(0)
+                                    - Point1.DistanceFromOriginMeters.GetValueOrDefault(0) * Point.Elevation.GetValueOrDefault(0)));
+        double bottom = Math.Sqrt(Math.Pow(Point1.DistanceFromOriginMeters.GetValueOrDefault(0) - Point2.DistanceFromOriginMeters.GetValueOrDefault(0), 2)
+            + Math.Pow(Point1.Elevation.GetValueOrDefault(0) - Point2.Elevation.GetValueOrDefault(0), 2));
+        double height = area / bottom * 2;
 
-            return height;
-        }
+        return height;
     }
 }

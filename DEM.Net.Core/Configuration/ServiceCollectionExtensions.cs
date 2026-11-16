@@ -1,4 +1,7 @@
-﻿using DEM.Net.Core.Datasets;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using DEM.Net.Core.Datasets;
 using DEM.Net.Core.EarthData;
 using DEM.Net.Core.Imagery;
 using DEM.Net.Core.Services.Imagery;
@@ -7,62 +10,51 @@ using DEM.Net.Core.TileIndex;
 using DEM.Net.Core.XyzTiles;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace DEM.Net.Core
+namespace DEM.Net.Core;
+
+public delegate IDEMDataSetIndex RasterIndexServiceResolver(DEMDataSourceType dataSourceType);
+
+public static class ServiceCollectionExtension
 {
-    public delegate IDEMDataSetIndex RasterIndexServiceResolver(DEMDataSourceType dataSourceType);
-
-    public static class ServiceCollectionExtension
+    public static IServiceCollection AddDemNetCore(this IServiceCollection services)
     {
-        public static IServiceCollection AddDemNetCore(this IServiceCollection services)
+        services.AddMemoryCache();
+        services.AddHttpClient();
+        services.AddOptions();
+
+        services.AddSingleton<GDALVRTFileService>();
+        services.AddSingleton<LocalFileSystemIndex>();
+        services.AddSingleton<NasaGranuleFileService>();
+        services.AddSingleton<EarthdataLoginConnector>();
+        services.AddSingleton<StacFileService>();
+        services.AddSingleton<TileIndexFileService>();
+        services.AddSingleton<XyzTileIndexService>();
+
+        services.AddTransient<RasterIndexServiceResolver>(serviceProvider => dataSourceType =>
         {
-            services.AddMemoryCache();
-            services.AddHttpClient();
-            services.AddOptions();
-
-            services.AddSingleton<GDALVRTFileService>();
-            services.AddSingleton<LocalFileSystemIndex>();
-            services.AddSingleton<NasaGranuleFileService>();
-            services.AddSingleton<EarthdataLoginConnector>();
-            services.AddSingleton<StacFileService>();
-            services.AddSingleton<TileIndexFileService>();
-            services.AddSingleton<XyzTileIndexService>();
-
-            services.AddTransient<RasterIndexServiceResolver>(serviceProvider => dataSourceType =>
+            return dataSourceType switch
             {
-                switch (dataSourceType)
-                {
-                    case Datasets.DEMDataSourceType.GDALVrt:
-                        return serviceProvider.GetService<GDALVRTFileService>();
-                    case Datasets.DEMDataSourceType.NasaEarthData:
-                        return serviceProvider.GetService<NasaGranuleFileService>();
-                    case Datasets.DEMDataSourceType.Stac:
-                        return serviceProvider.GetService<StacFileService>();
-                    case Datasets.DEMDataSourceType.TileIndex:
-                        return serviceProvider.GetService<TileIndexFileService>();
-                    case Datasets.DEMDataSourceType.XyzTiles:
-                        return serviceProvider.GetService<XyzTileIndexService>();
-                    case Datasets.DEMDataSourceType.LocalFileSystem:
-                        return serviceProvider.GetService<LocalFileSystemIndex>();
-                    default:
-                        throw new KeyNotFoundException(); // or maybe return null, up to you
-                }
-            });
+                Datasets.DEMDataSourceType.GDALVrt => serviceProvider.GetService<GDALVRTFileService>(),
+                Datasets.DEMDataSourceType.NasaEarthData => serviceProvider.GetService<NasaGranuleFileService>(),
+                Datasets.DEMDataSourceType.Stac => serviceProvider.GetService<StacFileService>(),
+                Datasets.DEMDataSourceType.TileIndex => serviceProvider.GetService<TileIndexFileService>(),
+                Datasets.DEMDataSourceType.XyzTiles => serviceProvider.GetService<XyzTileIndexService>(),
+                Datasets.DEMDataSourceType.LocalFileSystem => serviceProvider.GetService<LocalFileSystemIndex>(),
+                _ => throw new KeyNotFoundException(),// or maybe return null, up to you
+            };
+        });
 
-            services
-                    .AddSingleton<IDEMDataSetIndex,GDALVRTFileService>()
-                    .AddSingleton<RasterService>()
-                    .AddTransient<ElevationService>()
-                    .AddTransient<MeshService>()
-                    .AddTransient<AdornmentsService>()
-                    .AddTransient<ImageryCache>()
-                    .AddSingleton<ImageryService>();
+        services
+                .AddSingleton<IDEMDataSetIndex,GDALVRTFileService>()
+                .AddSingleton<RasterService>()
+                .AddTransient<ElevationService>()
+                .AddTransient<MeshService>()
+                .AddTransient<AdornmentsService>()
+                .AddTransient<ImageryCache>()
+                .AddSingleton<ImageryService>();
 
-            services.AddLazyCache();
-            return services;
-        }
+        services.AddLazyCache();
+        return services;
     }
 }

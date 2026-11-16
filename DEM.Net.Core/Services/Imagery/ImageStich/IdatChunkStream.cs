@@ -10,17 +10,12 @@ namespace DEM.Net.Core.Imagery;
 /// (length + "IDAT" + data + CRC32). Intended to sit below a <see cref="System.IO.Compression.ZLibStream"/>.
 /// Does not dispose the underlying stream.
 /// </summary>
-internal sealed class IdatChunkStream : Stream
+internal sealed class IdatChunkStream(Stream baseStream) : Stream
 {
     private static readonly byte[] ChunkType = "IDAT"u8.ToArray();
 
-    private readonly Stream _baseStream;
-    private readonly Crc32 _crc32 = new Crc32();
-
-    public IdatChunkStream(Stream baseStream)
-    {
-        _baseStream = baseStream ?? throw new ArgumentNullException(nameof(baseStream));
-    }
+    private readonly Stream _baseStream = baseStream ?? throw new ArgumentNullException(nameof(baseStream));
+    private readonly Crc32 _crc32 = new();
 
     public override void Write(ReadOnlySpan<byte> buffer)
     {

@@ -20,7 +20,7 @@ public class ElevationBenchmarks
     private HeightMap _heightMap = null!;
 
     /// <summary>~0.2° x 0.2° (about 240 x 240 samples at 3")</summary>
-    private static BoundingBox Bbox => new BoundingBox(5.30, 5.50, 43.30, 43.50);
+    private static BoundingBox Bbox => new(5.30, 5.50, 43.30, 43.50);
 
     [GlobalSetup]
     public void Setup()
@@ -30,13 +30,9 @@ public class ElevationBenchmarks
         _gltf = _data.Services.GetRequiredService<SharpGltfService>();
 
         var random = new Random(42);
-        _points = Enumerable.Range(0, 1_000)
-            .Select(_ => new GeoPoint(LocalHgtDataSet.South + 0.05 + random.NextDouble() * 0.9, LocalHgtDataSet.West + 0.05 + random.NextDouble() * 0.9))
-            .ToList();
+        _points = [.. Enumerable.Range(0, 1_000).Select(_ => new GeoPoint(LocalHgtDataSet.South + 0.05 + random.NextDouble() * 0.9, LocalHgtDataSet.West + 0.05 + random.NextDouble() * 0.9))];
         // 10 000 vertices zig-zagging across the tile
-        _line = Enumerable.Range(0, 10_000)
-            .Select(i => new GeoPoint(43.1 + (i % 100) * 0.008, 5.1 + i * 0.00008))
-            .ToList();
+        _line = [.. Enumerable.Range(0, 10_000).Select(i => new GeoPoint(43.1 + (i % 100) * 0.008, 5.1 + i * 0.00008))];
 
         // Warm up: generates and loads the file metadata (local dataset: nothing is downloaded), opens the raster once.
         // The measured calls use the synchronous APIs, which read the local files only.

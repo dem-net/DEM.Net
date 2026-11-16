@@ -25,13 +25,12 @@
 using System;
 using System.Collections.Generic;
 
-namespace DEM.Net.Core
+namespace DEM.Net.Core;
+
+public static class TransformExtensions
 {
-    public static class TransformExtensions
+    public static Func<IEnumerable<GeoPoint>, IEnumerable<GeoPoint>> PostTransform(this Func<IEnumerable<GeoPoint>, IEnumerable<GeoPoint>> func, Func<IEnumerable<GeoPoint>, IEnumerable<GeoPoint>> postTransform)
     {
-        public static Func<IEnumerable<GeoPoint>, IEnumerable<GeoPoint>> PostTransform(this Func<IEnumerable<GeoPoint>, IEnumerable<GeoPoint>> func, Func<IEnumerable<GeoPoint>, IEnumerable<GeoPoint>> postTransform)
-        {
-            return pts => postTransform(func(pts));
-        }
+        return pts => postTransform(func(pts));
     }
 }

@@ -2,18 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DEM.Net.Core.Datasets
+namespace DEM.Net.Core.Datasets;
+
+public class LocalFileSystem(string localDirectory) : IDEMDataSource
 {
-    public class LocalFileSystem : IDEMDataSource
-    {
-        private readonly string _localDirectory;
+    private readonly string _localDirectory = localDirectory;
 
-        public LocalFileSystem(string localDirectory)
-        {
-            _localDirectory = localDirectory;
-        }
-        public string IndexFilePath => _localDirectory;
+    public string IndexFilePath => _localDirectory;
 
-        public DEMDataSourceType DataSourceType => DEMDataSourceType.LocalFileSystem;
-    }
+    public DEMDataSourceType DataSourceType => DEMDataSourceType.LocalFileSystem;
 }

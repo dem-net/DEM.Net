@@ -23,37 +23,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-namespace DEM.Net.Core
+namespace DEM.Net.Core;
+
+public enum DEMFileType
 {
-    public enum DEMFileType
-    {
-        /// <summary>
-        /// Shuttle Radar Topography Mission (SRTM) Data file
-        /// </summary>
-        SRTM_HGT,
-        /// <summary>
-        /// Georeferenced TIFF file
-        /// </summary>
-        GEOTIFF,
-        /// <summary>
-        /// Network Common Data Form (Climat and Forecast)
-        /// </summary>
-        CF_NetCDF,
-        /// <summary>
-        /// ESRI ARC/INFO ASCII GRID
-        /// </summary>
-        /// <remarks>See https://en.wikipedia.org/wiki/Esri_grid</remarks>
-        ASCIIGrid,
-        /// <summary>
-        /// ESRI ARC/INFO ASCII GRID
-        /// </summary>
-        /// <remarks>See https://en.wikipedia.org/wiki/Esri_grid</remarks>
-        ASCIIGridGzip,
-        TerrainRGB,
-        /// <summary>
-        /// Terrarium encoded elevation image tile (Web Mercator, height = R*256 + G + B/256 - 32768)
-        /// </summary>
-        /// <remarks>See https://github.com/tilezen/joerd/blob/master/docs/formats.md#terrarium</remarks>
-        Terrarium,
-    }
+    /// <summary>
+    /// Shuttle Radar Topography Mission (SRTM) Data file
+    /// </summary>
+    SRTM_HGT,
+    /// <summary>
+    /// Georeferenced TIFF file
+    /// </summary>
+    GEOTIFF,
+    /// <summary>
+    /// Network Common Data Form (Climat and Forecast)
+    /// </summary>
+    CF_NetCDF,
+    /// <summary>
+    /// ESRI ARC/INFO ASCII GRID
+    /// </summary>
+    /// <remarks>See https://en.wikipedia.org/wiki/Esri_grid</remarks>
+    ASCIIGrid,
+    /// <summary>
+    /// ESRI ARC/INFO ASCII GRID
+    /// </summary>
+    /// <remarks>See https://en.wikipedia.org/wiki/Esri_grid</remarks>
+    ASCIIGridGzip,
+    TerrainRGB,
+    /// <summary>
+    /// Terrarium encoded elevation image tile (Web Mercator, height = R*256 + G + B/256 - 32768)
+    /// </summary>
+    /// <remarks>See https://github.com/tilezen/joerd/blob/master/docs/formats.md#terrarium</remarks>
+    Terrarium,
 }

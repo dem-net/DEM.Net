@@ -2,16 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DEM.Net.xUnit.Test
-{
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class TestPriorityAttribute : Attribute
-    {
-        public TestPriorityAttribute(int priority)
-        {
-            Priority = priority;
-        }
+namespace DEM.Net.xUnit.Test;
 
-        public int Priority { get; private set; }
-    }
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+public class TestPriorityAttribute(int priority) : Attribute
+{
+    public int Priority { get; private set; } = priority;
 }

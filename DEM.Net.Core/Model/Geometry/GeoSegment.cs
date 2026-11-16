@@ -29,21 +29,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Core
-{
-    public struct GeoSegment
-    {
-        public GeoPoint Start;
-        public GeoPoint End;
-        public GeoSegment(GeoPoint start, GeoPoint end)
-        {
-            Start = start;
-            End = end;
-        }
+namespace DEM.Net.Core;
 
-        public override string ToString()
-        {
-            return $"Segment from {Start} to {End}.";
-        }
+public struct GeoSegment(GeoPoint start, GeoPoint end)
+{
+    public GeoPoint Start = start;
+    public GeoPoint End = end;
+
+    public override string ToString()
+    {
+        return $"Segment from {Start} to {End}.";
     }
 }

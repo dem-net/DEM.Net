@@ -23,18 +23,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-namespace DEM.Net.Core
-{
-    public enum BoxBaseThickness
-    {
-        /// <summary>
-        /// Box base is at a given elevation
-        /// </summary>
-        FixedElevation,
+namespace DEM.Net.Core;
 
-        /// <summary>
-        /// Box base is calculated from the lowest Z value plus a margin
-        /// </summary>
-        FromMinimumPoint
-    }
+public enum BoxBaseThickness
+{
+    /// <summary>
+    /// Box base is at a given elevation
+    /// </summary>
+    FixedElevation,
+
+    /// <summary>
+    /// Box base is calculated from the lowest Z value plus a margin
+    /// </summary>
+    FromMinimumPoint
 }

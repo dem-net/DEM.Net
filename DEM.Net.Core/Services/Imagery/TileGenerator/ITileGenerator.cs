@@ -1,7 +1,6 @@
-namespace DEM.Net.Core.Imagery
+namespace DEM.Net.Core.Imagery;
+
+public interface ITileGenerator
 {
-    public interface ITileGenerator
-    {
-        byte[] GenerateTile(int x, int y, int zoom);
-    }
+    byte[] GenerateTile(int x, int y, int zoom);
 }

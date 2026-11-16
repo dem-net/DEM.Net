@@ -29,84 +29,83 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Core.Imagery
+namespace DEM.Net.Core.Imagery;
+
+public class MapTileInfo
 {
-    public class MapTileInfo
+
+    public MapTileInfo(int x, int y, int zoom, int tileSize)
     {
+        X = x;
+        Y = y;
+        Zoom = zoom;
+        TileSize = tileSize;
+    }
+    public MapTileInfo(Point<int> xy, int zoom, int tileSize)
+    {
+        X = xy.X;
+        Y = xy.Y;
+        Zoom = zoom;
+        TileSize = tileSize;
+    }
 
-        public MapTileInfo(int x, int y, int zoom, int tileSize)
+    public int X { get; set; }
+    public int Y { get; set; }
+    public int Zoom { get; set; }
+
+    public int TileSize { get; set; }
+
+    public TileRange ZoomIn()
+    {
+        if (Zoom == 23) return new TileRange(this, this, this.TileSize);
+
+        return new TileRange(this.ZoomIn("0"), this.ZoomIn("3"), this.TileSize);
+    }
+    public TileRange ToTileRange()
+    {
+        return new TileRange(this, this, this.TileSize);
+    }
+    public MapTileInfo ZoomIn(string quadIndex)
+    {
+        if (Zoom == 23) return this;
+
+        TileUtils.QuadKeyToTileXY(string.Concat(TileUtils.TileXYToQuadKey(X, Y, Zoom), quadIndex), out int x0, out int y0, out int z0);
+        return new MapTileInfo(x0, y0, z0, this.TileSize);
+    }      
+    public MapTileInfo ZoomOut()
+    {
+        if (Zoom == 1) return this;
+
+        var quadKey = TileUtils.TileXYToQuadKey(X, Y, Zoom);
+        TileUtils.QuadKeyToTileXY(quadKey.Substring(0, quadKey.Length - 1), out int x0, out int y0, out int z0);
+        return new MapTileInfo(x0, y0, z0, this.TileSize);
+    }
+    public MapTileInfo ZoomOut(int targetZoom)
+    {
+        var tile = this.MemberwiseClone() as MapTileInfo;
+        while (tile.Zoom>targetZoom)
         {
-            X = x;
-            Y = y;
-            Zoom = zoom;
-            TileSize = tileSize;
+            tile = tile.ZoomOut();
+            if (tile.Zoom == 1) return tile;
         }
-        public MapTileInfo(Point<int> xy, int zoom, int tileSize)
+        return tile;
+    }
+
+    public override string ToString()
+    {
+        return $"{X}_{Y}_z{Zoom}";
+    }
+
+    public BoundingBox BoundingBox
+    {
+        get
         {
-            X = xy.X;
-            Y = xy.Y;
-            Zoom = zoom;
-            TileSize = tileSize;
-        }
+            var bboxTopLeft = TileUtils.TileXYToGlobalPixel(this.X, this.Y, this.TileSize);
+            var bboxBottomRight = TileUtils.TileXYToGlobalPixel(this.X + 1, this.Y + 1, this.TileSize);
+            var coordTopLeft = TileUtils.GlobalPixelToPosition(bboxTopLeft, Zoom, this.TileSize);
+            var coordBottomRight = TileUtils.GlobalPixelToPosition(new Point<double>(bboxBottomRight.X-1, bboxBottomRight.Y-1), Zoom, this.TileSize);
 
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int Zoom { get; set; }
-
-        public int TileSize { get; set; }
-
-        public TileRange ZoomIn()
-        {
-            if (Zoom == 23) return new TileRange(this, this, this.TileSize);
-
-            return new TileRange(this.ZoomIn("0"), this.ZoomIn("3"), this.TileSize);
-        }
-        public TileRange ToTileRange()
-        {
-            return new TileRange(this, this, this.TileSize);
-        }
-        public MapTileInfo ZoomIn(string quadIndex)
-        {
-            if (Zoom == 23) return this;
-
-            TileUtils.QuadKeyToTileXY(string.Concat(TileUtils.TileXYToQuadKey(X, Y, Zoom), quadIndex), out int x0, out int y0, out int z0);
-            return new MapTileInfo(x0, y0, z0, this.TileSize);
-        }      
-        public MapTileInfo ZoomOut()
-        {
-            if (Zoom == 1) return this;
-
-            var quadKey = TileUtils.TileXYToQuadKey(X, Y, Zoom);
-            TileUtils.QuadKeyToTileXY(quadKey.Substring(0, quadKey.Length - 1), out int x0, out int y0, out int z0);
-            return new MapTileInfo(x0, y0, z0, this.TileSize);
-        }
-        public MapTileInfo ZoomOut(int targetZoom)
-        {
-            var tile = this.MemberwiseClone() as MapTileInfo;
-            while (tile.Zoom>targetZoom)
-            {
-                tile = tile.ZoomOut();
-                if (tile.Zoom == 1) return tile;
-            }
-            return tile;
-        }
-
-        public override string ToString()
-        {
-            return $"{X}_{Y}_z{Zoom}";
-        }
-
-        public BoundingBox BoundingBox
-        {
-            get
-            {
-                var bboxTopLeft = TileUtils.TileXYToGlobalPixel(this.X, this.Y, this.TileSize);
-                var bboxBottomRight = TileUtils.TileXYToGlobalPixel(this.X + 1, this.Y + 1, this.TileSize);
-                var coordTopLeft = TileUtils.GlobalPixelToPosition(bboxTopLeft, Zoom, this.TileSize);
-                var coordBottomRight = TileUtils.GlobalPixelToPosition(new Point<double>(bboxBottomRight.X-1, bboxBottomRight.Y-1), Zoom, this.TileSize);
-
-                return new BoundingBox(coordTopLeft.Long, coordBottomRight.Long, coordBottomRight.Lat, coordTopLeft.Lat);
-            }
+            return new BoundingBox(coordTopLeft.Long, coordBottomRight.Long, coordBottomRight.Lat, coordTopLeft.Lat);
         }
     }
 }

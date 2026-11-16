@@ -29,28 +29,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Core.Imagery
-{
-    public struct LatLong
-    {
-        // Function to perform operation 
-        // By changing sign of integers 
-        public static LatLong operator -(LatLong c1, LatLong c2)
-        {
-            return new LatLong(c1.Lat - c2.Lat, c1.Long - c2.Long);
-        } 
-        public double Lat { get; set; }
-        public double Long { get; set; }
+namespace DEM.Net.Core.Imagery;
 
-        public LatLong(double lat, double lon)
-        {
-            Lat = lat;
-            Long = lon;
-        }
-        
-        public override string ToString()
-        {
-            return $"lat={Lat}, Long={Long}";
-        }
+public struct LatLong(double lat, double lon)
+{
+    // Function to perform operation 
+    // By changing sign of integers 
+    public static LatLong operator -(LatLong c1, LatLong c2)
+    {
+        return new LatLong(c1.Lat - c2.Lat, c1.Long - c2.Long);
+    }
+    public double Lat { get; set; } = lat;
+    public double Long { get; set; } = lon;
+
+    public override string ToString()
+    {
+        return $"lat={Lat}, Long={Long}";
     }
 }

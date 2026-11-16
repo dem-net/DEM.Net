@@ -1,45 +1,35 @@
-﻿using DEM.Net.Core;
-using DEM.Net.xUnit.Test;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
-using Xunit;
+using DEM.Net.Core;
+using DEM.Net.Core.Configuration;
+using DEM.Net.xUnit.Test;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using DEM.Net.Core.Configuration;
+using Xunit;
 
-namespace DEM.Net.Test
+namespace DEM.Net.Test;
+
+public class ConfigurationTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    public class ConfigurationTests : IClassFixture<DemNetFixture>
-    {
-        readonly RasterService _rasterService;
-        private readonly IOptions<DEMNetOptions> _options;
-        readonly RasterIndexServiceResolver _indexServiceResolver;
+    readonly RasterService _rasterService = fixture.ServiceProvider.GetService<RasterService>();
+    private readonly IOptions<DEMNetOptions> _options = fixture.ServiceProvider.GetService<IOptions<DEMNetOptions>>();
+    readonly RasterIndexServiceResolver _indexServiceResolver = fixture.ServiceProvider.GetService<RasterIndexServiceResolver>();
 
-
-        public ConfigurationTests(DemNetFixture fixture)
+    [Fact]
+    public void LocalDirectoryTest()
+    {   
+        if (_options?.Value?.LocalDirectory == null)
         {
-            _rasterService = fixture.ServiceProvider.GetService<RasterService>();
-            _options = fixture.ServiceProvider.GetService<IOptions<DEMNetOptions>>();
-            _indexServiceResolver = fixture.ServiceProvider.GetService<RasterIndexServiceResolver>();
+            Assert.Equal(_rasterService.LocalDirectory, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), RasterService.APP_NAME));
         }
-
-
-        [Fact]
-        public void LocalDirectoryTest()
-        {   
-            if (_options?.Value?.LocalDirectory == null)
-            {
-                Assert.Equal(_rasterService.LocalDirectory, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), RasterService.APP_NAME));
-            }
-            else
-            {
-                Assert.Equal(_options.Value.LocalDirectory, _rasterService.LocalDirectory);
-            }
-            
+        else
+        {
+            Assert.Equal(_options.Value.LocalDirectory, _rasterService.LocalDirectory);
         }
-
         
-
     }
+
+    
+
 }

@@ -26,36 +26,35 @@
 using System;
 using System.Collections.Generic;
 
-namespace DEM.Net.Core
+namespace DEM.Net.Core;
+
+/// <summary>
+/// Superset of elevation metrics for raycasting (intervisibility)
+/// All reliefs standing in between are listed in <see cref="Obstacles"/>
+/// </summary>
+public class IntervisibilityMetrics : ElevationMetrics
 {
-    /// <summary>
-    /// Superset of elevation metrics for raycasting (intervisibility)
-    /// All reliefs standing in between are listed in <see cref="Obstacles"/>
-    /// </summary>
-    public class IntervisibilityMetrics : ElevationMetrics
+    public bool Intervisible => Obstacles.Count == 0;
+
+    public List<IntervisibilityObstacle> Obstacles { get; set; } = [];
+
+    internal void AddObstacle(IntervisibilityObstacle obstacle)
     {
-        public bool Intervisible => Obstacles.Count == 0;
+        Obstacles.Add(obstacle);
+    }
 
-        public List<IntervisibilityObstacle> Obstacles { get; set; } = new List<IntervisibilityObstacle>();
-
-        internal void AddObstacle(IntervisibilityObstacle obstacle)
+    public new string ToString()
+    {
+        if (Intervisible)
         {
-            Obstacles.Add(obstacle);
+            return string.Concat("(Intervisible) ", base.ToString());
         }
-
-        public new string ToString()
+        else
         {
-            if (Intervisible)
-            {
-                return string.Concat("(Intervisible) ", base.ToString());
-            }
-            else
-            {
-                return string.Concat($"{Obstacles.Count} obstacle(s): ",
-                    string.Join(Environment.NewLine + ", ", Obstacles),
-                    Environment.NewLine,
-                    base.ToString());
-            }
+            return string.Concat($"{Obstacles.Count} obstacle(s): ",
+                string.Join(Environment.NewLine + ", ", Obstacles),
+                Environment.NewLine,
+                base.ToString());
         }
     }
 }

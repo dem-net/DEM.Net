@@ -30,32 +30,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Core.Imagery
+namespace DEM.Net.Core.Imagery;
+
+public class TextureInfo(string filePath, TextureImageFormat imageFormat, int width, int height, int zoom = 0, BoundingBox? projectedBounds = null, int? tileCount = null)
 {
-    public class TextureInfo
-    {
 
-        public string FilePath { get; set; }
-        public string FileName { get; }
-        public TextureImageFormat ImageFormat { get; }
-        public int Width { get; }
-        public int Height { get; }
-        public int ProjectedZoom { get; }
-        public BoundingBox ProjectedBounds { get; }
-        public int? TileCount { get; set; }
-
-        public TextureInfo(string filePath, TextureImageFormat imageFormat, int width, int height, int zoom = 0, BoundingBox projectedBounds = null, int? tileCount = null)
-        {
-            this.FilePath = filePath;
-            this.FileName = Path.GetFileName(filePath);
-            this.ImageFormat = imageFormat;
-            this.Width = width;
-            this.Height = height;
-            this.ProjectedZoom = zoom;
-            this.ProjectedBounds = projectedBounds;
-            this.TileCount = tileCount;
-        }
-
-
-    }
+    public string FilePath { get; set; } = filePath;
+    public string FileName { get; } = Path.GetFileName(filePath);
+    public TextureImageFormat ImageFormat { get; } = imageFormat;
+    public int Width { get; } = width;
+    public int Height { get; } = height;
+    public int ProjectedZoom { get; } = zoom;
+    public BoundingBox ProjectedBounds { get; } = projectedBounds;
+    public int? TileCount { get; set; } = tileCount;
 }

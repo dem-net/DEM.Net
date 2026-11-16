@@ -1,271 +1,172 @@
-﻿using System.Threading.Tasks;
-using System;
-using System.Linq;
-using DEM.Net.Core;
-using DEM.Net.Test;
-using Xunit;
-using Microsoft.Extensions.DependencyInjection;
+﻿using System;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using DEM.Net.Core;
 using DEM.Net.Core.Interpolation;
+using DEM.Net.Test;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
-namespace DEM.Net.xUnit.Test
+namespace DEM.Net.xUnit.Test;
+
+// Downloads datasets / tiles: excluded from CI (dotnet test --filter Category!=Network)
+[Trait("Category", "Network")]
+public class TileTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    // Downloads datasets / tiles: excluded from CI (dotnet test --filter Category!=Network)
-    [Trait("Category", "Network")]
-    public class TileTests : IClassFixture<DemNetFixture>
+    readonly ElevationService _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
+    readonly RasterService _rasterService = fixture.ServiceProvider.GetService<RasterService>();
+    readonly RasterIndexServiceResolver _rasterResolver = fixture.ServiceProvider.GetService<RasterIndexServiceResolver>();
+
+    [Theory()]
+    [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.5, 10.5, "N46E010.tif")]
+    [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.00000000000004, 10.000000000000007, "N46E010.tif")]
+    [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.5, 10.000000000000007, "N46E010.tif")]
+    public async Task SourceBboxCheck(string dataSetName, double lat, double lon, string expectedFileName)
     {
-        readonly ElevationService _elevationService;
-        readonly RasterService _rasterService;
-        readonly RasterIndexServiceResolver _rasterResolver;
+        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+        Assert.NotNull(dataSet);
 
-        public TileTests(DemNetFixture fixture)
+        var indexService = _rasterResolver(dataSet.DataSource.DataSourceType);
+        Assert.NotNull(dataSet);
+
+        await indexService.SetupAsync(dataSet, _rasterService.LocalDirectory);
+        var intersectingTiles = indexService.GetFileSources(dataSet).Where(tile => tile.BBox.Intersects(lat, lon)).ToList();
+
+        var report = await _rasterService.GenerateReportForLocationAsync(dataSet, lat, lon);
+
+        Assert.NotNull(report);
+        Assert.True(report.Count == 1);
+
+
+        Assert.Equal(expectedFileName, Path.GetFileName(report.First().LocalName));
+
+    }
+
+    [Theory()]
+    [InlineData(nameof(DEMDataSet.SRTM_GL3), 46, 10, "N45E009.tif", "N45E010.tif", "N46E009.tif", "N46E010.tif")]
+    [InlineData(nameof(DEMDataSet.AW3D30), 46, 10, "ALPSMLC30_N045E009_DSM.tif", "ALPSMLC30_N045E010_DSM.tif", "ALPSMLC30_N046E009_DSM.tif", "ALPSMLC30_N046E010_DSM.tif")]
+    async Task TestEdges(string dataSetName, double lat, double lon
+        , string rasterSouthWestName, string rasterSouthEastName
+        , string rasterNorthWestName, string rasterNorthEastName)
+    {
+        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+        Assert.NotNull(dataSet);
+        DEMFileType fileType = dataSet.FileFormat.Type;
+        int rasterSize = dataSet.PointsPerDegree;
+        double amountx = (1d / rasterSize) / 4d;
+        double amounty = (1d / rasterSize) / 4d;
+
+        // Regenerates all metadata            
+        //_rasterService.GenerateDirectoryMetadata(dataSet
+        //                                        , force: true
+        //                                        , deleteOnError: false
+        //                                        , maxDegreeOfParallelism: 1);
+        await _elevationService.DownloadMissingFilesAsync(dataSet, lat, lon);
+        var tiles = await _rasterService.GenerateReportForLocationAsync(dataSet, lat, lon);
+        Assert.True(tiles.Count == 4);
+        Assert.Single(tiles, t => string.Equals(Path.GetFileName(t.LocalName), rasterSouthWestName, StringComparison.OrdinalIgnoreCase));
+        Assert.Single(tiles, t => string.Equals(Path.GetFileName(t.LocalName), rasterSouthEastName, StringComparison.OrdinalIgnoreCase));
+        Assert.Single(tiles, t => string.Equals(Path.GetFileName(t.LocalName), rasterNorthWestName, StringComparison.OrdinalIgnoreCase));
+        Assert.Single(tiles, t => string.Equals(Path.GetFileName(t.LocalName), rasterNorthEastName, StringComparison.OrdinalIgnoreCase));
+
+        if (dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell)
         {
-            _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
-            _rasterService = fixture.ServiceProvider.GetService<RasterService>();
-            _rasterResolver = fixture.ServiceProvider.GetService<RasterIndexServiceResolver>();
+            using var rasterNW = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterNorthWestName, Path.GetFileName(t.LocalName))).LocalName, fileType);
+            using var rasterNE = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterNorthEastName, Path.GetFileName(t.LocalName))).LocalName, fileType);
+            using var rasterSW = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterSouthWestName, Path.GetFileName(t.LocalName))).LocalName, fileType);
+            using var rasterSE = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterSouthEastName, Path.GetFileName(t.LocalName))).LocalName, fileType);
+            var elevNW = rasterNW.GetElevationAtPoint(rasterNW.ParseMetaData(dataSet.FileFormat), rasterSize - 1, rasterSize - 1);
+            var elevNE = rasterNE.GetElevationAtPoint(rasterNE.ParseMetaData(dataSet.FileFormat), 0, rasterSize - 1);
+            var elevSW = rasterSW.GetElevationAtPoint(rasterSW.ParseMetaData(dataSet.FileFormat), rasterSize - 1, 0);
+            var elevSE = rasterSE.GetElevationAtPoint(rasterSE.ParseMetaData(dataSet.FileFormat), 0, 0);
+
+            BilinearInterpolator interpolator = new BilinearInterpolator();
+            var elev0 = interpolator.Interpolate(elevSW, elevSE, elevNW, elevNE, 0.25, 0.25);
+            var apiElev0 = _elevationService.GetPointElevation(lat + amounty, lon - amountx, dataSet);
+            Assert.True((elev0 - apiElev0.Elevation.Value) < double.Epsilon);
+
+            var elev1 = interpolator.Interpolate(elevSW, elevSE, elevNW, elevNE, 0.75, 0.25);
+            var apiElev1 = _elevationService.GetPointElevation(lat + amounty, lon + amountx, dataSet);
+            Assert.True((elev1 - apiElev1.Elevation.Value) < double.Epsilon);
+
+            var elev2 = interpolator.Interpolate(elevSW, elevSE, elevNW, elevNE, 0.25, 0.75);
+            var apiElev2 = _elevationService.GetPointElevation(lat - amounty, lon - amountx, dataSet);
+            Assert.True((elev2 - apiElev2.Elevation.Value) < double.Epsilon);
+
+            var elev3 = interpolator.Interpolate(elevSW, elevSE, elevNW, elevNE, 0.75, 0.75);
+            var apiElev3 = _elevationService.GetPointElevation(lat - amounty, lon + amountx, dataSet);
+            Assert.True((elev3 - apiElev3.Elevation.Value) < double.Epsilon);
         }
-
-        [Theory()]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.5, 10.5, "N46E010.tif")]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.00000000000004, 10.000000000000007, "N46E010.tif")]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.5, 10.000000000000007, "N46E010.tif")]
-        public async Task SourceBboxCheck(string dataSetName, double lat, double lon, string expectedFileName)
+        else
         {
-            DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
-            Assert.NotNull(dataSet);
+            using var rasterNW = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterNorthWestName, Path.GetFileName(t.LocalName))).LocalName, fileType);
+            using var rasterNE = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterNorthEastName, Path.GetFileName(t.LocalName))).LocalName, fileType);
+            using var rasterSW = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterSouthWestName, Path.GetFileName(t.LocalName))).LocalName, fileType);
+            using var rasterSE = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterSouthEastName, Path.GetFileName(t.LocalName))).LocalName, fileType);
+            // Northen row, west to east
+            var elevN0 = rasterNW.GetElevationAtPoint(rasterNW.ParseMetaData(dataSet.FileFormat), rasterSize - 1, rasterSize - 1);
+            var elevN1 = rasterNW.GetElevationAtPoint(rasterNW.ParseMetaData(dataSet.FileFormat), rasterSize, rasterSize - 1);
+            var elevN2 = rasterNE.GetElevationAtPoint(rasterNE.ParseMetaData(dataSet.FileFormat), 1, rasterSize - 1);
 
-            var indexService = _rasterResolver(dataSet.DataSource.DataSourceType);
-            Assert.NotNull(dataSet);
+            // middle row, west to east
+            var elevM0 = rasterNW.GetElevationAtPoint(rasterNW.ParseMetaData(dataSet.FileFormat), rasterSize - 1, rasterSize);
+            var elevM1 = rasterNW.GetElevationAtPoint(rasterNW.ParseMetaData(dataSet.FileFormat), rasterSize, rasterSize);
+            var elevM2 = rasterNE.GetElevationAtPoint(rasterNE.ParseMetaData(dataSet.FileFormat), 1, rasterSize);
 
-            await indexService.SetupAsync(dataSet, _rasterService.LocalDirectory);
-            var intersectingTiles = indexService.GetFileSources(dataSet).Where(tile => tile.BBox.Intersects(lat, lon)).ToList();
+            // Sourthen row, west to east
+            var elevS0 = rasterSW.GetElevationAtPoint(rasterSW.ParseMetaData(dataSet.FileFormat), rasterSize - 1, 1);
+            var elevS1 = rasterSW.GetElevationAtPoint(rasterSW.ParseMetaData(dataSet.FileFormat), rasterSize, 1);
+            var elevS2 = rasterSE.GetElevationAtPoint(rasterSE.ParseMetaData(dataSet.FileFormat), 1, 1);
 
-            var report = await _rasterService.GenerateReportForLocationAsync(dataSet, lat, lon);
+            BilinearInterpolator interpolator = new BilinearInterpolator();
+            var elev0 = interpolator.Interpolate(elevM0, elevM1, elevN0, elevN1, 0.75, 0.75);
+            var apiElev0 = _elevationService.GetPointElevation(lat + amounty, lon - amountx, dataSet);
+            Assert.True((elev0 - apiElev0.Elevation.Value) < double.Epsilon);
 
-            Assert.NotNull(report);
-            Assert.True(report.Count == 1);
+            var elev1 = interpolator.Interpolate(elevM1, elevM2, elevN1, elevN2, 0.25, 0.75);
+            var apiElev1 = _elevationService.GetPointElevation(lat + amounty, lon + amountx, dataSet);
+            Assert.True((elev1 - apiElev1.Elevation.Value) < double.Epsilon);
 
+            var elev2 = interpolator.Interpolate(elevS0, elevS1, elevM0, elevM1, 0.75, 0.25);
+            var apiElev2 = _elevationService.GetPointElevation(lat - amounty, lon - amountx, dataSet);
+            Assert.True((elev2 - apiElev2.Elevation.Value) < double.Epsilon);
 
-            Assert.Equal(expectedFileName, Path.GetFileName(report.First().LocalName));
-
-        }
-
-        [Theory()]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3), 46, 10, "N45E009.tif", "N45E010.tif", "N46E009.tif", "N46E010.tif")]
-        [InlineData(nameof(DEMDataSet.AW3D30), 46, 10, "ALPSMLC30_N045E009_DSM.tif", "ALPSMLC30_N045E010_DSM.tif", "ALPSMLC30_N046E009_DSM.tif", "ALPSMLC30_N046E010_DSM.tif")]
-        async Task TestEdges(string dataSetName, double lat, double lon
-            , string rasterSouthWestName, string rasterSouthEastName
-            , string rasterNorthWestName, string rasterNorthEastName)
-        {
-            DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
-            Assert.NotNull(dataSet);
-            DEMFileType fileType = dataSet.FileFormat.Type;
-            int rasterSize = dataSet.PointsPerDegree;
-            double amountx = (1d / rasterSize) / 4d;
-            double amounty = (1d / rasterSize) / 4d;
-
-            // Regenerates all metadata            
-            //_rasterService.GenerateDirectoryMetadata(dataSet
-            //                                        , force: true
-            //                                        , deleteOnError: false
-            //                                        , maxDegreeOfParallelism: 1);
-            await _elevationService.DownloadMissingFilesAsync(dataSet, lat, lon);
-            var tiles = await _rasterService.GenerateReportForLocationAsync(dataSet, lat, lon);
-            Assert.True(tiles.Count == 4);
-            Assert.Single(tiles, t => string.Equals(Path.GetFileName(t.LocalName), rasterSouthWestName, StringComparison.OrdinalIgnoreCase));
-            Assert.Single(tiles, t => string.Equals(Path.GetFileName(t.LocalName), rasterSouthEastName, StringComparison.OrdinalIgnoreCase));
-            Assert.Single(tiles, t => string.Equals(Path.GetFileName(t.LocalName), rasterNorthWestName, StringComparison.OrdinalIgnoreCase));
-            Assert.Single(tiles, t => string.Equals(Path.GetFileName(t.LocalName), rasterNorthEastName, StringComparison.OrdinalIgnoreCase));
-
-            if (dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell)
-            {
-                using (var rasterNW = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterNorthWestName, Path.GetFileName(t.LocalName))).LocalName, fileType))
-                using (var rasterNE = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterNorthEastName, Path.GetFileName(t.LocalName))).LocalName, fileType))
-                using (var rasterSW = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterSouthWestName, Path.GetFileName(t.LocalName))).LocalName, fileType))
-                using (var rasterSE = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterSouthEastName, Path.GetFileName(t.LocalName))).LocalName, fileType))
-                {
-                    var elevNW = rasterNW.GetElevationAtPoint(rasterNW.ParseMetaData(dataSet.FileFormat), rasterSize - 1, rasterSize - 1);
-                    var elevNE = rasterNE.GetElevationAtPoint(rasterNE.ParseMetaData(dataSet.FileFormat), 0, rasterSize - 1);
-                    var elevSW = rasterSW.GetElevationAtPoint(rasterSW.ParseMetaData(dataSet.FileFormat), rasterSize - 1, 0);
-                    var elevSE = rasterSE.GetElevationAtPoint(rasterSE.ParseMetaData(dataSet.FileFormat), 0, 0);
-
-                    BilinearInterpolator interpolator = new BilinearInterpolator();
-                    var elev0 = interpolator.Interpolate(elevSW, elevSE, elevNW, elevNE, 0.25, 0.25);
-                    var apiElev0 = _elevationService.GetPointElevation(lat + amounty, lon - amountx, dataSet);
-                    Assert.True((elev0 - apiElev0.Elevation.Value) < double.Epsilon);
-
-                    var elev1 = interpolator.Interpolate(elevSW, elevSE, elevNW, elevNE, 0.75, 0.25);
-                    var apiElev1 = _elevationService.GetPointElevation(lat + amounty, lon + amountx, dataSet);
-                    Assert.True((elev1 - apiElev1.Elevation.Value) < double.Epsilon);
-
-                    var elev2 = interpolator.Interpolate(elevSW, elevSE, elevNW, elevNE, 0.25, 0.75);
-                    var apiElev2 = _elevationService.GetPointElevation(lat - amounty, lon - amountx, dataSet);
-                    Assert.True((elev2 - apiElev2.Elevation.Value) < double.Epsilon);
-
-                    var elev3 = interpolator.Interpolate(elevSW, elevSE, elevNW, elevNE, 0.75, 0.75);
-                    var apiElev3 = _elevationService.GetPointElevation(lat - amounty, lon + amountx, dataSet);
-                    Assert.True((elev3 - apiElev3.Elevation.Value) < double.Epsilon);
-                }
-            }
-            else
-            {
-                using (var rasterNW = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterNorthWestName, Path.GetFileName(t.LocalName))).LocalName, fileType))
-                using (var rasterNE = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterNorthEastName, Path.GetFileName(t.LocalName))).LocalName, fileType))
-                using (var rasterSW = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterSouthWestName, Path.GetFileName(t.LocalName))).LocalName, fileType))
-                using (var rasterSE = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterSouthEastName, Path.GetFileName(t.LocalName))).LocalName, fileType))
-                {
-                    // Northen row, west to east
-                    var elevN0 = rasterNW.GetElevationAtPoint(rasterNW.ParseMetaData(dataSet.FileFormat), rasterSize - 1, rasterSize - 1);
-                    var elevN1 = rasterNW.GetElevationAtPoint(rasterNW.ParseMetaData(dataSet.FileFormat), rasterSize, rasterSize - 1);
-                    var elevN2 = rasterNE.GetElevationAtPoint(rasterNE.ParseMetaData(dataSet.FileFormat), 1, rasterSize - 1);
-
-                    // middle row, west to east
-                    var elevM0 = rasterNW.GetElevationAtPoint(rasterNW.ParseMetaData(dataSet.FileFormat), rasterSize - 1, rasterSize);
-                    var elevM1 = rasterNW.GetElevationAtPoint(rasterNW.ParseMetaData(dataSet.FileFormat), rasterSize, rasterSize);
-                    var elevM2 = rasterNE.GetElevationAtPoint(rasterNE.ParseMetaData(dataSet.FileFormat), 1, rasterSize);
-
-                    // Sourthen row, west to east
-                    var elevS0 = rasterSW.GetElevationAtPoint(rasterSW.ParseMetaData(dataSet.FileFormat), rasterSize - 1, 1);
-                    var elevS1 = rasterSW.GetElevationAtPoint(rasterSW.ParseMetaData(dataSet.FileFormat), rasterSize, 1);
-                    var elevS2 = rasterSE.GetElevationAtPoint(rasterSE.ParseMetaData(dataSet.FileFormat), 1, 1);
-
-                    BilinearInterpolator interpolator = new BilinearInterpolator();
-                    var elev0 = interpolator.Interpolate(elevM0, elevM1, elevN0, elevN1, 0.75, 0.75);
-                    var apiElev0 = _elevationService.GetPointElevation(lat + amounty, lon - amountx, dataSet);
-                    Assert.True((elev0 - apiElev0.Elevation.Value) < double.Epsilon);
-
-                    var elev1 = interpolator.Interpolate(elevM1, elevM2, elevN1, elevN2, 0.25, 0.75);
-                    var apiElev1 = _elevationService.GetPointElevation(lat + amounty, lon + amountx, dataSet);
-                    Assert.True((elev1 - apiElev1.Elevation.Value) < double.Epsilon);
-
-                    var elev2 = interpolator.Interpolate(elevS0, elevS1, elevM0, elevM1, 0.75, 0.25);
-                    var apiElev2 = _elevationService.GetPointElevation(lat - amounty, lon - amountx, dataSet);
-                    Assert.True((elev2 - apiElev2.Elevation.Value) < double.Epsilon);
-
-                    var elev3 = interpolator.Interpolate(elevS1, elevS2, elevM1, elevM2, 0.25, 0.25);
-                    var apiElev3 = _elevationService.GetPointElevation(lat - amounty, lon + amountx, dataSet);
-                    Assert.True((elev3 - apiElev3.Elevation.Value) < double.Epsilon);
-                }
-
-            }
-        }
-
-        //    // Regenerates all metadata            
-        //    //_rasterService.GenerateDirectoryMetadata(dataSet
-        //    //                                        , force: true
-        //    //                                        , deleteOnError: false
-        //    //                                        , maxDegreeOfParallelism: 1);
-        //    await _elevationService.DownloadMissingFilesAsync(dataSet, lat, lon);
-        //    var tiles = await _rasterService.GenerateReportForLocationAsync(dataSet, lat, lon);
-        //    Assert.True(tiles.Count == 4);
-        //    Assert.Single(tiles, t => string.Equals(Path.GetFileName(t.LocalName), rasterSouthWestName, StringComparison.OrdinalIgnoreCase));
-        //    Assert.Single(tiles, t => string.Equals(Path.GetFileName(t.LocalName), rasterSouthEastName, StringComparison.OrdinalIgnoreCase));
-        //    Assert.Single(tiles, t => string.Equals(Path.GetFileName(t.LocalName), rasterNorthWestName, StringComparison.OrdinalIgnoreCase));
-        //    Assert.Single(tiles, t => string.Equals(Path.GetFileName(t.LocalName), rasterNorthEastName, StringComparison.OrdinalIgnoreCase));
-
-        //    if (dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell)
-        //    {
-        //        using (var rasterNW = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterNorthWestName, Path.GetFileName(t.LocalName))).LocalName, fileType))
-        //        using (var rasterNE = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterNorthEastName, Path.GetFileName(t.LocalName))).LocalName, fileType))
-        //        using (var rasterSW = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterSouthWestName, Path.GetFileName(t.LocalName))).LocalName, fileType))
-        //        using (var rasterSE = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterSouthEastName, Path.GetFileName(t.LocalName))).LocalName, fileType))
-        //        {
-        //            var elevNW = rasterNW.GetElevationAtPoint(rasterNW.ParseMetaData(dataSet.FileFormat), rasterSize - 1, rasterSize - 1);
-        //            var elevNE = rasterNE.GetElevationAtPoint(rasterNE.ParseMetaData(dataSet.FileFormat), 0, rasterSize - 1);
-        //            var elevSW = rasterSW.GetElevationAtPoint(rasterSW.ParseMetaData(dataSet.FileFormat), rasterSize - 1, 0);
-        //            var elevSE = rasterSE.GetElevationAtPoint(rasterSE.ParseMetaData(dataSet.FileFormat), 0, 0);
-
-        //            BilinearInterpolator interpolator = new BilinearInterpolator();
-        //            var elev0 = interpolator.Interpolate(elevSW, elevSE, elevNW, elevNE, 0.25, 0.25);
-        //            var apiElev0 = _elevationService.GetPointElevation(lat + amounty, lon - amountx, dataSet);
-        //            Assert.True((elev0 - apiElev0.Elevation.Value) < double.Epsilon);
-
-        //            var elev1 = interpolator.Interpolate(elevSW, elevSE, elevNW, elevNE, 0.75, 0.25);
-        //            var apiElev1 = _elevationService.GetPointElevation(lat + amounty, lon + amountx, dataSet);
-        //            Assert.True((elev1 - apiElev1.Elevation.Value) < double.Epsilon);
-
-        //            var elev2 = interpolator.Interpolate(elevSW, elevSE, elevNW, elevNE, 0.25, 0.75);
-        //            var apiElev2 = _elevationService.GetPointElevation(lat - amounty, lon - amountx, dataSet);
-        //            Assert.True((elev2 - apiElev2.Elevation.Value) < double.Epsilon);
-
-        //            var elev3 = interpolator.Interpolate(elevSW, elevSE, elevNW, elevNE, 0.75, 0.75);
-        //            var apiElev3 = _elevationService.GetPointElevation(lat - amounty, lon + amountx, dataSet);
-        //            Assert.True((elev3 - apiElev3.Elevation.Value) < double.Epsilon);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        using (var rasterNW = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterNorthWestName, Path.GetFileName(t.LocalName))).LocalName, fileType))
-        //        using (var rasterNE = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterNorthEastName, Path.GetFileName(t.LocalName))).LocalName, fileType))
-        //        using (var rasterSW = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterSouthWestName, Path.GetFileName(t.LocalName))).LocalName, fileType))
-        //        using (var rasterSE = _rasterService.OpenFile(tiles.First(t => string.Equals(rasterSouthEastName, Path.GetFileName(t.LocalName))).LocalName, fileType))
-        //        {
-        //            // Northen row, west to east
-        //            var elevN0 = rasterNW.GetElevationAtPoint(rasterNW.ParseMetaData(dataSet.FileFormat), rasterSize - 1, rasterSize - 1);
-        //            var elevN1 = rasterNW.GetElevationAtPoint(rasterNW.ParseMetaData(dataSet.FileFormat), rasterSize, rasterSize - 1);
-        //            var elevN2 = rasterNE.GetElevationAtPoint(rasterNE.ParseMetaData(dataSet.FileFormat), 1, rasterSize - 1);
-
-        //            // middle row, west to east
-        //            var elevM0 = rasterNW.GetElevationAtPoint(rasterNW.ParseMetaData(dataSet.FileFormat), rasterSize - 1, rasterSize);
-        //            var elevM1 = rasterNW.GetElevationAtPoint(rasterNW.ParseMetaData(dataSet.FileFormat), rasterSize, rasterSize);
-        //            var elevM2 = rasterNE.GetElevationAtPoint(rasterNE.ParseMetaData(dataSet.FileFormat), 1, rasterSize);
-
-        //            // Sourthen row, west to east
-        //            var elevS0 = rasterSW.GetElevationAtPoint(rasterSW.ParseMetaData(dataSet.FileFormat), rasterSize - 1, 1);
-        //            var elevS1 = rasterSW.GetElevationAtPoint(rasterSW.ParseMetaData(dataSet.FileFormat), rasterSize, 1);
-        //            var elevS2 = rasterSE.GetElevationAtPoint(rasterSE.ParseMetaData(dataSet.FileFormat), 1, 1);
-
-        //            BilinearInterpolator interpolator = new BilinearInterpolator();
-        //            var elev0 = interpolator.Interpolate(elevM0, elevM1, elevN0, elevN1, 0.75, 0.75);
-        //            var apiElev0 = _elevationService.GetPointElevation(lat + amounty, lon - amountx, dataSet);
-        //            Assert.True((elev0 - apiElev0.Elevation.Value) < double.Epsilon);
-
-        //            var elev1 = interpolator.Interpolate(elevM1, elevM2, elevN1, elevN2, 0.25, 0.75);
-        //            var apiElev1 = _elevationService.GetPointElevation(lat + amounty, lon + amountx, dataSet);
-        //            Assert.True((elev1 - apiElev1.Elevation.Value) < double.Epsilon);
-
-        //            var elev2 = interpolator.Interpolate(elevS0, elevS1, elevM0, elevM1, 0.75, 0.25);
-        //            var apiElev2 = _elevationService.GetPointElevation(lat - amounty, lon - amountx, dataSet);
-        //            Assert.True((elev2 - apiElev2.Elevation.Value) < double.Epsilon);
-
-        //            var elev3 = interpolator.Interpolate(elevS1, elevS2, elevM1, elevM2, 0.25, 0.25);
-        //            var apiElev3 = _elevationService.GetPointElevation(lat - amounty, lon + amountx, dataSet);
-        //            Assert.True((elev3 - apiElev3.Elevation.Value) < double.Epsilon);
-        //        }
-
-        //    }
-        //}
-
-
-        [Theory()]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3))]
-        public async Task BoudingBoxConservationTest(string datasetName)
-        {
-
-            var dataset = DEMDataSet.RegisteredDatasets.First(d => d.Name == datasetName);
-
-            string bboxWKT = "POLYGON((5.54888 43.519525, 5.61209 43.519525, 5.61209 43.565225, 5.54888 43.565225, 5.54888 43.519525))";
-
-
-            BoundingBox bbox = GeometryService.GetBoundingBox(bboxWKT);
-
-            Assert.NotNull(bbox);
-            Assert.Equal(bboxWKT, bbox.WKT);
-
-            HeightMap heightMap = await _elevationService.GetHeightMapAsync(bbox, dataset);
-
-            heightMap = heightMap.ReprojectGeodeticToCartesian();
-            Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
-
-            heightMap = heightMap.ZScale(2.5f);
-            Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
-
-            heightMap = heightMap.CenterOnOrigin();
-            Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
-
-            heightMap = heightMap.FitInto(30f);
-            Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
+            var elev3 = interpolator.Interpolate(elevS1, elevS2, elevM1, elevM2, 0.25, 0.25);
+            var apiElev3 = _elevationService.GetPointElevation(lat - amounty, lon + amountx, dataSet);
+            Assert.True((elev3 - apiElev3.Elevation.Value) < double.Epsilon);
 
         }
+    }
+
+    [Theory()]
+    [InlineData(nameof(DEMDataSet.SRTM_GL3))]
+    public async Task BoudingBoxConservationTest(string datasetName)
+    {
+
+        var dataset = DEMDataSet.RegisteredDatasets.First(d => d.Name == datasetName);
+
+        string bboxWKT = "POLYGON((5.54888 43.519525, 5.61209 43.519525, 5.61209 43.565225, 5.54888 43.565225, 5.54888 43.519525))";
+
+
+        BoundingBox bbox = GeometryService.GetBoundingBox(bboxWKT);
+
+        Assert.NotNull(bbox);
+        Assert.Equal(bboxWKT, bbox.WKT);
+
+        HeightMap heightMap = await _elevationService.GetHeightMapAsync(bbox, dataset);
+
+        heightMap = heightMap.ReprojectGeodeticToCartesian();
+        Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
+
+        heightMap = heightMap.ZScale(2.5f);
+        Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
+
+        heightMap = heightMap.CenterOnOrigin();
+        Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
+
+        heightMap = heightMap.FitInto(30f);
+        Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
+
     }
 }

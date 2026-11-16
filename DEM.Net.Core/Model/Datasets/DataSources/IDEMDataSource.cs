@@ -23,12 +23,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-namespace DEM.Net.Core.Datasets
+namespace DEM.Net.Core.Datasets;
+
+public interface IDEMDataSource
 {
-    public interface IDEMDataSource
-    {
 		string IndexFilePath { get; }
-        
-        DEMDataSourceType DataSourceType { get; }
-    }
+    
+    DEMDataSourceType DataSourceType { get; }
 }

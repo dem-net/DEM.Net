@@ -23,153 +23,452 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using BitMiracle.LibTiff.Classic;
-using DEM.Net.Core.IO;
-using DEM.Net.Core;
 using System;
-using System.Diagnostics;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using BitMiracle.LibTiff.Classic;
+using DEM.Net.Core;
+using DEM.Net.Core.IO;
 
-namespace DEM.Net.Core
+namespace DEM.Net.Core;
+
+
+public class GeoTiff : IRasterFile
 {
+    Tiff _tiff;
+    string _tiffPath;
+    //static NoLogTiffErrorHandler _errorHandler = new NoLogTiffErrorHandler();
+    TraceTiffErrorHandler _traceLogHandler = new();
+    Dictionary<int, byte[]> tilesCache;
 
-    public class GeoTiff : IRasterFile
+    internal Tiff TiffFile
     {
-        Tiff _tiff;
-        string _tiffPath;
-        //static NoLogTiffErrorHandler _errorHandler = new NoLogTiffErrorHandler();
-        TraceTiffErrorHandler _traceLogHandler = new TraceTiffErrorHandler();
-        Dictionary<int, byte[]> tilesCache;
+        get { return _tiff; }
+    }
 
-        internal Tiff TiffFile
+    public string FilePath
+    {
+        get { return _tiffPath; }
+    }
+    public GeoTiff(string tiffPath)
+    {
+        if (!File.Exists(tiffPath))
+            throw new FileNotFoundException($"File {tiffPath} does not exist", tiffPath);
+
+        _tiffPath = tiffPath;
+        Tiff.SetErrorHandler(_traceLogHandler);
+        _tiff = Tiff.Open(tiffPath, "r");
+
+        if (_tiff == null)
+            throw new IOException($"File {tiffPath} cannot be opened");
+    }
+
+
+    int tileWidth = 0;
+
+    internal int TileWidth
+    {
+        get
         {
-            get { return _tiff; }
-        }
-
-        public string FilePath
-        {
-            get { return _tiffPath; }
-        }
-        public GeoTiff(string tiffPath)
-        {
-            if (!File.Exists(tiffPath))
-                throw new Exception($"File {tiffPath} does not exists !");
-
-            _tiffPath = tiffPath;
-            Tiff.SetErrorHandler(_traceLogHandler);
-            _tiff = Tiff.Open(tiffPath, "r");
-
-            if (_tiff == null)
-                throw new Exception($"File {tiffPath} cannot be opened !");
-        }
-
-        #region Tile info
-
-        int tileWidth = 0;
-
-        internal int TileWidth
-        {
-            get
+            if (tileWidth == 0)
             {
-                if (tileWidth == 0)
-                {
-                    tileWidth = TiffFile.GetField(TiffTag.TILEWIDTH)[0].ToInt();
-                }
+                tileWidth = TiffFile.GetField(TiffTag.TILEWIDTH)[0].ToInt();
+            }
 
-                return tileWidth;
+            return tileWidth;
+        }
+    }
+    int tileHeight = 0;
+
+    internal int TileHeight
+    {
+        get
+        {
+            if (tileHeight == 0)
+            {
+                tileHeight = TiffFile.GetField(TiffTag.TILELENGTH)[0].ToInt();
+            }
+
+            return tileHeight;
+        }
+    }
+    int tileSize = 0;
+
+    internal int TileSize
+    {
+        get
+        {
+            if (tileSize == 0)
+            {
+                tileSize = TiffFile.TileSize();
+            }
+
+            return tileSize;
+        }
+    }
+
+    bool isTiledSet = false;
+    bool isTiled;
+    internal bool IsTiled
+    {
+        get
+        {
+            if (isTiledSet == false)
+            {
+                isTiled = TiffFile.IsTiled();
+                isTiledSet = true;
+            }
+
+            return isTiled;
+        }
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _tiff?.Dispose();
+            if (tilesCache != null)
+            {
+                tilesCache.Clear();
+                tilesCache = null;
             }
         }
-        int tileHeight = 0;
+    }
 
-        internal int TileHeight
+    ~GeoTiff()
+    {
+        Dispose(false);
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    public float GetElevationAtPoint(FileMetadata metadata, int x, int y)
+    {
+        float heightValue = 0;
+        try
         {
-            get
-            {
-                if (tileHeight == 0)
-                {
-                    tileHeight = TiffFile.GetField(TiffTag.TILELENGTH)[0].ToInt();
-                }
 
-                return tileHeight;
+            if (this.IsTiled)
+            {
+
+                // TODO store in metadata
+                int tileWidth = this.TileWidth;
+                int tileHeight = this.TileHeight;
+                int tileSize = this.TileSize;
+                byte[] buffer;
+
+                var tileX = (x / tileWidth) * tileWidth;
+                var tileY = (y / tileHeight) * tileHeight;
+
+                if (tilesCache == null) tilesCache = [];
+                var tileKey = (x / tileWidth) + (y / tileHeight) * (metadata.Width / tileWidth + 1);
+                if (!tilesCache.TryGetValue(tileKey, out buffer))
+                {
+                    buffer = new byte[tileSize];
+                    TiffFile.ReadTile(buffer, 0, tileX, tileY, 0, 0);
+                    tilesCache.Add(tileKey, buffer);
+                }
+                var offset = x - tileX + (y - tileY) * tileWidth; // row stride of a tile is its width
+                heightValue = GetElevationAtPoint(metadata, offset, buffer);
+            }
+            else
+            {
+                // metadata.BitsPerSample
+                // When 16 we have 2 bytes per sample
+                // When 32 we have 4 bytes per sample
+                heightValue = GetElevationAtPoint(metadata, x, GetScanline(metadata, y));
             }
         }
-        int tileSize = 0;
-
-        internal int TileSize
+        catch (Exception e)
         {
-            get
-            {
-                if (tileSize == 0)
-                {
-                    tileSize = TiffFile.TileSize();
-                }
+            throw new InvalidDataException($"Error in ParseGeoDataAtPoint: {e.Message}", e);
+        }
+        return heightValue;
+    }
 
-                return tileSize;
+    // The two last decoded rows: interpolating a point reads 2 rows, consecutive points mostly the same ones.
+    // Each row read decodes (and for compressed files decompresses) a whole scanline.
+    private int _row0 = -1, _row1 = -1;
+    private byte[] _scanline0, _scanline1;
+
+    private byte[] GetScanline(FileMetadata metadata, int y)
+    {
+        if (y == _row0) return _scanline0;
+        if (y == _row1)
+        {
+            (_row0, _row1) = (_row1, _row0);
+            (_scanline0, _scanline1) = (_scanline1, _scanline0);
+            return _scanline0;
+        }
+
+        // reuse the least recently used buffer
+        byte[] buffer = _scanline1 is { } old && old.Length == metadata.ScanlineSize ? old : new byte[metadata.ScanlineSize];
+        TiffFile.ReadScanline(buffer, y);
+        (_row1, _scanline1) = (_row0, _scanline0);
+        (_row0, _scanline0) = (y, buffer);
+        return buffer;
+    }
+
+    public float GetElevationAtPoint(FileMetadata metadata, int offset, byte[] buffer)
+    {
+        float heightValue = 0;
+        try
+        {
+            heightValue = metadata.SampleFormat switch
+            {
+                RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(buffer, offset * metadata.BitsPerSample / 8),
+                RasterSampleFormat.INTEGER => BitConverter.ToInt16(buffer, offset * metadata.BitsPerSample / 8),
+                RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(buffer, offset * metadata.BitsPerSample / 8),
+                _ => throw new NotSupportedException("Sample format unsupported."),
+            };
+            if (heightValue > 32768)
+            {
+                heightValue = metadata.NoDataValueFloat;
             }
         }
-
-        bool isTiledSet = false;
-        bool isTiled;
-        internal bool IsTiled
+        catch (Exception e)
         {
-            get
-            {
-                if (isTiledSet == false)
-                {
-                    isTiled = TiffFile.IsTiled();
-                    isTiledSet = true;
-                }
+            throw new InvalidDataException($"Error in ParseGeoDataAtPoint: {e.Message}", e);
+        }
 
-                return isTiled;
+        return heightValue;
+    }
+    public float GetElevationAtPointRef(FileMetadata metadata, int offset, ref byte[] buffer)
+    {
+        float heightValue = 0;
+        try
+        {
+            heightValue = metadata.SampleFormat switch
+            {
+                RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(buffer, offset * metadata.BitsPerSample / 8),
+                RasterSampleFormat.INTEGER => BitConverter.ToInt16(buffer, offset * metadata.BitsPerSample / 8),
+                RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(buffer, offset * metadata.BitsPerSample / 8),
+                _ => throw new NotSupportedException("Sample format unsupported."),
+            };
+            if (heightValue > 32768)
+            {
+                heightValue = metadata.NoDataValueFloat;
             }
         }
-        #endregion
-
-        protected virtual void Dispose(bool disposing)
+        catch (Exception e)
         {
-            if (disposing)
+            throw new InvalidDataException($"Error in ParseGeoDataAtPoint: {e.Message}", e);
+        }
+
+        return heightValue;
+    }
+
+    private const int GeoKeyDirectoryTag = 34735;
+    private const int GTRasterTypeGeoKey = 1025;
+    private const int RasterPixelIsArea = 1;
+    private const int RasterPixelIsPoint = 2;
+
+    /// <summary>
+    /// GTRasterTypeGeoKey value (1 = PixelIsArea, 2 = PixelIsPoint), or null when the file does not state it.
+    /// </summary>
+    private int? GetRasterTypeGeoKey()
+    {
+        FieldValue[] directory = TiffFile.GetField((TiffTag)GeoKeyDirectoryTag);
+        if (directory == null || directory.Length < 2) return null;
+
+        // header (version, revision, minor revision, number of keys), then 4 shorts per key:
+        // key id, tag location (0 = value stored in place), count, value
+        short[] keys = directory[1].ToShortArray();
+        if (keys == null || keys.Length < 4) return null;
+        int numKeys = keys[3];
+        for (int i = 0; i < numKeys && 4 + i * 4 + 3 < keys.Length; i++)
+        {
+            int k = 4 + i * 4;
+            if (keys[k] == GTRasterTypeGeoKey && keys[k + 1] == 0)
+                return keys[k + 3];
+        }
+        return null;
+    }
+
+    public FileMetadata ParseMetaData(DEMFileDefinition format)
+    {
+        FileMetadata metadata = new FileMetadata(FilePath, format);
+
+        ///
+        metadata.Height = TiffFile.GetField(TiffTag.IMAGELENGTH)[0].ToInt();
+        metadata.Width = TiffFile.GetField(TiffTag.IMAGEWIDTH)[0].ToInt();
+
+        ///
+        FieldValue[] modelPixelScaleTag = TiffFile.GetField(TiffTag.GEOTIFF_MODELPIXELSCALETAG);
+        FieldValue[] modelTiepointTag = TiffFile.GetField(TiffTag.GEOTIFF_MODELTIEPOINTTAG);
+
+        byte[] modelPixelScale = modelPixelScaleTag[1].GetBytes();
+        double pixelSizeX = BitConverter.ToDouble(modelPixelScale, 0);
+        double pixelSizeY = BitConverter.ToDouble(modelPixelScale, 8) * -1;
+        metadata.pixelSizeX = pixelSizeX;
+        metadata.pixelSizeY = pixelSizeY;
+        metadata.PixelScaleX = BitConverter.ToDouble(modelPixelScale, 0);
+        metadata.PixelScaleY = BitConverter.ToDouble(modelPixelScale, 8);
+
+        // Ignores first set of model points (3 bytes) and assumes they are 0's...
+        byte[] modelTransformation = modelTiepointTag[1].GetBytes();
+        metadata.DataStartLon = BitConverter.ToDouble(modelTransformation, 24);
+        metadata.DataStartLat = BitConverter.ToDouble(modelTransformation, 32);
+
+        // The tie point is a pixel corner (PixelIsArea) or a pixel center (PixelIsPoint), whatever the dataset
+        // registration says. Registration modes expect a corner (Cell) or a center (Grid): normalize the tie point
+        // when the file explicitly states the other convention (e.g. FABDEM v1.2 COGs are PixelIsPoint without overlap).
+        switch (GetRasterTypeGeoKey())
+        {
+            case RasterPixelIsPoint when format.Registration == DEMFileRegistrationMode.Cell:
+                metadata.DataStartLon -= pixelSizeX / 2d;
+                metadata.DataStartLat -= pixelSizeY / 2d; // pixelSizeY < 0: corner is north of the first center
+                break;
+            case RasterPixelIsArea when format.Registration == DEMFileRegistrationMode.Grid:
+                metadata.DataStartLon += pixelSizeX / 2d;
+                metadata.DataStartLat += pixelSizeY / 2d;
+                break;
+        }
+
+        if (format.Registration == DEMFileRegistrationMode.Grid)
+        {
+            metadata.DataEndLon = metadata.DataStartLon + (metadata.Width - 1) * pixelSizeX;
+            metadata.DataEndLat = metadata.DataStartLat + (metadata.Height - 1) * pixelSizeY;
+
+            if (metadata.DataStartLon > metadata.DataEndLon)
             {
-                _tiff?.Dispose();
-                if (tilesCache != null)
-                {
-                    tilesCache.Clear();
-                    tilesCache = null;
-                }
+                double temp = metadata.DataStartLon;
+                metadata.DataStartLon = metadata.DataEndLon;
+                metadata.DataEndLon = temp;
             }
-        }
-
-        ~GeoTiff()
-        {
-            Dispose(false);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        public float GetElevationAtPoint(FileMetadata metadata, int x, int y)
-        {
-            float heightValue = 0;
-            try
+            if (metadata.DataStartLat > metadata.DataEndLat)
             {
+                double temp = metadata.DataStartLat;
+                metadata.DataStartLat = metadata.DataEndLat;
+                metadata.DataEndLat = temp;
+            }
 
-                if (this.IsTiled)
+            metadata.PhysicalStartLat = Math.Round(metadata.DataStartLat - (metadata.PixelScaleY / 2.0), 10);
+            metadata.PhysicalStartLon = Math.Round(metadata.DataStartLon - (metadata.PixelScaleY / 2.0), 10);
+            metadata.PhysicalEndLat = Math.Round(metadata.DataEndLat + (metadata.PixelScaleY / 2.0), 10);
+            metadata.PhysicalEndLon = Math.Round(metadata.DataEndLon + (metadata.PixelScaleY / 2.0), 10);
+
+        }
+        else
+        {
+            metadata.DataEndLon = metadata.DataStartLon + (metadata.Width -1) * pixelSizeX;
+            metadata.DataEndLat = metadata.DataStartLat + (metadata.Height -1)* pixelSizeY;
+
+            if (metadata.DataStartLon > metadata.DataEndLon)
+            {
+                double temp = metadata.DataStartLon;
+                metadata.DataStartLon = metadata.DataEndLon;
+                metadata.DataEndLon = temp;
+            }
+            if (metadata.DataStartLat > metadata.DataEndLat)
+            {
+                double temp = metadata.DataStartLat;
+                metadata.DataStartLat = metadata.DataEndLat;
+                metadata.DataEndLat = temp;
+            }
+
+            // Cell registration: the tie point is the outer corner of the first pixel, so Data* bounds are pixel corners
+            // (first pixel to last pixel) and the physical extent is Width x Height pixels from the tie point.
+            metadata.PhysicalStartLon = metadata.DataStartLon;
+            metadata.PhysicalEndLon = metadata.DataStartLon + metadata.Width * metadata.pixelSizeX;
+            metadata.PhysicalEndLat = metadata.DataEndLat;
+            metadata.PhysicalStartLat = metadata.DataEndLat + metadata.Height * metadata.pixelSizeY;
+        }
+        var scanline = new byte[TiffFile.ScanlineSize()];
+        metadata.ScanlineSize = TiffFile.ScanlineSize();
+
+        // Grab some raster metadata
+        metadata.BitsPerSample = TiffFile.GetField(TiffTag.BITSPERSAMPLE)[0].ToInt();
+        var sampleFormat = TiffFile.GetField(TiffTag.SAMPLEFORMAT);
+        // Add other information about the data
+        metadata.SampleFormat = sampleFormat[0].Value.ToString();
+        // TODO: Read this from tiff metadata or determine after parsing
+        metadata.NoDataValue = "-32767";
+
+        metadata.WorldUnits = "meter";
+
+        return metadata;
+    }
+    public HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = 0)
+    {
+        int yStart = 0;
+        int yEnd = 0;
+        int xStart = 0;
+        int xEnd = 0;
+        if (metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid)
+        {
+            yStart = (int)Math.Floor((bbox.yMax - metadata.PhysicalEndLat) / metadata.pixelSizeY);
+            yEnd = (int)Math.Ceiling((bbox.yMin - metadata.PhysicalEndLat) / metadata.pixelSizeY);
+            xStart = (int)Math.Floor((bbox.xMin - metadata.PhysicalStartLon) / metadata.pixelSizeX);
+            xEnd = (int)Math.Ceiling((bbox.xMax - metadata.PhysicalStartLon) / metadata.pixelSizeX);
+        }
+        else
+        {
+            yStart = (int)Math.Floor((bbox.yMax - metadata.DataEndLat) / metadata.pixelSizeY);
+            yEnd = (int)Math.Ceiling((bbox.yMin - metadata.DataEndLat) / metadata.pixelSizeY);
+            xStart = (int)Math.Floor((bbox.xMin - metadata.DataStartLon) / metadata.pixelSizeX);
+            xEnd = (int)Math.Ceiling((bbox.xMax - metadata.DataStartLon) / metadata.pixelSizeX);
+        }
+
+
+        // Tiled grid-registered geotiffs like aster have overlapping 1px borders.
+        // Cell-registered tiles (FABDEM COGs, swissALTI3D) partition space: trimming would leave a 1px gap at each seam.
+        int overlappingPixel = this.IsTiled && metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid ? 1 : 0;
+
+        xStart = Math.Max(0, xStart);
+        xEnd = Math.Min(metadata.Width - 1, xEnd) - overlappingPixel;
+        yStart = Math.Max(0, yStart);
+        yEnd = Math.Min(metadata.Height - 1, yEnd) - overlappingPixel;
+
+        HeightMap heightMap = new HeightMap(xEnd - xStart + 1, yEnd - yStart + 1);
+        heightMap.Count = heightMap.Width * heightMap.Height;
+        var coords = new GeoPoint[heightMap.Count];
+        int coordIndex = 0;
+        heightMap.BoundingBox = new BoundingBox(0, 0, 0, 0);
+
+        if (this.IsTiled)
+        {
+            // Tiled rasters are composed of multiple "sub" images
+            // TODO store in metadata
+            int tileWidth = this.TileWidth;
+            int tileHeight = this.TileHeight;
+            int tileSize = this.TileSize;
+            byte[] buffer;
+
+            // Cell registration: Data* bounds are pixel corners, sample at pixel centers (same as the scanline path below)
+            bool isCell = metadata.FileFormat.Registration == DEMFileRegistrationMode.Cell;
+            double endLat = isCell ? metadata.DataEndLat + metadata.pixelSizeY / 2d : metadata.DataEndLat;
+            double startLon = isCell ? metadata.DataStartLon + metadata.pixelSizeX / 2d : metadata.DataStartLon;
+
+            for (int y = yStart; y <= yEnd; y++)
+            {
+                double latitude = endLat + (metadata.pixelSizeY * y);
+                // bounding box
+                if (y == yStart)
                 {
+                    heightMap.BoundingBox.yMax = latitude;
+                    heightMap.BoundingBox.xMin = startLon + (metadata.pixelSizeX * xStart);
+                    heightMap.BoundingBox.xMax = startLon + (metadata.pixelSizeX * xEnd);
+                }
+                if (y == yEnd)
+                {
+                    heightMap.BoundingBox.yMin = latitude;
+                }
 
-                    // TODO store in metadata
-                    int tileWidth = this.TileWidth;
-                    int tileHeight = this.TileHeight;
-                    int tileSize = this.TileSize;
-                    byte[] buffer;
-
+                for (int x = xStart; x <= xEnd; x++)
+                {
+                    double longitude = startLon + (metadata.pixelSizeX * x);
                     var tileX = (x / tileWidth) * tileWidth;
                     var tileY = (y / tileHeight) * tileHeight;
 
-                    if (tilesCache == null) tilesCache = new Dictionary<int, byte[]>();
+                    if (tilesCache == null) tilesCache = [];
                     var tileKey = (x / tileWidth) + (y / tileHeight) * (metadata.Width / tileWidth + 1);
                     if (!tilesCache.TryGetValue(tileKey, out buffer))
                     {
@@ -178,468 +477,137 @@ namespace DEM.Net.Core
                         tilesCache.Add(tileKey, buffer);
                     }
                     var offset = x - tileX + (y - tileY) * tileWidth; // row stride of a tile is its width
-                    heightValue = GetElevationAtPoint(metadata, offset, buffer);
-                }
-                else
-                {
-                    // metadata.BitsPerSample
-                    // When 16 we have 2 bytes per sample
-                    // When 32 we have 4 bytes per sample
-                    heightValue = GetElevationAtPoint(metadata, x, GetScanline(metadata, y));
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"Error in ParseGeoDataAtPoint: {e.Message}");
-            }
-            return heightValue;
-        }
-
-        // The two last decoded rows: interpolating a point reads 2 rows, consecutive points mostly the same ones.
-        // Each row read decodes (and for compressed files decompresses) a whole scanline.
-        private int _row0 = -1, _row1 = -1;
-        private byte[] _scanline0, _scanline1;
-
-        private byte[] GetScanline(FileMetadata metadata, int y)
-        {
-            if (y == _row0) return _scanline0;
-            if (y == _row1)
-            {
-                (_row0, _row1) = (_row1, _row0);
-                (_scanline0, _scanline1) = (_scanline1, _scanline0);
-                return _scanline0;
-            }
-
-            // reuse the least recently used buffer
-            byte[] buffer = _scanline1 is { } old && old.Length == metadata.ScanlineSize ? old : new byte[metadata.ScanlineSize];
-            TiffFile.ReadScanline(buffer, y);
-            (_row1, _scanline1) = (_row0, _scanline0);
-            (_row0, _scanline0) = (y, buffer);
-            return buffer;
-        }
-
-        public float GetElevationAtPoint(FileMetadata metadata, int offset, byte[] buffer)
-        {
-            float heightValue = 0;
-            try
-            {
-                switch (metadata.SampleFormat)
-                {
-                    case RasterSampleFormat.FLOATING_POINT:
-                        heightValue = BitConverter.ToSingle(buffer, offset * metadata.BitsPerSample / 8);
-                        break;
-                    case RasterSampleFormat.INTEGER:
-                        heightValue = BitConverter.ToInt16(buffer, offset * metadata.BitsPerSample / 8);
-                        break;
-                    case RasterSampleFormat.UNSIGNED_INTEGER:
-                        heightValue = BitConverter.ToUInt16(buffer, offset * metadata.BitsPerSample / 8);
-                        break;
-                    default:
-                        throw new Exception("Sample format unsupported.");
-                }
-                if (heightValue > 32768)
-                {
-                    heightValue = metadata.NoDataValueFloat;
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"Error in ParseGeoDataAtPoint: {e.Message}");
-            }
-
-            return heightValue;
-        }
-        public float GetElevationAtPointRef(FileMetadata metadata, int offset, ref byte[] buffer)
-        {
-            float heightValue = 0;
-            try
-            {
-                switch (metadata.SampleFormat)
-                {
-                    case RasterSampleFormat.FLOATING_POINT:
-                        heightValue = BitConverter.ToSingle(buffer, offset * metadata.BitsPerSample / 8);
-                        break;
-                    case RasterSampleFormat.INTEGER:
-                        heightValue = BitConverter.ToInt16(buffer, offset * metadata.BitsPerSample / 8);
-                        break;
-                    case RasterSampleFormat.UNSIGNED_INTEGER:
-                        heightValue = BitConverter.ToUInt16(buffer, offset * metadata.BitsPerSample / 8);
-                        break;
-                    default:
-                        throw new Exception("Sample format unsupported.");
-                }
-                if (heightValue > 32768)
-                {
-                    heightValue = metadata.NoDataValueFloat;
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"Error in ParseGeoDataAtPoint: {e.Message}");
-            }
-
-            return heightValue;
-        }
-
-        private const int GeoKeyDirectoryTag = 34735;
-        private const int GTRasterTypeGeoKey = 1025;
-        private const int RasterPixelIsArea = 1;
-        private const int RasterPixelIsPoint = 2;
-
-        /// <summary>
-        /// GTRasterTypeGeoKey value (1 = PixelIsArea, 2 = PixelIsPoint), or null when the file does not state it.
-        /// </summary>
-        private int? GetRasterTypeGeoKey()
-        {
-            FieldValue[] directory = TiffFile.GetField((TiffTag)GeoKeyDirectoryTag);
-            if (directory == null || directory.Length < 2) return null;
-
-            // header (version, revision, minor revision, number of keys), then 4 shorts per key:
-            // key id, tag location (0 = value stored in place), count, value
-            short[] keys = directory[1].ToShortArray();
-            if (keys == null || keys.Length < 4) return null;
-            int numKeys = keys[3];
-            for (int i = 0; i < numKeys && 4 + i * 4 + 3 < keys.Length; i++)
-            {
-                int k = 4 + i * 4;
-                if (keys[k] == GTRasterTypeGeoKey && keys[k + 1] == 0)
-                    return keys[k + 3];
-            }
-            return null;
-        }
-
-        public FileMetadata ParseMetaData(DEMFileDefinition format)
-        {
-            FileMetadata metadata = new FileMetadata(FilePath, format);
-
-            ///
-            metadata.Height = TiffFile.GetField(TiffTag.IMAGELENGTH)[0].ToInt();
-            metadata.Width = TiffFile.GetField(TiffTag.IMAGEWIDTH)[0].ToInt();
-
-            ///
-            FieldValue[] modelPixelScaleTag = TiffFile.GetField(TiffTag.GEOTIFF_MODELPIXELSCALETAG);
-            FieldValue[] modelTiepointTag = TiffFile.GetField(TiffTag.GEOTIFF_MODELTIEPOINTTAG);
-
-            byte[] modelPixelScale = modelPixelScaleTag[1].GetBytes();
-            double pixelSizeX = BitConverter.ToDouble(modelPixelScale, 0);
-            double pixelSizeY = BitConverter.ToDouble(modelPixelScale, 8) * -1;
-            metadata.pixelSizeX = pixelSizeX;
-            metadata.pixelSizeY = pixelSizeY;
-            metadata.PixelScaleX = BitConverter.ToDouble(modelPixelScale, 0);
-            metadata.PixelScaleY = BitConverter.ToDouble(modelPixelScale, 8);
-
-            // Ignores first set of model points (3 bytes) and assumes they are 0's...
-            byte[] modelTransformation = modelTiepointTag[1].GetBytes();
-            metadata.DataStartLon = BitConverter.ToDouble(modelTransformation, 24);
-            metadata.DataStartLat = BitConverter.ToDouble(modelTransformation, 32);
-
-            // The tie point is a pixel corner (PixelIsArea) or a pixel center (PixelIsPoint), whatever the dataset
-            // registration says. Registration modes expect a corner (Cell) or a center (Grid): normalize the tie point
-            // when the file explicitly states the other convention (e.g. FABDEM v1.2 COGs are PixelIsPoint without overlap).
-            switch (GetRasterTypeGeoKey())
-            {
-                case RasterPixelIsPoint when format.Registration == DEMFileRegistrationMode.Cell:
-                    metadata.DataStartLon -= pixelSizeX / 2d;
-                    metadata.DataStartLat -= pixelSizeY / 2d; // pixelSizeY < 0: corner is north of the first center
-                    break;
-                case RasterPixelIsArea when format.Registration == DEMFileRegistrationMode.Grid:
-                    metadata.DataStartLon += pixelSizeX / 2d;
-                    metadata.DataStartLat += pixelSizeY / 2d;
-                    break;
-            }
-
-            if (format.Registration == DEMFileRegistrationMode.Grid)
-            {
-                metadata.DataEndLon = metadata.DataStartLon + (metadata.Width - 1) * pixelSizeX;
-                metadata.DataEndLat = metadata.DataStartLat + (metadata.Height - 1) * pixelSizeY;
-
-                if (metadata.DataStartLon > metadata.DataEndLon)
-                {
-                    double temp = metadata.DataStartLon;
-                    metadata.DataStartLon = metadata.DataEndLon;
-                    metadata.DataEndLon = temp;
-                }
-                if (metadata.DataStartLat > metadata.DataEndLat)
-                {
-                    double temp = metadata.DataStartLat;
-                    metadata.DataStartLat = metadata.DataEndLat;
-                    metadata.DataEndLat = temp;
-                }
-
-                metadata.PhysicalStartLat = Math.Round(metadata.DataStartLat - (metadata.PixelScaleY / 2.0), 10);
-                metadata.PhysicalStartLon = Math.Round(metadata.DataStartLon - (metadata.PixelScaleY / 2.0), 10);
-                metadata.PhysicalEndLat = Math.Round(metadata.DataEndLat + (metadata.PixelScaleY / 2.0), 10);
-                metadata.PhysicalEndLon = Math.Round(metadata.DataEndLon + (metadata.PixelScaleY / 2.0), 10);
-
-            }
-            else
-            {
-                metadata.DataEndLon = metadata.DataStartLon + (metadata.Width -1) * pixelSizeX;
-                metadata.DataEndLat = metadata.DataStartLat + (metadata.Height -1)* pixelSizeY;
-
-                if (metadata.DataStartLon > metadata.DataEndLon)
-                {
-                    double temp = metadata.DataStartLon;
-                    metadata.DataStartLon = metadata.DataEndLon;
-                    metadata.DataEndLon = temp;
-                }
-                if (metadata.DataStartLat > metadata.DataEndLat)
-                {
-                    double temp = metadata.DataStartLat;
-                    metadata.DataStartLat = metadata.DataEndLat;
-                    metadata.DataEndLat = temp;
-                }
-
-                // Cell registration: the tie point is the outer corner of the first pixel, so Data* bounds are pixel corners
-                // (first pixel to last pixel) and the physical extent is Width x Height pixels from the tie point.
-                metadata.PhysicalStartLon = metadata.DataStartLon;
-                metadata.PhysicalEndLon = metadata.DataStartLon + metadata.Width * metadata.pixelSizeX;
-                metadata.PhysicalEndLat = metadata.DataEndLat;
-                metadata.PhysicalStartLat = metadata.DataEndLat + metadata.Height * metadata.pixelSizeY;
-            }
-            var scanline = new byte[TiffFile.ScanlineSize()];
-            metadata.ScanlineSize = TiffFile.ScanlineSize();
-
-            // Grab some raster metadata
-            metadata.BitsPerSample = TiffFile.GetField(TiffTag.BITSPERSAMPLE)[0].ToInt();
-            var sampleFormat = TiffFile.GetField(TiffTag.SAMPLEFORMAT);
-            // Add other information about the data
-            metadata.SampleFormat = sampleFormat[0].Value.ToString();
-            // TODO: Read this from tiff metadata or determine after parsing
-            metadata.NoDataValue = "-32767";
-
-            metadata.WorldUnits = "meter";
-
-            return metadata;
-        }
-        public HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = 0)
-        {
-            int yStart = 0;
-            int yEnd = 0;
-            int xStart = 0;
-            int xEnd = 0;
-            if (metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid)
-            {
-                yStart = (int)Math.Floor((bbox.yMax - metadata.PhysicalEndLat) / metadata.pixelSizeY);
-                yEnd = (int)Math.Ceiling((bbox.yMin - metadata.PhysicalEndLat) / metadata.pixelSizeY);
-                xStart = (int)Math.Floor((bbox.xMin - metadata.PhysicalStartLon) / metadata.pixelSizeX);
-                xEnd = (int)Math.Ceiling((bbox.xMax - metadata.PhysicalStartLon) / metadata.pixelSizeX);
-            }
-            else
-            {
-                yStart = (int)Math.Floor((bbox.yMax - metadata.DataEndLat) / metadata.pixelSizeY);
-                yEnd = (int)Math.Ceiling((bbox.yMin - metadata.DataEndLat) / metadata.pixelSizeY);
-                xStart = (int)Math.Floor((bbox.xMin - metadata.DataStartLon) / metadata.pixelSizeX);
-                xEnd = (int)Math.Ceiling((bbox.xMax - metadata.DataStartLon) / metadata.pixelSizeX);
-            }
-
-
-            // Tiled grid-registered geotiffs like aster have overlapping 1px borders.
-            // Cell-registered tiles (FABDEM COGs, swissALTI3D) partition space: trimming would leave a 1px gap at each seam.
-            int overlappingPixel = this.IsTiled && metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid ? 1 : 0;
-
-            xStart = Math.Max(0, xStart);
-            xEnd = Math.Min(metadata.Width - 1, xEnd) - overlappingPixel;
-            yStart = Math.Max(0, yStart);
-            yEnd = Math.Min(metadata.Height - 1, yEnd) - overlappingPixel;
-
-            HeightMap heightMap = new HeightMap(xEnd - xStart + 1, yEnd - yStart + 1);
-            heightMap.Count = heightMap.Width * heightMap.Height;
-            var coords = new GeoPoint[heightMap.Count];
-            int coordIndex = 0;
-            heightMap.BoundingBox = new BoundingBox(0, 0, 0, 0);
-
-            if (this.IsTiled)
-            {
-                // Tiled rasters are composed of multiple "sub" images
-                // TODO store in metadata
-                int tileWidth = this.TileWidth;
-                int tileHeight = this.TileHeight;
-                int tileSize = this.TileSize;
-                byte[] buffer;
-
-                // Cell registration: Data* bounds are pixel corners, sample at pixel centers (same as the scanline path below)
-                bool isCell = metadata.FileFormat.Registration == DEMFileRegistrationMode.Cell;
-                double endLat = isCell ? metadata.DataEndLat + metadata.pixelSizeY / 2d : metadata.DataEndLat;
-                double startLon = isCell ? metadata.DataStartLon + metadata.pixelSizeX / 2d : metadata.DataStartLon;
-
-                for (int y = yStart; y <= yEnd; y++)
-                {
-                    double latitude = endLat + (metadata.pixelSizeY * y);
-                    // bounding box
-                    if (y == yStart)
+                    float heightValue = GetElevationAtPoint(metadata, offset, buffer);
+                    if (heightValue <= 0)
                     {
-                        heightMap.BoundingBox.yMax = latitude;
-                        heightMap.BoundingBox.xMin = startLon + (metadata.pixelSizeX * xStart);
-                        heightMap.BoundingBox.xMax = startLon + (metadata.pixelSizeX * xEnd);
-                    }
-                    if (y == yEnd)
-                    {
-                        heightMap.BoundingBox.yMin = latitude;
-                    }
-
-                    for (int x = xStart; x <= xEnd; x++)
-                    {
-                        double longitude = startLon + (metadata.pixelSizeX * x);
-                        var tileX = (x / tileWidth) * tileWidth;
-                        var tileY = (y / tileHeight) * tileHeight;
-
-                        if (tilesCache == null) tilesCache = new Dictionary<int, byte[]>();
-                        var tileKey = (x / tileWidth) + (y / tileHeight) * (metadata.Width / tileWidth + 1);
-                        if (!tilesCache.TryGetValue(tileKey, out buffer))
-                        {
-                            buffer = new byte[tileSize];
-                            TiffFile.ReadTile(buffer, 0, tileX, tileY, 0, 0);
-                            tilesCache.Add(tileKey, buffer);
-                        }
-                        var offset = x - tileX + (y - tileY) * tileWidth; // row stride of a tile is its width
-                        float heightValue = GetElevationAtPoint(metadata, offset, buffer);
-                        if (heightValue <= 0)
-                        {
-                            heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
-                            heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
-                        }
-                        else if (heightValue < 32768)
-                        {
-                            heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
-                            heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
-                        }
-
-                        if (heightValue < -15000 || heightValue > 10000)
-                            heightValue = noDataValue;
-
-                        coords[coordIndex++] = new GeoPoint(latitude, longitude, heightValue);
-
-                    }
-                }
-            }
-            else
-            {
-                // metadata.BitsPerSample
-                // When 16 we have 2 bytes per sample
-                // When 32 we have 4 bytes per sample
-                int bytesPerSample = metadata.BitsPerSample / 8;
-                byte[] byteScanline = new byte[metadata.ScanlineSize];
-                double endLat = metadata.DataEndLat + metadata.pixelSizeY / 2d;
-                double startLon = metadata.DataStartLon + metadata.pixelSizeX / 2d;
-
-                for (int y = yStart; y <= yEnd; y++)
-                {
-
-                    TiffFile.ReadScanline(byteScanline, y);
-
-                    // TODO: handle Cell registered DEMs: lat is 1/2 pixel off
-                    double latitude = endLat + (metadata.pixelSizeY * y);
-
-                    // bounding box
-                    if (y == yStart)
-                    {
-                        heightMap.BoundingBox.yMax = latitude;
-                        heightMap.BoundingBox.xMin = startLon + (metadata.pixelSizeX * xStart);
-                        heightMap.BoundingBox.xMax = startLon + (metadata.pixelSizeX * xEnd);
-                    }
-                    else if (y == yEnd)
-                    {
-                        heightMap.BoundingBox.yMin = latitude;
-                    }
-
-                    for (int x = xStart; x <= xEnd; x++)
-                    {
-                        double longitude = startLon + (metadata.pixelSizeX * x);
-
-                        float heightValue = 0;
-                        switch (metadata.SampleFormat)
-                        {
-                            case RasterSampleFormat.FLOATING_POINT:
-                                heightValue = BitConverter.ToSingle(byteScanline, x * bytesPerSample);
-                                break;
-                            case RasterSampleFormat.INTEGER:
-                                heightValue = BitConverter.ToInt16(byteScanline, x * bytesPerSample);
-                                break;
-                            case RasterSampleFormat.UNSIGNED_INTEGER:
-                                heightValue = BitConverter.ToUInt16(byteScanline, x * bytesPerSample);
-                                break;
-                            default:
-                                throw new Exception("Sample format unsupported.");
-                        }
-
-                        if (heightValue < -15000 || heightValue > 10000)
-                            heightValue = noDataValue;
                         heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
                         heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
-
-
-                        coords[coordIndex++] = new GeoPoint(latitude, longitude, heightValue);
-
                     }
+                    else if (heightValue < 32768)
+                    {
+                        heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
+                        heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
+                    }
+
+                    if (heightValue < -15000 || heightValue > 10000)
+                        heightValue = noDataValue;
+
+                    coords[coordIndex++] = new GeoPoint(latitude, longitude, heightValue);
+
                 }
-
             }
-            heightMap.BoundingBox.zMin = heightMap.Minimum;
-            heightMap.BoundingBox.zMax = heightMap.Maximum;
-            Debug.Assert(coordIndex == coords.Length);
-
-            heightMap.Coordinates = coords;
-            return heightMap;
         }
-
-        public HeightMap GetHeightMap(FileMetadata metadata)
+        else
         {
-            if (this.IsTiled)
-                throw new NotImplementedException("Whole height map with tile geoTiff is not implemented");
-
-            HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
-            heightMap.Count = heightMap.Width * heightMap.Height;
-            var coords = new GeoPoint[heightMap.Count];
-            int coordIndex = 0;
-
             // metadata.BitsPerSample
             // When 16 we have 2 bytes per sample
             // When 32 we have 4 bytes per sample
             int bytesPerSample = metadata.BitsPerSample / 8;
             byte[] byteScanline = new byte[metadata.ScanlineSize];
+            double endLat = metadata.DataEndLat + metadata.pixelSizeY / 2d;
+            double startLon = metadata.DataStartLon + metadata.pixelSizeX / 2d;
 
-            for (int y = 0; y < metadata.Height; y++)
+            for (int y = yStart; y <= yEnd; y++)
             {
+
                 TiffFile.ReadScanline(byteScanline, y);
 
-                double latitude = metadata.DataStartLat + (metadata.pixelSizeY * y);
-                for (int x = 0; x < metadata.Width; x++)
+                // TODO: handle Cell registered DEMs: lat is 1/2 pixel off
+                double latitude = endLat + (metadata.pixelSizeY * y);
+
+                // bounding box
+                if (y == yStart)
                 {
-                    double longitude = metadata.DataStartLon + (metadata.pixelSizeX * x);
+                    heightMap.BoundingBox.yMax = latitude;
+                    heightMap.BoundingBox.xMin = startLon + (metadata.pixelSizeX * xStart);
+                    heightMap.BoundingBox.xMax = startLon + (metadata.pixelSizeX * xEnd);
+                }
+                else if (y == yEnd)
+                {
+                    heightMap.BoundingBox.yMin = latitude;
+                }
+
+                for (int x = xStart; x <= xEnd; x++)
+                {
+                    double longitude = startLon + (metadata.pixelSizeX * x);
 
                     float heightValue = 0;
-                    switch (metadata.SampleFormat)
+                    heightValue = metadata.SampleFormat switch
                     {
-                        case RasterSampleFormat.FLOATING_POINT:
-                            heightValue = BitConverter.ToSingle(byteScanline, x * metadata.BitsPerSample / 8);
-                            break;
-                        case RasterSampleFormat.INTEGER:
-                            heightValue = BitConverter.ToInt16(byteScanline, x * metadata.BitsPerSample / 8);
-                            break;
-                        case RasterSampleFormat.UNSIGNED_INTEGER:
-                            heightValue = BitConverter.ToUInt16(byteScanline, x * metadata.BitsPerSample / 8);
-                            break;
-                        default:
-                            throw new Exception("Sample format unsupported.");
-                    }
-                    if (heightValue < 32768)
-                    {
-                        heightMap.Minimum = Math.Min(metadata.MinimumAltitude, heightValue);
-                        heightMap.Maximum = Math.Max(metadata.MaximumAltitude, heightValue);
-                    }
-                    else
-                    {
-                        heightValue = 0;
-                    }
+                        RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(byteScanline, x * bytesPerSample),
+                        RasterSampleFormat.INTEGER => BitConverter.ToInt16(byteScanline, x * bytesPerSample),
+                        RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(byteScanline, x * bytesPerSample),
+                        _ => throw new NotSupportedException("Sample format unsupported."),
+                    };
+                    if (heightValue < -15000 || heightValue > 10000)
+                        heightValue = noDataValue;
+                    heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
+                    heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
+
+
                     coords[coordIndex++] = new GeoPoint(latitude, longitude, heightValue);
 
                 }
             }
 
-            heightMap.Coordinates = coords;
-            return heightMap;
+        }
+        heightMap.BoundingBox.zMin = heightMap.Minimum;
+        heightMap.BoundingBox.zMax = heightMap.Maximum;
+        Debug.Assert(coordIndex == coords.Length);
+
+        heightMap.Coordinates = coords;
+        return heightMap;
+    }
+
+    public HeightMap GetHeightMap(FileMetadata metadata)
+    {
+        if (this.IsTiled)
+            throw new NotImplementedException("Whole height map with tile geoTiff is not implemented");
+
+        HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
+        heightMap.Count = heightMap.Width * heightMap.Height;
+        var coords = new GeoPoint[heightMap.Count];
+        int coordIndex = 0;
+
+        // metadata.BitsPerSample
+        // When 16 we have 2 bytes per sample
+        // When 32 we have 4 bytes per sample
+        int bytesPerSample = metadata.BitsPerSample / 8;
+        byte[] byteScanline = new byte[metadata.ScanlineSize];
+
+        for (int y = 0; y < metadata.Height; y++)
+        {
+            TiffFile.ReadScanline(byteScanline, y);
+
+            double latitude = metadata.DataStartLat + (metadata.pixelSizeY * y);
+            for (int x = 0; x < metadata.Width; x++)
+            {
+                double longitude = metadata.DataStartLon + (metadata.pixelSizeX * x);
+
+                float heightValue = 0;
+                heightValue = metadata.SampleFormat switch
+                {
+                    RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(byteScanline, x * metadata.BitsPerSample / 8),
+                    RasterSampleFormat.INTEGER => BitConverter.ToInt16(byteScanline, x * metadata.BitsPerSample / 8),
+                    RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(byteScanline, x * metadata.BitsPerSample / 8),
+                    _ => throw new NotSupportedException("Sample format unsupported."),
+                };
+                if (heightValue < 32768)
+                {
+                    heightMap.Minimum = Math.Min(metadata.MinimumAltitude, heightValue);
+                    heightMap.Maximum = Math.Max(metadata.MaximumAltitude, heightValue);
+                }
+                else
+                {
+                    heightValue = 0;
+                }
+                coords[coordIndex++] = new GeoPoint(latitude, longitude, heightValue);
+
+            }
         }
 
+        heightMap.Coordinates = coords;
+        return heightMap;
     }
+
 }

@@ -18,9 +18,7 @@ namespace DEM.Net.Core.IO.SensorLog
 
     public partial class SensorLogData
     {
-        #region Computed props
 
-        #region AccelerometerAcceleration
         private Vector3 _accelerometerAcceleration = Vector3.Zero;
 
         public Vector3 AccelerometerAcceleration
@@ -36,9 +34,7 @@ namespace DEM.Net.Core.IO.SensorLog
                 return _accelerometerAcceleration;
             }
         }
-        #endregion
 
-        #region GyroRotation
         private Vector3 _gyroRotation = Vector3.Zero;
 
         public Vector3 GyroRotation
@@ -54,9 +50,7 @@ namespace DEM.Net.Core.IO.SensorLog
                 return _gyroRotation;
             }
         }
-        #endregion
 
-        #region LocationHeading
         private Vector3 _locationHeading = Vector3.Zero;
 
         public Vector3 LocationHeading
@@ -72,9 +66,7 @@ namespace DEM.Net.Core.IO.SensorLog
                 return _locationHeading;
             }
         }
-        #endregion
 
-        #region Magnetometer
         private Vector3 _magnetometer = Vector3.Zero;
 
         public Vector3 Magnetometer
@@ -90,9 +82,7 @@ namespace DEM.Net.Core.IO.SensorLog
                 return _magnetometer;
             }
         }
-        #endregion
 
-        #region MotionGravity
         private Vector3 _motionGravity = Vector3.One;
 
         public Vector3 MotionGravity
@@ -108,9 +98,7 @@ namespace DEM.Net.Core.IO.SensorLog
                 return _motionGravity;
             }
         }
-        #endregion
 
-        #region MotionMagneticField
         private Vector3 _motionMagneticField = Vector3.Zero;
 
         public Vector3 MotionMagneticField
@@ -126,9 +114,7 @@ namespace DEM.Net.Core.IO.SensorLog
                 return _motionMagneticField;
             }
         }
-        #endregion
 
-        #region MotionQuaternion
         private Quaternion _motionQuaternion = Quaternion.Identity;
 
         public Quaternion MotionQuaternion
@@ -145,9 +131,7 @@ namespace DEM.Net.Core.IO.SensorLog
                 return _motionQuaternion;
             }
         }
-        #endregion
 
-        #region AccelerometerAcceleration
         private Vector3 _motionRotationRate = Vector3.Zero;
 
         public Vector3 MotionRotationRate
@@ -163,9 +147,7 @@ namespace DEM.Net.Core.IO.SensorLog
                 return _motionRotationRate;
             }
         }
-        #endregion
 
-        #region MotionUserAcceleration
         private Vector3 _motionUserAcceleration = Vector3.Zero;
 
         public Vector3 MotionUserAcceleration
@@ -181,14 +163,8 @@ namespace DEM.Net.Core.IO.SensorLog
                 return _motionUserAcceleration;
             }
         }
-        #endregion
 
         public bool HasCoordinates => LocationLatitude.HasValue && LocationLongitude.HasValue;
-
-        #endregion
-
-
-        #region Json data properties
 
         [JsonPropertyName("accelerometerAccelerationX"), JsonInclude]
         internal float? AccelerometerAccelerationX { get; set; }
@@ -401,7 +377,6 @@ namespace DEM.Net.Core.IO.SensorLog
         [JsonPropertyName("motionYaw")]
         public float? MotionYaw { get; set; }
 
-        #endregion
     }
 
     public partial class SensorLogData

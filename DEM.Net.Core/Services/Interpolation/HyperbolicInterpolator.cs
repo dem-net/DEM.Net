@@ -29,27 +29,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Core.Interpolation
-{
-    /// <summary>
-    /// HyperbolicInterpolator : gives smoother results, but can skip small flat areas
-    /// Other implementation described briefly in article.
-    /// 
-    /// Source : http://www.geocomputation.org/1999/082/gc_082.htm
-    /// </summary>
-    public class HyperbolicInterpolator : IInterpolator
-    {
-        public double Interpolate(double southWestHeight, double southEastHeight, double northWestHeight, double northEastHeight, double x, double y)
-        {
-            double h1 = southWestHeight, h2 = southEastHeight, h3 = northWestHeight, h4 = northEastHeight;
-            // hyperbolic
-            double a00 = h1;
-            double a10 = h2 - h1;
-            double a01 = h3 - h1;
-            double a11 = h1 - h2 - h3 + h4;
-            double hi_hyperbolic = a00 + a10 * x + a01 * y + a11 * x * y;
+namespace DEM.Net.Core.Interpolation;
 
-            return hi_hyperbolic;
-        }
+/// <summary>
+/// HyperbolicInterpolator : gives smoother results, but can skip small flat areas
+/// Other implementation described briefly in article.
+/// 
+/// Source : http://www.geocomputation.org/1999/082/gc_082.htm
+/// </summary>
+public class HyperbolicInterpolator : IInterpolator
+{
+    public double Interpolate(double southWestHeight, double southEastHeight, double northWestHeight, double northEastHeight, double x, double y)
+    {
+        double h1 = southWestHeight, h2 = southEastHeight, h3 = northWestHeight, h4 = northEastHeight;
+        // hyperbolic
+        double a00 = h1;
+        double a10 = h2 - h1;
+        double a01 = h3 - h1;
+        double a11 = h1 - h2 - h3 + h4;
+        double hi_hyperbolic = a00 + a10 * x + a01 * y + a11 * x * y;
+
+        return hi_hyperbolic;
     }
 }

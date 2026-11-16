@@ -24,23 +24,22 @@
 // THE SOFTWARE.
 
 
-namespace DEM.Net.Core.Imagery
+namespace DEM.Net.Core.Imagery;
+
+public partial class ImageryProvider
 {
-    public partial class ImageryProvider
+    public string Name { get; set; }
+    public UrlModel UrlModel { get; set; }
+    public Attribution Attribution { get; set; }
+    public string TokenUserSecretsKey { get; set; }
+    public int TileSize { get; set; } = 256;
+    public int MaxDegreeOfParallelism { get; set; } = 4;
+    public int MaxZoom { get; set; } = 19;
+    public bool PrivateUseOnly { get; set; }
+
+    public override string ToString()
     {
-        public string Name { get; set; }
-        public UrlModel UrlModel { get; set; }
-        public Attribution Attribution { get; set; }
-        public string TokenUserSecretsKey { get; set; }
-        public int TileSize { get; set; } = 256;
-        public int MaxDegreeOfParallelism { get; set; } = 4;
-        public int MaxZoom { get; set; } = 19;
-        public bool PrivateUseOnly { get; set; }
+        return Name;
+    }        
 
-        public override string ToString()
-        {
-            return Name;
-        }        
-
-    }
 }

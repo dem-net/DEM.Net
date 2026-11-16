@@ -29,14 +29,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Core
-{
-    public interface IRasterFile : IDisposable
-    {
-        float GetElevationAtPoint(FileMetadata metadata, int x, int y);
-        HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = float.MinValue);
-        HeightMap GetHeightMap(FileMetadata metadata);
+namespace DEM.Net.Core;
 
-        FileMetadata ParseMetaData(DEMFileDefinition fileFormat);
-    }
+public interface IRasterFile : IDisposable
+{
+    float GetElevationAtPoint(FileMetadata metadata, int x, int y);
+    HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = float.MinValue);
+    HeightMap GetHeightMap(FileMetadata metadata);
+
+    FileMetadata ParseMetaData(DEMFileDefinition fileFormat);
 }

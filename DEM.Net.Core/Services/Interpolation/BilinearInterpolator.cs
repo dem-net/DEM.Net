@@ -30,35 +30,34 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Core.Interpolation
-{
-    /// <summary>
-    /// Standard interpolation
-    /// 
-    /// For a point lying between 4 nearest grid coordinates, this interpolator will do a linear interpolation on X axis and then on Y axis.
-    /// 
-    ///
-    /// 
-    /// "The concept of linear interpolation between two points can be extended to bilinear interpolation within 
-    /// the grid cell. The function is said to be linear in each variable when the other is held fixed. 
-    /// 
-    /// For example, to determine the height hi at x, y in Figure 5, the elevations at y on the vertical 
-    /// boundaries of the grid cell can be linearly interpolated between h1 and h3 at ha, and h2 and h4 at hb.
-    /// Finally, the required elevation at x can be linearly interpolated between ha and hb."
-    /// 
-    /// Source : http://www.geocomputation.org/1999/082/gc_082.htm
-    /// </summary>
-    public class BilinearInterpolator : IInterpolator
-    {
-        public double Interpolate(double southWestHeight, double southEastHeight, double northWestHeight, double northEastHeight, double x, double y)
-        {
-            double sw = southWestHeight, se = southEastHeight, nw = northWestHeight, ne = northEastHeight;
-            // bilinear
-            double ha = MathHelper.Lerp(nw, sw, y);
-            double hb = MathHelper.Lerp(ne, se, y);
-            double hi_linear = MathHelper.Lerp(ha, hb, x);
+namespace DEM.Net.Core.Interpolation;
 
-            return hi_linear;
-        }
+/// <summary>
+/// Standard interpolation
+/// 
+/// For a point lying between 4 nearest grid coordinates, this interpolator will do a linear interpolation on X axis and then on Y axis.
+/// 
+///
+/// 
+/// "The concept of linear interpolation between two points can be extended to bilinear interpolation within 
+/// the grid cell. The function is said to be linear in each variable when the other is held fixed. 
+/// 
+/// For example, to determine the height hi at x, y in Figure 5, the elevations at y on the vertical 
+/// boundaries of the grid cell can be linearly interpolated between h1 and h3 at ha, and h2 and h4 at hb.
+/// Finally, the required elevation at x can be linearly interpolated between ha and hb."
+/// 
+/// Source : http://www.geocomputation.org/1999/082/gc_082.htm
+/// </summary>
+public class BilinearInterpolator : IInterpolator
+{
+    public double Interpolate(double southWestHeight, double southEastHeight, double northWestHeight, double northEastHeight, double x, double y)
+    {
+        double sw = southWestHeight, se = southEastHeight, nw = northWestHeight, ne = northEastHeight;
+        // bilinear
+        double ha = MathHelper.Lerp(nw, sw, y);
+        double hb = MathHelper.Lerp(ne, se, y);
+        double hi_linear = MathHelper.Lerp(ha, hb, x);
+
+        return hi_linear;
     }
 }

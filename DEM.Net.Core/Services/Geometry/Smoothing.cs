@@ -29,8 +29,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Core
-{
+namespace DEM.Net.Core;
+
 	public static class Smoothing
 	{
 		
@@ -78,4 +78,3 @@ namespace DEM.Net.Core
 		}
 
 	}
-}

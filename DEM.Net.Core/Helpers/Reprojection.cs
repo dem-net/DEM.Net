@@ -34,348 +34,344 @@ using System.Threading.Tasks;
 using DEM.Net.Core.Imagery;
 using DotSpatial.Projections;
 
-namespace DEM.Net.Core
+namespace DEM.Net.Core;
+
+public static class Reprojection
 {
-    public static class Reprojection
+
+    public const int SRID_GEODETIC = 4326;
+    public const int SRID_PROJECTED_LAMBERT_93 = 2154;
+    public const int SRID_PROJECTED_MERCATOR = 3857;
+    public const int SRID_NAD83 = 4269;
+
+    // Parsing a projection costs more than reprojecting a few points (one parse per call before). Cached per thread:
+    // DotSpatial projections are not documented as thread safe.
+    [ThreadStatic] private static Dictionary<int, ProjectionInfo> t_projections;
+
+    private static ProjectionInfo GetProjection(int epsgCode)
     {
+        var projections = t_projections ??= [];
+        if (!projections.TryGetValue(epsgCode, out var projection))
+            projections[epsgCode] = projection = ProjectionInfo.FromEpsgCode(epsgCode);
+        return projection;
+    }
 
-        public const int SRID_GEODETIC = 4326;
-        public const int SRID_PROJECTED_LAMBERT_93 = 2154;
-        public const int SRID_PROJECTED_MERCATOR = 3857;
-        public const int SRID_NAD83 = 4269;
+    // The height map transforms change the coordinates in place. The bounding box is read before: when it is not set,
+    // it is computed from the points, and must be the one of the source points.
 
-        // Parsing a projection costs more than reprojecting a few points (one parse per call before). Cached per thread:
-        // DotSpatial projections are not documented as thread safe.
-        [ThreadStatic] private static Dictionary<int, ProjectionInfo> t_projections;
+    public static HeightMap ReprojectGeodeticToCartesian(this HeightMap heightMap)
+        => heightMap.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR);
 
-        private static ProjectionInfo GetProjection(int epsgCode)
-        {
-            var projections = t_projections ??= new Dictionary<int, ProjectionInfo>();
-            if (!projections.TryGetValue(epsgCode, out var projection))
-                projections[epsgCode] = projection = ProjectionInfo.FromEpsgCode(epsgCode);
-            return projection;
-        }
+    public static HeightMap ReprojectRelativeToObserver(this HeightMap heightMap, GeoPoint observer, double maxDistanceMeters)
+    {
+        foreach (ref var p in heightMap.Coordinates.AsSpan())
+            p = p.HaversineTranslate(observer, maxDistanceMeters);
+        return heightMap;
+    }
+    public static HeightMap ReprojectGeodeticToTileSystem(this HeightMap heightMap, int zoomLevel, int tileSize)
+    {
+        var bbox = heightMap.BoundingBox;
+        foreach (ref var p in heightMap.Coordinates.AsSpan())
+            p = p.ReprojectGeodeticToTileSystem(zoomLevel, tileSize);
+        heightMap.BoundingBox = bbox.ReprojectToTileSystem(zoomLevel, tileSize);
+        return heightMap;
+    }
 
-        // The height map transforms change the coordinates in place. The bounding box is read before: when it is not set,
-        // it is computed from the points, and must be the one of the source points.
-
-        public static HeightMap ReprojectGeodeticToCartesian(this HeightMap heightMap)
-            => heightMap.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR);
-
-        public static HeightMap ReprojectRelativeToObserver(this HeightMap heightMap, GeoPoint observer, double maxDistanceMeters)
-        {
-            foreach (ref var p in heightMap.Coordinates.AsSpan())
-                p = p.HaversineTranslate(observer, maxDistanceMeters);
+    public static HeightMap ReprojectTo(this HeightMap heightMap, int sourceEpsgCode, int destinationEpsgCode)
+    {
+        if (sourceEpsgCode == destinationEpsgCode)
             return heightMap;
-        }
-        public static HeightMap ReprojectGeodeticToTileSystem(this HeightMap heightMap, int zoomLevel, int tileSize)
+
+        var bbox = heightMap.BoundingBox;
+        ReprojectInPlace(heightMap.Coordinates, GetProjection(sourceEpsgCode), GetProjection(destinationEpsgCode));
+        heightMap.BoundingBox = bbox.ReprojectTo(sourceEpsgCode, destinationEpsgCode);
+
+        return heightMap;
+    }
+
+    /// <summary>
+    /// All points reprojected in one call, through a pooled coordinate buffer
+    /// </summary>
+    private static void ReprojectInPlace(Span<GeoPoint> points, ProjectionInfo pSource, ProjectionInfo pTarget)
+    {
+        if (points.IsEmpty)
+            return;
+
+        var coords = ArrayPool<double>.Shared.Rent(points.Length * 2);
+        try
         {
-            var bbox = heightMap.BoundingBox;
-            foreach (ref var p in heightMap.Coordinates.AsSpan())
-                p = p.ReprojectGeodeticToTileSystem(zoomLevel, tileSize);
-            heightMap.BoundingBox = bbox.ReprojectToTileSystem(zoomLevel, tileSize);
-            return heightMap;
-        }
-
-        public static HeightMap ReprojectTo(this HeightMap heightMap, int sourceEpsgCode, int destinationEpsgCode)
-        {
-            if (sourceEpsgCode == destinationEpsgCode)
-                return heightMap;
-
-            var bbox = heightMap.BoundingBox;
-            ReprojectInPlace(heightMap.Coordinates, GetProjection(sourceEpsgCode), GetProjection(destinationEpsgCode));
-            heightMap.BoundingBox = bbox.ReprojectTo(sourceEpsgCode, destinationEpsgCode);
-
-            return heightMap;
-        }
-
-        /// <summary>
-        /// All points reprojected in one call, through a pooled coordinate buffer
-        /// </summary>
-        private static void ReprojectInPlace(Span<GeoPoint> points, ProjectionInfo pSource, ProjectionInfo pTarget)
-        {
-            if (points.IsEmpty)
-                return;
-
-            var coords = ArrayPool<double>.Shared.Rent(points.Length * 2);
-            try
+            for (int i = 0; i < points.Length; i++)
             {
-                for (int i = 0; i < points.Length; i++)
-                {
-                    coords[2 * i] = points[i].Longitude;
-                    coords[2 * i + 1] = points[i].Latitude;
-                }
-                Reproject.ReprojectPoints(coords, null, pSource, pTarget, 0, points.Length);
-
-                for (int i = 0; i < points.Length; i++)
-                {
-                    points[i] = points[i] with { Longitude = coords[2 * i], Latitude = coords[2 * i + 1] };
-                }
+                coords[2 * i] = points[i].Longitude;
+                coords[2 * i + 1] = points[i].Latitude;
             }
-            finally
+            Reproject.ReprojectPoints(coords, null, pSource, pTarget, 0, points.Length);
+
+            for (int i = 0; i < points.Length; i++)
             {
-                ArrayPool<double>.Shared.Return(coords);
+                points[i] = points[i] with { Longitude = coords[2 * i], Latitude = coords[2 * i + 1] };
             }
         }
-
-        public static IEnumerable<GeoPoint> ReprojectGeodeticToTileSystem(this IEnumerable<GeoPoint> points, int zoomLevel, int tileSize)
+        finally
         {
-            foreach (var p in points)
-            {
-                var newPt = TileUtils.PositionToGlobalPixel(new LatLong(p.Latitude, p.Longitude), zoomLevel, tileSize);
-
-                yield return new GeoPoint(newPt.Y, newPt.X, p.Elevation);
-            }
+            ArrayPool<double>.Shared.Return(coords);
         }
-        public static GeoPoint ReprojectGeodeticToTileSystem(this GeoPoint p, int zoomLevel, int tileSize)
+    }
+
+    public static IEnumerable<GeoPoint> ReprojectGeodeticToTileSystem(this IEnumerable<GeoPoint> points, int zoomLevel, int tileSize)
+    {
+        foreach (var p in points)
         {
             var newPt = TileUtils.PositionToGlobalPixel(new LatLong(p.Latitude, p.Longitude), zoomLevel, tileSize);
 
-            return new GeoPoint(newPt.Y, newPt.X, p.Elevation);
+            yield return new GeoPoint(newPt.Y, newPt.X, p.Elevation);
         }
+    }
+    public static GeoPoint ReprojectGeodeticToTileSystem(this GeoPoint p, int zoomLevel, int tileSize)
+    {
+        var newPt = TileUtils.PositionToGlobalPixel(new LatLong(p.Latitude, p.Longitude), zoomLevel, tileSize);
 
-        public static IEnumerable<GeoPoint> ReprojectGeodeticToCartesian(this IEnumerable<GeoPoint> points, int? count = null)
+        return new GeoPoint(newPt.Y, newPt.X, p.Elevation);
+    }
+
+    public static IEnumerable<GeoPoint> ReprojectGeodeticToCartesian(this IEnumerable<GeoPoint> points, int? count = null)
+    {
+        return points.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR, count);
+    }
+    public static List<Gpx.GpxTrackPoint> ReprojectGeodeticToCartesian(this IEnumerable<Gpx.GpxTrackPoint> points)
+    {
+        return points.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR, null);
+    }
+
+
+    public static IEnumerable<GeoPoint> ReprojectTo(this IEnumerable<GeoPoint> points, int sourceEpsgCode, int destinationEpsgCode, int? pointCount = null)
+    {
+        if (sourceEpsgCode == destinationEpsgCode)
+            return points;
+
+
+        // Defines the starting coordiante system
+        ProjectionInfo pSource = GetProjection(sourceEpsgCode);
+        // Defines the starting coordiante system
+        ProjectionInfo pTarget = GetProjection(destinationEpsgCode);
+
+        if (pointCount == null)
         {
-            return points.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR, count);
+            return points.Select(pt => ReprojectPoint(pt, pSource, pTarget));
         }
-        public static List<Gpx.GpxTrackPoint> ReprojectGeodeticToCartesian(this IEnumerable<Gpx.GpxTrackPoint> points)
+        else
         {
-            return points.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR, null);
+            return ReprojectBatch(points, pSource, pTarget);
         }
+    }
 
-
-        public static IEnumerable<GeoPoint> ReprojectTo(this IEnumerable<GeoPoint> points, int sourceEpsgCode, int destinationEpsgCode, int? pointCount = null)
+    /// <summary>
+    /// All points reprojected in one call, when enumerated. The source is enumerated once (it is often a lazy
+    /// height map pipeline: it used to run twice) into one coordinate array (it used to allocate one per point).
+    /// </summary>
+    private static IEnumerable<GeoPoint> ReprojectBatch(IEnumerable<GeoPoint> points, ProjectionInfo pSource, ProjectionInfo pTarget)
+    {
+        var source = points as IReadOnlyList<GeoPoint> ?? points.ToList();
+        var coords = new double[source.Count * 2];
+        for (int i = 0; i < source.Count; i++)
         {
-            if (sourceEpsgCode == destinationEpsgCode)
-                return points;
-
-
-            // Defines the starting coordiante system
-            ProjectionInfo pSource = GetProjection(sourceEpsgCode);
-            // Defines the starting coordiante system
-            ProjectionInfo pTarget = GetProjection(destinationEpsgCode);
-
-            if (pointCount == null)
-            {
-                return points.Select(pt => ReprojectPoint(pt, pSource, pTarget));
-            }
-            else
-            {
-                return ReprojectBatch(points, pSource, pTarget);
-            }
+            coords[2 * i] = source[i].Longitude;
+            coords[2 * i + 1] = source[i].Latitude;
         }
+        if (source.Count > 0)
+            Reproject.ReprojectPoints(coords, null, pSource, pTarget, 0, source.Count);
 
-        /// <summary>
-        /// All points reprojected in one call, when enumerated. The source is enumerated once (it is often a lazy
-        /// height map pipeline: it used to run twice) into one coordinate array (it used to allocate one per point).
-        /// </summary>
-        private static IEnumerable<GeoPoint> ReprojectBatch(IEnumerable<GeoPoint> points, ProjectionInfo pSource, ProjectionInfo pTarget)
+        for (int i = 0; i < source.Count; i++)
         {
-            var source = points as IReadOnlyList<GeoPoint> ?? points.ToList();
-            var coords = new double[source.Count * 2];
-            for (int i = 0; i < source.Count; i++)
-            {
-                coords[2 * i] = source[i].Longitude;
-                coords[2 * i + 1] = source[i].Latitude;
-            }
-            if (source.Count > 0)
-                Reproject.ReprojectPoints(coords, null, pSource, pTarget, 0, source.Count);
-
-            for (int i = 0; i < source.Count; i++)
-            {
-                yield return source[i] with { Longitude = coords[2 * i], Latitude = coords[2 * i + 1] };
-            }
+            yield return source[i] with { Longitude = coords[2 * i], Latitude = coords[2 * i + 1] };
         }
-        public static TriangulationList<Vector3> ReprojectTo(this TriangulationList<Vector3> triangulation, int sourceEpsgCode, int destinationEpsgCode)
-        {
-            if (sourceEpsgCode == destinationEpsgCode)
-                return triangulation;
-
-
-            // Defines the starting coordiante system
-            ProjectionInfo pSource = GetProjection(sourceEpsgCode);
-            // Defines the starting coordiante system
-            ProjectionInfo pTarget = GetProjection(destinationEpsgCode);
-
-
-            double[] inputPoints = new double[triangulation.NumPositions * 2];
-            for (int i = 0; i < triangulation.NumPositions; i++)
-            {
-                inputPoints[2 * i] = triangulation.Positions[i].X;
-                inputPoints[2 * i + 1] = triangulation.Positions[i].Y;
-            }
-            Reproject.ReprojectPoints(inputPoints, null, pSource, pTarget, 0, triangulation.NumPositions);
-
-            for (int i = 0; i < triangulation.NumPositions; i++)
-            {
-                triangulation.Positions[i] = new Vector3((float)inputPoints[2 * i], (float)inputPoints[2 * i + 1], triangulation.Positions[i].Z);
-            }
+    }
+    public static TriangulationList<Vector3> ReprojectTo(this TriangulationList<Vector3> triangulation, int sourceEpsgCode, int destinationEpsgCode)
+    {
+        if (sourceEpsgCode == destinationEpsgCode)
             return triangulation;
 
-        }
-        public static TriangulationList<Vector3> ZScale(this TriangulationList<Vector3> triangulation, float zScale)
+
+        // Defines the starting coordiante system
+        ProjectionInfo pSource = GetProjection(sourceEpsgCode);
+        // Defines the starting coordiante system
+        ProjectionInfo pTarget = GetProjection(destinationEpsgCode);
+
+
+        double[] inputPoints = new double[triangulation.NumPositions * 2];
+        for (int i = 0; i < triangulation.NumPositions; i++)
         {
-            for (int i = 0; i < triangulation.NumPositions; i++)
+            inputPoints[2 * i] = triangulation.Positions[i].X;
+            inputPoints[2 * i + 1] = triangulation.Positions[i].Y;
+        }
+        Reproject.ReprojectPoints(inputPoints, null, pSource, pTarget, 0, triangulation.NumPositions);
+
+        for (int i = 0; i < triangulation.NumPositions; i++)
+        {
+            triangulation.Positions[i] = new Vector3((float)inputPoints[2 * i], (float)inputPoints[2 * i + 1], triangulation.Positions[i].Z);
+        }
+        return triangulation;
+
+    }
+    public static TriangulationList<Vector3> ZScale(this TriangulationList<Vector3> triangulation, float zScale)
+    {
+        for (int i = 0; i < triangulation.NumPositions; i++)
+        {
+            Vector3 pos = triangulation.Positions[i];
+            pos.Z *= zScale;
+            triangulation.Positions[i] = pos;
+        }
+        return triangulation;
+    }
+    public static TriangulationList<Vector3> Scale(this TriangulationList<Vector3> triangulation, float factor)
+    {
+        return triangulation.Transform(Matrix4x4.CreateScale(factor));
+    }
+    public static TriangulationList<Vector3> Scale(this TriangulationList<Vector3> triangulation, Vector3 scales)
+    {
+        return triangulation.Transform(Matrix4x4.CreateScale(scales));
+    }
+    public static TriangulationList<Vector3> ToGlTFSpace(this TriangulationList<Vector3> triangulation)
+    {
+        for (int i = 0; i < triangulation.NumPositions; i++)
+        {
+            triangulation.Positions[i] = triangulation.Positions[i].ToGlTFSpace();
+        }
+        return triangulation;
+
+    }
+    public static IEnumerable<(int Key, GeoPoint Point)> ReprojectTo(this IEnumerable<(int Key, GeoPoint Point)> points, int sourceEpsgCode, int destinationEpsgCode, int pointCount)
+    {
+        if (sourceEpsgCode == destinationEpsgCode)
+            return points;
+
+
+        // Defines the starting coordiante system
+        ProjectionInfo pSource = GetProjection(sourceEpsgCode);
+        // Defines the starting coordiante system
+        ProjectionInfo pTarget = GetProjection(destinationEpsgCode);
+
+        return points.Select(pt => (pt.Key, ReprojectPoint(pt.Point, pSource, pTarget)));
+
+    }
+    public static List<Gpx.GpxTrackPoint> ReprojectTo(this IEnumerable<Gpx.GpxTrackPoint> points, int sourceEpsgCode, int destinationEpsgCode, int? pointCount = null)
+    {
+        if (sourceEpsgCode == destinationEpsgCode)
+            return [.. points];
+
+
+        // Defines the starting coordiante system
+        ProjectionInfo pSource = GetProjection(sourceEpsgCode);
+        // Defines the starting coordiante system
+        ProjectionInfo pTarget = GetProjection(destinationEpsgCode);
+
+        if (pointCount == null)
+        {
+            return [.. points.Select(pt => ReprojectPoint(pt, pSource, pTarget))];
+        }
+        else
+        {
+            double[] inputPoints = null;
+
+            return [.. points.Select((p, index) =>
             {
-                Vector3 pos = triangulation.Positions[i];
-                pos.Z *= zScale;
-                triangulation.Positions[i] = pos;
-            }
-            return triangulation;
-        }
-        public static TriangulationList<Vector3> Scale(this TriangulationList<Vector3> triangulation, float factor)
-        {
-            return triangulation.Transform(Matrix4x4.CreateScale(factor));
-        }
-        public static TriangulationList<Vector3> Scale(this TriangulationList<Vector3> triangulation, Vector3 scales)
-        {
-            return triangulation.Transform(Matrix4x4.CreateScale(scales));
-        }
-        public static TriangulationList<Vector3> ToGlTFSpace(this TriangulationList<Vector3> triangulation)
-        {
-            for (int i = 0; i < triangulation.NumPositions; i++)
-            {
-                triangulation.Positions[i] = triangulation.Positions[i].ToGlTFSpace();
-            }
-            return triangulation;
-
-        }
-        public static IEnumerable<(int Key, GeoPoint Point)> ReprojectTo(this IEnumerable<(int Key, GeoPoint Point)> points, int sourceEpsgCode, int destinationEpsgCode, int pointCount)
-        {
-            if (sourceEpsgCode == destinationEpsgCode)
-                return points;
-
-
-            // Defines the starting coordiante system
-            ProjectionInfo pSource = GetProjection(sourceEpsgCode);
-            // Defines the starting coordiante system
-            ProjectionInfo pTarget = GetProjection(destinationEpsgCode);
-
-            return points.Select(pt => (pt.Key, ReprojectPoint(pt.Point, pSource, pTarget)));
-
-        }
-        public static List<Gpx.GpxTrackPoint> ReprojectTo(this IEnumerable<Gpx.GpxTrackPoint> points, int sourceEpsgCode, int destinationEpsgCode, int? pointCount = null)
-        {
-            if (sourceEpsgCode == destinationEpsgCode)
-                return points.ToList();
-
-
-            // Defines the starting coordiante system
-            ProjectionInfo pSource = GetProjection(sourceEpsgCode);
-            // Defines the starting coordiante system
-            ProjectionInfo pTarget = GetProjection(destinationEpsgCode);
-
-            if (pointCount == null)
-            {
-                return points.Select(pt => ReprojectPoint(pt, pSource, pTarget)).ToList();
-            }
-            else
-            {
-                double[] inputPoints = null;
-
-                return points.Select((p, index) =>
+                if (inputPoints == null)
                 {
-                    if (inputPoints == null)
-                    {
-                        inputPoints = points.SelectMany(pt => new double[] { pt.Longitude, pt.Latitude }).ToArray();
-                        Reproject.ReprojectPoints(inputPoints, null, pSource, pTarget, 0, pointCount.Value);
-                    }
-                    p.Longitude = inputPoints[2 * index];
-                    p.Latitude = inputPoints[2 * index + 1];
+                    inputPoints = [.. points.SelectMany(pt => new double[] { pt.Longitude, pt.Latitude })];
+                    Reproject.ReprojectPoints(inputPoints, null, pSource, pTarget, 0, pointCount.Value);
+                }
+                p.Longitude = inputPoints[2 * index];
+                p.Latitude = inputPoints[2 * index + 1];
 
-                    if (index == pointCount - 1)
-                    {
-                        inputPoints = null;
-                    }
-                    return p;
-                })
-                .ToList();
+                if (index == pointCount - 1)
+                {
+                    inputPoints = null;
+                }
+                return p;
+            })];
 
-
-            }
-        }
-        public static BoundingBox ReprojectTo(this BoundingBox bbox, int sourceEpsgCode, int destinationEpsgCode)
-        {
-            if (sourceEpsgCode == destinationEpsgCode || bbox.SRID == destinationEpsgCode)
-                return bbox;
-
-
-            // Defines the starting coordiante system
-            ProjectionInfo pSource = GetProjection(sourceEpsgCode);
-            // Defines the starting coordiante system
-            ProjectionInfo pTarget = GetProjection(destinationEpsgCode);
-
-            var minmin = ReprojectPoint(new GeoPoint(bbox.yMin, bbox.xMin), pSource, pTarget);
-            var minmax = ReprojectPoint(new GeoPoint(bbox.yMin, bbox.xMax), pSource, pTarget);
-            var maxmax = ReprojectPoint(new GeoPoint(bbox.yMax, bbox.xMax), pSource, pTarget);
-            var maxmin = ReprojectPoint(new GeoPoint(bbox.yMax, bbox.xMin), pSource, pTarget);
-
-            var outBbox = GeometryService.GetBoundingBox(new GeoPoint[] { minmin, minmax, maxmax, maxmin });
-            outBbox.zMin = bbox.zMin;
-            outBbox.zMax = bbox.zMax;
-            outBbox.SRID = destinationEpsgCode;
-
-            return outBbox;
 
         }
-        public static BoundingBox ReprojectToTileSystem(this BoundingBox bbox, int zoomLevel, int tileSize)
-        {
-
-            var minmin = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMin, bbox.xMin), zoomLevel, tileSize);
-            var minmax = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMin, bbox.xMax), zoomLevel, tileSize);
-            var maxmax = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMax, bbox.xMax), zoomLevel, tileSize);
-            var maxmin = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMax, bbox.xMin), zoomLevel, tileSize);
-
-            var outBbox = GeometryService.GetBoundingBox(new GeoPoint[] { new GeoPoint(minmin.Y, minmin.X),
-                new GeoPoint(minmax.Y,minmax.X),
-                new GeoPoint(maxmax.Y,maxmax.X),
-                new GeoPoint(maxmin.Y,maxmin.X)
-            });
-            outBbox.zMin = bbox.zMin;
-            outBbox.zMax = bbox.zMax;
-            outBbox.SRID = 3857;
-
-            return outBbox;
-
-        }
-
-        public static GeoPoint ReprojectTo(this GeoPoint point, int sourceEpsgCode, int destinationEpsgCode)
-        {
-            if (sourceEpsgCode == destinationEpsgCode)
-                return point;
-
-            // Defines the starting coordiante system
-            ProjectionInfo pSource = GetProjection(sourceEpsgCode);
-            // Defines the starting coordiante system
-            ProjectionInfo pTarget = GetProjection(destinationEpsgCode);
-
-            var pointReproj = ReprojectPoint(point, pSource, pTarget);
-
-            return pointReproj;
-        }
-
-        private static GeoPoint ReprojectPoint(GeoPoint sourcePoint, ProjectionInfo sourceProj, ProjectionInfo destProj)
-        {
-
-            double[] coords = { sourcePoint.Longitude, sourcePoint.Latitude };
-            // Calls the reproject function that will transform the input location to the output locaiton
-            Reproject.ReprojectPoints(coords, new double[] { sourcePoint.Elevation.GetValueOrDefault(0) }, sourceProj, destProj, 0, 1);
-
-            return new GeoPoint(coords[1], coords[0], sourcePoint.Elevation);
-        }
-        private static Gpx.GpxTrackPoint ReprojectPoint(Gpx.GpxTrackPoint sourcePoint, ProjectionInfo sourceProj, ProjectionInfo destProj)
-        {
-
-            double[] coords = { sourcePoint.Longitude, sourcePoint.Latitude };
-            // Calls the reproject function that will transform the input location to the output locaiton
-            Reproject.ReprojectPoints(coords, new double[] { sourcePoint.Elevation.GetValueOrDefault(0) }, sourceProj, destProj, 0, 1);
-
-            sourcePoint.Longitude = coords[0];
-            sourcePoint.Latitude = coords[1];
-            return sourcePoint;
-        }
+    }
+    public static BoundingBox ReprojectTo(this BoundingBox bbox, int sourceEpsgCode, int destinationEpsgCode)
+    {
+        if (sourceEpsgCode == destinationEpsgCode || bbox.SRID == destinationEpsgCode)
+            return bbox;
 
 
+        // Defines the starting coordiante system
+        ProjectionInfo pSource = GetProjection(sourceEpsgCode);
+        // Defines the starting coordiante system
+        ProjectionInfo pTarget = GetProjection(destinationEpsgCode);
+
+        var minmin = ReprojectPoint(new GeoPoint(bbox.yMin, bbox.xMin), pSource, pTarget);
+        var minmax = ReprojectPoint(new GeoPoint(bbox.yMin, bbox.xMax), pSource, pTarget);
+        var maxmax = ReprojectPoint(new GeoPoint(bbox.yMax, bbox.xMax), pSource, pTarget);
+        var maxmin = ReprojectPoint(new GeoPoint(bbox.yMax, bbox.xMin), pSource, pTarget);
+
+        var outBbox = GeometryService.GetBoundingBox(new GeoPoint[] { minmin, minmax, maxmax, maxmin });
+        outBbox.zMin = bbox.zMin;
+        outBbox.zMax = bbox.zMax;
+        outBbox.SRID = destinationEpsgCode;
+
+        return outBbox;
+
+    }
+    public static BoundingBox ReprojectToTileSystem(this BoundingBox bbox, int zoomLevel, int tileSize)
+    {
+
+        var minmin = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMin, bbox.xMin), zoomLevel, tileSize);
+        var minmax = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMin, bbox.xMax), zoomLevel, tileSize);
+        var maxmax = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMax, bbox.xMax), zoomLevel, tileSize);
+        var maxmin = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMax, bbox.xMin), zoomLevel, tileSize);
+
+        var outBbox = GeometryService.GetBoundingBox(new GeoPoint[] { new(minmin.Y, minmin.X),
+            new(minmax.Y,minmax.X),
+            new(maxmax.Y,maxmax.X),
+            new(maxmin.Y,maxmin.X)
+        });
+        outBbox.zMin = bbox.zMin;
+        outBbox.zMax = bbox.zMax;
+        outBbox.SRID = 3857;
+
+        return outBbox;
+
+    }
+
+    public static GeoPoint ReprojectTo(this GeoPoint point, int sourceEpsgCode, int destinationEpsgCode)
+    {
+        if (sourceEpsgCode == destinationEpsgCode)
+            return point;
+
+        // Defines the starting coordiante system
+        ProjectionInfo pSource = GetProjection(sourceEpsgCode);
+        // Defines the starting coordiante system
+        ProjectionInfo pTarget = GetProjection(destinationEpsgCode);
+
+        var pointReproj = ReprojectPoint(point, pSource, pTarget);
+
+        return pointReproj;
+    }
+
+    private static GeoPoint ReprojectPoint(GeoPoint sourcePoint, ProjectionInfo sourceProj, ProjectionInfo destProj)
+    {
+
+        double[] coords = [sourcePoint.Longitude, sourcePoint.Latitude];
+        // Calls the reproject function that will transform the input location to the output locaiton
+        Reproject.ReprojectPoints(coords, [sourcePoint.Elevation.GetValueOrDefault(0)], sourceProj, destProj, 0, 1);
+
+        return new GeoPoint(coords[1], coords[0], sourcePoint.Elevation);
+    }
+    private static Gpx.GpxTrackPoint ReprojectPoint(Gpx.GpxTrackPoint sourcePoint, ProjectionInfo sourceProj, ProjectionInfo destProj)
+    {
+
+        double[] coords = [sourcePoint.Longitude, sourcePoint.Latitude];
+        // Calls the reproject function that will transform the input location to the output locaiton
+        Reproject.ReprojectPoints(coords, [sourcePoint.Elevation.GetValueOrDefault(0)], sourceProj, destProj, 0, 1);
+
+        sourcePoint.Longitude = coords[0];
+        sourcePoint.Latitude = coords[1];
+        return sourcePoint;
     }
 
 

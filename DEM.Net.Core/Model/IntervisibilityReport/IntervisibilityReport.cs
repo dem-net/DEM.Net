@@ -26,38 +26,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DEM.Net.Core
+namespace DEM.Net.Core;
+
+/// <summary>
+/// Reports ray casting from an origin to a target point
+/// If there is anything standing between the points, it will be listed in obstacles
+/// </summary>
+public class IntervisibilityReport(List<GeoPoint> pointsWithElevation, IntervisibilityMetrics visibilityMetrics, bool includeAllPoints = false, double originVerticalOffset = 0d
+        , double targetVerticalOffset = 0d)
 {
-    /// <summary>
-    /// Reports ray casting from an origin to a target point
-    /// If there is anything standing between the points, it will be listed in obstacles
-    /// </summary>
-    public class IntervisibilityReport
+    public GeoPoint Origin { get; internal set; } = pointsWithElevation.First();
+    public GeoPoint Target { get; internal set; } = pointsWithElevation.Last();
+    public double OriginVerticalOffset { get; internal set; } = originVerticalOffset;
+    public double TargetVerticalOffset { get; internal set; } = targetVerticalOffset;
+    public bool HasObstacles => Metrics?.Intervisible == false;
+    public int ObstacleCount => Metrics?.Obstacles?.Count ?? 0;
+    public List<GeoPoint> GeoPoints { get; internal set; } = pointsWithElevation;
+    public IntervisibilityMetrics Metrics { get; internal set; } = visibilityMetrics;
+
+    public void ClearPoints()
     {
-        public GeoPoint Origin { get; internal set; }
-        public GeoPoint Target { get; internal set; }
-        public double OriginVerticalOffset { get; internal set; }
-        public double TargetVerticalOffset { get; internal set; }
-        public bool HasObstacles => Metrics?.Intervisible == false;
-        public int ObstacleCount => Metrics?.Obstacles?.Count ?? 0;
-        public List<GeoPoint> GeoPoints { get; internal set; }
-        public IntervisibilityMetrics Metrics { get; internal set; }
-
-        public void ClearPoints()
-        {
-            GeoPoints?.Clear();
-            GeoPoints = null;
-        }
-
-        public IntervisibilityReport(List<GeoPoint> pointsWithElevation, IntervisibilityMetrics visibilityMetrics, bool includeAllPoints = false, double originVerticalOffset = 0d
-            , double targetVerticalOffset = 0d)
-        {
-            this.Origin = pointsWithElevation.First();
-            this.Target = pointsWithElevation.Last();
-            this.Metrics = visibilityMetrics;
-            this.GeoPoints = pointsWithElevation;
-            this.OriginVerticalOffset = originVerticalOffset;
-            this.TargetVerticalOffset = targetVerticalOffset;
-        }
+        GeoPoints?.Clear();
+        GeoPoints = null;
     }
 }

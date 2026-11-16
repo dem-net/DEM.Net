@@ -23,17 +23,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-namespace DEM.Net.Core.Datasets
+namespace DEM.Net.Core.Datasets;
+
+public class VRTDataSource(string vrtFileUrl) : IDEMDataSource
 {
-    public class VRTDataSource : IDEMDataSource
-    {
-		public string IndexFilePath { get; }
+    public string IndexFilePath { get; } = vrtFileUrl;
 
-        public DEMDataSourceType DataSourceType => DEMDataSourceType.GDALVrt;
-
-        public VRTDataSource(string vrtFileUrl)
-		{
-			this.IndexFilePath = vrtFileUrl;
-		}
-    }
+    public DEMDataSourceType DataSourceType => DEMDataSourceType.GDALVrt;
 }

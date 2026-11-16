@@ -1,25 +1,24 @@
-﻿using DEM.Net.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using DEM.Net.Core;
 using DEM.Net.Core.Imagery;
 using DEM.Net.glTF.Export;
 using DEM.Net.glTF.SharpglTF;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace DEM.Net.glTF
+namespace DEM.Net.glTF;
+
+public static class IServiceCollectionExtension
 {
-    public static class IServiceCollectionExtension
+    public static IServiceCollection AddDemNetglTF(this IServiceCollection services)
     {
-        public static IServiceCollection AddDemNetglTF(this IServiceCollection services)
-        {
-            services
-                    .AddTransient<SharpGltfService>()
-                    .AddTransient<MeshReducer>()
-                    .AddTransient<ISTLExportService, STLExportService>()
-                    .AddTransient<OBJExportService>();
+        services
+                .AddTransient<SharpGltfService>()
+                .AddTransient<MeshReducer>()
+                .AddTransient<ISTLExportService, STLExportService>()
+                .AddTransient<OBJExportService>();
 
-            return services;
-        }
+        return services;
     }
 }
