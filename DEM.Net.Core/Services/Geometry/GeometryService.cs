@@ -165,7 +165,7 @@ namespace DEM.Net.Core
         /// <summary>
         /// Check if two lines intersects
         /// </summary>
-        /// <param name="intersection">Ouputs the lines intersection point if they intersect, otherwise null</param>
+        /// <param name="intersection">Ouputs the lines intersection point if they intersect, otherwise <see cref="GeoPoint.Zero"/></param>
         /// <param name="line1">Any segment of the first line</param>
         /// <param name="line2">Any segment of the second line</param>
         /// <returns>True if lines intersects</returns>
@@ -196,8 +196,7 @@ namespace DEM.Net.Core
                 //Is intersecting if u_a and u_b are between 0 and 1
                 if (u_a >= 0 && u_a <= 1 && u_b >= 0 && u_b <= 1)
                 {
-                    intersection.Latitude = p1_y + u_a * (p2_y - p1_y);
-                    intersection.Longitude = p1_x + u_a * (p2_x - p1_x);
+                    intersection = intersection with { Latitude = p1_y + u_a * (p2_y - p1_y), Longitude = p1_x + u_a * (p2_x - p1_x) };
                     isIntersecting = true;
                 }
             }
@@ -242,8 +241,8 @@ namespace DEM.Net.Core
             }
 
             double total = 0, minElevation = double.MaxValue, maxElevation = double.MinValue, totalClimb = 0, totalDescent = 0;
-            GeoPoint firstPoint = points[0];
-            firstPoint.DistanceFromOriginMeters = 0; // force at 0. If null, ignored in json responses
+            GeoPoint firstPoint = points[0] with { DistanceFromOriginMeters = 0 }; // force at 0. If null, ignored in json responses
+            points[0] = firstPoint;
             double lastElevation = firstPoint.Elevation ?? 0;
 
             IntervisibilityObstacle obstacle = null;
@@ -255,7 +254,8 @@ namespace DEM.Net.Core
                 GeoPoint curPoint = points[i];
                 double v_dist = DistanceTo(curPoint, points[i - 1]);
                 total += v_dist;
-                curPoint.DistanceFromOriginMeters = total;
+                curPoint = curPoint with { DistanceFromOriginMeters = total };
+                points[i] = curPoint;
 
                 minElevation = Math.Min(minElevation, curPoint.Elevation ?? double.MaxValue);
                 maxElevation = Math.Max(maxElevation, curPoint.Elevation ?? double.MinValue);
@@ -358,9 +358,6 @@ namespace DEM.Net.Core
         /// <returns>Distance in meters</returns>
 		public static double DistanceTo(this GeoPoint pt1, GeoPoint pt2)
         {
-            if ((pt1 == null) || (pt2 == null))
-                return 0;
-            else
             {
                 double v_thisLatitude = pt1.Latitude;
                 double v_otherLatitude = pt2.Latitude;
@@ -390,9 +387,6 @@ namespace DEM.Net.Core
         }
         public static double HaversineDistanceTo(this GeoPoint pt1, GeoPoint pt2)
         {
-            if ((pt1 == null) || (pt2 == null))
-                return 0;
-            else
             {
                 var p1 = pt1.Latitude * RADIAN;
                 var p2 = pt2.Latitude * RADIAN;
@@ -502,10 +496,7 @@ namespace DEM.Net.Core
         public static GeoPoint ToGeoPoint(this Coordinate coord)
         {
 
-            if (coord == null)
-            {
-                return null;
-            }
+            ArgumentNullException.ThrowIfNull(coord);
 
             return new GeoPoint(coord.Y, coord.X);
         }
@@ -568,18 +559,8 @@ namespace DEM.Net.Core
                 ntsPoint.X = pt.Longitude;
                 ntsPoint.Y = pt.Latitude;
                 ntsPoint.GeometryChanged();
-                //if (geom.Contains(new Point(pt.Longitude, pt.Latitude) { SRID = geom.SRID }))
-                if (geom.Distance(ntsPoint) < double.Epsilon)
-                {
-                    pt.Elevation = pt.Elevation;
-                }
-#if DEBUG // for breakpoints
-                else
-                {
-                    pt.Elevation = null;
-                }
-#endif
-                return pt;
+                // points outside of the geometry lose their elevation (formerly in Debug builds only)
+                return geom.Distance(ntsPoint) < double.Epsilon ? pt : pt with { Elevation = null };
             });
             return heightMap;
         }

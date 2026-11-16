@@ -46,3 +46,21 @@ reprojected height maps of the HGT and AW3D30 test tiles).
 - Interpolation: no array and LINQ per point to average the corners.
 - Reprojection: the source is enumerated once (it was enumerated twice, re-running lazy height map pipelines),
   without one array per point; projections are parsed once per thread.
+
+## `GeoPoint` struct (v11)
+
+Same machine and job, 2026-11-16. Outputs are byte-identical to the previous version (same comparison, plus line
+metrics and distances, Douglas-Peucker, intervisibility obstacles, height map transforms, downsampling and the GLB file).
+
+| Method                                          | Mean       | Allocated  | vs hot paths |
+|------------------------------------------------ |-----------:|-----------:|------------ |
+| 1 000 single point elevations                   |  17.977 ms |    6.27 MB | = |
+| 1 000 points elevation (batch)                  |   1.825 ms |    0.15 MB | -24% memory |
+| Line elevation, 10 000 vertices                 | 264.242 ms |   79.03 MB | -17% time, -39% memory |
+| Height map of a 0.2° bbox                       |   2.033 ms |    3.60 MB | 3.2x faster, -43% memory |
+| Reproject height map to 3857, z-scale, center   |   2.184 ms |    2.70 MB | 2x faster, 5.5x less memory |
+| glTF terrain mesh of the bbox, written as GLB   | 211.415 ms |  123.85 MB | -13% memory |
+
+- A point is 32 bytes inline in its list or array (an object of 72 bytes plus an 8 bytes reference before), and
+  transforms (`with`) no longer allocate per point.
+- Point elevations are written in place in the input order (they were grouped by tile, then sorted back by `Id`).

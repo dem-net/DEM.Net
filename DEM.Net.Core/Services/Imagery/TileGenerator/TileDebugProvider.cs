@@ -10,7 +10,7 @@ namespace DEM.Net.Core.Imagery
     public class TileDebugProvider : ImageryProvider, ITileGenerator
     {
         private readonly Graticules graticuleService;
-        public TileDebugProvider(GeoPoint debugPoint = null, int maxDegreeOfParallelism = -1, int maxZoom = 23)
+        public TileDebugProvider(GeoPoint? debugPoint = null, int maxDegreeOfParallelism = -1, int maxZoom = 23)
         {
             base.Name = nameof(TileDebugProvider);
             base.MaxDegreeOfParallelism = maxDegreeOfParallelism;
@@ -19,7 +19,7 @@ namespace DEM.Net.Core.Imagery
             this.DebugPoint = debugPoint;
         }
 
-        public GeoPoint DebugPoint { get; set; }
+        public GeoPoint? DebugPoint { get; set; }
 
         public byte[] GenerateTile(int x, int y, int zoom)
         {
@@ -49,7 +49,7 @@ namespace DEM.Net.Core.Imagery
                 // Test
                 if (DebugPoint != null)
                 {
-                    var testPixel = TileUtils.PositionToGlobalPixel(new LatLong(DebugPoint.Latitude, DebugPoint.Longitude), zoom, TileSize);
+                    var testPixel = TileUtils.PositionToGlobalPixel(new LatLong(DebugPoint.Value.Latitude, DebugPoint.Value.Longitude), zoom, TileSize);
                     var testTile = TileUtils.GlobalPixelToTileXY(testPixel.X, testPixel.Y, TileSize);
 
                     // Draw test pixel

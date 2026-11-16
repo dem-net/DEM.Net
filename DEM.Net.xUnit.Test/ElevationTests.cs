@@ -25,7 +25,8 @@ namespace DEM.Net.Test
             DEMDataSet dataSet = DEMDataSet.SRTM_GL3;
 
             var point = _elevationService.GetPointElevation(31, -27, dataSet);
-            Assert.Null(point);
+            Assert.Null(point.Elevation);
+            Assert.Equal(new GeoPoint(31, -27), point);
 
         }
 
@@ -116,7 +117,7 @@ namespace DEM.Net.Test
             await _elevationService.DownloadMissingFilesAsync(dataSet, BoundingBox.AroundPoint(lat, lon, 0.001));
             GeoPoint point = _elevationService.GetPointElevation(lat, lon, dataSet);
 
-            Assert.NotNull(point);
+            Assert.NotNull(point.Elevation);
             // absolute tolerance: Assert.Equal(double, double, precision) rounds both values and fails on midpoints
             Assert.True(Math.Abs(expectedElevation - point.Elevation.Value) < 0.001, $"Expected {expectedElevation}, got {point.Elevation.Value}");
         }

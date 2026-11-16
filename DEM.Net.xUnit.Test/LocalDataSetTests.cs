@@ -75,6 +75,36 @@ namespace DEM.Net.Test
         }
 
         [Fact]
+        public async Task PointsElevationKeepsTheInputOrder()
+        {
+            // points outside the tile are processed apart (former versions returned them grouped by tile)
+            var points = new[]
+            {
+                new GeoPoint(42.50, 5.50), // outside
+                new GeoPoint(43.30, 5.37),
+                new GeoPoint(44.50, 5.50), // outside
+                new GeoPoint(43.53, 5.45),
+            };
+
+            var elevated = await _elevation.GetPointsElevationAsync(points, _dataSet);
+
+            Assert.Equal(points, elevated); // same locations, same order
+            Assert.Equal(0, elevated[0].Elevation);
+            Assert.Equal(0, elevated[2].Elevation);
+            Assert.Equal(_elevation.GetPointElevation(43.30, 5.37, _dataSet).Elevation, elevated[1].Elevation);
+            Assert.Equal(_elevation.GetPointElevation(43.53, 5.45, _dataSet).Elevation, elevated[3].Elevation);
+        }
+
+        [Fact]
+        public async Task UncoveredLocationHasNoElevation()
+        {
+            await _elevation.DownloadMissingFilesAsync(_dataSet, 43.5, 5.5);
+            var point = _elevation.GetPointElevation(10.5, 20.5, _dataSet);
+            Assert.Equal(new GeoPoint(10.5, 20.5), point);
+            Assert.Null(point.Elevation);
+        }
+
+        [Fact]
         public async Task HeightMapDoesNotModifyTheRequestedBoundingBox()
         {
             var bbox = new BoundingBox(5.40, 5.50, 43.40, 43.50);

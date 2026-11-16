@@ -70,6 +70,18 @@ These metadata files will be used as an index when querying Digital Elevation Mo
 | `XyzTileIndexService.GetMaxZoom(...)` | `await GetMaxZoomAsync(...)` |
 | `IDEMDataSetIndex.Setup` / `IRasterDownloader.DownloadRasterFile` | `SetupAsync` / `DownloadRasterFileAsync` |
 
+`GeoPoint` is now an immutable `readonly struct` (32 bytes, was a class of ~80 bytes per point with its reference):
+
+| v10 | v11 |
+|---|---|
+| `point.Elevation = z` / `point.Clone(z)` | `point = point with { Elevation = z }` (in a list: `list[i] = list[i] with { ... }`) |
+| `point == null`, `GeoPoint x = null` | `GeoPoint?` where a point is optional; `default(GeoPoint)` is (0, 0) without elevation |
+| `point.Id` (used to restore the order of `GetPointsElevation`) | removed: `GetPointsElevation` returns the points in the input order |
+| `GetPointElevation(...)` returns `null` outside of the dataset | returns the location with `Elevation == null` |
+| `ComputeMetrics()` sets `DistanceFromOriginMeters` on the point objects | sets it on the points of the given list (`IList<GeoPoint>`) |
+| `GeoPointRays : GeoPoint` | holds a `Point` (implicit conversion to `GeoPoint`) |
+| `IntervisibilityObstacle.PeakPoint` / `ExitPoint` | `GeoPoint?` |
+
 ## glTF export
 - `glTFService` can generate triangulated MeshPrimitives from height maps
 - Export to .gtlf or .glb

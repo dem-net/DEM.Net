@@ -149,10 +149,7 @@ namespace DEM.Net.Core
 
             for (int i = 0; i < source.Count; i++)
             {
-                var pout = source[i].Clone();
-                pout.Longitude = coords[2 * i];
-                pout.Latitude = coords[2 * i + 1];
-                yield return pout;
+                yield return source[i] with { Longitude = coords[2 * i], Latitude = coords[2 * i + 1] };
             }
         }
         public static TriangulationList<Vector3> ReprojectTo(this TriangulationList<Vector3> triangulation, int sourceEpsgCode, int destinationEpsgCode)
@@ -330,7 +327,7 @@ namespace DEM.Net.Core
             // Calls the reproject function that will transform the input location to the output locaiton
             Reproject.ReprojectPoints(coords, new double[] { sourcePoint.Elevation.GetValueOrDefault(0) }, sourceProj, destProj, 0, 1);
 
-            return new GeoPoint(sourcePoint.Id, coords[1], coords[0], sourcePoint.Elevation);
+            return new GeoPoint(coords[1], coords[0], sourcePoint.Elevation);
         }
         private static Gpx.GpxTrackPoint ReprojectPoint(Gpx.GpxTrackPoint sourcePoint, ProjectionInfo sourceProj, ProjectionInfo destProj)
         {

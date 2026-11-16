@@ -184,11 +184,7 @@ namespace DEM.Net.Core
             //Logger.Info("Translate...");
             foreach (var pt in points)
             {
-                var p = pt.Clone();
-                p.Latitude += y;
-                p.Longitude += x;
-                p.Elevation += z;
-                yield return p;
+                yield return pt.Translate(x, y, z);
             }
             //Logger.Info("Translate done...");
         }
@@ -196,11 +192,7 @@ namespace DEM.Net.Core
         {
             //Logger.Info("Translate...");
 
-            var p = point.Clone();
-            p.Latitude += y;
-            p.Longitude += x;
-            p.Elevation += z;
-            return p;
+            return point with { Latitude = point.Latitude + y, Longitude = point.Longitude + x, Elevation = point.Elevation + z };
 
             //Logger.Info("Translate done...");
         }
@@ -299,11 +291,7 @@ namespace DEM.Net.Core
         }
         public static IEnumerable<GeoPoint> ZClamp(this IEnumerable<GeoPoint> points, float? min, float? max)
         {
-            return points.Select(pt =>
-            {
-                pt.Elevation = MathHelper.Clamp(pt.Elevation ?? 0, min ?? float.MinValue, max ?? float.MaxValue);
-                return pt;
-            });
+            return points.Select(pt => pt with { Elevation = MathHelper.Clamp(pt.Elevation ?? 0, min ?? float.MinValue, max ?? float.MaxValue) });
         }
         
         public static List<Gpx.GpxTrackPoint> ZScale(this List<Gpx.GpxTrackPoint> points, float zFactor = 1f)
@@ -324,11 +312,7 @@ namespace DEM.Net.Core
             //Logger.Info("Scale...");
             foreach (var pt in points)
             {
-                var pout = pt.Clone();
-                pout.Longitude *= x;
-                pout.Latitude *= y;
-                pout.Elevation *= z;
-                yield return pout;
+                yield return pt.Scale(x, y, z);
             }
             //Logger.Info("Scale done...");
 
@@ -342,11 +326,7 @@ namespace DEM.Net.Core
          /// <returns></returns>
         public static GeoPoint Scale(this GeoPoint pt, float x = 1f, float y = 1f, float z = 1f)
         {
-            var pout = pt.Clone();
-            pout.Longitude *= x;
-            pout.Latitude *= y;
-            pout.Elevation *= z;
-            return pout;
+            return pt with { Longitude = pt.Longitude * x, Latitude = pt.Latitude * y, Elevation = pt.Elevation * z };
         }
 
         /// <summary>
@@ -383,9 +363,7 @@ namespace DEM.Net.Core
             //Logger.Info("ZTranslate...");
             foreach (var pt in points)
             {
-                var pout = pt.Clone();
-                pout.Elevation = (pout.Elevation ?? 0) + distance;
-                yield return pout;
+                yield return pt with { Elevation = (pt.Elevation ?? 0) + distance };
             }
             //Logger.Info("ZTranslate done...");
 
@@ -394,11 +372,7 @@ namespace DEM.Net.Core
         {
             foreach (var pt in points)
             {
-                var pout = pt.Clone();
-                pout.Latitude += vector.Latitude;
-                pout.Longitude += vector.Longitude;
-                pout.Elevation += vector.Elevation ?? 0;
-                yield return pout;
+                yield return pt with { Latitude = pt.Latitude + vector.Latitude, Longitude = pt.Longitude + vector.Longitude, Elevation = pt.Elevation + (vector.Elevation ?? 0) };
             }
         }
 
@@ -625,7 +599,7 @@ namespace DEM.Net.Core
                 for (int x = 0; x < destWidth; x++)
                 {
                     var pts = outPoints[x + y * destWidth];
-                    (GeoPoint point, List<GeoPoint> source) outPt =  (new GeoPoint(id: y, y, x, 0), new List<GeoPoint>());
+                    (GeoPoint point, List<GeoPoint> source) outPt =  (new GeoPoint(y, x, 0), new List<GeoPoint>());
                     if (pts.Count > 0)
                     {
                         double outVal = 0;
@@ -636,7 +610,7 @@ namespace DEM.Net.Core
                             weights += pt.Weight;
                             outPt.source.Add(pt.source);
                         }
-                        outPt.point.Elevation = outVal / weights;
+                        outPt.point = outPt.point with { Elevation = outVal / weights };
                     }
 
                     yield return outPt;
@@ -735,9 +709,9 @@ namespace DEM.Net.Core
                 for (int x = 0; x < destWidth; x++)
                 {
                     var pts = outPoints[x + y * destWidth];
-                    GeoPoint outPt = new GeoPoint(id: y, y, x, 0);
+                    GeoPoint outPt = new GeoPoint(y, x, 0);
                     if (pts.Count > 0)
-                        outPt.Elevation = pts.Average();// (pts.Max() - pts.Min())/2+pts.Min();
+                        outPt = outPt with { Elevation = pts.Average() };// (pts.Max() - pts.Min())/2+pts.Min();
                     //outPt.Elevation = pts.Average();
 
                     yield return outPt;

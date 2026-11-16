@@ -30,6 +30,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -115,9 +116,6 @@ namespace DEM.Net.Core
         /// </remarks>
         public Task DownloadMissingFilesAsync(DEMDataSet dataSet, GeoPoint geoPoint, CancellationToken cancellationToken = default)
         {
-            if (geoPoint == null)
-                return Task.CompletedTask;
-
             return DownloadMissingFilesAsync(dataSet, geoPoint.Latitude, geoPoint.Longitude, cancellationToken);
         }
 
@@ -254,11 +252,10 @@ namespace DEM.Net.Core
                         , registrationOffset
                         , true);
 
-                    // Get elevation for each point
-                    intersections = this.GetElevationData(intersections, adjacentRasters, segTiles, interpolator, behavior);
-
-                    // Add to output list
+                    // Add to output list, then get elevation for each point
+                    int segmentStart = geoPoints.Count;
                     geoPoints.AddRange(intersections);
+                    this.FillElevations(CollectionsMarshal.AsSpan(geoPoints)[segmentStart..], adjacentRasters, segTiles, interpolator, behavior);
 
                     isFirstSegment = false;
                 }
@@ -327,11 +324,10 @@ namespace DEM.Net.Core
                         , registrationOffset
                         , true);
 
-                    // Get elevation for each point
-                    intersections = this.GetElevationData(intersections, adjacentRasters, tiles, interpolator, behavior);
-
-                    // Add to output list
+                    // Add to output list, then get elevation for each point
+                    int segmentStart = geoPoints.Count;
                     geoPoints.AddRange(intersections);
+                    this.FillElevations(CollectionsMarshal.AsSpan(geoPoints)[segmentStart..], adjacentRasters, tiles, interpolator, behavior);
 
                     isFirstSegment = false;
                 }
@@ -368,7 +364,6 @@ namespace DEM.Net.Core
             step = Math.Max(step, totalMeters / MaxProjectedLineSamples);
 
             var samples = new List<GeoPoint>();
-            int id = 0;
             foreach (var segment in segments)
             {
                 double length = segment.Start.DistanceTo(segment.End);
@@ -376,7 +371,7 @@ namespace DEM.Net.Core
                 for (int i = samples.Count == 0 ? 0 : 1; i <= n; i++)
                 {
                     double t = i / (double)n;
-                    samples.Add(new GeoPoint(id++,
+                    samples.Add(new GeoPoint(
                         segment.Start.Latitude + (segment.End.Latitude - segment.Start.Latitude) * t,
                         segment.Start.Longitude + (segment.End.Longitude - segment.Start.Longitude) * t));
                 }
@@ -386,13 +381,10 @@ namespace DEM.Net.Core
             if (elevated == null)
                 return new List<GeoPoint>();
 
-            // back to WGS84, in line order
-            var byId = elevated.ToDictionary(p => p.Id);
-            foreach (var sample in samples)
-            {
-                if (byId.TryGetValue(sample.Id, out var p))
-                    sample.Elevation = p.Elevation;
-            }
+            // elevated points are in the dataset projection and in the same order: elevations back to the WGS84 samples
+            var span = CollectionsMarshal.AsSpan(samples);
+            for (int i = 0; i < span.Length; i++)
+                span[i] = span[i] with { Elevation = elevated[i].Elevation };
             return samples;
         }
 
@@ -512,7 +504,7 @@ namespace DEM.Net.Core
         /// <param name="lon">Point longitude</param>
         /// <param name="dataSet">DEM dataset to use</param>
         /// <param name="interpolationMode">Interpolation mode</param>
-        /// <returns></returns>
+        /// <returns>The location as requested (WGS84) with its elevation, without elevation when the dataset does not cover it</returns>
         public GeoPoint GetPointElevation(double lat, double lon, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
         {
             GeoPoint geoPoint = new GeoPoint(lat, lon).ReprojectTo(Reprojection.SRID_GEODETIC, dataSet.SRID);
@@ -521,7 +513,7 @@ namespace DEM.Net.Core
             if (tile == null)
             {
                 _logger?.LogDebug($"No coverage found matching provided point {geoPoint} for dataset {dataSet.Name}");
-                return null;
+                return new GeoPoint(lat, lon);
             }
             else
             {
@@ -540,17 +532,10 @@ namespace DEM.Net.Core
                 {
                     PopulateRasterFileDictionary(tileCache, tile, _RasterService, adjacentRasters);
 
-                    geoPoint.Elevation = GetElevationAtPoint(tileCache, tile, geoPoint.Latitude, geoPoint.Longitude, 0, interpolator, NoDataBehavior.SetToZero);
-
-
-                    //Debug.WriteLine(adjacentRasters.Count);
+                    // Location is returned as requested (WGS84), not in the dataset projection
+                    return new GeoPoint(lat, lon, GetElevationAtPoint(tileCache, tile, geoPoint.Latitude, geoPoint.Longitude, 0, interpolator, NoDataBehavior.SetToZero));
                 }  // Ensures all geotifs are properly closed
             }
-
-            // Location is returned as requested (WGS84), not in the dataset projection
-            geoPoint.Latitude = lat;
-            geoPoint.Longitude = lon;
-            return geoPoint;
         }
 
         /// <summary>
@@ -559,7 +544,7 @@ namespace DEM.Net.Core
         /// <param name="points">List of points</param>
         /// <param name="dataSet">DEM dataset to use</param>
         /// <param name="interpolationMode">Interpolation mode</param>
-        /// <returns>The points with their elevation (the input points are updated), null when the dataset does not cover them</returns>
+        /// <returns>The points with their elevation, in the dataset projection and in the input order, null when the dataset does not cover them</returns>
         public async Task<List<GeoPoint>> GetPointsElevationAsync(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero, bool downloadMissingFiles = true, CancellationToken cancellationToken = default)
         {
             if (points == null)
@@ -581,7 +566,7 @@ namespace DEM.Net.Core
         /// <param name="points">List of points</param>
         /// <param name="dataSet">DEM dataset to use</param>
         /// <param name="interpolationMode">Interpolation mode</param>
-        /// <returns>The points with their elevation (the input points are updated), null when the dataset does not cover them</returns>
+        /// <returns>The points with their elevation, in the dataset projection and in the input order, null when the dataset does not cover them</returns>
         public List<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
         {
             if (points == null)
@@ -603,8 +588,9 @@ namespace DEM.Net.Core
 
             using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
             {
-                // Materialized before the rasters are closed: GetElevationData reads them lazily
-                return this.GetElevationData(pointList.ReprojectTo(4326, dataSet.SRID), adjacentRasters, tiles, interpolator, behavior).ToList();
+                var result = pointList.ReprojectTo(4326, dataSet.SRID).ToList();
+                this.FillElevations(CollectionsMarshal.AsSpan(result), adjacentRasters, tiles, interpolator, behavior);
+                return result;
             }
         }
 
@@ -904,9 +890,19 @@ namespace DEM.Net.Core
         /// <param name="adjacentRasters"></param>
         /// <param name="segTiles"></param>
         /// <param name="interpolator"></param>
-        public IEnumerable<GeoPoint> GetElevationData(IEnumerable<GeoPoint> intersections, RasterFileDictionary adjacentRasters, List<FileMetadata> segTiles, IInterpolator interpolator, NoDataBehavior behavior)
+        public List<GeoPoint> GetElevationData(IEnumerable<GeoPoint> intersections, RasterFileDictionary adjacentRasters, List<FileMetadata> segTiles, IInterpolator interpolator, NoDataBehavior behavior)
         {
-            // Group by raster file for sequential and faster access
+            var points = intersections.ToList();
+            FillElevations(CollectionsMarshal.AsSpan(points), adjacentRasters, segTiles, interpolator, behavior);
+            return points;
+        }
+
+        /// <summary>
+        /// Sets the elevation of each point, in place (the points keep their order)
+        /// </summary>
+        /// <remarks>Points are read tile after tile (in the order the tiles are first met) for sequential file access.</remarks>
+        public void FillElevations(Span<GeoPoint> points, RasterFileDictionary adjacentRasters, List<FileMetadata> segTiles, IInterpolator interpolator, NoDataBehavior behavior)
+        {
             // Adjacent tiles are only needed near the tile edges: the search (one list per point) is skipped elsewhere
             var noAdjacentTiles = new List<FileMetadata>(0);
             FileMetadata lastTile = null;
@@ -924,50 +920,56 @@ namespace DEM.Net.Core
                     return noAdjacentTiles;
                 return segTiles.Where(t => this.IsPointInAdjacentTile(t, point)).ToList();
             }
-            var pointsByTileQuery = from point in intersections
-                                    let tile = FindTile(point)
-                                    let pointTile = new
-                                    {
-                                        Point = point,
-                                        Tile = tile,
-                                        AdjacentTiles = FindAdjacentTiles(tile, point)
-                                    }
-                                    group pointTile by pointTile.Tile into pointsByTile
-                                    select pointsByTile;
 
-            float lastElevation = 0;
-
-            // To interpolate well points close to tile edges, we need all adjacent tiles
-            //using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
-            //{
-            // For each group (key = tile, values = points within this tile)
-            // TIP: test use of Parallel (warning : a lot of files may be opened at the same time)
-            foreach (var tilePoints in pointsByTileQuery)
+            // Group point indexes by raster file
+            var tiles = new List<FileMetadata>();
+            var tilePoints = new List<List<int>>();
+            var tileIndex = new Dictionary<FileMetadata, int>();
+            List<int> outsidePoints = null;
+            for (int i = 0; i < points.Length; i++)
             {
-                // Get the tile
-                FileMetadata mainTile = tilePoints.Key;
-                if (mainTile == null)
+                FileMetadata tile = FindTile(points[i]);
+                if (tile == null)
                 {
-                    foreach (var pointile in tilePoints)
-                    {
-                        GeoPoint current = pointile.Point;
-                        current.Elevation = 0;
-                        yield return current;
-                    }
+                    (outsidePoints ??= new List<int>()).Add(i);
                 }
                 else
                 {
-                    // We open rasters first, then we iterate
-                    PopulateRasterFileDictionary(adjacentRasters, mainTile, _RasterService, tilePoints.SelectMany(tp => tp.AdjacentTiles));
-
-
-                    foreach (var pointile in tilePoints)
+                    if (!tileIndex.TryGetValue(tile, out int group))
                     {
-                        GeoPoint current = pointile.Point;
-                        lastElevation = this.GetElevationAtPoint(adjacentRasters, mainTile, current.Latitude, current.Longitude, lastElevation, interpolator, behavior);
-                        current.Elevation = lastElevation;
-                        yield return current;
+                        group = tiles.Count;
+                        tileIndex[tile] = group;
+                        tiles.Add(tile);
+                        tilePoints.Add(new List<int>());
                     }
+                    tilePoints[group].Add(i);
+                }
+            }
+
+            if (outsidePoints != null)
+            {
+                foreach (int i in outsidePoints)
+                    points[i] = points[i] with { Elevation = 0 };
+            }
+
+            float lastElevation = 0;
+            // To interpolate well points close to tile edges, we need all adjacent tiles
+            // TIP: test use of Parallel (warning : a lot of files may be opened at the same time)
+            for (int group = 0; group < tiles.Count; group++)
+            {
+                FileMetadata mainTile = tiles[group];
+                List<int> indexes = tilePoints[group];
+
+                // We open rasters first, then we iterate
+                PopulateRasterFileDictionary(adjacentRasters, mainTile, _RasterService, null);
+                foreach (int i in indexes)
+                    PopulateRasterFileDictionary(adjacentRasters, mainTile, _RasterService, FindAdjacentTiles(mainTile, points[i]));
+
+                foreach (int i in indexes)
+                {
+                    GeoPoint current = points[i];
+                    lastElevation = this.GetElevationAtPoint(adjacentRasters, mainTile, current.Latitude, current.Longitude, lastElevation, interpolator, behavior);
+                    points[i] = current with { Elevation = lastElevation };
                 }
             }
         }
@@ -1181,7 +1183,7 @@ namespace DEM.Net.Core
                 if (firstUsefulIndex > curIndex)
                 {
                     curIndex = firstUsefulIndex;
-                    curPoint.Longitude = startLon + (top.pixelSizeX * (curIndex - 1));
+                    curPoint = curPoint with { Longitude = startLon + (top.pixelSizeX * (curIndex - 1)) };
                 }
 
                 while (IsPointInTile(top, curPoint))
@@ -1191,7 +1193,7 @@ namespace DEM.Net.Core
                         break;
                     }
 
-                    curPoint.Longitude = startLon + (top.pixelSizeX * curIndex);
+                    curPoint = curPoint with { Longitude = startLon + (top.pixelSizeX * curIndex) };
                     if (curPoint.Longitude > easternSegPoint.Longitude)
                     {
                         break;
@@ -1230,7 +1232,7 @@ namespace DEM.Net.Core
                 if (firstUsefulIndex > curIndex)
                 {
                     curIndex = firstUsefulIndex;
-                    curPoint.Latitude = endLat + (left.pixelSizeY * (curIndex - 1));
+                    curPoint = curPoint with { Latitude = endLat + (left.pixelSizeY * (curIndex - 1)) };
                 }
 
                 while (IsPointInTile(left, curPoint))
@@ -1240,7 +1242,7 @@ namespace DEM.Net.Core
                         break;
                     }
 
-                    curPoint.Latitude = endLat + (left.pixelSizeY * curIndex);
+                    curPoint = curPoint with { Latitude = endLat + (left.pixelSizeY * curIndex) };
                     if (curPoint.Latitude < southernSegPoint.Latitude)
                     {
                         break;
@@ -1286,7 +1288,7 @@ namespace DEM.Net.Core
                         break;
                     }
 
-                    curPoint.Longitude = startLon + (top.pixelSizeX * curIndex);
+                    curPoint = curPoint with { Longitude = startLon + (top.pixelSizeX * curIndex) };
 
                     segments.Add(new GeoSegment(new GeoPoint(top.DataEndLat, curPoint.Longitude), new GeoPoint(bottom.DataStartLat, curPoint.Longitude)));
                     curIndex++;
@@ -1325,7 +1327,7 @@ namespace DEM.Net.Core
                         break;
                     }
 
-                    curPoint.Latitude = endLat + (left.pixelSizeY * curIndex);
+                    curPoint = curPoint with { Latitude = endLat + (left.pixelSizeY * curIndex) };
 
                     segments.Add(new GeoSegment(new GeoPoint(curPoint.Latitude, left.DataStartLon), new GeoPoint(curPoint.Latitude, right.DataEndLon)));
                     curIndex++;

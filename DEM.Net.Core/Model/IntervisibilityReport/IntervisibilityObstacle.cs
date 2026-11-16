@@ -46,11 +46,11 @@ namespace DEM.Net.Core
         /// <summary>
         /// Highest point on the relief above the entry point
         /// </summary>
-        public GeoPoint PeakPoint { get; internal set; }
+        public GeoPoint? PeakPoint { get; internal set; }
         /// <summary>
         /// Location where the ray exists the obstacle
         /// </summary>
-        public GeoPoint ExitPoint { get; internal set; }
+        public GeoPoint? ExitPoint { get; internal set; }
         /// <summary>
         /// Elevation threshold. If the relief was below this altitude, the ray will
         /// have passed above.
@@ -65,9 +65,9 @@ namespace DEM.Net.Core
             return msg;
         }
 
-        private string PointAsString(string label, GeoPoint pt)
+        private string PointAsString(string label, GeoPoint? point)
         {
-            if (pt == null)
+            if (point is not GeoPoint pt)
                 return $"No {label}";
             else
                 return $"{label}: dist={pt.DistanceFromOriginMeters ?? 0:F2}, Elevation={pt.Elevation ?? 0:F2}";

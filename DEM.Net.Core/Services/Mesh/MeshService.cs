@@ -263,9 +263,7 @@ namespace DEM.Net.Core
             int baseIndex = baseIndex0;
             for (int x = 0; x < heightMap.Width - 1; x++)
             {
-                var pBase = coords[x].Clone();
-                pBase.Elevation = baseElevation;
-                basePoints.Add(pBase);
+                basePoints.Add(coords[x] with { Elevation = baseElevation });
 
                 baseIndexes.Add(x);
                 baseIndexes.Add(baseIndex + 1);
@@ -284,9 +282,7 @@ namespace DEM.Net.Core
                 int x = heightMap.Width - 1;
                 int index = x + y * heightMap.Width;
 
-                var pBase = coords[index].Clone();
-                pBase.Elevation = baseElevation;
-                basePoints.Add(pBase);
+                basePoints.Add(coords[index] with { Elevation = baseElevation });
 
                 baseIndexes.Add(x + y * heightMap.Width);
                 baseIndexes.Add(baseIndex + 1);
@@ -302,9 +298,7 @@ namespace DEM.Net.Core
             for (int x = heightMap.Width - 1; x > 0; x--)
             {
                 int index = x + (heightMap.Height - 1) * heightMap.Width;
-                var pBase = coords[index].Clone();
-                pBase.Elevation = baseElevation;
-                basePoints.Add(pBase);
+                basePoints.Add(coords[index] with { Elevation = baseElevation });
 
                 baseIndexes.Add(index);
                 baseIndexes.Add(index - 1);
@@ -322,9 +316,7 @@ namespace DEM.Net.Core
                 int x = 0;
                 int index = x + y * heightMap.Width;
 
-                var pBase = coords[index].Clone();
-                pBase.Elevation = baseElevation;
-                basePoints.Add(pBase);
+                basePoints.Add(coords[index] with { Elevation = baseElevation });
 
                 // last base position is the first base generated
                 int nextBaseIndex = baseIndex + 1 > baseIndex0 + capacity - 1 ? baseIndex0 : baseIndex + 1;
