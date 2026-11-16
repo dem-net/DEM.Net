@@ -36,6 +36,7 @@ using System.Threading.Tasks;
 using DEM.Net.Core.Configuration;
 using DEM.Net.Core.Services.Imagery;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing;
@@ -52,15 +53,11 @@ public class ImageryService(MeshService meshService,
     IOptions<AppSecrets> appSecrets,
     IOptions<DEMNetOptions> options,
     ImageryCache cache,
-    ILogger<ImageryService> logger = null)
+    ILogger<ImageryService>? logger = null)
 {
-    #region Tiled imagery
-
     private int _serverCycle = 0;
 
-
-
-    private readonly ILogger<ImageryService> _logger = logger;
+    private readonly ILogger<ImageryService> _logger = logger ?? NullLogger<ImageryService>.Instance;
     private readonly MeshService _meshService = meshService;
     private readonly AppSecrets appSecrets = appSecrets?.Value;
     private readonly DEMNetOptions options = options?.Value;
@@ -257,10 +254,6 @@ public class ImageryService(MeshService meshService,
 
             }
 
-            // with encoder
-            //IImageEncoder encoder = ConvertFormat(mimeType);
-            //outputImage.Save(fileName, encoder);
-
             // Make image power of two dimensions
             if (options.PowerOfTwoImages)
             {
@@ -400,8 +393,6 @@ public class ImageryService(MeshService meshService,
             .Select(pt => TileUtils.PositionToGlobalPixel(new LatLong(pt.Latitude, pt.Longitude), zoomLevel, tiles.TileSize))
             .Select(pt => new PointF((float)(pt.X - (int)projectedBbox.xMin), (float)(pt.Y - (int)projectedBbox.yMin)));
 
-        
-
         using (Image<Rgba32> outputImage = new Image<Rgba32>((int)projectedBbox.Width, (int)projectedBbox.Height))
         {
             foreach (var tile in tiles.Tiles)
@@ -468,7 +459,7 @@ public class ImageryService(MeshService meshService,
                 var message =
                     $"There is no token found for {provider.Name} provider. Make sure a user secrets are set with a {provider.TokenUserSecretsKey} value.";
                 _logger?.LogError(message);
-                throw new Exception(message);
+                throw new InvalidOperationException(message);
             }
 
             url = url.Replace("{t}", token);
@@ -501,10 +492,6 @@ public class ImageryService(MeshService meshService,
 
         return true;
     }
-
-    #endregion
-
-    #region Normal map generation
 
     /// <summary>
     /// Generate normal texture from height map.
@@ -694,40 +681,6 @@ public class ImageryService(MeshService meshService,
     {
         return ResizeHeightMap_RTIN(heightMap.Select(c => (float)(c.Elevation ?? 0)), sourceWidth, sourceHeight, destWidth, destHeight, minElevation, maxElevation, margin);
     }
-    //{
-
-    //    float[] outMap = new float[(width + margin) * (height + margin)];
-
-    //    using (Image<L16> outputImage = new Image<L16>(heightMap.Width, heightMap.Height))
-    //    {
-
-    //        int hMapIndex = 0;
-    //        foreach (var coord in heightMap.Coordinates)
-    //        {
-    //            var j = hMapIndex / heightMap.Width;
-    //            var i = hMapIndex - j * heightMap.Width;
-
-    //            float gray = MathHelper.Map(heightMap.Minimum, heightMap.Maximum, 0, (float)ushort.MaxValue, (float)(coord.Elevation ?? 0f), true);
-
-    //            outputImage[i, j] = new L16((ushort)Math.Round(gray, 0));
-
-    //            hMapIndex++;
-    //        }
-
-    //        // Resize
-    //        outputImage.Mutate(i => i.Resize(width, height));
-
-    //        // Read heights from pixels again
-    //        for (int j = 0; j < height + margin; j++)
-    //            for (int i = 0; i < width + margin; i++)
-    //            {
-    //                L16 color = outputImage[Math.Min(i, width - 1), Math.Min(j, height - 1)];
-    //                outMap[i + (j * width)] = FromColorToHeight(color, heightMap.Minimum, heightMap.Maximum);
-    //            }
-    //    }
-
-    //    return outMap;
-    //}
     public List<float> ResizeHeightMap_RTIN(IEnumerable<float> heightMap, int sourceWidth, int sourceHeight, int destWidth, int destHeight, float minElevation, float maxElevation, int margin)
     {
 
@@ -803,8 +756,6 @@ public class ImageryService(MeshService meshService,
         return outMap;
     }
 
-
-
     private L16 FromGeoPointToHeightMapColor(GeoPoint point, float min, float max)
     {
         float gray = MathHelper.Map(min, max, 0, (float)ushort.MaxValue, (float)(point.Elevation ?? 0f), true);
@@ -841,9 +792,6 @@ public class ImageryService(MeshService meshService,
             (byte)Math.Round(MathHelper.Map(-1, 1, 0, 255, normal.Y, true), 0),
             (byte)Math.Round(MathHelper.Map(0, -1, 128, 255, -normal.Z, true), 0));
     }
-
-    #endregion
-
 
     public List<Vector2> ComputeUVMap(HeightMap heightMap, TextureInfo textureInfo, int tileSize)
     {

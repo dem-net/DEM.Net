@@ -11,7 +11,7 @@ namespace DEM.Net.Core.Datasets;
 /// </summary>
 public class TileIndexDataSource(string indexUrl, string indexFilePath,
     Func<IReadOnlyDictionary<string, string>, string> tileUrl,
-    Func<IReadOnlyDictionary<string, string>, string> tileFileName = null) : IDEMDataSource
+    Func<IReadOnlyDictionary<string, string>, string>? tileFileName = null) : IDEMDataSource
 {
     /// <summary>URL of the GeoJSON FeatureCollection listing the tiles.</summary>
     public string IndexUrl { get; } = indexUrl ?? throw new ArgumentNullException(nameof(indexUrl));

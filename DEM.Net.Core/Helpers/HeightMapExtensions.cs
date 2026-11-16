@@ -72,8 +72,6 @@ public static class HeightMapExtensions
 
         TranslateInPlace(heightMap.Coordinates, -origin.Longitude, -origin.Latitude, -origin.Elevation ?? 0);
 
-
-
         heightMap.BoundingBox = new BoundingBox(bbox.xMin - origin.Longitude, bbox.xMax - origin.Longitude
                                                 , bbox.yMin - origin.Latitude, bbox.yMax - origin.Latitude
                                                 , bbox.zMin - origin.Elevation ?? 0, bbox.zMax - origin.Elevation ?? 0);
@@ -637,10 +635,6 @@ public static class HeightMapExtensions
                 outPoints[index].Add((elevation, w, sourcePt));
             }
         }
-        //double WeightedDistance(double x1, double x2, double y1, double y2, double radius)
-        //    => (radius - Distance(x1, x2, y1, y2))/radius;
-        //double Distance(double x1, double x2, double y1, double y2)
-        //    => Math.Sqrt((x2 - x1) * (x2 - x1)+ (y2 - y1) * (y2 - y1));
     }
     public static IEnumerable<GeoPoint> WarpHeightMapOld(IReadOnlyList<GeoPoint> coords, int sourceWidth, int sourceHeight, int destWidth, int destHeight)
     {

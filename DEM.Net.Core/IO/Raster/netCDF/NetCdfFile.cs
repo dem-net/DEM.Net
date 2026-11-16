@@ -25,8 +25,7 @@ public class NetCdfFile : IRasterFile
     private Variable _longVariable;
     private Variable _elevationVariable;
 
-    #region Lifecycle
-    public NetCdfFile(string fileName, netCDFField latitudeField = null, netCDFField longitudeField = null, netCDFField elevationField = null)
+    public NetCdfFile(string fileName, netCDFField? latitudeField = null, netCDFField? longitudeField = null, netCDFField? elevationField = null)
     {
         _filename = fileName;
 
@@ -67,7 +66,6 @@ public class NetCdfFile : IRasterFile
         }
     }
 
-    #region IDisposable Support
     private bool disposedValue = false; // Pour détecter les appels redondants
 
 
@@ -90,10 +88,6 @@ public class NetCdfFile : IRasterFile
     {
         Dispose(true);
     }
-
-
-    #endregion
-    #endregion
 
     public float GetElevationAtPoint(FileMetadata metadata, int x, int y)
     {

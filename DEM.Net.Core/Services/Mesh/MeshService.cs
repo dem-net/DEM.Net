@@ -32,13 +32,14 @@ using System.Text;
 using System.Threading.Tasks;
 using DEM.Net.Core.Tesselation;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using NetTopologySuite.IO;
 
 namespace DEM.Net.Core;
 
-public class MeshService(ILogger<MeshService> logger = null)
+public class MeshService(ILogger<MeshService>? logger = null)
 {
-    private readonly ILogger<MeshService> _logger = logger;
+    private readonly ILogger<MeshService> _logger = logger ?? NullLogger<MeshService>.Instance;
 
     /// <summary>
     /// Triangulate a regular set of points
@@ -330,14 +331,9 @@ public class MeshService(ILogger<MeshService> logger = null)
         baseIndexes.Add(baseIndex0 + heightMap.Width - 1 + heightMap.Height - 1);
         baseIndexes.Add(baseIndex0 + 2 * (heightMap.Width - 1) + heightMap.Height - 1);
 
-
-
-
         triangulation.Positions = triangulation.Positions.Concat(basePoints);
         triangulation.NumPositions += basePoints.Count;
         triangulation.Indices = triangulation.Indices.Concat(baseIndexes);
-
-
 
     }
 
@@ -387,26 +383,6 @@ public class MeshService(ILogger<MeshService> logger = null)
         {
             yield return vec == Vector3.Zero ? Vector3.UnitY : Vector3.Normalize(vec);
         }
-//#if DEBUG
-//            for (int i = 0; i < norm.Length; i++)
-//            {
-//                var vec = norm[i];
-//                if (vec == Vector3.Zero)
-//                {
-//                    //_logger.LogWarning("Invalid normal detected for position {0}", i);
-//                    yield return Vector3.UnitY;
-//                }
-//                else
-//                {
-//                    yield return Vector3.Normalize(vec);
-//                }
-//            }
-//#else
-//            foreach (var vec in norm)
-//            {
-//                yield return vec == Vector3.Zero ? Vector3.UnitY : Vector3.Normalize(vec);
-//            }
-//#endif
     }
 
 
@@ -443,7 +419,7 @@ public class MeshService(ILogger<MeshService> logger = null)
 
                 if (width <= 0)
                 {
-                    throw new Exception("Line width of 0 is not supported. Please provide a with > 0.");
+                    throw new ArgumentOutOfRangeException(nameof(width), width, "Line width must be > 0.");
                 }
                 else
                 {
@@ -724,13 +700,6 @@ public class MeshService(ILogger<MeshService> logger = null)
         triangulation.Indices.AddRange(new[] { 3, 0, 4 });
         triangulation.Indices.AddRange(new[] { 3, 4, 7 });
 
-        //triangulation.Colors = new List<Vector4>();
-        //triangulation.Colors.Add(VectorsExtensions.CreateColor(255, 0, 0));
-        //triangulation.Colors.Add(VectorsExtensions.CreateColor(0, 255, 0));
-        //triangulation.Colors.Add(VectorsExtensions.CreateColor(0, 0, 255));
-        //triangulation.Colors.Add(VectorsExtensions.CreateColor(255,255, 255));
-
-        // add color for each position
         triangulation.Colors = [.. triangulation.Positions.Select(p => color)];
         return triangulation;
     }
@@ -752,13 +721,6 @@ public class MeshService(ILogger<MeshService> logger = null)
         triangulation.Indices.Add(3);
         triangulation.Indices.Add(2);
 
-        //triangulation.Colors = new List<Vector4>();
-        //triangulation.Colors.Add(VectorsExtensions.CreateColor(255, 0, 0));
-        //triangulation.Colors.Add(VectorsExtensions.CreateColor(0, 255, 0));
-        //triangulation.Colors.Add(VectorsExtensions.CreateColor(0, 0, 255));
-        //triangulation.Colors.Add(VectorsExtensions.CreateColor(255,255, 255));
-
-        // add color for each position
         triangulation.Colors = [.. triangulation.Positions.Select(p => color)];
         return triangulation;
     }
@@ -927,6 +889,4 @@ public class MeshService(ILogger<MeshService> logger = null)
         return arrow;
     }
 
-
-    
 }

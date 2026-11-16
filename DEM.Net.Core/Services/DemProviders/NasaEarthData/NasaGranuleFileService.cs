@@ -100,7 +100,7 @@ public class NasaGranuleFileService(ILogger<NasaGranuleFileService> logger, Eart
                 // fallack for LPCLOUD datasets (see https://cmr.earthdata.nasa.gov/search/granules.json?collection_concept_id=C1711961296-LPCLOUD&page_num=1&page_size=2000&sort_key=-entry_title)
                 link = entry.Links.FirstOrDefault(l => l.Href.AbsolutePath.EndsWith("_dem.tif"));
                 if (link == null)
-                    throw new Exception("Cannot find Zip entry or dem.tif entry");
+                    throw new InvalidDataException("Cannot find Zip entry or dem.tif entry");
             }
 
 

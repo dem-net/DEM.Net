@@ -250,7 +250,6 @@ namespace DEM.Net.Core;
         int numNoDataPoints = 0;
         for (int i = 1; i < points.Count; i++)
         {
-            #region metrics
             GeoPoint curPoint = points[i];
             double v_dist = DistanceTo(curPoint, points[i - 1]);
             total += v_dist;
@@ -272,9 +271,7 @@ namespace DEM.Net.Core;
             {
                 totalDescent += diff;
             }
-            #endregion
 
-            #region visibility checks
             // Visibility check
             // If obstacle hit, add it and
             if (visibilityCheck)
@@ -322,7 +319,6 @@ namespace DEM.Net.Core;
                     obstacle = null;
                 }
             }
-            #endregion
 
 
             lastElevation = currentElevation;
@@ -439,7 +435,6 @@ namespace DEM.Net.Core;
         return total;
     }
 
-    #region Enumerators
 
     /// <summary>
     /// Enumerates through a geometry sub parts
@@ -483,7 +478,6 @@ namespace DEM.Net.Core;
         }
     }
 
-    #endregion
 
     /// <summary>
     /// Transform a NTS coordinate to a DEM.Net geopoint

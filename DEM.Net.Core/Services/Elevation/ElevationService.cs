@@ -38,16 +38,17 @@ using DEM.Net.Core.Interpolation;
 using LazyCache;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using NetTopologySuite.Geometries;
 
 namespace DEM.Net.Core;
 
-public class ElevationService(RasterService rasterService, IAppCache memCache, ILogger<ElevationService> logger = null)
+public class ElevationService(RasterService rasterService, IAppCache memCache, ILogger<ElevationService>? logger = null)
 {
     public const float NO_DATA_OUT = 0;
     private const double EPSILON = 1E-10;
     private readonly RasterService _RasterService = rasterService;
-    private readonly ILogger<ElevationService> _logger = logger;
+    private readonly ILogger<ElevationService> _logger = logger ?? NullLogger<ElevationService>.Instance;
     private readonly IAppCache _memCache = memCache;
 
     public string GetDEMLocalPath(DEMDataSet dataSet)
@@ -63,7 +64,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
     /// <param name="bbox">Bounding box, <see cref="GeometryService.GetBoundingBox(string)"/></param>
     /// <remarks>VRT file is downloaded once. It will be cached in local for 30 days.
     /// </remarks>
-    public async Task DownloadMissingFilesAsync(DEMDataSet dataSet, BoundingBox bbox = null, CancellationToken cancellationToken = default)
+    public async Task DownloadMissingFilesAsync(DEMDataSet dataSet, BoundingBox? bbox = null, CancellationToken cancellationToken = default)
     {
         var report = await _RasterService.GenerateReportAsync(dataSet, bbox, cancellationToken).ConfigureAwait(false);
 
@@ -198,17 +199,17 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
     /// <param name="behavior">Action to use when no data is found in dataset</param>
     /// <remarks>Output can be BIG, as all elevations will be returned.</remarks>
     /// <returns></returns>
-    public List<GeoPoint> GetLineGeometryElevation(Geometry lineStringGeometry, DEMDataSet dataSet, List<FileMetadata> segTiles, List<GeoSegment> nsLines, List<GeoSegment> weLines, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
+    public List<GeoPoint>? GetLineGeometryElevation(Geometry? lineStringGeometry, DEMDataSet dataSet, List<FileMetadata> segTiles, List<GeoSegment> nsLines, List<GeoSegment> weLines, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
     {
         if (lineStringGeometry == null || lineStringGeometry.IsEmpty)
             return null;
         if (lineStringGeometry.OgcGeometryType != OgcGeometryType.LineString)
         {
-            throw new Exception("Geometry must be a linestring");
+            throw new ArgumentException("Geometry must be a linestring", nameof(lineStringGeometry));
         }
         if (lineStringGeometry.SRID != 4326)
         {
-            throw new Exception("Geometry SRID must be set to 4326 (WGS 84)");
+            throw new ArgumentException("Geometry SRID must be set to 4326 (WGS 84)", nameof(lineStringGeometry));
         }
 
         BoundingBox bbox = lineStringGeometry.GetBoundingBox();
@@ -266,17 +267,17 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
     /// <param name="behavior">Action to use when no data is found in dataset</param>
     /// <remarks>Output can be BIG, as all elevations will be returned.</remarks>
     /// <returns></returns>
-    public List<GeoPoint> GetLineGeometryElevation(Geometry lineStringGeometry, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
+    public List<GeoPoint>? GetLineGeometryElevation(Geometry? lineStringGeometry, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
     {
         if (lineStringGeometry == null || lineStringGeometry.IsEmpty)
             return null;
         if (lineStringGeometry.OgcGeometryType != OgcGeometryType.LineString)
         {
-            throw new Exception("Geometry must be a linestring");
+            throw new ArgumentException("Geometry must be a linestring", nameof(lineStringGeometry));
         }
         if (lineStringGeometry.SRID != 4326)
         {
-            throw new Exception("Geometry SRID must be set to 4326 (WGS 84)");
+            throw new ArgumentException("Geometry SRID must be set to 4326 (WGS 84)", nameof(lineStringGeometry));
         }
         if (dataSet.SRID != Reprojection.SRID_GEODETIC)
         {
@@ -414,13 +415,6 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
         var weLines = GetDEMWestEastLines(tiles, registrationOffset);
         var nsLines = GetDEMNorthSouthLines(tiles, registrationOffset);
 
-        //Dictionary<TKey, List<GeoPoint>> outLines = new Dictionary<TKey, List<GeoPoint>>(lineGeoPoints.Count);
-        //foreach (var linePts in lineGeoPoints)
-        //{
-        //    Geometry geometry = GeometryService.ParseGeoPointAsGeometryLine(linePts.Value);
-
-        //    outLines.Add(linePts.Key, GetLineGeometryElevation(geometry, dataSet, tiles, nsLines, weLines, interpolationMode, behavior));
-        //}
         ConcurrentDictionary<TKey, List<GeoPoint>> outLines = new ConcurrentDictionary<TKey, List<GeoPoint>>();
         Parallel.ForEach(lineGeoPoints, linePts =>
         {
@@ -442,7 +436,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
     /// <param name="lon"></param>
     /// <param name="interpolator">If null, then Bilinear interpolation will be used</param>
     /// <returns></returns>
-    public float GetPointElevation(FileMetadata metadata, double lat, double lon, IInterpolator interpolator = null)
+    public float GetPointElevation(FileMetadata metadata, double lat, double lon, IInterpolator? interpolator = null)
     {
         float heightValue = 0;
         try
@@ -466,7 +460,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
     /// <param name="lon"></param>
     /// <param name="interpolator">If null, then Bilinear interpolation will be used</param>
     /// <returns></returns>
-    public float GetPointElevation(IRasterFile raster, FileMetadata metadata, double lat, double lon, IInterpolator interpolator = null)
+    public float GetPointElevation(IRasterFile raster, FileMetadata metadata, double lat, double lon, IInterpolator? interpolator = null)
     {
         // Do not dispose Dictionary, as IRasterFile disposal is the caller's responsability
         RasterFileDictionary rasters = new RasterFileDictionary
@@ -536,7 +530,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
     /// <param name="dataSet">DEM dataset to use</param>
     /// <param name="interpolationMode">Interpolation mode</param>
     /// <returns>The points with their elevation, in the dataset projection and in the input order, null when the dataset does not cover them</returns>
-    public async Task<List<GeoPoint>> GetPointsElevationAsync(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero, bool downloadMissingFiles = true, CancellationToken cancellationToken = default)
+    public async Task<List<GeoPoint>?> GetPointsElevationAsync(IEnumerable<GeoPoint>? points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero, bool downloadMissingFiles = true, CancellationToken cancellationToken = default)
     {
         if (points == null)
             return null;
@@ -558,7 +552,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
     /// <param name="dataSet">DEM dataset to use</param>
     /// <param name="interpolationMode">Interpolation mode</param>
     /// <returns>The points with their elevation, in the dataset projection and in the input order, null when the dataset does not cover them</returns>
-    public List<GeoPoint> GetPointsElevation(IEnumerable<GeoPoint> points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
+    public List<GeoPoint>? GetPointsElevation(IEnumerable<GeoPoint>? points, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
     {
         if (points == null)
             return null;
@@ -642,7 +636,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
         {
             string errorMessage = $"Dataset {dataSet.Name} has no coverage for provided bounding box.";
             this._logger.LogWarning(errorMessage);
-            throw new Exception(errorMessage);
+            throw new ArgumentException(errorMessage, nameof(bbox));
         }
         else
         {
@@ -743,11 +737,6 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
 
         int registrationOffset = dataSet.FileFormat.Registration == DEMFileRegistrationMode.Grid ? 1 : 0;
 
-        //xWest = Math.Max(0, xWest);
-        //xEast = Math.Min(missingTile.Width - 1 - registrationOffset, xEast);
-        //yNorth = Math.Max(0, yNorth);
-        //ySouth = Math.Min(missingTile.Height - 1 - registrationOffset, ySouth);
-
         // get x/y increments
         double tileSizeX = ((double)templateTile.Width - registrationOffset) * templateTile.PixelScaleX;
         double tileSizeY = ((double)templateTile.Height - registrationOffset) * templateTile.PixelScaleY;
@@ -785,8 +774,6 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
 
                     // missing tile
                     _logger.LogInformation($"Generating missing tile at x/y = {x:F5} {y:F5}, index = [{xIndex}, {yIndex}]");
-
-
 
                     // The missing tile is the template tile translated by whole tiles: same internal layout
                     // (data bounds span Width-1 pixels for cell registration, physical bounds...) so that its
@@ -1338,7 +1325,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
     }
 
 
-    public List<FileMetadata> GetCoveringFiles(BoundingBox bbox, DEMDataSet dataSet, List<FileMetadata> subSet = null)
+    public List<FileMetadata> GetCoveringFiles(BoundingBox bbox, DEMDataSet dataSet, List<FileMetadata>? subSet = null)
     {
         // Locate which files are needed
 
@@ -1356,7 +1343,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
 
         return bboxMetadata;
     }
-    public FileMetadata GetCoveringFile(double lat, double lon, DEMDataSet dataSet, List<FileMetadata> subSet = null)
+    public FileMetadata? GetCoveringFile(double lat, double lon, DEMDataSet dataSet, List<FileMetadata>? subSet = null)
     {
         // Locate which files are needed
 
@@ -1601,9 +1588,6 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
         => tile.FileFormat.Registration == DEMFileRegistrationMode.Cell
             ? tile.PhysicalEndLat + (y + 0.5) * tile.pixelSizeY
             : tile.DataEndLat + y * tile.pixelSizeY;
-
-
-
 
     /// <summary>Average of the 4 corner values that are not no data (per interpolated point: no array, no LINQ).</summary>
     private static float GetAverageExceptForNoDataValue(float noData, float valueIfAllBad, float a, float b, float c, float d)

@@ -39,7 +39,7 @@ public class Attribution : Dictionary<string, string>
     {
 
     }
-    public Attribution(string subject, string text = null, string url = null, string acknowledgement = null)
+    public Attribution(string subject, string? text = null, string? url = null, string? acknowledgement = null)
     {
         this.Subject = subject;
         this.Text = text;

@@ -12,7 +12,6 @@ namespace DEM.Net.Core.IO.SensorLog;
 
 public static class SensorLogExtensions
 {
-    #region GeoPoints
 
     public static IEnumerable<GpxTrackPoint> ToGPX(this SensorLog sensorLog)
     {
@@ -37,9 +36,7 @@ public static class SensorLogExtensions
         return sensorLog.Data.Where(d => d.HasCoordinates)
             .Select(d => new GeoPoint(d.LocationLatitude.Value, d.LocationLongitude.Value, d.AltimeterRelativeAltitude));
     }
-    #endregion
 
-    #region Plot
     private class SeriesDefinition : Dictionary<string, (Func<SensorLogData, float?> getter, Predicate<float?> noDatavalue)>
     {
     }
@@ -58,21 +55,6 @@ public static class SensorLogExtensions
         seriesDefinition.Add("LocationMagneticHeading", (getter: data => data.LocationMagneticHeading, noDatavalue: v => v == null));
         seriesDefinition.Add("LocationTrueHeading", (getter: data => data.LocationTrueHeading, noDatavalue: v => v == null));
         seriesDefinition.Add("LocationHeadingAccuracy", (getter: data => data.LocationHeadingAccuracy, noDatavalue: v => v == null));
-        //seriesDefinition.Add("LocationAltitude", (getter: data => data.LocationAltitude, noDatavalue: v => v <= 0));
-        //seriesDefinition.Add("MotionYaw", (getter: data => data.MotionYaw, noDatavalue: v => v <= -9990));
-        //seriesDefinition.Add("MotionPitch", (getter: data => data.MotionPitch, noDatavalue: v => v <= -9990));
-        //seriesDefinition.Add("MotionRoll", (getter: data => data.MotionRoll, noDatavalue: v => v <= -9990));
-        //seriesDefinition.Add("GyroRotationX", (getter: data => data.GyroRotationX, noDatavalue: v => v <= -9990));
-        //seriesDefinition.Add("GyroRotationY", (getter: data => data.GyroRotationY, noDatavalue: v => v <= -9990));
-        //seriesDefinition.Add("GyroRotationZ", (getter: data => data.GyroRotationZ, noDatavalue: v => v <= -9990));
-        //seriesDefinition.Add("LocationCourse", (getter: data => data.LocationCourse, noDatavalue: v => v <= -9990));
-        //seriesDefinition.Add("LocationFloor", (getter: data => data.LocationFloor, noDatavalue: v => v <= -9990));
-        //seriesDefinition.Add("LocationHeadingX", (getter: data => data.LocationHeadingX, noDatavalue: v => v <= -9990));
-        //seriesDefinition.Add("LocationHeadingY", (getter: data => data.LocationHeadingY, noDatavalue: v => v <= -9990));
-        //seriesDefinition.Add("LocationHeadingZ", (getter: data => data.LocationHeadingZ, noDatavalue: v => v <= -9990));
-        //seriesDefinition.Add("MotionRotationRateX", (getter: data => data.MotionRotationRateX, noDatavalue: v => v <= -9990));
-        //seriesDefinition.Add("MotionRotationRateY", (getter: data => data.MotionRotationRateY, noDatavalue: v => v <= -9990));
-        //seriesDefinition.Add("MotionRotationRateZ", (getter: data => data.MotionRotationRateZ, noDatavalue: v => v <= -9990));
         int margin = 10;
         //width = log.Data.Count + 2 * margin;
         List<PointF[]> dataseries = GetDataSeries(log, seriesDefinition);
@@ -239,5 +221,4 @@ public static class SensorLogExtensions
            .DrawLine(Color.Black, 1, yAxis);
     }
 
-    #endregion
 }

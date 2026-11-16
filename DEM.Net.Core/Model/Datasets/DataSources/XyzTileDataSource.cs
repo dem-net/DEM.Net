@@ -34,7 +34,7 @@ public class XyzTileDataSource : IDEMDataSource
 
     public DEMDataSourceType DataSourceType => DEMDataSourceType.XyzTiles;
 
-    public XyzTileDataSource(string urlTemplate, int zoom, int tileSize, int fullCoverageMaxZoom, string coverageIndexUrl = null)
+    public XyzTileDataSource(string urlTemplate, int zoom, int tileSize, int fullCoverageMaxZoom, string? coverageIndexUrl = null)
     {
         UrlTemplate = urlTemplate ?? throw new ArgumentNullException(nameof(urlTemplate));
         if (zoom < 0 || zoom > 24) throw new ArgumentOutOfRangeException(nameof(zoom));

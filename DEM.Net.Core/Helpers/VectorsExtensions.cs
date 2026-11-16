@@ -105,13 +105,6 @@ public static class VectorsExtensions
     public static IEnumerable<Vector3> ToQuadPoints(this Vector3 vertex, float pointSize)
     {
         float halfSize = pointSize / 2f;
-        //List<Vector3> outList = new List<Vector3>(4);
-
-        //outList.Add(new Vector3(vertex.X - halfSize, vertex.Y, vertex.Z - halfSize));
-        //outList.Add(new Vector3(vertex.X + halfSize, vertex.Y, vertex.Z - halfSize));
-        //outList.Add(new Vector3(vertex.X + halfSize, vertex.Y, vertex.Z + halfSize));
-        //outList.Add(new Vector3(vertex.X - halfSize, vertex.Y, vertex.Z + halfSize));
-        //return outList;
         yield return new Vector3(vertex.X - halfSize, vertex.Y, vertex.Z - halfSize);
         yield return new Vector3(vertex.X + halfSize, vertex.Y, vertex.Z - halfSize);
         yield return new Vector3(vertex.X + halfSize, vertex.Y, vertex.Z + halfSize);

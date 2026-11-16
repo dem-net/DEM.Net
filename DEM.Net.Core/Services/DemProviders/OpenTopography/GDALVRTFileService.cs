@@ -36,6 +36,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace DEM.Net.Core;
 
@@ -43,11 +44,11 @@ namespace DEM.Net.Core;
 /// Remote GDAL VRT file handling
 /// Downloads and enumerates through tiles referenced in VRT file
 /// </summary>
-public class GDALVRTFileService(IHttpClientFactory httpClientFactory, ILogger<GDALVRTFileService> logger = null) : IDEMDataSetIndex
+public class GDALVRTFileService(IHttpClientFactory httpClientFactory, ILogger<GDALVRTFileService>? logger = null) : IDEMDataSetIndex
 {
     private const int MAX_AGE_DAYS = 100;
     private readonly SingleFlight _setup = new(keepCompleted: false); // the result lives in _cacheByDemName
-    private readonly ILogger<GDALVRTFileService> _logger = logger;
+    private readonly ILogger<GDALVRTFileService> _logger = logger ?? NullLogger<GDALVRTFileService>.Instance;
     private readonly ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
     private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
 
@@ -181,7 +182,7 @@ public class GDALVRTFileService(IHttpClientFactory httpClientFactory, ILogger<GD
             geoTransform = ParseGeoTransform(reader.ReadElementContentAsString());
         }
         else
-            throw new Exception("GeoTransform element not found!");
+            throw new InvalidDataException("GeoTransform element not found");
 
         string sourceName = "";
         if (reader.ReadToFollowing("VRTRasterBand"))
@@ -345,7 +346,7 @@ public class GDALVRTFileService(IHttpClientFactory httpClientFactory, ILogger<GD
 
         if (geoTransformArray.Length != 6)
         {
-            throw new Exception("GeoTransform is not valid. 6 elements accounted.");
+            throw new InvalidDataException("GeoTransform is not valid: 6 elements expected");
         }
 
         return geoTransformArray;

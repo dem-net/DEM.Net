@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core.Imagery;
 
-public class TextureInfo(string filePath, TextureImageFormat imageFormat, int width, int height, int zoom = 0, BoundingBox projectedBounds = null, int? tileCount = null)
+public class TextureInfo(string filePath, TextureImageFormat imageFormat, int width, int height, int zoom = 0, BoundingBox? projectedBounds = null, int? tileCount = null)
 {
 
     public string FilePath { get; set; } = filePath;

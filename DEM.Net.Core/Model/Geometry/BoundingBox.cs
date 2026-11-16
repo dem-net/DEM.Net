@@ -148,7 +148,7 @@ public class BoundingBox(double xmin, double xmax, double ymin, double ymax, dou
             , Math.Min(zMin, zMax), Math.Max(zMin, zMax));
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         BoundingBox objTyped = obj as BoundingBox;
 
@@ -257,7 +257,7 @@ public class BoundingBox(double xmin, double xmax, double ymin, double ymax, dou
             , xMin, xMax, yMin, yMax, zMin, zMax, Center[0], Center[1], Center[2]);
     }
 
-    public bool Equals(BoundingBox other)
+    public bool Equals(BoundingBox? other)
     {
         if (other == null) return false;
         return xMin == other.xMin
@@ -281,7 +281,7 @@ public class BoundingBox(double xmin, double xmax, double ymin, double ymax, dou
         return (BoundingBox)this.MemberwiseClone();
     }
 
-    public static bool operator ==(BoundingBox a, BoundingBox b)
+    public static bool operator ==(BoundingBox? a, BoundingBox? b)
     {
         if (Object.ReferenceEquals(a, null))
         {
@@ -298,7 +298,7 @@ public class BoundingBox(double xmin, double xmax, double ymin, double ymax, dou
 
         return a.Equals(b);
     }
-    public static bool operator !=(BoundingBox a, BoundingBox b)
+    public static bool operator !=(BoundingBox? a, BoundingBox? b)
     {
         return !(a == b);
     }

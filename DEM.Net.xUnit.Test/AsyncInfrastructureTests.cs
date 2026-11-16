@@ -27,7 +27,6 @@ public class AsyncInfrastructureTests : IDisposable
         try { Directory.Delete(_dir, recursive: true); } catch (IOException) { } catch (UnauthorizedAccessException) { }
     }
 
-    #region SingleFlight
 
     [Fact]
     public async Task SingleFlightRunsConcurrentCallsOnce()
@@ -88,10 +87,6 @@ public class AsyncInfrastructureTests : IDisposable
         await other;
         Assert.True(completed);
     }
-
-    #endregion
-
-    #region Downloads
 
     [Fact]
     public async Task InterruptedDownloadLeavesNoFile()
@@ -161,10 +156,6 @@ public class AsyncInfrastructureTests : IDisposable
         public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
     }
 
-    #endregion
-
-    #region Tar archives
-
     [Fact]
     public void TarGzArchiveIsFullyExtracted()
     {
@@ -217,10 +208,6 @@ public class AsyncInfrastructureTests : IDisposable
         }
         return tarGz;
     }
-
-    #endregion
-
-    #region Raster fixes
 
     [Fact]
     public void NoDataValueIsCultureInvariant()
@@ -276,5 +263,4 @@ public class AsyncInfrastructureTests : IDisposable
             Assert.Equal(Value(x, y), geoTiff.GetElevationAtPoint(metadata, x, y));
     }
 
-    #endregion
 }

@@ -42,7 +42,6 @@ public sealed class JsonCompatibilityTests : IDisposable
         FileFormat = new DEMFileDefinition("hgt", DEMFileType.SRTM_HGT, ".hgt", DEMFileRegistrationMode.Grid),
     };
 
-    #region Files written by former versions
 
     // Written by DEM.Net 10 (Newtonsoft.Json, indented), NaN and Infinity as strings
     private const string NewtonsoftMetadata = """
@@ -198,10 +197,6 @@ public sealed class JsonCompatibilityTests : IDisposable
         Assert.Equal(44, tileSources[0].BBox.yMax);
     }
 
-    #endregion
-
-    #region Remote payloads
-
     [Fact]
     public void StacPagesAreParsed()
     {
@@ -338,5 +333,4 @@ public sealed class JsonCompatibilityTests : IDisposable
         Assert.Equal(new DateTimeOffset(2019, 3, 2, 16, 3, 19, 123, TimeSpan.Zero), new DateTimeOffset(log.Data[1].LoggingTime)); // no offset: UTC
     }
 
-    #endregion
 }

@@ -55,17 +55,16 @@ public class GeoTiff : IRasterFile
     public GeoTiff(string tiffPath)
     {
         if (!File.Exists(tiffPath))
-            throw new Exception($"File {tiffPath} does not exists !");
+            throw new FileNotFoundException($"File {tiffPath} does not exist", tiffPath);
 
         _tiffPath = tiffPath;
         Tiff.SetErrorHandler(_traceLogHandler);
         _tiff = Tiff.Open(tiffPath, "r");
 
         if (_tiff == null)
-            throw new Exception($"File {tiffPath} cannot be opened !");
+            throw new IOException($"File {tiffPath} cannot be opened");
     }
 
-    #region Tile info
 
     int tileWidth = 0;
 
@@ -125,7 +124,6 @@ public class GeoTiff : IRasterFile
             return isTiled;
         }
     }
-    #endregion
 
     protected virtual void Dispose(bool disposing)
     {
@@ -190,7 +188,7 @@ public class GeoTiff : IRasterFile
         }
         catch (Exception e)
         {
-            throw new Exception($"Error in ParseGeoDataAtPoint: {e.Message}");
+            throw new InvalidDataException($"Error in ParseGeoDataAtPoint: {e.Message}", e);
         }
         return heightValue;
     }
@@ -228,7 +226,7 @@ public class GeoTiff : IRasterFile
                 RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(buffer, offset * metadata.BitsPerSample / 8),
                 RasterSampleFormat.INTEGER => BitConverter.ToInt16(buffer, offset * metadata.BitsPerSample / 8),
                 RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(buffer, offset * metadata.BitsPerSample / 8),
-                _ => throw new Exception("Sample format unsupported."),
+                _ => throw new NotSupportedException("Sample format unsupported."),
             };
             if (heightValue > 32768)
             {
@@ -237,7 +235,7 @@ public class GeoTiff : IRasterFile
         }
         catch (Exception e)
         {
-            throw new Exception($"Error in ParseGeoDataAtPoint: {e.Message}");
+            throw new InvalidDataException($"Error in ParseGeoDataAtPoint: {e.Message}", e);
         }
 
         return heightValue;
@@ -252,7 +250,7 @@ public class GeoTiff : IRasterFile
                 RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(buffer, offset * metadata.BitsPerSample / 8),
                 RasterSampleFormat.INTEGER => BitConverter.ToInt16(buffer, offset * metadata.BitsPerSample / 8),
                 RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(buffer, offset * metadata.BitsPerSample / 8),
-                _ => throw new Exception("Sample format unsupported."),
+                _ => throw new NotSupportedException("Sample format unsupported."),
             };
             if (heightValue > 32768)
             {
@@ -261,7 +259,7 @@ public class GeoTiff : IRasterFile
         }
         catch (Exception e)
         {
-            throw new Exception($"Error in ParseGeoDataAtPoint: {e.Message}");
+            throw new InvalidDataException($"Error in ParseGeoDataAtPoint: {e.Message}", e);
         }
 
         return heightValue;
@@ -539,7 +537,7 @@ public class GeoTiff : IRasterFile
                         RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(byteScanline, x * bytesPerSample),
                         RasterSampleFormat.INTEGER => BitConverter.ToInt16(byteScanline, x * bytesPerSample),
                         RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(byteScanline, x * bytesPerSample),
-                        _ => throw new Exception("Sample format unsupported."),
+                        _ => throw new NotSupportedException("Sample format unsupported."),
                     };
                     if (heightValue < -15000 || heightValue > 10000)
                         heightValue = noDataValue;
@@ -592,7 +590,7 @@ public class GeoTiff : IRasterFile
                     RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(byteScanline, x * metadata.BitsPerSample / 8),
                     RasterSampleFormat.INTEGER => BitConverter.ToInt16(byteScanline, x * metadata.BitsPerSample / 8),
                     RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(byteScanline, x * metadata.BitsPerSample / 8),
-                    _ => throw new Exception("Sample format unsupported."),
+                    _ => throw new NotSupportedException("Sample format unsupported."),
                 };
                 if (heightValue < 32768)
                 {

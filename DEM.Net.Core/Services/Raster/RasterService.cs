@@ -60,7 +60,7 @@ public class RasterService : IRasterDownloader
         get { return _localDirectory; }
     }
 
-    public RasterService(RasterIndexServiceResolver rasterResolver, IOptions<DEMNetOptions> options, ILogger<RasterService> logger = null)
+    public RasterService(RasterIndexServiceResolver rasterResolver, IOptions<DEMNetOptions> options, ILogger<RasterService>? logger = null)
     {
         this._logger = logger;
         this._rasterIndexServiceResolver = rasterResolver;
@@ -461,7 +461,7 @@ public class RasterService : IRasterDownloader
     /// <param name="dataSet">DEM dataset information</param>
     /// <param name="bbox">Bbox for filtering</param>
     /// <returns>A Dictionnary</returns>
-    public async Task<List<DemFileReport>> GenerateReportAsync(DEMDataSet dataSet, BoundingBox bbox = null, CancellationToken cancellationToken = default)
+    public async Task<List<DemFileReport>> GenerateReportAsync(DEMDataSet dataSet, BoundingBox? bbox = null, CancellationToken cancellationToken = default)
     {
         List<DemFileReport> statusByFile = [];
 

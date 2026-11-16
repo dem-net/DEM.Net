@@ -36,7 +36,7 @@ public class TarArchive
     /// <param name="filename">The <i>.tar</i> to extract.</param>
     /// <param name="outputDir">Output directory to write the files.</param>
     /// <param name="onlyExtensions">When set, only files ending with this extension are extracted.</param>
-    public static void ExtractTar(string filename, string outputDir, string onlyExtensions = null)
+    public static void ExtractTar(string filename, string outputDir, string? onlyExtensions = null)
     {
         using var stream = File.OpenRead(filename);
         ExtractTar(stream, outputDir, onlyExtensions);
@@ -48,7 +48,7 @@ public class TarArchive
     /// <param name="stream">The <i>.tar</i> to extract.</param>
     /// <param name="outputDir">Output directory to write the files.</param>
     /// <param name="onlyExtensions">When set, only files ending with this extension are extracted.</param>
-    public static void ExtractTar(Stream stream, string outputDir, string onlyExtensions = null)
+    public static void ExtractTar(Stream stream, string outputDir, string? onlyExtensions = null)
     {
         var outputRoot = Path.GetFullPath(outputDir);
         if (!outputRoot.EndsWith(Path.DirectorySeparatorChar))

@@ -6,6 +6,7 @@ using System.Text;
 using DEM.Net.Core;
 using DEM.Net.Core.Imagery;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using SharpGLTF.Geometry;
 using SharpGLTF.Geometry.VertexTypes;
 using SharpGLTF.Materials;
@@ -14,9 +15,9 @@ using SharpGLTF.Schema2;
 namespace DEM.Net.glTF.SharpglTF;
 
 
-public partial class SharpGltfService(MeshService meshService, MeshReducer meshReducer, ILogger<SharpGltfService> logger = null)
+public partial class SharpGltfService(MeshService meshService, MeshReducer meshReducer, ILogger<SharpGltfService>? logger = null)
 {
-    private readonly ILogger<SharpGltfService> _logger = logger;
+    private readonly ILogger<SharpGltfService> _logger = logger ?? NullLogger<SharpGltfService>.Instance;
     private MeshService _meshService = meshService;
     private MeshReducer _meshReducer = meshReducer;
     private const string TERRAIN_NODE_NAME = "TerrainNode";

@@ -42,7 +42,6 @@ namespace DEM.Net.Core;
 [ProtoContract]
 public class FileMetadata : IEquatable<FileMetadata>
 {
-    #region Versioning
 
     /* History
      * 
@@ -52,7 +51,6 @@ public class FileMetadata : IEquatable<FileMetadata>
      */
     [ProtoMember(1)]
     public const string FILEMETADATA_VERSION = "2.3";
-    #endregion
 
     [JsonConstructor]
     internal FileMetadata()

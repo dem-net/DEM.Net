@@ -279,7 +279,6 @@ public class ASCIIGridFile : IRasterFile
 
     }
 
-    #region IDisposable Support
     private bool disposedValue = false; // Pour détecter les appels redondants
 
     protected virtual void Dispose(bool disposing)
@@ -309,5 +308,4 @@ public class ASCIIGridFile : IRasterFile
     }
 
 
-    #endregion
 }

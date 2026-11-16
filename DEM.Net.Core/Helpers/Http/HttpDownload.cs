@@ -15,7 +15,7 @@ internal static class HttpDownload
     /// </summary>
     /// <returns>False when the server answered 404 and <paramref name="notFoundIsMissing"/> is true (nothing written).</returns>
     public static async Task<bool> DownloadToFileAsync(HttpClient client, string url, string localFileName,
-        CancellationToken cancellationToken, Action<HttpRequestMessage> configureRequest = null, bool notFoundIsMissing = false)
+        CancellationToken cancellationToken, Action<HttpRequestMessage>? configureRequest = null, bool notFoundIsMissing = false)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(localFileName)));
         string tempFile = TempFileName(localFileName);
@@ -45,8 +45,8 @@ internal static class HttpDownload
     }
 
     /// <summary>Downloads a small resource in memory. Returns null when the server answered 404.</summary>
-    public static async Task<byte[]> TryGetBytesAsync(HttpClient client, string url, CancellationToken cancellationToken,
-        Action<HttpRequestMessage> configureRequest = null)
+    public static async Task<byte[]?> TryGetBytesAsync(HttpClient client, string url, CancellationToken cancellationToken,
+        Action<HttpRequestMessage>? configureRequest = null)
     {
         using var request = new HttpRequestMessage(HttpMethod.Get, url);
         configureRequest?.Invoke(request);

@@ -154,30 +154,9 @@ namespace DEM.Net.Core;
         {
             throw new NotSupportedException("HGT files should always be grid registered, not cell registered.");
             ///
-            //metadata.Height = numPixels;
-            //metadata.Width = numPixels;
-
-            //metadata.PixelScaleX = 1d / numPixels;
-            //metadata.PixelScaleY = 1d / numPixels;
-            //metadata.pixelSizeX = metadata.PixelScaleX;
-            //metadata.pixelSizeY = -metadata.PixelScaleY;
 
             //// fileName gives is coordinates of center of first lower left pixel (south west)
             //// example N08E003.hgt
-            //string fileTitle = Path.GetFileNameWithoutExtension(_filename);
-            //int latSign = fileTitle.Substring(0, 1) == "N" ? 1 : -1;
-            //int lonSign = fileTitle.Substring(3, 1) == "E" ? 1 : -1;
-            //int lat = int.Parse(fileTitle.Substring(1, 2)) * latSign;
-            //int lon = int.Parse(fileTitle.Substring(4, 3)) * lonSign;
-            //metadata.OriginLongitude = lon;
-            //metadata.OriginLatitude = lat + 1;
-            //metadata.StartLat = metadata.OriginLatitude + (metadata.pixelSizeY / 2.0);
-            //metadata.StartLon = metadata.OriginLongitude + (metadata.pixelSizeX / 2.0);
-
-            //metadata.ScanlineSize = numPixels * 2; // 16 bit signed integers
-
-
-            //metadata.BitsPerSample = 16;
             //// Add other information about the data
             //metadata.SampleFormat = RasterSampleFormat.INTEGER;
             //// TODO: Read this from tiff metadata or determine after parsing
@@ -254,7 +233,7 @@ namespace DEM.Net.Core;
                         RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(heightBytes, 0),
                         RasterSampleFormat.INTEGER => BitConverter.ToInt16(heightBytes, 0),
                         RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(heightBytes, 0),
-                        _ => throw new Exception("Sample format unsupported."),
+                        _ => throw new NotSupportedException("Sample format unsupported."),
                     };
                 }
                 else
@@ -264,7 +243,7 @@ namespace DEM.Net.Core;
                         RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(byteScanline, x * bytesPerSample),
                         RasterSampleFormat.INTEGER => BitConverter.ToInt16(byteScanline, x * bytesPerSample),
                         RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(byteScanline, x * bytesPerSample),
-                        _ => throw new Exception("Sample format unsupported."),
+                        _ => throw new NotSupportedException("Sample format unsupported."),
                     };
                 }
 
@@ -332,7 +311,7 @@ namespace DEM.Net.Core;
                         RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(heightBytes, 0),
                         RasterSampleFormat.INTEGER => BitConverter.ToInt16(heightBytes, 0),
                         RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(heightBytes, 0),
-                        _ => throw new Exception("Sample format unsupported."),
+                        _ => throw new NotSupportedException("Sample format unsupported."),
                     };
                 }
                 else
@@ -342,7 +321,7 @@ namespace DEM.Net.Core;
                         RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(byteScanline, x * bytesPerSample),
                         RasterSampleFormat.INTEGER => BitConverter.ToInt16(byteScanline, x * bytesPerSample),
                         RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(byteScanline, x * bytesPerSample),
-                        _ => throw new Exception("Sample format unsupported."),
+                        _ => throw new NotSupportedException("Sample format unsupported."),
                     };
                 }
                 if (heightValue < 32768)
@@ -363,7 +342,6 @@ namespace DEM.Net.Core;
         return heightMap;
     }
 
-    #region IDisposable Support
     private bool disposedValue = false; // Pour détecter les appels redondants
 
     protected virtual void Dispose(bool disposing)
@@ -382,20 +360,10 @@ namespace DEM.Net.Core;
         }
     }
 
-    // TODO: remplacer un finaliseur seulement si la fonction Dispose(bool disposing) ci-dessus a du code pour libérer les ressources non managées.
-    // ~HGTFile() {
-    //   // Ne modifiez pas ce code. Placez le code de nettoyage dans Dispose(bool disposing) ci-dessus.
-    //   Dispose(false);
-    // }
-
-    // Ce code est ajouté pour implémenter correctement le modèle supprimable.
     public void Dispose()
     {
         // Ne modifiez pas ce code. Placez le code de nettoyage dans Dispose(bool disposing) ci-dessus.
         Dispose(true);
     }
-
-
-    #endregion
 
 }

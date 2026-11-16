@@ -36,7 +36,7 @@ namespace DEM.Net.Core.Imagery;
 public class TileRange
 {
     private List<MapTile> _tiles = [];
-    private Lock _syncLock = new();
+    private readonly Lock _syncLock = new();
 
     public TileRange(ImageryProvider provider)
     {
