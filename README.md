@@ -82,6 +82,15 @@ These metadata files will be used as an index when querying Digital Elevation Mo
 | `GeoPointRays : GeoPoint` | holds a `Point` (implicit conversion to `GeoPoint`) |
 | `IntervisibilityObstacle.PeakPoint` / `ExitPoint` | `GeoPoint?` |
 
+DEM.Net.Core no longer depends on Newtonsoft.Json: manifests, dataset indexes and the STAC / NASA CMR payloads use System.Text.Json (source generated).
+The files written by former versions are read as is (PascalCase or camelCase names, enum numbers or names, `"NaN"`), nothing has to be regenerated.
+
+| v10 | v11 |
+|---|---|
+| Newtonsoft `[JsonIgnore]` on `FileMetadata`, `StacDataSource`, `TileIndexDataSource` | `System.Text.Json.Serialization.JsonIgnore`: an application serializing these types with Newtonsoft must honor it (see `ApiContractResolver` in DEM.Net.WebAPI), the data source delegates are not serializable |
+| Newtonsoft.Json available transitively | reference it in the application when it is used there |
+| Tile index feature properties: ISO date strings reformatted by Newtonsoft (`06/15/2020 00:00:00`) | passed as written in the GeoJSON |
+
 ## glTF export
 - `glTFService` can generate triangulated MeshPrimitives from height maps
 - Export to .gtlf or .glb
@@ -103,7 +112,7 @@ For sea bed elevation : ETOPO1 Global Relief Model https://www.ngdc.noaa.gov/mgg
 - Image processing: Six Labors Image Sharp: https://sixlabors.com/products/imagesharp/
 - glTF : glTF2Loader and AssetGenerator : https://github.com/KhronosGroup/glTF
 - Tiff support : https://github.com/BitMiracle/libtiff.net
-- Serialization : https://github.com/neuecc/ZeroFormatter and https://github.com/JamesNK/Newtonsoft.Json
+- Serialization : https://github.com/protobuf-net/protobuf-net and System.Text.Json
 - System.Numerics.Vectors for Vector support
 - GPX reader from dlg.krakow.pl
 

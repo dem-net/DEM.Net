@@ -24,7 +24,7 @@
 // THE SOFTWARE.
 
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 using ProtoBuf;
 using System;
 using System.Collections.Generic;
@@ -54,6 +54,7 @@ namespace DEM.Net.Core
         public const string FILEMETADATA_VERSION = "2.3";
         #endregion
 
+        [JsonConstructor]
         internal FileMetadata()
         {
         }

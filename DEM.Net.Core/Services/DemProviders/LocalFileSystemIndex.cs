@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -53,7 +52,7 @@ namespace DEM.Net.Core
                 }
 
 
-                FileMetadata metadata = JsonConvert.DeserializeObject<FileMetadata>(File.ReadAllText(metadataPath));
+                FileMetadata metadata = RasterService.ReadMetadataFile(metadataPath);
                 metadata.BoundingBox.SRID = dataset.SRID;
                 yield return new DEMFileSource()
                 {

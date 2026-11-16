@@ -1,7 +1,6 @@
 using DEM.Net.Core.Datasets;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -57,7 +56,7 @@ namespace DEM.Net.Core.TileIndex
                         var entries = ParseGeoJsonIndex(await client.GetStringAsync(dataSource.IndexUrl).ConfigureAwait(false), dataSource);
 
                         // an interrupted run never leaves a truncated index
-                        await HttpDownload.WriteAllTextAtomicAsync(indexFileName, JsonConvert.SerializeObject(entries), CancellationToken.None).ConfigureAwait(false);
+                        await HttpDownload.WriteAllTextAtomicAsync(indexFileName, JsonSerializer.Serialize(entries, CoreJsonContext.Default.ListTileIndexEntry), CancellationToken.None).ConfigureAwait(false);
                         _logger.LogInformation($"{entries.Count:N0} tiles written to index file {indexFileName}");
                     }
 
@@ -73,17 +72,25 @@ namespace DEM.Net.Core.TileIndex
 
         internal static List<TileIndexEntry> ParseGeoJsonIndex(string geoJson, TileIndexDataSource dataSource)
         {
-            var root = JObject.Parse(geoJson);
-            var features = root["features"] as JArray ?? throw new InvalidDataException("Tile index is not a GeoJSON FeatureCollection.");
+            using var document = JsonDocument.Parse(geoJson);
+            if (document.RootElement.ValueKind != JsonValueKind.Object
+                || !document.RootElement.TryGetProperty("features", out var features) || features.ValueKind != JsonValueKind.Array)
+                throw new InvalidDataException("Tile index is not a GeoJSON FeatureCollection.");
 
-            var entries = new List<TileIndexEntry>(features.Count);
-            foreach (JObject feature in features.OfType<JObject>())
+            var entries = new List<TileIndexEntry>(features.GetArrayLength());
+            foreach (var feature in features.EnumerateArray())
             {
-                var properties = (feature["properties"] as JObject)?.Properties()
-                    .ToDictionary(p => p.Name, p => p.Value.Type == JTokenType.Null ? null : Convert.ToString(((JValue)p.Value).Value, CultureInfo.InvariantCulture))
-                    ?? new Dictionary<string, string>();
+                if (feature.ValueKind != JsonValueKind.Object)
+                    continue;
 
-                var bbox = GetBoundingBox(feature["geometry"]);
+                var properties = new Dictionary<string, string>();
+                if (feature.TryGetProperty("properties", out var props) && props.ValueKind == JsonValueKind.Object)
+                {
+                    foreach (var property in props.EnumerateObject())
+                        properties[property.Name] = PropertyToString(property.Value);
+                }
+
+                var bbox = feature.TryGetProperty("geometry", out var geometry) ? GetBoundingBox(geometry) : null;
                 if (bbox == null) continue;
 
                 string url = dataSource.TileUrl(properties);
@@ -95,29 +102,53 @@ namespace DEM.Net.Core.TileIndex
             return entries;
         }
 
-        // [xMin, yMin, xMax, yMax] over all positions of the geometry
-        private static double[] GetBoundingBox(JToken geometry)
+        /// <summary>Feature property as text: numbers in invariant culture, booleans as True/False (as former versions)</summary>
+        private static string PropertyToString(JsonElement value) => value.ValueKind switch
         {
-            var positions = geometry?["coordinates"]?
-                .SelectTokens("$..[?(@ != null)]") // flatten nested arrays
-                .OfType<JArray>()
-                .Where(a => a.Count >= 2 && a[0].Type != JTokenType.Array)
-                .ToList();
-            if (positions == null || positions.Count == 0) return null;
+            JsonValueKind.Null or JsonValueKind.Undefined => null,
+            JsonValueKind.String => value.GetString(),
+            JsonValueKind.True => bool.TrueString,
+            JsonValueKind.False => bool.FalseString,
+            JsonValueKind.Number => value.TryGetInt64(out long l) ? l.ToString(CultureInfo.InvariantCulture) : value.GetDouble().ToString(CultureInfo.InvariantCulture),
+            _ => value.GetRawText(),
+        };
+
+        /// <summary>Bounds of all the positions nested in the geometry coordinates (any geometry type but Point)</summary>
+        private static double[] GetBoundingBox(JsonElement geometry)
+        {
+            if (geometry.ValueKind != JsonValueKind.Object
+                || !geometry.TryGetProperty("coordinates", out var coordinates) || coordinates.ValueKind != JsonValueKind.Array)
+                return null;
 
             double xMin = double.MaxValue, yMin = double.MaxValue, xMax = double.MinValue, yMax = double.MinValue;
-            foreach (var p in positions)
+            bool any = false;
+            foreach (var child in coordinates.EnumerateArray())
+                Visit(child);
+            return any ? new[] { xMin, yMin, xMax, yMax } : null;
+
+            void Visit(JsonElement element)
             {
-                double x = p[0].Value<double>(), y = p[1].Value<double>();
-                xMin = Math.Min(xMin, x); xMax = Math.Max(xMax, x);
-                yMin = Math.Min(yMin, y); yMax = Math.Max(yMax, y);
+                if (element.ValueKind != JsonValueKind.Array)
+                    return;
+                if (element.GetArrayLength() >= 2 && element[0].ValueKind == JsonValueKind.Number)
+                {
+                    double x = element[0].GetDouble(), y = element[1].GetDouble();
+                    xMin = Math.Min(xMin, x); xMax = Math.Max(xMax, x);
+                    yMin = Math.Min(yMin, y); yMax = Math.Max(yMax, y);
+                    any = true;
+                    return;
+                }
+                foreach (var child in element.EnumerateArray())
+                    Visit(child);
             }
-            return new[] { xMin, yMin, xMax, yMax };
         }
 
         private static List<DEMFileSource> LoadSources(string indexFileName, string dataSetLocalDir, int srid)
         {
-            var entries = JsonConvert.DeserializeObject<List<TileIndexEntry>>(File.ReadAllText(indexFileName));
+            List<TileIndexEntry> entries;
+            using (var stream = File.OpenRead(indexFileName))
+                entries = JsonSerializer.Deserialize(stream, CoreJsonContext.Default.ListTileIndexEntry)
+                    ?? throw new InvalidDataException($"Empty tile index {indexFileName}.");
             return entries.Select(e => new DEMFileSource
             {
                 BBox = new BoundingBox(e.Box[0], e.Box[2], e.Box[1], e.Box[3]) { SRID = srid },

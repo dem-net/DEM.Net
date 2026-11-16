@@ -17,6 +17,11 @@ namespace DEM.Net.Core.EarthData
 
         public string GranuleId { get; set; }
 
+        [System.Text.Json.Serialization.JsonConstructor]
+        internal NasaDemFile() : this(string.Empty, string.Empty, string.Empty)
+        {
+        }
+
         public NasaDemFile(string producerGranuleId, string box, string zipFileLink)
         {
             this.Box = box;

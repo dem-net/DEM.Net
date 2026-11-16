@@ -27,7 +27,7 @@ using DEM.Net.Core.Configuration;
 using DEM.Net.Core.Model;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
+using System.Text.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -151,6 +151,21 @@ namespace DEM.Net.Core
         {
             return Path.Combine(GetLocalDEMPath(dataset), fileTitle);
         }
+
+        /// <summary>Reads a json manifest (also the ones written by former versions)</summary>
+        internal static FileMetadata ReadMetadataFile(string path)
+        {
+            using var stream = File.OpenRead(path);
+            return JsonSerializer.Deserialize(stream, CoreJsonContext.Default.FileMetadata)
+                ?? throw new InvalidDataException($"Empty metadata file {path}.");
+        }
+
+        internal static void WriteMetadataFile(string path, FileMetadata metadata)
+        {
+            using var stream = File.Create(path);
+            JsonSerializer.Serialize(stream, metadata, CoreJsonContext.Indented.FileMetadata);
+        }
+
         public static FileMetadata ParseMetadata(IRasterFile rasterFile, DEMFileDefinition format)
         {
             return rasterFile.ParseMetaData(format);
@@ -229,14 +244,12 @@ namespace DEM.Net.Core
                     //foreach (var file in manifestFiles)
                     Parallel.ForEach(manifestFiles, file =>
                     {
-                        string jsonContent = File.ReadAllText(file);
-
-                        FileMetadata metadata = JsonConvert.DeserializeObject<FileMetadata>(jsonContent);
+                        FileMetadata metadata = ReadMetadataFile(file);
                         metadata.BoundingBox.SRID = dataset.SRID;
                         if (IsMetadataStale(metadata, dataset))
                         {
                             metadata = FileMetadataMigrations.Migrate(this, _logger, metadata, _localDirectory, dataset);
-                            File.WriteAllText(file, JsonConvert.SerializeObject(metadata, Formatting.Indented));
+                            WriteMetadataFile(file, metadata);
                         }
                         metaList.Add(metadata);
                     }
@@ -370,7 +383,7 @@ namespace DEM.Net.Core
                 FileMetadata metadata = this.ParseMetadata(rasterFileName, fileFormat);
                 // a concurrent catalog build must never read a partial manifest
                 string tempJsonPath = HttpDownload.TempFileName(jsonPath); // the same file may be indexed concurrently
-                File.WriteAllText(tempJsonPath, JsonConvert.SerializeObject(metadata, Formatting.Indented));
+                WriteMetadataFile(tempJsonPath, metadata);
                 File.Move(tempJsonPath, jsonPath, overwrite: true);
 
                 Trace.TraceInformation($"Manifest generated for file {rasterFileName}.");

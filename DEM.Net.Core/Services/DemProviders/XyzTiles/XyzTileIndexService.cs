@@ -1,7 +1,7 @@
 using DEM.Net.Core.Datasets;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -320,13 +320,24 @@ namespace DEM.Net.Core.XyzTiles
         /// <summary>Parses Mapterhorn download_urls.json: items with min_lon/min_lat/max_lon/max_lat/max_zoom.</summary>
         internal static IReadOnlyList<CoverageArea> ParseCoverageIndex(string json)
         {
-            var items = JObject.Parse(json)["items"] as JArray ?? throw new InvalidDataException("Coverage index has no items.");
-            return items.OfType<JObject>()
-                .Where(i => i["max_zoom"] != null && i["min_lon"] != null)
-                .Select(i => new CoverageArea(
-                    WebMercatorTiles.ToMercator(new BoundingBox(i.Value<double>("min_lon"), i.Value<double>("max_lon"), i.Value<double>("min_lat"), i.Value<double>("max_lat"))),
-                    i.Value<int>("max_zoom")))
-                .ToList();
+            using var document = JsonDocument.Parse(json);
+            if (document.RootElement.ValueKind != JsonValueKind.Object
+                || !document.RootElement.TryGetProperty("items", out var items) || items.ValueKind != JsonValueKind.Array)
+                throw new InvalidDataException("Coverage index has no items.");
+
+            var areas = new List<CoverageArea>(items.GetArrayLength());
+            foreach (var item in items.EnumerateArray())
+            {
+                if (item.ValueKind != JsonValueKind.Object || !Has(item, "max_zoom") || !Has(item, "min_lon"))
+                    continue;
+                areas.Add(new CoverageArea(
+                    WebMercatorTiles.ToMercator(new BoundingBox(item.GetProperty("min_lon").GetDouble(), item.GetProperty("max_lon").GetDouble(),
+                        item.GetProperty("min_lat").GetDouble(), item.GetProperty("max_lat").GetDouble())),
+                    item.GetProperty("max_zoom").GetInt32()));
+            }
+            return areas;
+
+            static bool Has(JsonElement item, string name) => item.TryGetProperty(name, out var value) && value.ValueKind != JsonValueKind.Null;
         }
 
         internal readonly struct CoverageArea

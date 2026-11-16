@@ -1,6 +1,6 @@
 ﻿using DEM.Net.Core.Datasets;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using System.Text.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -47,7 +47,7 @@ namespace DEM.Net.Core.Stac
                     {
                         var links = await FetchCollectionAsync(dataSource).ConfigureAwait(false);
                         // an interrupted run never leaves a truncated index
-                        await HttpDownload.WriteAllTextAtomicAsync(indexFileName, JsonConvert.SerializeObject(links.Values, Formatting.Indented), CancellationToken.None).ConfigureAwait(false);
+                        await HttpDownload.WriteAllTextAtomicAsync(indexFileName, JsonSerializer.Serialize(links.Values.ToList(), CoreJsonContext.Indented.ListStacDemFile), CancellationToken.None).ConfigureAwait(false);
                         logger.LogInformation($"{links.Count} entries written to index file {indexFileName}");
                     }
 
@@ -97,7 +97,10 @@ namespace DEM.Net.Core.Stac
 
         private List<DEMFileSource> GetSources(DEMDataSet dataSet, string indexFileName)
         {
-            List<StacDemFile> stacDemFiles = JsonConvert.DeserializeObject<List<StacDemFile>>(File.ReadAllText(indexFileName));
+            List<StacDemFile> stacDemFiles;
+            using (var stream = File.OpenRead(indexFileName))
+                stacDemFiles = JsonSerializer.Deserialize(stream, CoreJsonContext.Default.ListStacDemFile)
+                    ?? throw new InvalidDataException($"Empty STAC index {indexFileName}.");
             var dataSetLocalDir = Path.GetDirectoryName(indexFileName);
 
             return stacDemFiles.Select(file => new DEMFileSource()
