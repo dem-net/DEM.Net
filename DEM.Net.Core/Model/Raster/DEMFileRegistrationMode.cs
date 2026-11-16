@@ -23,20 +23,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-namespace DEM.Net.Core
+namespace DEM.Net.Core;
+
+/// <summary>
+/// Registration modes. Good explanation here : https://www.ngdc.noaa.gov/mgg/global/gridregistration.html
+/// </summary>
+public enum DEMFileRegistrationMode
 {
     /// <summary>
-    /// Registration modes. Good explanation here : https://www.ngdc.noaa.gov/mgg/global/gridregistration.html
+    /// Grid/node-registered: cells are centered on lines of latitude and longitude (usually there is one pixel overlap for each tile).
     /// </summary>
-    public enum DEMFileRegistrationMode
-    {
-        /// <summary>
-        /// Grid/node-registered: cells are centered on lines of latitude and longitude (usually there is one pixel overlap for each tile).
-        /// </summary>
-        Grid,
-        /// <summary>
-        /// Cell/pixel-registered: cell edges are along lines of latitude and longitude.
-        /// </summary>
-        Cell,
-    }
+    Grid,
+    /// <summary>
+    /// Cell/pixel-registered: cell edges are along lines of latitude and longitude.
+    /// </summary>
+    Cell,
 }

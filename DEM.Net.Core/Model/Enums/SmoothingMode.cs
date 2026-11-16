@@ -29,12 +29,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Core
-{
+namespace DEM.Net.Core;
+
 	public enum SmoothingMode
 	{
 		None = 0,
 		FeedbackSmooth = 1,
 		WindowSmooth = 2
 	}
-}

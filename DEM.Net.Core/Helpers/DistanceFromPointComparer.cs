@@ -29,22 +29,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Core
+namespace DEM.Net.Core;
+
+ internal class DistanceFromPointComparer : IComparer<GeoPoint>
 {
-     internal class DistanceFromPointComparer : IComparer<GeoPoint>
+    private readonly GeoPoint _reference;
+
+    public DistanceFromPointComparer(GeoPoint reference)
     {
-        private readonly GeoPoint _reference;
-
-        public DistanceFromPointComparer(GeoPoint reference)
-        {
-            _reference = reference;
-        }
-        public int Compare(GeoPoint x, GeoPoint y)
-        {
-            return _reference.DistanceSquaredTo(x)
-                    .CompareTo(_reference.DistanceSquaredTo(y));
-        }
-
-
+        _reference = reference;
     }
+    public int Compare(GeoPoint x, GeoPoint y)
+    {
+        return _reference.DistanceSquaredTo(x)
+                .CompareTo(_reference.DistanceSquaredTo(y));
+    }
+
+
 }

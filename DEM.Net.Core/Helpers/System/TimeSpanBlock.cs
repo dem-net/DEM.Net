@@ -27,26 +27,25 @@ using System;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 
-namespace DEM.Net.Core
+namespace DEM.Net.Core;
+
+public class TimeSpanBlock : IDisposable
 {
-    public class TimeSpanBlock : IDisposable
+    private StopwatchLog _sw;
+    private readonly string _operationName;
+    private readonly LogLevel _logLevel;
+
+    public TimeSpanBlock(string operationName, ILogger logger, LogLevel logLevel = LogLevel.Information)
     {
-        private StopwatchLog _sw;
-        private readonly string _operationName;
-        private readonly LogLevel _logLevel;
+        _sw = StopwatchLog.StartNew(logger);
+        _operationName = operationName;
+        _logLevel = logLevel;
+    }
 
-        public TimeSpanBlock(string operationName, ILogger logger, LogLevel logLevel = LogLevel.Information)
-        {
-            _sw = StopwatchLog.StartNew(logger);
-            _operationName = operationName;
-            _logLevel = logLevel;
-        }
+    public TimeSpan Elapsed => _sw.Elapsed;
 
-        public TimeSpan Elapsed => _sw.Elapsed;
-
-        public void Dispose()
-        {
-            _sw.LogTime(_operationName, _logLevel);
-        }
+    public void Dispose()
+    {
+        _sw.LogTime(_operationName, _logLevel);
     }
 }

@@ -26,34 +26,32 @@ using System;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 
-namespace DEM.Net.Core
-{
-    public class StopwatchLog : Stopwatch
-    {
-        private readonly ILogger _logger;
-        private TimeSpan _lastTime = TimeSpan.Zero;
-        public static StopwatchLog StartNew(ILogger logger)
-        {
-            StopwatchLog sw = new StopwatchLog(logger);
-            sw.Start();
-            return sw;
-        }
-        public StopwatchLog(ILogger logger)
-        {
-            this._logger = logger;            
-        }
+namespace DEM.Net.Core;
 
-        public void LogTime(string operationName = "Operation", LogLevel level = LogLevel.Information)
-        {
-            this.Stop();
-            if (_logger.IsEnabled(level))
-            {
-                _logger.Log(level, $"{operationName} completed in {(this.Elapsed - _lastTime).TotalMilliseconds:N1} ms (Total: {this.ElapsedMilliseconds:N1} ms)");
-            }
-            _lastTime = this.Elapsed;
-            this.Start();
-        }
-        
+public class StopwatchLog : Stopwatch
+{
+    private readonly ILogger _logger;
+    private TimeSpan _lastTime = TimeSpan.Zero;
+    public static StopwatchLog StartNew(ILogger logger)
+    {
+        StopwatchLog sw = new StopwatchLog(logger);
+        sw.Start();
+        return sw;
+    }
+    public StopwatchLog(ILogger logger)
+    {
+        this._logger = logger;            
     }
 
+    public void LogTime(string operationName = "Operation", LogLevel level = LogLevel.Information)
+    {
+        this.Stop();
+        if (_logger.IsEnabled(level))
+        {
+            _logger.Log(level, $"{operationName} completed in {(this.Elapsed - _lastTime).TotalMilliseconds:N1} ms (Total: {this.ElapsedMilliseconds:N1} ms)");
+        }
+        _lastTime = this.Elapsed;
+        this.Start();
+    }
+    
 }

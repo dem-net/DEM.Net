@@ -29,8 +29,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Core
-{
+namespace DEM.Net.Core;
+
 	public static class ExceptionHelper
 	{
 		public static Exception GetInnerMostException(this AggregateException ex)
@@ -43,4 +43,3 @@ namespace DEM.Net.Core
 			return e;
 		}
 	}
-}

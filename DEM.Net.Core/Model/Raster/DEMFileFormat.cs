@@ -23,72 +23,71 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using ProtoBuf;
-using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using ProtoBuf;
 
-namespace DEM.Net.Core
-{
-    /// <summary>
-    /// File specification for a given dataset. Used in raster services to handle properly different cases of files encountered
-    /// Here is defined the format of raster file (extension, raster type, grid registration)
-    /// </summary>
-    [ProtoContract]
+namespace DEM.Net.Core;
+
+/// <summary>
+/// File specification for a given dataset. Used in raster services to handle properly different cases of files encountered
+/// Here is defined the format of raster file (extension, raster type, grid registration)
+/// </summary>
+[ProtoContract]
 	public class DEMFileDefinition
+{
+    public DEMFileDefinition(string name, DEMFileType format, string extension, DEMFileRegistrationMode registration)
     {
-        public DEMFileDefinition(string name, DEMFileType format, string extension, DEMFileRegistrationMode registration)
-        {
-            this.Name = name;
-            this.Type = format;
-            this.FileExtension = extension;
-            this.Registration = registration;
-        }
-        public DEMFileDefinition(DEMFileType format, DEMFileRegistrationMode registration)
-        {
-            this.Name = null;
-            this.Type = format;
-            this.FileExtension = null;
-            this.Registration = registration;
-        }
+        this.Name = name;
+        this.Type = format;
+        this.FileExtension = extension;
+        this.Registration = registration;
+    }
+    public DEMFileDefinition(DEMFileType format, DEMFileRegistrationMode registration)
+    {
+        this.Name = null;
+        this.Type = format;
+        this.FileExtension = null;
+        this.Registration = registration;
+    }
 
-        public DEMFileDefinition()
-        {
-        }
-        /// <summary>
-        /// Common name
-        /// </summary>
-        [ProtoMember(1)]
-        public string Name { get; set; }
-        /// <summary>
-        /// Physical raster files extension (format: ".ext")
-        /// </summary>
+    public DEMFileDefinition()
+    {
+    }
+    /// <summary>
+    /// Common name
+    /// </summary>
+    [ProtoMember(1)]
+    public string Name { get; set; }
+    /// <summary>
+    /// Physical raster files extension (format: ".ext")
+    /// </summary>
 		[ProtoMember(2)]
-        public string FileExtension { get; set; }
+    public string FileExtension { get; set; }
 
-        /// <summary>
-        /// Physical file format enumeration
-        /// </summary>
-        [ProtoMember(3)]
-        [JsonConverter(typeof(JsonStringEnumConverter<DEMFileType>))] // names or numbers (manifests written by former versions have both)
-        public DEMFileType Type { get; set; }
+    /// <summary>
+    /// Physical file format enumeration
+    /// </summary>
+    [ProtoMember(3)]
+    [JsonConverter(typeof(JsonStringEnumConverter<DEMFileType>))] // names or numbers (manifests written by former versions have both)
+    public DEMFileType Type { get; set; }
 
-        /// <summary>
-        /// Grid/node-registered: cells are centered on lines of latitude and longitude (usually there is one pixel overlap for each tile).
-        /// Cell/pixel-registered: cell edges are along lines of latitude and longitude.
-        /// Good explanation here : https://www.ngdc.noaa.gov/mgg/global/gridregistration.html
-        /// </summary>
-        [ProtoMember(4)]
-        [JsonConverter(typeof(JsonStringEnumConverter<DEMFileRegistrationMode>))]
-        public DEMFileRegistrationMode Registration { get; set; }
+    /// <summary>
+    /// Grid/node-registered: cells are centered on lines of latitude and longitude (usually there is one pixel overlap for each tile).
+    /// Cell/pixel-registered: cell edges are along lines of latitude and longitude.
+    /// Good explanation here : https://www.ngdc.noaa.gov/mgg/global/gridregistration.html
+    /// </summary>
+    [ProtoMember(4)]
+    [JsonConverter(typeof(JsonStringEnumConverter<DEMFileRegistrationMode>))]
+    public DEMFileRegistrationMode Registration { get; set; }
 
-        public override string ToString()
-        {
-            return Name;
-        }
+    public override string ToString()
+    {
+        return Name;
     }
 }

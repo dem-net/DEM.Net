@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DEM.Net.Core
-{
-    public interface IPolygon<T>
-    {
-        List<T> ExteriorRing { get; set; }
+namespace DEM.Net.Core;
 
-        List<List<T>> InteriorRings { get; set; }
-    }
+public interface IPolygon<T>
+{
+    List<T> ExteriorRing { get; set; }
+
+    List<List<T>> InteriorRings { get; set; }
 }

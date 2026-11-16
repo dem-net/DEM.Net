@@ -30,42 +30,41 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Core
+namespace DEM.Net.Core;
+
+class FileSystem
 {
-    class FileSystem
+    public static long GetDirectorySize(string directoryFullPath, string searchPattern = "*")
     {
-        public static long GetDirectorySize(string directoryFullPath, string searchPattern = "*")
+        var fileSizeBytes = new DirectoryInfo(directoryFullPath)
+                .EnumerateFileSystemInfos(searchPattern, SearchOption.AllDirectories)
+                .Where(fi => !fi.Attributes.HasFlag(FileAttributes.Directory)) // check if it is a file
+                .Sum(fi => new FileInfo(fi.FullName).Length);
+        return fileSizeBytes;
+    }
+}
+
+public static class StreamReaderExtensions
+{
+    public static void Skip(this StreamReader sr, int numLines)
+    {
+        for (int i = 1; i <= numLines; i++)
         {
-            var fileSizeBytes = new DirectoryInfo(directoryFullPath)
-                    .EnumerateFileSystemInfos(searchPattern, SearchOption.AllDirectories)
-                    .Where(fi => !fi.Attributes.HasFlag(FileAttributes.Directory)) // check if it is a file
-                    .Sum(fi => new FileInfo(fi.FullName).Length);
-            return fileSizeBytes;
+            sr.ReadLine();
         }
     }
-
-    public static class StreamReaderExtensions
+    public static string[] ReadUntil(this StreamReader sr, Predicate<string> match)
     {
-        public static void Skip(this StreamReader sr, int numLines)
+        List<string> lines = new List<string>();
+        string line;
+        do
         {
-            for (int i = 1; i <= numLines; i++)
-            {
-                sr.ReadLine();
-            }
+            line = sr.ReadLine();
+            lines.Add(line);
         }
-        public static string[] ReadUntil(this StreamReader sr, Predicate<string> match)
-        {
-            List<string> lines = new List<string>();
-            string line;
-            do
-            {
-                line = sr.ReadLine();
-                lines.Add(line);
-            }
-            while (match(line) == false && !sr.EndOfStream);
+        while (match(line) == false && !sr.EndOfStream);
 
-            return lines.ToArray();
-        }
-
+        return lines.ToArray();
     }
+
 }

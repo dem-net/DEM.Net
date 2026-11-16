@@ -2,33 +2,32 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DEM.Net.Core.Datasets
+namespace DEM.Net.Core.Datasets;
+
+public enum DEMDataSourceType
 {
-    public enum DEMDataSourceType
-    {
-        /// <summary>
-        /// Data source points to a VRT file (generated gy GDAL)
-        /// </summary>
-        GDALVrt = 1,
-        /// <summary>
-        /// Data source is a single or multiple files, downloaded manually and stored at a specific location
-        /// </summary>
-        LocalFileSystem = 2,
-        /// <summary>
-        /// Data comes from NASA EarthData Common Metadata Repository (CMR) API at https://earthdata.nasa.gov/
-        /// </summary>
-        NasaEarthData = 3,
-        /// <summary>
-        /// Data comes from Spatio Temporal Asset Catalogs (STAC) https://stacspec.org
-        /// </summary>
-        Stac = 4,
-        /// <summary>
-        /// Data comes from a GeoJSON tile index listing one downloadable raster per feature (e.g. FABDEM on Hugging Face)
-        /// </summary>
-        TileIndex = 5,
-        /// <summary>
-        /// Data comes from a XYZ (slippy map) tile pyramid of encoded elevation images (e.g. Mapterhorn Terrarium tiles)
-        /// </summary>
-        XyzTiles = 6
-    }
+    /// <summary>
+    /// Data source points to a VRT file (generated gy GDAL)
+    /// </summary>
+    GDALVrt = 1,
+    /// <summary>
+    /// Data source is a single or multiple files, downloaded manually and stored at a specific location
+    /// </summary>
+    LocalFileSystem = 2,
+    /// <summary>
+    /// Data comes from NASA EarthData Common Metadata Repository (CMR) API at https://earthdata.nasa.gov/
+    /// </summary>
+    NasaEarthData = 3,
+    /// <summary>
+    /// Data comes from Spatio Temporal Asset Catalogs (STAC) https://stacspec.org
+    /// </summary>
+    Stac = 4,
+    /// <summary>
+    /// Data comes from a GeoJSON tile index listing one downloadable raster per feature (e.g. FABDEM on Hugging Face)
+    /// </summary>
+    TileIndex = 5,
+    /// <summary>
+    /// Data comes from a XYZ (slippy map) tile pyramid of encoded elevation images (e.g. Mapterhorn Terrarium tiles)
+    /// </summary>
+    XyzTiles = 6
 }

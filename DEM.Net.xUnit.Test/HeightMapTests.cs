@@ -1,72 +1,71 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using DEM.Net.Core;
-using Xunit;
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
+using Xunit;
 
-namespace DEM.Net.Test
+namespace DEM.Net.Test;
+
+// Downloads datasets / tiles: excluded from CI (dotnet test --filter Category!=Network)
+[Trait("Category", "Network")]
+public class HeightMapTests : IClassFixture<DemNetFixture>
 {
-    // Downloads datasets / tiles: excluded from CI (dotnet test --filter Category!=Network)
-    [Trait("Category", "Network")]
-    public class HeightMapTests : IClassFixture<DemNetFixture>
+    ElevationService _elevationService;
+
+    public HeightMapTests(DemNetFixture fixture)
     {
-        ElevationService _elevationService;
+        _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
+    }
 
-        public HeightMapTests(DemNetFixture fixture)
-        {
-            _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
-        }
+    [Theory()]
+    [InlineData(nameof(DEMDataSet.SRTM_GL3))]
+    public async Task BoudingBoxConservationTest(string datasetName)
+    {
 
-        [Theory()]
-        [InlineData(nameof(DEMDataSet.SRTM_GL3))]
-        public async Task BoudingBoxConservationTest(string datasetName)
-        {
+        var dataset = DEMDataSet.RegisteredDatasets.First(d => d.Name == datasetName);
 
-            var dataset = DEMDataSet.RegisteredDatasets.First(d => d.Name == datasetName);
+        string bboxWKT = "POLYGON((5.54888 43.519525, 5.61209 43.519525, 5.61209 43.565225, 5.54888 43.565225, 5.54888 43.519525))";
 
-            string bboxWKT = "POLYGON((5.54888 43.519525, 5.61209 43.519525, 5.61209 43.565225, 5.54888 43.565225, 5.54888 43.519525))";
+       
+        BoundingBox bbox = GeometryService.GetBoundingBox(bboxWKT);
 
-           
-            BoundingBox bbox = GeometryService.GetBoundingBox(bboxWKT);
+        Assert.NotNull(bbox);
+        Assert.Equal(bboxWKT, bbox.WKT);
 
-            Assert.NotNull(bbox);
-            Assert.Equal(bboxWKT, bbox.WKT);
+        HeightMap heightMap = await _elevationService.GetHeightMapAsync(bbox, dataset);
 
-            HeightMap heightMap = await _elevationService.GetHeightMapAsync(bbox, dataset);
+        heightMap = heightMap.ReprojectGeodeticToCartesian();
+        Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
 
-            heightMap = heightMap.ReprojectGeodeticToCartesian();
-            Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
+        heightMap = heightMap.ZScale(2.5f);
+        Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
 
-            heightMap = heightMap.ZScale(2.5f);
-            Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
+        heightMap = heightMap.CenterOnOrigin();
+        Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
 
-            heightMap = heightMap.CenterOnOrigin();
-            Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
-
-            heightMap = heightMap.FitInto(30f);
-            Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
-
-        }
-
-        [Fact]
-        public async Task BoudingBoxEqualityTest()
-        {
-
-            string bboxWKT = "POLYGON((5.54888 43.519525, 5.61209 43.519525, 5.61209 43.565225, 5.54888 43.565225, 5.54888 43.519525))";
-
-           BoundingBox bbox = GeometryService.GetBoundingBox(bboxWKT);
-
-            Assert.NotNull(bbox);
-            Assert.Equal(bboxWKT, bbox.WKT);
-
-            HeightMap heightMap = await _elevationService.GetHeightMapAsync(bbox, DEMDataSet.SRTM_GL3);
-
-            Assert.False(object.ReferenceEquals(bbox, null));
-            Assert.NotNull(heightMap.Coordinates.GetBoundingBox());
-            Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
-            Assert.False(heightMap.BoundingBox != heightMap.Coordinates.GetBoundingBox());
-
-        }
+        heightMap = heightMap.FitInto(30f);
+        Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
 
     }
+
+    [Fact]
+    public async Task BoudingBoxEqualityTest()
+    {
+
+        string bboxWKT = "POLYGON((5.54888 43.519525, 5.61209 43.519525, 5.61209 43.565225, 5.54888 43.565225, 5.54888 43.519525))";
+
+       BoundingBox bbox = GeometryService.GetBoundingBox(bboxWKT);
+
+        Assert.NotNull(bbox);
+        Assert.Equal(bboxWKT, bbox.WKT);
+
+        HeightMap heightMap = await _elevationService.GetHeightMapAsync(bbox, DEMDataSet.SRTM_GL3);
+
+        Assert.False(object.ReferenceEquals(bbox, null));
+        Assert.NotNull(heightMap.Coordinates.GetBoundingBox());
+        Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
+        Assert.False(heightMap.BoundingBox != heightMap.Coordinates.GetBoundingBox());
+
+    }
+
 }

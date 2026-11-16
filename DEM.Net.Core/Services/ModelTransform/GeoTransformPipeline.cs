@@ -23,23 +23,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace DEM.Net.Core
+namespace DEM.Net.Core;
+
+
+public class GeoTransformPipeline
 {
+    public Func<IEnumerable<GeoPoint>, IEnumerable<GeoPoint>> TransformPoints { get; set; }
+    public Func<HeightMap, HeightMap> TransformHeightMap { get; set; }
 
-    public class GeoTransformPipeline
+    public GeoTransformPipeline Clone()
     {
-        public Func<IEnumerable<GeoPoint>, IEnumerable<GeoPoint>> TransformPoints { get; set; }
-        public Func<HeightMap, HeightMap> TransformHeightMap { get; set; }
-
-        public GeoTransformPipeline Clone()
-        {
-            return this.MemberwiseClone() as GeoTransformPipeline;
-        }
-
-        public static GeoTransformPipeline Default => new GeoTransformPipeline() { TransformHeightMap = h => h, TransformPoints = pts => pts };
+        return this.MemberwiseClone() as GeoTransformPipeline;
     }
 
+    public static GeoTransformPipeline Default => new GeoTransformPipeline() { TransformHeightMap = h => h, TransformPoints = pts => pts };
 }

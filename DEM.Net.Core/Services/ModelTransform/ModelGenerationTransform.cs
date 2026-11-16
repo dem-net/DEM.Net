@@ -24,60 +24,59 @@
 // THE SOFTWARE.
 using System;
 
-namespace DEM.Net.Core
+namespace DEM.Net.Core;
+
+public class ModelGenerationTransform : GeoTransformPipeline
 {
-    public class ModelGenerationTransform : GeoTransformPipeline
+    public BoundingBox BoundingBox { get; set; }
+ 
+    private readonly int _outputSrid;
+    private readonly bool _centerOnOrigin;
+    private readonly float _zFactor;
+    private readonly bool _centerOnZOrigin;
+
+   
+    public ModelGenerationTransform(BoundingBox bbox, int datasetSrid, int outputSrid, bool centerOnOrigin, float zFactor, bool centerOnZOrigin)
     {
-        public BoundingBox BoundingBox { get; set; }
-     
-        private readonly int _outputSrid;
-        private readonly bool _centerOnOrigin;
-        private readonly float _zFactor;
-        private readonly bool _centerOnZOrigin;
+        this.BoundingBox = bbox;
+        _outputSrid = outputSrid;
+        _centerOnOrigin = centerOnOrigin;
+        _zFactor = zFactor;
+        _centerOnZOrigin = centerOnZOrigin;
 
-       
-        public ModelGenerationTransform(BoundingBox bbox, int datasetSrid, int outputSrid, bool centerOnOrigin, float zFactor, bool centerOnZOrigin)
+        base.TransformPoints = points =>
         {
-            this.BoundingBox = bbox;
-            _outputSrid = outputSrid;
-            _centerOnOrigin = centerOnOrigin;
-            _zFactor = zFactor;
-            _centerOnZOrigin = centerOnZOrigin;
-
-            base.TransformPoints = points =>
+            points = points.ReprojectTo(datasetSrid, _outputSrid);
+            if (_centerOnOrigin)
             {
-                points = points.ReprojectTo(datasetSrid, _outputSrid);
-                if (_centerOnOrigin)
+                if (BoundingBox == null)
                 {
-                    if (BoundingBox == null)
-                    {
-                        throw new ArgumentNullException($"Bouding box must be set when using {nameof(GeoTransformPipeline)}.{nameof(TransformPoints)} with center on origin");
-                    }
-                    points = points.CenterOnOrigin(this.BoundingBox.ReprojectTo(this.BoundingBox.SRID, _outputSrid));
+                    throw new ArgumentNullException($"Bouding box must be set when using {nameof(GeoTransformPipeline)}.{nameof(TransformPoints)} with center on origin");
                 }
+                points = points.CenterOnOrigin(this.BoundingBox.ReprojectTo(this.BoundingBox.SRID, _outputSrid));
+            }
 
-                points = points.ZScale(_zFactor);
-                return points;
-            };
+            points = points.ZScale(_zFactor);
+            return points;
+        };
 
 
-            base.TransformHeightMap = hMap =>
+        base.TransformHeightMap = hMap =>
+        {
+            hMap = hMap.ReprojectTo(BoundingBox.SRID, _outputSrid);
+
+            if (_centerOnOrigin)
             {
-                hMap = hMap.ReprojectTo(BoundingBox.SRID, _outputSrid);
+                hMap = hMap.CenterOnOrigin(this.BoundingBox.ReprojectTo(this.BoundingBox.SRID, _outputSrid), _centerOnZOrigin);
+            }
 
-                if (_centerOnOrigin)
-                {
-                    hMap = hMap.CenterOnOrigin(this.BoundingBox.ReprojectTo(this.BoundingBox.SRID, _outputSrid), _centerOnZOrigin);
-                }
+            hMap = hMap.ZScale(_zFactor);
 
-                hMap = hMap.ZScale(_zFactor);
-
-                return hMap;
-            };
-        }
-
-       
-
-
+            return hMap;
+        };
     }
+
+   
+
+
 }

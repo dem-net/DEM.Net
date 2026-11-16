@@ -29,28 +29,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Core.Imagery
+namespace DEM.Net.Core.Imagery;
+
+public struct Point<T>
 {
-    public struct Point<T>
+    public T X;
+    public T Y;
+
+
+    public Point(T x, T y)
     {
-        public T X;
-        public T Y;
+        X = x;
+        Y = y;
+    }
 
+    public override string ToString()
+    {
+        return $"x={X}, y={Y}";
+    }
 
-        public Point(T x, T y)
-        {
-            X = x;
-            Y = y;
-        }
-
-        public override string ToString()
-        {
-            return $"x={X}, y={Y}";
-        }
-
-        public static bool IsDefault(Point<T> point)
-        {
-            return point.X.Equals(default(T)) && point.Y.Equals(default(T));
-        }
+    public static bool IsDefault(Point<T> point)
+    {
+        return point.X.Equals(default(T)) && point.Y.Equals(default(T));
     }
 }

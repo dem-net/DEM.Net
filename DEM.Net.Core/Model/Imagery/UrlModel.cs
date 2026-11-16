@@ -25,26 +25,25 @@
 
 using System;
 
-namespace DEM.Net.Core.Imagery
+namespace DEM.Net.Core.Imagery;
+
+public class UrlModel
 {
-    public class UrlModel
+    public string UrlFormat { get; set; }
+    public string[] Servers { get; set; }
+
+    public UrlModel()
     {
-        public string UrlFormat { get; set; }
-        public string[] Servers { get; set; }
+    }
 
-        public UrlModel()
-        {
-        }
+    public UrlModel(string urlFormat, string[] servers)
+    {
+        this.UrlFormat = urlFormat;
+        this.Servers = servers;
+    }
 
-        public UrlModel(string urlFormat, string[] servers)
-        {
-            this.UrlFormat = urlFormat;
-            this.Servers = servers;
-        }
-
-        public static implicit operator UrlModel(string url)
-        {
-            return new UrlModel(url, null);
-        }
+    public static implicit operator UrlModel(string url)
+    {
+        return new UrlModel(url, null);
     }
 }

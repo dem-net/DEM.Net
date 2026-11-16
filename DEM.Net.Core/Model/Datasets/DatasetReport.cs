@@ -25,59 +25,58 @@
 using System;
 using System.Text;
 
-namespace DEM.Net.Core.Model
+namespace DEM.Net.Core.Model;
+
+public class DatasetReport
 {
-    public class DatasetReport
+    /// <summary>
+    /// Dataset name
+    /// </summary>
+    public string DatasetName { get; internal set; }
+
+    /// <summary>
+    /// Total files in dataset definition
+    /// </summary>
+    public int TotalFiles { get; internal set; }
+
+    /// <summary>
+    /// Number of files currently downloaded and stored locally
+    /// </summary>
+    public int DownloadedFiles { get; internal set; }
+
+    /// <summary>
+    /// File size on locally downloaded files
+    /// </summary>
+    public double DownloadedSizeMB { get; internal set; }
+
+    /// <summary>
+    /// Number of files with generated metadata. This should be equal to <see cref="DownloadedFiles"/>.
+    /// </summary>
+    public int FilesWithMetadata { get; internal set; }
+
+    /// <summary>
+    /// Size remaining to download
+    /// </summary>
+    public double RemainingSizeGB { get; internal set; }
+
+    /// <summary>
+    /// Total dataset size if downloaded
+    /// </summary>
+    public double TotalSizeGB { get; internal set; }
+
+    /// <summary>
+    /// Percentage of downloaded files (100%) means everything has been downloaded
+    /// </summary>
+    public double DowloadedPercent { get; internal set; }
+
+    public override string ToString()
     {
-        /// <summary>
-        /// Dataset name
-        /// </summary>
-        public string DatasetName { get; internal set; }
+        var sb = new StringBuilder();
+        sb.AppendLine($"Dataset : {this.DatasetName} report :");
+        sb.AppendLine($"> {this.TotalFiles} file(s) in dataset.");
+        sb.AppendLine($"> {this.DownloadedFiles} file(s) dowloaded ({this.DownloadedSizeMB:F2} MB total).");
+        sb.AppendLine($"> {this.FilesWithMetadata} file(s) with DEM.Net metadata.");
 
-        /// <summary>
-        /// Total files in dataset definition
-        /// </summary>
-        public int TotalFiles { get; internal set; }
-
-        /// <summary>
-        /// Number of files currently downloaded and stored locally
-        /// </summary>
-        public int DownloadedFiles { get; internal set; }
-
-        /// <summary>
-        /// File size on locally downloaded files
-        /// </summary>
-        public double DownloadedSizeMB { get; internal set; }
-
-        /// <summary>
-        /// Number of files with generated metadata. This should be equal to <see cref="DownloadedFiles"/>.
-        /// </summary>
-        public int FilesWithMetadata { get; internal set; }
-
-        /// <summary>
-        /// Size remaining to download
-        /// </summary>
-        public double RemainingSizeGB { get; internal set; }
-
-        /// <summary>
-        /// Total dataset size if downloaded
-        /// </summary>
-        public double TotalSizeGB { get; internal set; }
-
-        /// <summary>
-        /// Percentage of downloaded files (100%) means everything has been downloaded
-        /// </summary>
-        public double DowloadedPercent { get; internal set; }
-
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine($"Dataset : {this.DatasetName} report :");
-            sb.AppendLine($"> {this.TotalFiles} file(s) in dataset.");
-            sb.AppendLine($"> {this.DownloadedFiles} file(s) dowloaded ({this.DownloadedSizeMB:F2} MB total).");
-            sb.AppendLine($"> {this.FilesWithMetadata} file(s) with DEM.Net metadata.");
-
-            return sb.ToString();
-        }
+        return sb.ToString();
     }
 }

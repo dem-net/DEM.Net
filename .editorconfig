@@ -1,0 +1,36 @@
+root = true
+
+[*]
+charset = utf-8
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{xml,csproj,props,targets,slnx,json,yml,yaml}]
+indent_style = space
+indent_size = 2
+
+[*.cs]
+indent_style = space
+indent_size = 4
+
+# Usings
+dotnet_sort_system_directives_first = true
+csharp_using_directive_placement = outside_namespace:warning
+
+# Modern C# style (enforced by `dotnet format style`)
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_prefer_simple_using_statement = true:suggestion
+csharp_style_prefer_primary_constructors = true:suggestion
+csharp_style_prefer_switch_expression = true:suggestion
+csharp_style_prefer_pattern_matching = true:suggestion
+csharp_style_prefer_null_check_over_type_check = true:suggestion
+csharp_style_implicit_object_creation_when_type_is_apparent = true:suggestion
+dotnet_style_prefer_collection_expression = when_types_loosely_match:suggestion
+dotnet_style_prefer_conditional_expression_over_assignment = false:silent
+dotnet_style_prefer_conditional_expression_over_return = false:silent
+csharp_style_var_for_built_in_types = false:silent
+csharp_style_var_when_type_is_apparent = true:silent
+csharp_style_var_elsewhere = false:silent
+
+# Use System.Threading.Lock for lock objects
+dotnet_diagnostic.IDE0330.severity = suggestion

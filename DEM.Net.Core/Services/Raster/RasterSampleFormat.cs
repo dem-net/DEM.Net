@@ -29,12 +29,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DEM.Net.Core
+namespace DEM.Net.Core;
+
+public static class RasterSampleFormat
 {
-    public static class RasterSampleFormat
-    {
-        public const string FLOATING_POINT = "IEEEFP";
-        public const string INTEGER = "INT";
-        public const string UNSIGNED_INTEGER = "UINT";
-    }
+    public const string FLOATING_POINT = "IEEEFP";
+    public const string INTEGER = "INT";
+    public const string UNSIGNED_INTEGER = "UINT";
 }

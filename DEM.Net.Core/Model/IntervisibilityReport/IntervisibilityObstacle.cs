@@ -25,52 +25,51 @@
 
 using System;
 
-namespace DEM.Net.Core
+namespace DEM.Net.Core;
+
+/// <summary>
+/// Defines an obstacle between two non-intervisible points
+/// A ray is casted from Origin to a Target. If any relief is hit, an obstacle will be created
+/// </summary>
+public class IntervisibilityObstacle
 {
-    /// <summary>
-    /// Defines an obstacle between two non-intervisible points
-    /// A ray is casted from Origin to a Target. If any relief is hit, an obstacle will be created
-    /// </summary>
-    public class IntervisibilityObstacle
+    public IntervisibilityObstacle(GeoPoint entryPoint, double visibilityElevationThreshold)
     {
-        public IntervisibilityObstacle(GeoPoint entryPoint, double visibilityElevationThreshold)
-        {
-            this.EntryPoint = entryPoint;
-            this.VisibilityElevationThreshold = visibilityElevationThreshold;
-        }
+        this.EntryPoint = entryPoint;
+        this.VisibilityElevationThreshold = visibilityElevationThreshold;
+    }
 
-        /// <summary>
-        /// First location where the relief is being hit
-        /// </summary>
-        public GeoPoint EntryPoint { get; internal set; }
-        /// <summary>
-        /// Highest point on the relief above the entry point
-        /// </summary>
-        public GeoPoint? PeakPoint { get; internal set; }
-        /// <summary>
-        /// Location where the ray exists the obstacle
-        /// </summary>
-        public GeoPoint? ExitPoint { get; internal set; }
-        /// <summary>
-        /// Elevation threshold. If the relief was below this altitude, the ray will
-        /// have passed above.
-        /// </summary>
-        public double VisibilityElevationThreshold { get; }
+    /// <summary>
+    /// First location where the relief is being hit
+    /// </summary>
+    public GeoPoint EntryPoint { get; internal set; }
+    /// <summary>
+    /// Highest point on the relief above the entry point
+    /// </summary>
+    public GeoPoint? PeakPoint { get; internal set; }
+    /// <summary>
+    /// Location where the ray exists the obstacle
+    /// </summary>
+    public GeoPoint? ExitPoint { get; internal set; }
+    /// <summary>
+    /// Elevation threshold. If the relief was below this altitude, the ray will
+    /// have passed above.
+    /// </summary>
+    public double VisibilityElevationThreshold { get; }
 
-        public override string ToString()
-        {
-            var msg = string.Concat(PointAsString("Entry", EntryPoint), Environment.NewLine
-                                    , PointAsString("Peak", PeakPoint), Environment.NewLine
-                                    , PointAsString("Exit", ExitPoint), Environment.NewLine);
-            return msg;
-        }
+    public override string ToString()
+    {
+        var msg = string.Concat(PointAsString("Entry", EntryPoint), Environment.NewLine
+                                , PointAsString("Peak", PeakPoint), Environment.NewLine
+                                , PointAsString("Exit", ExitPoint), Environment.NewLine);
+        return msg;
+    }
 
-        private string PointAsString(string label, GeoPoint? point)
-        {
-            if (point is not GeoPoint pt)
-                return $"No {label}";
-            else
-                return $"{label}: dist={pt.DistanceFromOriginMeters ?? 0:F2}, Elevation={pt.Elevation ?? 0:F2}";
-        }
+    private string PointAsString(string label, GeoPoint? point)
+    {
+        if (point is not GeoPoint pt)
+            return $"No {label}";
+        else
+            return $"{label}: dist={pt.DistanceFromOriginMeters ?? 0:F2}, Elevation={pt.Elevation ?? 0:F2}";
     }
 }
