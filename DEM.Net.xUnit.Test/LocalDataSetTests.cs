@@ -147,6 +147,38 @@ public sealed class LocalDataSetTests : IDisposable
     }
 
     [Fact]
+    public void LinesBatchMatchesOneCallPerLine()
+    {
+        NetTopologySuite.Geometries.Geometry?[] lines =
+        [
+            GeometryService.ParseGeoPointAsGeometryLine([new GeoPoint(43.30, 5.37), new GeoPoint(43.53, 5.45), new GeoPoint(43.33, 5.71)]),
+            null, // no line: null result, the other lines are still elevated
+            GeometryService.ParseGeoPointAsGeometryLine([new GeoPoint(43.10, 5.90), new GeoPoint(43.90, 5.05)]),
+            GeometryService.ParseGeoPointAsGeometryLine([new GeoPoint(43.40, 5.40), new GeoPoint(43.4005, 5.4005)]), // within a pixel
+        ];
+
+        var batch = _elevation.GetLinesGeometryElevation(lines, _dataSet);
+
+        Assert.Equal(lines.Length, batch.Count);
+        Assert.Null(batch[1]);
+        for (int i = 0; i < lines.Length; i++)
+        {
+            if (lines[i] == null) continue;
+            var single = _elevation.GetLineGeometryElevation(lines[i], _dataSet);
+            Assert.NotEmpty(single);
+            Assert.Equal(single, batch[i]); // same points (positions and elevations)
+        }
+
+        var byKey = _elevation.GetLinesGeometryElevation(new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<GeoPoint>>
+        {
+            ["a"] = [new GeoPoint(43.30, 5.37), new GeoPoint(43.53, 5.45), new GeoPoint(43.33, 5.71)],
+            ["b"] = [new GeoPoint(43.10, 5.90), new GeoPoint(43.90, 5.05)],
+        }, _dataSet);
+        Assert.Equal(batch[0], byKey["a"]);
+        Assert.Equal(batch[2], byKey["b"]);
+    }
+
+    [Fact]
     public async Task LocalDatasetsCannotDownload()
     {
         var report = new DemFileReport { LocalName = Path.Combine(_root, "missing.hgt") };

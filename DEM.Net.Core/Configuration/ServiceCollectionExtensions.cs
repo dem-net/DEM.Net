@@ -23,6 +23,7 @@ public static class ServiceCollectionExtension
         services.AddHttpClient();
         services.AddOptions();
 
+        services.AddSingleton<TileMemoryCache>();
         services.AddSingleton<GDALVRTFileService>();
         services.AddSingleton<LocalFileSystemIndex>();
         services.AddSingleton<NasaGranuleFileService>();

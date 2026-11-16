@@ -187,7 +187,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
             _logger?.LogWarning("Geometry is a multi line string. Only the longest segment will be processed.");
             geom = geom.Geometries().OrderByDescending(g => g.NumPoints).First();
         }
-        return GetLineGeometryElevation(geom, dataSet, interpolationMode);
+        return GetLineGeometryElevation(geom, dataSet, interpolationMode, behavior);
     }
 
     /// <summary>
@@ -265,12 +265,85 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
     /// <param name="dataSet">DEM dataset to use</param>
     /// <param name="interpolationMode">Interpolation mode</param>
     /// <param name="behavior">Action to use when no data is found in dataset</param>
-    /// <remarks>Output can be BIG, as all elevations will be returned.</remarks>
+    /// <remarks>Output can be BIG, as all elevations will be returned. To elevate many lines, see <see cref="GetLinesGeometryElevation(IReadOnlyList{Geometry?}, DEMDataSet, InterpolationMode, NoDataBehavior)"/>.</remarks>
     /// <returns></returns>
     public List<GeoPoint>? GetLineGeometryElevation(Geometry? lineStringGeometry, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
     {
-        if (lineStringGeometry == null || lineStringGeometry.IsEmpty)
+        if (!IsValidLine(lineStringGeometry))
             return null;
+        return GetLinesGeometryElevation([lineStringGeometry], dataSet, interpolationMode, behavior)[0];
+    }
+
+    /// <summary>
+    /// Retrieves all dataset elevations along each given line. The raster files are opened once for all the lines
+    /// (same results as one <see cref="GetLineGeometryElevation(Geometry?, DEMDataSet, InterpolationMode, NoDataBehavior)"/> call per line).
+    /// </summary>
+    /// <param name="lines">WGS84 line strings. A null or empty line gives a null result.</param>
+    /// <param name="dataSet">DEM dataset to use, its files must be downloaded</param>
+    /// <param name="interpolationMode">Interpolation mode</param>
+    /// <param name="behavior">Action to use when no data is found in dataset</param>
+    /// <returns>The elevated points of each line, in the input order (WGS84)</returns>
+    public List<List<GeoPoint>?> GetLinesGeometryElevation(IReadOnlyList<Geometry?> lines, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
+    {
+        ArgumentNullException.ThrowIfNull(lines);
+        var results = new List<List<GeoPoint>?>(lines.Count);
+        BoundingBox? bbox = null;
+        foreach (var line in lines)
+        {
+            if (!IsValidLine(line))
+                continue;
+            var lineBbox = line!.GetBoundingBox();
+            if (bbox == null) bbox = lineBbox;
+            else bbox.UnionWith(lineBbox);
+        }
+        if (bbox == null)
+        {
+            results.AddRange(Enumerable.Repeat<List<GeoPoint>?>(null, lines.Count));
+            return results;
+        }
+
+        if (dataSet.SRID != Reprojection.SRID_GEODETIC)
+        {
+            // Grid intersections are computed in degrees: projected datasets are sampled instead, all lines in one batch
+            var samples = lines.Select(l => IsValidLine(l) ? SampleProjectedLine(l!, dataSet) : null).ToList();
+            var elevated = GetPointsElevation(samples.Where(s => s != null).SelectMany(s => s!).ToList(), dataSet, interpolationMode, behavior);
+            int offset = 0;
+            foreach (var lineSamples in samples)
+            {
+                if (lineSamples != null)
+                {
+                    if (elevated == null) lineSamples.Clear();
+                    else CopyElevations(elevated, offset, lineSamples);
+                    offset += elevated == null ? 0 : lineSamples.Count;
+                }
+                results.Add(lineSamples);
+            }
+            return results;
+        }
+
+        // Catalog read once: each line then uses the tiles under its own bbox, as when it is elevated alone
+        List<FileMetadata> allTiles = this.GetCoveringFiles(bbox, dataSet);
+        IInterpolator interpolator = GetInterpolator(interpolationMode);
+        double registrationOffset = dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell ? 0 : 0.5;
+
+        using RasterFileDictionary adjacentRasters = []; // shared by all lines, closes the rasters at the end
+        foreach (var line in lines)
+        {
+            if (!IsValidLine(line))
+            {
+                results.Add(null);
+                continue;
+            }
+            List<FileMetadata> tiles = allTiles.Count <= 1 ? allTiles : this.GetCoveringFiles(line!.GetBoundingBox(), dataSet, allTiles);
+            results.Add(ElevateLine(line!, dataSet, tiles, adjacentRasters, interpolator, registrationOffset, behavior));
+        }
+        return results;
+    }
+
+    private static bool IsValidLine(Geometry? lineStringGeometry)
+    {
+        if (lineStringGeometry == null || lineStringGeometry.IsEmpty)
+            return false;
         if (lineStringGeometry.OgcGeometryType != OgcGeometryType.LineString)
         {
             throw new ArgumentException("Geometry must be a linestring", nameof(lineStringGeometry));
@@ -279,18 +352,12 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
         {
             throw new ArgumentException("Geometry SRID must be set to 4326 (WGS 84)", nameof(lineStringGeometry));
         }
-        if (dataSet.SRID != Reprojection.SRID_GEODETIC)
-        {
-            // Grid intersections below are computed in degrees: projected datasets are sampled instead
-            return GetProjectedLineElevation(lineStringGeometry, dataSet, interpolationMode, behavior);
-        }
+        return true;
+    }
 
-        BoundingBox bbox = lineStringGeometry.GetBoundingBox();
-        List<FileMetadata> tiles = this.GetCoveringFiles(bbox, dataSet);
-
-        // Init interpolator
-        IInterpolator interpolator = GetInterpolator(interpolationMode);
-
+    /// <summary>Grid intersections of the line with their elevation (geodetic datasets).</summary>
+    private List<GeoPoint> ElevateLine(Geometry lineStringGeometry, DEMDataSet dataSet, List<FileMetadata> tiles, RasterFileDictionary adjacentRasters, IInterpolator interpolator, double registrationOffset, NoDataBehavior behavior)
+    {
         var ptStart = lineStringGeometry.Coordinates[0];
         var ptEnd = lineStringGeometry.Coordinates.Last();
         GeoPoint start = new GeoPoint(ptStart.Y, ptStart.X);
@@ -298,47 +365,32 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
         double lengthMeters = start.DistanceTo(end);
         float demResolution = dataSet.ResolutionMeters;
         int totalCapacity = 2 * (int)(lengthMeters / demResolution);
-        double registrationOffset = dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell ? 0 : 0.5;
 
         List<GeoPoint> geoPoints = new List<GeoPoint>(totalCapacity);
 
-        using (RasterFileDictionary adjacentRasters = [])
+        bool isFirstSegment = true; // used to return first point only for first segments, for all other segments last point will be returned
+        foreach (GeoSegment segment in lineStringGeometry.Segments())
         {
-            bool isFirstSegment = true; // used to return first point only for first segments, for all other segments last point will be returned
-            foreach (GeoSegment segment in lineStringGeometry.Segments())
-            {
-                // Find all intersection with segment and DEM grid
-                IEnumerable<GeoPoint> intersections = this.FindSegmentIntersections(segment.Start.Longitude
-                    , segment.Start.Latitude
-                    , segment.End.Longitude
-                    , segment.End.Latitude
-                    , tiles
-                    , isFirstSegment
-                    , registrationOffset
-                    , true);
+            // Find all intersection with segment and DEM grid
+            IEnumerable<GeoPoint> intersections = this.FindSegmentIntersections(segment.Start.Longitude
+                , segment.Start.Latitude
+                , segment.End.Longitude
+                , segment.End.Latitude
+                , tiles
+                , isFirstSegment
+                , registrationOffset
+                , true);
 
-                // Add to output list, then get elevation for each point
-                int segmentStart = geoPoints.Count;
-                geoPoints.AddRange(intersections);
-                this.FillElevations(CollectionsMarshal.AsSpan(geoPoints)[segmentStart..], adjacentRasters, tiles, interpolator, behavior);
+            // Add to output list, then get elevation for each point
+            int segmentStart = geoPoints.Count;
+            geoPoints.AddRange(intersections);
+            this.FillElevations(CollectionsMarshal.AsSpan(geoPoints)[segmentStart..], adjacentRasters, tiles, interpolator, behavior);
 
-                isFirstSegment = false;
-            }
-            //Debug.WriteLine(adjacentRasters.Count);
-        }  // Ensures all rasters are properly closed
-
+            isFirstSegment = false;
+        }
         return geoPoints;
     }
 
-    /// <summary>
-    /// High level method that retrieves all dataset elevations along given line
-    /// </summary>
-    /// <param name="lineGeoPoints">List of points that, when joined, makes the input line</param>
-    /// <param name="dataSet">DEM dataset to use</param>
-    /// <param name="interpolationMode">Interpolation mode</param>
-    /// <param name="behavior">Action to use when no data is found in dataset</param>
-    /// <remarks>Output can be BIG, as all elevations will be returned.</remarks>
-    /// <returns></returns>
     private const int MaxProjectedLineSamples = 100_000;
 
     /// <summary>
@@ -346,6 +398,17 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
     /// ground resolution and each sample is interpolated. Returned points are in WGS84.
     /// </summary>
     private List<GeoPoint> GetProjectedLineElevation(Geometry lineStringGeometry, DEMDataSet dataSet, InterpolationMode interpolationMode, NoDataBehavior behavior)
+    {
+        var samples = SampleProjectedLine(lineStringGeometry, dataSet);
+        var elevated = GetPointsElevation(samples, dataSet, interpolationMode, behavior);
+        if (elevated == null)
+            return [];
+        CopyElevations(elevated, 0, samples);
+        return samples;
+    }
+
+    /// <summary>The WGS84 line sampled at the dataset ground resolution.</summary>
+    private static List<GeoPoint> SampleProjectedLine(Geometry lineStringGeometry, DEMDataSet dataSet)
     {
         var segments = lineStringGeometry.Segments().ToList();
         double totalMeters = segments.Sum(s => s.Start.DistanceTo(s.End));
@@ -370,15 +433,17 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
             }
         }
 
-        var elevated = GetPointsElevation(samples, dataSet, interpolationMode, behavior);
-        if (elevated == null)
-            return [];
+        return samples;
+    }
 
-        // elevated points are in the dataset projection and in the same order: elevations back to the WGS84 samples
+    /// <summary>
+    /// Elevated points are in the dataset projection and in the same order as the samples: elevations back to the WGS84 samples.
+    /// </summary>
+    private static void CopyElevations(List<GeoPoint> elevated, int offset, List<GeoPoint> samples)
+    {
         var span = CollectionsMarshal.AsSpan(samples);
         for (int i = 0; i < span.Length; i++)
-            span[i] = span[i] with { Elevation = elevated[i].Elevation };
-        return samples;
+            span[i] = span[i] with { Elevation = elevated[offset + i].Elevation };
     }
 
     public List<GeoPoint> GetLineGeometryElevation(IEnumerable<GeoPoint> lineGeoPoints, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
@@ -401,31 +466,15 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
     /// <remarks>Output can be BIG, as all elevations will be returned.</remarks>
     /// <returns></returns>
     public Dictionary<TKey, List<GeoPoint>> GetLinesGeometryElevation<TKey>(Dictionary<TKey, List<GeoPoint>> lineGeoPoints, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
+        where TKey : notnull
     {
-        List<Geometry> geoLines = [.. lineGeoPoints.Select(l => GeometryService.ParseGeoPointAsGeometryLine(l.Value))];
-        var bbox = GeometryService.GetBoundingBox(geoLines.First());
-        foreach (var linePts in geoLines.Skip(1))
-        {
-            bbox.UnionWith(GeometryService.GetBoundingBox(linePts));
-        }
-
-
-        List<FileMetadata> tiles = this.GetCoveringFiles(bbox, dataSet);
-        double registrationOffset = dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell ? 0 : 0.5;
-        var weLines = GetDEMWestEastLines(tiles, registrationOffset);
-        var nsLines = GetDEMNorthSouthLines(tiles, registrationOffset);
-
-        ConcurrentDictionary<TKey, List<GeoPoint>> outLines = new ConcurrentDictionary<TKey, List<GeoPoint>>();
-        Parallel.ForEach(lineGeoPoints, linePts =>
-        {
-            Geometry geometry = GeometryService.ParseGeoPointAsGeometryLine(linePts.Value);
-
-            if (!outLines.TryAdd(linePts.Key, GetLineGeometryElevation(geometry, dataSet, tiles, nsLines, weLines, interpolationMode, behavior)))
-            {
-                _logger.LogWarning("Could not add line");
-            }
-        });
-        return outLines.ToDictionary(k => k.Key, v => v.Value);
+        ArgumentNullException.ThrowIfNull(lineGeoPoints);
+        var keys = lineGeoPoints.Keys.ToList();
+        var elevated = GetLinesGeometryElevation([.. keys.Select(k => (Geometry?)GeometryService.ParseGeoPointAsGeometryLine(lineGeoPoints[k]))], dataSet, interpolationMode, behavior);
+        var outLines = new Dictionary<TKey, List<GeoPoint>>(keys.Count);
+        for (int i = 0; i < keys.Count; i++)
+            outLines[keys[i]] = elevated[i] ?? [];
+        return outLines;
     }
 
     /// <summary>
@@ -539,7 +588,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
         {
             BoundingBox bbox = pointList.GetBoundingBox();
             if (bbox.xMin <= bbox.xMax && bbox.yMin <= bbox.yMax) // no points: an empty bbox spans the world (too many tiles to download)
-                await DownloadMissingFilesAsync(dataSet, bbox, cancellationToken).ConfigureAwait(false);
+                await DownloadMissingFilesAsync(dataSet, PadByOnePixel(bbox, dataSet), cancellationToken).ConfigureAwait(false);
         }
         return GetPointsElevation(pointList, dataSet, interpolationMode, behavior);
     }
@@ -560,7 +609,13 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
         BoundingBox bbox = pointList.GetBoundingBox();
         if (!(bbox.xMin <= bbox.xMax && bbox.yMin <= bbox.yMax))
             return []; // no points
-        List<FileMetadata> tiles = this.GetCoveringFiles(bbox.ReprojectTo(4326, dataSet.SRID), dataSet);
+        // A point within a pixel of a tile edge is interpolated with the neighbor tile: include it when it is local
+        List<FileMetadata> tiles = this.GetCoveringFiles(PadByOnePixel(bbox, dataSet).ReprojectTo(4326, dataSet.SRID), dataSet);
+        if (tiles.Count > 1)
+        {
+            var pointsBbox = bbox.ReprojectTo(4326, dataSet.SRID);
+            tiles.RemoveAll(t => !IsBboxIntersectingTile(t, pointsBbox) && !File.Exists(_RasterService.GetLocalFilePath(t.Filename)));
+        }
 
         if (tiles.Count == 0)
         {
@@ -575,6 +630,16 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
         var result = pointList.ReprojectTo(4326, dataSet.SRID).ToList();
         this.FillElevations(CollectionsMarshal.AsSpan(result), adjacentRasters, tiles, interpolator, behavior);
         return result;
+    }
+
+    /// <summary>
+    /// WGS84 bbox grown by one dataset pixel on each side (the neighbor pixels used by the interpolation).
+    /// </summary>
+    internal static BoundingBox PadByOnePixel(BoundingBox wgs84Bbox, DEMDataSet dataSet)
+    {
+        // Degrees: arc seconds for geodetic datasets, otherwise meters at the equator (an upper bound in latitude)
+        double pixelDegrees = Math.Max(dataSet.ResolutionArcSeconds / 3600d, dataSet.ResolutionMeters / 111_320d);
+        return pixelDegrees > 0 ? wgs84Bbox.Pad(pixelDegrees, pixelDegrees, 0) : wgs84Bbox;
     }
 
     public IInterpolator GetInterpolator(InterpolationMode interpolationMode)

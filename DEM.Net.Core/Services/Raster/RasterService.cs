@@ -80,6 +80,9 @@ public class RasterService : IRasterDownloader
     /// Directory will be created if not existing
     /// </summary>
     /// <param name="localDirectory"></param>
+    /// <summary>Absolute path of a raster file (catalog file names are relative to <see cref="LocalDirectory"/>).</summary>
+    public string GetLocalFilePath(string filePath) => Path.IsPathRooted(filePath) ? filePath : Path.Combine(_localDirectory, filePath);
+
     public void SetLocalDirectory(string localDirectory)
     {
         localDirectory = Path.Combine(localDirectory, APP_NAME);
@@ -107,11 +110,7 @@ public class RasterService : IRasterDownloader
     /// <returns><see cref="IRasterFile"/> interface for accessing file contents</returns>
     public IRasterFile OpenFile(string filePath, DEMFileType fileFormat)
     {
-
-        if (!Path.IsPathRooted(filePath))
-        {
-            filePath = Path.Combine(_localDirectory, filePath);
-        }
+        filePath = GetLocalFilePath(filePath);
 
         return fileFormat switch
         {
