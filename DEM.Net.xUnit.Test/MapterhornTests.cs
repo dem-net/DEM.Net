@@ -122,7 +122,7 @@ namespace DEM.Net.Test
             var dataSet = DEMDataSet.GetMapterhorn(zoom);
             await _elevationService.DownloadMissingFilesAsync(dataSet, lat, lon);
             var point = _elevationService.GetPointElevation(lat, lon, dataSet);
-            Assert.NotNull(point);
+            Assert.NotNull(point.Elevation);
             Assert.InRange(point.Elevation.GetValueOrDefault(), expected - tolerance, expected + tolerance);
         }
 
@@ -163,7 +163,7 @@ namespace DEM.Net.Test
             var onEdge = new[] { new GeoPoint(46.04, edgeLon), new GeoPoint(46.045, edgeLon), new GeoPoint(46.05, edgeLon) };
             await _elevationService.DownloadMissingFilesAsync(dataSet, new BoundingBox(edgeLon - 0.01, edgeLon + 0.01, 46.03, 46.06));
 
-            var points = await _elevationService.GetPointsElevationAsync(onEdge.Select(p => p.Clone()), dataSet);
+            var points = await _elevationService.GetPointsElevationAsync(onEdge, dataSet);
             Assert.NotNull(points);
             Assert.All(points, p => Assert.InRange(p.Elevation.GetValueOrDefault(), 1000, 3500));
 
@@ -207,7 +207,7 @@ namespace DEM.Net.Test
             double lat = 0.5, lon = -150.5;
             await _elevationService.DownloadMissingFilesAsync(dataSet, lat, lon);
             var point = _elevationService.GetPointElevation(lat, lon, dataSet);
-            Assert.NotNull(point);
+            Assert.NotNull(point.Elevation);
         }
 
         [Fact(DisplayName = "Extents covering too many tiles are refused before any download")]

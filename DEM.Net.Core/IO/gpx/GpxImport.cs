@@ -38,8 +38,8 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public static IEnumerable<IEnumerable<GeoPoint>> ReadGPX_Segments(Stream gpxFileStream)
         {
-            var trackPointConvert = (GpxTrackPoint pt, int index) => new GeoPoint(pt.Latitude, pt.Longitude, pt.Elevation) { Id=index };
-            var routePointConvert = (GpxPoint pt, int index) => new GeoPoint(pt.Latitude, pt.Longitude, pt.Elevation) { Id=index };
+            var trackPointConvert = (GpxTrackPoint pt, int index) => new GeoPoint(pt.Latitude, pt.Longitude, pt.Elevation);
+            var routePointConvert = (GpxPoint pt, int index) => new GeoPoint(pt.Latitude, pt.Longitude, pt.Elevation);
 
             IEnumerable<IEnumerable<GeoPoint>> segments = Enumerable.Empty<IEnumerable<GeoPoint>>();
 

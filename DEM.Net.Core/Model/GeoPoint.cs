@@ -23,69 +23,66 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using DEM.Net.Core;
-using SixLabors.ImageSharp.Processing;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
 
 namespace DEM.Net.Core
 {
-    public class GeoPoint : IEquatable<GeoPoint>
+    /// <summary>
+    /// A location with an optional elevation (32 bytes, immutable: use <c>with</c> to change a coordinate,
+    /// eg: <c>point with { Elevation = 120 }</c>).
+    /// </summary>
+    /// <remarks>
+    /// Since v11 this is a value type: copies are independent, and a point stored in a list is changed
+    /// by storing a new value (<c>list[i] = list[i] with { ... }</c>).
+    /// <c>default(GeoPoint)</c> is (0, 0) without elevation.
+    /// </remarks>
+    public readonly struct GeoPoint : IEquatable<GeoPoint>
     {
-        public int? Id { get; set; }
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
-        public double? Elevation { get; set; }
+        // Optional values are stored as the bits of the double xor those of NaN: 0 (the default) means no value,
+        // so the struct needs no HasValue flags (32 bytes instead of 48), and NaN is no value as before.
+        private static readonly long NoValueBits = BitConverter.DoubleToInt64Bits(double.NaN);
+        private readonly long _elevation;
+        private readonly long _distanceFromOrigin;
+
+        private static long Encode(double? value) => value is double v && !double.IsNaN(v) ? BitConverter.DoubleToInt64Bits(v) ^ NoValueBits : 0;
+        private static double? Decode(long bits) => bits == 0 ? null : BitConverter.Int64BitsToDouble(bits ^ NoValueBits);
+
+        public double Latitude { get; init; }
+        public double Longitude { get; init; }
+
+        /// <summary>Elevation in meters, null when unknown (NaN is stored as null)</summary>
+        public double? Elevation
+        {
+            get => Decode(_elevation);
+            init => _elevation = Encode(value);
+        }
 
         /// <summary>
-        /// When this point is part of a List and ComputePointsDistances is called, this field
-        /// stores the distance from this point to origin point in meters.
+        /// For points of a line profile: distance from the first point of the line in meters
+        /// (see <see cref="PointsExtensions.ComputeMetrics"/>), null otherwise.
         /// </summary>
-        public double? DistanceFromOriginMeters { get; set; }
-
-        public GeoPoint(int? id, double latitude, double longitude, double? altitude)
-            : this(latitude, longitude, altitude)
+        public double? DistanceFromOriginMeters
         {
-            this.Id = id;
+            get => Decode(_distanceFromOrigin);
+            init => _distanceFromOrigin = Encode(value);
         }
+
         public GeoPoint(double latitude, double longitude, double? altitude)
         {
-            this.Latitude = latitude;
-            this.Longitude = longitude;
-            this.Elevation = (altitude.HasValue && double.IsNaN(altitude.Value)) ? null : altitude;
-            this.DistanceFromOriginMeters = null;
+            Latitude = latitude;
+            Longitude = longitude;
+            _elevation = Encode(altitude);
+            _distanceFromOrigin = 0;
         }
 
         public GeoPoint(double latitude, double longitude) : this(latitude, longitude, null) { }
-        public GeoPoint(int? id, double latitude, double longitude) : this(id, latitude, longitude, null) { }
-        public GeoPoint() : this(0, 0) { }
-
-        public GeoPoint Clone(double? newHeight = null)
-        {
-            return new GeoPoint
-            {
-                Id = this.Id
-                ,
-                DistanceFromOriginMeters = this.DistanceFromOriginMeters
-                ,
-                Elevation = newHeight ?? this.Elevation
-                ,
-                Latitude = this.Latitude
-                ,
-                Longitude = this.Longitude
-            };
-
-        }
 
         public double DistanceSquaredTo(GeoPoint pt)
         {
             return (pt.Longitude - Longitude) * (pt.Longitude - Longitude)
                     + (pt.Latitude - Latitude) * (pt.Latitude - Latitude);
         }
-
 
         public static GeoPoint Zero => new GeoPoint(0d, 0d, 0d);
         public static GeoPoint UnitX => new GeoPoint(1d, 0d, 0d);
@@ -97,33 +94,18 @@ namespace DEM.Net.Core
             return new GeoPoint(left.Latitude * right, left.Longitude * right, left.Elevation.GetValueOrDefault(0) * right);
         }
 
-
         public override string ToString()
         {
-            return
-                (Id.HasValue ? $"Id: {Id.Value}, " : "")
-                + $"Lat/Lon: {Latitude} / {Longitude} "
+            return $"Lat/Lon: {Latitude} / {Longitude} "
                 + (Elevation.HasValue ? $", Elevation: {Elevation.Value:F2}" : "")
                 + ((DistanceFromOriginMeters ?? 0) > 0 ? $", DistanceFromOrigin: {DistanceFromOriginMeters:F2}" : "");
         }
 
-        public bool Equals(GeoPoint other)
-        {
-            if (this == null) return false;
-            if (other == null) return false;
+        /// <summary>Points are equal when they have the same location (elevation and distance are ignored)</summary>
+        public bool Equals(GeoPoint other) => Latitude.Equals(other.Latitude) && Longitude.Equals(other.Longitude);
 
-            return Math.Abs(this.Latitude - other.Latitude) < double.Epsilon
-                  && Math.Abs(this.Longitude - other.Longitude) < double.Epsilon;
-        }
+        public override bool Equals(object? obj) => obj is GeoPoint other && Equals(other);
 
-        public override int GetHashCode()
-        {
-            int hashCode = -1416534245;
-            hashCode = hashCode * -1521134295 + Latitude.GetHashCode();
-            hashCode = hashCode * -1521134295 + Longitude.GetHashCode();
-            return hashCode;
-        }
+        public override int GetHashCode() => HashCode.Combine(Latitude, Longitude);
     }
-
-
 }

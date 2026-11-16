@@ -49,7 +49,7 @@ namespace DEM.Net.Core
 				{
 					elevationSum += smoothingFilter[j + smoothingFilter.Length / 2] * nodes[i - j].Elevation.GetValueOrDefault(elevationSum);
 				}
-				nodes[i].Elevation = elevationSum / smoothingFilter.Sum();
+				nodes[i] = nodes[i] with { Elevation = elevationSum / smoothingFilter.Sum() };
 			}
 		}
 
@@ -67,13 +67,13 @@ namespace DEM.Net.Core
 			for (var i = 0; i < nodes.Count; i++)
 			{
 				filteredValue = (filteredValue * feedbackWeight + nodes[i].Elevation * currentWeight) / (feedbackWeight + currentWeight);
-				nodes[i].Elevation = filteredValue;
+				nodes[i] = nodes[i] with { Elevation = filteredValue };
 			}
 			filteredValue = nodes[nodes.Count - 1].Elevation;
 			for (var i = nodes.Count - 1; i >= 0; i--)
 			{
 				filteredValue = (filteredValue * feedbackWeight + nodes[i].Elevation * currentWeight) / (feedbackWeight + currentWeight);
-				nodes[i].Elevation = filteredValue;
+				nodes[i] = nodes[i] with { Elevation = filteredValue };
 			}
 		}
 
