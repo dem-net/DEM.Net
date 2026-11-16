@@ -76,7 +76,7 @@ public static class SensorLogExtensions
         int margin = 10;
         //width = log.Data.Count + 2 * margin;
         List<PointF[]> dataseries = GetDataSeries(log, seriesDefinition);
-        Color[] palette = { Color.Red, Color.Blue, Color.Green, Color.Orange, Color.Purple, Color.Yellow, Color.Gray, Color.LimeGreen };
+        Color[] palette = [Color.Red, Color.Blue, Color.Green, Color.Orange, Color.Purple, Color.Yellow, Color.Gray, Color.LimeGreen];
         var SeriesAndRanges = UpdateRanges(dataseries, seriesDefinition, width, height, margin);
 
 
@@ -85,47 +85,45 @@ public static class SensorLogExtensions
 
         if (mergedImage)
         {
-            using (Image<Rgba32> img = new Image<Rgba32>(width, height))
-            {
-                img.Mutate(o =>
+            using Image<Rgba32> img = new Image<Rgba32>(width, height);
+            img.Mutate(o =>
+                    {
+                        o.BackgroundColor(Color.White);
+                        DrawAxis(o, width, height, margin);
+
+                        int serieIndex = 0; int colorIndex = 0;
+                        foreach (var serieDef in seriesDefinition)
                         {
-                            o.BackgroundColor(Color.White);
-                            DrawAxis(o, width, height, margin);
-
-                            int serieIndex = 0; int colorIndex = 0;
-                            foreach (var serieDef in seriesDefinition)
-                            {
-                                var serie = SeriesAndRanges.Series[serieIndex];
-                                Console.WriteLine($"Drawing serie {serieDef.Key}...");
-                                var pointsWithData = serie.Where(p => p.Y >= margin && p.Y <= (height - margin)).ToArray();
-                                o.DrawLine(drawingOptions, palette[colorIndex], 1f, pointsWithData);
+                            var serie = SeriesAndRanges.Series[serieIndex];
+                            Console.WriteLine($"Drawing serie {serieDef.Key}...");
+                            var pointsWithData = serie.Where(p => p.Y >= margin && p.Y <= (height - margin)).ToArray();
+                            o.DrawLine(drawingOptions, palette[colorIndex], 1f, pointsWithData);
 
 
-                                serieIndex++;
-                                colorIndex = (colorIndex + 1) % palette.Length;
-                            }
-
-                            // Legend
-                            serieIndex = 0; colorIndex = 0;
-                            Console.WriteLine($"Drawing legend...");
-                            foreach (var serieDef in seriesDefinition)
-                            {
-                                var serie = SeriesAndRanges.Series[serieIndex];
-
-                                var text = $"{serieDef.Key} {SeriesAndRanges.Ranges[serieIndex].min:F2} to {SeriesAndRanges.Ranges[serieIndex].max:F2}";
-                                var textSize = TextMeasurer.MeasureSize(text, new TextOptions(font));
-                                var yText = margin + (textSize.Height + textSpacing) * serieIndex;
-                                o.DrawLine(drawingOptions, palette[colorIndex], 2f, new PointF(margin * 2 + 2, yText), new PointF(margin * 2 + 45, yText));
-                                o.DrawText(drawingOptions, text, font, Color.Black, new PointF(margin * 2 + 50, yText));
-
-                                serieIndex++;
-                                colorIndex = (colorIndex + 1) % palette.Length;
-                            }
+                            serieIndex++;
+                            colorIndex = (colorIndex + 1) % palette.Length;
                         }
-                );
 
-                img.Save(outputFileName);
-            }
+                        // Legend
+                        serieIndex = 0; colorIndex = 0;
+                        Console.WriteLine($"Drawing legend...");
+                        foreach (var serieDef in seriesDefinition)
+                        {
+                            var serie = SeriesAndRanges.Series[serieIndex];
+
+                            var text = $"{serieDef.Key} {SeriesAndRanges.Ranges[serieIndex].min:F2} to {SeriesAndRanges.Ranges[serieIndex].max:F2}";
+                            var textSize = TextMeasurer.MeasureSize(text, new TextOptions(font));
+                            var yText = margin + (textSize.Height + textSpacing) * serieIndex;
+                            o.DrawLine(drawingOptions, palette[colorIndex], 2f, new PointF(margin * 2 + 2, yText), new PointF(margin * 2 + 45, yText));
+                            o.DrawText(drawingOptions, text, font, Color.Black, new PointF(margin * 2 + 50, yText));
+
+                            serieIndex++;
+                            colorIndex = (colorIndex + 1) % palette.Length;
+                        }
+                    }
+            );
+
+            img.Save(outputFileName);
         }
         else
         {
@@ -168,7 +166,7 @@ public static class SensorLogExtensions
 
     private static List<PointF[]> GetDataSeries(SensorLog log, SeriesDefinition seriesDefinition)
     {
-        List<PointF[]> series = new List<PointF[]>();
+        List<PointF[]> series = [];
         int gettersCount = seriesDefinition.Count;
         foreach (var def in seriesDefinition)
         {
@@ -196,7 +194,7 @@ public static class SensorLogExtensions
     private static (List<PointF[]> Series, List<(float min, float max)> Ranges) UpdateRanges(List<PointF[]> dataseries, SeriesDefinition seriesDefinition, int width, int height, int margin)
     {
         int dataCount = dataseries.First().Length;
-        (float min, float max)[] ranges = ComputeRanges(dataseries, seriesDefinition.Select(kvp => kvp.Value.noDatavalue).ToList());
+        (float min, float max)[] ranges = ComputeRanges(dataseries, [.. seriesDefinition.Select(kvp => kvp.Value.noDatavalue)]);
         var seriesKeys = seriesDefinition.Keys.ToArray();
         for (int i = 0; i < dataseries.Count; i++)
         {
@@ -217,25 +215,25 @@ public static class SensorLogExtensions
     {
         if (noDataValues == null)
         {
-            return dataseries.Select((data, index) => (
+            return [.. dataseries.Select((data, index) => (
                 data.Min(d => d.Y)
                 , data.Max(d => d.Y)
-            )).ToArray();
+            ))];
         }
         else
         {
-            return dataseries.Select((data, index) => (
+            return [.. dataseries.Select((data, index) => (
                 data.Where(d => !noDataValues[index](d.Y)).Min(d => d.Y)
                 , data.Where(d => !noDataValues[index](d.Y)).Max(d => d.Y)
-            )).ToArray();
+            ))];
         }
     }
 
 
     private static void DrawAxis(IImageProcessingContext ctx, int width, int height, int margin)
     {
-        PointF[] xAxis = { new PointF(margin, height - margin), new PointF(width - margin, height - margin) };
-        PointF[] yAxis = { new PointF(margin, margin), new PointF(margin, height - margin) };
+        PointF[] xAxis = [new(margin, height - margin), new(width - margin, height - margin)];
+        PointF[] yAxis = [new(margin, margin), new(margin, height - margin)];
 
         ctx.DrawLine(Color.Black, 1, xAxis)
            .DrawLine(Color.Black, 1, yAxis);

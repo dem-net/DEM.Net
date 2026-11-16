@@ -815,45 +815,21 @@ internal class Earcut
         }
     }
 
-    class Node
+    class Node(int i, double x, double y)
     {
-        public int i;
-        public double x;
-        public double y;
+        public int i = i;
+        public double x = x;
+        public double y = y;
 
-        public int? z;
+        public int? z = null;
 
-        public Node prev;
-        public Node next;
+        public Node prev = null;
+        public Node next = null;
 
-        public Node prevZ;
-        public Node nextZ;
+        public Node prevZ = null;
+        public Node nextZ = null;
 
-        public bool steiner;
-
-        public Node(int i, double x, double y)
-        {
-            // vertex index in coordinates array
-            this.i = i;
-
-            // vertex coordinates
-            this.x = x;
-            this.y = y;
-
-            // previous and next vertex nodes in a polygon ring
-            this.prev = null;
-            this.next = null;
-
-            // z-order curve value
-            this.z = null;
-
-            // previous and next nodes in z-order
-            this.prevZ = null;
-            this.nextZ = null;
-
-            // indicates whether this is a steiner point
-            this.steiner = false;
-        }
+        public bool steiner = false;
     }
 
     static double SignedArea(IList<double> data, int start, int end)

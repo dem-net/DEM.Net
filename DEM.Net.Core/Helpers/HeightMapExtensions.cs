@@ -392,7 +392,7 @@ public static class HeightMapExtensions
     /// <returns></returns>
     public static HeightMap Sort(this HeightMap heightMap)
     {
-        heightMap.Coordinates = heightMap.Coordinates.Sort().ToArray();
+        heightMap.Coordinates = [.. heightMap.Coordinates.Sort()];
 
         return heightMap;
     }
@@ -429,11 +429,10 @@ public static class HeightMapExtensions
         if (grids.Count == 0) throw new ArgumentException("No height map to merge.", nameof(tiles));
         if (grids.Count == 1) return grids[0].HeightMap;
 
-        List<TileGrid[]> tileRows = grids
+        List<TileGrid[]> tileRows = [.. grids
             .GroupBy(g => RoundCoordinate(g.North))
             .OrderByDescending(g => g.Key)
-            .Select(g => g.OrderBy(t => t.West).ToArray())
-            .ToList();
+            .Select(g => g.OrderBy(t => t.West).ToArray())];
 
         // Skip overlapping columns (west edge repeating the previous tile's east edge) and rows (north edge repeating the row above)
         for (int r = 0; r < tileRows.Count; r++)
@@ -549,7 +548,7 @@ public static class HeightMapExtensions
             Maximum = heightMap.Maximum,
             Minimum = heightMap.Minimum,
             BoundingBox = heightMap.BoundingBox,
-            Coordinates = DownsampleCoordinates(heightMap.Coordinates, heightMap.Width, heightMap.Height, step).ToArray()
+            Coordinates = [.. DownsampleCoordinates(heightMap.Coordinates, heightMap.Width, heightMap.Height, step)]
         };
 
         return hMap;
@@ -576,7 +575,7 @@ public static class HeightMapExtensions
         int numPoints = destWidth * destHeight;
         var enume = coords.GetEnumerator();
         double radius = 1.4;
-        List<List<(double Elevation, double Weight, GeoPoint source)>> outPoints = Enumerable.Range(1, numPoints).Select(_ => new List<(double elevation, double weigh, GeoPoint sourcet)>()).ToList();
+        List<List<(double Elevation, double Weight, GeoPoint source)>> outPoints = [.. Enumerable.Range(1, numPoints).Select(_ => new List<(double elevation, double weigh, GeoPoint sourcet)>())];
         for (int y = 0; y < sourceHeight; y++)
         {
             for (int x = 0; x < sourceWidth; x++)
@@ -649,7 +648,7 @@ public static class HeightMapExtensions
         // attribuer aux pixels de destination la valeur interpolée
 
         int numPoints = destWidth * destHeight;
-        List<List<double>> outPoints = Enumerable.Range(1, numPoints).Select(_ => new List<double>()).ToList();
+        List<List<double>> outPoints = [.. Enumerable.Range(1, numPoints).Select(_ => new List<double>())];
         var enume = coords.GetEnumerator();
         double lastXz = 0, lastYz = 0;
         for (int y = 0; y < sourceHeight; y++)

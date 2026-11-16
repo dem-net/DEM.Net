@@ -32,14 +32,14 @@ using DEM.Net.Core.Gpx;
 
 namespace DEM.Net.Core;
 
-public class BoundingBox : IEquatable<BoundingBox>
+public class BoundingBox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax) : IEquatable<BoundingBox>
 {
-    public double xMin { get; set; }
-    public double xMax { get; set; }
-    public double yMin { get; set; }
-    public double yMax { get; set; }
-    public double zMin { get; set; }
-    public double zMax { get; set; }
+    public double xMin { get; set; } = xmin;
+    public double xMax { get; set; } = xmax;
+    public double yMin { get; set; } = ymin;
+    public double yMax { get; set; } = ymax;
+    public double zMin { get; set; } = zmin;
+    public double zMax { get; set; } = zmax;
 
     public double Width
     {
@@ -72,16 +72,6 @@ public class BoundingBox : IEquatable<BoundingBox>
     }
     public BoundingBox(double xmin, double xmax, double ymin, double ymax) : this(xmin, xmax, ymin, ymax, 0, 0)
     {
-    }
-
-    public BoundingBox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)
-    {
-        xMin = xmin;
-        xMax = xmax;
-        yMin = ymin;
-        yMax = ymax;
-        zMin = zmin;
-        zMax = zmax;
     }
 
     public bool IsValid()
@@ -225,11 +215,11 @@ public class BoundingBox : IEquatable<BoundingBox>
     {
         get
         {
-            return new double[] {
+            return [
                 (xMax - xMin) / 2d + xMin
                 , (yMax - yMin) / 2d + yMin
                 , (zMax - zMin) / 2d + zMin
-            };
+            ];
         }
     }
 
@@ -240,12 +230,14 @@ public class BoundingBox : IEquatable<BoundingBox>
     }
     public List<GeoPoint> AsPoints()
     {
-        var pts = new List<GeoPoint>();
-        pts.Add(new GeoPoint(yMax, xMin));
-        pts.Add(new GeoPoint(yMax, xMax));
-        pts.Add(new GeoPoint(yMin, xMax));
-        pts.Add(new GeoPoint(yMin, xMin));
-        pts.Add(new GeoPoint(yMax, xMin));
+        var pts = new List<GeoPoint>
+        {
+            new GeoPoint(yMax, xMin),
+            new GeoPoint(yMax, xMax),
+            new GeoPoint(yMin, xMax),
+            new GeoPoint(yMin, xMin),
+            new GeoPoint(yMax, xMin)
+        };
         return pts;
     }
 

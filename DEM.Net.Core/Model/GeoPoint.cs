@@ -37,19 +37,19 @@ namespace DEM.Net.Core;
 /// by storing a new value (<c>list[i] = list[i] with { ... }</c>).
 /// <c>default(GeoPoint)</c> is (0, 0) without elevation.
 /// </remarks>
-public readonly struct GeoPoint : IEquatable<GeoPoint>
+public readonly struct GeoPoint(double latitude, double longitude, double? altitude) : IEquatable<GeoPoint>
 {
     // Optional values are stored as the bits of the double xor those of NaN: 0 (the default) means no value,
     // so the struct needs no HasValue flags (32 bytes instead of 48), and NaN is no value as before.
     private static readonly long NoValueBits = BitConverter.DoubleToInt64Bits(double.NaN);
-    private readonly long _elevation;
-    private readonly long _distanceFromOrigin;
+    private readonly long _elevation = Encode(altitude);
+    private readonly long _distanceFromOrigin = 0;
 
     private static long Encode(double? value) => value is double v && !double.IsNaN(v) ? BitConverter.DoubleToInt64Bits(v) ^ NoValueBits : 0;
     private static double? Decode(long bits) => bits == 0 ? null : BitConverter.Int64BitsToDouble(bits ^ NoValueBits);
 
-    public double Latitude { get; init; }
-    public double Longitude { get; init; }
+    public double Latitude { get; init; } = latitude;
+    public double Longitude { get; init; } = longitude;
 
     /// <summary>Elevation in meters, null when unknown (NaN is stored as null)</summary>
     public double? Elevation
@@ -68,14 +68,6 @@ public readonly struct GeoPoint : IEquatable<GeoPoint>
         init => _distanceFromOrigin = Encode(value);
     }
 
-    public GeoPoint(double latitude, double longitude, double? altitude)
-    {
-        Latitude = latitude;
-        Longitude = longitude;
-        _elevation = Encode(altitude);
-        _distanceFromOrigin = 0;
-    }
-
     public GeoPoint(double latitude, double longitude) : this(latitude, longitude, null) { }
 
     public double DistanceSquaredTo(GeoPoint pt)
@@ -84,10 +76,10 @@ public readonly struct GeoPoint : IEquatable<GeoPoint>
                 + (pt.Latitude - Latitude) * (pt.Latitude - Latitude);
     }
 
-    public static GeoPoint Zero => new GeoPoint(0d, 0d, 0d);
-    public static GeoPoint UnitX => new GeoPoint(1d, 0d, 0d);
-    public static GeoPoint UnitY => new GeoPoint(0d, 1d, 0d);
-    public static GeoPoint UnitZ => new GeoPoint(0d, 0d, 1d);
+    public static GeoPoint Zero => new(0d, 0d, 0d);
+    public static GeoPoint UnitX => new(1d, 0d, 0d);
+    public static GeoPoint UnitY => new(0d, 1d, 0d);
+    public static GeoPoint UnitZ => new(0d, 0d, 1d);
 
     public static GeoPoint operator *(GeoPoint left, float right)
     {

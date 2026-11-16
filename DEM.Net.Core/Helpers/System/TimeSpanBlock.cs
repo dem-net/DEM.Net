@@ -29,18 +29,11 @@ using Microsoft.Extensions.Logging;
 
 namespace DEM.Net.Core;
 
-public class TimeSpanBlock : IDisposable
+public class TimeSpanBlock(string operationName, ILogger logger, LogLevel logLevel = LogLevel.Information) : IDisposable
 {
-    private StopwatchLog _sw;
-    private readonly string _operationName;
-    private readonly LogLevel _logLevel;
-
-    public TimeSpanBlock(string operationName, ILogger logger, LogLevel logLevel = LogLevel.Information)
-    {
-        _sw = StopwatchLog.StartNew(logger);
-        _operationName = operationName;
-        _logLevel = logLevel;
-    }
+    private StopwatchLog _sw = StopwatchLog.StartNew(logger);
+    private readonly string _operationName = operationName;
+    private readonly LogLevel _logLevel = logLevel;
 
     public TimeSpan Elapsed => _sw.Elapsed;
 

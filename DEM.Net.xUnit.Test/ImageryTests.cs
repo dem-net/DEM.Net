@@ -14,18 +14,12 @@ namespace DEM.Net.xUnit.Test;
 
 // Downloads datasets / tiles: excluded from CI (dotnet test --filter Category!=Network)
 [Trait("Category", "Network")]
-public class ImageryTests : IClassFixture<DemNetFixture>
+public class ImageryTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    readonly ImageryService _imageryService;
+    readonly ImageryService _imageryService = fixture.ServiceProvider.GetService<ImageryService>();
 
     private static MapTileInfo tileInfoFrance = new(x: 527, y: 374, zoom: 10, 256);
     private static MapTileInfo tileInfoSwiss = new(x: 534, y: 361, zoom: 10, 256);
-
-
-    public ImageryTests(DemNetFixture fixture)
-    {
-        _imageryService = fixture.ServiceProvider.GetService<ImageryService>();
-    }
 
     [Theory()]
     [MemberData(nameof(ImageryProviders))]
@@ -42,24 +36,24 @@ public class ImageryTests : IClassFixture<DemNetFixture>
 
     public static IEnumerable<object[]> ImageryProviders =>
     [
-        new object[] {ImageryProvider.EsriWorldImagery, tileInfoFrance },
-        new object[] {ImageryProvider.MapTilerSatellite, tileInfoFrance},
-        new object[] {ImageryProvider.MapBoxSatellite, tileInfoFrance},
-        new object[] {ImageryProvider.MapBoxSatelliteStreet, tileInfoFrance},
-        new object[] {ImageryProvider.MapBoxStreets, tileInfoFrance},
-        new object[] {ImageryProvider.MapBoxLight, tileInfoFrance},
-        new object[] {ImageryProvider.MapBoxDark, tileInfoFrance},
-        new object[] {ImageryProvider.StamenToner, tileInfoFrance},
-        new object[] {ImageryProvider.StamenWaterColor, tileInfoFrance},
-        new object[] {ImageryProvider.StamenTerrain, tileInfoFrance},
-        new object[] {ImageryProvider.StadiaOutdoors, tileInfoFrance},
-        new object[] {ImageryProvider.OpenTopoMap, tileInfoFrance},
-        new object[] {ImageryProvider.ThunderForestOutdoors, tileInfoFrance},
-        new object[] {ImageryProvider.ThunderForestLandscape, tileInfoFrance},
-        new object[] {ImageryProvider.ThunderForestNeighbourhood, tileInfoFrance},
-        new object[] {ImageryProvider.OrtoIGNes, tileInfoFrance},
-        new object[] {ImageryProvider.SwissImage, tileInfoSwiss},
-        new object[] {ImageryProvider.OrtoIGNfr, tileInfoFrance},
+        [ImageryProvider.EsriWorldImagery, tileInfoFrance],
+        [ImageryProvider.MapTilerSatellite, tileInfoFrance],
+        [ImageryProvider.MapBoxSatellite, tileInfoFrance],
+        [ImageryProvider.MapBoxSatelliteStreet, tileInfoFrance],
+        [ImageryProvider.MapBoxStreets, tileInfoFrance],
+        [ImageryProvider.MapBoxLight, tileInfoFrance],
+        [ImageryProvider.MapBoxDark, tileInfoFrance],
+        [ImageryProvider.StamenToner, tileInfoFrance],
+        [ImageryProvider.StamenWaterColor, tileInfoFrance],
+        [ImageryProvider.StamenTerrain, tileInfoFrance],
+        [ImageryProvider.StadiaOutdoors, tileInfoFrance],
+        [ImageryProvider.OpenTopoMap, tileInfoFrance],
+        [ImageryProvider.ThunderForestOutdoors, tileInfoFrance],
+        [ImageryProvider.ThunderForestLandscape, tileInfoFrance],
+        [ImageryProvider.ThunderForestNeighbourhood, tileInfoFrance],
+        [ImageryProvider.OrtoIGNes, tileInfoFrance],
+        [ImageryProvider.SwissImage, tileInfoSwiss],
+        [ImageryProvider.OrtoIGNfr, tileInfoFrance],
     ];
 
 }

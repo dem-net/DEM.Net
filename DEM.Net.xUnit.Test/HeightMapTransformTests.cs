@@ -12,16 +12,14 @@ public class HeightMapTransformTests
     {
         var hm = new HeightMap(width, height)
         {
-            Coordinates = Enumerable.Range(0, width * height)
-                .Select(i => new GeoPoint(45.1 - (i / width) * 0.01, 6 + (i % width) * 0.01, 1000 + i))
-                .ToArray(),
+            Coordinates = [.. Enumerable.Range(0, width * height).Select(i => new GeoPoint(45.1 - (i / width) * 0.01, 6 + (i % width) * 0.01, 1000 + i))],
         };
         hm.Minimum = 1000;
         hm.Maximum = 1000 + width * height - 1;
         return hm;
     }
 
-    private static (double, double, double?)[] Values(GeoPoint[] points) => points.Select(p => (p.Latitude, p.Longitude, p.Elevation)).ToArray();
+    private static (double, double, double?)[] Values(GeoPoint[] points) => [.. points.Select(p => (p.Latitude, p.Longitude, p.Elevation))];
 
     [Fact]
     public void TransformsChangeTheCoordinatesInPlace()

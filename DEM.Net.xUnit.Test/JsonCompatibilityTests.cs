@@ -36,7 +36,7 @@ public sealed class JsonCompatibilityTests : IDisposable
         return path;
     }
 
-    private static readonly DEMDataSet AnyDataSet = new DEMDataSet
+    private static readonly DEMDataSet AnyDataSet = new()
     {
         Name = "json-tests",
         FileFormat = new DEMFileDefinition("hgt", DEMFileType.SRTM_HGT, ".hgt", DEMFileRegistrationMode.Grid),
@@ -179,21 +179,21 @@ public sealed class JsonCompatibilityTests : IDisposable
             ]
             """);
         var stacSources = (List<DEMFileSource>)typeof(StacFileService).GetMethod("GetSources", NonPublic)!
-            .Invoke(new StacFileService(null!, null!), new object[] { AnyDataSet, stac })!;
+            .Invoke(new StacFileService(null!, null!), [AnyDataSet, stac])!;
         Assert.Equal(2, stacSources.Count);
         Assert.Equal("https://data.geo.admin.ch/b.tif", stacSources[1].SourceFileNameAbsolute);
         Assert.Equal(46.25, stacSources[1].BBox.yMax, 5);
 
         string nasa = WriteFile("nasa.json", """[{"Box":"43 5 44 6","ZipFileLink":"https://e4ftl01.cr.usgs.gov/N43E005.SRTMGL1.hgt.zip","GranuleId":"SRTMGL1_N43E005"}]""");
         var nasaSources = (List<DEMFileSource>)typeof(NasaGranuleFileService).GetMethod("GetSources", NonPublic)!
-            .Invoke(null, new object[] { AnyDataSet, nasa })!;
+            .Invoke(null, [AnyDataSet, nasa])!;
         Assert.Equal("https://e4ftl01.cr.usgs.gov/N43E005.SRTMGL1.hgt.zip", Assert.Single(nasaSources).SourceFileNameAbsolute);
         Assert.Equal("SRTMGL1_N43E005", nasaSources[0].SourceFileName);
         Assert.Equal(5, nasaSources[0].BBox.xMin);
 
         string tiles = WriteFile("tiles.json", """[{"FileName":"N43E005_FABDEM_V1-2.tif","Url":"https://h/N43E005_FABDEM_V1-2.tif","Box":[5.0,43.0,6.0,44.0]}]""");
         var tileSources = (List<DEMFileSource>)typeof(TileIndexFileService).GetMethod("LoadSources", NonPublic)!
-            .Invoke(null, new object[] { tiles, _dir, 4326 })!;
+            .Invoke(null, [tiles, _dir, 4326])!;
         Assert.Equal("https://h/N43E005_FABDEM_V1-2.tif", Assert.Single(tileSources).SourceFileNameAbsolute);
         Assert.Equal(44, tileSources[0].BBox.yMax);
     }
@@ -273,8 +273,8 @@ public sealed class JsonCompatibilityTests : IDisposable
             """, source);
 
         Assert.Equal(new[] { "a.tif", "b.tif" }, entries.Select(e => e.FileName));
-        Assert.Equal(new[] { 5.0, 43, 6, 44 }, entries[0].Box);
-        Assert.Equal(new[] { -1.5, -1, 4, 5 }, entries[1].Box);
+        Assert.Equal([5.0, 43, 6, 44], entries[0].Box);
+        Assert.Equal([-1.5, -1, 4, 5], entries[1].Box);
 
         // property values reach the url builders as former versions formatted them
         IReadOnlyDictionary<string, string> properties = null!;

@@ -31,15 +31,10 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core;
 
-public struct GeoSegment
+public struct GeoSegment(GeoPoint start, GeoPoint end)
 {
-    public GeoPoint Start;
-    public GeoPoint End;
-    public GeoSegment(GeoPoint start, GeoPoint end)
-    {
-        Start = start;
-        End = end;
-    }
+    public GeoPoint Start = start;
+    public GeoPoint End = end;
 
     public override string ToString()
     {

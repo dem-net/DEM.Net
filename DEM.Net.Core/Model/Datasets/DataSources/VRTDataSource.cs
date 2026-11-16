@@ -25,14 +25,9 @@
 using System;
 namespace DEM.Net.Core.Datasets;
 
-public class VRTDataSource : IDEMDataSource
+public class VRTDataSource(string vrtFileUrl) : IDEMDataSource
 {
-		public string IndexFilePath { get; }
+    public string IndexFilePath { get; } = vrtFileUrl;
 
     public DEMDataSourceType DataSourceType => DEMDataSourceType.GDALVrt;
-
-    public VRTDataSource(string vrtFileUrl)
-		{
-			this.IndexFilePath = vrtFileUrl;
-		}
 }

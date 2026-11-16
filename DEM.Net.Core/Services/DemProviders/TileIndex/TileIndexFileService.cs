@@ -17,20 +17,14 @@ namespace DEM.Net.Core.TileIndex;
 /// Index for <see cref="TileIndexDataSource"/>: downloads the GeoJSON tile index once, keeps a compact
 /// local copy (bbox + url + file name per tile) and downloads tiles on demand.
 /// </summary>
-public class TileIndexFileService : IDEMDataSetIndex
+public class TileIndexFileService(ILogger<TileIndexFileService> logger, IHttpClientFactory httpClientFactory) : IDEMDataSetIndex
 {
     private const string TilesDirectory = "Tiles";
 
-    private readonly ILogger<TileIndexFileService> _logger;
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
-    private readonly SingleFlight _setup = new SingleFlight(keepCompleted: false); // the result lives in _cacheByDemName
-
-    public TileIndexFileService(ILogger<TileIndexFileService> logger, IHttpClientFactory httpClientFactory)
-    {
-        _logger = logger;
-        _httpClientFactory = httpClientFactory;
-    }
+    private readonly ILogger<TileIndexFileService> _logger = logger;
+    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
+    private readonly ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName = new();
+    private readonly SingleFlight _setup = new(keepCompleted: false); // the result lives in _cacheByDemName
 
     public Task SetupAsync(DEMDataSet dataSet, string dataSetLocalDir, CancellationToken cancellationToken = default)
     {
@@ -124,7 +118,7 @@ public class TileIndexFileService : IDEMDataSetIndex
         bool any = false;
         foreach (var child in coordinates.EnumerateArray())
             Visit(child);
-        return any ? new[] { xMin, yMin, xMax, yMax } : null;
+        return any ? [xMin, yMin, xMax, yMax] : null;
 
         void Visit(JsonElement element)
         {
@@ -149,13 +143,13 @@ public class TileIndexFileService : IDEMDataSetIndex
         using (var stream = File.OpenRead(indexFileName))
             entries = JsonSerializer.Deserialize(stream, CoreJsonContext.Default.ListTileIndexEntry)
                 ?? throw new InvalidDataException($"Empty tile index {indexFileName}.");
-        return entries.Select(e => new DEMFileSource
+        return [.. entries.Select(e => new DEMFileSource
         {
             BBox = new BoundingBox(e.Box[0], e.Box[2], e.Box[1], e.Box[3]) { SRID = srid },
             SourceFileName = e.FileName,
             SourceFileNameAbsolute = e.Url,
             LocalFileName = Path.Combine(dataSetLocalDir, TilesDirectory, e.FileName)
-        }).ToList();
+        })];
     }
 
     public async Task DownloadRasterFileAsync(DemFileReport report, DEMDataSet dataset, CancellationToken cancellationToken = default)

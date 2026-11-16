@@ -11,7 +11,7 @@ namespace DEM.Net.Core.Imagery;
 /// </summary>
 internal static class PngWriter
 {
-    private static readonly byte[] PngSignature = { 137, 80, 78, 71, 13, 10, 26, 10 };
+    private static readonly byte[] PngSignature = [137, 80, 78, 71, 13, 10, 26, 10];
 
     /// <summary>
     /// Writes the PNG signature and an IHDR chunk for an 8-bit RGBA, non-interlaced image.

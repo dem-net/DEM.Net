@@ -15,17 +15,10 @@ using SixLabors.ImageSharp.Drawing;
 
 namespace DEM.Net.Core;
 
-public class AdornmentsService
+public class AdornmentsService(MeshService meshService, ILogger<AdornmentsService> logger)
 {
-    private readonly MeshService _meshService;
-    private readonly ILogger<AdornmentsService> _logger;
-
-    public AdornmentsService(MeshService meshService, ILogger<AdornmentsService> logger)
-    {
-
-        this._meshService = meshService;
-        this._logger = logger;
-    }
+    private readonly MeshService _meshService = meshService;
+    private readonly ILogger<AdornmentsService> _logger = logger;
 
     public TriangulationList<Vector3> CreateModelAdornments(DEMDataSet dataset, ImageryProvider imageryProvider, BoundingBox bboxDemSpace, BoundingBox bboxModelSpace)
     {
@@ -82,7 +75,7 @@ public class AdornmentsService
     {
         List<Polygon<Vector3>> letterPolygons = GetTextPolygons(text);
         TriangulationList<Vector3> triangulation = _meshService.Extrude(letterPolygons);
-        triangulation.Colors = triangulation.Positions.Select(p => color).ToList();
+        triangulation.Colors = [.. triangulation.Positions.Select(p => color)];
         triangulation = triangulation.CenterOnOrigin();
         return triangulation;
     }
@@ -117,7 +110,7 @@ public class AdornmentsService
     private ScaleBarInfo GetScaleBarWidth(float totalWidth, float modelSizeProjected, float scaleBarSizeRelativeToModel = 0.5f, int nSteps = 4)
     {
         // must be divisible by 4
-        float[] smallestScaleStep = { 1, 2, 5, 10, 20, 25, 50, 100, 250, 500, 1000, 2000, 2500, 5000, 10000, 20000, 25000, 50000, 100000, 200000, 500000, 1000000, 2000000, 5000000, 10000000 };
+        float[] smallestScaleStep = [1, 2, 5, 10, 20, 25, 50, 100, 250, 500, 1000, 2000, 2500, 5000, 10000, 20000, 25000, 50000, 100000, 200000, 500000, 1000000, 2000000, 5000000, 10000000];
 
         var scaleBarTotalRequestedSize = totalWidth * scaleBarSizeRelativeToModel;
         var bestScale = smallestScaleStep.Select(s => new { Step = s, diff = Math.Abs(1 - (scaleBarTotalRequestedSize / (s * nSteps))) })
@@ -139,7 +132,7 @@ public class AdornmentsService
     }
 
     // Preferred font first (historical GDI+ choice), then common cross-platform fallbacks.
-    private static readonly string[] PreferredFontFamilies = { "Calibri", "Arial", "Liberation Sans", "DejaVu Sans", "Helvetica", "Noto Sans" };
+    private static readonly string[] PreferredFontFamilies = ["Calibri", "Arial", "Liberation Sans", "DejaVu Sans", "Helvetica", "Noto Sans"];
     private static FontFamily? _textFontFamily;
 
     private FontFamily GetTextFontFamily()
@@ -167,7 +160,7 @@ public class AdornmentsService
 
     public List<Polygon<Vector3>> GetTextPolygons(string text)
     {
-        Dictionary<int, Polygon<Vector3>> letterPolygons = new Dictionary<int, Polygon<Vector3>>();
+        Dictionary<int, Polygon<Vector3>> letterPolygons = [];
 
         // 40pt at 72 dpi = 40 px em size, same as the former GDI+ GraphicsPath.AddString(..., 40f, ...)
         Font font = GetTextFontFamily().CreateFont(40f);
@@ -215,22 +208,18 @@ public class AdornmentsService
             }
         }
 
-        return letterPolygons.Values.ToList();
+        return [.. letterPolygons.Values];
     }
 
     private List<int> GetContainerPolygons(List<Vector3> currentPolygon, Dictionary<int, Polygon<Vector3>> polygons)
     {
-        List<int> parents = polygons.Where(p => IsPointInPolygon(p.Value.ExteriorRing, currentPolygon[0]))
-                                    .Select(p => p.Key)
-                                    .ToList();
+        List<int> parents = [.. polygons.Where(p => IsPointInPolygon(p.Value.ExteriorRing, currentPolygon[0])).Select(p => p.Key)];
         return parents;
     }
 
     private List<int> GetIncludedPolygons(List<Vector3> currentPolygon, Dictionary<int, Polygon<Vector3>> polygons)
     {
-        List<int> childs = polygons.Where(p => IsPointInPolygon(currentPolygon, p.Value.ExteriorRing[0]))
-                                    .Select(p => p.Key)
-                                    .ToList();
+        List<int> childs = [.. polygons.Where(p => IsPointInPolygon(currentPolygon, p.Value.ExteriorRing[0])).Select(p => p.Key)];
         return childs;
     }
 

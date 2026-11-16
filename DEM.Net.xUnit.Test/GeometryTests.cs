@@ -12,13 +12,13 @@ public class GeometryTests
 
     public GeometryTests()
     {
-        _linePoints = new GeoPoint[] {
-                                    new GeoPoint(43.429923, 0.517782),
-                                      new GeoPoint(43.093901, 0.451817),
-                                      new GeoPoint(42.610654, 0.27591),
-                                      new GeoPoint(42.237605, 0.165969),
-                                      new GeoPoint(41.796848, -0.053915)
-                                    };
+        _linePoints = [
+                                    new(43.429923, 0.517782),
+                                      new(43.093901, 0.451817),
+                                      new(42.610654, 0.27591),
+                                      new(42.237605, 0.165969),
+                                      new(41.796848, -0.053915)
+                                    ];
 
     }
 

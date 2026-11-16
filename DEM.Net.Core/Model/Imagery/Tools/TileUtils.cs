@@ -346,7 +346,7 @@ public static class TileUtils
             }
         }
 
-        return keys.ToArray();
+        return [.. keys];
     }
 
     /// <summary>

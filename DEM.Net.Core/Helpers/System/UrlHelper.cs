@@ -34,7 +34,7 @@ namespace DEM.Net.Core;
 
 public static class UrlHelper
 {
-    readonly static Uri SomeBaseUri = new Uri("http://foo.org");
+    readonly static Uri SomeBaseUri = new("http://foo.org");
 
     public static string GetFileNameFromUrl(string url)
     {

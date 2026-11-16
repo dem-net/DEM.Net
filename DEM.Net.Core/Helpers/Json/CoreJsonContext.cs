@@ -52,11 +52,9 @@ internal sealed class UniversalDateTimeOffsetConverter : JsonConverter<DateTimeO
 }
 
 /// <summary>Maps JSON strings to enum values, several strings may map to the same value. Unknown strings are rejected.</summary>
-internal abstract class MappedEnumConverter<T> : JsonConverter<T> where T : struct, Enum
+internal abstract class MappedEnumConverter<T>(params (string Name, T Value)[] map) : JsonConverter<T> where T : struct, Enum
 {
-    private readonly (string Name, T Value)[] _map;
-
-    protected MappedEnumConverter(params (string Name, T Value)[] map) => _map = map;
+    private readonly (string Name, T Value)[] _map = map;
 
     public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

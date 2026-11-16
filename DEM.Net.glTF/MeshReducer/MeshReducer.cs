@@ -13,16 +13,10 @@ using SharpGLTF.Schema2;
 
 namespace DEM.Net.glTF;
 
-public class MeshReducer
+public class MeshReducer(ILogger<MeshReducer> logger, IOptions<DEMNetOptions> options)
 {
-    private readonly ILogger<MeshReducer> _logger;
-    private readonly DEMNetOptions _options;
-
-    public MeshReducer(ILogger<MeshReducer> logger, IOptions<DEMNetOptions> options)
-    {
-        _logger = logger;
-        _options = options?.Value;
-    }
+    private readonly ILogger<MeshReducer> _logger = logger;
+    private readonly DEMNetOptions _options = options?.Value;
 
     public Triangulation Decimate(ModelRoot inputModel, float quality = 0.5F)
     {
@@ -125,12 +119,12 @@ public class MeshReducer
     {
         mesh.CompactInPlace();
 
-        return new TriangulationList<System.Numerics.Vector3>(GetMeshPositionsVector3(mesh), GetMeshIndices(mesh).ToList());
+        return new TriangulationList<System.Numerics.Vector3>(GetMeshPositionsVector3(mesh), [.. GetMeshIndices(mesh)]);
     }
 
     private List<Vector3> GetMeshPositionsVector3(DMesh3 mesh)
     {
-        return mesh.Vertices().Select(v => new Vector3((float)v.x, (float)v.y, (float)v.z)).ToList();
+        return [.. mesh.Vertices().Select(v => new Vector3((float)v.x, (float)v.y, (float)v.z))];
     }
 
     private IEnumerable<GeoPoint> GetMeshPositions(DMesh3 mesh)

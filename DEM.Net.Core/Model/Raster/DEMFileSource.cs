@@ -53,6 +53,6 @@ public class DEMFileSource
 
     public DEMFileSource()
     {
-        Properties = new Dictionary<string, string>();
+        Properties = [];
     }
 }

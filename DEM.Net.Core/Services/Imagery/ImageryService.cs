@@ -48,7 +48,11 @@ using SixLabors.ImageSharp.Processing;
 
 namespace DEM.Net.Core.Imagery;
 
-public class ImageryService
+public class ImageryService(MeshService meshService,
+    IOptions<AppSecrets> appSecrets,
+    IOptions<DEMNetOptions> options,
+    ImageryCache cache,
+    ILogger<ImageryService> logger = null)
 {
     #region Tiled imagery
 
@@ -56,25 +60,11 @@ public class ImageryService
 
 
 
-    private readonly ILogger<ImageryService> _logger;
-    private readonly MeshService _meshService;
-    private readonly AppSecrets appSecrets;
-    private readonly DEMNetOptions options;
-    private readonly ImageryCache cache;
-
-
-    public ImageryService(MeshService meshService,
-        IOptions<AppSecrets> appSecrets,
-        IOptions<DEMNetOptions> options,
-        ImageryCache cache,
-        ILogger<ImageryService> logger = null)
-    {
-        _logger = logger;
-        _meshService = meshService;
-        this.appSecrets = appSecrets?.Value;
-        this.options = options?.Value;
-        this.cache = cache;
-    }
+    private readonly ILogger<ImageryService> _logger = logger;
+    private readonly MeshService _meshService = meshService;
+    private readonly AppSecrets appSecrets = appSecrets?.Value;
+    private readonly DEMNetOptions options = options?.Value;
+    private readonly ImageryCache cache = cache;
 
     public TileRange ComputeBoundingBoxTileRange(BoundingBox bbox, ImageryProvider provider,
         int minTilesPerImage = 4)
@@ -117,7 +107,7 @@ public class ImageryService
     public TileRange ComputeBoundingBoxTileRangeForTargetResolution(BoundingBox bbox, ImageryProvider imageryProvider, int width, int height)
     {
         TileRange tiles = new TileRange(imageryProvider);
-        TileUtils.BestMapView(new double[] { bbox.xMin, bbox.yMin, bbox.xMax, bbox.yMax }, width, height, 0, imageryProvider.TileSize, out double _, out double _, out double zoom);
+        TileUtils.BestMapView([bbox.xMin, bbox.yMin, bbox.xMax, bbox.yMax], width, height, 0, imageryProvider.TileSize, out double _, out double _, out double zoom);
         zoom = Math.Round(zoom, 0);
         var topLeft = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMax, bbox.xMin), (int)zoom, imageryProvider.TileSize);
         var bottomRight = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMin, bbox.xMax), (int)zoom, imageryProvider.TileSize);
@@ -255,12 +245,10 @@ public class ImageryService
                         _logger.LogWarning($"Tile {tile.Uri} is empty. Skipping.");
                         continue;
                     }
-                    using (Image<Rgba32> tileImg = Image.Load<Rgba32>(SafeImageDecoding.Options, tile.Image))
-                    {
-                        outputImage.Mutate(o => o
-                            .DrawImage(tileImg, new Point(x, y), 1f)
-                        );
-                    }
+                    using Image<Rgba32> tileImg = Image.Load<Rgba32>(SafeImageDecoding.Options, tile.Image);
+                    outputImage.Mutate(o => o
+                        .DrawImage(tileImg, new Point(x, y), 1f)
+                    );
                 }
                 catch (Exception ex)
                 {
@@ -362,19 +350,17 @@ public class ImageryService
         {
             foreach (var tile in tiles.Tiles)
             {
-                using (Image<Rgba32> tileImg = Image.Load<Rgba32>(SafeImageDecoding.Options, tile.Image))
-                {
-                    int x = (tile.TileInfo.X - tiles.Start.X) * tileSize + xOffset;
-                    int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize + yOffset;
+                using Image<Rgba32> tileImg = Image.Load<Rgba32>(SafeImageDecoding.Options, tile.Image);
+                int x = (tile.TileInfo.X - tiles.Start.X) * tileSize + xOffset;
+                int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize + yOffset;
 
-                    outputImage.Mutate(o => o
-                        .DrawImage(tileImg, new Point(x, y), 1f)
-                    );
-                }
+                outputImage.Mutate(o => o
+                    .DrawImage(tileImg, new Point(x, y), 1f)
+                );
             }
 
             outputImage.Mutate(o => o
-                .DrawLine(color == default(Rgba32) ? new Rgba32(1, 0, 0, 1f) : color, lineWidth, pointsOnTexture.ToArray())
+                .DrawLine(color == default(Rgba32) ? new Rgba32(1, 0, 0, 1f) : color, lineWidth, [.. pointsOnTexture])
             );
 
             if (drawGpxVertices)
@@ -420,15 +406,13 @@ public class ImageryService
         {
             foreach (var tile in tiles.Tiles)
             {
-                using (Image<Rgba32> tileImg = new Image<Rgba32>(tile.PixelSize, tile.PixelSize))
-                {
-                    int x = (tile.TileInfo.X - tiles.Start.X) * tileSize + xOffset;
-                    int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize + yOffset;
+                using Image<Rgba32> tileImg = new Image<Rgba32>(tile.PixelSize, tile.PixelSize);
+                int x = (tile.TileInfo.X - tiles.Start.X) * tileSize + xOffset;
+                int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize + yOffset;
 
-                    outputImage.Mutate(o => o
-                        .FillPolygon(Color.Black, new PointF(x, y), new PointF(x + tileSize, y), new PointF(x + tileSize, y + tileSize), new PointF(x, y + tileSize), new PointF(x, y))
-                    );
-                }
+                outputImage.Mutate(o => o
+                    .FillPolygon(Color.Black, new PointF(x, y), new PointF(x + tileSize, y), new PointF(x + tileSize, y + tileSize), new PointF(x, y + tileSize), new PointF(x, y))
+                );
             }
 
             var poly = new Polygon(pointsOnTexture.ToArray());
@@ -494,7 +478,7 @@ public class ImageryService
     }
 
 
-    ConcurrentDictionary<string, PropertyInfo> tokenGetters = new ConcurrentDictionary<string, PropertyInfo>();
+    ConcurrentDictionary<string, PropertyInfo> tokenGetters = new();
 
     private string GetToken(ImageryProvider provider)
     {
@@ -531,7 +515,7 @@ public class ImageryService
     /// <returns></returns>
     public TextureInfo GenerateNormalMap(HeightMap heightMap, string outputDirectory, string fileName = "normalmap.png")
     {
-        List<Vector3> normals = _meshService.ComputeNormals(heightMap).ToList();
+        List<Vector3> normals = [.. _meshService.ComputeNormals(heightMap)];
 
         using (Image<Bgra32> outputImage = new Image<Bgra32>(heightMap.Width, heightMap.Height))
         {
@@ -662,11 +646,9 @@ public class ImageryService
     public void GenerateTerrainRGB(IEnumerable<float> heightMap, int width, int height, string outputDirectory,
         string fileName = "terrainRGB.png")
     {
-        using (Image<Rgb24> outputImage = GenerateTerrainRGB(heightMap, width, height))
-        {
-            Directory.CreateDirectory(outputDirectory);
-            outputImage.Save(System.IO.Path.Combine(outputDirectory, fileName));
-        }
+        using Image<Rgb24> outputImage = GenerateTerrainRGB(heightMap, width, height);
+        Directory.CreateDirectory(outputDirectory);
+        outputImage.Save(System.IO.Path.Combine(outputDirectory, fileName));
     }
     public unsafe Image<Rgb24> GenerateTerrainRGB(IEnumerable<float> heightMap, int width, int height)
     {
@@ -901,7 +883,7 @@ public class ImageryService
     /// <returns></returns>
     public List<ImageryProvider> GetRegisteredProviders()
     {
-        List<ImageryProvider> providers = new List<ImageryProvider>();
+        List<ImageryProvider> providers = [];
         foreach (var f in predefinedStaticProviders.Value)
         {
             providers.Add(f.GetValue(this) as ImageryProvider);
@@ -916,7 +898,7 @@ public class ImageryService
     }
 
     private Lazy<List<FieldInfo>> predefinedStaticProviders =
-        new Lazy<List<FieldInfo>>(GetPredefinedProviders, false);
+        new(GetPredefinedProviders, false);
 
     private static List<FieldInfo> GetPredefinedProviders()
     {

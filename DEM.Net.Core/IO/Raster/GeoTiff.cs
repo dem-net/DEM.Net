@@ -40,7 +40,7 @@ public class GeoTiff : IRasterFile
     Tiff _tiff;
     string _tiffPath;
     //static NoLogTiffErrorHandler _errorHandler = new NoLogTiffErrorHandler();
-    TraceTiffErrorHandler _traceLogHandler = new TraceTiffErrorHandler();
+    TraceTiffErrorHandler _traceLogHandler = new();
     Dictionary<int, byte[]> tilesCache;
 
     internal Tiff TiffFile
@@ -169,7 +169,7 @@ public class GeoTiff : IRasterFile
                 var tileX = (x / tileWidth) * tileWidth;
                 var tileY = (y / tileHeight) * tileHeight;
 
-                if (tilesCache == null) tilesCache = new Dictionary<int, byte[]>();
+                if (tilesCache == null) tilesCache = [];
                 var tileKey = (x / tileWidth) + (y / tileHeight) * (metadata.Width / tileWidth + 1);
                 if (!tilesCache.TryGetValue(tileKey, out buffer))
                 {
@@ -223,20 +223,13 @@ public class GeoTiff : IRasterFile
         float heightValue = 0;
         try
         {
-            switch (metadata.SampleFormat)
+            heightValue = metadata.SampleFormat switch
             {
-                case RasterSampleFormat.FLOATING_POINT:
-                    heightValue = BitConverter.ToSingle(buffer, offset * metadata.BitsPerSample / 8);
-                    break;
-                case RasterSampleFormat.INTEGER:
-                    heightValue = BitConverter.ToInt16(buffer, offset * metadata.BitsPerSample / 8);
-                    break;
-                case RasterSampleFormat.UNSIGNED_INTEGER:
-                    heightValue = BitConverter.ToUInt16(buffer, offset * metadata.BitsPerSample / 8);
-                    break;
-                default:
-                    throw new Exception("Sample format unsupported.");
-            }
+                RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(buffer, offset * metadata.BitsPerSample / 8),
+                RasterSampleFormat.INTEGER => BitConverter.ToInt16(buffer, offset * metadata.BitsPerSample / 8),
+                RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(buffer, offset * metadata.BitsPerSample / 8),
+                _ => throw new Exception("Sample format unsupported."),
+            };
             if (heightValue > 32768)
             {
                 heightValue = metadata.NoDataValueFloat;
@@ -254,20 +247,13 @@ public class GeoTiff : IRasterFile
         float heightValue = 0;
         try
         {
-            switch (metadata.SampleFormat)
+            heightValue = metadata.SampleFormat switch
             {
-                case RasterSampleFormat.FLOATING_POINT:
-                    heightValue = BitConverter.ToSingle(buffer, offset * metadata.BitsPerSample / 8);
-                    break;
-                case RasterSampleFormat.INTEGER:
-                    heightValue = BitConverter.ToInt16(buffer, offset * metadata.BitsPerSample / 8);
-                    break;
-                case RasterSampleFormat.UNSIGNED_INTEGER:
-                    heightValue = BitConverter.ToUInt16(buffer, offset * metadata.BitsPerSample / 8);
-                    break;
-                default:
-                    throw new Exception("Sample format unsupported.");
-            }
+                RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(buffer, offset * metadata.BitsPerSample / 8),
+                RasterSampleFormat.INTEGER => BitConverter.ToInt16(buffer, offset * metadata.BitsPerSample / 8),
+                RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(buffer, offset * metadata.BitsPerSample / 8),
+                _ => throw new Exception("Sample format unsupported."),
+            };
             if (heightValue > 32768)
             {
                 heightValue = metadata.NoDataValueFloat;
@@ -484,7 +470,7 @@ public class GeoTiff : IRasterFile
                     var tileX = (x / tileWidth) * tileWidth;
                     var tileY = (y / tileHeight) * tileHeight;
 
-                    if (tilesCache == null) tilesCache = new Dictionary<int, byte[]>();
+                    if (tilesCache == null) tilesCache = [];
                     var tileKey = (x / tileWidth) + (y / tileHeight) * (metadata.Width / tileWidth + 1);
                     if (!tilesCache.TryGetValue(tileKey, out buffer))
                     {
@@ -548,21 +534,13 @@ public class GeoTiff : IRasterFile
                     double longitude = startLon + (metadata.pixelSizeX * x);
 
                     float heightValue = 0;
-                    switch (metadata.SampleFormat)
+                    heightValue = metadata.SampleFormat switch
                     {
-                        case RasterSampleFormat.FLOATING_POINT:
-                            heightValue = BitConverter.ToSingle(byteScanline, x * bytesPerSample);
-                            break;
-                        case RasterSampleFormat.INTEGER:
-                            heightValue = BitConverter.ToInt16(byteScanline, x * bytesPerSample);
-                            break;
-                        case RasterSampleFormat.UNSIGNED_INTEGER:
-                            heightValue = BitConverter.ToUInt16(byteScanline, x * bytesPerSample);
-                            break;
-                        default:
-                            throw new Exception("Sample format unsupported.");
-                    }
-
+                        RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(byteScanline, x * bytesPerSample),
+                        RasterSampleFormat.INTEGER => BitConverter.ToInt16(byteScanline, x * bytesPerSample),
+                        RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(byteScanline, x * bytesPerSample),
+                        _ => throw new Exception("Sample format unsupported."),
+                    };
                     if (heightValue < -15000 || heightValue > 10000)
                         heightValue = noDataValue;
                     heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
@@ -609,20 +587,13 @@ public class GeoTiff : IRasterFile
                 double longitude = metadata.DataStartLon + (metadata.pixelSizeX * x);
 
                 float heightValue = 0;
-                switch (metadata.SampleFormat)
+                heightValue = metadata.SampleFormat switch
                 {
-                    case RasterSampleFormat.FLOATING_POINT:
-                        heightValue = BitConverter.ToSingle(byteScanline, x * metadata.BitsPerSample / 8);
-                        break;
-                    case RasterSampleFormat.INTEGER:
-                        heightValue = BitConverter.ToInt16(byteScanline, x * metadata.BitsPerSample / 8);
-                        break;
-                    case RasterSampleFormat.UNSIGNED_INTEGER:
-                        heightValue = BitConverter.ToUInt16(byteScanline, x * metadata.BitsPerSample / 8);
-                        break;
-                    default:
-                        throw new Exception("Sample format unsupported.");
-                }
+                    RasterSampleFormat.FLOATING_POINT => BitConverter.ToSingle(byteScanline, x * metadata.BitsPerSample / 8),
+                    RasterSampleFormat.INTEGER => BitConverter.ToInt16(byteScanline, x * metadata.BitsPerSample / 8),
+                    RasterSampleFormat.UNSIGNED_INTEGER => BitConverter.ToUInt16(byteScanline, x * metadata.BitsPerSample / 8),
+                    _ => throw new Exception("Sample format unsupported."),
+                };
                 if (heightValue < 32768)
                 {
                     heightMap.Minimum = Math.Min(metadata.MinimumAltitude, heightValue);

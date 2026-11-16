@@ -10,20 +10,12 @@ namespace DEM.Net.Core.Stac;
 /// Extract of relevant granule information for DEM Net
 /// (whole granule is too big)
 /// </summary>
-public class StacDemFile : IEquatable<StacDemFile>
+public class StacDemFile(string fileId, List<float> box, string href, DateTimeOffset dateTime) : IEquatable<StacDemFile>
 {
-    public string FileId { get; }
-    public List<float> Box { get; }
-    public string Href { get; }
-    public DateTimeOffset DateTime { get; } // from feature
-
-    public StacDemFile(string fileId, List<float> box, string href, DateTimeOffset dateTime)
-    {
-        this.FileId = fileId;
-        this.Box = box;
-        this.Href = href;
-        this.DateTime = dateTime;
-    }
+    public string FileId { get; } = fileId;
+    public List<float> Box { get; } = box;
+    public string Href { get; } = href;
+    public DateTimeOffset DateTime { get; } = dateTime;
 
     public bool Equals(StacDemFile other)
     {

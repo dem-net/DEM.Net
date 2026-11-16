@@ -28,19 +28,15 @@ using Microsoft.Extensions.Logging;
 
 namespace DEM.Net.Core;
 
-public class StopwatchLog : Stopwatch
+public class StopwatchLog(ILogger logger) : Stopwatch
 {
-    private readonly ILogger _logger;
+    private readonly ILogger _logger = logger;
     private TimeSpan _lastTime = TimeSpan.Zero;
     public static StopwatchLog StartNew(ILogger logger)
     {
         StopwatchLog sw = new StopwatchLog(logger);
         sw.Start();
         return sw;
-    }
-    public StopwatchLog(ILogger logger)
-    {
-        this._logger = logger;            
     }
 
     public void LogTime(string operationName = "Operation", LogLevel level = LogLevel.Information)

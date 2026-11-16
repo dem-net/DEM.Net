@@ -47,7 +47,7 @@ public class GpxPoint
     private const double EARTH_RADIUS = 6378; // [km]
     private const double RADIAN = Math.PI / 180;
 
-    protected GpxProperties Properties_ = new GpxProperties();
+    protected GpxProperties Properties_ = new();
 
     public double Latitude { get; set; }
     public double Longitude { get; set; }
@@ -377,7 +377,7 @@ public class GpxRoutePoint : GpxPoint
 
 public class GpxPointCollection<T> : IList<T> where T : GpxPoint
 {
-    private List<T> Points_ = new List<T>();
+    private List<T> Points_ = [];
 
     public GpxPoint AddPoint(T point)
     {
@@ -420,7 +420,7 @@ public class GpxPointCollection<T> : IList<T> where T : GpxPoint
 
     public GpxPointCollection<GpxPoint> ToGpxPoints()
     {
-        GpxPointCollection<GpxPoint> points = new GpxPointCollection<GpxPoint>();
+        GpxPointCollection<GpxPoint> points = [];
 
         foreach (T gpxPoint in Points_)
         {
@@ -507,7 +507,7 @@ public class GpxPointCollection<T> : IList<T> where T : GpxPoint
 
 public abstract class GpxTrackOrRoute
 {
-    private List<GpxLink> Links_ = new List<GpxLink>(0);
+    private List<GpxLink> Links_ = [];
 
     public string Name { get; set; }
     public string Comment { get; set; }
@@ -535,7 +535,7 @@ public abstract class GpxTrackOrRoute
 
 public class GpxRoute : GpxTrackOrRoute
 {
-    private GpxPointCollection<GpxRoutePoint> RoutePoints_ = new GpxPointCollection<GpxRoutePoint>();
+    private GpxPointCollection<GpxRoutePoint> RoutePoints_ = [];
 
     public GpxPointCollection<GpxRoutePoint> RoutePoints
     {
@@ -544,7 +544,7 @@ public class GpxRoute : GpxTrackOrRoute
 
     public override GpxPointCollection<GpxPoint> ToGpxPoints()
     {
-        GpxPointCollection<GpxPoint> points = new GpxPointCollection<GpxPoint>();
+        GpxPointCollection<GpxPoint> points = [];
 
         foreach (GpxRoutePoint routePoint in RoutePoints_)
         {
@@ -562,7 +562,7 @@ public class GpxRoute : GpxTrackOrRoute
 
 public class GpxTrack : GpxTrackOrRoute
 {
-    private List<GpxTrackSegment> Segments_ = new List<GpxTrackSegment>(1);
+    private List<GpxTrackSegment> Segments_ = new(1);
 
     public IList<GpxTrackSegment> Segments
     {
@@ -571,7 +571,7 @@ public class GpxTrack : GpxTrackOrRoute
 
     public override GpxPointCollection<GpxPoint> ToGpxPoints()
     {
-        GpxPointCollection<GpxPoint> points = new GpxPointCollection<GpxPoint>();
+        GpxPointCollection<GpxPoint> points = [];
 
         foreach (GpxTrackSegment segment in Segments_)
         {
@@ -589,7 +589,7 @@ public class GpxTrack : GpxTrackOrRoute
 
 public class GpxTrackSegment
 {
-    GpxPointCollection<GpxTrackPoint> TrackPoints_ = new GpxPointCollection<GpxTrackPoint>();
+    GpxPointCollection<GpxTrackPoint> TrackPoints_ = [];
 
     public GpxPointCollection<GpxTrackPoint> TrackPoints
     {

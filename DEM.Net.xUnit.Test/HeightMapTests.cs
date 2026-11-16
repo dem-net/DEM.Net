@@ -8,14 +8,9 @@ namespace DEM.Net.Test;
 
 // Downloads datasets / tiles: excluded from CI (dotnet test --filter Category!=Network)
 [Trait("Category", "Network")]
-public class HeightMapTests : IClassFixture<DemNetFixture>
+public class HeightMapTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    ElevationService _elevationService;
-
-    public HeightMapTests(DemNetFixture fixture)
-    {
-        _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
-    }
+    ElevationService _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
 
     [Theory()]
     [InlineData(nameof(DEMDataSet.SRTM_GL3))]

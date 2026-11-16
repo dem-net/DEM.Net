@@ -63,7 +63,7 @@ public partial class DEMDataSet : ICloneable
 
     
 
-    private static readonly Lazy<Dictionary<string, DEMDataSet>> Datasets = new Lazy<Dictionary<string, DEMDataSet>>(GetRegisteredDatasets, true);
+    private static readonly Lazy<Dictionary<string, DEMDataSet>> Datasets = new(GetRegisteredDatasets, true);
 
     public static IEnumerable<DEMDataSet> RegisteredDatasets => DEMDataSet.Datasets.Value.Values;
     public static IEnumerable<DEMDataSet> RegisteredNonLocalDatasets => RegisteredDatasets.Where(d => d.DataSource.DataSourceType != DEMDataSourceType.LocalFileSystem);
@@ -71,7 +71,7 @@ public partial class DEMDataSet : ICloneable
 
     private static Dictionary<string, DEMDataSet> GetRegisteredDatasets()
     {
-        Dictionary<string, DEMDataSet> datasets = new Dictionary<string, DEMDataSet>();
+        Dictionary<string, DEMDataSet> datasets = [];
         datasets.Add("SRTM_GL3", new DEMDataSet()
         {
             Name = nameof(SRTM_GL3),

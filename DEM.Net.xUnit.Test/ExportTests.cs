@@ -29,9 +29,7 @@ public class ExportTests : IClassFixture<DemNetFixture>
         _obj = fixture.ServiceProvider.GetRequiredService<OBJExportService>();
         var heightMap = new HeightMap(Width, Height)
         {
-            Coordinates = Enumerable.Range(0, Width * Height)
-                .Select(i => new GeoPoint(45.1 - (i / Width) * 0.001, 6 + (i % Width) * 0.001, 1000 + (i % 7) * 3))
-                .ToArray(),
+            Coordinates = [.. Enumerable.Range(0, Width * Height).Select(i => new GeoPoint(45.1 - (i / Width) * 0.001, 6 + (i % Width) * 0.001, 1000 + (i % 7) * 3))],
             Minimum = 1000,
             Maximum = 1018,
         };
@@ -67,7 +65,7 @@ public class ExportTests : IClassFixture<DemNetFixture>
         var (a, b, c) = FirstTriangle();
         float F(int i) => BitConverter.ToSingle(bytes, 84 + 4 * i);
         Assert.Equal(Vector3.Normalize(Vector3.Cross(b - a, c - a)), new Vector3(F(0), F(1), F(2)));
-        Assert.Equal([a, b, c], new[] { new Vector3(F(3), F(4), F(5)), new Vector3(F(6), F(7), F(8)), new Vector3(F(9), F(10), F(11)) });
+        Assert.Equal([a, b, c], [new Vector3(F(3), F(4), F(5)), new Vector3(F(6), F(7), F(8)), new Vector3(F(9), F(10), F(11))]);
     }
 
     [Fact]

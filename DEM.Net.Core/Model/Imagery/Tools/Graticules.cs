@@ -11,7 +11,7 @@ namespace DEM.Net.Core.Imagery;
 public class Graticules
 {
     private enum LineType { Meridian, Parallel };
-    private Collection<double> intervals = new Collection<double>();
+    private Collection<double> intervals = [];
     int graticuleDensity;
 
     //Structure used for labeling the meridians and parallels at the desired location on the map in screen coordinates.
@@ -61,8 +61,8 @@ public class Graticules
         increment = GetIncrement(currentExtent.Width, graticuleDensity);
 
         //Collections of GraticuleLabel for labeling the different lines.
-        List<GraticuleLabel> meridianGraticuleLabels = new List<GraticuleLabel>();
-        List<GraticuleLabel> parallelGraticuleLabels = new List<GraticuleLabel>();
+        List<GraticuleLabel> meridianGraticuleLabels = [];
+        List<GraticuleLabel> parallelGraticuleLabels = [];
         
         //Loop for displaying the meridians (lines of common longitude).
         double x = 0;
@@ -205,14 +205,8 @@ public struct GraticuleLabel
     }
 }
 
-public class GraticuleLabels
+public class GraticuleLabels(List<GraticuleLabel> verticalLabels, List<GraticuleLabel> horizontalLabels)
 {
-    public List<GraticuleLabel> VerticalLabels { get; set; }
-    public List<GraticuleLabel> HorizontalLabels { get; set; }
-         
-    public GraticuleLabels(List<GraticuleLabel> verticalLabels, List<GraticuleLabel> horizontalLabels)
-    {
-        this.VerticalLabels = verticalLabels;
-        this.HorizontalLabels = horizontalLabels;
-    }
+    public List<GraticuleLabel> VerticalLabels { get; set; } = verticalLabels;
+    public List<GraticuleLabel> HorizontalLabels { get; set; } = horizontalLabels;
 }

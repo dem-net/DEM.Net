@@ -31,17 +31,10 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core.Imagery;
 
-public struct Point<T>
+public struct Point<T>(T x, T y)
 {
-    public T X;
-    public T Y;
-
-
-    public Point(T x, T y)
-    {
-        X = x;
-        Y = y;
-    }
+    public T X = x;
+    public T Y = y;
 
     public override string ToString()
     {

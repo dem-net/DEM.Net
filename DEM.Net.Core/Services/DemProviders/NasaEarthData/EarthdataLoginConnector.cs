@@ -38,8 +38,10 @@ public class EarthdataLoginConnector
         logger.LogInformation($"Setup {nameof(EarthdataLoginConnector)}");
 
         // Credentials for the Earthdata Login redirect
-        var credentialCache = new CredentialCache();
-        credentialCache.Add(new Uri(Urs), "Basic", new NetworkCredential(secretOptions.NasaEarthDataLogin, secretOptions.NasaEarthDataPassword));
+        var credentialCache = new CredentialCache
+        {
+            { new Uri(Urs), "Basic", new NetworkCredential(secretOptions.NasaEarthDataLogin, secretOptions.NasaEarthDataPassword) }
+        };
 
         // Same behavior as the former HttpWebRequest: cookies kept across requests, credentials sent
         // only when challenged (Earthdata Login redirect), redirects followed automatically.

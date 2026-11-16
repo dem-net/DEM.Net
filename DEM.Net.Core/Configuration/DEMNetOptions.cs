@@ -10,7 +10,7 @@ public class DEMNetOptions
     public float RenderGpxZTranslateTrackMeters { get; set; } = 5f;
 
     public float RenderGpxTrailWidthMeters { get; set; } = 15f;
-    public List<ImageryProvider> ImageryProviders { get; set; } = new List<ImageryProvider>();
+    public List<ImageryProvider> ImageryProviders { get; set; } = [];
 
     public bool UseImageryDiskCache { get; set; } = true;
     public float ImageryDiskCacheExpirationHours { get; set; } = 5f;

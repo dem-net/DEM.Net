@@ -11,20 +11,11 @@ namespace DEM.Net.Test;
 
 // Downloads datasets / tiles: excluded from CI (dotnet test --filter Category!=Network)
 [Trait("Category", "Network")]
-public class DatasetTests : IClassFixture<DemNetFixture>
+public class DatasetTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    readonly RasterService _rasterService;
-    readonly ElevationService _elevationService;
-    readonly RasterIndexServiceResolver _indexServiceResolver;
-
-
-    public DatasetTests(DemNetFixture fixture)
-    {
-        _rasterService = fixture.ServiceProvider.GetService<RasterService>();
-        _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
-        _indexServiceResolver = fixture.ServiceProvider.GetService<RasterIndexServiceResolver>();
-    }
-
+    readonly RasterService _rasterService = fixture.ServiceProvider.GetService<RasterService>();
+    readonly ElevationService _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
+    readonly RasterIndexServiceResolver _indexServiceResolver = fixture.ServiceProvider.GetService<RasterIndexServiceResolver>();
 
     [Theory(), TestPriority(1)]
     [InlineData(nameof(DEMDataSet.SRTM_GL3))]

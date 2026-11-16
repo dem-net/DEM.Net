@@ -41,7 +41,7 @@ public static class GpxImport
         var trackPointConvert = (GpxTrackPoint pt, int index) => new GeoPoint(pt.Latitude, pt.Longitude, pt.Elevation);
         var routePointConvert = (GpxPoint pt, int index) => new GeoPoint(pt.Latitude, pt.Longitude, pt.Elevation);
 
-        IEnumerable<IEnumerable<GeoPoint>> segments = Enumerable.Empty<IEnumerable<GeoPoint>>();
+        IEnumerable<IEnumerable<GeoPoint>> segments = [];
 
         int i = 0;
         using (GpxReader reader = new GpxReader(gpxFileStream))

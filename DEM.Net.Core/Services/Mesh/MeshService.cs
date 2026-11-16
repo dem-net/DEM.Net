@@ -36,15 +36,10 @@ using NetTopologySuite.IO;
 
 namespace DEM.Net.Core;
 
-public class MeshService
+public class MeshService(ILogger<MeshService> logger = null)
 {
-    private readonly ILogger<MeshService> _logger;
+    private readonly ILogger<MeshService> _logger = logger;
 
-    public MeshService(ILogger<MeshService> logger = null)
-    {
-        _logger = logger;
-    }
-    
     /// <summary>
     /// Triangulate a regular set of points
     /// </summary>
@@ -244,18 +239,11 @@ public class MeshService
         var baseIndexes = new List<int>(capacity);
 
         float baseElevation = 0;
-        switch (thickness)
+        baseElevation = thickness switch
         {
-            case BoxBaseThickness.FromMinimumPoint:
-                baseElevation = (float)coords.Min(p => p.Elevation).GetValueOrDefault(0) - zValue;
-                break;
-
-            default:
-            case BoxBaseThickness.FixedElevation:
-                baseElevation = zValue;
-                break;
-
-        }
+            BoxBaseThickness.FromMinimumPoint => (float)coords.Min(p => p.Elevation).GetValueOrDefault(0) - zValue,
+            _ => zValue,
+        };
 
         // x : 0 => width // y : 0
         int baseIndex0 = coords.Length;
@@ -431,13 +419,13 @@ public class MeshService
     {
         var triangulation = TriangulateHeightMap(heightMap);
         var normals = ComputeMeshNormals(
-                heightMap.Coordinates.Select(c =>
+                [.. heightMap.Coordinates.Select(c =>
                                                         new Vector3((
                                                             float)c.Longitude,
                                                             (float)c.Latitude,
                                                             (float)c.Elevation)
-                                                        ).ToList(),
-        triangulation.Indices.ToList());
+                                                        )],
+        [.. triangulation.Indices]);
 
         return normals;
     }
@@ -464,9 +452,7 @@ public class MeshService
                     // https://gist.github.com/gszauer/5718441
                     // Line triangle mesh
                     transform = transform == default ? Matrix4x4.Identity : transform;
-                    List<Vector3> sections = points.Select(pt => Vector3.Transform(pt.ToVector3GlTFSpace(), transform))
-                        .FilterConsecutiveSame()
-                        .ToList();
+                    List<Vector3> sections = [.. points.Select(pt => Vector3.Transform(pt.ToVector3GlTFSpace(), transform)).FilterConsecutiveSame()];
 
                     for (int i = 0; i < sections.Count - 1; i++)
                     {
@@ -640,9 +626,11 @@ public class MeshService
 
         // Triangulate wall for each ring
         // (We add floor indices before copying the vertices, they will be duplicated and z shifted later on)
-        List<int> numVerticesPerRing = new List<int>();
-        numVerticesPerRing.Add(polygon.ExteriorRing.Count);
-        numVerticesPerRing.AddRange(polygon.InteriorRings.Select(r => r.Count));
+        List<int> numVerticesPerRing =
+        [
+            polygon.ExteriorRing.Count,
+            .. polygon.InteriorRings.Select(r => r.Count),
+        ];
         triangulation = this.TriangulateRingsWalls(triangulation, numVerticesPerRing, totalPoints);
 
         // Roof
@@ -659,7 +647,7 @@ public class MeshService
         // Colors: assume all vertices have the same color, otherwise look at code done for buildings            
         Vector4 DefaultColor = Vector4.One;
         // assign wall or default color to all vertices
-        triangulation.Colors = triangulation.Positions.Select(p => DefaultColor).ToList();
+        triangulation.Colors = [.. triangulation.Positions.Select(p => DefaultColor)];
 
         Debug.Assert(triangulation.Colors.Count == 0 || triangulation.Colors.Count == triangulation.Positions.Count);
 
@@ -743,7 +731,7 @@ public class MeshService
         //triangulation.Colors.Add(VectorsExtensions.CreateColor(255,255, 255));
 
         // add color for each position
-        triangulation.Colors = triangulation.Positions.Select(p => color).ToList();
+        triangulation.Colors = [.. triangulation.Positions.Select(p => color)];
         return triangulation;
     }
     public TriangulationList<Vector3> CreatePlane(Vector3 bottomLeft, Vector3 topRight, Vector3 topLeft, Vector3 bottomRight, Vector4 color)
@@ -771,7 +759,7 @@ public class MeshService
         //triangulation.Colors.Add(VectorsExtensions.CreateColor(255,255, 255));
 
         // add color for each position
-        triangulation.Colors = triangulation.Positions.Select(p => color).ToList();
+        triangulation.Colors = [.. triangulation.Positions.Select(p => color)];
         return triangulation;
     }
 
@@ -838,7 +826,7 @@ public class MeshService
         }
 
         // add color for each position
-        triangulation.Colors = triangulation.Positions.Select(p => color).ToList();
+        triangulation.Colors = [.. triangulation.Positions.Select(p => color)];
         return triangulation;
     }
 
@@ -891,7 +879,7 @@ public class MeshService
         }
 
         // add color for each position
-        triangulation.Colors = triangulation.Positions.Select(p => color).ToList();
+        triangulation.Colors = [.. triangulation.Positions.Select(p => color)];
 
         return triangulation;
     }

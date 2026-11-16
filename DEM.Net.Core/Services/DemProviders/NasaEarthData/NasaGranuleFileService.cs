@@ -16,20 +16,14 @@ using Microsoft.Extensions.Logging;
 
 namespace DEM.Net.Core.EarthData;
 
-public class NasaGranuleFileService : IDEMDataSetIndex
+public class NasaGranuleFileService(ILogger<NasaGranuleFileService> logger, EarthdataLoginConnector rasterDownloader, IHttpClientFactory httpClientFactory) : IDEMDataSetIndex
 {
-    private readonly ILogger<NasaGranuleFileService> logger;
-    private readonly ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
-    private readonly SingleFlight _setup = new SingleFlight(keepCompleted: false); // the result lives in _cacheByDemName
-    private readonly IHttpClientFactory httpClientFactory;
-    private readonly EarthdataLoginConnector rasterDownloader;
+    private readonly ILogger<NasaGranuleFileService> logger = logger;
+    private readonly ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName = new();
+    private readonly SingleFlight _setup = new(keepCompleted: false); // the result lives in _cacheByDemName
+    private readonly IHttpClientFactory httpClientFactory = httpClientFactory;
+    private readonly EarthdataLoginConnector rasterDownloader = rasterDownloader;
 
-    public NasaGranuleFileService(ILogger<NasaGranuleFileService> logger, EarthdataLoginConnector rasterDownloader, IHttpClientFactory httpClientFactory)
-    {
-        this.logger = logger;
-        this.rasterDownloader = rasterDownloader;
-        this.httpClientFactory = httpClientFactory;
-    }
     public Task SetupAsync(DEMDataSet dataSet, string dataSetLocalDir, CancellationToken cancellationToken = default)
     {
         if (dataSet == null)
@@ -136,13 +130,13 @@ public class NasaGranuleFileService : IDEMDataSetIndex
             return new BoundingBox(coords[1], coords[3], coords[0], coords[2]);
         };
 
-        return nasaDemFiles.Select(file => new DEMFileSource()
+        return [.. nasaDemFiles.Select(file => new DEMFileSource()
         {
             BBox = GetBBox(file.Box),
             SourceFileName = file.GranuleId,
             SourceFileNameAbsolute = file.ZipFileLink,
             LocalFileName = Path.Combine(dataSetLocalDir, "Granules", FileNameFromGranuleId(file.GranuleId, dataSet))
-        }).ToList();
+        })];
     }
 
     public IEnumerable<DEMFileSource> GetCoveredFileSources(DEMDataSet dataset, BoundingBox bbox)

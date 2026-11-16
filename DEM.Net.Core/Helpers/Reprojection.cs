@@ -50,7 +50,7 @@ public static class Reprojection
 
     private static ProjectionInfo GetProjection(int epsgCode)
     {
-        var projections = t_projections ??= new Dictionary<int, ProjectionInfo>();
+        var projections = t_projections ??= [];
         if (!projections.TryGetValue(epsgCode, out var projection))
             projections[epsgCode] = projection = ProjectionInfo.FromEpsgCode(epsgCode);
         return projection;
@@ -257,7 +257,7 @@ public static class Reprojection
     public static List<Gpx.GpxTrackPoint> ReprojectTo(this IEnumerable<Gpx.GpxTrackPoint> points, int sourceEpsgCode, int destinationEpsgCode, int? pointCount = null)
     {
         if (sourceEpsgCode == destinationEpsgCode)
-            return points.ToList();
+            return [.. points];
 
 
         // Defines the starting coordiante system
@@ -267,17 +267,17 @@ public static class Reprojection
 
         if (pointCount == null)
         {
-            return points.Select(pt => ReprojectPoint(pt, pSource, pTarget)).ToList();
+            return [.. points.Select(pt => ReprojectPoint(pt, pSource, pTarget))];
         }
         else
         {
             double[] inputPoints = null;
 
-            return points.Select((p, index) =>
+            return [.. points.Select((p, index) =>
             {
                 if (inputPoints == null)
                 {
-                    inputPoints = points.SelectMany(pt => new double[] { pt.Longitude, pt.Latitude }).ToArray();
+                    inputPoints = [.. points.SelectMany(pt => new double[] { pt.Longitude, pt.Latitude })];
                     Reproject.ReprojectPoints(inputPoints, null, pSource, pTarget, 0, pointCount.Value);
                 }
                 p.Longitude = inputPoints[2 * index];
@@ -288,8 +288,7 @@ public static class Reprojection
                     inputPoints = null;
                 }
                 return p;
-            })
-            .ToList();
+            })];
 
 
         }
@@ -326,10 +325,10 @@ public static class Reprojection
         var maxmax = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMax, bbox.xMax), zoomLevel, tileSize);
         var maxmin = TileUtils.PositionToGlobalPixel(new LatLong(bbox.yMax, bbox.xMin), zoomLevel, tileSize);
 
-        var outBbox = GeometryService.GetBoundingBox(new GeoPoint[] { new GeoPoint(minmin.Y, minmin.X),
-            new GeoPoint(minmax.Y,minmax.X),
-            new GeoPoint(maxmax.Y,maxmax.X),
-            new GeoPoint(maxmin.Y,maxmin.X)
+        var outBbox = GeometryService.GetBoundingBox(new GeoPoint[] { new(minmin.Y, minmin.X),
+            new(minmax.Y,minmax.X),
+            new(maxmax.Y,maxmax.X),
+            new(maxmin.Y,maxmin.X)
         });
         outBbox.zMin = bbox.zMin;
         outBbox.zMax = bbox.zMax;
@@ -357,18 +356,18 @@ public static class Reprojection
     private static GeoPoint ReprojectPoint(GeoPoint sourcePoint, ProjectionInfo sourceProj, ProjectionInfo destProj)
     {
 
-        double[] coords = { sourcePoint.Longitude, sourcePoint.Latitude };
+        double[] coords = [sourcePoint.Longitude, sourcePoint.Latitude];
         // Calls the reproject function that will transform the input location to the output locaiton
-        Reproject.ReprojectPoints(coords, new double[] { sourcePoint.Elevation.GetValueOrDefault(0) }, sourceProj, destProj, 0, 1);
+        Reproject.ReprojectPoints(coords, [sourcePoint.Elevation.GetValueOrDefault(0)], sourceProj, destProj, 0, 1);
 
         return new GeoPoint(coords[1], coords[0], sourcePoint.Elevation);
     }
     private static Gpx.GpxTrackPoint ReprojectPoint(Gpx.GpxTrackPoint sourcePoint, ProjectionInfo sourceProj, ProjectionInfo destProj)
     {
 
-        double[] coords = { sourcePoint.Longitude, sourcePoint.Latitude };
+        double[] coords = [sourcePoint.Longitude, sourcePoint.Latitude];
         // Calls the reproject function that will transform the input location to the output locaiton
-        Reproject.ReprojectPoints(coords, new double[] { sourcePoint.Elevation.GetValueOrDefault(0) }, sourceProj, destProj, 0, 1);
+        Reproject.ReprojectPoints(coords, [sourcePoint.Elevation.GetValueOrDefault(0)], sourceProj, destProj, 0, 1);
 
         sourcePoint.Longitude = coords[0];
         sourcePoint.Latitude = coords[1];

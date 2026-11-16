@@ -10,21 +10,13 @@ using Microsoft.Extensions.Logging;
 
 namespace DEM.Net.Core;
 
-public class LocalFileSystemIndex : IDEMDataSetIndex
+public class LocalFileSystemIndex(ILogger<LocalFileSystemIndex> logger, RasterService rasterService) : IDEMDataSetIndex
 {
-    private ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName;
+    private ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
 
-    private ConcurrentDictionary<string, string> _directoryPerDataset;
-    private readonly RasterService _rasterService;
-    private readonly ILogger<LocalFileSystemIndex> _logger;
-    public LocalFileSystemIndex(ILogger<LocalFileSystemIndex> logger, RasterService rasterService)
-    {
-        _logger = logger;
-        _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
-        _directoryPerDataset = new ConcurrentDictionary<string, string>();
-        _rasterService = rasterService;
-    }
-
+    private ConcurrentDictionary<string, string> _directoryPerDataset = new ConcurrentDictionary<string, string>();
+    private readonly RasterService _rasterService = rasterService;
+    private readonly ILogger<LocalFileSystemIndex> _logger = logger;
 
     public Task DownloadRasterFileAsync(DemFileReport report, DEMDataSet dataset, CancellationToken cancellationToken = default)
         => throw new NotSupportedException($"{dataset.Name} is a local dataset: its files cannot be downloaded ({report.LocalName} is missing).");
@@ -95,7 +87,7 @@ public class LocalFileSystemIndex : IDEMDataSetIndex
             if (_cacheByDemName.ContainsKey(dataSet.Name))
                 return;
 
-            _cacheByDemName[dataSet.Name] = GetFileSources(dataSet).ToList();
+            _cacheByDemName[dataSet.Name] = [.. GetFileSources(dataSet)];
 
             _directoryPerDataset[dataSet.Name] = dataSetLocalDir;
 

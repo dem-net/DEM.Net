@@ -17,7 +17,7 @@ public partial class ImageryProvider
     //    TileSize = 256,
     //    MaxZoom = 19
     //};
-    public static readonly ImageryProvider MapTilerSatellite = new ImageryProvider
+    public static readonly ImageryProvider MapTilerSatellite = new()
     {
         Name = "MapTiler-Satellite",
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapTiler Cloud Satellite", "https://www.maptiler.com", "© MapTiler- © OpenStreetMap and contributors"),
@@ -26,7 +26,7 @@ public partial class ImageryProvider
         TileSize = 512,
         MaxZoom = 20
     };
-    public static readonly ImageryProvider MapTilerSatelliteHybrid = new ImageryProvider
+    public static readonly ImageryProvider MapTilerSatelliteHybrid = new()
     {
         Name = "MapTiler-Satellite-Hybrid",
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapTiler Cloud Satellite Hybrid", "https://www.maptiler.com", "© MapTiler- © OpenStreetMap and contributors"),
@@ -35,7 +35,7 @@ public partial class ImageryProvider
         TileSize = 512,
         MaxZoom = 20
     };
-    public static readonly ImageryProvider MapBoxSatellite = new ImageryProvider
+    public static readonly ImageryProvider MapBoxSatellite = new()
     {
         Name = "MapBox-Satellite",
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Satellite", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
@@ -45,7 +45,7 @@ public partial class ImageryProvider
         TileSize = 512,
         MaxZoom = 23
     };
-    public static readonly ImageryProvider MapBoxSatelliteStreet = new ImageryProvider
+    public static readonly ImageryProvider MapBoxSatelliteStreet = new()
     {
         Name = "MapBox-SatelliteStreet",
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Satellite Street", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
@@ -54,7 +54,7 @@ public partial class ImageryProvider
         TileSize = 512,
         MaxZoom = 23
     };
-    public static readonly ImageryProvider MapBoxStreets = new ImageryProvider
+    public static readonly ImageryProvider MapBoxStreets = new()
     {
         Name = "MapBox-Streets",
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Streets", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
@@ -63,7 +63,7 @@ public partial class ImageryProvider
         TileSize = 512,
         MaxZoom = 23
     };
-    public static readonly ImageryProvider MapBoxLight = new ImageryProvider
+    public static readonly ImageryProvider MapBoxLight = new()
     {
         Name = "MapBox-Light",
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Light", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
@@ -72,7 +72,7 @@ public partial class ImageryProvider
         TileSize = 512,
         MaxZoom = 23
     };
-    public static readonly ImageryProvider MapBoxDark = new ImageryProvider
+    public static readonly ImageryProvider MapBoxDark = new()
     {
         Name = "MapBox-Dark",
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "MapBox Dark", "https://www.mapbox.com", "© MapBox - OpenStreetMap contributors"),
@@ -82,7 +82,7 @@ public partial class ImageryProvider
         MaxZoom = 23
     };
     private static string StadiaAttribution = "&copy; <a href=\"https://stadiamaps.com/\" target=\"_blank\">Stadia Maps</a> &copy; <a href=\"https://openmaptiles.org/\" target=\"_blank\">OpenMapTiles</a> &copy; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\">OpenStreetMap</a>";
-    public static readonly ImageryProvider StamenToner = new ImageryProvider
+    public static readonly ImageryProvider StamenToner = new()
     {
         Name = "Stadia-Stamen-Toner",
         TokenUserSecretsKey = "StadiaMapsApiKey",
@@ -91,7 +91,7 @@ public partial class ImageryProvider
         TileSize = 512,
         MaxZoom = 20
     };
-    public static readonly ImageryProvider StamenWaterColor = new ImageryProvider
+    public static readonly ImageryProvider StamenWaterColor = new()
     {
         Name = "Stadia-Stamen-Watercolor",
         TokenUserSecretsKey = "StadiaMapsApiKey",
@@ -100,7 +100,7 @@ public partial class ImageryProvider
         TileSize = 256,
         MaxZoom = 20
     };
-    public static readonly ImageryProvider StamenTerrain = new ImageryProvider
+    public static readonly ImageryProvider StamenTerrain = new()
     {
         Name = "Stadia-Stamen-Terrain",
         TokenUserSecretsKey = "StadiaMapsApiKey",
@@ -109,7 +109,7 @@ public partial class ImageryProvider
         TileSize = 512,
         MaxZoom = 20
     };
-    public static readonly ImageryProvider StadiaOutdoors = new ImageryProvider
+    public static readonly ImageryProvider StadiaOutdoors = new()
     {
         Name = "Stadia-Stamen-Outdoors",
         TokenUserSecretsKey = "StadiaMapsApiKey",
@@ -118,15 +118,15 @@ public partial class ImageryProvider
         TileSize = 512,
         MaxZoom = 20
     };
-    public static readonly ImageryProvider OpenTopoMap = new ImageryProvider
+    public static readonly ImageryProvider OpenTopoMap = new()
     {
         Name = "OpenTopoMap",
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "OpenTopoMap",
                                         "Map data: © <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors, <a href=\"http://viewfinderpanoramas.org\"> SRTM</a> | Map style: &copy; <a href=\"https://opentopomap.org\" > OpenTopoMap</a> (<a href=\"https://creativecommons.org/licenses/by-sa/3.0/\" > CC-BY-SA</a>)"),
-        UrlModel = new UrlModel("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", new[] { "a", "b", "c" }),
+        UrlModel = new UrlModel("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", ["a", "b", "c"]),
         MaxZoom = 17
     };
-    public static readonly ImageryProvider EsriWorldImagery = new ImageryProvider
+    public static readonly ImageryProvider EsriWorldImagery = new()
     {
         Name = "Esri.WorldImagery",
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Esri World Imagery", "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer", "Source: Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community"),
@@ -134,7 +134,7 @@ public partial class ImageryProvider
         MaxZoom = 18,
         PrivateUseOnly = true
     };
-    public static readonly ImageryProvider ThunderForestOutdoors = new ImageryProvider
+    public static readonly ImageryProvider ThunderForestOutdoors = new()
     {
         Name = "ThunderForest-Outdoors",
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "ThunderForest", "https://www.thunderforest.com", "Maps © www.thunderforest.com, Data © www.osm.org/copyright"),
@@ -142,7 +142,7 @@ public partial class ImageryProvider
         TokenUserSecretsKey = "ThunderForestApiKey",
         MaxZoom = 22
     };
-    public static readonly ImageryProvider ThunderForestLandscape = new ImageryProvider
+    public static readonly ImageryProvider ThunderForestLandscape = new()
     {
         Name = "ThunderForest-Landscape",
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "ThunderForest", "https://www.thunderforest.com", "Maps © www.thunderforest.com, Data © www.osm.org/copyright"),
@@ -150,7 +150,7 @@ public partial class ImageryProvider
         TokenUserSecretsKey = "ThunderForestApiKey",
         MaxZoom = 22
     };
-    public static readonly ImageryProvider ThunderForestNeighbourhood = new ImageryProvider
+    public static readonly ImageryProvider ThunderForestNeighbourhood = new()
     {
         Name = "ThunderForest-Neighbourhood",
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "ThunderForest", "https://www.thunderforest.com", "Maps © www.thunderforest.com, Data © www.osm.org/copyright"),
@@ -158,21 +158,21 @@ public partial class ImageryProvider
         TokenUserSecretsKey = "ThunderForestApiKey",
         MaxZoom = 22
     };
-    public static readonly ImageryProvider OrtoIGNes = new ImageryProvider
+    public static readonly ImageryProvider OrtoIGNes = new()
     {
         Name = "OrtoIGNes (Spain only)",
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN.es", "https://www.ign.es", "ign.es"),
         UrlModel = new UrlModel("http://www.ign.es/wmts/pnoa-ma?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=OI.OrthoimageCoverage&FORMAT=image/jpeg&TILEMATRIXSET=GoogleMapsCompatible&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}", null),
         MaxZoom = 20
     };
-    public static readonly ImageryProvider SwissImage = new ImageryProvider
+    public static readonly ImageryProvider SwissImage = new()
     {
         Name = "SwissImage (Switzerland only)",
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "swisstopo", "https://www.swisstopo.admin.ch", "ign.es"),
         UrlModel = new UrlModel("https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg", null),
         MaxZoom = 20
     };
-    public static readonly ImageryProvider OrtoIGNfr = new ImageryProvider
+    public static readonly ImageryProvider OrtoIGNfr = new()
     {
         Name = "Orthophoto IGN (France only)",
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN.fr", "https://geoservices.ign.fr", "Ign.fr"),

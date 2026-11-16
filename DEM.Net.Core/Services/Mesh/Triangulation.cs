@@ -42,16 +42,10 @@ public class Triangulation : Triangulation<GeoPoint>
          : base(positions, indices) { }
 
 }
-public class TriangulationNormals : Triangulation<Vector3>
+public class TriangulationNormals(IEnumerable<Vector3> positions, IEnumerable<int> indices, IEnumerable<Vector3> normals, List<Vector4> colors) : Triangulation<Vector3>(positions, indices)
 {
-    public IEnumerable<Vector3> Normals { get; internal set; }
-    public List<Vector4> Colors { get; set; }
-    public TriangulationNormals(IEnumerable<Vector3> positions, IEnumerable<int> indices, IEnumerable<Vector3> normals, List<Vector4> colors)
-        : base(positions, indices)
-    {
-        Normals = normals;
-        Colors = colors;
-    }
+    public IEnumerable<Vector3> Normals { get; internal set; } = normals;
+    public List<Vector4> Colors { get; set; } = colors;
 }
 
 public class TriangulationList<T>
@@ -63,9 +57,9 @@ public class TriangulationList<T>
 
     public TriangulationList()
     {
-        Positions = new List<T>();
-        Indices = new List<int>();
-        Colors = new List<Vector4>();
+        Positions = [];
+        Indices = [];
+        Colors = [];
     }
     public TriangulationList(List<T> positions, List<int> indices)
     {
@@ -91,9 +85,9 @@ public class TriangulationList<T>
             return a;
 
         return new TriangulationList<T>(
-            positions: a.Positions.Concat(b.Positions).ToList(),
-            colors: a.Colors.Concat(b.Colors).ToList(),
-            indices: a.Indices.Concat(b.Indices.Select(i => i + a.NumPositions)).ToList());
+            positions: [.. a.Positions, .. b.Positions],
+            colors: [.. a.Colors, .. b.Colors],
+            indices: [.. a.Indices, .. b.Indices.Select(i => i + a.NumPositions)]);
     }
 
     public TriangulationList<T> Clone()

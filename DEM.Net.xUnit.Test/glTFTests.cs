@@ -9,20 +9,12 @@ using Xunit;
 
 namespace DEM.Net.Test;
 
-public class glTFTests : IClassFixture<DemNetFixture>
+public class glTFTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    RasterService _rasterService;
-    ElevationService _elevationService;
-    SharpGltfService _sharpGltfService;
-    MeshService _meshService;
-
-    public glTFTests(DemNetFixture fixture)
-    {
-        _rasterService = fixture.ServiceProvider.GetService<RasterService>();
-        _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
-        _sharpGltfService = fixture.ServiceProvider.GetService<SharpGltfService>();
-        _meshService = fixture.ServiceProvider.GetService<MeshService>();
-    }
+    RasterService _rasterService = fixture.ServiceProvider.GetService<RasterService>();
+    ElevationService _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
+    SharpGltfService _sharpGltfService = fixture.ServiceProvider.GetService<SharpGltfService>();
+    MeshService _meshService = fixture.ServiceProvider.GetService<MeshService>();
 
     [Fact]
     public void Test_GLB_Export()
@@ -44,21 +36,19 @@ public class glTFTests : IClassFixture<DemNetFixture>
 
         // Pass the full file name
         fileName = Path.GetFullPath(fileName);
-        using (IRasterFile raster = _rasterService.OpenFile(fileName, DEMFileType.SRTM_HGT))
-        {
-            FileMetadata metaData = raster.ParseMetaData(new DEMFileDefinition( DEMFileType.SRTM_HGT, DEMFileRegistrationMode.Grid));
-            Assert.NotNull(metaData);
+        using IRasterFile raster = _rasterService.OpenFile(fileName, DEMFileType.SRTM_HGT);
+        FileMetadata metaData = raster.ParseMetaData(new DEMFileDefinition(DEMFileType.SRTM_HGT, DEMFileRegistrationMode.Grid));
+        Assert.NotNull(metaData);
 
-            HeightMap heightMap = _elevationService.GetHeightMap(metaData)
-                                        .ReprojectGeodeticToCartesian()
-                                        .ZScale(2.5f);
+        HeightMap heightMap = _elevationService.GetHeightMap(metaData)
+                                    .ReprojectGeodeticToCartesian()
+                                    .ZScale(2.5f);
 
-            var model = _sharpGltfService.CreateTerrainMesh(heightMap);
-            model.SaveGLB(Path.Combine(Directory.GetCurrentDirectory(),"test.glb"));
-        }
+        var model = _sharpGltfService.CreateTerrainMesh(heightMap);
+        model.SaveGLB(Path.Combine(Directory.GetCurrentDirectory(), "test.glb"));
 
-        
-        
+
+
     }
 
     [Trait("Category", "Network")]

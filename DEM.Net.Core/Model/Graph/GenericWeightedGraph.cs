@@ -9,17 +9,11 @@ namespace DEM.Net.Core.Graph;
 /// <summary>
 /// Source https://stackoverflow.com/a/15310845/1818237
 /// </summary>
-public class Node<T>
+public class Node<T>(T model, string key)
 {
-    public T Model;
-    public string Key;
-    public List<Arc<T>> Arcs = new List<Arc<T>>();
-
-    public Node(T model, string key)
-    {
-        Model = model;
-        Key = key;
-    }
+    public T Model = model;
+    public string Key = key;
+    public List<Arc<T>> Arcs = [];
 
     public override string ToString()
     {
@@ -65,7 +59,7 @@ public class Arc<T>
 public class Graph<T>
 {
     public Node<T> Root;
-    public List<Node<T>> AllNodes = new List<Node<T>>();
+    public List<Node<T>> AllNodes = [];
 
     public Node<T> CreateRoot(T node, string key)
     {

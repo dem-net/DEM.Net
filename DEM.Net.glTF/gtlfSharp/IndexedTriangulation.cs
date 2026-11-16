@@ -49,14 +49,14 @@ public class IndexedTriangulation
     {
         if (vectorTransform == default)
             vectorTransform = Matrix4x4.Identity;
-        Positions = vectorTransform == default ? positions.ToList() : positions.Select(p => Vector3.Transform(p, vectorTransform)).ToList();
-        Indices = indices.ToList();
+        Positions = vectorTransform == default ? [.. positions] : [.. positions.Select(p => Vector3.Transform(p, vectorTransform))];
+        Indices = [.. indices];
     }
 
     public IndexedTriangulation(TriangulationNormals triangulation)
     {
-        Positions = triangulation.Positions.ToList();
-        Indices = triangulation.Indices.ToList();
+        Positions = [.. triangulation.Positions];
+        Indices = [.. triangulation.Indices];
         Colors = triangulation.Colors?.ToList();
     }
 

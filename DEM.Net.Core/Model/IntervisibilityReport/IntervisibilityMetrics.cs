@@ -36,7 +36,7 @@ public class IntervisibilityMetrics : ElevationMetrics
 {
     public bool Intervisible => Obstacles.Count == 0;
 
-    public List<IntervisibilityObstacle> Obstacles { get; set; } = new List<IntervisibilityObstacle>();
+    public List<IntervisibilityObstacle> Obstacles { get; set; } = [];
 
     internal void AddObstacle(IntervisibilityObstacle obstacle)
     {

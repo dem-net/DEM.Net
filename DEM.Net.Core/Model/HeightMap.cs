@@ -36,16 +36,8 @@ namespace DEM.Net.Core;
 /// Use <see cref="Clone"/> to keep the original points.
 /// </remarks>
 [Serializable()]
-public class HeightMap
+public class HeightMap(int width, int height)
 {
-    public HeightMap(int width, int height)
-    {
-        Width = width;
-        Height = height;
-        Count = width * height;
-        Minimum = 15000;
-        Maximum = -15000;
-    }
 
     /// <summary>
     /// Bounds of the points, computed from the coordinates when not set
@@ -64,14 +56,14 @@ public class HeightMap
     /// <summary>
     /// Coordinate count
     /// </summary>
-    public int Count { get; set; }
+    public int Count { get; set; } = width * height;
 
-    public float Minimum { get; set; }
-    public float Maximum { get; set; }
+    public float Minimum { get; set; } = 15000;
+    public float Maximum { get; set; } = -15000;
     public float Range => Maximum - Minimum;
 
-    public int Width { get; private set; }
-    public int Height { get; private set; }
+    public int Width { get; private set; } = width;
+    public int Height { get; private set; } = height;
 
     /// <summary>
     /// Copy of the height map, with its own coordinates (the transforms of the copy leave this height map unchanged)

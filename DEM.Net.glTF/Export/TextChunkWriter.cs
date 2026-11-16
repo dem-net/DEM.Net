@@ -17,21 +17,15 @@ namespace DEM.Net.glTF.Export;
 /// Call <see cref="ReserveAsync"/> before formatting with <see cref="AppendLine"/>: it makes room for
 /// <see cref="MaxFormattedLength"/> characters. Text of any length goes through <see cref="WriteLineAsync"/>.
 /// </remarks>
-internal sealed class TextChunkWriter : IAsyncDisposable
+internal sealed class TextChunkWriter(Stream stream) : IAsyncDisposable
 {
     /// <summary>Room made by <see cref="ReserveAsync"/>: the formatted lines between two calls must fit</summary>
     public const int MaxFormattedLength = 1024;
 
     private static readonly UTF8Encoding Utf8NoBom = new(encoderShouldEmitUTF8Identifier: false);
-    private readonly StreamWriter _writer;
-    private readonly char[] _buffer;
+    private readonly StreamWriter _writer = new StreamWriter(stream, Utf8NoBom, bufferSize: 1 << 16, leaveOpen: true);
+    private readonly char[] _buffer = ArrayPool<char>.Shared.Rent(1 << 15);
     private int _length;
-
-    public TextChunkWriter(Stream stream)
-    {
-        _writer = new StreamWriter(stream, Utf8NoBom, bufferSize: 1 << 16, leaveOpen: true);
-        _buffer = ArrayPool<char>.Shared.Rent(1 << 15);
-    }
 
     public ValueTask ReserveAsync(CancellationToken cancellationToken)
         => _buffer.Length - _length >= MaxFormattedLength ? ValueTask.CompletedTask : FlushBufferAsync(cancellationToken);

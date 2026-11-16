@@ -21,7 +21,7 @@ namespace DEM.Net.Core.XyzTiles;
 /// which only exists at low zoom levels): the tile is resampled (bilinear) from its closest available ancestor
 /// and stored as a regular tile, so that every dataset keeps a uniform resolution.
 /// </summary>
-public class XyzTileIndexService : IDEMDataSetIndex
+public class XyzTileIndexService(ILogger<XyzTileIndexService> logger, IHttpClientFactory httpClientFactory, IMemoryCache cache) : IDEMDataSetIndex
 {
     private const string UserAgent = "DEM.Net (+https://github.com/dem-net/DEM.Net)";
     private static readonly TimeSpan AncestorCacheDuration = TimeSpan.FromMinutes(10);
@@ -30,17 +30,10 @@ public class XyzTileIndexService : IDEMDataSetIndex
     /// <summary>Maximum number of tiles a single bbox query may cover (protects the tile server from mass downloads).</summary>
     public static int MaxTilesPerRequest { get; set; } = 1024;
 
-    private readonly ILogger<XyzTileIndexService> _logger;
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly IMemoryCache _cache;
-    private readonly ConcurrentDictionary<string, string> _localDirByDemName = new ConcurrentDictionary<string, string>();
-
-    public XyzTileIndexService(ILogger<XyzTileIndexService> logger, IHttpClientFactory httpClientFactory, IMemoryCache cache)
-    {
-        _logger = logger;
-        _httpClientFactory = httpClientFactory;
-        _cache = cache;
-    }
+    private readonly ILogger<XyzTileIndexService> _logger = logger;
+    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
+    private readonly IMemoryCache _cache = cache;
+    private readonly ConcurrentDictionary<string, string> _localDirByDemName = new();
 
     private static XyzTileDataSource GetDataSource(DEMDataSet dataSet)
     {
@@ -340,11 +333,9 @@ public class XyzTileIndexService : IDEMDataSetIndex
         static bool Has(JsonElement item, string name) => item.TryGetProperty(name, out var value) && value.ValueKind != JsonValueKind.Null;
     }
 
-    internal readonly struct CoverageArea
+    internal readonly struct CoverageArea(BoundingBox bounds, int maxZoom)
     {
-        public CoverageArea(BoundingBox bounds, int maxZoom) { Bounds = bounds; MaxZoom = maxZoom; }
-        public BoundingBox Bounds { get; }
-        public int MaxZoom { get; }
+        public BoundingBox Bounds { get; } = bounds; public int MaxZoom { get; } = maxZoom;
     }
 
     public void Reset()

@@ -10,20 +10,11 @@ using Xunit;
 
 namespace DEM.Net.Test;
 
-public class ConfigurationTests : IClassFixture<DemNetFixture>
+public class ConfigurationTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    readonly RasterService _rasterService;
-    private readonly IOptions<DEMNetOptions> _options;
-    readonly RasterIndexServiceResolver _indexServiceResolver;
-
-
-    public ConfigurationTests(DemNetFixture fixture)
-    {
-        _rasterService = fixture.ServiceProvider.GetService<RasterService>();
-        _options = fixture.ServiceProvider.GetService<IOptions<DEMNetOptions>>();
-        _indexServiceResolver = fixture.ServiceProvider.GetService<RasterIndexServiceResolver>();
-    }
-
+    readonly RasterService _rasterService = fixture.ServiceProvider.GetService<RasterService>();
+    private readonly IOptions<DEMNetOptions> _options = fixture.ServiceProvider.GetService<IOptions<DEMNetOptions>>();
+    readonly RasterIndexServiceResolver _indexServiceResolver = fixture.ServiceProvider.GetService<RasterIndexServiceResolver>();
 
     [Fact]
     public void LocalDirectoryTest()

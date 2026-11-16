@@ -101,7 +101,7 @@ public class MassiveTextureTests
             for (int c = 0; c < Cols; c++)
             {
                 int index = r * Cols + c;
-                byte[] bytes = index == missingTile ? Array.Empty<byte>() : CreateTileImage(tileSize, c, r);
+                byte[] bytes = index == missingTile ? [] : CreateTileImage(tileSize, c, r);
                 range.Add(new MapTile(bytes, tileSize, new Uri($"http://test/{c}/{r}"), new MapTileInfo(StartX + c, StartY + r, Zoom, tileSize)));
             }
         return range;

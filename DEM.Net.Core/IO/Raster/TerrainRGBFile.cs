@@ -31,11 +31,9 @@ public class TerrainRGBFile : IRasterFile
         tileInfo = new MapTileInfo(x, y, z, tileSize);
 
         pixelData = new Rgb24[tileSize * tileSize];
-        
-        using (var image = Image.Load<Rgb24>(SafeImageDecoding.Options, filePath))
-        {
-            image.CopyPixelDataTo(pixelData);
-        }
+
+        using var image = Image.Load<Rgb24>(SafeImageDecoding.Options, filePath);
+        image.CopyPixelDataTo(pixelData);
     }
 
     public void Dispose()

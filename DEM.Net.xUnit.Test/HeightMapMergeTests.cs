@@ -8,12 +8,10 @@ using Xunit.Abstractions;
 
 namespace DEM.Net.Test;
 
-public class HeightMapMergeTests
+public class HeightMapMergeTests(ITestOutputHelper output)
 {
     private const double Step = 1 / 3600d;
-    private readonly ITestOutputHelper _output;
-
-    public HeightMapMergeTests(ITestOutputHelper output) => _output = output;
+    private readonly ITestOutputHelper _output = output;
 
     // Elevation encodes the global (row, col) so any misplaced sample is detected
     private static float Id(int row, int col) => row * 10000 + col;
@@ -28,7 +26,7 @@ public class HeightMapMergeTests
 
         return new HeightMap(cols, rows)
         {
-            Coordinates = coords.ToArray(),
+            Coordinates = [.. coords],
             Count = coords.Count,
             Minimum = coords.Min(p => (float)p.Elevation.Value),
             Maximum = coords.Max(p => (float)p.Elevation.Value),

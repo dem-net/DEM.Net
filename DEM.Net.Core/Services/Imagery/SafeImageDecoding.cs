@@ -18,12 +18,12 @@ namespace DEM.Net.Core.Imagery;
 /// </summary>
 internal static class SafeImageDecoding
 {
-    public static readonly SixLabors.ImageSharp.Configuration Configuration = new SixLabors.ImageSharp.Configuration(
+    public static readonly SixLabors.ImageSharp.Configuration Configuration = new(
         new PngConfigurationModule(),
         new JpegConfigurationModule(),
         new WebpConfigurationModule());
 
-    public static readonly DecoderOptions Options = new DecoderOptions
+    public static readonly DecoderOptions Options = new()
     {
         Configuration = Configuration,
         SkipMetadata = true,

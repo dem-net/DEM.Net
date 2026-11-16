@@ -7,16 +7,10 @@ using Xunit;
 
 namespace DEM.Net.Test;
 
-public class RasterTests : IClassFixture<DemNetFixture>
+public class RasterTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    RasterService _rasterService;
-    ElevationService _elevationService;
-
-    public RasterTests(DemNetFixture fixture)
-    {
-        _rasterService = fixture.ServiceProvider.GetService<RasterService>();
-        _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
-    }
+    RasterService _rasterService = fixture.ServiceProvider.GetService<RasterService>();
+    ElevationService _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
 
     [Fact]
     public void Test_FileFormat_GeoTIFF()
@@ -37,18 +31,15 @@ public class RasterTests : IClassFixture<DemNetFixture>
 
         // Pass the full file name
         fileName = Path.GetFullPath(fileName);
-        using (IRasterFile raster = _rasterService.OpenFile(fileName, DEMFileType.GEOTIFF))
-        {
-            FileMetadata metaData = raster.ParseMetaData(new DEMFileDefinition(DEMFileType.GEOTIFF, DEMFileRegistrationMode.Cell));
-            Assert.NotNull(metaData);
+        using IRasterFile raster = _rasterService.OpenFile(fileName, DEMFileType.GEOTIFF);
+        FileMetadata metaData = raster.ParseMetaData(new DEMFileDefinition(DEMFileType.GEOTIFF, DEMFileRegistrationMode.Cell));
+        Assert.NotNull(metaData);
 
-            float elevation = raster.GetElevationAtPoint(metaData, 1000, 200);
-            Assert.Equal(304f, elevation);
+        float elevation = raster.GetElevationAtPoint(metaData, 1000, 200);
+        Assert.Equal(304f, elevation);
 
-            elevation = raster.GetElevationAtPoint(metaData, 200, 1000);
-            Assert.Equal(95f, elevation);
-
-        }
+        elevation = raster.GetElevationAtPoint(metaData, 200, 1000);
+        Assert.Equal(95f, elevation);
     }
 
     [Fact]
@@ -69,17 +60,15 @@ public class RasterTests : IClassFixture<DemNetFixture>
 
         // Pass the full file name
         fileName = Path.GetFullPath(fileName);
-        using (IRasterFile raster = _rasterService.OpenFile(fileName, DEMFileType.SRTM_HGT))
-        {
-            FileMetadata metaData = raster.ParseMetaData(new DEMFileDefinition(DEMFileType.SRTM_HGT, DEMFileRegistrationMode.Grid));
-            Assert.NotNull(metaData);
+        using IRasterFile raster = _rasterService.OpenFile(fileName, DEMFileType.SRTM_HGT);
+        FileMetadata metaData = raster.ParseMetaData(new DEMFileDefinition(DEMFileType.SRTM_HGT, DEMFileRegistrationMode.Grid));
+        Assert.NotNull(metaData);
 
-            float elevation = raster.GetElevationAtPoint(metaData, 300, 10);
-            Assert.Equal(751f, elevation);
+        float elevation = raster.GetElevationAtPoint(metaData, 300, 10);
+        Assert.Equal(751f, elevation);
 
-            elevation = raster.GetElevationAtPoint(metaData, 10, 300);
-            Assert.Equal(297f, elevation);
-        }
+        elevation = raster.GetElevationAtPoint(metaData, 10, 300);
+        Assert.Equal(297f, elevation);
     }
 
     [Fact]
@@ -100,16 +89,14 @@ public class RasterTests : IClassFixture<DemNetFixture>
 
         // Pass the full file name
         fileName = Path.GetFullPath(fileName);
-        using (IRasterFile raster = _rasterService.OpenFile(fileName, DEMFileType.SRTM_HGT))
-        {
-            FileMetadata metaData = raster.ParseMetaData(new DEMFileDefinition(DEMFileType.SRTM_HGT, DEMFileRegistrationMode.Grid));
-            Assert.NotNull(metaData);
+        using IRasterFile raster = _rasterService.OpenFile(fileName, DEMFileType.SRTM_HGT);
+        FileMetadata metaData = raster.ParseMetaData(new DEMFileDefinition(DEMFileType.SRTM_HGT, DEMFileRegistrationMode.Grid));
+        Assert.NotNull(metaData);
 
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
-           {
-               float elevation = raster.GetElevationAtPoint(metaData, 10000, 10000);
-           });
-            // Expect exception
-        }
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+       {
+           float elevation = raster.GetElevationAtPoint(metaData, 10000, 10000);
+       });
+        // Expect exception
     }
 }

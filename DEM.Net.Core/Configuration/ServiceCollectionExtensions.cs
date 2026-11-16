@@ -33,23 +33,16 @@ public static class ServiceCollectionExtension
 
         services.AddTransient<RasterIndexServiceResolver>(serviceProvider => dataSourceType =>
         {
-            switch (dataSourceType)
+            return dataSourceType switch
             {
-                case Datasets.DEMDataSourceType.GDALVrt:
-                    return serviceProvider.GetService<GDALVRTFileService>();
-                case Datasets.DEMDataSourceType.NasaEarthData:
-                    return serviceProvider.GetService<NasaGranuleFileService>();
-                case Datasets.DEMDataSourceType.Stac:
-                    return serviceProvider.GetService<StacFileService>();
-                case Datasets.DEMDataSourceType.TileIndex:
-                    return serviceProvider.GetService<TileIndexFileService>();
-                case Datasets.DEMDataSourceType.XyzTiles:
-                    return serviceProvider.GetService<XyzTileIndexService>();
-                case Datasets.DEMDataSourceType.LocalFileSystem:
-                    return serviceProvider.GetService<LocalFileSystemIndex>();
-                default:
-                    throw new KeyNotFoundException(); // or maybe return null, up to you
-            }
+                Datasets.DEMDataSourceType.GDALVrt => serviceProvider.GetService<GDALVRTFileService>(),
+                Datasets.DEMDataSourceType.NasaEarthData => serviceProvider.GetService<NasaGranuleFileService>(),
+                Datasets.DEMDataSourceType.Stac => serviceProvider.GetService<StacFileService>(),
+                Datasets.DEMDataSourceType.TileIndex => serviceProvider.GetService<TileIndexFileService>(),
+                Datasets.DEMDataSourceType.XyzTiles => serviceProvider.GetService<XyzTileIndexService>(),
+                Datasets.DEMDataSourceType.LocalFileSystem => serviceProvider.GetService<LocalFileSystemIndex>(),
+                _ => throw new KeyNotFoundException(),// or maybe return null, up to you
+            };
         });
 
         services

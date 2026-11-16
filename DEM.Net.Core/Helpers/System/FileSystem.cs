@@ -55,7 +55,7 @@ public static class StreamReaderExtensions
     }
     public static string[] ReadUntil(this StreamReader sr, Predicate<string> match)
     {
-        List<string> lines = new List<string>();
+        List<string> lines = [];
         string line;
         do
         {
@@ -64,7 +64,7 @@ public static class StreamReaderExtensions
         }
         while (match(line) == false && !sr.EndOfStream);
 
-        return lines.ToArray();
+        return [.. lines];
     }
 
 }

@@ -14,21 +14,14 @@ using SharpGLTF.Schema2;
 namespace DEM.Net.glTF.SharpglTF;
 
 
-public partial class SharpGltfService
+public partial class SharpGltfService(MeshService meshService, MeshReducer meshReducer, ILogger<SharpGltfService> logger = null)
 {
-    private readonly ILogger<SharpGltfService> _logger;
-    private MeshService _meshService;
-    private MeshReducer _meshReducer;
+    private readonly ILogger<SharpGltfService> _logger = logger;
+    private MeshService _meshService = meshService;
+    private MeshReducer _meshReducer = meshReducer;
     private const string TERRAIN_NODE_NAME = "TerrainNode";
     private const string TERRAIN_SCENE_NAME = "TerrainScene";
     private const string TERRAIN_MESH_NAME = "TerrainMesh";
-
-    public SharpGltfService(MeshService meshService, MeshReducer meshReducer, ILogger<SharpGltfService> logger = null)
-    {
-        _logger = logger;
-        _meshService = meshService;
-        _meshReducer = meshReducer;
-    }
 
     public ModelRoot CreateNewModel()
     {
@@ -350,8 +343,8 @@ public partial class SharpGltfService
     }
     public ModelRoot AddLines(ModelRoot model, string nodeName, IEnumerable<(IEnumerable<GeoPoint> points, float trailWidthMeters)> lines, Vector4 color, Matrix4x4 transform = default)
     {
-        List<Vector3> positions = new List<Vector3>();
-        List<int> indices = new List<int>();
+        List<Vector3> positions = [];
+        List<int> indices = [];
 
         foreach (var line in lines)
         {

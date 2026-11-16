@@ -14,14 +14,9 @@ namespace DEM.Net.Core.Imagery;
 /// Memory usage is bounded by one row of decoded tiles (NumCols * tileSize² * 4 bytes),
 /// instead of the full output image.
 /// </summary>
-internal sealed class MassiveMapGenerator
+internal sealed class MassiveMapGenerator(ILogger? logger = null)
 {
-    private readonly ILogger? _logger;
-
-    public MassiveMapGenerator(ILogger? logger = null)
-    {
-        _logger = logger;
-    }
+    private readonly ILogger? _logger = logger;
 
     /// <summary>
     /// Generates the PNG.
@@ -86,7 +81,7 @@ internal sealed class MassiveMapGenerator
                         _logger?.LogDebug("Massive texture: tile row {Row}/{Rows}", tileRow + 1, tileRange.NumRows);
                     }
 
-                    stitcher.WriteCroppedScanline(rowInRange ? rowTiles : Array.Empty<byte[]?>(), firstCol,
+                    stitcher.WriteCroppedScanline(rowInRange ? rowTiles : [], firstCol,
                         cropRect.X, cropRect.Width, yInTile, scanlineBuffer, zlibStream);
                 }
             } // flushes remaining compressed data into IDAT chunks

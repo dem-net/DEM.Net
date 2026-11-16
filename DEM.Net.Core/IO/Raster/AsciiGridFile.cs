@@ -26,7 +26,7 @@ public class ASCIIGridFile : IRasterFile
     private StreamReader _streamReader;
     private GZipStream _gzipStream;
     private readonly string _filename;
-    private static char[] SEPARATOR = new char[] { ' ' };
+    private static char[] SEPARATOR = [' '];
 
     List<List<string>> _data = null;
 

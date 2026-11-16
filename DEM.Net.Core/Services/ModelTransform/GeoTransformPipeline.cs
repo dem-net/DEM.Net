@@ -39,5 +39,5 @@ public class GeoTransformPipeline
         return this.MemberwiseClone() as GeoTransformPipeline;
     }
 
-    public static GeoTransformPipeline Default => new GeoTransformPipeline() { TransformHeightMap = h => h, TransformPoints = pts => pts };
+    public static GeoTransformPipeline Default => new() { TransformHeightMap = h => h, TransformPoints = pts => pts };
 }

@@ -10,14 +10,9 @@ namespace DEM.Net.Test;
 
 // Downloads datasets / tiles: excluded from CI (dotnet test --filter Category!=Network)
 [Trait("Category", "Network")]
-public class ElevationTests : IClassFixture<DemNetFixture>
+public class ElevationTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    ElevationService _elevationService;
-
-    public ElevationTests(DemNetFixture fixture)
-    {
-        _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
-    }
+    ElevationService _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
 
     [Fact(DisplayName = "Not covered elevation check")]
     public void TestElevationWithNoCoverage()
@@ -233,7 +228,7 @@ public class ElevationTests : IClassFixture<DemNetFixture>
             DistanceFromOriginMeters = 949.06197559241423
         };
 
-        var result = _elevationService.GetIntervisibilityReport(new List<GeoPoint> { start, end }, 0, 0);
+        var result = _elevationService.GetIntervisibilityReport([start, end], 0, 0);
 
     }
 

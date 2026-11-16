@@ -14,8 +14,8 @@ public class TarArchive
     /// <param name="outputDir">Output directory to write the files.</param>
     public static void ExtractTarGz(string filename, string outputDir)
     {
-        using (var stream = File.OpenRead(filename))
-            ExtractTarGz(stream, outputDir);
+        using var stream = File.OpenRead(filename);
+        ExtractTarGz(stream, outputDir);
     }
 
     /// <summary>
@@ -26,8 +26,8 @@ public class TarArchive
     public static void ExtractTarGz(Stream stream, string outputDir)
     {
         // TarReader reads forward only: the archive is streamed, never buffered in memory
-        using (var gzip = new GZipStream(stream, CompressionMode.Decompress))
-            ExtractTar(gzip, outputDir);
+        using var gzip = new GZipStream(stream, CompressionMode.Decompress);
+        ExtractTar(gzip, outputDir);
     }
 
     /// <summary>
@@ -38,8 +38,8 @@ public class TarArchive
     /// <param name="onlyExtensions">When set, only files ending with this extension are extracted.</param>
     public static void ExtractTar(string filename, string outputDir, string onlyExtensions = null)
     {
-        using (var stream = File.OpenRead(filename))
-            ExtractTar(stream, outputDir, onlyExtensions);
+        using var stream = File.OpenRead(filename);
+        ExtractTar(stream, outputDir, onlyExtensions);
     }
 
     /// <summary>
@@ -69,10 +69,8 @@ public class TarArchive
                 continue;
 
             Directory.CreateDirectory(Path.GetDirectoryName(output));
-            using (var fs = new FileStream(output, FileMode.Create, FileAccess.Write))
-            {
-                entry.DataStream.CopyTo(fs);
-            }
+            using var fs = new FileStream(output, FileMode.Create, FileAccess.Write);
+            entry.DataStream.CopyTo(fs);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Threading;
 using DEM.Net.Core.Imagery;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Webp;
@@ -71,10 +72,10 @@ public class TerrariumFile : IRasterFile
         set => DecodedTiles.Capacity = value;
     }
 
-    private static readonly DecodedTileCache DecodedTiles = new DecodedTileCache(128);
+    private static readonly DecodedTileCache DecodedTiles = new(128);
 
     /// <summary>LRU of decoded heights by file path. Arrays are shared: they must not be modified.</summary>
-    private sealed class DecodedTileCache
+    private sealed class DecodedTileCache(int capacity)
     {
         private sealed class Entry
         {
@@ -84,12 +85,10 @@ public class TerrariumFile : IRasterFile
             public int Size;
         }
 
-        private readonly object _lock = new object();
-        private readonly Dictionary<string, LinkedListNode<Entry>> _byPath = new Dictionary<string, LinkedListNode<Entry>>(StringComparer.Ordinal);
-        private readonly LinkedList<Entry> _lru = new LinkedList<Entry>();
-        private int _capacity;
-
-        public DecodedTileCache(int capacity) => _capacity = capacity;
+        private readonly Lock _lock = new();
+        private readonly Dictionary<string, LinkedListNode<Entry>> _byPath = new(StringComparer.Ordinal);
+        private readonly LinkedList<Entry> _lru = new();
+        private int _capacity = capacity;
 
         public int Capacity
         {
@@ -159,22 +158,20 @@ public class TerrariumFile : IRasterFile
     /// <summary>Decodes a square Terrarium image to row major heights.</summary>
     public static float[] Decode(byte[] imageBytes, out int size)
     {
-        using (var image = Image.Load<Rgb24>(SafeImageDecoding.Options, imageBytes))
+        using var image = Image.Load<Rgb24>(SafeImageDecoding.Options, imageBytes);
+        if (image.Width != image.Height)
+            throw new InvalidDataException($"Terrarium tile must be square, got {image.Width}x{image.Height}.");
+
+        size = image.Width;
+        var pixels = new Rgb24[size * size];
+        image.CopyPixelDataTo(pixels);
+
+        var heights = new float[pixels.Length];
+        for (int i = 0; i < pixels.Length; i++)
         {
-            if (image.Width != image.Height)
-                throw new InvalidDataException($"Terrarium tile must be square, got {image.Width}x{image.Height}.");
-
-            size = image.Width;
-            var pixels = new Rgb24[size * size];
-            image.CopyPixelDataTo(pixels);
-
-            var heights = new float[pixels.Length];
-            for (int i = 0; i < pixels.Length; i++)
-            {
-                heights[i] = DecodeHeight(pixels[i].R, pixels[i].G, pixels[i].B);
-            }
-            return heights;
+            heights[i] = DecodeHeight(pixels[i].R, pixels[i].G, pixels[i].B);
         }
+        return heights;
     }
 
     /// <summary>Encodes row major heights to a lossless Terrarium WebP file (1/256 m precision).</summary>
@@ -191,10 +188,8 @@ public class TerrariumFile : IRasterFile
             pixels[i] = new Rgb24((byte)(whole >> 8), (byte)(whole & 0xFF), (byte)Math.Floor((v - whole) * 256d));
         }
 
-        using (var image = Image.LoadPixelData<Rgb24>(pixels, size, size))
-        {
-            image.SaveAsWebp(filePath, new WebpEncoder { FileFormat = WebpFileFormatType.Lossless });
-        }
+        using var image = Image.LoadPixelData<Rgb24>(pixels, size, size);
+        image.SaveAsWebp(filePath, new WebpEncoder { FileFormat = WebpFileFormatType.Lossless });
     }
 
     public void Dispose()

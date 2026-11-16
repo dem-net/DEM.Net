@@ -54,12 +54,12 @@ public sealed class LocalDataSetTests : IDisposable
         try { Directory.Delete(_root, recursive: true); } catch (IOException) { } catch (UnauthorizedAccessException) { }
     }
 
-    private static GeoPoint[] Points() => new[]
-    {
+    private static GeoPoint[] Points() =>
+    [
         new GeoPoint(43.30, 5.37), // Marseille
         new GeoPoint(43.53, 5.45), // Aix-en-Provence
         new GeoPoint(43.33, 5.71), // Sainte-Baume
-    };
+    ];
 
     [Fact]
     public async Task PointsElevationIsMaterializedAndMatchesTheAsyncVersion()

@@ -9,18 +9,11 @@ using Xunit;
 
 namespace DEM.Net.Test;
 
-public class MapterhornTests : IClassFixture<DemNetFixture>
+public class MapterhornTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    private readonly ElevationService _elevationService;
-    private readonly RasterService _rasterService;
-    private readonly XyzTileIndexService _xyzIndex;
-
-    public MapterhornTests(DemNetFixture fixture)
-    {
-        _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
-        _rasterService = fixture.ServiceProvider.GetService<RasterService>();
-        _xyzIndex = fixture.ServiceProvider.GetService<XyzTileIndexService>();
-    }
+    private readonly ElevationService _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
+    private readonly RasterService _rasterService = fixture.ServiceProvider.GetService<RasterService>();
+    private readonly XyzTileIndexService _xyzIndex = fixture.ServiceProvider.GetService<XyzTileIndexService>();
 
     [Fact(DisplayName = "Mapterhorn datasets are registered, only zoom 12 is listed")]
     public void DatasetsRegistered()
@@ -66,7 +59,7 @@ public class MapterhornTests : IClassFixture<DemNetFixture>
         string file = Path.Combine(Path.GetTempPath(), $"12_2_{Guid.NewGuid().GetHashCode() & 0xFFFF}.webp");
         try
         {
-            TerrariumFile.EncodeWebP(Enumerable.Repeat(100f, size * size).ToArray(), size, file);
+            TerrariumFile.EncodeWebP([.. Enumerable.Repeat(100f, size * size)], size, file);
             using (var first = new TerrariumFile(file))
             using (var second = new TerrariumFile(file))
             {
@@ -74,10 +67,10 @@ public class MapterhornTests : IClassFixture<DemNetFixture>
                 Assert.Equal(100f, second.GetElevationAtPoint(null, 3, 3), 2);
             }
 
-            TerrariumFile.EncodeWebP(Enumerable.Repeat(250f, size * size).ToArray(), size, file);
+            TerrariumFile.EncodeWebP([.. Enumerable.Repeat(250f, size * size)], size, file);
             File.SetLastWriteTimeUtc(file, DateTime.UtcNow.AddMinutes(1));
-            using (var updated = new TerrariumFile(file))
-                Assert.Equal(250f, updated.GetElevationAtPoint(null, 3, 3), 2);
+            using var updated = new TerrariumFile(file);
+            Assert.Equal(250f, updated.GetElevationAtPoint(null, 3, 3), 2);
         }
         finally
         {
@@ -175,7 +168,7 @@ public class MapterhornTests : IClassFixture<DemNetFixture>
         }
 
         // No points (an area without buildings): nothing to download, not the whole world
-        Assert.Empty(await _elevationService.GetPointsElevationAsync(Enumerable.Empty<GeoPoint>(), dataSet));
+        Assert.Empty(await _elevationService.GetPointsElevationAsync([], dataSet));
     }
 
     [Trait("Category", "Network")]

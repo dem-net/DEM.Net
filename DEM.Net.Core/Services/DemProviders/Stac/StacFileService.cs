@@ -14,18 +14,13 @@ using Microsoft.Extensions.Logging;
 
 namespace DEM.Net.Core.Stac;
 
-public class StacFileService : IDEMDataSetIndex
+public class StacFileService(ILogger<StacFileService> logger, IHttpClientFactory httpClientFactory) : IDEMDataSetIndex
 {
-    private readonly ILogger<StacFileService> logger;
-    private readonly ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
-    private readonly SingleFlight _setup = new SingleFlight(keepCompleted: false); // the result lives in _cacheByDemName
-    private readonly IHttpClientFactory httpClientFactory;
+    private readonly ILogger<StacFileService> logger = logger;
+    private readonly ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName = new();
+    private readonly SingleFlight _setup = new(keepCompleted: false); // the result lives in _cacheByDemName
+    private readonly IHttpClientFactory httpClientFactory = httpClientFactory;
 
-    public StacFileService(ILogger<StacFileService> logger, IHttpClientFactory httpClientFactory)
-    {
-        this.logger = logger;
-        this.httpClientFactory = httpClientFactory;
-    }
     public Task SetupAsync(DEMDataSet dataSet, string dataSetLocalDir, CancellationToken cancellationToken = default)
     {
         if (dataSet == null)
@@ -47,7 +42,7 @@ public class StacFileService : IDEMDataSetIndex
                 {
                     var links = await FetchCollectionAsync(dataSource).ConfigureAwait(false);
                     // an interrupted run never leaves a truncated index
-                    await HttpDownload.WriteAllTextAtomicAsync(indexFileName, JsonSerializer.Serialize(links.Values.ToList(), CoreJsonContext.Indented.ListStacDemFile), CancellationToken.None).ConfigureAwait(false);
+                    await HttpDownload.WriteAllTextAtomicAsync(indexFileName, JsonSerializer.Serialize([.. links.Values], CoreJsonContext.Indented.ListStacDemFile), CancellationToken.None).ConfigureAwait(false);
                     logger.LogInformation($"{links.Count} entries written to index file {indexFileName}");
                 }
 
@@ -103,13 +98,13 @@ public class StacFileService : IDEMDataSetIndex
                 ?? throw new InvalidDataException($"Empty STAC index {indexFileName}.");
         var dataSetLocalDir = Path.GetDirectoryName(indexFileName);
 
-        return stacDemFiles.Select(file => new DEMFileSource()
+        return [.. stacDemFiles.Select(file => new DEMFileSource()
         {
             BBox = new BoundingBox(file.Box[0], file.Box[2], file.Box[1], file.Box[3]),
             SourceFileName = file.FileId,
             SourceFileNameAbsolute = file.Href,
             LocalFileName = Path.Combine(dataSetLocalDir, "Features", file.FileId)
-        }).ToList();
+        })];
     }
 
     private StacDemFile GetStacDemFile(StacDataSource dataSource, Feature f)

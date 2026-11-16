@@ -16,18 +16,11 @@ namespace DEM.Net.Test;
 /// </summary>
 // Downloads datasets / tiles: excluded from CI (dotnet test --filter Category!=Network)
 [Trait("Category", "Network")]
-public class TiledGeoTiffSeamTests : IClassFixture<DemNetFixture>
+public class TiledGeoTiffSeamTests(DemNetFixture fixture, ITestOutputHelper output) : IClassFixture<DemNetFixture>
 {
-    private readonly ElevationService _elevationService;
-    private readonly IServiceProvider _services;
-    private readonly ITestOutputHelper _output;
-
-    public TiledGeoTiffSeamTests(DemNetFixture fixture, ITestOutputHelper output)
-    {
-        _services = fixture.ServiceProvider;
-        _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
-        _output = output;
-    }
+    private readonly ElevationService _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
+    private readonly IServiceProvider _services = fixture.ServiceProvider;
+    private readonly ITestOutputHelper _output = output;
 
     public static IEnumerable<object[]> Cases => new List<object[]>
     {

@@ -48,7 +48,7 @@ public class GeoPointTests
     [Fact]
     public void WithCreatesAnIndependentCopy()
     {
-        var points = new List<GeoPoint> { new GeoPoint(1, 2, 3) };
+        var points = new List<GeoPoint> { new(1, 2, 3) };
         var copy = points[0] with { Elevation = 10 };
         Assert.Equal(3, points[0].Elevation);
         Assert.Equal(10, copy.Elevation);
@@ -66,7 +66,7 @@ public class GeoPointTests
     [Fact]
     public void MetricsWriteTheDistancesInTheList()
     {
-        var line = new List<GeoPoint> { new GeoPoint(45, 6, 100), new GeoPoint(45.001, 6, 110), new GeoPoint(45.002, 6, 105) };
+        var line = new List<GeoPoint> { new(45, 6, 100), new(45.001, 6, 110), new(45.002, 6, 105) };
         var metrics = line.ComputeMetrics();
 
         Assert.Equal(0, line[0].DistanceFromOriginMeters);

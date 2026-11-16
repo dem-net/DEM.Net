@@ -43,20 +43,14 @@ namespace DEM.Net.Core;
 /// Remote GDAL VRT file handling
 /// Downloads and enumerates through tiles referenced in VRT file
 /// </summary>
-public class GDALVRTFileService : IDEMDataSetIndex
+public class GDALVRTFileService(IHttpClientFactory httpClientFactory, ILogger<GDALVRTFileService> logger = null) : IDEMDataSetIndex
 {
     private const int MAX_AGE_DAYS = 100;
-    private readonly SingleFlight _setup = new SingleFlight(keepCompleted: false); // the result lives in _cacheByDemName
-    private readonly ILogger<GDALVRTFileService> _logger;
-    private readonly ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName;
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly SingleFlight _setup = new(keepCompleted: false); // the result lives in _cacheByDemName
+    private readonly ILogger<GDALVRTFileService> _logger = logger;
+    private readonly ConcurrentDictionary<string, List<DEMFileSource>> _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
+    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
 
-    public GDALVRTFileService(IHttpClientFactory httpClientFactory, ILogger<GDALVRTFileService> logger = null)
-    {
-        _logger = logger;
-        _httpClientFactory = httpClientFactory;
-        _cacheByDemName = new ConcurrentDictionary<string, List<DEMFileSource>>();
-    }
     public void Reset()
     {
         _cacheByDemName.Clear();
@@ -106,7 +100,7 @@ public class GDALVRTFileService : IDEMDataSetIndex
                     await HttpDownload.DownloadToFileAsync(CreateClient(), dataSet.DataSource.IndexFilePath, vrtFileName, CancellationToken.None).ConfigureAwait(false);
                 }
 
-                _cacheByDemName[dataSet.Name] = this.GetSources(dataSet, vrtFileName).ToList();
+                _cacheByDemName[dataSet.Name] = [.. this.GetSources(dataSet, vrtFileName)];
             }
             catch (Exception ex)
             {
@@ -180,72 +174,70 @@ public class GDALVRTFileService : IDEMDataSetIndex
         Dictionary<string, string> properties;
 
         // Create an XmlReader
-        using (FileStream fileStream = new FileStream(vrtFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-        using (XmlReader reader = XmlReader.Create(fileStream))
+        using FileStream fileStream = new FileStream(vrtFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        using XmlReader reader = XmlReader.Create(fileStream);
+        if (reader.ReadToFollowing("GeoTransform"))
         {
-            if (reader.ReadToFollowing("GeoTransform"))
+            geoTransform = ParseGeoTransform(reader.ReadElementContentAsString());
+        }
+        else
+            throw new Exception("GeoTransform element not found!");
+
+        string sourceName = "";
+        if (reader.ReadToFollowing("VRTRasterBand"))
+        {
+            properties = [];
+            while (reader.Read())
             {
-                geoTransform = ParseGeoTransform(reader.ReadElementContentAsString());
+                if (reader.NodeType == XmlNodeType.Element)
+                {
+                    if (reader.Name == "ComplexSource" || reader.Name == "SimpleSource")
+                    {
+                        sourceName = reader.Name;
+                        break;
+                    }
+                    properties[reader.Name] = reader.ReadElementContentAsString();
+                }
             }
-            else
-                throw new Exception("GeoTransform element not found!");
 
-            string sourceName = "";
-            if (reader.ReadToFollowing("VRTRasterBand"))
+
+            bool isOnFirstSource = true;
+            while (isOnFirstSource || reader.ReadToFollowing(sourceName))
             {
-                properties = new Dictionary<string, string>();
-                while (reader.Read())
+                DEMFileSource source = ParseGDALSource(reader);
+
+                // SetLocalFileName
+                source.SourceFileNameAbsolute = new Uri(remoteVrtUri, source.SourceFileName).ToString();
+                source.LocalFileName = new Uri(localVrtUri, source.SourceFileName).LocalPath;
+
+                // Transform origin
+                // Xp = padfTransform[0] + P * padfTransform[1] + L * padfTransform[2];
+                // Yp = padfTransform[3] + P * padfTransform[4] + L * padfTransform[5];
+                source.OriginLon = geoTransform[0] + source.DstxOff * geoTransform[1] + source.DstyOff * geoTransform[2];
+                source.OriginLat = geoTransform[3] + source.DstxOff * geoTransform[4] + source.DstyOff * geoTransform[5];
+                source.DestLon = geoTransform[0] + (source.DstxOff + source.DstxSize) * geoTransform[1] + (source.DstyOff + source.DstySize) * geoTransform[2];
+                source.DestLat = geoTransform[3] + (source.DstxOff + source.DstxSize) * geoTransform[4] + (source.DstyOff + source.DstySize) * geoTransform[5];
+
+                if (registration == DEMFileRegistrationMode.Grid)
                 {
-                    if (reader.NodeType == XmlNodeType.Element)
-                    {
-                        if (reader.Name == "ComplexSource" || reader.Name == "SimpleSource")
-                        {
-                            sourceName = reader.Name;
-                            break;
-                        }
-                        properties[reader.Name] = reader.ReadElementContentAsString();
-                    }
+                    source.BBox = new BoundingBox(Math.Round(source.OriginLon + geoTransform[1] / 2, 10),
+                                                                Math.Round(source.DestLon - +geoTransform[1] / 2, 10),
+                                                                Math.Round(source.DestLat - geoTransform[5] / 2, 10),
+                                                                Math.Round(source.OriginLat + geoTransform[5] / 2, 10));
+                }
+                else
+                {
+                    source.OriginLon = Math.Round(source.OriginLon, 10);
+                    source.OriginLat = Math.Round(source.OriginLat, 10);
+                    source.DestLon = Math.Round(source.DestLon, 10);
+                    source.DestLat = Math.Round(source.DestLat, 10);
+                    source.BBox = new BoundingBox(source.OriginLon, source.DestLon, source.DestLat, source.OriginLat);
                 }
 
 
-                bool isOnFirstSource = true;
-                while (isOnFirstSource || reader.ReadToFollowing(sourceName))
-                {
-                    DEMFileSource source = ParseGDALSource(reader);
+                isOnFirstSource = false;
 
-                    // SetLocalFileName
-                    source.SourceFileNameAbsolute = new Uri(remoteVrtUri, source.SourceFileName).ToString();
-                    source.LocalFileName = new Uri(localVrtUri, source.SourceFileName).LocalPath;
-
-                    // Transform origin
-                    // Xp = padfTransform[0] + P * padfTransform[1] + L * padfTransform[2];
-                    // Yp = padfTransform[3] + P * padfTransform[4] + L * padfTransform[5];
-                    source.OriginLon = geoTransform[0] + source.DstxOff * geoTransform[1] + source.DstyOff * geoTransform[2];
-                    source.OriginLat = geoTransform[3] + source.DstxOff * geoTransform[4] + source.DstyOff * geoTransform[5];
-                    source.DestLon = geoTransform[0] + (source.DstxOff + source.DstxSize) * geoTransform[1] + (source.DstyOff + source.DstySize) * geoTransform[2];
-                    source.DestLat = geoTransform[3] + (source.DstxOff + source.DstxSize) * geoTransform[4] + (source.DstyOff + source.DstySize) * geoTransform[5];
-
-                    if (registration == DEMFileRegistrationMode.Grid)
-                    {
-                        source.BBox = new BoundingBox(Math.Round(source.OriginLon + geoTransform[1] / 2, 10),
-                                                                    Math.Round(source.DestLon - +geoTransform[1] / 2, 10),
-                                                                    Math.Round(source.DestLat - geoTransform[5] / 2, 10),
-                                                                    Math.Round(source.OriginLat + geoTransform[5] / 2, 10));
-                    }
-                    else
-                    {
-                        source.OriginLon = Math.Round(source.OriginLon, 10);
-                        source.OriginLat = Math.Round(source.OriginLat, 10);
-                        source.DestLon = Math.Round(source.DestLon, 10);
-                        source.DestLat = Math.Round(source.DestLat, 10);
-                        source.BBox = new BoundingBox(source.OriginLon, source.DestLon, source.DestLat, source.OriginLat);
-                    }
-
-
-                    isOnFirstSource = false;
-
-                    yield return source;
-                }
+                yield return source;
             }
         }
 
@@ -349,7 +341,7 @@ public class GDALVRTFileService : IDEMDataSetIndex
 
     private double[] ParseGeoTransform(string geoTransform)
     {
-        double[] geoTransformArray = geoTransform.Trim().Split(',').Select(val => double.Parse(val, CultureInfo.InvariantCulture)).ToArray();
+        double[] geoTransformArray = [.. geoTransform.Trim().Split(',').Select(val => double.Parse(val, CultureInfo.InvariantCulture))];
 
         if (geoTransformArray.Length != 6)
         {

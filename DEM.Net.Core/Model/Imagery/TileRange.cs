@@ -28,14 +28,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DEM.Net.Core.Imagery;
 
 public class TileRange
 {
-    private List<MapTile> _tiles = new List<MapTile>();
-    private object _syncLock = new object();
+    private List<MapTile> _tiles = [];
+    private Lock _syncLock = new();
 
     public TileRange(ImageryProvider provider)
     {

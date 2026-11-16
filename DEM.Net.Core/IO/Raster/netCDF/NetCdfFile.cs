@@ -98,7 +98,7 @@ public class NetCdfFile : IRasterFile
     public float GetElevationAtPoint(FileMetadata metadata, int x, int y)
     {
         var Y = metadata.Height - y;
-        float height = (float)_elevationVariable.GetData(new int[] { Y, x }, new int[] { 1, 1 }).GetValue(0, 0);
+        float height = (float)_elevationVariable.GetData([Y, x], [1, 1]).GetValue(0, 0);
         return height;
     }
 
@@ -169,9 +169,9 @@ public class NetCdfFile : IRasterFile
 
             // The netCDF storage is arranged as contiguous latitudinal bands.
             MultipleDataResponse response = _dataset.GetMultipleData(
-                DataRequest.GetData(_elevationVariable, new int[] { ySouth, xWest }, new int[] { heightMap.Height, heightMap.Width }),
-                DataRequest.GetData(_latVariable, new int[] { ySouth }, new int[] { heightMap.Height }),
-                DataRequest.GetData(_longVariable, new int[] { xWest }, new int[] { heightMap.Width }));
+                DataRequest.GetData(_elevationVariable, [ySouth, xWest], [heightMap.Height, heightMap.Width]),
+                DataRequest.GetData(_latVariable, [ySouth], [heightMap.Height]),
+                DataRequest.GetData(_longVariable, [xWest], [heightMap.Width]));
 
             Array latitudes = response[_latVariable.ID].Data;
             Array longitudes = response[_longVariable.ID].Data;
@@ -219,8 +219,7 @@ public class NetCdfFile : IRasterFile
         // Data origin is lower left corner
         try
         {
-            int[] shape = new int[1];
-            shape[0] = 2;
+            int[] shape = [2];
             int ncols = _longVariable.Dimensions.First().Length;
             int nrows = _latVariable.Dimensions.First().Length;
 

@@ -48,12 +48,12 @@ public class RasterService : IRasterDownloader
     private readonly RasterIndexServiceResolver _rasterIndexServiceResolver;
     private readonly ILogger<RasterService> _logger;
     // concurrent requests for the same missing file share one download
-    private readonly SingleFlight _downloads = new SingleFlight(keepCompleted: false);
+    private readonly SingleFlight _downloads = new(keepCompleted: false);
     // one manifest catalog build at a time per dataset directory
-    private readonly ConcurrentDictionary<string, Lock> _manifestLocks = new ConcurrentDictionary<string, Lock>(StringComparer.Ordinal);
+    private readonly ConcurrentDictionary<string, Lock> _manifestLocks = new(StringComparer.Ordinal);
 
     private string _localDirectory;
-    private ConcurrentDictionary<string, List<FileMetadata>> _metadataCatalogCache = new ConcurrentDictionary<string, List<FileMetadata>>();
+    private ConcurrentDictionary<string, List<FileMetadata>> _metadataCatalogCache = new();
 
     public string LocalDirectory
     {
@@ -236,7 +236,7 @@ public class RasterService : IRasterDownloader
 
             var manifestDirectories = Directory.EnumerateDirectories(localPath, MANIFEST_DIR, SearchOption.AllDirectories);
 
-            ConcurrentBag<FileMetadata> metaList = new ConcurrentBag<FileMetadata>();
+            ConcurrentBag<FileMetadata> metaList = [];
             foreach (var manifestDirectory in manifestDirectories)
             {
                 var manifestFiles = Directory.EnumerateFiles(manifestDirectory, "*.json");
@@ -414,7 +414,7 @@ public class RasterService : IRasterDownloader
     {
         var reports = await Task.WhenAll(DEMDataSet.RegisteredDatasets
             .Select(dataset => GenerateReportSummaryAsync(dataset, cancellationToken))).ConfigureAwait(false);
-        return reports.ToList();
+        return [.. reports];
     }
 
     private async Task<DatasetReport> GenerateReportSummaryAsync(DEMDataSet dataset, CancellationToken cancellationToken)
@@ -463,7 +463,7 @@ public class RasterService : IRasterDownloader
     /// <returns>A Dictionnary</returns>
     public async Task<List<DemFileReport>> GenerateReportAsync(DEMDataSet dataSet, BoundingBox bbox = null, CancellationToken cancellationToken = default)
     {
-        List<DemFileReport> statusByFile = new List<DemFileReport>();
+        List<DemFileReport> statusByFile = [];
 
         var indexService = await GetIndexServiceAsync(dataSet, cancellationToken).ConfigureAwait(false);
 
@@ -512,7 +512,7 @@ public class RasterService : IRasterDownloader
             // Tile pyramids only list downloaded tiles: compute the tiles around the location instead
             // (one pixel around, adjacent tiles are needed for interpolation at tile edges).
             var pixelDegrees = 360d / ((1L << ((Datasets.XyzTileDataSource)dataSet.DataSource).Zoom) * ((Datasets.XyzTileDataSource)dataSet.DataSource).TileSize);
-            return indexService.GetCoveredFileSources(dataSet, BoundingBox.AroundPoint(lat, lon, pixelDegrees))
+            return [.. indexService.GetCoveredFileSources(dataSet, BoundingBox.AroundPoint(lat, lon, pixelDegrees))
                 .Select(source => new DemFileReport()
                 {
                     IsExistingLocally = File.Exists(source.LocalFileName),
@@ -520,8 +520,7 @@ public class RasterService : IRasterDownloader
                     LocalName = source.LocalFileName,
                     URL = source.SourceFileNameAbsolute,
                     Source = source
-                })
-                .ToList();
+                })];
         }
 
         if (dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell)

@@ -31,14 +31,10 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core;
 
- internal class DistanceFromPointComparer : IComparer<GeoPoint>
+ internal class DistanceFromPointComparer(GeoPoint reference) : IComparer<GeoPoint>
 {
-    private readonly GeoPoint _reference;
+    private readonly GeoPoint _reference = reference;
 
-    public DistanceFromPointComparer(GeoPoint reference)
-    {
-        _reference = reference;
-    }
     public int Compare(GeoPoint x, GeoPoint y)
     {
         return _reference.DistanceSquaredTo(x)

@@ -45,15 +45,16 @@ namespace DEM.Net.Core;
 		public static List<GeoPoint> DouglasPeuckerReduction(IReadOnlyList<GeoPoint> Points, double Tolerance)
 		{
 			if (Points == null || Points.Count < 3)
-				return Points.ToList();
+				return [.. Points];
 
 			int firstPoint = 0;
 			int lastPoint = Points.Count - 1;
-			var pointIndexsToKeep = new List<int>();
-
-			//Add the first and last index to the keepers
-			pointIndexsToKeep.Add(firstPoint);
-			pointIndexsToKeep.Add(lastPoint);
+			var pointIndexsToKeep = new List<int>
+            {
+                //Add the first and last index to the keepers
+                firstPoint,
+                lastPoint
+            };
 
 			//The first and the last point can not be the same
 			while (Points[firstPoint].Equals(Points[lastPoint]))

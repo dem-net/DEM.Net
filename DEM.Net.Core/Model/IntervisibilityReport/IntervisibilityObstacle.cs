@@ -31,18 +31,13 @@ namespace DEM.Net.Core;
 /// Defines an obstacle between two non-intervisible points
 /// A ray is casted from Origin to a Target. If any relief is hit, an obstacle will be created
 /// </summary>
-public class IntervisibilityObstacle
+public class IntervisibilityObstacle(GeoPoint entryPoint, double visibilityElevationThreshold)
 {
-    public IntervisibilityObstacle(GeoPoint entryPoint, double visibilityElevationThreshold)
-    {
-        this.EntryPoint = entryPoint;
-        this.VisibilityElevationThreshold = visibilityElevationThreshold;
-    }
 
     /// <summary>
     /// First location where the relief is being hit
     /// </summary>
-    public GeoPoint EntryPoint { get; internal set; }
+    public GeoPoint EntryPoint { get; internal set; } = entryPoint;
     /// <summary>
     /// Highest point on the relief above the entry point
     /// </summary>
@@ -55,7 +50,7 @@ public class IntervisibilityObstacle
     /// Elevation threshold. If the relief was below this altitude, the ray will
     /// have passed above.
     /// </summary>
-    public double VisibilityElevationThreshold { get; }
+    public double VisibilityElevationThreshold { get; } = visibilityElevationThreshold;
 
     public override string ToString()
     {

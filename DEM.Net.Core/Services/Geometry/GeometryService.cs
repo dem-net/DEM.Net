@@ -152,11 +152,11 @@ namespace DEM.Net.Core;
     /// <returns></returns>
     public static Geometry ParseGeoPointAsGeometryLine(IEnumerable<GeoPoint> points)
     {
-        return new LineString(points.Select(pt => new Coordinate(pt.Longitude, pt.Latitude)).ToArray()) { SRID = WGS84_SRID };
+        return new LineString([.. points.Select(pt => new Coordinate(pt.Longitude, pt.Latitude))]) { SRID = WGS84_SRID };
     }
     public static Geometry ParseGeoPointAsGeometryLine(params GeoPoint[] points)
     {
-        return new LineString(points.Select(pt => new Coordinate(pt.Longitude, pt.Latitude)).ToArray()) { SRID = WGS84_SRID };
+        return new LineString([.. points.Select(pt => new Coordinate(pt.Longitude, pt.Latitude))]) { SRID = WGS84_SRID };
     }
 
 
@@ -478,10 +478,7 @@ namespace DEM.Net.Core;
 
         for (int i = 0; i < lineGeom.NumPoints - 1; i++)
         {
-            Coordinate[] segCoords = new Coordinate[2];
-            segCoords[0] = lineGeom.Coordinates[i];
-            segCoords[1] = lineGeom.Coordinates[i + 1];
-
+            Coordinate[] segCoords = [lineGeom.Coordinates[i], lineGeom.Coordinates[i + 1]];
             yield return new GeoSegment(lineGeom.Coordinates[i].ToGeoPoint(), lineGeom.Coordinates[i + 1].ToGeoPoint());
         }
     }
@@ -510,12 +507,12 @@ namespace DEM.Net.Core;
         if (boundingBox == null)
             throw new ArgumentNullException(nameof(boundingBox));
 
-        var ring = _factory.CreateLinearRing(new Coordinate[] {
-                    new Coordinate(boundingBox.xMin, boundingBox.yMax),
-                    new Coordinate(boundingBox.xMax, boundingBox.yMax),
-                    new Coordinate(boundingBox.xMax, boundingBox.yMin),
-                    new Coordinate(boundingBox.xMin, boundingBox.yMin),
-                    new Coordinate(boundingBox.xMin, boundingBox.yMax)});
+        var ring = _factory.CreateLinearRing([
+                    new(boundingBox.xMin, boundingBox.yMax),
+                    new(boundingBox.xMax, boundingBox.yMax),
+                    new(boundingBox.xMax, boundingBox.yMin),
+                    new(boundingBox.xMin, boundingBox.yMin),
+                    new(boundingBox.xMin, boundingBox.yMax)]);
         return ring;
     }
 

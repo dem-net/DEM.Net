@@ -15,18 +15,11 @@ namespace DEM.Net.Core.Gpx;
 
 public class GpxProperties
 {
-    private class GpxListWrapper<T> : IList<T>
+    private class GpxListWrapper<T>(GpxProperties properties, string name) : IList<T>
     {
-        GpxProperties Properties_;
-        string Name_;
-        IList<T> Items_;
-
-        public GpxListWrapper(GpxProperties properties, string name)
-        {
-            this.Properties_ = properties;
-            this.Name_ = name;
-            this.Items_ = properties.GetObjectProperty<IList<T>>(name);
-        }
+        GpxProperties Properties_ = properties;
+        string Name_ = name;
+        IList<T> Items_ = properties.GetObjectProperty<IList<T>>(name);
 
         public int IndexOf(T item)
         {
@@ -39,7 +32,7 @@ public class GpxProperties
 
             if (Items_ == null)
             {
-                Items_ = new List<T>();
+                Items_ = [];
                 Properties_.SetObjectProperty(Name_, Items_);
             }
 
@@ -70,7 +63,7 @@ public class GpxProperties
         {
             if (Items_ == null)
             {
-                Items_ = new List<T>();
+                Items_ = [];
                 Properties_.SetObjectProperty(Name_, Items_);
             }
 
@@ -154,7 +147,7 @@ public class GpxProperties
     {
         if (value != null)
         {
-            if (Properties_ == null) Properties_ = new Dictionary<string, object>();
+            if (Properties_ == null) Properties_ = [];
             Properties_[name] = value.Value;
         }
         else if (Properties_ != null)
@@ -167,7 +160,7 @@ public class GpxProperties
     {
         if (value != null)
         {
-            if (Properties_ == null) Properties_ = new Dictionary<string, object>();
+            if (Properties_ == null) Properties_ = [];
             Properties_[name] = value;
         }
         else if (Properties_ != null)

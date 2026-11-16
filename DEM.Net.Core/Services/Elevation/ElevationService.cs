@@ -42,21 +42,13 @@ using NetTopologySuite.Geometries;
 
 namespace DEM.Net.Core;
 
-public class ElevationService
+public class ElevationService(RasterService rasterService, IAppCache memCache, ILogger<ElevationService> logger = null)
 {
     public const float NO_DATA_OUT = 0;
     private const double EPSILON = 1E-10;
-    private readonly RasterService _RasterService;
-    private readonly ILogger<ElevationService> _logger;
-    private readonly IAppCache _memCache;
-
-    public ElevationService(RasterService rasterService, IAppCache memCache, ILogger<ElevationService> logger = null)
-    {
-        _RasterService = rasterService;
-        _logger = logger;
-        _memCache = memCache;
-    }
-
+    private readonly RasterService _RasterService = rasterService;
+    private readonly ILogger<ElevationService> _logger = logger;
+    private readonly IAppCache _memCache = memCache;
 
     public string GetDEMLocalPath(DEMDataSet dataSet)
     {
@@ -133,7 +125,7 @@ public class ElevationService
             if (done % 10 == 0)
                 _logger?.LogInformation($"Generating medata {done:N0}/{fileCount:N0} ({(float)done / fileCount:P0})");
         });
-        List<DemFileReport> filesToDownload = report.Where(kvp => kvp.IsExistingLocally == false).ToList();
+        List<DemFileReport> filesToDownload = [.. report.Where(kvp => kvp.IsExistingLocally == false)];
 
         if (filesToDownload.Count == 0)
         {
@@ -235,7 +227,7 @@ public class ElevationService
 
         List<GeoPoint> geoPoints = new List<GeoPoint>(totalCapacity);
 
-        using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
+        using (RasterFileDictionary adjacentRasters = [])
         {
             bool isFirstSegment = true; // used to return first point only for first segments, for all other segments last point will be returned
             foreach (GeoSegment segment in lineStringGeometry.Segments())
@@ -309,7 +301,7 @@ public class ElevationService
 
         List<GeoPoint> geoPoints = new List<GeoPoint>(totalCapacity);
 
-        using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
+        using (RasterFileDictionary adjacentRasters = [])
         {
             bool isFirstSegment = true; // used to return first point only for first segments, for all other segments last point will be returned
             foreach (GeoSegment segment in lineStringGeometry.Segments())
@@ -379,7 +371,7 @@ public class ElevationService
 
         var elevated = GetPointsElevation(samples, dataSet, interpolationMode, behavior);
         if (elevated == null)
-            return new List<GeoPoint>();
+            return [];
 
         // elevated points are in the dataset projection and in the same order: elevations back to the WGS84 samples
         var span = CollectionsMarshal.AsSpan(samples);
@@ -409,7 +401,7 @@ public class ElevationService
     /// <returns></returns>
     public Dictionary<TKey, List<GeoPoint>> GetLinesGeometryElevation<TKey>(Dictionary<TKey, List<GeoPoint>> lineGeoPoints, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
     {
-        List<Geometry> geoLines = lineGeoPoints.Select(l => GeometryService.ParseGeoPointAsGeometryLine(l.Value)).ToList();
+        List<Geometry> geoLines = [.. lineGeoPoints.Select(l => GeometryService.ParseGeoPointAsGeometryLine(l.Value))];
         var bbox = GeometryService.GetBoundingBox(geoLines.First());
         foreach (var linePts in geoLines.Skip(1))
         {
@@ -455,10 +447,8 @@ public class ElevationService
         float heightValue = 0;
         try
         {
-            using (IRasterFile raster = _RasterService.OpenFile(metadata.Filename, metadata.FileFormat.Type))
-            {
-                heightValue = GetPointElevation(raster, metadata, lat, lon, interpolator);
-            }
+            using IRasterFile raster = _RasterService.OpenFile(metadata.Filename, metadata.FileFormat.Type);
+            heightValue = GetPointElevation(raster, metadata, lat, lon, interpolator);
         }
         catch (Exception e)
         {
@@ -479,8 +469,10 @@ public class ElevationService
     public float GetPointElevation(IRasterFile raster, FileMetadata metadata, double lat, double lon, IInterpolator interpolator = null)
     {
         // Do not dispose Dictionary, as IRasterFile disposal is the caller's responsability
-        RasterFileDictionary rasters = new RasterFileDictionary();
-        rasters.Add(metadata, raster);
+        RasterFileDictionary rasters = new RasterFileDictionary
+        {
+            { metadata, raster }
+        };
         return GetElevationAtPoint(raster, rasters, metadata, lat, lon, 0, interpolator, NoDataBehavior.UseNoDataDefinedInDem);
 
     }
@@ -528,13 +520,12 @@ public class ElevationService
             IInterpolator interpolator = GetInterpolator(interpolationMode);
 
             // TODO : grab adjacent tiles for cell registrered datasets to allow correct interpolation when close to edges
-            using (RasterFileDictionary tileCache = new RasterFileDictionary())
-            {
-                PopulateRasterFileDictionary(tileCache, tile, _RasterService, adjacentRasters);
+            using RasterFileDictionary tileCache = [];
+            PopulateRasterFileDictionary(tileCache, tile, _RasterService, adjacentRasters);
 
-                // Location is returned as requested (WGS84), not in the dataset projection
-                return new GeoPoint(lat, lon, GetElevationAtPoint(tileCache, tile, geoPoint.Latitude, geoPoint.Longitude, 0, interpolator, NoDataBehavior.SetToZero));
-            }  // Ensures all geotifs are properly closed
+            // Location is returned as requested (WGS84), not in the dataset projection
+            return new GeoPoint(lat, lon, GetElevationAtPoint(tileCache, tile, geoPoint.Latitude, geoPoint.Longitude, 0, interpolator, NoDataBehavior.SetToZero));
+            // Ensures all geotifs are properly closed
         }
     }
 
@@ -574,7 +565,7 @@ public class ElevationService
         var pointList = points as IReadOnlyCollection<GeoPoint> ?? points.ToList(); // enumerated twice (bbox, then elevations)
         BoundingBox bbox = pointList.GetBoundingBox();
         if (!(bbox.xMin <= bbox.xMax && bbox.yMin <= bbox.yMax))
-            return new List<GeoPoint>(); // no points
+            return []; // no points
         List<FileMetadata> tiles = this.GetCoveringFiles(bbox.ReprojectTo(4326, dataSet.SRID), dataSet);
 
         if (tiles.Count == 0)
@@ -586,25 +577,20 @@ public class ElevationService
         // Init interpolator
         IInterpolator interpolator = GetInterpolator(interpolationMode);
 
-        using (RasterFileDictionary adjacentRasters = new RasterFileDictionary())
-        {
-            var result = pointList.ReprojectTo(4326, dataSet.SRID).ToList();
-            this.FillElevations(CollectionsMarshal.AsSpan(result), adjacentRasters, tiles, interpolator, behavior);
-            return result;
-        }
+        using RasterFileDictionary adjacentRasters = [];
+        var result = pointList.ReprojectTo(4326, dataSet.SRID).ToList();
+        this.FillElevations(CollectionsMarshal.AsSpan(result), adjacentRasters, tiles, interpolator, behavior);
+        return result;
     }
 
     public IInterpolator GetInterpolator(InterpolationMode interpolationMode)
     {
-        switch (interpolationMode)
+        return interpolationMode switch
         {
-            case InterpolationMode.Hyperbolic:
-                return new HyperbolicInterpolator();
-            case InterpolationMode.Bilinear:
-                return new BilinearInterpolator();
-            default:
-                throw new NotImplementedException($"Interpolator {interpolationMode} is not implemented.");
-        }
+            InterpolationMode.Hyperbolic => new HyperbolicInterpolator(),
+            InterpolationMode.Bilinear => new BilinearInterpolator(),
+            _ => throw new NotImplementedException($"Interpolator {interpolationMode} is not implemented."),
+        };
     }
 
     /// <summary>
@@ -714,14 +700,12 @@ public class ElevationService
                     }
                     else
                     {
-                        using (IRasterFile raster = _RasterService.OpenFile(metadata.Filename, dataSet.FileFormat.Type))
+                        using IRasterFile raster = _RasterService.OpenFile(metadata.Filename, dataSet.FileFormat.Type);
+                        var hmap = raster.GetHeightMapInBBox(bbox, metadata, dataSet.NoDataValue);
+                        hmap.BoundingBox.SRID = bbox.SRID;
+                        if (hmap.Count > 0)
                         {
-                            var hmap = raster.GetHeightMapInBBox(bbox, metadata, dataSet.NoDataValue);
-                            hmap.BoundingBox.SRID = bbox.SRID;
-                            if (hmap.Count > 0)
-                            {
-                                tilesHeightMap.Add(hmap);
-                            }
+                            tilesHeightMap.Add(hmap);
                         }
                     }
 
@@ -773,7 +757,7 @@ public class ElevationService
         int templateIndexY = (int)Math.Round((templateTile.BoundingBox.yMin - tilesBbox.yMin) / tileSizeY);
 
         // output list
-        HashSet<FileMetadata> missingTiles = new HashSet<FileMetadata>();
+        HashSet<FileMetadata> missingTiles = [];
 
         double x = bbox.xMin, y = bbox.yMin;
         double currentX = x;
@@ -835,7 +819,7 @@ public class ElevationService
         } while (currentX < bbox.xMax);
 
         _logger.LogInformation($"{missingTiles.Count} missing tiles generated.");
-        return missingTiles.ToList();
+        return [.. missingTiles];
 
     }
 
@@ -918,7 +902,7 @@ public class ElevationService
         {
             if (segTiles.Count == 1 || (tile != null && this.IsPointFarFromTileEdges(tile, point)))
                 return noAdjacentTiles;
-            return segTiles.Where(t => this.IsPointInAdjacentTile(t, point)).ToList();
+            return [.. segTiles.Where(t => this.IsPointInAdjacentTile(t, point))];
         }
 
         // Group point indexes by raster file
@@ -931,7 +915,7 @@ public class ElevationService
             FileMetadata tile = FindTile(points[i]);
             if (tile == null)
             {
-                (outsidePoints ??= new List<int>()).Add(i);
+                (outsidePoints ??= []).Add(i);
             }
             else
             {
@@ -940,7 +924,7 @@ public class ElevationService
                     group = tiles.Count;
                     tileIndex[tile] = group;
                     tiles.Add(tile);
-                    tilePoints.Add(new List<int>());
+                    tilePoints.Add([]);
                 }
                 tilePoints[group].Add(i);
             }
@@ -1160,7 +1144,7 @@ public class ElevationService
 
         foreach (var tilesByX in segTiles.GroupBy(t => t.DataStartLon).OrderBy(g => g.Key))
         {
-            List<FileMetadata> NSTilesOrdered = tilesByX.OrderByDescending(t => t.DataStartLat).ToList();
+            List<FileMetadata> NSTilesOrdered = [.. tilesByX.OrderByDescending(t => t.DataStartLat)];
 
             FileMetadata top = NSTilesOrdered.First();
             FileMetadata bottom = NSTilesOrdered.Last();
@@ -1212,7 +1196,7 @@ public class ElevationService
 
         foreach (var tilesByY in segTiles.GroupBy(t => t.DataStartLat).OrderByDescending(g => g.Key))
         {
-            List<FileMetadata> WETilesOrdered = tilesByY.OrderBy(t => t.DataStartLon).ToList();
+            List<FileMetadata> WETilesOrdered = [.. tilesByY.OrderBy(t => t.DataStartLon)];
 
             FileMetadata left = WETilesOrdered.First();
             FileMetadata right = WETilesOrdered.Last();
@@ -1261,11 +1245,11 @@ public class ElevationService
         // Get the first north west tile and last south east tile. 
         // The lines are bounded by those tiles
 
-        List<GeoSegment> segments = new List<GeoSegment>();
+        List<GeoSegment> segments = [];
 
         foreach (var tilesByX in segTiles.GroupBy(t => t.DataStartLon).OrderBy(g => g.Key))
         {
-            List<FileMetadata> NSTilesOrdered = tilesByX.OrderByDescending(t => t.DataStartLat).ToList();
+            List<FileMetadata> NSTilesOrdered = [.. tilesByX.OrderByDescending(t => t.DataStartLat)];
 
             FileMetadata top = NSTilesOrdered.First();
             FileMetadata bottom = NSTilesOrdered.Last();
@@ -1302,10 +1286,10 @@ public class ElevationService
     {
         // Get the first north west tile and last south east tile. 
         // The lines are bounded by those tiles
-        List<GeoSegment> segments = new List<GeoSegment>();
+        List<GeoSegment> segments = [];
         foreach (var tilesByY in segTiles.GroupBy(t => t.DataStartLat).OrderByDescending(g => g.Key))
         {
-            List<FileMetadata> WETilesOrdered = tilesByY.OrderBy(t => t.DataStartLon).ToList();
+            List<FileMetadata> WETilesOrdered = [.. tilesByY.OrderBy(t => t.DataStartLon)];
 
             FileMetadata left = WETilesOrdered.First();
             FileMetadata right = WETilesOrdered.Last();

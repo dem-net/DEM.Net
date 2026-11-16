@@ -85,28 +85,23 @@ public class SexagesimalAngle
 
     public string ToString(string format)
     {
-        switch (format)
+        return format switch
         {
-            case "NS":
-                return string.Format(
-                    "{0}° {1:00}' {2:00}\".{3:000} {4}",
-                    this.Degrees,
-                    this.Minutes,
-                    this.Seconds,
-                    this.Milliseconds,
-                    this.IsNegative ? 'S' : 'N');
-
-            case "WE":
-                return string.Format(
-                    "{0}° {1:00}' {2:00}\".{3:000} {4}",
-                    this.Degrees,
-                    this.Minutes,
-                    this.Seconds,
-                    this.Milliseconds,
-                    this.IsNegative ? 'W' : 'E');
-
-            default:
-                throw new NotImplementedException();
-        }
+            "NS" => string.Format(
+                                "{0}° {1:00}' {2:00}\".{3:000} {4}",
+                                this.Degrees,
+                                this.Minutes,
+                                this.Seconds,
+                                this.Milliseconds,
+                                this.IsNegative ? 'S' : 'N'),
+            "WE" => string.Format(
+                                "{0}° {1:00}' {2:00}\".{3:000} {4}",
+                                this.Degrees,
+                                this.Minutes,
+                                this.Seconds,
+                                this.Milliseconds,
+                                this.IsNegative ? 'W' : 'E'),
+            _ => throw new NotImplementedException(),
+        };
     }
 }
