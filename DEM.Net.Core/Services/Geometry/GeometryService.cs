@@ -554,14 +554,15 @@ namespace DEM.Net.Core
         {
             var geom = ParseWKTAsGeometry(bbox);
             var ntsPoint = new Point(0, 0) { SRID = srid };
-            heightMap.Coordinates = heightMap.Coordinates.Select(pt =>
+            foreach (ref var pt in heightMap.Coordinates.AsSpan())
             {
                 ntsPoint.X = pt.Longitude;
                 ntsPoint.Y = pt.Latitude;
                 ntsPoint.GeometryChanged();
                 // points outside of the geometry lose their elevation (formerly in Debug builds only)
-                return geom.Distance(ntsPoint) < double.Epsilon ? pt : pt with { Elevation = null };
-            });
+                if (geom.Distance(ntsPoint) >= double.Epsilon)
+                    pt = pt with { Elevation = null };
+            }
             return heightMap;
         }
 

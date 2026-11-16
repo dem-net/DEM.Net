@@ -45,7 +45,7 @@ namespace DEM.Net.Core
         /// </summary>
         /// <param name="heightMap"></param>
         /// <returns></returns>
-        /// <remarks>This can be used in an height map processing pipeline, as coordinates are changed only on enumeration</remarks>
+        /// <remarks>Coordinates are changed in place</remarks>
         public static HeightMap CenterOnOrigin(this HeightMap heightMap, out Matrix4x4 transform)
         {
             //Logger.Info("CenterOnOrigin...");
@@ -54,7 +54,7 @@ namespace DEM.Net.Core
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
             double zOriginOffset = bbox.zMax - (bbox.zMax - bbox.zMin) / 2d;
-            heightMap.Coordinates = heightMap.Coordinates.Translate(-xOriginOffset, -yOriginOffset, -zOriginOffset);
+            TranslateInPlace(heightMap.Coordinates, -xOriginOffset, -yOriginOffset, -zOriginOffset);
 
             // world to model is (x,y,z) -> (x,z,-y)
             // translate (X,Y,0) -> (X,0,-Y)
@@ -70,7 +70,7 @@ namespace DEM.Net.Core
             //Logger.Info("CenterOnOrigin...");
             var bbox = heightMap.BoundingBox;
 
-            heightMap.Coordinates = heightMap.Coordinates.Translate(-origin.Longitude, -origin.Latitude, -origin.Elevation ?? 0);
+            TranslateInPlace(heightMap.Coordinates, -origin.Longitude, -origin.Latitude, -origin.Elevation ?? 0);
 
 
 
@@ -85,7 +85,7 @@ namespace DEM.Net.Core
         /// <param name="heightMap"></param>
         /// <param name="centerOnZ"></param>
         /// <returns></returns>
-        /// <remarks>This can be used in an height map processing pipeline, as coordinates are changed only on enumeration</remarks>
+        /// <remarks>Coordinates are changed in place</remarks>
         public static HeightMap CenterOnOrigin(this HeightMap heightMap, bool centerOnZ = false)
         {
             //Logger.Info("CenterOnOrigin...");
@@ -93,7 +93,7 @@ namespace DEM.Net.Core
 
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
-            heightMap.Coordinates = heightMap.Coordinates.Translate(-xOriginOffset, -yOriginOffset, centerOnZ ? -bbox.zMin : 0);
+            TranslateInPlace(heightMap.Coordinates, -xOriginOffset, -yOriginOffset, centerOnZ ? -bbox.zMin : 0);
 
             heightMap.BoundingBox = new BoundingBox(bbox.xMin - xOriginOffset, bbox.xMax - xOriginOffset
                                                     , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset
@@ -116,7 +116,7 @@ namespace DEM.Net.Core
 
             double xOriginOffset = bbox.xMax - (bbox.xMax - bbox.xMin) / 2d;
             double yOriginOffset = bbox.yMax - (bbox.yMax - bbox.yMin) / 2d;
-            heightMap.Coordinates = heightMap.Coordinates.Translate(-xOriginOffset, -yOriginOffset, centerOnZ ? -bbox.zMin : 0);
+            TranslateInPlace(heightMap.Coordinates, -xOriginOffset, -yOriginOffset, centerOnZ ? -bbox.zMin : 0);
 
             heightMap.BoundingBox = new BoundingBox(bbox.xMin - xOriginOffset, bbox.xMax - xOriginOffset
                                                     , bbox.yMin - yOriginOffset, bbox.yMax - yOriginOffset
@@ -197,19 +197,24 @@ namespace DEM.Net.Core
             //Logger.Info("Translate done...");
         }
 
+        private static void TranslateInPlace(Span<GeoPoint> points, double x, double y, double z)
+        {
+            foreach (ref var pt in points)
+                pt = pt.Translate(x, y, z);
+        }
+
+        private static void ScaleInPlace(Span<GeoPoint> points, float x, float y, float z)
+        {
+            foreach (ref var pt in points)
+                pt = pt.Scale(x, y, z);
+        }
+
         /// <summary>
-        /// Helper to get an in memory coordinate list
-        /// useful to generate normal maps and let the same height map follow the pipeline (reproj, center, ...)
+        /// Before v11: turned the lazy coordinates into a list, they are an array now
         /// </summary>
         /// <returns></returns>
-        public static HeightMap BakeCoordinates(this HeightMap heightMap)
-        {
-            if (heightMap.Coordinates is IList)
-                return heightMap;
-
-            heightMap.Coordinates = heightMap.Coordinates.ToList();
-            return heightMap;
-        }
+        [Obsolete("Height map coordinates are an array since v11, the transforms change them in place: there is nothing to bake.")]
+        public static HeightMap BakeCoordinates(this HeightMap heightMap) => heightMap;
 
         /// <summary>
         /// Scale height map verticaly for relief exageration
@@ -219,7 +224,7 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public static HeightMap ZScale(this HeightMap heightMap, float zFactor = 1f)
         {
-            heightMap.Coordinates = heightMap.Coordinates.ZScale(zFactor);
+            ScaleInPlace(heightMap.Coordinates, 1f, 1f, zFactor);
             heightMap.Minimum *= zFactor;
             heightMap.Maximum *= zFactor;
 
@@ -228,7 +233,8 @@ namespace DEM.Net.Core
 
         public static HeightMap ZClamp(this HeightMap heightMap, float? min, float? max)
         {
-            heightMap.Coordinates = heightMap.Coordinates.ZClamp(min, max);
+            foreach (ref var pt in heightMap.Coordinates.AsSpan())
+                pt = pt with { Elevation = MathHelper.Clamp(pt.Elevation ?? 0, min ?? float.MinValue, max ?? float.MaxValue) };
             heightMap.Minimum = MathHelper.Clamp(heightMap.Minimum, min ?? float.MinValue, max ?? float.MaxValue);
             heightMap.Maximum = MathHelper.Clamp(heightMap.Maximum, min ?? float.MinValue, max ?? float.MaxValue);
 
@@ -246,8 +252,9 @@ namespace DEM.Net.Core
         /// <remarks>Bounding box will be updated accordingly</remarks>
         public static HeightMap Scale(this HeightMap heightMap, float x = 1f, float y = 1f, float z = 1f)
         {
-            heightMap.Coordinates = heightMap.Coordinates.Scale(x, y, z);
-            heightMap.BoundingBox = heightMap.BoundingBox.Scale(x, y, z);
+            var bbox = heightMap.BoundingBox; // before the points are scaled, when it is computed from them
+            ScaleInPlace(heightMap.Coordinates, x, y, z);
+            heightMap.BoundingBox = bbox.Scale(x, y, z);
             heightMap.Minimum *= z;
             heightMap.Maximum *= z;
 
@@ -275,7 +282,7 @@ namespace DEM.Net.Core
             {
                 scale = (float)(maxSize / heightMap.BoundingBox.Height);
             }
-            heightMap.Coordinates = heightMap.Coordinates.Scale(scale, scale, scale);
+            ScaleInPlace(heightMap.Coordinates, scale, scale, scale);
             heightMap.BoundingBox = heightMap.BoundingBox.ScaleAbsolute(scale, scale, scale);
             return heightMap;
         }
@@ -337,7 +344,8 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public static HeightMap ZTranslate(this HeightMap heightMap, float distance)
         {
-            heightMap.Coordinates = heightMap.Coordinates.ZTranslate(distance);
+            foreach (ref var pt in heightMap.Coordinates.AsSpan())
+                pt = pt with { Elevation = (pt.Elevation ?? 0) + distance };
             heightMap.Minimum += distance;
             heightMap.Maximum += distance;
 
@@ -345,7 +353,7 @@ namespace DEM.Net.Core
         }
         public static HeightMap Translate(this HeightMap heightMap, GeoPoint pt)
         {
-            heightMap.Coordinates = heightMap.Coordinates.Translate(pt.Longitude, pt.Latitude, pt.Elevation ?? 0);
+            TranslateInPlace(heightMap.Coordinates, pt.Longitude, pt.Latitude, pt.Elevation ?? 0);
             heightMap.Minimum += (float)(pt.Elevation ?? 0);
             heightMap.Maximum += (float)(pt.Elevation ?? 0);
 
@@ -384,7 +392,7 @@ namespace DEM.Net.Core
         /// <returns></returns>
         public static HeightMap Sort(this HeightMap heightMap)
         {
-            heightMap.Coordinates = heightMap.Coordinates.Sort();
+            heightMap.Coordinates = heightMap.Coordinates.Sort().ToArray();
 
             return heightMap;
         }
@@ -449,7 +457,8 @@ namespace DEM.Net.Core
                 }
             }
 
-            var coords = new List<GeoPoint>(width * height);
+            var coords = new GeoPoint[width * height];
+            int coordIndex = 0;
             foreach (var row in tileRows)
             {
                 for (int y = row[0].FirstRow; y < row[0].FirstRow + row[0].Rows; y++)
@@ -458,7 +467,7 @@ namespace DEM.Net.Core
                     {
                         int start = y * tile.HeightMap.Width + tile.FirstColumn;
                         for (int x = 0; x < tile.Columns; x++)
-                            coords.Add(tile.Points[start + x]);
+                            coords[coordIndex++] = tile.Points[start + x];
                     }
                 }
             }
@@ -467,7 +476,7 @@ namespace DEM.Net.Core
             return new HeightMap(width, height)
             {
                 Coordinates = coords,
-                Count = coords.Count,
+                Count = coords.Length,
                 Minimum = all.Min(h => h.Minimum),
                 Maximum = all.Max(h => h.Maximum),
                 BoundingBox = new BoundingBox(xmin: all.Min(h => h.BoundingBox.xMin), xmax: all.Max(h => h.BoundingBox.xMax),
@@ -482,15 +491,15 @@ namespace DEM.Net.Core
             public TileGrid(HeightMap heightMap)
             {
                 HeightMap = heightMap;
-                Points = heightMap.Coordinates as IList<GeoPoint> ?? heightMap.Coordinates.ToList();
-                if (Points.Count != heightMap.Width * heightMap.Height)
-                    throw new InvalidOperationException($"Height map has {Points.Count} points, expected {heightMap.Width}x{heightMap.Height}.");
+                Points = heightMap.Coordinates;
+                if (Points.Length != heightMap.Width * heightMap.Height)
+                    throw new InvalidOperationException($"Height map has {Points.Length} points, expected {heightMap.Width}x{heightMap.Height}.");
                 Columns = heightMap.Width;
                 Rows = heightMap.Height;
             }
 
             public HeightMap HeightMap { get; }
-            public IList<GeoPoint> Points { get; }
+            public GeoPoint[] Points { get; }
             public int FirstColumn { get; private set; }
             public int FirstRow { get; private set; }
             public int Columns { get; private set; }
@@ -540,13 +549,13 @@ namespace DEM.Net.Core
                 Maximum = heightMap.Maximum,
                 Minimum = heightMap.Minimum,
                 BoundingBox = heightMap.BoundingBox,
-                Coordinates = DownsampleCoordinates(heightMap.Coordinates.ToList(), heightMap.Width, heightMap.Height, step).ToList()
+                Coordinates = DownsampleCoordinates(heightMap.Coordinates, heightMap.Width, heightMap.Height, step).ToArray()
             };
 
             return hMap;
         }
 
-        private static IEnumerable<GeoPoint> DownsampleCoordinates(List<GeoPoint> input, int w, int h, int step)
+        private static IEnumerable<GeoPoint> DownsampleCoordinates(GeoPoint[] input, int w, int h, int step)
         {
             for (int lat = 0; lat <= h; lat += step)
             {

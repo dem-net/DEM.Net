@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -55,21 +56,24 @@ namespace DEM.Net.Core
             return projection;
         }
 
+        // The height map transforms change the coordinates in place. The bounding box is read before: when it is not set,
+        // it is computed from the points, and must be the one of the source points.
+
         public static HeightMap ReprojectGeodeticToCartesian(this HeightMap heightMap)
-        {
-            heightMap.Coordinates = heightMap.Coordinates.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR, heightMap.Count);
-            heightMap.BoundingBox = heightMap.BoundingBox.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR);
-            return heightMap;
-        }
+            => heightMap.ReprojectTo(SRID_GEODETIC, SRID_PROJECTED_MERCATOR);
+
         public static HeightMap ReprojectRelativeToObserver(this HeightMap heightMap, GeoPoint observer, double maxDistanceMeters)
         {
-            heightMap.Coordinates = heightMap.Coordinates.Select(p => p.HaversineTranslate(observer, maxDistanceMeters));
+            foreach (ref var p in heightMap.Coordinates.AsSpan())
+                p = p.HaversineTranslate(observer, maxDistanceMeters);
             return heightMap;
         }
         public static HeightMap ReprojectGeodeticToTileSystem(this HeightMap heightMap, int zoomLevel, int tileSize)
         {
-            heightMap.Coordinates = heightMap.Coordinates.ReprojectGeodeticToTileSystem(zoomLevel, tileSize);
-            heightMap.BoundingBox = heightMap.BoundingBox.ReprojectToTileSystem(zoomLevel, tileSize);
+            var bbox = heightMap.BoundingBox;
+            foreach (ref var p in heightMap.Coordinates.AsSpan())
+                p = p.ReprojectGeodeticToTileSystem(zoomLevel, tileSize);
+            heightMap.BoundingBox = bbox.ReprojectToTileSystem(zoomLevel, tileSize);
             return heightMap;
         }
 
@@ -78,10 +82,40 @@ namespace DEM.Net.Core
             if (sourceEpsgCode == destinationEpsgCode)
                 return heightMap;
 
-            heightMap.Coordinates = heightMap.Coordinates.ReprojectTo(sourceEpsgCode, destinationEpsgCode, heightMap.Count);
-            heightMap.BoundingBox = heightMap.BoundingBox.ReprojectTo(sourceEpsgCode, destinationEpsgCode);
+            var bbox = heightMap.BoundingBox;
+            ReprojectInPlace(heightMap.Coordinates, GetProjection(sourceEpsgCode), GetProjection(destinationEpsgCode));
+            heightMap.BoundingBox = bbox.ReprojectTo(sourceEpsgCode, destinationEpsgCode);
 
             return heightMap;
+        }
+
+        /// <summary>
+        /// All points reprojected in one call, through a pooled coordinate buffer
+        /// </summary>
+        private static void ReprojectInPlace(Span<GeoPoint> points, ProjectionInfo pSource, ProjectionInfo pTarget)
+        {
+            if (points.IsEmpty)
+                return;
+
+            var coords = ArrayPool<double>.Shared.Rent(points.Length * 2);
+            try
+            {
+                for (int i = 0; i < points.Length; i++)
+                {
+                    coords[2 * i] = points[i].Longitude;
+                    coords[2 * i + 1] = points[i].Latitude;
+                }
+                Reproject.ReprojectPoints(coords, null, pSource, pTarget, 0, points.Length);
+
+                for (int i = 0; i < points.Length; i++)
+                {
+                    points[i] = points[i] with { Longitude = coords[2 * i], Latitude = coords[2 * i + 1] };
+                }
+            }
+            finally
+            {
+                ArrayPool<double>.Shared.Return(coords);
+            }
         }
 
         public static IEnumerable<GeoPoint> ReprojectGeodeticToTileSystem(this IEnumerable<GeoPoint> points, int zoomLevel, int tileSize)

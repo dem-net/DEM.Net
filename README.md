@@ -91,9 +91,25 @@ The files written by former versions are read as is (PascalCase or camelCase nam
 | Newtonsoft.Json available transitively | reference it in the application when it is used there |
 | Tile index feature properties: ISO date strings reformatted by Newtonsoft (`06/15/2020 00:00:00`) | passed as written in the GeoJSON |
 
+`HeightMap.Coordinates` is a `GeoPoint[]`, and the height map transforms (`ReprojectTo`, `ReprojectGeodeticToCartesian`,
+`CenterOnOrigin`, `ZScale`, `Scale`, `FitInto`, `ZTranslate`, `ZClamp`, `ApplyGeometryMask`...) change the points in place.
+Before, each transform added a lazy step that ran again on every enumeration of the coordinates.
+
+| v10 | v11 |
+|---|---|
+| `IEnumerable<GeoPoint> Coordinates` (lazy pipeline) | `GeoPoint[] Coordinates`: index it, `Length` instead of `Count()` |
+| `heightMap.BakeCoordinates()` | not needed (obsolete, does nothing) |
+| `heightMap.Clone()` shares the source points, transforms of the clone build a new pipeline | `Clone()` copies the points: clone a height map to keep the original points |
+| a reference to `heightMap.Coordinates` kept before a transform still enumerates the former points | it sees the transformed points (same array) |
+| `ISTLExportService.STLExport(mesh, fileName, ...)` | `await STLExportAsync(mesh, fileName, ..., cancellationToken)` (written through a temporary file), `WriteSTLAsync(mesh, stream, ...)` |
+| `OBJExportService.ExportGlTFModelToWaveFrontObj(...)` | `await ExportGlTFModelToWaveFrontObjAsync(..., cancellationToken)` |
+
+The STL and OBJ files are byte-identical to v10.
+
 ## glTF export
 - `glTFService` can generate triangulated MeshPrimitives from height maps
 - Export to .gtlf or .glb
+- Export to STL (ASCII or binary) and Wavefront OBJ, streamed from the mesh
 
 # Sample data
 - Rasters from http://www.opentopography.org

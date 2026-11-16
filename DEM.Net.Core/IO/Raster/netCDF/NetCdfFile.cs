@@ -108,7 +108,8 @@ namespace DEM.Net.Core
             heightMap.Count = heightMap.Width * heightMap.Height;
             heightMap.Minimum = 15000;
             heightMap.Maximum = -15000;
-            var coords = new List<GeoPoint>(heightMap.Count);
+            var coords = new GeoPoint[heightMap.Count];
+            int coordIndex = 0;
 
             MultipleDataResponse response = _dataset.GetMultipleData(
                 DataRequest.GetData(_elevationVariable),
@@ -129,7 +130,7 @@ namespace DEM.Net.Core
                     elevationsEnumerator.MoveNext();
                     float heightValue = (float)Convert.ChangeType(elevationsEnumerator.Current, typeof(float));
 
-                    coords.Add(new GeoPoint(latitude, longitude, heightValue));
+                    coords[coordIndex++] = new GeoPoint(latitude, longitude, heightValue);
                     heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
                     heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
 
@@ -179,29 +180,29 @@ namespace DEM.Net.Core
                 int index = 0;
 
                 // Coordinates in height maps are rows in lat descending order
-                // Here, netCDF enumerates in lat ascending order.
-                // We stack the rows and enumerate them at the end
-                Stack<List<GeoPoint>> geoPointsRows = new Stack<List<GeoPoint>>();
+                // Here, netCDF enumerates in lat ascending order: the first row read is the last one of the height map
+                var coords = new GeoPoint[heightMap.Count];
+                int row = heightMap.Height - 1;
                 var elevationsEnumerator = elevations.GetEnumerator();
                 foreach (double latitude in latitudes)
                 {
-                    List<GeoPoint> curRow = new List<GeoPoint>();
+                    int coordIndex = row * heightMap.Width;
                     foreach (double longitude in longitudes)
                     {
                         elevationsEnumerator.MoveNext();
                         float heightValue = (float)Convert.ChangeType(elevationsEnumerator.Current, typeof(float));
 
-                        curRow.Add(new GeoPoint(latitude, longitude, heightValue));
+                        coords[coordIndex++] = new GeoPoint(latitude, longitude, heightValue);
                         heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
                         heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
 
                         index++;
                     }
-                    geoPointsRows.Push(curRow);
+                    row--;
                 }
 
                 Debug.Assert(index == heightMap.Count);
-                heightMap.Coordinates = GetUnstackedCoordinates(geoPointsRows, heightMap.Count); // enumerate stack
+                heightMap.Coordinates = coords;
                 heightMap.BoundingBox.zMin = heightMap.Minimum;
                 heightMap.BoundingBox.zMax = heightMap.Maximum;
             }
@@ -211,19 +212,6 @@ namespace DEM.Net.Core
             }
 
             return heightMap;
-        }
-
-        private List<GeoPoint> GetUnstackedCoordinates(Stack<List<GeoPoint>> geoPointsRows, int capacity)
-        {
-            List<GeoPoint> coords = new List<GeoPoint>(capacity);
-            while (geoPointsRows.Count > 0)
-            {
-                coords.AddRange(geoPointsRows.Pop());
-            }
-
-            Debug.Assert(coords.Count == capacity);
-            return coords;
-
         }
 
         public FileMetadata ParseMetaData(DEMFileDefinition fileFormat)

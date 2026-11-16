@@ -28,7 +28,7 @@ namespace DEM.Net.Test
 
             return new HeightMap(cols, rows)
             {
-                Coordinates = coords,
+                Coordinates = coords.ToArray(),
                 Count = coords.Count,
                 Minimum = coords.Min(p => (float)p.Elevation.Value),
                 Maximum = coords.Max(p => (float)p.Elevation.Value),

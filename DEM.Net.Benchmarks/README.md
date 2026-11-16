@@ -64,3 +64,23 @@ metrics and distances, Douglas-Peucker, intervisibility obstacles, height map tr
 - A point is 32 bytes inline in its list or array (an object of 72 bytes plus an 8 bytes reference before), and
   transforms (`with`) no longer allocate per point.
 - Point elevations are written in place in the input order (they were grouped by tile, then sorted back by `Id`).
+
+## Height map arrays and async exports (v11)
+
+Apple M1, .NET 10, default job, 2026-11-16, both versions measured the same day. The STL (binary and ASCII), OBJ
+and MTL files are byte-identical to the previous version.
+
+| Method                                          | Before     | After      | Allocated before | Allocated after |
+|------------------------------------------------ |-----------:|-----------:|-----------:|-----------:|
+| Height map of a 0.2° bbox                       |   1.915 ms |   2.038 ms |    3.60 MB |    3.60 MB |
+| Reproject height map to 3857, z-scale, center   |   2.149 ms |   1.647 ms |    2.70 MB |    3.80 MB |
+| glTF terrain mesh of the bbox, written as GLB   | 200.006 ms | 207.232 ms |  123.87 MB |  122.24 MB |
+| STL binary export                               |  25.89 ms  |   4.58 ms  |   48.62 MB |   0.07 MB |
+| STL ASCII export                                | 114.72 ms  |  64.23 ms  |  137.19 MB |   0.48 MB |
+| OBJ export                                      |  17.01 ms  |  12.06 ms  |   11.33 MB |   0.73 MB |
+
+- Reprojection: the benchmark clones the height map, which now copies its points (1.8 MB): the transforms change
+  them in place, without allocating per point, and the result is no longer re-computed on each enumeration.
+- STL: triangles are written from the mesh accessors as they are read (no list of triangle objects, no
+  vertex builders), through a pooled buffer; ASCII lines are formatted without strings.
+- OBJ: same line formatting, no string per line.

@@ -24,14 +24,17 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DEM.Net.Core
 {
+    /// <summary>
+    /// A grid of points (rows north to south, columns west to east), as read from a raster
+    /// </summary>
+    /// <remarks>
+    /// Since v11 the coordinates are an array, and the transforms (<see cref="HeightMapExtensions"/>, <see cref="Reprojection"/>)
+    /// change them in place: before, each transform added a step to a lazy pipeline that ran again on every enumeration.
+    /// Use <see cref="Clone"/> to keep the original points.
+    /// </remarks>
     [Serializable()]
     public class HeightMap
     {
@@ -39,31 +42,24 @@ namespace DEM.Net.Core
         {
             Width = width;
             Height = height;
-            Coordinates = null;
             Count = width * height;
             Minimum = 15000;
             Maximum = -15000;
         }
 
-        private BoundingBox _bbox;
+        /// <summary>
+        /// Bounds of the points, computed from the coordinates when not set
+        /// </summary>
         public BoundingBox BoundingBox
         {
-            get
-            {
-                if (_bbox == null)
-                {
-                    //Logger.Info("Computing bbox...");
-                    _bbox = this.Coordinates.GetBoundingBox();
-                }
-                return _bbox;
-            }
-            set
-            {
-                _bbox = value;
-            }
+            get => field ??= Coordinates.GetBoundingBox();
+            set;
         }
 
-        public IEnumerable<GeoPoint> Coordinates { get; set; }
+        /// <summary>
+        /// Points of the grid, row by row (north to south), west to east in each row
+        /// </summary>
+        public GeoPoint[] Coordinates { get; set; } = [];
 
         /// <summary>
         /// Coordinate count
@@ -72,18 +68,19 @@ namespace DEM.Net.Core
 
         public float Minimum { get; set; }
         public float Maximum { get; set; }
-        public float Range
-        {
-            get { return Maximum - Minimum; }
-        }
+        public float Range => Maximum - Minimum;
 
         public int Width { get; private set; }
         public int Height { get; private set; }
 
+        /// <summary>
+        /// Copy of the height map, with its own coordinates (the transforms of the copy leave this height map unchanged)
+        /// </summary>
         public HeightMap Clone()
         {
-            return (HeightMap)this.MemberwiseClone();
+            var clone = (HeightMap)MemberwiseClone();
+            clone.Coordinates = (GeoPoint[])Coordinates.Clone();
+            return clone;
         }
-
     }
 }
