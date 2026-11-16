@@ -23,9 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using ProtoBuf;
+using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,6 +74,7 @@ namespace DEM.Net.Core
         /// Physical file format enumeration
         /// </summary>
         [ProtoMember(3)]
+        [JsonConverter(typeof(JsonStringEnumConverter<DEMFileType>))] // names or numbers (manifests written by former versions have both)
         public DEMFileType Type { get; set; }
 
         /// <summary>
@@ -83,6 +83,7 @@ namespace DEM.Net.Core
         /// Good explanation here : https://www.ngdc.noaa.gov/mgg/global/gridregistration.html
         /// </summary>
         [ProtoMember(4)]
+        [JsonConverter(typeof(JsonStringEnumConverter<DEMFileRegistrationMode>))]
         public DEMFileRegistrationMode Registration { get; set; }
 
         public override string ToString()

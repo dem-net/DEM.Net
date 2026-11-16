@@ -1,6 +1,6 @@
 ﻿using DEM.Net.Core.Datasets;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using System.Text.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -51,7 +51,7 @@ namespace DEM.Net.Core.EarthData
                     {
                         var links = await FetchGranulesAsync(dataSource).ConfigureAwait(false);
                         // an interrupted run never leaves a truncated index
-                        await HttpDownload.WriteAllTextAtomicAsync(indexFileName, JsonConvert.SerializeObject(links), CancellationToken.None).ConfigureAwait(false);
+                        await HttpDownload.WriteAllTextAtomicAsync(indexFileName, JsonSerializer.Serialize(links, CoreJsonContext.Default.ListNasaDemFile), CancellationToken.None).ConfigureAwait(false);
                         logger.LogInformation($"{links.Count} entries written to index file {indexFileName}");
                     }
 
@@ -122,7 +122,10 @@ namespace DEM.Net.Core.EarthData
 
         private static List<DEMFileSource> GetSources(DEMDataSet dataSet, string indexFileName)
         {
-            List<NasaDemFile> nasaDemFiles = JsonConvert.DeserializeObject<List<NasaDemFile>>(File.ReadAllText(indexFileName));
+            List<NasaDemFile> nasaDemFiles;
+            using (var stream = File.OpenRead(indexFileName))
+                nasaDemFiles = JsonSerializer.Deserialize(stream, CoreJsonContext.Default.ListNasaDemFile)
+                    ?? throw new InvalidDataException($"Empty granule index {indexFileName}.");
             var dataSetLocalDir = Path.GetDirectoryName(indexFileName);
 
             static BoundingBox GetBBox(string box)

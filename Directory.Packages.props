@@ -27,7 +27,6 @@
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.403" />
     <PackageVersion Include="Microsoft.VisualStudio.Threading.Analyzers" Version="18.12.1" />
     <PackageVersion Include="NetTopologySuite" Version="2.6.0" />
-    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="protobuf-net" Version="3.2.56" />
     <PackageVersion Include="SDSCore" Version="1.2.0" />
     <PackageVersion Include="SharpGLTF.Toolkit" Version="1.0.3" />
