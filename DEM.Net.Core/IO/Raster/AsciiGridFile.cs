@@ -106,7 +106,8 @@ namespace DEM.Net.Core
 
             HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
             heightMap.Count = heightMap.Width * heightMap.Height;
-            var coords = new List<GeoPoint>(heightMap.Count);
+            var coords = new GeoPoint[heightMap.Count];
+            int coordIndex = 0;
 
 
             for (int y = 0; y < metadata.Height; y++)
@@ -122,11 +123,11 @@ namespace DEM.Net.Core
                     heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
                     heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
 
-                    coords.Add(new GeoPoint(latitude, longitude, heightValue));
+                    coords[coordIndex++] = new GeoPoint(latitude, longitude, heightValue);
 
                 }
             }
-            Debug.Assert(heightMap.Width * heightMap.Height == coords.Count);
+            Debug.Assert(coordIndex == coords.Length);
 
             heightMap.Coordinates = coords;
             return heightMap;
@@ -155,7 +156,8 @@ namespace DEM.Net.Core
 
             HeightMap heightMap = new HeightMap(xEast - xWest + 1, ySouth - yNorth + 1);
             heightMap.Count = heightMap.Width * heightMap.Height;
-            var coords = new List<GeoPoint>(heightMap.Count);
+            var coords = new GeoPoint[heightMap.Count];
+            int coordIndex = 0;
             heightMap.BoundingBox = new BoundingBox(0, 0, 0, 0);
 
             for (int y = yNorth; y <= ySouth; y++)
@@ -183,13 +185,13 @@ namespace DEM.Net.Core
                     heightMap.Minimum = Math.Min(heightMap.Minimum, heightValue);
                     heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
 
-                    coords.Add(new GeoPoint(latitude, longitude, heightValue));
+                    coords[coordIndex++] = new GeoPoint(latitude, longitude, heightValue);
 
                 }
             }
             heightMap.BoundingBox.zMin = heightMap.Minimum;
             heightMap.BoundingBox.zMax = heightMap.Maximum;
-            Debug.Assert(heightMap.Width * heightMap.Height == coords.Count);
+            Debug.Assert(coordIndex == coords.Length);
 
             heightMap.Coordinates = coords;
             Console.WriteLine($"GetHeightmap in {sw.ElapsedMilliseconds:N2} ms");

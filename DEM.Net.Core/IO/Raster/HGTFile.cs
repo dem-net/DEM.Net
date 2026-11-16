@@ -211,7 +211,8 @@ namespace DEM.Net.Core
 
             HeightMap heightMap = new HeightMap(xEast - xWest + 1, ySouth - yNorth + 1);
             heightMap.Count = heightMap.Width * heightMap.Height;
-            var coords = new List<GeoPoint>(heightMap.Count);
+            var coords = new GeoPoint[heightMap.Count];
+            int coordIndex = 0;
             heightMap.BoundingBox = new BoundingBox(0, 0, 0, 0);
 
             // Set position to ystart
@@ -281,13 +282,13 @@ namespace DEM.Net.Core
                     {
                         heightValue = (float)noDataValue;
                     }
-                    coords.Add(new GeoPoint(latitude, longitude, heightValue));
+                    coords[coordIndex++] = new GeoPoint(latitude, longitude, heightValue);
 
                 }
             }
             heightMap.BoundingBox.zMin = heightMap.Minimum;
             heightMap.BoundingBox.zMax = heightMap.Maximum;
-            Debug.Assert(heightMap.Width * heightMap.Height == coords.Count);
+            Debug.Assert(coordIndex == coords.Length);
 
             heightMap.Coordinates = coords;
             return heightMap;
@@ -297,7 +298,8 @@ namespace DEM.Net.Core
         {
             HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
             heightMap.Count = heightMap.Width * heightMap.Height;
-            var coords = new List<GeoPoint>(heightMap.Count);
+            var coords = new GeoPoint[heightMap.Count];
+            int coordIndex = 0;
 
             _hgtStream.Seek(0, SeekOrigin.Begin);
 
@@ -352,7 +354,7 @@ namespace DEM.Net.Core
                     {
                         heightValue = 0;
                     }
-                    coords.Add(new GeoPoint(latitude, longitude, heightValue));
+                    coords[coordIndex++] = new GeoPoint(latitude, longitude, heightValue);
 
                 }
             }

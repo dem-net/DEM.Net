@@ -71,7 +71,7 @@ namespace DEM.Net.Core
             // Step 1: Mark valid points
             var validMask = new bool[heightMap.Width, heightMap.Height];
             var visited = new bool[heightMap.Width, heightMap.Height];
-            var coords = heightMap.Coordinates.ToList();
+            var coords = heightMap.Coordinates;
 
             for (int y = 0; y < heightMap.Height; y++)
             {
@@ -238,8 +238,7 @@ namespace DEM.Net.Core
 
         private void AddHeightMapBase(Triangulation triangulation, HeightMap heightMap, BoxBaseThickness thickness, float zValue)
         {
-            // bake coordinates to avoid executing the coords transfrom pipeline
-            var coords = heightMap.Coordinates.ToList();
+            var coords = heightMap.Coordinates;
             int capacity = heightMap.Width * 2 + (heightMap.Height - 2) * 2;
             var basePoints = new List<GeoPoint>(capacity);
             var baseIndexes = new List<int>(capacity);
@@ -259,7 +258,7 @@ namespace DEM.Net.Core
             }
 
             // x : 0 => width // y : 0
-            int baseIndex0 = coords.Count;
+            int baseIndex0 = coords.Length;
             int baseIndex = baseIndex0;
             for (int x = 0; x < heightMap.Width - 1; x++)
             {

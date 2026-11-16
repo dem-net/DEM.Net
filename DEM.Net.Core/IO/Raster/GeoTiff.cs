@@ -445,7 +445,8 @@ namespace DEM.Net.Core
 
             HeightMap heightMap = new HeightMap(xEnd - xStart + 1, yEnd - yStart + 1);
             heightMap.Count = heightMap.Width * heightMap.Height;
-            var coords = new List<GeoPoint>(heightMap.Count);
+            var coords = new GeoPoint[heightMap.Count];
+            int coordIndex = 0;
             heightMap.BoundingBox = new BoundingBox(0, 0, 0, 0);
 
             if (this.IsTiled)
@@ -507,7 +508,7 @@ namespace DEM.Net.Core
                         if (heightValue < -15000 || heightValue > 10000)
                             heightValue = noDataValue;
 
-                        coords.Add(new GeoPoint(latitude, longitude, heightValue));
+                        coords[coordIndex++] = new GeoPoint(latitude, longitude, heightValue);
 
                     }
                 }
@@ -568,7 +569,7 @@ namespace DEM.Net.Core
                         heightMap.Maximum = Math.Max(heightMap.Maximum, heightValue);
 
 
-                        coords.Add(new GeoPoint(latitude, longitude, heightValue));
+                        coords[coordIndex++] = new GeoPoint(latitude, longitude, heightValue);
 
                     }
                 }
@@ -576,7 +577,7 @@ namespace DEM.Net.Core
             }
             heightMap.BoundingBox.zMin = heightMap.Minimum;
             heightMap.BoundingBox.zMax = heightMap.Maximum;
-            Debug.Assert(heightMap.Width * heightMap.Height == coords.Count);
+            Debug.Assert(coordIndex == coords.Length);
 
             heightMap.Coordinates = coords;
             return heightMap;
@@ -589,7 +590,8 @@ namespace DEM.Net.Core
 
             HeightMap heightMap = new HeightMap(metadata.Width, metadata.Height);
             heightMap.Count = heightMap.Width * heightMap.Height;
-            var coords = new List<GeoPoint>(heightMap.Count);
+            var coords = new GeoPoint[heightMap.Count];
+            int coordIndex = 0;
 
             // metadata.BitsPerSample
             // When 16 we have 2 bytes per sample
@@ -630,7 +632,7 @@ namespace DEM.Net.Core
                     {
                         heightValue = 0;
                     }
-                    coords.Add(new GeoPoint(latitude, longitude, heightValue));
+                    coords[coordIndex++] = new GeoPoint(latitude, longitude, heightValue);
 
                 }
             }

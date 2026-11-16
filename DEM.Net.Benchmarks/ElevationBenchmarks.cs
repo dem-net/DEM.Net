@@ -75,7 +75,7 @@ public class ElevationBenchmarks
 
     [Benchmark(Description = "Reproject height map to 3857, z-scale, center")]
     public int ReprojectHeightMap()
-        => _heightMap.Clone().ReprojectGeodeticToCartesian().ZScale(2f).CenterOnOrigin().Coordinates.Count();
+        => _heightMap.Clone().ReprojectGeodeticToCartesian().ZScale(2f).CenterOnOrigin().Coordinates.Length;
 
     [Benchmark(Description = "glTF terrain mesh of the bbox, written as GLB")]
     public long TerrainMeshGlb()

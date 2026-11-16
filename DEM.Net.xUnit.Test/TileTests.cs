@@ -254,16 +254,16 @@ namespace DEM.Net.xUnit.Test
 
             HeightMap heightMap = await _elevationService.GetHeightMapAsync(bbox, dataset);
 
-            heightMap = heightMap.ReprojectGeodeticToCartesian().BakeCoordinates();
+            heightMap = heightMap.ReprojectGeodeticToCartesian();
             Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
 
-            heightMap = heightMap.ZScale(2.5f).BakeCoordinates();
+            heightMap = heightMap.ZScale(2.5f);
             Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
 
-            heightMap = heightMap.CenterOnOrigin().BakeCoordinates();
+            heightMap = heightMap.CenterOnOrigin();
             Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
 
-            heightMap = heightMap.FitInto(30f).BakeCoordinates();
+            heightMap = heightMap.FitInto(30f);
             Assert.True(heightMap.BoundingBox == heightMap.Coordinates.GetBoundingBox());
 
         }
