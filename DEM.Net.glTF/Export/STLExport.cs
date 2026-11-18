@@ -41,7 +41,7 @@ namespace DEM.Net.glTF.Export;
 
 public class STLExportService(ILogger<STLExportService>? logger = null) : ISTLExportService
 {
-    private const int BinaryHeaderSize = 84; // 80 bytes (unused) + triangle count
+    private const int BinaryHeaderSize = 84; // 80 bytes (attributions) + triangle count
     private const int BinaryTriangleSize = 50; // normal and 3 vertices (12 floats) + attribute byte count
 
     public async Task STLExportAsync(MeshPrimitive mesh, string fileName, bool ascii = true, IEnumerable<Attribution>? attributions = null, CancellationToken cancellationToken = default)
@@ -80,7 +80,23 @@ public class STLExportService(ILogger<STLExportService>? logger = null) : ISTLEx
         var triangles = mesh.GetTriangleIndices();
         return ascii
             ? WriteAsciiAsync(positions, triangles, GetAttributionExtraText(attributions), stream, cancellationToken)
-            : WriteBinaryAsync(positions, triangles, stream, cancellationToken);
+            : WriteBinaryAsync(positions, triangles, GetBinaryHeader(attributions), stream, cancellationToken);
+    }
+
+    /// <summary>
+    /// The 80 bytes header of binary STL: the attributions in ASCII, truncated, data first (dataset, imagery),
+    /// software credits last. It mustn't start with "solid" (readers would take the file for ASCII STL).
+    /// </summary>
+    internal static byte[] GetBinaryHeader(IEnumerable<Attribution>? attributions)
+    {
+        var texts = (attributions ?? []).Where(a => a.Subject != "Generator" && !string.IsNullOrWhiteSpace(a.Text))
+            .OrderBy(a => a.Subject == "Mesh reduction") // stable: keeps the order otherwise
+            .Select(a => a.Text.Trim());
+        string text = string.Join("; ", texts.Prepend("elevationapi.com"));
+        var header = new byte[80];
+        for (int i = 0; i < Math.Min(text.Length, header.Length); i++)
+            header[i] = text[i] is >= ' ' and <= '~' ? (byte)text[i] : (byte)'?';
+        return header;
     }
 
     private static async Task WriteAsciiAsync(IList<Vector3> positions, IEnumerable<(int A, int B, int C)> triangles, string solidName, Stream stream, CancellationToken cancellationToken)
@@ -105,12 +121,12 @@ public class STLExportService(ILogger<STLExportService>? logger = null) : ISTLEx
         await writer.FlushAsync(cancellationToken).ConfigureAwait(false);
     }
 
-    private static async Task WriteBinaryAsync(IList<Vector3> positions, IEnumerable<(int A, int B, int C)> triangles, Stream stream, CancellationToken cancellationToken)
+    private static async Task WriteBinaryAsync(IList<Vector3> positions, IEnumerable<(int A, int B, int C)> triangles, byte[] header, Stream stream, CancellationToken cancellationToken)
     {
         byte[] buffer = ArrayPool<byte>.Shared.Rent(1 << 16);
         try
         {
-            buffer.AsSpan(0, BinaryHeaderSize).Clear();
+            header.AsSpan(0, 80).CopyTo(buffer);
             BinaryPrimitives.WriteUInt32LittleEndian(buffer.AsSpan(80), (uint)triangles.Count());
             int length = BinaryHeaderSize;
 

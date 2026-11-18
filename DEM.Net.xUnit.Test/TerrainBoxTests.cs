@@ -161,6 +161,53 @@ public class TerrainBoxTests(DemNetFixture fixture) : IClassFixture<DemNetFixtur
         Assert.Equal(boxPos.Min(p => p.Y), _sharpGltfService.GetTerrainBoxBaseElevation(model));
     }
 
+    [Theory]
+    [InlineData(0.5f)]
+    [InlineData(0.1f)]
+    public void Reduced_terrain_keeps_grid_points_and_the_rectangle(float reduceFactor)
+    {
+        var hMap = CreateHeightMap();
+        var model = _sharpGltfService.CreateTerrainMesh(hMap, null, reduceFactor);
+        var (terrainPos, terrainIdx) = ReadPrimitive(model, "TerrainNode");
+
+        // Delatin: the vertices are grid points (not moved), the four corners are kept, the triangle count is the target
+        var grid = hMap.Coordinates.Select(p => p.ToVector3GlTFSpace()).ToHashSet();
+        Assert.All(terrainPos, p => Assert.Contains(p, grid));
+        foreach (int i in new[] { 0, W - 1, (H - 1) * W, W * H - 1 })
+            Assert.Contains(hMap.Coordinates[i].ToVector3GlTFSpace(), terrainPos);
+        int target = (int)(reduceFactor * 2 * (W - 1) * (H - 1));
+        Assert.InRange(terrainIdx.Count / 3, target, target + 1);
+    }
+
+    [Theory]
+    [InlineData(1f)]
+    [InlineData(0.3f)]
+    [InlineData(0.05f)]
+    public void Stl_box_is_closed_in_a_single_primitive(float reduceFactor)
+    {
+        // As the STL endpoints: one primitive (terrain + walls + bottom), Z up, base 5 under the lowest point
+        var model = _sharpGltfService.CreateTerrainMesh(CreateHeightMap(), GenOptions.BoxedBaseElevationMin,
+            Matrix4x4.CreateRotationX(MathF.PI / 2f), doubleSided: true, meshReduceFactor: reduceFactor);
+        Assert.Single(model.LogicalMeshes);
+        var primitive = Assert.Single(model.LogicalMeshes[0].Primitives);
+        var pos = primitive.GetVertices("POSITION").AsVector3Array().ToList();
+        var idx = primitive.GetIndices().Select(i => (int)i).ToList();
+
+        // Closed: every directed edge (matched by position) has its reverse; the terrain is wound like the box
+        var directed = new HashSet<(Vector3, Vector3)>();
+        for (int t = 0; t < idx.Count; t += 3)
+        {
+            Vector3 a = pos[idx[t]], b = pos[idx[t + 1]], c = pos[idx[t + 2]];
+            if (a == b || b == c || c == a) continue;
+            Assert.True(directed.Add((a, b)) & directed.Add((b, c)) & directed.Add((c, a)), "edge used twice in the same direction");
+        }
+        Assert.All(directed, e => Assert.Contains((e.Item2, e.Item1), directed));
+
+        // Z up after the rotation: the base is 5 under the lowest terrain point
+        var hMap = CreateHeightMap();
+        Assert.Equal(hMap.Minimum - 5f, pos.Min(p => p.Z), 2);
+    }
+
     [Fact]
     public void No_box_by_default()
     {
