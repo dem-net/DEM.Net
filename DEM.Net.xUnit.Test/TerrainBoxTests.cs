@@ -158,6 +158,7 @@ public class TerrainBoxTests(DemNetFixture fixture) : IClassFixture<DemNetFixtur
         var (terrainPos, _) = ReadPrimitive(model, "TerrainNode");
         var (boxPos, _) = ReadPrimitive(model, SharpGltfService.TERRAIN_BOX_NODE_NAME);
         Assert.Equal(terrainPos.Min(p => p.Y) - 7f, boxPos.Min(p => p.Y), 3);
+        Assert.Equal(boxPos.Min(p => p.Y), _sharpGltfService.GetTerrainBoxBaseElevation(model));
     }
 
     [Fact]
@@ -165,5 +166,6 @@ public class TerrainBoxTests(DemNetFixture fixture) : IClassFixture<DemNetFixtur
     {
         var model = _sharpGltfService.CreateTerrainMesh(CreateHeightMap(), null, 1f);
         Assert.Null(model.LogicalScenes[0].FindNode(n => n.Name == SharpGltfService.TERRAIN_BOX_NODE_NAME));
+        Assert.Null(_sharpGltfService.GetTerrainBoxBaseElevation(model));
     }
 }

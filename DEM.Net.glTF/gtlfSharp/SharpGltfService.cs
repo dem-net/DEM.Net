@@ -285,6 +285,17 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
         return model;
     }
 
+    /// <summary>
+    /// Elevation of the bottom of the terrain box (glTF Y, i.e. model Z), null when the model has no box.
+    /// Lets other meshes (adornments) sit at the box base.
+    /// </summary>
+    public float? GetTerrainBoxBaseElevation(ModelRoot model)
+    {
+        var mesh = model?.LogicalScenes.FirstOrDefault()?.FindNode(n => n.Name == TERRAIN_BOX_NODE_NAME)?.Mesh;
+        var positions = mesh?.Primitives.FirstOrDefault()?.GetVertexAccessor("POSITION");
+        return positions == null ? null : positions.AsVector3Array().Min(p => p.Y);
+    }
+
     public ModelRoot GenerateTriangleMesh(List<GeoPoint> points, List<int> indices, PBRTexture textures)
     {
         Triangulation triangulation = new Triangulation(points, indices);
