@@ -41,6 +41,8 @@ public class MonumentTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
     {
         var atlas = MonumentAtlas.Instance;
         using var image = SixLabors.ImageSharp.Image.Load<Rgba32>(atlas.Png);
+        // RGBA: Sketchfab ignores the alpha of grayscale+alpha PNGs
+        Assert.Equal(SixLabors.ImageSharp.Formats.Png.PngColorType.RgbWithAlpha, image.Metadata.GetPngMetadata().ColorType);
         Assert.True(atlas.Png.Length < 200_000, $"{atlas.Png.Length} bytes");
         foreach (var m in Monuments.All)
         {
@@ -76,7 +78,7 @@ public class MonumentTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
         float size = Math.Max(terrainPos.Max(p => p.X) - terrainPos.Min(p => p.X), terrainPos.Max(p => p.Z) - terrainPos.Min(p => p.Z));
         var decals = MonumentPlacer.Place(terrainPos, baseY, Scale(horizontal, vertical));
         Assert.NotEmpty(decals);
-        Assert.Contains(decals, d => d.Normal == Vector3.UnitZ); // the south side is used first
+        Assert.Contains(decals, d => d.Normal == Vector3.UnitZ); // south side
 
         foreach (var d in decals)
         {
@@ -106,10 +108,10 @@ public class MonumentTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
             }
         }
 
-        // No overlap on a side, each monument once
-        Assert.Equal(decals.Count, decals.Select(d => d.Monument).Distinct().Count());
+        // No overlap on a side, each monument at most once per side
         foreach (var group in decals.GroupBy(d => d.Normal))
         {
+            Assert.Equal(group.Count(), group.Select(d => d.Monument).Distinct().Count());
             var spans = group.Select(d => (Start: Vector3.Dot(d.BottomLeft, d.Right), End: Vector3.Dot(d.BottomLeft, d.Right) + d.Width)).OrderBy(s => s.Start).ToList();
             for (int i = 1; i < spans.Count; i++)
                 Assert.True(spans[i].Start > spans[i - 1].End);
@@ -180,9 +182,13 @@ public class MonumentTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
         var decals = MonumentPlacer.Place(positions, 0f, Scale(1f, 1f) with { MinHeightRatio = 0 });
         Assert.Empty(decals);
 
-        // 200 m walls: the 6 monuments under 190 m (5 % top margin), each placed once
+        // 200 m walls: the 6 monuments under 190 m (5 % top margin), on each of the 4 sides
         positions = [.. positions.Select(p => p with { Y = 200 })];
         decals = MonumentPlacer.Place(positions, 0f, Scale(1f, 1f) with { MinHeightRatio = 0 });
-        Assert.Equal(Monuments.All.Where(m => m.Height * 1.05f <= 200).Select(m => m.Name).OrderBy(n => n), decals.Select(d => d.Monument.Name).OrderBy(n => n));
+        var expected = Monuments.All.Where(m => m.Height * 1.05f <= 200).Select(m => m.Name).OrderBy(n => n).ToList();
+        Assert.Equal(6, expected.Count);
+        var sides = decals.GroupBy(d => d.Normal).ToList();
+        Assert.Equal(4, sides.Count);
+        Assert.All(sides, side => Assert.Equal(expected, side.Select(d => d.Monument.Name).OrderBy(n => n)));
     }
 }

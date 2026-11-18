@@ -46,8 +46,8 @@ public sealed record MonumentDecal(Monument Monument, Vector3 BottomLeft, Vector
 /// <remarks>
 /// Each side's wall top is the terrain outline through the boundary vertices, so the wall height is a 1D profile.
 /// It is sampled on a grid of cells, each cell keeping the lowest wall top over it, and a monument of width w fits
-/// where the minimum over a w window (sliding window minimum, O(cells)) is above the monument. Greedy: tallest monuments
-/// first, the south side first (the default view), the middle of the longest free run.
+/// where the minimum over a w window (sliding window minimum, O(cells)) is above the monument. Each side gets every
+/// monument that fits there, tallest first, in the middle of the longest free run.
 /// </remarks>
 public static class MonumentPlacer
 {
@@ -99,13 +99,11 @@ public static class MonumentPlacer
             if (height < minHeight)
                 continue;
             float clearance = height * (1f + options.TopMarginRatio);
+            // On every side where it fits: the model reads the same from any direction
             foreach (var side in sides)
             {
                 if (side.TryPlace(width, clearance, out float left))
-                {
                     decals.Add(new MonumentDecal(monument, side.Origin + side.Normal * offset + side.Right * left, side.Right, side.Normal, width, height));
-                    break;
-                }
             }
         }
         return decals;

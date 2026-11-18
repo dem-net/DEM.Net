@@ -70,7 +70,10 @@ public sealed class MonumentAtlas
     private static readonly Lazy<MonumentAtlas> _instance = new(() => new MonumentAtlas(Monuments.All));
     public static MonumentAtlas Instance => _instance.Value;
 
-    /// <summary>PNG bytes (grayscale with alpha)</summary>
+    /// <summary>
+    /// PNG bytes, RGBA: some glTF importers (Sketchfab) drop the alpha of grayscale+alpha PNGs, which turns the
+    /// alpha-masked silhouettes into plain rectangles.
+    /// </summary>
     public byte[] Png { get; }
 
     /// <summary>Per monument: its outline bounds in meters (x right, y up from the ground) and its texture coordinates (v down).</summary>
@@ -123,7 +126,7 @@ public sealed class MonumentAtlas
         Entries = entries;
 
         using var stream = new System.IO.MemoryStream();
-        image.SaveAsPng(stream, new PngEncoder { ColorType = PngColorType.GrayscaleWithAlpha, BitDepth = PngBitDepth.Bit8 });
+        image.SaveAsPng(stream, new PngEncoder { ColorType = PngColorType.RgbWithAlpha, BitDepth = PngBitDepth.Bit8 });
         Png = stream.ToArray();
     }
 }
