@@ -18,7 +18,7 @@ public class TerrainBoxTests(DemNetFixture fixture) : IClassFixture<DemNetFixtur
     const float Cell = 25f; // meters
 
     /// <summary>Grid in projected coordinates (x east, y north), rows north to south, with hills.</summary>
-    static HeightMap CreateHeightMap()
+    internal static HeightMap CreateHeightMap()
     {
         var hMap = new HeightMap(W, H);
         var coords = new GeoPoint[W * H];

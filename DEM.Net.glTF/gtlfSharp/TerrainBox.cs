@@ -20,6 +20,9 @@ public sealed record TerrainBoxOptions
 
     /// <summary>Solid color (linear RGBA) of the walls and the bottom.</summary>
     public Vector4 Color { get; init; } = DefaultColor;
+
+    /// <summary>Monument silhouettes on the walls, as a scale reference. Null: plain walls.</summary>
+    public TerrainBoxMonumentOptions? Monuments { get; init; }
 }
 
 /// <summary>

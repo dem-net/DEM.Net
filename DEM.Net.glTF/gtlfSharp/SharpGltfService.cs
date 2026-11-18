@@ -24,6 +24,7 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
     private const string TERRAIN_SCENE_NAME = "TerrainScene";
     private const string TERRAIN_MESH_NAME = "TerrainMesh";
     public const string TERRAIN_BOX_NODE_NAME = "TerrainBox";
+    public const string TERRAIN_BOX_MONUMENTS_NODE_NAME = "TerrainBoxMonuments";
 
     public ModelRoot CreateNewModel()
     {
@@ -298,8 +299,63 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
             .WithIndicesAccessor(PrimitiveType.TRIANGLES, boxMesh.Indices)
             .WithMaterial(material);
 
+        if (box.Monuments != null)
+            AddTerrainBoxMonuments(model, MonumentPlacer.Place(positions, boxMesh.BaseElevation, box.Monuments), box.Monuments.Color);
+
         return model;
     }
+
+    /// <summary>
+    /// Monument decals as their own node (<see cref="TERRAIN_BOX_MONUMENTS_NODE_NAME"/>): one quad each, textured with
+    /// the shared silhouette atlas (<see cref="MonumentAtlas"/>), alpha masked.
+    /// </summary>
+    private void AddTerrainBoxMonuments(ModelRoot model, List<MonumentDecal> decals, Vector4 color)
+    {
+        if (decals.Count == 0)
+            return;
+        var atlas = MonumentAtlas.Instance;
+        var positions = new List<Vector3>(decals.Count * 4);
+        var normals = new List<Vector3>(decals.Count * 4);
+        var uvs = new List<Vector2>(decals.Count * 4);
+        var indices = new List<int>(decals.Count * 6);
+        foreach (var d in decals)
+        {
+            var e = atlas.Entries[d.Monument];
+            int i = positions.Count;
+            Vector3 right = d.Right * d.Width, up = Vector3.UnitY * d.Height;
+            positions.AddRange([d.BottomLeft, d.BottomLeft + right, d.BottomLeft + right + up, d.BottomLeft + up]);
+            normals.AddRange([d.Normal, d.Normal, d.Normal, d.Normal]);
+            uvs.AddRange([new(e.U0, e.V1), new(e.U1, e.V1), new(e.U1, e.V0), new(e.U0, e.V0)]);
+            // Counter-clockwise seen from outside: Cross(Right, Up) = Normal
+            indices.AddRange([i, i + 1, i + 2, i, i + 2, i + 3]);
+        }
+
+        var scene = model.UseScene(TERRAIN_SCENE_NAME);
+        var rnode = scene.FindNode(n => n.Name == TERRAIN_BOX_MONUMENTS_NODE_NAME) ?? scene.CreateNode(TERRAIN_BOX_MONUMENTS_NODE_NAME);
+        var rmesh = rnode.Mesh = FindOrCreateMesh(model, string.Concat(TERRAIN_BOX_MONUMENTS_NODE_NAME, "Mesh"));
+
+        var materialBuilder = new MaterialBuilder(string.Concat(TERRAIN_BOX_MONUMENTS_NODE_NAME, "Material"))
+            .WithMetallicRoughnessShader()
+            .WithAlpha(SharpGLTF.Materials.AlphaMode.MASK, 0.5f)
+            .WithDoubleSide(false)
+            .WithBaseColor(new SharpGLTF.Memory.MemoryImage(atlas.Png), color)
+            .WithMetallicRoughness(0f, 0.9f);
+        var material = model.CreateMaterial(materialBuilder);
+
+        rmesh.CreatePrimitive()
+            .WithVertexAccessor("POSITION", positions)
+            .WithVertexAccessor("NORMAL", normals)
+            .WithVertexAccessor("TEXCOORD_0", uvs)
+            .WithIndicesAccessor(PrimitiveType.TRIANGLES, indices)
+            .WithMaterial(material);
+    }
+
+    /// <summary>
+    /// Upper bound of the bytes the monuments add to a GLB: the atlas and every decal (4 vertices with position,
+    /// normal and texture coordinates, 6 indices).
+    /// </summary>
+    public static int TerrainBoxMonumentsMaxBytes =>
+        MonumentAtlas.Instance.Png.Length + Monuments.All.Count * (4 * (12 + 12 + 8) + 6 * sizeof(int));
 
     /// <summary>
     /// Elevation of the bottom of the terrain box (glTF Y, i.e. model Z), null when the model has no box.
