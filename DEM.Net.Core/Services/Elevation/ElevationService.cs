@@ -247,7 +247,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
 
                 // Add to output list, then get elevation for each point
                 int segmentStart = geoPoints.Count;
-                geoPoints.AddRange(intersections);
+                AddDistinct(geoPoints, intersections);
                 this.FillElevations(CollectionsMarshal.AsSpan(geoPoints)[segmentStart..], adjacentRasters, segTiles, interpolator, behavior);
 
                 isFirstSegment = false;
@@ -340,6 +340,27 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
         return results;
     }
 
+    /// <summary>Same position within about 0.1 µm (grid crossings are computed, vertices are given).</summary>
+    private const double SamePositionDegrees = 1e-12;
+
+    /// <summary>
+    /// Appends the points, skipping a point at the position of the previous one: a vertex on a grid line is also
+    /// a grid crossing (twice at a grid corner), and a vertex on a grid line ends one segment and starts the next.
+    /// </summary>
+    internal static void AddDistinct(List<GeoPoint> target, IEnumerable<GeoPoint> points)
+    {
+        foreach (var point in points)
+        {
+            if (target.Count > 0)
+            {
+                var last = target[^1];
+                if (Math.Abs(last.Latitude - point.Latitude) < SamePositionDegrees && Math.Abs(last.Longitude - point.Longitude) < SamePositionDegrees)
+                    continue;
+            }
+            target.Add(point);
+        }
+    }
+
     private static bool IsValidLine(Geometry? lineStringGeometry)
     {
         if (lineStringGeometry == null || lineStringGeometry.IsEmpty)
@@ -383,7 +404,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
 
             // Add to output list, then get elevation for each point
             int segmentStart = geoPoints.Count;
-            geoPoints.AddRange(intersections);
+            AddDistinct(geoPoints, intersections);
             this.FillElevations(CollectionsMarshal.AsSpan(geoPoints)[segmentStart..], adjacentRasters, tiles, interpolator, behavior);
 
             isFirstSegment = false;
