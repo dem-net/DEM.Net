@@ -41,6 +41,8 @@ public class MonumentTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
     {
         var atlas = MonumentAtlas.Instance;
         using var image = SixLabors.ImageSharp.Image.Load<Rgba32>(atlas.Png);
+        // RGBA: Sketchfab ignores the alpha of grayscale+alpha PNGs
+        Assert.Equal(SixLabors.ImageSharp.Formats.Png.PngColorType.RgbWithAlpha, image.Metadata.GetPngMetadata().ColorType);
         Assert.True(atlas.Png.Length < 200_000, $"{atlas.Png.Length} bytes");
         foreach (var m in Monuments.All)
         {
