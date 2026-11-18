@@ -31,6 +31,7 @@ public static class ServiceCollectionExtension
         services.AddSingleton<StacFileService>();
         services.AddSingleton<TileIndexFileService>();
         services.AddSingleton<XyzTileIndexService>();
+        services.AddSingleton<TileDownloadThrottle>();
 
         services.AddTransient<RasterIndexServiceResolver>(serviceProvider => dataSourceType =>
         {

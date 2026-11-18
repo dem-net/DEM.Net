@@ -36,7 +36,6 @@ public class ImageryTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 
     public static IEnumerable<object[]> ImageryProviders =>
     [
-        [ImageryProvider.EsriWorldImagery, tileInfoFrance],
         [ImageryProvider.MapTilerSatellite, tileInfoFrance],
         [ImageryProvider.MapBoxSatellite, tileInfoFrance],
         [ImageryProvider.MapBoxSatelliteStreet, tileInfoFrance],

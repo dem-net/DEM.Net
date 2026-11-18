@@ -24,7 +24,9 @@ public partial class ImageryProvider
         UrlModel = new UrlModel("https://api.maptiler.com/maps/satellite-v4/{z}/{x}/{y}.jpg?key={t}", null),
         TokenUserSecretsKey = "MapTilerKey",
         TileSize = 512,
-        MaxZoom = 20
+        MaxZoom = 20,
+        MaxDegreeOfParallelism = 16,
+        MaxConcurrentDownloads = 32
     };
     public static readonly ImageryProvider MapTilerSatelliteHybrid = new()
     {
@@ -33,7 +35,9 @@ public partial class ImageryProvider
         UrlModel = new UrlModel("https://api.maptiler.com/maps/hybrid-v4/{z}/{x}/{y}.jpg?key={t}", null),
         TokenUserSecretsKey = "MapTilerKey",
         TileSize = 512,
-        MaxZoom = 20
+        MaxZoom = 20,
+        MaxDegreeOfParallelism = 16,
+        MaxConcurrentDownloads = 32
     };
     public static readonly ImageryProvider MapBoxSatellite = new()
     {
@@ -43,7 +47,9 @@ public partial class ImageryProvider
         //UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token={t}", null),
         TokenUserSecretsKey = "MapBoxToken",
         TileSize = 512,
-        MaxZoom = 23
+        MaxZoom = 23,
+        MaxDegreeOfParallelism = 16,
+        MaxConcurrentDownloads = 32
     };
     public static readonly ImageryProvider MapBoxSatelliteStreet = new()
     {
@@ -52,7 +58,9 @@ public partial class ImageryProvider
         TokenUserSecretsKey = "MapBoxToken",
         UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}?access_token={t}", null),
         TileSize = 512,
-        MaxZoom = 23
+        MaxZoom = 23,
+        MaxDegreeOfParallelism = 16,
+        MaxConcurrentDownloads = 32
     };
     public static readonly ImageryProvider MapBoxStreets = new()
     {
@@ -61,7 +69,9 @@ public partial class ImageryProvider
         TokenUserSecretsKey = "MapBoxToken",
         UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token={t}", null),
         TileSize = 512,
-        MaxZoom = 23
+        MaxZoom = 23,
+        MaxDegreeOfParallelism = 16,
+        MaxConcurrentDownloads = 32
     };
     public static readonly ImageryProvider MapBoxLight = new()
     {
@@ -70,7 +80,9 @@ public partial class ImageryProvider
         TokenUserSecretsKey = "MapBoxToken",
         UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/{z}/{x}/{y}@2x?access_token={t}", null),
         TileSize = 512,
-        MaxZoom = 23
+        MaxZoom = 23,
+        MaxDegreeOfParallelism = 16,
+        MaxConcurrentDownloads = 32
     };
     public static readonly ImageryProvider MapBoxDark = new()
     {
@@ -79,7 +91,9 @@ public partial class ImageryProvider
         TokenUserSecretsKey = "MapBoxToken",
         UrlModel = new UrlModel("https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/{z}/{x}/{y}@2x?access_token={t}", null),
         TileSize = 512,
-        MaxZoom = 23
+        MaxZoom = 23,
+        MaxDegreeOfParallelism = 16,
+        MaxConcurrentDownloads = 32
     };
     private static string StadiaAttribution = "&copy; <a href=\"https://stadiamaps.com/\" target=\"_blank\">Stadia Maps</a> &copy; <a href=\"https://openmaptiles.org/\" target=\"_blank\">OpenMapTiles</a> &copy; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\">OpenStreetMap</a>";
     public static readonly ImageryProvider StamenToner = new()
@@ -89,7 +103,9 @@ public partial class ImageryProvider
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Stamen Toner", "https://stadiamaps.com/", StadiaAttribution),
         UrlModel = new UrlModel("https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}@2x.png?api_key={t}", null),
         TileSize = 512,
-        MaxZoom = 20
+        MaxZoom = 20,
+        MaxDegreeOfParallelism = 16,
+        MaxConcurrentDownloads = 32
     };
     public static readonly ImageryProvider StamenWaterColor = new()
     {
@@ -98,7 +114,9 @@ public partial class ImageryProvider
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Stamen Watercolor", "https://stadiamaps.com/", StadiaAttribution),
         UrlModel = new UrlModel("https://tiles.stadiamaps.com/data/stamen_watercolor_v1/{z}/{x}/{y}.jpg?api_key={t}", null),
         TileSize = 256,
-        MaxZoom = 20
+        MaxZoom = 20,
+        MaxDegreeOfParallelism = 16,
+        MaxConcurrentDownloads = 32
     };
     public static readonly ImageryProvider StamenTerrain = new()
     {
@@ -107,7 +125,9 @@ public partial class ImageryProvider
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Stamen Terrain", "https://stadiamaps.com/", StadiaAttribution),
         UrlModel = new UrlModel("https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}@2x.png?api_key={t}", null),
         TileSize = 512,
-        MaxZoom = 20
+        MaxZoom = 20,
+        MaxDegreeOfParallelism = 16,
+        MaxConcurrentDownloads = 32
     };
     public static readonly ImageryProvider StadiaOutdoors = new()
     {
@@ -116,7 +136,9 @@ public partial class ImageryProvider
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Stadia Outdoors", "https://stadiamaps.com/", StadiaAttribution),
         UrlModel = new UrlModel("https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}@2x.png?api_key={t}", null),
         TileSize = 512,
-        MaxZoom = 20
+        MaxZoom = 20,
+        MaxDegreeOfParallelism = 16,
+        MaxConcurrentDownloads = 32
     };
     public static readonly ImageryProvider OpenTopoMap = new()
     {
@@ -124,15 +146,9 @@ public partial class ImageryProvider
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "OpenTopoMap",
                                         "Map data: © <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors, <a href=\"http://viewfinderpanoramas.org\"> SRTM</a> | Map style: &copy; <a href=\"https://opentopomap.org\" > OpenTopoMap</a> (<a href=\"https://creativecommons.org/licenses/by-sa/3.0/\" > CC-BY-SA</a>)"),
         UrlModel = new UrlModel("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", ["a", "b", "c"]),
-        MaxZoom = 17
-    };
-    public static readonly ImageryProvider EsriWorldImagery = new()
-    {
-        Name = "Esri.WorldImagery",
-        Attribution = new Attribution(ATTRIBUTION_SUBJECT, "Esri World Imagery", "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer", "Source: Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community"),
-        UrlModel = new UrlModel("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", null),
-        MaxZoom = 18,
-        PrivateUseOnly = true
+        MaxZoom = 17,
+        MaxDegreeOfParallelism = 2,
+        MaxConcurrentDownloads = 2
     };
     public static readonly ImageryProvider ThunderForestOutdoors = new()
     {
@@ -140,7 +156,9 @@ public partial class ImageryProvider
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "ThunderForest", "https://www.thunderforest.com", "Maps © www.thunderforest.com, Data © www.osm.org/copyright"),
         UrlModel = new UrlModel("https://tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey={t}", null),
         TokenUserSecretsKey = "ThunderForestApiKey",
-        MaxZoom = 22
+        MaxZoom = 22,
+        MaxDegreeOfParallelism = 16,
+        MaxConcurrentDownloads = 32
     };
     public static readonly ImageryProvider ThunderForestLandscape = new()
     {
@@ -148,7 +166,9 @@ public partial class ImageryProvider
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "ThunderForest", "https://www.thunderforest.com", "Maps © www.thunderforest.com, Data © www.osm.org/copyright"),
         UrlModel = new UrlModel("https://tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey={t}", null),
         TokenUserSecretsKey = "ThunderForestApiKey",
-        MaxZoom = 22
+        MaxZoom = 22,
+        MaxDegreeOfParallelism = 16,
+        MaxConcurrentDownloads = 32
     };
     public static readonly ImageryProvider ThunderForestNeighbourhood = new()
     {
@@ -156,28 +176,36 @@ public partial class ImageryProvider
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "ThunderForest", "https://www.thunderforest.com", "Maps © www.thunderforest.com, Data © www.osm.org/copyright"),
         UrlModel = new UrlModel("https://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey={t}", null),
         TokenUserSecretsKey = "ThunderForestApiKey",
-        MaxZoom = 22
+        MaxZoom = 22,
+        MaxDegreeOfParallelism = 16,
+        MaxConcurrentDownloads = 32
     };
     public static readonly ImageryProvider OrtoIGNes = new()
     {
         Name = "OrtoIGNes (Spain only)",
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN.es", "https://www.ign.es", "ign.es"),
         UrlModel = new UrlModel("http://www.ign.es/wmts/pnoa-ma?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=OI.OrthoimageCoverage&FORMAT=image/jpeg&TILEMATRIXSET=GoogleMapsCompatible&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}", null),
-        MaxZoom = 20
+        MaxZoom = 20,
+        MaxDegreeOfParallelism = 8,
+        MaxConcurrentDownloads = 8
     };
     public static readonly ImageryProvider SwissImage = new()
     {
         Name = "SwissImage (Switzerland only)",
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "swisstopo", "https://www.swisstopo.admin.ch", "ign.es"),
         UrlModel = new UrlModel("https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg", null),
-        MaxZoom = 20
+        MaxZoom = 20,
+        MaxDegreeOfParallelism = 8,
+        MaxConcurrentDownloads = 8
     };
     public static readonly ImageryProvider OrtoIGNfr = new()
     {
         Name = "Orthophoto IGN (France only)",
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN.fr", "https://geoservices.ign.fr", "Ign.fr"),
         UrlModel = new UrlModel("https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIXSET=PM&TILEMATRIX={z}&TILECOL={x}&TILEROW={y}&STYLE=normal&FORMAT=image/jpeg", null),
-        MaxZoom = 19
+        MaxZoom = 19,
+        MaxDegreeOfParallelism = 16,
+        MaxConcurrentDownloads = 32
     };
     
     

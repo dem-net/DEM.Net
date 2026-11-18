@@ -22,7 +22,7 @@ namespace DEM.Net.Core.XyzTiles;
 /// </summary>
 public class XyzTileIndexService(ILogger<XyzTileIndexService> logger, IHttpClientFactory httpClientFactory, TileMemoryCache cache) : IDEMDataSetIndex
 {
-    private const string UserAgent = "DEM.Net (+https://github.com/dem-net/DEM.Net)";
+    private const string UserAgent = HttpDownload.UserAgent;
     private static readonly TimeSpan AncestorCacheDuration = TimeSpan.FromMinutes(10);
     private static readonly TimeSpan CoverageCacheDuration = TimeSpan.FromHours(24);
 

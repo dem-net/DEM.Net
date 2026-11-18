@@ -19,14 +19,17 @@ public class ImageryCache
     private readonly TileMemoryCache cache;
     private readonly DEMNetOptions options;
     private readonly IHttpClientFactory httpClientFactory;
+    private readonly TileDownloadThrottle throttle;
     private readonly string _localDirectory;
     private readonly TimeSpan diskExpirationHours;
     private readonly TimeSpan memoryExpirationMinutes;
 
     public ImageryCache(TileMemoryCache cache,
         IOptions<DEMNetOptions> options,
-        IHttpClientFactory clientFactory)
+        IHttpClientFactory clientFactory,
+        TileDownloadThrottle throttle)
     {
+        this.throttle = throttle;
         this.cache = cache;
 
         this.options = options.Value;
@@ -51,7 +54,8 @@ public class ImageryCache
         else
         {
             HttpClient httpClient = httpClientFactory.CreateClient();
-            contentBytes = await httpClient.GetByteArrayAsync(tileUri, cancellationToken).ConfigureAwait(false);
+            // only network fetches take a permit: memory and disk hits don't
+            contentBytes = await throttle.FetchAsync(httpClient, tileUri, provider, cancellationToken).ConfigureAwait(false);
             if (tileFile != null && contentBytes.Length > 0)
             {
                 // a concurrent reader never sees a partial tile

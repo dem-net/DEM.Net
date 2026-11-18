@@ -33,7 +33,13 @@ public partial class ImageryProvider
     public Attribution Attribution { get; set; }
     public string TokenUserSecretsKey { get; set; }
     public int TileSize { get; set; } = 256;
+    /// <summary>Tiles downloaded at once by one request.</summary>
     public int MaxDegreeOfParallelism { get; set; } = 4;
+    /// <summary>
+    /// Tiles downloaded at once by the whole process, from this provider's host (all requests together).
+    /// Providers on the same host share one limit, set by the first one used.
+    /// </summary>
+    public int MaxConcurrentDownloads { get; set; } = 8;
     public int MaxZoom { get; set; } = 19;
     public bool PrivateUseOnly { get; set; }
 
