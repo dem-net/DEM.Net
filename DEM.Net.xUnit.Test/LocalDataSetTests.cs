@@ -179,6 +179,18 @@ public sealed class LocalDataSetTests : IDisposable
     }
 
     [Fact]
+    public void LinePointsSkipARepeatedPosition()
+    {
+        // what a vertex on a grid corner produces: the vertex, its north/south and west/east crossings
+        // (computed, so a few ulps off), then the next segment starting at the same vertex
+        var points = new System.Collections.Generic.List<GeoPoint> { new(43.30, 5.37) };
+        ElevationService.AddDistinct(points, [new GeoPoint(43.30 + 1e-15, 5.37), new GeoPoint(43.30, 5.37 - 1e-15), new GeoPoint(43.30083333, 5.37083333)]);
+        ElevationService.AddDistinct(points, [new GeoPoint(43.30083333, 5.37083333), new GeoPoint(43.31, 5.38)]);
+
+        Assert.Equal([new GeoPoint(43.30, 5.37), new GeoPoint(43.30083333, 5.37083333), new GeoPoint(43.31, 5.38)], points);
+    }
+
+    [Fact]
     public async Task LocalDatasetsCannotDownload()
     {
         var report = new DemFileReport { LocalName = Path.Combine(_root, "missing.hgt") };

@@ -36,6 +36,24 @@ public class ElevationTests(DemNetFixture fixture) : IClassFixture<DemNetFixture
 
     }
 
+    [Fact(DisplayName = "Line points are not repeated at grid crossings")]
+    public async Task LinePointsAreNotRepeatedAtGridCrossings()
+    {
+        // SRTM_GL3 grid lines are at multiples of 1/1200 degree: both ends are grid corners, and the line crosses
+        // more corners on its way (each one is both a north/south and a west/east crossing)
+        DEMDataSet dataSet = DEMDataSet.SRTM_GL3;
+        GeoPoint start = new(45.83, 6.86), end = new(45.90, 6.95);
+        await _elevationService.DownloadMissingFilesAsync(dataSet, new BoundingBox(6.85, 6.96, 45.82, 45.91));
+
+        var points = _elevationService.GetLineGeometryElevation([start, end], dataSet);
+
+        Assert.Equal(181, points.Count); // 196 before, with 15 repeated points
+        for (int i = 1; i < points.Count; i++)
+            Assert.NotEqual((points[i - 1].Latitude, points[i - 1].Longitude), (points[i].Latitude, points[i].Longitude));
+        Assert.Equal((start.Latitude, start.Longitude), (points[0].Latitude, points[0].Longitude));
+        Assert.Equal((end.Latitude, end.Longitude), (points[^1].Latitude, points[^1].Longitude));
+    }
+
     [Fact(DisplayName = "Batch points near a tile edge use the neighbor tile")]
     public async Task BatchPointsNearATileEdgeMatchSinglePoints()
     {
