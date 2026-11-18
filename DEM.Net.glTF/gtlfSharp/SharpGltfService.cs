@@ -351,11 +351,11 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
     }
 
     /// <summary>
-    /// Upper bound of the bytes the monuments add to a GLB: the atlas and every decal (4 vertices with position,
-    /// normal and texture coordinates, 6 indices).
+    /// Upper bound of the bytes the monuments add to a GLB: the atlas and every decal on each of the 4 sides
+    /// (4 vertices with position, normal and texture coordinates, 6 indices).
     /// </summary>
     public static int TerrainBoxMonumentsMaxBytes =>
-        MonumentAtlas.Instance.Png.Length + Monuments.All.Count * (4 * (12 + 12 + 8) + 6 * sizeof(int));
+        MonumentAtlas.Instance.Png.Length + 4 * Monuments.All.Count * (4 * (12 + 12 + 8) + 6 * sizeof(int));
 
     /// <summary>
     /// Elevation of the bottom of the terrain box (glTF Y, i.e. model Z), null when the model has no box.
