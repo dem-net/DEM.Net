@@ -9,6 +9,9 @@ namespace DEM.Net.Core;
 
 internal static class HttpDownload
 {
+    /// <summary>Sent to tile servers, some of which (swisstopo, OSM-based ones) ask clients to identify themselves.</summary>
+    public const string UserAgent = "DEM.Net (+https://github.com/dem-net/DEM.Net)";
+
     /// <summary>
     /// Streams a remote file to disk. The content goes to a temporary file first, moved over
     /// <paramref name="localFileName"/> once complete: an interrupted download never looks like a valid file.
