@@ -280,7 +280,9 @@ public class RasterService : IRasterDownloader
     private static bool IsMetadataStale(FileMetadata metadata, DEMDataSet dataset)
         => metadata.Version != FileMetadata.FILEMETADATA_VERSION
         || metadata.FileFormat == null
-        || metadata.FileFormat.Registration != dataset.FileFormat.Registration;
+        || metadata.FileFormat.Registration != dataset.FileFormat.Registration
+        // netCDF metadata is north up since GEBCO line support (NetCdfFile.CreateMetadata): regenerate the older one
+        || (metadata.FileFormat.Type == DEMFileType.CF_NetCDF && metadata.pixelSizeY > 0);
 
     /// <summary>
     /// Generate metadata files for fast in-memory indexing
