@@ -38,34 +38,52 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
         return model;
     }
 
+    /// <summary>
+    /// Terrain mesh of the height map in a single primitive (the STL export reads it), reduced to
+    /// <paramref name="meshReduceFactor"/> of the triangles.
+    /// </summary>
+    /// <remarks>
+    /// The whole grid is reduced with Delatin (<see cref="MeshService.TriangulateHeightMapReduced"/>), and the
+    /// boxed options add walls and a bottom along the reduced outline (<see cref="TerrainBoxBuilder"/>), closed with
+    /// the terrain. <see cref="GenOptions.CropToNonEmpty"/> isn't a whole grid: it is reduced with
+    /// <see cref="MeshReducer"/> (QEM), without box.
+    /// </remarks>
     public ModelRoot CreateTerrainMesh(HeightMap heightMap, GenOptions options = GenOptions.None, Matrix4x4 vectorTransform = default, bool doubleSided = true, float meshReduceFactor = 0.5f)
     {
-        Triangulation triangulation = default;
-        if (options.HasFlag(GenOptions.BoxedBaseElevation0))
+        if (options.HasFlag(GenOptions.CropToNonEmpty))
+            return CreateTerrainMesh(_meshService.TriangulateHeightMapFiltered(heightMap), options, vectorTransform, doubleSided, meshReduceFactor);
+
+        Triangulation triangulation = _meshService.TriangulateHeightMapReduced(heightMap, meshReduceFactor);
+        List<Vector3> positions = [.. triangulation.Positions.ToVector3GlTFSpace()];
+        List<int> indices = [.. triangulation.Indices];
+
+        // Box base: elevation 0, or 5 units under the lowest grid point (reduction may drop it from the mesh)
+        float? baseElevation = options.HasFlag(GenOptions.BoxedBaseElevation0) ? 0f
+            : options.HasFlag(GenOptions.BoxedBaseElevationMin) ? (float)heightMap.Coordinates.Min(p => p.Elevation ?? 0) - 5f
+            : null;
+        if (baseElevation is float baseY)
         {
-            triangulation = _meshService.GenerateTriangleMesh_Boxed(heightMap, BoxBaseThickness.FixedElevation, 0);
-        }
-        else if (options.HasFlag(GenOptions.BoxedBaseElevationMin))
-        {
-            triangulation = _meshService.GenerateTriangleMesh_Boxed(heightMap, BoxBaseThickness.FromMinimumPoint, 5);
-        }
-        else if (options.HasFlag(GenOptions.CropToNonEmpty))
-        {
-            triangulation = _meshService.TriangulateHeightMapFiltered(heightMap);
-        }
-        else
-        {
-            triangulation = _meshService.TriangulateHeightMap(heightMap);
+            var box = TerrainBoxBuilder.Build(positions, indices, baseMargin: MathF.Max(positions.Min(p => p.Y) - baseY, 0f));
+            if (box != null)
+            {
+                int offset = positions.Count;
+                positions.AddRange(box.Positions);
+                indices.AddRange(box.Indices.Select(i => i + offset));
+            }
         }
 
-        return CreateTerrainMesh(triangulation, options, vectorTransform, doubleSided, meshReduceFactor);
+        return CreateTerrainModel(new IndexedTriangulation(positions, indices, vectorTransform), options, doubleSided);
     }
 
+    /// <summary>Terrain mesh of any triangulation, reduced with <see cref="MeshReducer"/> (QEM)</summary>
     public ModelRoot CreateTerrainMesh(Triangulation triangulation, GenOptions options = GenOptions.None, Matrix4x4 vectorTransform = default, bool doubleSided = true, float meshReduceFactor = 0.5f)
     {
-
         triangulation = _meshReducer.Decimate(triangulation, meshReduceFactor);
+        return CreateTerrainModel(new IndexedTriangulation(triangulation, vectorTransform), options, doubleSided);
+    }
 
+    private ModelRoot CreateTerrainModel(IndexedTriangulation indexedTriangulation, GenOptions options, bool doubleSided)
+    {
         // create a basic scene
         var model = CreateNewModel();
         var rnode = model.LogicalScenes.First()?.FindNode(n => n.Name == TERRAIN_NODE_NAME);
@@ -74,8 +92,6 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
         var material = model.CreateMaterial(string.Concat(TERRAIN_MESH_NAME, "Material"))
           .WithPBRMetallicRoughness()
           .WithDoubleSide(doubleSided);
-
-        var indexedTriangulation = new IndexedTriangulation(triangulation, vectorTransform);
 
         // create mesh primitive
         var primitive = rmesh.CreatePrimitive()
@@ -144,6 +160,7 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
     public ModelRoot CreateTerrainMesh(HeightMap heightMap, PBRTexture textures, float reduceFactor, TerrainBoxOptions? box = null)
     { return AddTerrainMesh(CreateNewModel(), heightMap, textures, reduceFactor, box); }
 
+    /// <summary>Terrain without its missing or zero elevation regions: not a whole grid, reduced with <see cref="MeshReducer"/> (QEM)</summary>
     public ModelRoot CreateTerrainMesh_NonRectangular(HeightMap heightMap, PBRTexture textures, float reduceFactor)
     {
         var model = CreateNewModel();
@@ -158,12 +175,11 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
         return model;
     }
 
+    /// <summary>Terrain mesh of the whole height map grid, reduced with Delatin (<see cref="MeshService.TriangulateHeightMapReduced"/>)</summary>
     /// <param name="box">If set, adds walls and a bottom under the terrain (<see cref="AddTerrainBox"/>)</param>
     public ModelRoot AddTerrainMesh(ModelRoot model, HeightMap heightMap, PBRTexture textures, float reduceFactor, TerrainBoxOptions? box = null)
     {
-        Triangulation triangulation = _meshService.TriangulateHeightMap(heightMap);
-
-        triangulation = _meshReducer.Decimate(triangulation, reduceFactor);
+        Triangulation triangulation = _meshService.TriangulateHeightMapReduced(heightMap, reduceFactor);
 
         model = AddTerrainMesh(model, triangulation, textures, box: box);
 

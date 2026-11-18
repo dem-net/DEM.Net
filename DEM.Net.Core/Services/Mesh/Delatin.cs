@@ -52,8 +52,13 @@ public sealed class Delatin
 
     private double _rmsSum;
 
+    /// <summary>Credit for the algorithm (ISC license), for the attributions of generated models</summary>
+    public static Attribution Attribution => new("Mesh reduction", "Delatin (Mapbox, Vladimir Agafonkin), ISC License",
+        "https://github.com/mapbox/delatin", "Delatin (Mapbox), ported to C# in DEM.Net");
+
     /// <param name="data">Heights, row by row (<paramref name="width"/> values per row)</param>
-    public Delatin(float[] data, int width, int height)
+    /// <param name="triangleCapacity">Expected triangle count, to size the buffers once (they grow otherwise)</param>
+    public Delatin(float[] data, int width, int height, int triangleCapacity = 0)
     {
         ArgumentNullException.ThrowIfNull(data);
         if (width < 2 || height < 2)
@@ -65,8 +70,10 @@ public sealed class Delatin
         _width = width;
         _height = height;
 
-        const int initialTriangles = 64;
-        _coords = new int[initialTriangles];
+        // + 2: an insertion can add 2 triangles past the target
+        int initialTriangles = Math.Max(64, triangleCapacity + 2);
+        // V = (T + B + 2) / 2 for B outline vertices (at most the grid perimeter)
+        _coords = new int[2 * Math.Max(64, Math.Min((initialTriangles + 2 * (width + height)) / 2 + 2, width * height))];
         _triangles = new int[initialTriangles * 3];
         _halfedges = new int[initialTriangles * 3];
         _candidates = new int[initialTriangles * 2];

@@ -84,3 +84,33 @@ and MTL files are byte-identical to the previous version.
 - STL: triangles are written from the mesh accessors as they are read (no list of triangle objects, no
   vertex builders), through a pooled buffer; ASCII lines are formatted without strings.
 - OBJ: same line formatting, no string per line.
+
+## Terrain mesh reduction: Delatin vs QEM (v11)
+
+`ReductionBenchmarks`, Apple M1, .NET 10, `--job short`, 2026-11-18. Square height maps centered on the test tile,
+reprojected to 3857, Z factor 2, reduced to the same triangle count (the API's `meshReduceFactor`).
+QEM: the full grid as a geometry3Sharp `DMesh3`, then edge collapses. Delatin: greedy Delaunay refinement of the grid.
+
+| Grid | Factor | QEM | Delatin | |
+|---|---|---:|---:|---|
+| 0.2° (242²) | 0.5 | 185 ms, 107 MB | 26 ms, 9.3 MB | 7× faster, 11× less memory |
+| 0.2° | 0.1 | 262 ms, 122 MB | 9 ms, 2.4 MB | 28×, 50× |
+| 0.5° (602²) | 0.5 | 1.67 s, 691 MB | 0.20 s, 71 MB | 8×, 10× |
+| 0.5° | 0.1 | 2.52 s, 786 MB | 61 ms, 18 MB | 41×, 43× |
+| 1° (1200²) | 0.5 | 10.5 s, 3.2 GB | 1.3 s, 284 MB | 8×, 11× |
+| 1° | 0.1 | 14.0 s, 3.6 GB | 0.28 s, 73 MB | 50×, 50× |
+
+Vertical error at every grid point (`-- quality`), in meters, same triangle count:
+
+| Grid | Factor | QEM max / RMS | Delatin max / RMS | QEM grid points outside the mesh |
+|---|---|---:|---:|---:|
+| 242² | 0.5 | 5.00 / 0.69 | 3.00 / 0.79 | 487 |
+| 242² | 0.1 | 23.9 / 2.93 | 12.0 / 3.88 | 511 |
+| 602² | 0.5 | 28.7 / 0.98 | 2.00 / 0.69 | 2,018 |
+| 602² | 0.1 | 32.5 / 2.84 | 12.0 / 3.77 | 2,039 |
+| 1200² | 0.5 | 72.0 / 1.30 | 1.25 / 0.34 | 28,688 |
+| 1200² | 0.1 | 72.6 / 2.39 | 8.86 / 2.77 | 28,710 |
+
+- QEM moves vertices (lower RMS at strong reductions) but its outline shrinks; Delatin keeps grid points only, covers
+  the whole grid and keeps the rectangle sides straight.
+- The model endpoints use Delatin for whole grids; QEM stays for meshes that aren't (cropped terrains, GPX trails).

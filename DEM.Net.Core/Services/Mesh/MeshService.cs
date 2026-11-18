@@ -62,6 +62,47 @@ public class MeshService(ILogger<MeshService>? logger = null)
         return triangulationResult;
     }
 
+    /// <summary>
+    /// Triangulates the whole height map grid, reduced to <paramref name="reduceFactor"/> of the regular grid's
+    /// triangle count with <see cref="Delatin"/> (greedy Delaunay refinement, largest vertical error first).
+    /// </summary>
+    /// <remarks>
+    /// The vertices are grid points (none is moved), every grid point is covered, and the outline is the grid
+    /// rectangle. Missing elevations count as 0, as in <see cref="TriangulateHeightMap"/>.
+    /// </remarks>
+    /// <param name="reduceFactor">Kept fraction of the triangles; 1 or more: the regular grid (<see cref="TriangulateHeightMap"/>)</param>
+    public Triangulation TriangulateHeightMapReduced(HeightMap heightMap, float reduceFactor)
+    {
+        ArgumentNullException.ThrowIfNull(heightMap);
+        if (reduceFactor >= 1 || heightMap.Width < 2 || heightMap.Height < 2)
+            return TriangulateHeightMap(heightMap);
+
+        var sw = Stopwatch.StartNew();
+        int width = heightMap.Width;
+        var coords = heightMap.Coordinates;
+        var heights = new float[coords.Length];
+        for (int i = 0; i < coords.Length; i++)
+            heights[i] = (float)(coords[i].Elevation ?? 0);
+
+        int target = (int)Math.Min(int.MaxValue - 2, Math.Max(reduceFactor, 0) * 2.0 * (width - 1) * (heightMap.Height - 1));
+        var delatin = new Delatin(heights, width, heightMap.Height, target);
+        delatin.RunToTriangleCount(target);
+
+        var vertices = delatin.Coordinates;
+        var positions = new GeoPoint[delatin.VertexCount];
+        for (int i = 0; i < positions.Length; i++)
+            positions[i] = coords[vertices[2 * i + 1] * width + vertices[2 * i]];
+
+        _logger.LogInformation("Delatin: {Width}x{Height} grid to {Triangles} triangles (max error {MaxError:F2}) in {Elapsed} ms",
+            width, heightMap.Height, delatin.TriangleCount, delatin.MaxError, sw.ElapsedMilliseconds);
+
+        return new Triangulation(positions, delatin.Triangles.ToArray())
+        {
+            NumPositions = positions.Length,
+            NumIndices = delatin.TriangleCount * 3,
+        };
+    }
+
     public Triangulation TriangulateHeightMapFiltered(HeightMap heightMap, bool regularTriangulation = true)
     {
         // Step 1: Mark valid points

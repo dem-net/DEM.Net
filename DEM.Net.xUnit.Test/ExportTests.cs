@@ -69,6 +69,23 @@ public class ExportTests : IClassFixture<DemNetFixture>
     }
 
     [Fact]
+    public async Task BinaryStlHeaderHasTheAttributions()
+    {
+        using var stream = new MemoryStream();
+        await _stl.WriteSTLAsync(Mesh, stream, ascii: false,
+            [new Attribution("Generator", "DEM Net Elevation API"),
+             new Attribution("Mesh reduction", "Délatin (Mapbox), ISC License, and a long text past the 80 bytes of the header"),
+             new Attribution("Digital Elevation Model", "SRTM_GL3 OpenTopography")]);
+        var header = Encoding.ASCII.GetString(stream.ToArray(), 0, 80);
+
+        // Generator skipped (elevationapi.com instead), data before mesh reduction, non ASCII replaced, truncated to the 80 bytes
+        Assert.StartsWith("elevationapi.com; SRTM_GL3 OpenTopography; D?latin (Mapbox), ISC License, and a", header);
+        Assert.DoesNotContain('\0', header);
+        Assert.False(header.StartsWith("solid", StringComparison.Ordinal));
+        Assert.Equal(TriangleCount, (int)BitConverter.ToUInt32(stream.ToArray(), 80));
+    }
+
+    [Fact]
     public async Task AsciiStlListsTheTriangles()
     {
         using var stream = new MemoryStream();

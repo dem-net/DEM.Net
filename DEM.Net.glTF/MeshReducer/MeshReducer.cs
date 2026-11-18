@@ -13,8 +13,16 @@ using SharpGLTF.Schema2;
 
 namespace DEM.Net.glTF;
 
+/// <summary>
+/// QEM edge collapse reduction (geometry3Sharp) of any triangulation. Used for meshes that aren't a whole height map
+/// grid (cropped terrains, GPX trails); whole grids are reduced with <see cref="MeshService.TriangulateHeightMapReduced"/>.
+/// </summary>
 public class MeshReducer(ILogger<MeshReducer> logger, IOptions<DEMNetOptions> options)
 {
+    /// <summary>Credit for geometry3Sharp (Boost Software License 1.0), for the attributions of generated models</summary>
+    public static Attribution Attribution => new("Mesh reduction", "geometry3Sharp (GradientSpace, Ryan Schmidt), BSL 1.0 License",
+        "https://github.com/gradientspace/geometry3Sharp/blob/master/LICENSE", "geometry3Sharp (GradientSpace, Ryan Schmidt)");
+
     private readonly ILogger<MeshReducer> _logger = logger;
     private readonly DEMNetOptions _options = options?.Value;
 

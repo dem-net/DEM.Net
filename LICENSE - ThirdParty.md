@@ -387,6 +387,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - Usage : HGT file reader
 - Authorization asked : yes
 
+---
+# Delatin
+- Repo : https://github.com/mapbox/delatin
+- License : ISC Copyright (c) 2020, Mapbox (notice kept in `DEM.Net.Core/Services/Mesh/Delatin.cs`)
+- Usage : Terrain mesh reduction of whole height map grids, ported to C# (`Delatin`)
+- Authorization asked : no
+
+---
+# geometry3Sharp
+- Repo : https://github.com/gradientspace/geometry3Sharp
+- License : Boost Software License 1.0, Copyright (c) Ryan Schmidt (gradientspace)
+- Usage : QEM mesh reduction of meshes that aren't a whole grid (cropped terrains, GPX trails) (`MeshReducer`)
+- Authorization asked : no
+
 *template below*
 
 ---
