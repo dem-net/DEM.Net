@@ -23,6 +23,7 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
     private const string TERRAIN_NODE_NAME = "TerrainNode";
     private const string TERRAIN_SCENE_NAME = "TerrainScene";
     private const string TERRAIN_MESH_NAME = "TerrainMesh";
+    public const string TERRAIN_BOX_NODE_NAME = "TerrainBox";
 
     public ModelRoot CreateNewModel()
     {
@@ -139,8 +140,9 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
         return outputModel;
     }
 
-    public ModelRoot CreateTerrainMesh(HeightMap heightMap, PBRTexture textures, float reduceFactor)
-    { return AddTerrainMesh(CreateNewModel(), heightMap, textures, reduceFactor); }
+    /// <param name="box">If set, adds walls and a bottom under the terrain (<see cref="AddTerrainBox"/>)</param>
+    public ModelRoot CreateTerrainMesh(HeightMap heightMap, PBRTexture textures, float reduceFactor, TerrainBoxOptions? box = null)
+    { return AddTerrainMesh(CreateNewModel(), heightMap, textures, reduceFactor, box); }
 
     public ModelRoot CreateTerrainMesh_NonRectangular(HeightMap heightMap, PBRTexture textures, float reduceFactor)
     {
@@ -156,13 +158,14 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
         return model;
     }
 
-    public ModelRoot AddTerrainMesh(ModelRoot model, HeightMap heightMap, PBRTexture textures, float reduceFactor)
+    /// <param name="box">If set, adds walls and a bottom under the terrain (<see cref="AddTerrainBox"/>)</param>
+    public ModelRoot AddTerrainMesh(ModelRoot model, HeightMap heightMap, PBRTexture textures, float reduceFactor, TerrainBoxOptions? box = null)
     {
         Triangulation triangulation = _meshService.TriangulateHeightMap(heightMap);
 
         triangulation = _meshReducer.Decimate(triangulation, reduceFactor);
 
-        model = AddTerrainMesh(model, triangulation, textures);
+        model = AddTerrainMesh(model, triangulation, textures, box: box);
 
         triangulation = null;
 
@@ -171,11 +174,14 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
     }
     public ModelRoot CreateTerrainMesh(Triangulation triangulation, PBRTexture textures, bool doubleSided = true)
     { return AddTerrainMesh(CreateNewModel(), triangulation, textures, doubleSided); }
-    public ModelRoot AddTerrainMesh(ModelRoot model, Triangulation triangulation, PBRTexture textures, bool doubleSided = true, Matrix4x4 matrix = default)
+    /// <param name="box">If set, adds walls and a bottom under the terrain (<see cref="AddTerrainBox"/>)</param>
+    public ModelRoot AddTerrainMesh(ModelRoot model, Triangulation triangulation, PBRTexture textures, bool doubleSided = true, Matrix4x4 matrix = default, TerrainBoxOptions? box = null)
     {
         var indexedTriangulation = new IndexedTriangulation(triangulation, matrix);
         var normals = _meshService.ComputeMeshNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
         model = AddMesh(model, TERRAIN_NODE_NAME, indexedTriangulation, normals, textures, doubleSided);
+        if (box != null)
+            model = AddTerrainBox(model, indexedTriangulation.Positions, indexedTriangulation.Indices, box);
 
         indexedTriangulation.Clear();
         indexedTriangulation = null;
@@ -240,6 +246,42 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
         }
 
         primitive = primitive.WithMaterial(material);
+        return model;
+    }
+
+    /// <summary>
+    /// Adds walls and a bottom under a terrain mesh, as their own node (<see cref="TERRAIN_BOX_NODE_NAME"/>)
+    /// with one solid-color material and flat normals. The walls follow the mesh's boundary edges, so this
+    /// works after mesh reduction.
+    /// </summary>
+    /// <param name="positions">Terrain positions, glTF space (as written in the model)</param>
+    /// <param name="indices">Terrain triangles</param>
+    public ModelRoot AddTerrainBox(ModelRoot model, IReadOnlyList<Vector3> positions, IReadOnlyList<int> indices, TerrainBoxOptions? box = null)
+    {
+        box ??= new TerrainBoxOptions();
+        var boxMesh = TerrainBoxBuilder.Build(positions, indices, box.BaseMargin);
+        if (boxMesh == null)
+        {
+            _logger.LogWarning("Terrain mesh has no boundary: no box added");
+            return model;
+        }
+
+        model ??= CreateNewModel();
+        var scene = model.UseScene(TERRAIN_SCENE_NAME);
+        var rnode = scene.FindNode(n => n.Name == TERRAIN_BOX_NODE_NAME) ?? scene.CreateNode(TERRAIN_BOX_NODE_NAME);
+        var rmesh = rnode.Mesh = FindOrCreateMesh(model, string.Concat(TERRAIN_BOX_NODE_NAME, "Mesh"));
+
+        var material = model.CreateMaterial(string.Concat(TERRAIN_BOX_NODE_NAME, "Material"))
+            .WithPBRMetallicRoughness(box.Color, null, null, 0f, 0.9f)
+            .WithDoubleSide(false); // closed and wound outwards
+        material.Alpha = box.Color.W < 1f ? SharpGLTF.Schema2.AlphaMode.BLEND : SharpGLTF.Schema2.AlphaMode.OPAQUE;
+
+        rmesh.CreatePrimitive()
+            .WithVertexAccessor("POSITION", boxMesh.Positions)
+            .WithVertexAccessor("NORMAL", boxMesh.Normals)
+            .WithIndicesAccessor(PrimitiveType.TRIANGLES, boxMesh.Indices)
+            .WithMaterial(material);
+
         return model;
     }
 
