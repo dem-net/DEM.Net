@@ -353,21 +353,20 @@ public static class Reprojection
         return pointReproj;
     }
 
+    // The elevation is not passed as the datum shift height: DEM elevations are not ellipsoidal heights, and a point
+    // projected with its elevation (once elevated) and without it (before) would move, e.g. by ~8 cm for 4,000 m in
+    // CH1903+ (swissALTI3D). Same horizontal transform as the batch path (ReprojectBatch, ReprojectInPlace) and PROJ.
     private static GeoPoint ReprojectPoint(GeoPoint sourcePoint, ProjectionInfo sourceProj, ProjectionInfo destProj)
     {
-
         double[] coords = [sourcePoint.Longitude, sourcePoint.Latitude];
-        // Calls the reproject function that will transform the input location to the output locaiton
-        Reproject.ReprojectPoints(coords, [sourcePoint.Elevation.GetValueOrDefault(0)], sourceProj, destProj, 0, 1);
+        Reproject.ReprojectPoints(coords, null, sourceProj, destProj, 0, 1);
 
         return new GeoPoint(coords[1], coords[0], sourcePoint.Elevation);
     }
     private static Gpx.GpxTrackPoint ReprojectPoint(Gpx.GpxTrackPoint sourcePoint, ProjectionInfo sourceProj, ProjectionInfo destProj)
     {
-
         double[] coords = [sourcePoint.Longitude, sourcePoint.Latitude];
-        // Calls the reproject function that will transform the input location to the output locaiton
-        Reproject.ReprojectPoints(coords, [sourcePoint.Elevation.GetValueOrDefault(0)], sourceProj, destProj, 0, 1);
+        Reproject.ReprojectPoints(coords, null, sourceProj, destProj, 0, 1);
 
         sourcePoint.Longitude = coords[0];
         sourcePoint.Latitude = coords[1];
