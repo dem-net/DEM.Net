@@ -198,7 +198,7 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
         indexedTriangulation = null;
         return model;
     }
-    public ModelRoot AddMesh(ModelRoot model, string nodeName, IndexedTriangulation indexedTriangulation, IEnumerable<Vector3> normals, PBRTexture? textures, bool doubleSided = true)
+    public ModelRoot AddMesh(ModelRoot model, string nodeName, IndexedTriangulation indexedTriangulation, IEnumerable<Vector3>? normals, PBRTexture? textures, bool doubleSided = true)
     {
         // create a basic scene
         model = model ?? CreateNewModel();

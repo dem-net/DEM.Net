@@ -537,7 +537,7 @@ public class MeshService(ILogger<MeshService>? logger = null)
     /// </summary>
     /// <param name="outerRingPoints"></param>
     /// <returns></returns>
-    public TriangulationList<GeoPoint> Tesselate(IEnumerable<GeoPoint> outerRingPoints, IEnumerable<IEnumerable<GeoPoint>> innerRingsPoints)
+    public TriangulationList<GeoPoint> Tesselate(IEnumerable<GeoPoint> outerRingPoints, IEnumerable<IEnumerable<GeoPoint>>? innerRingsPoints)
     {
         TriangulationList<GeoPoint> triangulation = new TriangulationList<GeoPoint>();
 
@@ -573,7 +573,7 @@ public class MeshService(ILogger<MeshService>? logger = null)
 
         return triangulation;
     }
-    public TriangulationList<Vector3> Tesselate(IEnumerable<Vector3> outerRingPoints, IEnumerable<IEnumerable<Vector3>> innerRingsPoints)
+    public TriangulationList<Vector3> Tesselate(IEnumerable<Vector3> outerRingPoints, IEnumerable<IEnumerable<Vector3>>? innerRingsPoints)
     {
         TriangulationList<Vector3> triangulation = new TriangulationList<Vector3>();
 
