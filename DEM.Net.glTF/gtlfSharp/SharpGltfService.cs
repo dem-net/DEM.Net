@@ -88,7 +88,7 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
         // create a basic scene
         var model = CreateNewModel();
         var rnode = model.LogicalScenes.First()?.FindNode(n => n.Name == TERRAIN_NODE_NAME);
-        var rmesh = rnode.Mesh = model.CreateMesh(TERRAIN_MESH_NAME);
+        var rmesh = rnode!.Mesh = model.CreateMesh(TERRAIN_MESH_NAME);
 
         var material = model.CreateMaterial(string.Concat(TERRAIN_MESH_NAME, "Material"))
           .WithPBRMetallicRoughness()
@@ -158,11 +158,11 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
     }
 
     /// <param name="box">If set, adds walls and a bottom under the terrain (<see cref="AddTerrainBox"/>)</param>
-    public ModelRoot CreateTerrainMesh(HeightMap heightMap, PBRTexture textures, float reduceFactor, TerrainBoxOptions? box = null)
+    public ModelRoot CreateTerrainMesh(HeightMap heightMap, PBRTexture? textures, float reduceFactor, TerrainBoxOptions? box = null)
     { return AddTerrainMesh(CreateNewModel(), heightMap, textures, reduceFactor, box); }
 
     /// <summary>Terrain without its missing or zero elevation regions: not a whole grid, reduced with <see cref="MeshReducer"/> (QEM)</summary>
-    public ModelRoot CreateTerrainMesh_NonRectangular(HeightMap heightMap, PBRTexture textures, float reduceFactor)
+    public ModelRoot CreateTerrainMesh_NonRectangular(HeightMap heightMap, PBRTexture? textures, float reduceFactor)
     {
         var model = CreateNewModel();
         Triangulation triangulation = _meshService.TriangulateHeightMapFiltered(heightMap);
@@ -170,29 +170,23 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
         triangulation = _meshReducer.Decimate(triangulation, reduceFactor);
 
         model = AddTerrainMesh(model, triangulation, textures);
-
-        triangulation = null;
-
         return model;
     }
 
     /// <summary>Terrain mesh of the whole height map grid, reduced with Delatin (<see cref="MeshService.TriangulateHeightMapReduced"/>)</summary>
     /// <param name="box">If set, adds walls and a bottom under the terrain (<see cref="AddTerrainBox"/>)</param>
-    public ModelRoot AddTerrainMesh(ModelRoot model, HeightMap heightMap, PBRTexture textures, float reduceFactor, TerrainBoxOptions? box = null)
+    public ModelRoot AddTerrainMesh(ModelRoot model, HeightMap heightMap, PBRTexture? textures, float reduceFactor, TerrainBoxOptions? box = null)
     {
         Triangulation triangulation = _meshService.TriangulateHeightMapReduced(heightMap, reduceFactor);
 
         model = AddTerrainMesh(model, triangulation, textures, box: box);
-
-        triangulation = null;
-
         return model;
 
     }
-    public ModelRoot CreateTerrainMesh(Triangulation triangulation, PBRTexture textures, bool doubleSided = true)
+    public ModelRoot CreateTerrainMesh(Triangulation triangulation, PBRTexture? textures, bool doubleSided = true)
     { return AddTerrainMesh(CreateNewModel(), triangulation, textures, doubleSided); }
     /// <param name="box">If set, adds walls and a bottom under the terrain (<see cref="AddTerrainBox"/>)</param>
-    public ModelRoot AddTerrainMesh(ModelRoot model, Triangulation triangulation, PBRTexture textures, bool doubleSided = true, Matrix4x4 matrix = default, TerrainBoxOptions? box = null)
+    public ModelRoot AddTerrainMesh(ModelRoot model, Triangulation triangulation, PBRTexture? textures, bool doubleSided = true, Matrix4x4 matrix = default, TerrainBoxOptions? box = null)
     {
         var indexedTriangulation = new IndexedTriangulation(triangulation, matrix);
         var normals = _meshService.ComputeMeshNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
@@ -204,7 +198,7 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
         indexedTriangulation = null;
         return model;
     }
-    public ModelRoot AddMesh(ModelRoot model, string nodeName, IndexedTriangulation indexedTriangulation, IEnumerable<Vector3> normals, PBRTexture textures, bool doubleSided = true)
+    public ModelRoot AddMesh(ModelRoot model, string nodeName, IndexedTriangulation indexedTriangulation, IEnumerable<Vector3> normals, PBRTexture? textures, bool doubleSided = true)
     {
         // create a basic scene
         model = model ?? CreateNewModel();
@@ -223,7 +217,7 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
         // Specular F0 = 0 (KHR_materials_specular): terrain is matte; the default 4 % dielectric
         // reflection washes out the imagery at grazing angles. Read by three.js and Sketchfab.
         material.InitializePBRMetallicRoughness("Specular");
-        material.FindChannel("SpecularFactor").Value.SetFactor("SpecularFactor", 0f);
+        material.FindChannel("SpecularFactor")!.Value.SetFactor("SpecularFactor", 0f);
         if (textures != null && textures.NormalTexture != null)
         {
             material.WithChannelTexture("NORMAL", 0, textures.NormalTexture.FilePath);
@@ -368,7 +362,7 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
         return positions == null ? null : positions.AsVector3Array().Min(p => p.Y);
     }
 
-    public ModelRoot GenerateTriangleMesh(List<GeoPoint> points, List<int> indices, PBRTexture textures)
+    public ModelRoot GenerateTriangleMesh(List<GeoPoint> points, List<int> indices, PBRTexture? textures)
     {
         Triangulation triangulation = new Triangulation(points, indices);
         return CreateTerrainMesh(triangulation, textures);

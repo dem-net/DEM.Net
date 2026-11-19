@@ -11,9 +11,9 @@ namespace DEM.Net.Test;
 
 public class MapterhornTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    private readonly ElevationService _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
-    private readonly RasterService _rasterService = fixture.ServiceProvider.GetService<RasterService>();
-    private readonly XyzTileIndexService _xyzIndex = fixture.ServiceProvider.GetService<XyzTileIndexService>();
+    private readonly ElevationService _elevationService = fixture.ServiceProvider.GetRequiredService<ElevationService>();
+    private readonly RasterService _rasterService = fixture.ServiceProvider.GetRequiredService<RasterService>();
+    private readonly XyzTileIndexService _xyzIndex = fixture.ServiceProvider.GetRequiredService<XyzTileIndexService>();
 
     [Fact(DisplayName = "Mapterhorn datasets are registered, only zoom 12 is listed")]
     public void DatasetsRegistered()
@@ -63,14 +63,14 @@ public class MapterhornTests(DemNetFixture fixture) : IClassFixture<DemNetFixtur
             using (var first = new TerrariumFile(file))
             using (var second = new TerrariumFile(file))
             {
-                Assert.Equal(100f, first.GetElevationAtPoint(null, 3, 3), 2);
-                Assert.Equal(100f, second.GetElevationAtPoint(null, 3, 3), 2);
+                Assert.Equal(100f, first.GetElevationAtPoint(null!, 3, 3), 2);
+                Assert.Equal(100f, second.GetElevationAtPoint(null!, 3, 3), 2);
             }
 
             TerrariumFile.EncodeWebP([.. Enumerable.Repeat(250f, size * size)], size, file);
             File.SetLastWriteTimeUtc(file, DateTime.UtcNow.AddMinutes(1));
             using var updated = new TerrariumFile(file);
-            Assert.Equal(250f, updated.GetElevationAtPoint(null, 3, 3), 2);
+            Assert.Equal(250f, updated.GetElevationAtPoint(null!, 3, 3), 2);
         }
         finally
         {
@@ -168,7 +168,7 @@ public class MapterhornTests(DemNetFixture fixture) : IClassFixture<DemNetFixtur
         }
 
         // No points (an area without buildings): nothing to download, not the whole world
-        Assert.Empty(await _elevationService.GetPointsElevationAsync([], dataSet));
+        Assert.Empty((await _elevationService.GetPointsElevationAsync([], dataSet))!);
     }
 
     [Trait("Category", "Network")]
@@ -181,13 +181,13 @@ public class MapterhornTests(DemNetFixture fixture) : IClassFixture<DemNetFixtur
         var line = GeometryService.ParseGeoPointAsGeometryLine(start, end);
         await _elevationService.DownloadMissingFilesAsync(dataSet, line.GetBoundingBox());
 
-        var points = _elevationService.GetLineGeometryElevation(line, dataSet);
+        var points = _elevationService.GetLineGeometryElevation(line, dataSet)!;
 
         double step = dataSet.ResolutionMeters * Math.Cos(45.96 * Math.PI / 180);
         Assert.InRange(points.Count, start.DistanceTo(end) / step, start.DistanceTo(end) / step + 2);
         Assert.Equal(start.Latitude, points.First().Latitude, 6);
         Assert.Equal(end.Longitude, points.Last().Longitude, 6);
-        Assert.InRange(points.First().Elevation.Value, 4300, 4480);
+        Assert.InRange(points.First().Elevation!.Value, 4300, 4480);
         Assert.DoesNotContain(points, p => p.Elevation < 1500);
     }
 

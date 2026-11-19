@@ -78,12 +78,12 @@ public class NasaGranuleFileService(ILogger<NasaGranuleFileService> logger, Eart
                 break;
 
             // Only retrieve bbox and dem file link (zip file)
-            links.AddRange(result.Feed.Entry.Select(GetNasaDemFile).Where(file => file != null));
+            links.AddRange(result.Feed.Entry.Select(GetNasaDemFile).OfType<NasaDemFile>());
         }
         return links;
     }
 
-    private NasaDemFile GetNasaDemFile(Entry entry)
+    private NasaDemFile? GetNasaDemFile(Entry entry)
     {
         try
         {
@@ -120,7 +120,7 @@ public class NasaGranuleFileService(ILogger<NasaGranuleFileService> logger, Eart
         using (var stream = File.OpenRead(indexFileName))
             nasaDemFiles = JsonSerializer.Deserialize(stream, CoreJsonContext.Default.ListNasaDemFile)
                 ?? throw new InvalidDataException($"Empty granule index {indexFileName}.");
-        var dataSetLocalDir = Path.GetDirectoryName(indexFileName);
+        var dataSetLocalDir = Path.GetDirectoryName(indexFileName)!;
 
         static BoundingBox GetBBox(string box)
         {
@@ -173,7 +173,7 @@ public class NasaGranuleFileService(ILogger<NasaGranuleFileService> logger, Eart
             }
 
             // Zipped granule: keep only the DEM file of the archive (e.g. *_dem.tif), renamed as the local file
-            var zipFileName = Path.Combine(Path.GetDirectoryName(report.LocalName), report.Source.SourceFileName);
+            var zipFileName = Path.Combine(Path.GetDirectoryName(report.LocalName)!, report.Source.SourceFileName);
             await rasterDownloader.DownloadAsync(report.URL, zipFileName, cancellationToken).ConfigureAwait(false);
             try
             {

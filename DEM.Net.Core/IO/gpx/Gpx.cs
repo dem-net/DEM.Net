@@ -26,20 +26,20 @@ public static class GpxNamespaces
 
 public class GpxAttributes
 {
-    public string Version { get; set; }
-    public string Creator { get; set; }
+    public string? Version { get; set; }
+    public string? Creator { get; set; }
 }
 
 public class GpxMetadata
 {
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public GpxPerson Author { get; set; }
-    public GpxCopyright Copyright { get; set; }
-    public GpxLink Link { get; set; }
+    public string? Name { get; set; }
+    public string? Description { get; set; }
+    public GpxPerson? Author { get; set; }
+    public GpxCopyright? Copyright { get; set; }
+    public GpxLink? Link { get; set; }
     public DateTime? Time { get; set; }
-    public string Keywords { get; set; }
-    public GpxBounds Bounds { get; set; }
+    public string? Keywords { get; set; }
+    public GpxBounds? Bounds { get; set; }
 }
 
 public class GpxPoint
@@ -66,25 +66,25 @@ public class GpxPoint
         set { Properties_.SetValueProperty<double>("GeoidHeight", value); }
     }
 
-    public string Name
+    public string? Name
     {
         get { return Properties_.GetObjectProperty<string>("Name"); }
         set { Properties_.SetObjectProperty<string>("Name", value); }
     }
 
-    public string Comment
+    public string? Comment
     {
         get { return Properties_.GetObjectProperty<string>("Comment"); }
         set { Properties_.SetObjectProperty<string>("Comment", value); }
     }
 
-    public string Description
+    public string? Description
     {
         get { return Properties_.GetObjectProperty<string>("Description"); }
         set { Properties_.SetObjectProperty<string>("Description", value); }
     }
 
-    public string Source
+    public string? Source
     {
         get { return Properties_.GetObjectProperty<string>("Source"); }
         set { Properties_.SetObjectProperty<string>("Source", value); }
@@ -95,19 +95,19 @@ public class GpxPoint
         get { return Properties_.GetListProperty<GpxLink>("Links"); }
     }
 
-    public string Symbol
+    public string? Symbol
     {
         get { return Properties_.GetObjectProperty<string>("Symbol"); }
         set { Properties_.SetObjectProperty<string>("Symbol", value); }
     }
 
-    public string Type
+    public string? Type
     {
         get { return Properties_.GetObjectProperty<string>("Type"); }
         set { Properties_.SetObjectProperty<string>("Type", value); }
     }
 
-    public string FixType
+    public string? FixType
     {
         get { return Properties_.GetObjectProperty<string>("FixType"); }
         set { Properties_.SetObjectProperty<string>("FixType", value); }
@@ -149,7 +149,7 @@ public class GpxPoint
         set { Properties_.SetValueProperty<int>("DgpsId", value); }
     }
 
-    public GpxLink HttpLink
+    public GpxLink? HttpLink
     {
         get
         {
@@ -157,7 +157,7 @@ public class GpxPoint
         }
     }
 
-    public GpxLink EmailLink
+    public GpxLink? EmailLink
     {
         get
         {
@@ -208,7 +208,7 @@ public class GpxWayPoint : GpxPoint
         set { Properties_.SetValueProperty<double>("Depth", value); }
     }
 
-    public string DisplayMode
+    public string? DisplayMode
     {
         get { return Properties_.GetObjectProperty<string>("DisplayMode"); }
         set { Properties_.SetObjectProperty<string>("DisplayMode", value); }
@@ -219,7 +219,7 @@ public class GpxWayPoint : GpxPoint
         get { return Properties_.GetListProperty<string>("Categories"); }
     }
 
-    public GpxAddress Address
+    public GpxAddress? Address
     {
         get { return Properties_.GetObjectProperty<GpxAddress>("Address"); }
         set { Properties_.SetObjectProperty<GpxAddress>("Address", value); }
@@ -385,12 +385,12 @@ public class GpxPointCollection<T> : IList<T> where T : GpxPoint
         return point;
     }
 
-    public T StartPoint
+    public T? StartPoint
     {
         get { return (Points_.Count == 0) ? null : Points_[0]; }
     }
 
-    public T EndPoint
+    public T? EndPoint
     {
         get { return (Points_.Count == 0) ? null : Points_[Points_.Count - 1]; }
     }
@@ -509,12 +509,12 @@ public abstract class GpxTrackOrRoute
 {
     private List<GpxLink> Links_ = [];
 
-    public string Name { get; set; }
-    public string Comment { get; set; }
-    public string Description { get; set; }
-    public string Source { get; set; }
+    public string? Name { get; set; }
+    public string? Comment { get; set; }
+    public string? Description { get; set; }
+    public string? Source { get; set; }
     public int? Number { get; set; }
-    public string Type { get; set; }
+    public string? Type { get; set; }
 
     public IList<GpxLink> Links
     {
@@ -599,15 +599,15 @@ public class GpxTrackSegment
 
 public class GpxLink
 {
-    public string Href { get; set; }
-    public string Text { get; set; }
-    public string MimeType { get; set; }
+    public string? Href { get; set; }
+    public string? Text { get; set; }
+    public string? MimeType { get; set; }
 
-    public Uri Uri
+    public Uri? Uri
     {
         get
         {
-            Uri result;
+            Uri? result;
             return Uri.TryCreate(Href, UriKind.Absolute, out result) ? result : null;
         }
     }
@@ -615,37 +615,37 @@ public class GpxLink
 
 public class GpxEmail
 {
-    public string Id { get; set; }
-    public string Domain { get; set; }
+    public string? Id { get; set; }
+    public string? Domain { get; set; }
 }
 
 public class GpxAddress
 {
-    public string StreetAddress { get; set; }
-    public string City { get; set; }
-    public string State { get; set; }
-    public string Country { get; set; }
-    public string PostalCode { get; set; }
+    public string? StreetAddress { get; set; }
+    public string? City { get; set; }
+    public string? State { get; set; }
+    public string? Country { get; set; }
+    public string? PostalCode { get; set; }
 }
 
 public class GpxPhone
 {
-    public string Number { get; set; }
-    public string Category { get; set; }
+    public string? Number { get; set; }
+    public string? Category { get; set; }
 }
 
 public class GpxPerson
 {
-    public string Name { get; set; }
-    public GpxEmail Email { get; set; }
-    public GpxLink Link { get; set; }
+    public string? Name { get; set; }
+    public GpxEmail? Email { get; set; }
+    public GpxLink? Link { get; set; }
 }
 
 public class GpxCopyright
 {
-    public string Author { get; set; }
+    public string? Author { get; set; }
     public int? Year { get; set; }
-    public string Licence { get; set; }
+    public string? Licence { get; set; }
 }
 
 public class GpxBounds

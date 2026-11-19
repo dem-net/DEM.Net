@@ -10,7 +10,7 @@ namespace DEM.Net.Test;
 [Trait("Category", "Network")]
 public class HeightMapTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    ElevationService _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
+    ElevationService _elevationService = fixture.ServiceProvider.GetRequiredService<ElevationService>();
 
     [Theory()]
     [InlineData(nameof(DEMDataSet.SRTM_GL3))]

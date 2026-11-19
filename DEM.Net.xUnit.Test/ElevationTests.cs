@@ -12,7 +12,7 @@ namespace DEM.Net.Test;
 [Trait("Category", "Network")]
 public class ElevationTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    ElevationService _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
+    ElevationService _elevationService = fixture.ServiceProvider.GetRequiredService<ElevationService>();
 
     [Fact(DisplayName = "Not covered elevation check")]
     public void TestElevationWithNoCoverage()
@@ -45,7 +45,7 @@ public class ElevationTests(DemNetFixture fixture) : IClassFixture<DemNetFixture
         GeoPoint start = new(45.83, 6.86), end = new(45.90, 6.95);
         await _elevationService.DownloadMissingFilesAsync(dataSet, new BoundingBox(6.85, 6.96, 45.82, 45.91));
 
-        var points = _elevationService.GetLineGeometryElevation([start, end], dataSet);
+        var points = _elevationService.GetLineGeometryElevation([start, end], dataSet)!;
 
         Assert.Equal(181, points.Count); // 196 before, with 15 repeated points
         for (int i = 1; i < points.Count; i++)
@@ -70,7 +70,7 @@ public class ElevationTests(DemNetFixture fixture) : IClassFixture<DemNetFixture
         {
             await _elevationService.DownloadMissingFilesAsync(dataSet, points[i]);
             var single = _elevationService.GetPointElevation(points[i].Latitude, points[i].Longitude, dataSet);
-            Assert.Equal(single.Elevation.Value, batch[i].Elevation.Value, 6);
+            Assert.Equal(single.Elevation!.Value, batch[i].Elevation!.Value, 6);
         }
     }
 
@@ -81,7 +81,7 @@ public class ElevationTests(DemNetFixture fixture) : IClassFixture<DemNetFixture
     [InlineData(nameof(DEMDataSet.AW3D30),  47.132563, -86.818075,  179)] // Lake Superior surface
     public async Task TestUS(string dataSetName, double lat, double lon, double expectedElevation)
     {
-        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.First(d => d.Name == dataSetName);
         Assert.NotNull(dataSet);
 
         await _elevationService.DownloadMissingFilesAsync(dataSet, lat, lon);
@@ -97,7 +97,7 @@ public class ElevationTests(DemNetFixture fixture) : IClassFixture<DemNetFixture
     [InlineData(nameof(DEMDataSet.AW3D30), 45.179337, 5.721421, 223)]   // 222.996
     public async Task TestElevationSinglePoint(string dataSetName, double lat, double lon, double expectedElevation)
     {
-        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.First(d => d.Name == dataSetName);
         Assert.NotNull(dataSet);
 
         await _elevationService.DownloadMissingFilesAsync(dataSet, lat, lon);
@@ -112,7 +112,7 @@ public class ElevationTests(DemNetFixture fixture) : IClassFixture<DemNetFixture
     [InlineData(nameof(DEMDataSet.AW3D30), 46.00000000000004, 10.000000000000007, 1743)] // 1742.75, 4 tiles corner
     public async Task TestElevationSinglePoint_TileEdges(string dataSetName, double lat, double lon, double expectedElevation)
     {
-        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.First(d => d.Name == dataSetName);
         Assert.NotNull(dataSet);
 
         await _elevationService.DownloadMissingFilesAsync(dataSet, lat, lon);
@@ -144,7 +144,7 @@ public class ElevationTests(DemNetFixture fixture) : IClassFixture<DemNetFixture
     [InlineData(nameof(DEMDataSet.SRTM_GL3), 45.5, 5.9999, 322.48)]        // overlapping tiles seam
     public async Task TestElevationSinglePoint_TileBorders(string dataSetName, double lat, double lon, double expectedElevation)
     {
-        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.First(d => d.Name == dataSetName);
         Assert.NotNull(dataSet);
 
         await _elevationService.DownloadMissingFilesAsync(dataSet, BoundingBox.AroundPoint(lat, lon, 0.001));
@@ -152,7 +152,7 @@ public class ElevationTests(DemNetFixture fixture) : IClassFixture<DemNetFixture
 
         Assert.NotNull(point.Elevation);
         // absolute tolerance: Assert.Equal(double, double, precision) rounds both values and fails on midpoints
-        Assert.True(Math.Abs(expectedElevation - point.Elevation.Value) < 0.001, $"Expected {expectedElevation}, got {point.Elevation.Value}");
+        Assert.True(Math.Abs(expectedElevation - point.Elevation!.Value) < 0.001, $"Expected {expectedElevation}, got {point.Elevation!.Value}");
     }
 
     [Theory()]
@@ -166,7 +166,7 @@ public class ElevationTests(DemNetFixture fixture) : IClassFixture<DemNetFixture
         Assert.NotNull(elevationLine);
         Assert.Equal(2, elevationLine.Coordinates.Length);
 
-        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.First(d => d.Name == dataSetName);
         Assert.NotNull(dataSet);
 
         await _elevationService.DownloadMissingFilesAsync(dataSet, elevationLine.GetBoundingBox());
@@ -194,7 +194,7 @@ public class ElevationTests(DemNetFixture fixture) : IClassFixture<DemNetFixture
         BoundingBox bbox = new BoundingBox(xmin, xmax, ymin, ymax);
         Assert.True(bbox.IsValid(), "Bbox is not valid");
 
-        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.First(d => d.Name == dataSetName);
         Assert.NotNull(dataSet);
 
         await _elevationService.DownloadMissingFilesAsync(dataSet, bbox);
@@ -209,7 +209,7 @@ public class ElevationTests(DemNetFixture fixture) : IClassFixture<DemNetFixture
     public async Task TestIntervisibility(string dataSetName, double latStart, double lonStart
         , double latEnd, double lonEnd, double expectedObstacles)
     {
-        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.First(d => d.Name == dataSetName);
         Assert.NotNull(dataSet);
 
         IntervisibilityReport report = await _elevationService.GetIntervisibilityReportAsync(new GeoPoint(latStart, lonStart), new GeoPoint(latEnd, lonEnd), dataSet);
@@ -224,7 +224,7 @@ public class ElevationTests(DemNetFixture fixture) : IClassFixture<DemNetFixture
     public async Task TestIntervisibilityWithInitialAltitude(string dataSetName, double latStart, double lonStart, double altitudeStart
         , double latEnd, double lonEnd, double altitudeEnd, double expectedObstacles)
     {
-        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.First(d => d.Name == dataSetName);
         Assert.NotNull(dataSet);
 
         BoundingBox bbox = new BoundingBox(lonStart, lonEnd,latStart, latEnd);
@@ -276,7 +276,7 @@ public class ElevationTests(DemNetFixture fixture) : IClassFixture<DemNetFixture
     public async Task TestIntervisibility2(string dataSetName, double latStart, double lonStart
         , double latEnd, double lonEnd, double expectedObstacles)
     {
-        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.First(d => d.Name == dataSetName);
         Assert.NotNull(dataSet);
 
         IntervisibilityReport report = await _elevationService.GetIntervisibilityReportAsync(new GeoPoint(latStart, lonStart), new GeoPoint(latEnd, lonEnd), dataSet);

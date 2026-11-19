@@ -23,9 +23,9 @@ public static class SensorLogExtensions
              ,
                 Elevation = d.AltimeterRelativeAltitude
              ,
-                Latitude = d.LocationLatitude.Value
+                Latitude = d.LocationLatitude!.Value
              ,
-                Longitude = d.LocationLongitude.Value
+                Longitude = d.LocationLongitude!.Value
              ,
                 Time = d.LoggingTime
             });
@@ -34,7 +34,7 @@ public static class SensorLogExtensions
     public static IEnumerable<GeoPoint> ToGeoPoints(this SensorLog sensorLog)
     {
         return sensorLog.Data.Where(d => d.HasCoordinates)
-            .Select(d => new GeoPoint(d.LocationLatitude.Value, d.LocationLongitude.Value, d.AltimeterRelativeAltitude));
+            .Select(d => new GeoPoint(d.LocationLatitude!.Value, d.LocationLongitude!.Value, d.AltimeterRelativeAltitude));
     }
 
     private class SeriesDefinition : Dictionary<string, (Func<SensorLogData, float?> getter, Predicate<float?> noDatavalue)>
@@ -48,7 +48,7 @@ public static class SensorLogExtensions
         DrawingOptions drawingOptions = new DrawingOptions { GraphicsOptions= graphicsOptions };
 
         SeriesDefinition seriesDefinition = new SeriesDefinition();
-        var firstHeading = log.Data.First(d => d.LocationTrueHeading.HasValue).LocationTrueHeading.Value;
+        var firstHeading = log.Data.First(d => d.LocationTrueHeading.HasValue).LocationTrueHeading!.Value;
         //seriesDefinition.Add("LocationLatitude", (getter: data => data.LocationLatitude.Value, noDatavalue: v => v == null));
         //seriesDefinition.Add("LocationLongitude", (getter: data => data.LocationLongitude.Value, noDatavalue: v => v == 0));
         //seriesDefinition.Add("AltimeterRelativeAltitude", (getter: data => data.AltimeterRelativeAltitude, noDatavalue: v => v <= 0));
@@ -166,7 +166,7 @@ public static class SensorLogExtensions
                 float? dataValue = def.Value.getter(data);
                 if (dataValue.HasValue)
                 {
-                    series[defIndex][i] = new PointF(i, def.Value.getter(data).Value);
+                    series[defIndex][i] = new PointF(i, dataValue.Value);
                 }
                 defIndex++;
             }

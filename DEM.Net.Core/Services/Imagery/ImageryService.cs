@@ -59,8 +59,8 @@ public class ImageryService(MeshService meshService,
 
     private readonly ILogger<ImageryService> _logger = logger ?? NullLogger<ImageryService>.Instance;
     private readonly MeshService _meshService = meshService;
-    private readonly AppSecrets appSecrets = appSecrets?.Value;
-    private readonly DEMNetOptions options = options?.Value;
+    private readonly AppSecrets? appSecrets = appSecrets?.Value;
+    private readonly DEMNetOptions options = options?.Value!;
     private readonly ImageryCache cache = cache;
 
     public TileRange ComputeBoundingBoxTileRange(BoundingBox bbox, ImageryProvider provider,
@@ -255,7 +255,7 @@ public class ImageryService(MeshService meshService,
             }
 
             // Make image power of two dimensions
-            if (options.PowerOfTwoImages)
+            if (options!.PowerOfTwoImages)
             {
                 int nearestPowerOf2 = ToNextNearestPowerOf2(Math.Max(outputImage.Width, outputImage.Height));
                 outputImage.Mutate(o => o.Resize(nearestPowerOf2, nearestPowerOf2));
@@ -303,12 +303,12 @@ public class ImageryService(MeshService meshService,
     }
     private void SaveImage(Image outputImage, string fileName, float quality = 0.98f)
     {
-        IImageEncoder imageEncoder = GetEncoder(fileName, quality);
+        IImageEncoder imageEncoder = GetEncoder(fileName, quality)!;
 
         outputImage.Save(fileName, imageEncoder);
     }
 
-    private IImageEncoder GetEncoder(string fileName, float quality = 0.98f)
+    private IImageEncoder? GetEncoder(string fileName, float quality = 0.98f)
     {
         var fileExtension = System.IO.Path.GetExtension(fileName).ToLower();
         if (fileExtension.EndsWith("jpg"))
@@ -425,19 +425,19 @@ public class ImageryService(MeshService meshService,
     private IImageEncoder ConvertFormat(TextureImageFormat format)
     {
         ImageFormatManager imageFormatManager = new ImageFormatManager();
-        IImageFormat imageFormat = null;
+        IImageFormat? imageFormat = null;
         if (format == TextureImageFormat.image_jpeg)
             imageFormatManager.TryFindFormatByFileExtension(".jpg", out imageFormat);
         else
             imageFormatManager.TryFindFormatByFileExtension(".png", out imageFormat);
 
-        return imageFormatManager.GetEncoder(imageFormat);
+        return imageFormatManager.GetEncoder(imageFormat!);
     }
 
 
     public Uri BuildUri(ImageryProvider provider, int x, int y, int zoom)
     {
-        string[] serverNodes = provider.UrlModel.Servers;
+        string[]? serverNodes = provider.UrlModel.Servers;
         string server = string.Empty;
         if (serverNodes != null && serverNodes.Length > 0)
         {
@@ -469,12 +469,12 @@ public class ImageryService(MeshService meshService,
     }
 
 
-    ConcurrentDictionary<string, PropertyInfo> tokenGetters = new();
+    ConcurrentDictionary<string, PropertyInfo?> tokenGetters = new();
 
-    private string GetToken(ImageryProvider provider)
+    private string? GetToken(ImageryProvider provider)
     {
-        PropertyInfo tokenGetter = tokenGetters.GetOrAdd(provider.TokenUserSecretsKey,
-            tokenKey => typeof(AppSecrets).GetProperty(provider.TokenUserSecretsKey));
+        PropertyInfo? tokenGetter = tokenGetters.GetOrAdd(provider.TokenUserSecretsKey!,
+            tokenKey => typeof(AppSecrets).GetProperty(provider.TokenUserSecretsKey!));
         return tokenGetter?.GetValue(appSecrets)?.ToString();
     }
 
@@ -805,7 +805,7 @@ public class ImageryService(MeshService meshService,
         *   map this offset to (0 -> texWidth, 0 -> textHeight) => (0->1, 0->1)
         */
         List<Vector2> uvs = new List<Vector2>(heightMap.Count);
-        var bbox = textureInfo.ProjectedBounds;
+        var bbox = textureInfo.ProjectedBounds!;
         foreach (GeoPoint geoPoint in heightMap.Coordinates)
         {
             Point<double> projPoint =
@@ -834,7 +834,7 @@ public class ImageryService(MeshService meshService,
         List<ImageryProvider> providers = [];
         foreach (var f in predefinedStaticProviders.Value)
         {
-            providers.Add(f.GetValue(this) as ImageryProvider);
+            providers.Add((ImageryProvider)f.GetValue(this)!);
         }
 
         if (options.ImageryProviders != null)
@@ -851,7 +851,7 @@ public class ImageryService(MeshService meshService,
     private static List<FieldInfo> GetPredefinedProviders()
     {
         Type t = typeof(ImageryProvider);
-        string providerTypeName = t.FullName;
+        string? providerTypeName = t.FullName;
         var fields = t.GetRuntimeFields().Where(f => f.FieldType.FullName == providerTypeName).ToList();
 
         return fields;

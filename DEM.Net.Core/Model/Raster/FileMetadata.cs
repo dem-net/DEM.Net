@@ -73,15 +73,15 @@ public class FileMetadata : IEquatable<FileMetadata>
     public bool VirtualMetadata { get; set; }
 
     [ProtoMember(2)]
-    public string Version { get; set; }
+    public string Version { get; set; } = null!;
     [ProtoMember(3)]
     public string Filename
     {
         get => _filename;
         set { _filename = value; _fileNameOnly = null; }
     }
-    private string _filename;
-    private string _fileNameOnly;
+    private string _filename = null!;
+    private string? _fileNameOnly;
     // Identity of the file: raster dictionaries look it up several times per interpolated point
     private string FileNameOnly => _fileNameOnly ??= Path.GetFileName(_filename) ?? string.Empty;
     [ProtoMember(4)]
@@ -117,11 +117,11 @@ public class FileMetadata : IEquatable<FileMetadata>
     [ProtoMember(12)]
     public int BitsPerSample { get; set; }
     [ProtoMember(13)]
-    public string WorldUnits { get; set; }
+    public string WorldUnits { get; set; } = null!;
     [ProtoMember(14)]
-    public string SampleFormat { get; set; }
+    public string SampleFormat { get; set; } = null!;
     [ProtoMember(15)]
-    public string NoDataValue { get; set; }
+    public string NoDataValue { get; set; } = null!;
     [ProtoMember(16)]
     public int ScanlineSize { get; set; }
     /// <summary>
@@ -142,7 +142,7 @@ public class FileMetadata : IEquatable<FileMetadata>
     [ProtoMember(22)]
     public double pixelSizeY { get; set; }
     [ProtoMember(23)]
-    public DEMFileDefinition FileFormat { get; set; }
+    public DEMFileDefinition FileFormat { get; set; } = null!;
     [ProtoMember(24)]
     public float MinimumAltitude { get; set; }
     [ProtoMember(25)]
@@ -175,9 +175,9 @@ public class FileMetadata : IEquatable<FileMetadata>
         return $"{System.IO.Path.GetFileName(Filename)}: {BoundingBox}";
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
-        FileMetadata objTyped = obj as FileMetadata;
+        FileMetadata? objTyped = obj as FileMetadata;
         if (objTyped == null)
             return false;
 
@@ -188,7 +188,7 @@ public class FileMetadata : IEquatable<FileMetadata>
         return FileNameOnly.GetHashCode();
     }
 
-    public bool Equals(FileMetadata other)
+    public bool Equals(FileMetadata? other)
     {
         if (other == null)
             return false;
@@ -197,7 +197,7 @@ public class FileMetadata : IEquatable<FileMetadata>
         return string.Equals(FileNameOnly, other.FileNameOnly);
     }
 
-    private BoundingBox _boundingBox;
+    private BoundingBox? _boundingBox;
     [JsonIgnore]
     public BoundingBox BoundingBox
     {

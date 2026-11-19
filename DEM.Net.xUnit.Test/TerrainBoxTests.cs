@@ -12,7 +12,7 @@ namespace DEM.Net.Test;
 
 public class TerrainBoxTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    readonly SharpGltfService _sharpGltfService = fixture.ServiceProvider.GetService<SharpGltfService>();
+    readonly SharpGltfService _sharpGltfService = fixture.ServiceProvider.GetRequiredService<SharpGltfService>();
 
     const int W = 60, H = 40;
     const float Cell = 25f; // meters
@@ -29,8 +29,8 @@ public class TerrainBoxTests(DemNetFixture fixture) : IClassFixture<DemNetFixtur
                 coords[x + y * W] = new GeoPoint(latitude: (H - 1 - y) * Cell, longitude: x * Cell, altitude: e);
             }
         hMap.Coordinates = coords;
-        hMap.Minimum = (float)coords.Min(c => c.Elevation.Value);
-        hMap.Maximum = (float)coords.Max(c => c.Elevation.Value);
+        hMap.Minimum = (float)coords.Min(c => c.Elevation!.Value);
+        hMap.Maximum = (float)coords.Max(c => c.Elevation!.Value);
         return hMap;
     }
 

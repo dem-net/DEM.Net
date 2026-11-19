@@ -16,7 +16,7 @@ namespace DEM.Net.xUnit.Test;
 [Trait("Category", "Network")]
 public class ImageryTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    readonly ImageryService _imageryService = fixture.ServiceProvider.GetService<ImageryService>();
+    readonly ImageryService _imageryService = fixture.ServiceProvider.GetRequiredService<ImageryService>();
 
     private static MapTileInfo tileInfoFrance = new(x: 527, y: 374, zoom: 10, 256);
     private static MapTileInfo tileInfoSwiss = new(x: 534, y: 361, zoom: 10, 256);

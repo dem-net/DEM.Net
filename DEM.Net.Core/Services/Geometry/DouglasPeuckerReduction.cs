@@ -45,7 +45,7 @@ namespace DEM.Net.Core;
 		public static List<GeoPoint> DouglasPeuckerReduction(IReadOnlyList<GeoPoint> Points, double Tolerance)
 		{
 			if (Points == null || Points.Count < 3)
-				return [.. Points];
+				return [.. Points!];
 
 			int firstPoint = 0;
 			int lastPoint = Points.Count - 1;

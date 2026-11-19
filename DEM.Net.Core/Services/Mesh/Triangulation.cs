@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -51,7 +52,8 @@ public class TriangulationNormals(IEnumerable<Vector3> positions, IEnumerable<in
 public class TriangulationList<T>
 {
     public List<T> Positions { get; set; } 
-    public List<Vector4> Colors { get; set; }
+    public List<Vector4>? Colors { get; set; }
+    [MemberNotNullWhen(true, nameof(Colors))]
     public bool HasColors => Colors?.Count > 0;
     public List<int> Indices { get; internal set; }
 
@@ -86,13 +88,13 @@ public class TriangulationList<T>
 
         return new TriangulationList<T>(
             positions: [.. a.Positions, .. b.Positions],
-            colors: [.. a.Colors, .. b.Colors],
+            colors: [.. a.Colors!, .. b.Colors!],
             indices: [.. a.Indices, .. b.Indices.Select(i => i + a.NumPositions)]);
     }
 
     public TriangulationList<T> Clone()
     {
-        return new TriangulationList<T>(new List<T>(Positions), new List<Vector4>(Colors), new List<int>(Indices));
+        return new TriangulationList<T>(new List<T>(Positions), new List<Vector4>(Colors!), new List<int>(Indices));
     }
 
     public Triangulation<T> AsTriangulation()
@@ -103,8 +105,8 @@ public class TriangulationList<T>
 
 public class Triangulation<T>
 {
-    public IEnumerable<T> Positions { get; internal set; }
-    public IEnumerable<int> Indices { get; internal set; }
+    public IEnumerable<T> Positions { get; internal set; } = null!;
+    public IEnumerable<int> Indices { get; internal set; } = null!;
 
     public Triangulation()
     {

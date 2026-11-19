@@ -25,7 +25,7 @@ public class TileIndexDataSource(string indexUrl, string indexFilePath,
 
     /// <summary>Builds the local file name from the feature properties. Defaults to the last segment of the tile URL.</summary>
     [JsonIgnore]
-    public Func<IReadOnlyDictionary<string, string>, string> TileFileName { get; } = tileFileName;
+    public Func<IReadOnlyDictionary<string, string>, string>? TileFileName { get; } = tileFileName;
 
     public DEMDataSourceType DataSourceType => DEMDataSourceType.TileIndex;
 }

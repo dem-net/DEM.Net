@@ -31,12 +31,12 @@ using System.Threading.Tasks;
 
 namespace DEM.Net.Core.Imagery;
 
-public class MapTile(byte[] imgBytes, int tileSize, Uri tileUri, MapTileInfo mapTileInfo)
+public class MapTile(byte[] imgBytes, int tileSize, Uri? tileUri, MapTileInfo mapTileInfo)
 {
     public MapTileInfo TileInfo { get; set; } = mapTileInfo;
-    public string FileExtension { get; set; }
+    public string FileExtension { get; set; } = null!;
     public int PixelSize { get; set; } = tileSize;
-    public Uri Uri { get; set; } = tileUri;
+    public Uri? Uri { get; set; } = tileUri;
     public byte[] Image { get; set; } = imgBytes;
 
 }

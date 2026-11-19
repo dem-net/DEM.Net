@@ -70,16 +70,16 @@ namespace DEM.Net.Core;
     // The two last rows read: interpolating a point reads 2 rows, consecutive points mostly the same ones.
     // (Formerly a whole row was read and copied for each sample, ~7 KB per sample of an SRTM1 tile.)
     private int _row0 = -1, _row1 = -1;
-    private byte[] _scanline0, _scanline1;
+    private byte[]? _scanline0, _scanline1;
 
     private ReadOnlySpan<byte> GetScanline(FileMetadata metadata, int y)
     {
-        if (y == _row0) return _scanline0;
+        if (y == _row0) return _scanline0!;
         if (y == _row1)
         {
             (_row0, _row1) = (_row1, _row0);
             (_scanline0, _scanline1) = (_scanline1, _scanline0);
-            return _scanline0;
+            return _scanline0!;
         }
 
         // reuse the least recently used buffer

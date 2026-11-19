@@ -75,7 +75,7 @@ public class GDALVRTFileService(IHttpClientFactory httpClientFactory, ILogger<GD
                 _logger?.LogInformation($"Setup for {dataSet.Name} dataset.");
                 Directory.CreateDirectory(dataSetLocalDir);
 
-                string vrtFileName = Path.Combine(dataSetLocalDir, UrlHelper.GetFileNameFromUrl(dataSet.DataSource.IndexFilePath));
+                string vrtFileName = Path.Combine(dataSetLocalDir, UrlHelper.GetFileNameFromUrl(dataSet.DataSource.IndexFilePath!));
 
                 bool download = true;
                 if (File.Exists(vrtFileName))
@@ -98,7 +98,7 @@ public class GDALVRTFileService(IHttpClientFactory httpClientFactory, ILogger<GD
                 if (download)
                 {
                     _logger?.LogInformation($"Downloading index file from {dataSet.DataSource.IndexFilePath}... This file will be downloaded once and stored locally.");
-                    await HttpDownload.DownloadToFileAsync(CreateClient(), dataSet.DataSource.IndexFilePath, vrtFileName, CancellationToken.None).ConfigureAwait(false);
+                    await HttpDownload.DownloadToFileAsync(CreateClient(), dataSet.DataSource.IndexFilePath!, vrtFileName, CancellationToken.None).ConfigureAwait(false);
                 }
 
                 _cacheByDemName[dataSet.Name] = [.. this.GetSources(dataSet, vrtFileName)];
@@ -169,7 +169,7 @@ public class GDALVRTFileService(IHttpClientFactory httpClientFactory, ILogger<GD
     private IEnumerable<DEMFileSource> GetSources(DEMDataSet dataSet, string vrtFileName)
     {
         Uri localVrtUri = new Uri(Path.GetFullPath(vrtFileName), UriKind.Absolute);
-        Uri remoteVrtUri = new Uri(dataSet.DataSource.IndexFilePath, UriKind.Absolute);
+        Uri remoteVrtUri = new Uri(dataSet.DataSource.IndexFilePath!, UriKind.Absolute);
         double[] geoTransform;
         var registration = dataSet.FileFormat.Registration;
         Dictionary<string, string> properties;

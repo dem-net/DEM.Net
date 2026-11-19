@@ -13,10 +13,10 @@ public record Triangle3D(Vector4 A, Vector4 B, Vector4 C, int Index);
 
 public class IndexedTriangulation
 {
-    private Triangulation Triangulation;
+    private Triangulation? Triangulation;
 
     public List<Vector3> Positions { get; set; }
-    public List<Vector4> Colors { get; private set; }
+    public List<Vector4>? Colors { get; private set; }
     public List<int> Indices { get; private set; }
 
     public IndexedTriangulation(Triangulation triangulation, Matrix4x4 vectorTransform = default, bool transformToGltfCoords = true)
@@ -78,8 +78,8 @@ public class IndexedTriangulation
         Indices?.Clear();
         Colors?.Clear();
 
-        Positions = null;
-        Indices = null;
+        Positions = null!;
+        Indices = null!;
         Colors = null;
     }
 }
@@ -93,7 +93,7 @@ public class Triangulation3DModel : IndexedTriangulation
     public Triangulation3DModel(Triangulation triangulation, Func<GeoPoint, Vector3> transform)
         : base(triangulation, transform) { }
 
-    private List<Triangle3D> _triangles = null;
+    private List<Triangle3D>? _triangles = null;
     public List<Triangle3D> Triangles
     {
         get
@@ -117,5 +117,5 @@ public class Triangulation3DModel : IndexedTriangulation
         }
     }
 
-    public List<Triangle3D> ProjectedTriangles { get; set; }
+    public List<Triangle3D>? ProjectedTriangles { get; set; }
 }

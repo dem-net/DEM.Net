@@ -11,10 +11,10 @@ namespace DEM.Net.Test;
 
 public class glTFTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    RasterService _rasterService = fixture.ServiceProvider.GetService<RasterService>();
-    ElevationService _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
-    SharpGltfService _sharpGltfService = fixture.ServiceProvider.GetService<SharpGltfService>();
-    MeshService _meshService = fixture.ServiceProvider.GetService<MeshService>();
+    RasterService _rasterService = fixture.ServiceProvider.GetRequiredService<RasterService>();
+    ElevationService _elevationService = fixture.ServiceProvider.GetRequiredService<ElevationService>();
+    SharpGltfService _sharpGltfService = fixture.ServiceProvider.GetRequiredService<SharpGltfService>();
+    MeshService _meshService = fixture.ServiceProvider.GetRequiredService<MeshService>();
 
     [Fact]
     public void Test_GLB_Export()

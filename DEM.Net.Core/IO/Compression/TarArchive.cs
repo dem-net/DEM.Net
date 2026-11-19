@@ -68,7 +68,7 @@ public class TarArchive
             if (onlyExtensions != null && !output.EndsWith(onlyExtensions, StringComparison.OrdinalIgnoreCase))
                 continue;
 
-            Directory.CreateDirectory(Path.GetDirectoryName(output));
+            Directory.CreateDirectory(Path.GetDirectoryName(output)!);
             using var fs = new FileStream(output, FileMode.Create, FileAccess.Write);
             entry.DataStream.CopyTo(fs);
         }

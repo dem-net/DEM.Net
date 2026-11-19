@@ -13,9 +13,9 @@ namespace DEM.Net.Test;
 [Trait("Category", "Network")]
 public class DatasetTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    readonly RasterService _rasterService = fixture.ServiceProvider.GetService<RasterService>();
-    readonly ElevationService _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
-    readonly RasterIndexServiceResolver _indexServiceResolver = fixture.ServiceProvider.GetService<RasterIndexServiceResolver>();
+    readonly RasterService _rasterService = fixture.ServiceProvider.GetRequiredService<RasterService>();
+    readonly ElevationService _elevationService = fixture.ServiceProvider.GetRequiredService<ElevationService>();
+    readonly RasterIndexServiceResolver _indexServiceResolver = fixture.ServiceProvider.GetRequiredService<RasterIndexServiceResolver>();
 
     [Theory(), TestPriority(1)]
     [InlineData(nameof(DEMDataSet.SRTM_GL3))]
@@ -28,7 +28,7 @@ public class DatasetTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
         Assert.True(datasets.Any(), "No datasets found");
 
 
-        DEMDataSet dataset = datasets.FirstOrDefault(d => d.Name == datasetName);
+        DEMDataSet dataset = datasets.First(d => d.Name == datasetName);
         Assert.NotNull(dataset);
 
         var indexService = this._indexServiceResolver(dataset.DataSource.DataSourceType);
@@ -64,7 +64,7 @@ public class DatasetTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
         var datasets = DEMDataSet.RegisteredDatasets;
         Assert.True(datasets.Any(), "No datasets found");
 
-        DEMDataSet dataset = datasets.FirstOrDefault(d => d.Name == datasetName);
+        DEMDataSet dataset = datasets.First(d => d.Name == datasetName);
         Assert.NotNull(dataset);
 
         const string WKT_BBOX_AIX_PUYRICARD = "POLYGON ((5.429993 43.537854, 5.459132 43.537854, 5.459132 43.58151, 5.429993 43.58151, 5.429993 43.537854))";

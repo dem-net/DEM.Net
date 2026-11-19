@@ -28,10 +28,10 @@ namespace DEM.Net.Core.Imagery;
 
 public partial class ImageryProvider
 {
-    public string Name { get; set; }
-    public UrlModel UrlModel { get; set; }
-    public Attribution Attribution { get; set; }
-    public string TokenUserSecretsKey { get; set; }
+    public string Name { get; set; } = null!;
+    public UrlModel UrlModel { get; set; } = null!;
+    public Attribution Attribution { get; set; } = null!;
+    public string? TokenUserSecretsKey { get; set; }
     public int TileSize { get; set; } = 256;
     /// <summary>Tiles downloaded at once by one request.</summary>
     public int MaxDegreeOfParallelism { get; set; } = 4;

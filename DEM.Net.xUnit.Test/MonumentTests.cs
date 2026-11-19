@@ -13,7 +13,7 @@ namespace DEM.Net.Test;
 
 public class MonumentTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    readonly SharpGltfService _sharpGltfService = fixture.ServiceProvider.GetService<SharpGltfService>();
+    readonly SharpGltfService _sharpGltfService = fixture.ServiceProvider.GetRequiredService<SharpGltfService>();
 
     static TerrainBoxMonumentOptions Scale(float horizontal, float vertical) => new() { HorizontalScale = horizontal, VerticalScale = vertical };
 
@@ -74,7 +74,7 @@ public class MonumentTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
         model = ModelRoot.ParseGLB(model.WriteGLB());
 
         var (terrainPos, _) = ReadPrimitive(model, "TerrainNode");
-        float baseY = _sharpGltfService.GetTerrainBoxBaseElevation(model).Value;
+        float baseY = _sharpGltfService.GetTerrainBoxBaseElevation(model)!.Value;
         float size = Math.Max(terrainPos.Max(p => p.X) - terrainPos.Min(p => p.X), terrainPos.Max(p => p.Z) - terrainPos.Min(p => p.Z));
         var decals = MonumentPlacer.Place(terrainPos, baseY, Scale(horizontal, vertical));
         Assert.NotEmpty(decals);
@@ -125,7 +125,7 @@ public class MonumentTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
         Assert.NotNull(primitive.GetVertexAccessor("TEXCOORD_0"));
         Assert.Equal(AlphaMode.MASK, primitive.Material.Alpha);
         Assert.NotNull(primitive.Material.FindChannel("BaseColor")?.Texture);
-        Assert.Equal(TerrainBoxMonumentOptions.DefaultColor, primitive.Material.FindChannel("BaseColor").Value.Color);
+        Assert.Equal(TerrainBoxMonumentOptions.DefaultColor, primitive.Material.FindChannel("BaseColor")!.Value.Color);
 
         // Front faces outward
         var pos = primitive.GetVertices("POSITION").AsVector3Array();

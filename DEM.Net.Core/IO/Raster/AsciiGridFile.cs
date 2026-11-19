@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
@@ -24,11 +25,11 @@ public class ASCIIGridFile : IRasterFile
 {
     private FileStream _fileStream;
     private StreamReader _streamReader;
-    private GZipStream _gzipStream;
+    private GZipStream? _gzipStream;
     private readonly string _filename;
     private static char[] SEPARATOR = [' '];
 
-    List<List<string>> _data = null;
+    List<List<string>>? _data = null;
 
     public ASCIIGridFile(string fileName, bool gzip)
     {
@@ -59,9 +60,10 @@ public class ASCIIGridFile : IRasterFile
 
     }
 
+    [MemberNotNull(nameof(_data))]
     public void ReadAllFile(FileMetadata metadata)
     {
-        string curLine = null;
+        string? curLine = null;
         _fileStream.Seek(0, SeekOrigin.Begin);
 
         // skip header
@@ -73,7 +75,7 @@ public class ASCIIGridFile : IRasterFile
         _data = new List<List<string>>(metadata.Height);
         while (!_streamReader.EndOfStream)
         {
-            var line = _streamReader.ReadLine().Trim();
+            var line = _streamReader.ReadLine()!.Trim();
 
             var values = new List<string>(metadata.Width);
             var current = string.Empty;
@@ -203,12 +205,12 @@ public class ASCIIGridFile : IRasterFile
         try
         {
 
-            string ncolsLine = _streamReader.ReadLine();
-            string nrowsLine = _streamReader.ReadLine();
-            string xllcornerLine = _streamReader.ReadLine();
-            string yllcornerLine = _streamReader.ReadLine();
-            string cellsizeLine = _streamReader.ReadLine();
-            string NODATA_valueLine = _streamReader.ReadLine();
+            string ncolsLine = _streamReader.ReadLine()!;
+            string nrowsLine = _streamReader.ReadLine()!;
+            string xllcornerLine = _streamReader.ReadLine()!;
+            string yllcornerLine = _streamReader.ReadLine()!;
+            string cellsizeLine = _streamReader.ReadLine()!;
+            string NODATA_valueLine = _streamReader.ReadLine()!;
 
             DebugCheckRegistrationType(fileFormat.Registration, xllcornerLine, yllcornerLine);
 

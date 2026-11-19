@@ -28,9 +28,9 @@ public class XyzTileDataSource : IDEMDataSource
     /// <summary>
     /// Optional JSON file listing the areas and max zoom levels available (Mapterhorn download_urls.json format).
     /// </summary>
-    public string CoverageIndexUrl { get; }
+    public string? CoverageIndexUrl { get; }
 
-    public string IndexFilePath => null;
+    public string? IndexFilePath => null;
 
     public DEMDataSourceType DataSourceType => DEMDataSourceType.XyzTiles;
 

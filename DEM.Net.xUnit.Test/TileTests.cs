@@ -14,9 +14,9 @@ namespace DEM.Net.xUnit.Test;
 [Trait("Category", "Network")]
 public class TileTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    readonly ElevationService _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
-    readonly RasterService _rasterService = fixture.ServiceProvider.GetService<RasterService>();
-    readonly RasterIndexServiceResolver _rasterResolver = fixture.ServiceProvider.GetService<RasterIndexServiceResolver>();
+    readonly ElevationService _elevationService = fixture.ServiceProvider.GetRequiredService<ElevationService>();
+    readonly RasterService _rasterService = fixture.ServiceProvider.GetRequiredService<RasterService>();
+    readonly RasterIndexServiceResolver _rasterResolver = fixture.ServiceProvider.GetRequiredService<RasterIndexServiceResolver>();
 
     [Theory()]
     [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.5, 10.5, "N46E010.tif")]
@@ -24,7 +24,7 @@ public class TileTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
     [InlineData(nameof(DEMDataSet.SRTM_GL3), 46.5, 10.000000000000007, "N46E010.tif")]
     public async Task SourceBboxCheck(string dataSetName, double lat, double lon, string expectedFileName)
     {
-        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.First(d => d.Name == dataSetName);
         Assert.NotNull(dataSet);
 
         var indexService = _rasterResolver(dataSet.DataSource.DataSourceType);
@@ -50,7 +50,7 @@ public class TileTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
         , string rasterSouthWestName, string rasterSouthEastName
         , string rasterNorthWestName, string rasterNorthEastName)
     {
-        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.FirstOrDefault(d => d.Name == dataSetName);
+        DEMDataSet dataSet = DEMDataSet.RegisteredDatasets.First(d => d.Name == dataSetName);
         Assert.NotNull(dataSet);
         DEMFileType fileType = dataSet.FileFormat.Type;
         int rasterSize = dataSet.PointsPerDegree;
@@ -84,19 +84,19 @@ public class TileTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
             BilinearInterpolator interpolator = new BilinearInterpolator();
             var elev0 = interpolator.Interpolate(elevSW, elevSE, elevNW, elevNE, 0.25, 0.25);
             var apiElev0 = _elevationService.GetPointElevation(lat + amounty, lon - amountx, dataSet);
-            Assert.True((elev0 - apiElev0.Elevation.Value) < double.Epsilon);
+            Assert.True((elev0 - apiElev0.Elevation!.Value) < double.Epsilon);
 
             var elev1 = interpolator.Interpolate(elevSW, elevSE, elevNW, elevNE, 0.75, 0.25);
             var apiElev1 = _elevationService.GetPointElevation(lat + amounty, lon + amountx, dataSet);
-            Assert.True((elev1 - apiElev1.Elevation.Value) < double.Epsilon);
+            Assert.True((elev1 - apiElev1.Elevation!.Value) < double.Epsilon);
 
             var elev2 = interpolator.Interpolate(elevSW, elevSE, elevNW, elevNE, 0.25, 0.75);
             var apiElev2 = _elevationService.GetPointElevation(lat - amounty, lon - amountx, dataSet);
-            Assert.True((elev2 - apiElev2.Elevation.Value) < double.Epsilon);
+            Assert.True((elev2 - apiElev2.Elevation!.Value) < double.Epsilon);
 
             var elev3 = interpolator.Interpolate(elevSW, elevSE, elevNW, elevNE, 0.75, 0.75);
             var apiElev3 = _elevationService.GetPointElevation(lat - amounty, lon + amountx, dataSet);
-            Assert.True((elev3 - apiElev3.Elevation.Value) < double.Epsilon);
+            Assert.True((elev3 - apiElev3.Elevation!.Value) < double.Epsilon);
         }
         else
         {
@@ -122,19 +122,19 @@ public class TileTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
             BilinearInterpolator interpolator = new BilinearInterpolator();
             var elev0 = interpolator.Interpolate(elevM0, elevM1, elevN0, elevN1, 0.75, 0.75);
             var apiElev0 = _elevationService.GetPointElevation(lat + amounty, lon - amountx, dataSet);
-            Assert.True((elev0 - apiElev0.Elevation.Value) < double.Epsilon);
+            Assert.True((elev0 - apiElev0.Elevation!.Value) < double.Epsilon);
 
             var elev1 = interpolator.Interpolate(elevM1, elevM2, elevN1, elevN2, 0.25, 0.75);
             var apiElev1 = _elevationService.GetPointElevation(lat + amounty, lon + amountx, dataSet);
-            Assert.True((elev1 - apiElev1.Elevation.Value) < double.Epsilon);
+            Assert.True((elev1 - apiElev1.Elevation!.Value) < double.Epsilon);
 
             var elev2 = interpolator.Interpolate(elevS0, elevS1, elevM0, elevM1, 0.75, 0.25);
             var apiElev2 = _elevationService.GetPointElevation(lat - amounty, lon - amountx, dataSet);
-            Assert.True((elev2 - apiElev2.Elevation.Value) < double.Epsilon);
+            Assert.True((elev2 - apiElev2.Elevation!.Value) < double.Epsilon);
 
             var elev3 = interpolator.Interpolate(elevS1, elevS2, elevM1, elevM2, 0.25, 0.25);
             var apiElev3 = _elevationService.GetPointElevation(lat - amounty, lon + amountx, dataSet);
-            Assert.True((elev3 - apiElev3.Elevation.Value) < double.Epsilon);
+            Assert.True((elev3 - apiElev3.Elevation!.Value) < double.Epsilon);
 
         }
     }

@@ -21,11 +21,11 @@ public class GpxReader : IDisposable
     private XmlReader Reader_;
 
     public GpxObjectType ObjectType { get; private set; }
-    public GpxAttributes Attributes { get; private set; }
-    public GpxMetadata Metadata { get; private set; }
-    public GpxWayPoint WayPoint { get; private set; }
-    public GpxRoute Route { get; private set; }
-    public GpxTrack Track { get; private set; }
+    public GpxAttributes Attributes { get; private set; } = null!;
+    public GpxMetadata? Metadata { get; private set; }
+    public GpxWayPoint? WayPoint { get; private set; }
+    public GpxRoute? Route { get; private set; }
+    public GpxTrack? Track { get; private set; }
 
     public GpxReader(Stream stream)
     {

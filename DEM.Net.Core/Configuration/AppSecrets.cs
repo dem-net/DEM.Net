@@ -6,11 +6,11 @@ namespace DEM.Net.Core.Configuration;
 
 public class AppSecrets
 {
-    public string NasaEarthDataLogin { get; set; }
-    public string NasaEarthDataPassword { get; set; }
-    public string MapBoxToken { get; set; }
-    public string MapTilerKey { get; set; }
-    public string SketchFabToken { get; set; }
-    public string ThunderForestApiKey { get; set; }
-    public string StadiaMapsApiKey { get; set; }
+    public string? NasaEarthDataLogin { get; set; }
+    public string? NasaEarthDataPassword { get; set; }
+    public string? MapBoxToken { get; set; }
+    public string? MapTilerKey { get; set; }
+    public string? SketchFabToken { get; set; }
+    public string? ThunderForestApiKey { get; set; }
+    public string? StadiaMapsApiKey { get; set; }
 }

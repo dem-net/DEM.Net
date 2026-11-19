@@ -26,6 +26,9 @@
 // THE SOFTWARE.
 
 
+// Port of the earcut linked-list algorithm, nodes are null by design
+#nullable disable
+
 using System;
 using System.Collections.Generic;
 
@@ -132,7 +135,7 @@ internal class Earcut
     }
 
     // eliminate colinear or duplicate points
-    static Node FilterPoints(Node start, Node? end = null)
+    static Node FilterPoints(Node start, Node end = null)
     {
         if (start == null)
         {

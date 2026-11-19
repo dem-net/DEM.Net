@@ -43,11 +43,11 @@ namespace DEM.Net.Core.Imagery;
 /// </summary>
 public class PBRTexture
 {
-    public TextureInfo BaseColorTexture { get; set; }
-    public TextureInfo NormalTexture { get; set; }
-    public IEnumerable<Vector2> TextureCoordSets { get; set; }
+    public TextureInfo BaseColorTexture { get; set; } = null!;
+    public TextureInfo? NormalTexture { get; set; }
+    public IEnumerable<Vector2>? TextureCoordSets { get; set; }
 
-    public static PBRTexture Create(TextureInfo baseColorTexture, TextureInfo normalMapTexture, IEnumerable<Vector2>? textureUVMap = null)
+    public static PBRTexture Create(TextureInfo baseColorTexture, TextureInfo? normalMapTexture, IEnumerable<Vector2>? textureUVMap = null)
     {
         return new PBRTexture() {
             BaseColorTexture = baseColorTexture,

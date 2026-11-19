@@ -43,6 +43,6 @@ public struct Point<T>(T x, T y)
 
     public static bool IsDefault(Point<T> point)
     {
-        return point.X.Equals(default(T)) && point.Y.Equals(default(T));
+        return point.X!.Equals(default(T)) && point.Y!.Equals(default(T));
     }
 }

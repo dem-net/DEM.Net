@@ -45,8 +45,8 @@ public class Node<T>(T model, string key)
 public class Arc<T>
 {
     public float Weigth;
-    public Node<T> Parent;
-    public Node<T> Child;
+    public Node<T> Parent = null!;
+    public Node<T> Child = null!;
 
     public bool Visited { get; internal set; }
 
@@ -58,7 +58,7 @@ public class Arc<T>
 
 public class Graph<T>
 {
-    public Node<T> Root;
+    public Node<T>? Root;
     public List<Node<T>> AllNodes = [];
 
     public Node<T> CreateRoot(T node, string key)

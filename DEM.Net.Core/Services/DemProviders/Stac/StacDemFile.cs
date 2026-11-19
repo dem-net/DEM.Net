@@ -17,9 +17,9 @@ public class StacDemFile(string fileId, List<float> box, string href, DateTimeOf
     public string Href { get; } = href;
     public DateTimeOffset DateTime { get; } = dateTime;
 
-    public bool Equals(StacDemFile other)
+    public bool Equals(StacDemFile? other)
     {
-        return this.Box.SequenceEqual(other.Box);
+        return this.Box.SequenceEqual(other!.Box);
     }
 
     public override int GetHashCode()
@@ -27,13 +27,13 @@ public class StacDemFile(string fileId, List<float> box, string href, DateTimeOf
         return HashCode.Combine(this.Box[0], this.Box[1], this.Box[2], this.Box[3]);
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (this==null)
             return false;
 
         if (obj is StacDemFile other)
-            return this.Box.SequenceEqual(other.Box);
+            return this.Box.SequenceEqual(other!.Box);
 
         return false;
     }

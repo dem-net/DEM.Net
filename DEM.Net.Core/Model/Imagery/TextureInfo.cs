@@ -41,6 +41,6 @@ public class TextureInfo(string filePath, TextureImageFormat imageFormat, int wi
     public int Width { get; } = width;
     public int Height { get; } = height;
     public int ProjectedZoom { get; } = zoom;
-    public BoundingBox ProjectedBounds { get; } = projectedBounds;
+    public BoundingBox? ProjectedBounds { get; } = projectedBounds;
     public int? TileCount { get; set; } = tileCount;
 }

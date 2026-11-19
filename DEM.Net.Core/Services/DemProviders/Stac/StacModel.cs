@@ -10,22 +10,22 @@ namespace DEM.Net.Core.Stac;
 public partial class CollectionItems
 {
     [JsonPropertyName("type")]
-    public string Type { get; set; }
+    public string Type { get; set; } = null!;
 
     [JsonPropertyName("timeStamp")]
     public DateTimeOffset TimeStamp { get; set; }
 
     [JsonPropertyName("features")]
-    public List<Feature> Features { get; set; }
+    public List<Feature> Features { get; set; } = null!;
 
     [JsonPropertyName("links")]
-    public List<Link> Links { get; set; }
+    public List<Link> Links { get; set; } = null!;
 }
 
 public partial class Feature
 {
     [JsonPropertyName("id")]
-    public string Id { get; set; }
+    public string Id { get; set; } = null!;
 
     [JsonPropertyName("collection")]
     public Collection Collection { get; set; }
@@ -37,19 +37,19 @@ public partial class Feature
     public StacVersion StacVersion { get; set; }
 
     [JsonPropertyName("geometry")]
-    public Geometry Geometry { get; set; }
+    public Geometry Geometry { get; set; } = null!;
 
     [JsonPropertyName("bbox")]
-    public List<float> Bbox { get; set; }
+    public List<float> Bbox { get; set; } = null!;
 
     [JsonPropertyName("properties")]
-    public Properties Properties { get; set; }
+    public Properties Properties { get; set; } = null!;
 
     [JsonPropertyName("links")]
-    public List<Link> Links { get; set; }
+    public List<Link> Links { get; set; } = null!;
 
     [JsonPropertyName("assets")]
-    public Dictionary<string, Asset> Assets { get; set; }
+    public Dictionary<string, Asset> Assets { get; set; } = null!;
 }
 
 public partial class Asset
@@ -58,7 +58,7 @@ public partial class Asset
     public AssetType Type { get; set; }
 
     [JsonPropertyName("href")]
-    public Uri Href { get; set; }
+    public Uri Href { get; set; } = null!;
 
     [JsonPropertyName("created")]
     public DateTimeOffset Created { get; set; }
@@ -73,7 +73,7 @@ public partial class Asset
     public long ProjEpsg { get; set; }
 
     [JsonPropertyName("checksum:multihash")]
-    public string ChecksumMultihash { get; set; }
+    public string ChecksumMultihash { get; set; } = null!;
 }
 
 public partial class Geometry
@@ -82,7 +82,7 @@ public partial class Geometry
     public GeometryType Type { get; set; }
 
     [JsonPropertyName("coordinates")]
-    public List<List<List<double>>> Coordinates { get; set; }
+    public List<List<List<double>>> Coordinates { get; set; } = null!;
 }
 
 public partial class Link
@@ -91,7 +91,7 @@ public partial class Link
     public Rel Rel { get; set; }
 
     [JsonPropertyName("href")]
-    public Uri Href { get; set; }
+    public Uri Href { get; set; } = null!;
 }
 
 public partial class Properties
@@ -128,7 +128,7 @@ public enum FeatureType { Feature };
 
 public partial class CollectionItems
 {
-    public static CollectionItems FromJson(string json) => JsonSerializer.Deserialize(json, CoreJsonContext.Default.CollectionItems);
+    public static CollectionItems FromJson(string json) => JsonSerializer.Deserialize(json, CoreJsonContext.Default.CollectionItems)!;
 }
 
 public static class Serialize

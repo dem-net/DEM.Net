@@ -37,7 +37,7 @@ public class LocalFileSystemIndex(ILogger<LocalFileSystemIndex> logger, RasterSe
         string datasetPath = _rasterService.GetLocalDEMPath(dataset);
         foreach (var file in Directory.GetFiles(datasetPath, "*" + dataset.FileFormat.FileExtension, SearchOption.AllDirectories))
         {
-            var metadataPath = Path.Combine(Path.GetDirectoryName(file), RasterService.MANIFEST_DIR, Path.ChangeExtension(Path.GetFileName(file), ".json"));
+            var metadataPath = Path.Combine(Path.GetDirectoryName(file)!, RasterService.MANIFEST_DIR, Path.ChangeExtension(Path.GetFileName(file), ".json"));
             if (!File.Exists(metadataPath))
             {
                 _rasterService.GenerateFileMetadata(file, dataset.FileFormat, false);

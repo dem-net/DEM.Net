@@ -18,7 +18,7 @@ namespace DEM.Net.Test;
 [Trait("Category", "Network")]
 public class TiledGeoTiffSeamTests(DemNetFixture fixture, ITestOutputHelper output) : IClassFixture<DemNetFixture>
 {
-    private readonly ElevationService _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
+    private readonly ElevationService _elevationService = fixture.ServiceProvider.GetRequiredService<ElevationService>();
     private readonly IServiceProvider _services = fixture.ServiceProvider;
     private readonly ITestOutputHelper _output = output;
 
@@ -39,7 +39,7 @@ public class TiledGeoTiffSeamTests(DemNetFixture fixture, ITestOutputHelper outp
     [MemberData(nameof(Cases))]
     public async Task HeightMapAcrossTileSeamIsARegularGridOfPixelCenters(string datasetName, double xMin, double xMax, double yMin, double yMax, double pixelSize, double centerOffset)
     {
-        var dataset = (DEMDataSet)typeof(DEMDataSet).GetProperty(datasetName).GetValue(null);
+        var dataset = (DEMDataSet)typeof(DEMDataSet).GetProperty(datasetName)!.GetValue(null)!;
         var bbox = new BoundingBox(xMin, xMax, yMin, yMax) { SRID = dataset.SRID };
 
         HeightMap heightMap = await _elevationService.GetHeightMapAsync(bbox, dataset);
@@ -75,7 +75,7 @@ public class TiledGeoTiffSeamTests(DemNetFixture fixture, ITestOutputHelper outp
     [Fact]
     public async Task FabdemTerrainAcrossTileSeamCanBeDecimated()
     {
-        var gltf = _services.GetService<DEM.Net.glTF.SharpglTF.SharpGltfService>();
+        var gltf = _services.GetRequiredService<DEM.Net.glTF.SharpglTF.SharpGltfService>();
         var dataset = DEMDataSet.FABDEM;
         var bbox = new BoundingBox(8.223893, 8.35273, 49.964561, 50.042325) { SRID = dataset.SRID };
 

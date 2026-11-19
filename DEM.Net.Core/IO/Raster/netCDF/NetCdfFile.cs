@@ -17,13 +17,13 @@ namespace DEM.Net.Core;
 public class NetCdfFile : IRasterFile
 {
     private readonly string _filename;
-    private DataSet _dataset;
+    private DataSet _dataset = null!;
     private netCDFField _lat = netCDFField.Create<double>("lat");
     private netCDFField _long = netCDFField.Create<double>("lon");
     private netCDFField _elevation = netCDFField.Create<float>("elevation");
-    private Variable _latVariable;
-    private Variable _longVariable;
-    private Variable _elevationVariable;
+    private Variable _latVariable = null!;
+    private Variable _longVariable = null!;
+    private Variable _elevationVariable = null!;
 
     public NetCdfFile(string fileName, netCDFField? latitudeField = null, netCDFField? longitudeField = null, netCDFField? elevationField = null)
     {
@@ -76,7 +76,7 @@ public class NetCdfFile : IRasterFile
             if (disposing)
             {
                 _dataset?.Dispose();
-                _dataset = null;
+                _dataset = null!;
             }
 
             disposedValue = true;
@@ -103,7 +103,7 @@ public class NetCdfFile : IRasterFile
             if (_southUp is null)
             {
                 Array latValues = _latVariable.GetData(null, [2]);
-                _southUp = (double)latValues.GetValue(1) > (double)latValues.GetValue(0);
+                _southUp = (double)latValues.GetValue(1)! > (double)latValues.GetValue(0)!;
             }
             return _southUp.Value;
         }
@@ -146,7 +146,7 @@ public class NetCdfFile : IRasterFile
         catch (Exception ex)
         {
             Trace.TraceError($"{nameof(NetCdfFile)} error: {ex.Message}");
-            return null;
+            return null!;
         }
     }
 
@@ -208,10 +208,10 @@ public class NetCdfFile : IRasterFile
 
         Array longValues = _longVariable.GetData(null, [2]);
         Array latValues = _latVariable.GetData(null, [2]);
-        double firstLon = (double)longValues.GetValue(0);
-        double firstLat = (double)latValues.GetValue(0);
-        double stepLon = (double)longValues.GetValue(1) - firstLon;
-        double stepLat = (double)latValues.GetValue(1) - firstLat;
+        double firstLon = (double)longValues.GetValue(0)!;
+        double firstLat = (double)latValues.GetValue(0)!;
+        double stepLon = (double)longValues.GetValue(1)! - firstLon;
+        double stepLat = (double)latValues.GetValue(1)! - firstLat;
 
         return CreateMetadata(_filename, fileFormat, ncols, nrows, firstLon, firstLat, stepLon, stepLat);
     }

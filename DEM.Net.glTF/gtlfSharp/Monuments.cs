@@ -84,7 +84,7 @@ public sealed class MonumentAtlas
         var paths = new List<(Monument Monument, IPath Path, RectangleF Bounds, int Width)>();
         foreach (var m in monuments)
         {
-            if (!Path.TryParseSvgPath(m.SvgPath, out IPath path))
+            if (!Path.TryParseSvgPath(m.SvgPath, out IPath? path))
                 throw new InvalidOperationException($"Invalid SVG path for {m.Name}");
             RectangleF b = path.Bounds;
             int width = (int)MathF.Ceiling(b.Width / b.Height * CellHeight);

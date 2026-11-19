@@ -32,7 +32,7 @@ public class DatasetReport
     /// <summary>
     /// Dataset name
     /// </summary>
-    public string DatasetName { get; internal set; }
+    public string DatasetName { get; internal set; } = null!;
 
     /// <summary>
     /// Total files in dataset definition

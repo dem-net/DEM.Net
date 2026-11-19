@@ -188,7 +188,7 @@ public class Graticules
 
 public struct GraticuleLabel
 {
-    public string label;
+    public string? label;
     public Point<int> location;
     public LatLong worldLocation;
          
