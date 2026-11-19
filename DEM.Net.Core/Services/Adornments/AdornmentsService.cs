@@ -20,7 +20,7 @@ public class AdornmentsService(MeshService meshService, ILogger<AdornmentsServic
     private readonly MeshService _meshService = meshService;
     private readonly ILogger<AdornmentsService> _logger = logger;
 
-    public TriangulationList<Vector3> CreateModelAdornments(DEMDataSet dataset, ImageryProvider imageryProvider, BoundingBox bboxDemSpace, BoundingBox bboxModelSpace)
+    public TriangulationList<Vector3> CreateModelAdornments(DEMDataSet dataset, ImageryProvider? imageryProvider, BoundingBox bboxDemSpace, BoundingBox bboxModelSpace)
     {
         var width = (float)new GeoPoint(latitude: bboxDemSpace.Center[1],
                                  longitude: bboxDemSpace.Center[0] - bboxDemSpace.Width / 2f)
