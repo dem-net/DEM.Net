@@ -32,18 +32,18 @@ public static class GpxImport
     }
 
     /// <summary>
-    /// Read gpx file segments as enumerable GeoPoints
+    /// Read gpx file segments as enumerable GeoPoints: one list per track segment (<c>trkseg</c>)
+    /// and one per route (<c>rte</c>), in file order. Empty segments are skipped.
     /// </summary>
     /// <param name="gpxFileStream">GPX file stream</param>
     /// <returns></returns>
+    /// <remarks>A route's points are its <c>rtept</c>, each followed by its Garmin <c>gpxx:rpt</c> shape points when present.</remarks>
     public static IEnumerable<IEnumerable<GeoPoint>> ReadGPX_Segments(Stream gpxFileStream)
     {
-        var trackPointConvert = (GpxTrackPoint pt, int index) => new GeoPoint(pt.Latitude, pt.Longitude, pt.Elevation);
-        var routePointConvert = (GpxPoint pt, int index) => new GeoPoint(pt.Latitude, pt.Longitude, pt.Elevation);
+        static GeoPoint Convert(GpxPoint pt) => new GeoPoint(pt.Latitude, pt.Longitude, pt.Elevation);
 
-        IEnumerable<IEnumerable<GeoPoint>> segments = [];
+        var segments = new List<List<GeoPoint>>();
 
-        int i = 0;
         using (GpxReader reader = new GpxReader(gpxFileStream))
         {
             while (reader.Read())
@@ -51,18 +51,15 @@ public static class GpxImport
                 switch (reader.ObjectType)
                 {
                     case GpxObjectType.Track:
-                        GpxTrack track = reader.Track!;
-                        var currentSegment = track.Segments.Select(seg => seg.TrackPoints.Select(pt => trackPointConvert(pt, i++)));
-                        segments = segments.Concat(currentSegment);
+                        foreach (var seg in reader.Track!.Segments)
+                            segments.Add([.. seg.TrackPoints.Select(Convert)]);
                         break;
                     case GpxObjectType.Route:
-                        GpxRoute route = reader.Route!;
-                        var currentRouteSegment = route.RoutePoints.Select(seg => seg.RoutePoints.Select(pt => routePointConvert(pt, i++)));
-                        segments = segments.Concat(currentRouteSegment);
+                        segments.Add([.. reader.Route!.ToGpxPoints().Select(Convert)]);
                         break;
                 }
             }
         }
-        return segments;
+        return segments.Where(seg => seg.Count > 0).ToList();
     }
 }

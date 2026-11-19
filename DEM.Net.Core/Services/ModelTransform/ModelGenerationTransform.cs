@@ -35,14 +35,47 @@ public class ModelGenerationTransform : GeoTransformPipeline
     private readonly float _zFactor;
     private readonly bool _centerOnZOrigin;
 
-   
-    public ModelGenerationTransform(BoundingBox bbox, int datasetSrid, int outputSrid, bool centerOnOrigin, float zFactor, bool centerOnZOrigin)
+    /// <summary>
+    /// X and Y scale applied after centring: cos(lat₀) with true scale, 1 otherwise.
+    /// </summary>
+    public double HorizontalScale { get; }
+
+    /// <summary>
+    /// True when X and Y are scaled to true metres at the model centre.
+    /// </summary>
+    public bool IsTrueScale => HorizontalScale != 1d;
+
+    /// <inheritdoc/>
+    public override double ModelUnitsPerMeter { get; }
+
+    /// <param name="bbox">Model extent, in its own SRID</param>
+    /// <param name="datasetSrid">SRID of the points given to <see cref="GeoTransformPipeline.TransformPoints"/></param>
+    /// <param name="outputSrid">Model SRID</param>
+    /// <param name="centerOnOrigin">Translate the model so the bbox centre is at (0, 0)</param>
+    /// <param name="zFactor">Vertical exaggeration</param>
+    /// <param name="centerOnZOrigin">Translate the height map so its lowest point is at Z = 0</param>
+    /// <param name="trueScale">With a Web Mercator output centred on the origin, scale X and Y by cos(lat₀) (bbox centre),
+    /// so model units are true metres at the centre and the relief keeps its real proportions.
+    /// Ignored otherwise: an uncentred model keeps pure Web Mercator coordinates.</param>
+    public ModelGenerationTransform(BoundingBox bbox, int datasetSrid, int outputSrid, bool centerOnOrigin, float zFactor, bool centerOnZOrigin, bool trueScale = false)
     {
         this.BoundingBox = bbox;
         _outputSrid = outputSrid;
         _centerOnOrigin = centerOnOrigin;
         _zFactor = zFactor;
         _centerOnZOrigin = centerOnZOrigin;
+
+        // Web Mercator inflates horizontal distances by 1/cos(lat), Z stays in metres
+        double mercatorScale = 1d;
+        if (outputSrid == Reprojection.SRID_PROJECTED_MERCATOR && bbox != null)
+        {
+            var bboxWgs84 = bbox.SRID == Reprojection.SRID_GEODETIC ? bbox : bbox.ReprojectTo(bbox.SRID, Reprojection.SRID_GEODETIC);
+            double lat0 = (bboxWgs84.yMin + bboxWgs84.yMax) / 2d;
+            mercatorScale = Math.Cos(lat0 * Math.PI / 180d);
+        }
+        bool applyScale = trueScale && centerOnOrigin && outputSrid == Reprojection.SRID_PROJECTED_MERCATOR && mercatorScale != 1d;
+        HorizontalScale = applyScale ? mercatorScale : 1d;
+        ModelUnitsPerMeter = applyScale ? 1d : 1d / mercatorScale;
 
         base.TransformPoints = points =>
         {
@@ -56,6 +89,11 @@ public class ModelGenerationTransform : GeoTransformPipeline
                 points = points.CenterOnOrigin(this.BoundingBox.ReprojectTo(this.BoundingBox.SRID, _outputSrid));
             }
 
+            if (IsTrueScale)
+            {
+                float s = (float)HorizontalScale;
+                points = points.Scale(s, s, 1f);
+            }
             points = points.ZScale(_zFactor);
             return points;
         };
@@ -70,13 +108,14 @@ public class ModelGenerationTransform : GeoTransformPipeline
                 hMap = hMap.CenterOnOrigin(this.BoundingBox.ReprojectTo(this.BoundingBox.SRID, _outputSrid), _centerOnZOrigin);
             }
 
+            if (IsTrueScale)
+            {
+                float s = (float)HorizontalScale;
+                hMap = hMap.Scale(s, s, 1f);
+            }
             hMap = hMap.ZScale(_zFactor);
 
             return hMap;
         };
     }
-
-   
-
-
 }
