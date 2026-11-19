@@ -447,89 +447,48 @@ public class MeshService(ILogger<MeshService>? logger = null)
         return normals;
     }
 
-    public TriangulationList<Vector3> GenerateTriangleMesh_Line(IEnumerable<GeoPoint> points, float width, Matrix4x4 transform)
+    /// <summary>
+    /// Flat ribbon mesh along a line (roads, GPX tracks), in glTF space (Y up).
+    /// </summary>
+    /// <param name="points">Line points, in model coordinates (X, Y horizontal, elevation)</param>
+    /// <param name="width">Full ribbon width, in model units (half on each side of the line)</param>
+    /// <param name="transform">Optional transform applied to the points in glTF space</param>
+    /// <param name="simplifyTolerance">When &gt; 0, the line is first simplified (3D Douglas–Peucker) with this tolerance, in model units</param>
+    /// <remarks>
+    /// The ribbon stays horizontal across the line: its side vector is built from the horizontal direction,
+    /// so it keeps its width on slopes. Inner vertices use a miter join, or a bevel when the turn is too sharp
+    /// for the miter (longer than twice the half width, or longer than the adjacent segments).
+    /// Points closer than a quarter of the width to the previous one are dropped.
+    /// </remarks>
+    public TriangulationList<Vector3> GenerateTriangleMesh_Line(IEnumerable<GeoPoint> points, float width, Matrix4x4 transform, float simplifyTolerance = 0f)
     {
         try
         {
             if (points == null)
             {
                 _logger?.LogWarning("Points are empty.");
+                return new TriangulationList<Vector3>();
             }
-            else
+            if (width <= 0)
             {
-
-                if (width <= 0)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(width), width, "Line width must be > 0.");
-                }
-                else
-                {
-                    TriangulationList<Vector3> triangulation = new TriangulationList<Vector3>();
-
-                    // https://gist.github.com/gszauer/5718441
-                    // Line triangle mesh
-                    transform = transform == default ? Matrix4x4.Identity : transform;
-                    List<Vector3> sections = [.. points.Select(pt => Vector3.Transform(pt.ToVector3GlTFSpace(), transform)).FilterConsecutiveSame()];
-
-                    for (int i = 0; i < sections.Count - 1; i++)
-                    {
-                        Vector3 current = sections[i];
-                        Vector3 next = sections[i + 1];
-                        Vector3 dir = Vector3.Normalize(next - current);
-
-
-                        // translate the vector to the left along its way
-                        Vector3 side;
-                        if (dir.Equals(Vector3.UnitY))
-                        {
-                            side = Vector3.UnitX * width;
-                        }
-                        else
-                        {
-                            side = Vector3.Cross(dir, Vector3.UnitY) * width;
-                        }
-
-
-                        Vector3 v0 = current - side; // 0
-                        Vector3 v1 = current + side; // 1
-
-                        triangulation.Positions.Add(v0);
-                        triangulation.Positions.Add(v1);
-
-                        if (i == sections.Count - 2) // add last vertices
-                        {
-                            v0 = next - side; // 0
-                            v1 = next + side; // 1
-                            triangulation.Positions.Add(v0);
-                            triangulation.Positions.Add(v1);
-                        }
-                    }
-                    // add last vertices
-
-
-                    for (int i = 0; i < sections.Count - 1; i++)
-                    {
-                        int i0 = i * 2;
-                        triangulation.Indices.Add(i0);
-                        triangulation.Indices.Add(i0 + 1);
-                        triangulation.Indices.Add(i0 + 3);
-
-                        triangulation.Indices.Add(i0 + 0);
-                        triangulation.Indices.Add(i0 + 3);
-                        triangulation.Indices.Add(i0 + 2);
-                    }
-
-                    return triangulation;
-
-                }
+                throw new ArgumentOutOfRangeException(nameof(width), width, "Line width must be > 0.");
             }
+
+            transform = transform == default ? Matrix4x4.Identity : transform;
+            List<Vector3> line = [.. points.Select(pt => Vector3.Transform(pt.ToVector3GlTFSpace(), transform)).FilterConsecutiveSame()];
+            if (simplifyTolerance > 0)
+            {
+                line = LineHelpers.SimplifyDouglasPeucker(line, simplifyTolerance);
+            }
+            line = LineHelpers.DropCloseHorizontalPoints(line, width * 0.25f);
+
+            return LineHelpers.BuildRibbon(line, width / 2f);
         }
         catch (Exception ex)
         {
             _logger?.LogError(ex, ex.ToString());
             throw;
         }
-        return default!;
     }
 
     /// <summary>

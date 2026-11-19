@@ -430,45 +430,37 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
         primitive = primitive.WithMaterial(material);
         return model;
     }
+    /// <summary>
+    /// Adds a track ribbon (GPX), simplified before meshing (3D Douglas–Peucker, a quarter of the width).
+    /// </summary>
+    /// <param name="trailWidthMeters">Full ribbon width, in model units</param>
     public ModelRoot AddLine(ModelRoot? model, string nodeName, IEnumerable<GeoPoint> gpxPointsElevated, Vector4 color, float trailWidthMeters, Matrix4x4 transform = default)
+        => AddLine(model, nodeName, [gpxPointsElevated], color, trailWidthMeters, transform);
+
+    /// <summary>
+    /// Adds a track ribbon per segment (GPX track segments or routes), simplified before meshing
+    /// (3D Douglas–Peucker, a quarter of the width). The ribbon is not reduced afterwards: QEM slides
+    /// its boundary vertices, which cuts corners and flips triangles.
+    /// </summary>
+    /// <param name="trailWidthMeters">Full ribbon width, in model units</param>
+    public ModelRoot AddLine(ModelRoot? model, string nodeName, IEnumerable<IEnumerable<GeoPoint>> segmentsElevated, Vector4 color, float trailWidthMeters, Matrix4x4 transform = default)
     {
         model = model ?? CreateNewModel();
-        var scene = model.UseScene(TERRAIN_SCENE_NAME);
-        var rnode = scene.FindNode(n => n.Name == nodeName);
-        if (rnode == null)
-            rnode = scene.CreateNode(nodeName);
-        var rmesh = rnode.Mesh = FindOrCreateMesh(model, string.Concat(nodeName, "Mesh"));
-
-
-        var material = model.CreateMaterial(string.Concat(nodeName, "Material"))
-           .WithPBRMetallicRoughness(color, null, null, 0, 0.9f)
-          .WithDoubleSide(true);
-        material.Alpha = SharpGLTF.Schema2.AlphaMode.BLEND;
-
-
-        var triangulation = _meshService.GenerateTriangleMesh_Line(gpxPointsElevated, trailWidthMeters, transform);
-        var decimatedTriangulation = _meshReducer.Decimate(triangulation, 0.1f);
-
-        var normals = _meshService.ComputeMeshNormals(decimatedTriangulation.Positions, decimatedTriangulation.Indices);
-
-
-        // create mesh primitive
-        var primitive = rmesh.CreatePrimitive()
-            .WithVertexAccessor("POSITION", decimatedTriangulation.Positions)
-            .WithVertexAccessor("NORMAL", normals.ToList())
-            .WithIndicesAccessor(PrimitiveType.TRIANGLES, decimatedTriangulation.Indices);
-
-        primitive = primitive.WithMaterial(material);
-        return model;
+        return AddLines(model, nodeName, segmentsElevated.Select(seg => (seg, trailWidthMeters)), color, transform, simplifyTolerance: trailWidthMeters * 0.25f);
     }
-    public ModelRoot AddLines(ModelRoot model, string nodeName, IEnumerable<(IEnumerable<GeoPoint> points, float trailWidthMeters)> lines, Vector4 color, Matrix4x4 transform = default)
+    /// <summary>
+    /// Adds ribbons along lines (roads, railways, tracks) in a single mesh.
+    /// </summary>
+    /// <param name="lines">Line points, and the full ribbon width in model units</param>
+    /// <param name="simplifyTolerance">When &gt; 0, each line is simplified first (3D Douglas–Peucker, in model units)</param>
+    public ModelRoot AddLines(ModelRoot model, string nodeName, IEnumerable<(IEnumerable<GeoPoint> points, float trailWidthMeters)> lines, Vector4 color, Matrix4x4 transform = default, float simplifyTolerance = 0f)
     {
         List<Vector3> positions = [];
         List<int> indices = [];
 
         foreach (var line in lines)
         {
-            TriangulationList<Vector3> triangulation = _meshService.GenerateTriangleMesh_Line(line.points, line.trailWidthMeters, transform);
+            TriangulationList<Vector3> triangulation = _meshService.GenerateTriangleMesh_Line(line.points, line.trailWidthMeters, transform, simplifyTolerance);
 
             indices.AddRange(triangulation.Indices.Select(i => i + positions.Count)); // offset indices, adding last positions count
             positions.AddRange(triangulation.Positions);

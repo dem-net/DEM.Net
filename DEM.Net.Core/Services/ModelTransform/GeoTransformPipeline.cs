@@ -34,6 +34,14 @@ public class GeoTransformPipeline
     public Func<IEnumerable<GeoPoint>, IEnumerable<GeoPoint>> TransformPoints { get; set; } = null!;
     public Func<HeightMap, HeightMap> TransformHeightMap { get; set; } = null!;
 
+    /// <summary>
+    /// Horizontal model units for one true metre at the model centre. Metric sizes added after the transform
+    /// (line widths, building heights) are multiplied by it, so they keep their real proportions in the model.
+    /// </summary>
+    /// <remarks>Elevations are in metres times the z factor, whatever this value: a lift above the terrain
+    /// is added before the transform, so it follows the z factor like the terrain does.</remarks>
+    public virtual double ModelUnitsPerMeter => 1d;
+
     public GeoTransformPipeline Clone()
     {
         return (GeoTransformPipeline)this.MemberwiseClone();
