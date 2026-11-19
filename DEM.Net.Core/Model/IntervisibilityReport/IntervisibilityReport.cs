@@ -32,7 +32,7 @@ namespace DEM.Net.Core;
 /// Reports ray casting from an origin to a target point
 /// If there is anything standing between the points, it will be listed in obstacles
 /// </summary>
-public class IntervisibilityReport(List<GeoPoint> pointsWithElevation, IntervisibilityMetrics visibilityMetrics, bool includeAllPoints = false, double originVerticalOffset = 0d
+public class IntervisibilityReport(List<GeoPoint> pointsWithElevation, IntervisibilityMetrics visibilityMetrics, double originVerticalOffset = 0d
         , double targetVerticalOffset = 0d)
 {
     public GeoPoint Origin { get; internal set; } = pointsWithElevation.First();
