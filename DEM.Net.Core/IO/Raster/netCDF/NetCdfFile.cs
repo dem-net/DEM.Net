@@ -121,33 +121,25 @@ public class NetCdfFile : IRasterFile
 
     public HeightMap GetHeightMapInBBox(BoundingBox bbox, FileMetadata metadata, float noDataValue = float.MinValue)
     {
-        try
+        // Same rows and columns as GeoTiff.GetHeightMapInBBox: metadata rows count from the north (pixelSizeY < 0)
+        int yStart, yEnd, xStart, xEnd;
+        if (metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid)
         {
-            // Same rows and columns as GeoTiff.GetHeightMapInBBox: metadata rows count from the north (pixelSizeY < 0)
-            int yStart, yEnd, xStart, xEnd;
-            if (metadata.FileFormat.Registration == DEMFileRegistrationMode.Grid)
-            {
-                yStart = (int)Math.Floor((bbox.yMax - metadata.PhysicalEndLat) / metadata.pixelSizeY);
-                yEnd = (int)Math.Ceiling((bbox.yMin - metadata.PhysicalEndLat) / metadata.pixelSizeY);
-                xStart = (int)Math.Floor((bbox.xMin - metadata.PhysicalStartLon) / metadata.pixelSizeX);
-                xEnd = (int)Math.Ceiling((bbox.xMax - metadata.PhysicalStartLon) / metadata.pixelSizeX);
-            }
-            else
-            {
-                yStart = (int)Math.Floor((bbox.yMax - metadata.DataEndLat) / metadata.pixelSizeY);
-                yEnd = (int)Math.Ceiling((bbox.yMin - metadata.DataEndLat) / metadata.pixelSizeY);
-                xStart = (int)Math.Floor((bbox.xMin - metadata.DataStartLon) / metadata.pixelSizeX);
-                xEnd = (int)Math.Ceiling((bbox.xMax - metadata.DataStartLon) / metadata.pixelSizeX);
-            }
+            yStart = (int)Math.Floor((bbox.yMax - metadata.PhysicalEndLat) / metadata.pixelSizeY);
+            yEnd = (int)Math.Ceiling((bbox.yMin - metadata.PhysicalEndLat) / metadata.pixelSizeY);
+            xStart = (int)Math.Floor((bbox.xMin - metadata.PhysicalStartLon) / metadata.pixelSizeX);
+            xEnd = (int)Math.Ceiling((bbox.xMax - metadata.PhysicalStartLon) / metadata.pixelSizeX);
+        }
+        else
+        {
+            yStart = (int)Math.Floor((bbox.yMax - metadata.DataEndLat) / metadata.pixelSizeY);
+            yEnd = (int)Math.Ceiling((bbox.yMin - metadata.DataEndLat) / metadata.pixelSizeY);
+            xStart = (int)Math.Floor((bbox.xMin - metadata.DataStartLon) / metadata.pixelSizeX);
+            xEnd = (int)Math.Ceiling((bbox.xMax - metadata.DataStartLon) / metadata.pixelSizeX);
+        }
 
-            return ReadBlock(Math.Max(0, yStart), Math.Min(metadata.Height - 1, yEnd),
-                             Math.Max(0, xStart), Math.Min(metadata.Width - 1, xEnd), metadata);
-        }
-        catch (Exception ex)
-        {
-            Trace.TraceError($"{nameof(NetCdfFile)} error: {ex.Message}");
-            return null!;
-        }
+        return ReadBlock(Math.Max(0, yStart), Math.Min(metadata.Height - 1, yEnd),
+                         Math.Max(0, xStart), Math.Min(metadata.Width - 1, xEnd), metadata);
     }
 
     /// <summary>
