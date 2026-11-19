@@ -537,7 +537,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
         {
             { metadata, raster }
         };
-        return GetElevationAtPoint(raster, rasters, metadata, lat, lon, 0, interpolator!, NoDataBehavior.UseNoDataDefinedInDem);
+        return GetElevationAtPoint(raster, rasters, metadata, lat, lon, 0, interpolator ?? GetInterpolator(InterpolationMode.Bilinear), NoDataBehavior.UseNoDataDefinedInDem);
 
     }
 

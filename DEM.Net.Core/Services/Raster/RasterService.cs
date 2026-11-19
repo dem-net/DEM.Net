@@ -36,6 +36,7 @@ using System.Threading.Tasks;
 using DEM.Net.Core.Configuration;
 using DEM.Net.Core.Model;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using ProtoBuf;
 
@@ -62,7 +63,7 @@ public class RasterService : IRasterDownloader
 
     public RasterService(RasterIndexServiceResolver rasterResolver, IOptions<DEMNetOptions> options, ILogger<RasterService>? logger = null)
     {
-        this._logger = logger!;
+        this._logger = logger ?? NullLogger<RasterService>.Instance;
         this._rasterIndexServiceResolver = rasterResolver;
         string? directoryFromOptions = options?.Value?.LocalDirectory;
         _localDirectory = string.IsNullOrWhiteSpace(directoryFromOptions) ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), APP_NAME)
