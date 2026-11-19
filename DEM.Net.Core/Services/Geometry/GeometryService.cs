@@ -245,7 +245,7 @@ namespace DEM.Net.Core;
         points[0] = firstPoint;
         double lastElevation = firstPoint.Elevation ?? 0;
 
-        IntervisibilityObstacle obstacle = null;
+        IntervisibilityObstacle? obstacle = null;
         double lastPeakElevation = 0;
         int numNoDataPoints = 0;
         for (int i = 1; i < points.Count; i++)

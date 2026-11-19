@@ -50,9 +50,9 @@ namespace DEM.Net.Core;
     }
     public DEMFileDefinition(DEMFileType format, DEMFileRegistrationMode registration)
     {
-        this.Name = null;
+        this.Name = null!;
         this.Type = format;
-        this.FileExtension = null;
+        this.FileExtension = null!;
         this.Registration = registration;
     }
 
@@ -63,12 +63,12 @@ namespace DEM.Net.Core;
     /// Common name
     /// </summary>
     [ProtoMember(1)]
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
     /// <summary>
     /// Physical raster files extension (format: ".ext")
     /// </summary>
 		[ProtoMember(2)]
-    public string FileExtension { get; set; }
+    public string FileExtension { get; set; } = null!;
 
     /// <summary>
     /// Physical file format enumeration

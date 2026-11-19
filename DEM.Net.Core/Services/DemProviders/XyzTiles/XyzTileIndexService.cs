@@ -151,7 +151,7 @@ public class XyzTileIndexService(ILogger<XyzTileIndexService> logger, IHttpClien
     private static void SetUserAgent(HttpRequestMessage request) => request.Headers.UserAgent.ParseAdd(UserAgent);
 
     /// <summary>Downloads a tile, returns null when it does not exist (404).</summary>
-    private Task<byte[]> TryDownloadAsync(string url, CancellationToken cancellationToken)
+    private Task<byte[]?> TryDownloadAsync(string url, CancellationToken cancellationToken)
         => HttpDownload.TryGetBytesAsync(_httpClientFactory.CreateClient(), url, cancellationToken, SetUserAgent);
 
     /// <summary>
@@ -164,9 +164,9 @@ public class XyzTileIndexService(ILogger<XyzTileIndexService> logger, IHttpClien
             int az = z - d, ax = x >> d, ay = y >> d;
             string url = source.GetTileUrl(az, ax, ay);
             string key = "xyz-ancestor:" + url;
-            if (!_cache.TryGetValue(key, out (float[] heights, int size) ancestor))
+            if (!_cache.TryGetValue(key, out (float[]? heights, int size) ancestor))
             {
-                byte[] bytes = await TryDownloadAsync(url, cancellationToken).ConfigureAwait(false);
+                byte[]? bytes = await TryDownloadAsync(url, cancellationToken).ConfigureAwait(false);
                 ancestor = bytes == null ? (null, 0) : (TerrariumFile.Decode(bytes, out int size), size);
                 _cache.Set(key, ancestor, ancestor.heights == null ? TileMemoryCache.SmallEntrySize : ancestor.heights.Length * sizeof(float), AncestorCacheDuration);
             }
@@ -294,7 +294,7 @@ public class XyzTileIndexService(ILogger<XyzTileIndexService> logger, IHttpClien
         TimeSpan duration = CoverageCacheDuration;
         try
         {
-            byte[] bytes = await TryDownloadAsync(source.CoverageIndexUrl, cancellationToken).ConfigureAwait(false)
+            byte[]? bytes = await TryDownloadAsync(source.CoverageIndexUrl, cancellationToken).ConfigureAwait(false)
                 ?? throw new FileNotFoundException(source.CoverageIndexUrl);
             areas = ParseCoverageIndex(System.Text.Encoding.UTF8.GetString(bytes));
         }

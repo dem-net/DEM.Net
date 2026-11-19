@@ -62,9 +62,9 @@ public class RasterService : IRasterDownloader
 
     public RasterService(RasterIndexServiceResolver rasterResolver, IOptions<DEMNetOptions> options, ILogger<RasterService>? logger = null)
     {
-        this._logger = logger;
+        this._logger = logger!;
         this._rasterIndexServiceResolver = rasterResolver;
-        string directoryFromOptions = options?.Value?.LocalDirectory;
+        string? directoryFromOptions = options?.Value?.LocalDirectory;
         _localDirectory = string.IsNullOrWhiteSpace(directoryFromOptions) ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), APP_NAME)
             : directoryFromOptions;
         if (!Directory.Exists(_localDirectory))
@@ -171,7 +171,7 @@ public class RasterService : IRasterDownloader
     }
     public FileMetadata ParseMetadata(string fileName, DEMFileDefinition fileFormat)
     {
-        FileMetadata metadata = null;
+        FileMetadata? metadata = null;
 
         fileName = Path.GetFullPath(fileName);
 
@@ -339,7 +339,7 @@ public class RasterService : IRasterDownloader
     }
     private static string GetManifestDirectory(string rasterFileName)
     {
-        return Path.Combine(Path.GetDirectoryName(rasterFileName), MANIFEST_DIR);
+        return Path.Combine(Path.GetDirectoryName(rasterFileName)!, MANIFEST_DIR);
     }
     private static string GetMetadataFileName(string rasterFileName, string extension = ".json")
     {

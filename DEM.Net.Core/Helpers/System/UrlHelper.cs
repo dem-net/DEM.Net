@@ -39,7 +39,7 @@ public static class UrlHelper
     public static string GetFileNameFromUrl(string url)
     {
 
-        Uri uri = null;
+        Uri? uri = null;
         if (!Uri.TryCreate(url, UriKind.Absolute, out uri))
         {
             uri = new Uri(SomeBaseUri, url);

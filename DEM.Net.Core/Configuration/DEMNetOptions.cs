@@ -31,7 +31,7 @@ public class DEMNetOptions
     /// </summary>
     public bool MassiveImageGenerator { get; set; } = true;
 
-    public string LocalDirectory { get; set; } = null;
+    public string? LocalDirectory { get; set; }
 
     // Set to true for ensure tiles stitch correctly when tiling
     public bool ReduceMeshPreserveEdges { get; set; } = false;

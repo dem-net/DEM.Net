@@ -27,7 +27,7 @@ namespace DEM.Net.Core.Datasets;
 
 public interface IDEMDataSource
 {
-		string IndexFilePath { get; }
+		string? IndexFilePath { get; }
     
     DEMDataSourceType DataSourceType { get; }
 }

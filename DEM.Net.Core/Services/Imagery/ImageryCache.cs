@@ -46,7 +46,7 @@ public class ImageryCache
         if (cache.TryGetValue(tileUri, out byte[] contentBytes))
             return contentBytes;
 
-        string tileFile = options.UseImageryDiskCache ? GetTileDiskPath(provider, tileInfo) : null;
+        string? tileFile = options.UseImageryDiskCache ? GetTileDiskPath(provider, tileInfo) : null;
         if (tileFile != null && File.Exists(tileFile) && (DateTime.Now - File.GetLastWriteTime(tileFile)) <= diskExpirationHours)
         {
             contentBytes = await File.ReadAllBytesAsync(tileFile, cancellationToken).ConfigureAwait(false);

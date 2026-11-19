@@ -33,9 +33,9 @@ public class PriorityOrderer : ITestCaseOrderer
 
     static TValue GetOrCreate<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key) where TValue : new()
     {
-        TValue result;
+        TValue? result;
 
-        if (dictionary.TryGetValue(key, out result)) return result;
+        if (dictionary.TryGetValue(key, out result)) return result!;
 
         result = new TValue();
         dictionary[key] = result;

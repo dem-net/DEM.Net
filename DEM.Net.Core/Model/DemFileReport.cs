@@ -43,7 +43,7 @@ public class DemFileReport
     /// <value>
     /// Full URL as specified in the VRT file
     /// </value>
-    public string URL { get; internal set; }
+    public string URL { get; internal set; } = null!;
 
 
     /// <summary>
@@ -52,7 +52,7 @@ public class DemFileReport
     /// <value>
     /// The name of the local.
     /// </value>
-    public string LocalName { get; internal set; }
+    public string LocalName { get; internal set; } = null!;
 
     /// <summary>
     /// Gets a value indicating whether this file is existing locally.
@@ -68,7 +68,7 @@ public class DemFileReport
     /// <value>
     /// <see cref="DEMFileSource"/> object
     /// </value>
-    public DEMFileSource Source { get; internal set; }
+    public DEMFileSource Source { get; internal set; } = null!;
 
     /// <summary>
     /// Gets a value indicating whether this file has metadata generated.

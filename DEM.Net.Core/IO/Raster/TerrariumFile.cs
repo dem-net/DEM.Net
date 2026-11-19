@@ -24,7 +24,7 @@ public class TerrariumFile : IRasterFile
 
     private readonly string _filePath;
     private readonly int _zoom, _tileX, _tileY;
-    private float[] _heights;
+    private float[]? _heights;
     private int _size;
 
     public TerrariumFile(string filePath)
@@ -79,9 +79,9 @@ public class TerrariumFile : IRasterFile
     {
         private sealed class Entry
         {
-            public string Path;
+            public string Path = null!;
             public DateTime LastWriteUtc;
-            public float[] Heights;
+            public float[] Heights = null!;
             public int Size;
         }
 
@@ -139,7 +139,7 @@ public class TerrariumFile : IRasterFile
             {
                 var last = _lru.Last;
                 _lru.RemoveLast();
-                _byPath.Remove(last.Value.Path);
+                _byPath.Remove(last!.Value.Path);
             }
         }
     }

@@ -59,7 +59,7 @@ public static class StreamReaderExtensions
         string line;
         do
         {
-            line = sr.ReadLine();
+            line = sr.ReadLine()!;
             lines.Add(line);
         }
         while (match(line) == false && !sr.EndOfStream);

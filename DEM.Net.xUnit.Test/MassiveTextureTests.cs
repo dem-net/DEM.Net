@@ -90,7 +90,7 @@ public class MassiveTextureTests
     private static ImageryService CreateService(bool massive)
     {
         var options = Options.Create(new DEMNetOptions { MassiveImageGenerator = massive, PowerOfTwoImages = false });
-        return new ImageryService(null, Options.Create(new AppSecrets()), options, null, NullLogger<ImageryService>.Instance);
+        return new ImageryService(null!, Options.Create(new AppSecrets()), options, null!, NullLogger<ImageryService>.Instance);
     }
 
     private static TileRange CreateTiles(int tileSize, int missingTile)

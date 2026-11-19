@@ -31,12 +31,12 @@ namespace DEM.Net.Core;
 
 public class GeoTransformPipeline
 {
-    public Func<IEnumerable<GeoPoint>, IEnumerable<GeoPoint>> TransformPoints { get; set; }
-    public Func<HeightMap, HeightMap> TransformHeightMap { get; set; }
+    public Func<IEnumerable<GeoPoint>, IEnumerable<GeoPoint>> TransformPoints { get; set; } = null!;
+    public Func<HeightMap, HeightMap> TransformHeightMap { get; set; } = null!;
 
     public GeoTransformPipeline Clone()
     {
-        return this.MemberwiseClone() as GeoTransformPipeline;
+        return (GeoTransformPipeline)this.MemberwiseClone();
     }
 
     public static GeoTransformPipeline Default => new() { TransformHeightMap = h => h, TransformPoints = pts => pts };

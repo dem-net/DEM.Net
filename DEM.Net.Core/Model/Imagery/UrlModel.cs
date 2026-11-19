@@ -29,14 +29,14 @@ namespace DEM.Net.Core.Imagery;
 
 public class UrlModel
 {
-    public string UrlFormat { get; set; }
-    public string[] Servers { get; set; }
+    public string UrlFormat { get; set; } = null!;
+    public string[]? Servers { get; set; }
 
     public UrlModel()
     {
     }
 
-    public UrlModel(string urlFormat, string[] servers)
+    public UrlModel(string urlFormat, string[]? servers)
     {
         this.UrlFormat = urlFormat;
         this.Servers = servers;

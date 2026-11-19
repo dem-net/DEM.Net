@@ -23,7 +23,7 @@ public class TileDebugProvider : ImageryProvider, ITileGenerator
 
     public byte[] GenerateTile(int x, int y, int zoom)
     {
-        byte[] tileBytes = null;
+        byte[]? tileBytes = null;
         var font = SixLabors.Fonts.SystemFonts.CreateFont("Arial", 12);
 
         var corner = TileUtils.TileXYToGlobalPixel(x, y, TileSize);

@@ -41,7 +41,7 @@ public class IntervisibilityReport(List<GeoPoint> pointsWithElevation, Intervisi
     public double TargetVerticalOffset { get; internal set; } = targetVerticalOffset;
     public bool HasObstacles => Metrics?.Intervisible == false;
     public int ObstacleCount => Metrics?.Obstacles?.Count ?? 0;
-    public List<GeoPoint> GeoPoints { get; internal set; } = pointsWithElevation;
+    public List<GeoPoint>? GeoPoints { get; internal set; } = pointsWithElevation;
     public IntervisibilityMetrics Metrics { get; internal set; } = visibilityMetrics;
 
     public void ClearPoints()

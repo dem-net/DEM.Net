@@ -22,7 +22,7 @@ public static class GpxImport
     /// <returns></returns>
     public static IEnumerable<IEnumerable<GeoPoint>> ReadGPX_Segments(string fileName)
     {
-        IEnumerable<IEnumerable<GeoPoint>> segments = null;
+        IEnumerable<IEnumerable<GeoPoint>> segments;
         using (FileStream fs = new FileStream(fileName, FileMode.Open))
         {
             segments = ReadGPX_Segments(fs);
@@ -51,12 +51,12 @@ public static class GpxImport
                 switch (reader.ObjectType)
                 {
                     case GpxObjectType.Track:
-                        GpxTrack track = reader.Track;
+                        GpxTrack track = reader.Track!;
                         var currentSegment = track.Segments.Select(seg => seg.TrackPoints.Select(pt => trackPointConvert(pt, i++)));
                         segments = segments.Concat(currentSegment);
                         break;
                     case GpxObjectType.Route:
-                        GpxRoute route = reader.Route;
+                        GpxRoute route = reader.Route!;
                         var currentRouteSegment = route.RoutePoints.Select(seg => seg.RoutePoints.Select(pt => routePointConvert(pt, i++)));
                         segments = segments.Concat(currentRouteSegment);
                         break;

@@ -32,7 +32,7 @@ public class ImageDecodingTests
         var bottomRight = TileUtils.GlobalPixelToPosition(new Point<double>((StartX + 2.75) * TileSize, (StartY + 0.75) * TileSize), Zoom, TileSize);
         var bbox = new BoundingBox(topLeft.Long, bottomRight.Long, bottomRight.Lat, topLeft.Lat);
 
-        var service = new ImageryService(null, Options.Create(new AppSecrets()), Options.Create(new DEMNetOptions()), null, NullLogger<ImageryService>.Instance);
+        var service = new ImageryService(null!, Options.Create(new AppSecrets()), Options.Create(new DEMNetOptions()), null!, NullLogger<ImageryService>.Instance);
         string file = Path.Combine(Path.GetTempPath(), "demnet-decoding-" + Guid.NewGuid().ToString("N") + ".png");
         try
         {

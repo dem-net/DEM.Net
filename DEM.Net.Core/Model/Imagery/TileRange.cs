@@ -111,8 +111,8 @@ public class TileRange
     }
 
     public int TileSize { get; set; }
-    public MapTileInfo Start { get; set; }
-    public MapTileInfo End { get; set; }
+    public MapTileInfo Start { get; set; } = null!;
+    public MapTileInfo End { get; set; } = null!;
     public int NumCols => End.X - Start.X + 1;
     public int NumRows => End.Y - Start.Y + 1;
     public int Count => NumCols * NumRows;
@@ -121,7 +121,7 @@ public class TileRange
 
     public int Zoom => Start.Zoom;
 
-    private BoundingBox _areaOfInterest;
+    private BoundingBox? _areaOfInterest;
     public BoundingBox AreaOfInterest 
     {
         get

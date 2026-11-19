@@ -91,7 +91,7 @@ public class STLExportService(ILogger<STLExportService>? logger = null) : ISTLEx
     {
         var texts = (attributions ?? []).Where(a => a.Subject != "Generator" && !string.IsNullOrWhiteSpace(a.Text))
             .OrderBy(a => a.Subject == "Mesh reduction") // stable: keeps the order otherwise
-            .Select(a => a.Text.Trim());
+            .Select(a => a.Text!.Trim());
         string text = string.Join("; ", texts.Prepend("elevationapi.com"));
         var header = new byte[80];
         for (int i = 0; i < Math.Min(text.Length, header.Length); i++)

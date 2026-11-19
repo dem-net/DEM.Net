@@ -440,7 +440,7 @@ public class MeshService(ILogger<MeshService>? logger = null)
                                                         new Vector3((
                                                             float)c.Longitude,
                                                             (float)c.Latitude,
-                                                            (float)c.Elevation)
+                                                            (float)c.Elevation!)
                                                         )],
         [.. triangulation.Indices]);
 
@@ -529,7 +529,7 @@ public class MeshService(ILogger<MeshService>? logger = null)
             _logger?.LogError(ex, ex.ToString());
             throw;
         }
-        return default;
+        return default!;
     }
 
     /// <summary>
@@ -537,7 +537,7 @@ public class MeshService(ILogger<MeshService>? logger = null)
     /// </summary>
     /// <param name="outerRingPoints"></param>
     /// <returns></returns>
-    public TriangulationList<GeoPoint> Tesselate(IEnumerable<GeoPoint> outerRingPoints, IEnumerable<IEnumerable<GeoPoint>> innerRingsPoints)
+    public TriangulationList<GeoPoint> Tesselate(IEnumerable<GeoPoint> outerRingPoints, IEnumerable<IEnumerable<GeoPoint>>? innerRingsPoints)
     {
         TriangulationList<GeoPoint> triangulation = new TriangulationList<GeoPoint>();
 
@@ -573,7 +573,7 @@ public class MeshService(ILogger<MeshService>? logger = null)
 
         return triangulation;
     }
-    public TriangulationList<Vector3> Tesselate(IEnumerable<Vector3> outerRingPoints, IEnumerable<IEnumerable<Vector3>> innerRingsPoints)
+    public TriangulationList<Vector3> Tesselate(IEnumerable<Vector3> outerRingPoints, IEnumerable<IEnumerable<Vector3>>? innerRingsPoints)
     {
         TriangulationList<Vector3> triangulation = new TriangulationList<Vector3>();
 
@@ -629,7 +629,7 @@ public class MeshService(ILogger<MeshService>? logger = null)
         // Footprint triangulation
         //
         var footPrintOutline = polygon.ExteriorRing; 
-        var footPrintInnerRingsFlattened = polygon.InteriorRings == null ? null : polygon.InteriorRings;
+        var footPrintInnerRingsFlattened = polygon.InteriorRings;
 
         TriangulationList<Vector3> triangulation = this.Tesselate(footPrintOutline, footPrintInnerRingsFlattened);
         int numFootPrintIndices = triangulation.Indices.Count;

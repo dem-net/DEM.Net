@@ -64,14 +64,14 @@ public sealed class LocalDataSetTests : IDisposable
     [Fact]
     public async Task PointsElevationIsMaterializedAndMatchesTheAsyncVersion()
     {
-        var asyncPoints = await _elevation.GetPointsElevationAsync(Points(), _dataSet);
+        var asyncPoints = (await _elevation.GetPointsElevationAsync(Points(), _dataSet))!;
         // the rasters are closed when the method returns: the result must not be read lazily from them
-        var syncPoints = _elevation.GetPointsElevation(Points().AsEnumerable().Select(p => p), _dataSet);
+        var syncPoints = _elevation.GetPointsElevation(Points().AsEnumerable().Select(p => p), _dataSet)!;
 
         Assert.Equal(3, asyncPoints.Count);
         Assert.Equal(asyncPoints.Select(p => p.Elevation), syncPoints.Select(p => p.Elevation));
         Assert.All(asyncPoints, p => Assert.InRange(p.Elevation.GetValueOrDefault(), 1, 1200));
-        Assert.Equal(_elevation.GetPointElevation(43.53, 5.45, _dataSet).Elevation.Value, asyncPoints[1].Elevation.Value, 3);
+        Assert.Equal(_elevation.GetPointElevation(43.53, 5.45, _dataSet).Elevation!.Value, asyncPoints[1].Elevation!.Value, 3);
     }
 
     [Fact]
@@ -86,7 +86,7 @@ public sealed class LocalDataSetTests : IDisposable
             new GeoPoint(43.53, 5.45),
         };
 
-        var elevated = await _elevation.GetPointsElevationAsync(points, _dataSet);
+        var elevated = (await _elevation.GetPointsElevationAsync(points, _dataSet))!;
 
         Assert.Equal(points, elevated); // same locations, same order
         Assert.Equal(0, elevated[0].Elevation);
@@ -164,7 +164,7 @@ public sealed class LocalDataSetTests : IDisposable
         for (int i = 0; i < lines.Length; i++)
         {
             if (lines[i] == null) continue;
-            var single = _elevation.GetLineGeometryElevation(lines[i], _dataSet);
+            var single = _elevation.GetLineGeometryElevation(lines[i], _dataSet)!;
             Assert.NotEmpty(single);
             Assert.Equal(single, batch[i]); // same points (positions and elevations)
         }

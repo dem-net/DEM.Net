@@ -41,7 +41,7 @@ public class GeoTiff : IRasterFile
     string _tiffPath;
     //static NoLogTiffErrorHandler _errorHandler = new NoLogTiffErrorHandler();
     TraceTiffErrorHandler _traceLogHandler = new();
-    Dictionary<int, byte[]> tilesCache;
+    Dictionary<int, byte[]>? tilesCache;
 
     internal Tiff TiffFile
     {
@@ -162,7 +162,7 @@ public class GeoTiff : IRasterFile
                 int tileWidth = this.TileWidth;
                 int tileHeight = this.TileHeight;
                 int tileSize = this.TileSize;
-                byte[] buffer;
+                byte[]? buffer;
 
                 var tileX = (x / tileWidth) * tileWidth;
                 var tileY = (y / tileHeight) * tileHeight;
@@ -196,16 +196,16 @@ public class GeoTiff : IRasterFile
     // The two last decoded rows: interpolating a point reads 2 rows, consecutive points mostly the same ones.
     // Each row read decodes (and for compressed files decompresses) a whole scanline.
     private int _row0 = -1, _row1 = -1;
-    private byte[] _scanline0, _scanline1;
+    private byte[]? _scanline0, _scanline1;
 
     private byte[] GetScanline(FileMetadata metadata, int y)
     {
-        if (y == _row0) return _scanline0;
+        if (y == _row0) return _scanline0!;
         if (y == _row1)
         {
             (_row0, _row1) = (_row1, _row0);
             (_scanline0, _scanline1) = (_scanline1, _scanline0);
-            return _scanline0;
+            return _scanline0!;
         }
 
         // reuse the least recently used buffer
@@ -388,7 +388,7 @@ public class GeoTiff : IRasterFile
         metadata.BitsPerSample = TiffFile.GetField(TiffTag.BITSPERSAMPLE)[0].ToInt();
         var sampleFormat = TiffFile.GetField(TiffTag.SAMPLEFORMAT);
         // Add other information about the data
-        metadata.SampleFormat = sampleFormat[0].Value.ToString();
+        metadata.SampleFormat = sampleFormat[0].Value.ToString()!;
         // TODO: Read this from tiff metadata or determine after parsing
         metadata.NoDataValue = "-32767";
 
@@ -440,7 +440,7 @@ public class GeoTiff : IRasterFile
             int tileWidth = this.TileWidth;
             int tileHeight = this.TileHeight;
             int tileSize = this.TileSize;
-            byte[] buffer;
+            byte[]? buffer;
 
             // Cell registration: Data* bounds are pixel corners, sample at pixel centers (same as the scanline path below)
             bool isCell = metadata.FileFormat.Registration == DEMFileRegistrationMode.Cell;

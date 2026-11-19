@@ -61,7 +61,7 @@ public class StacFileService(ILogger<StacFileService> logger, IHttpClientFactory
     {
         logger.LogInformation($"Fetching items from collection {dataSource.Collection} to disk... This will be done once.");
         Uri baseUrl = new Uri(dataSource.Url);
-        string url = string.Concat(baseUrl, $"/collections/{dataSource.Collection}/items");
+        string? url = string.Concat(baseUrl, $"/collections/{dataSource.Collection}/items");
         var links = new Dictionary<StacDemFile, StacDemFile>(30000);
         var httpClient = httpClientFactory.CreateClient();
         int pageIndex = 0;
@@ -79,7 +79,7 @@ public class StacFileService(ILogger<StacFileService> logger, IHttpClientFactory
                 break;
 
             // Only retrieve bbox and dem file link (zip file), keep the most recent item of each file
-            foreach (var newFile in result.Features.Select(f => GetStacDemFile(dataSource, f)).Where(file => file != null))
+            foreach (var newFile in result.Features.Select(f => GetStacDemFile(dataSource, f)).OfType<StacDemFile>())
             {
                 if (!links.TryGetValue(newFile, out var existing) || existing.DateTime.CompareTo(newFile.DateTime) < 0)
                     links[newFile] = newFile;
@@ -96,7 +96,7 @@ public class StacFileService(ILogger<StacFileService> logger, IHttpClientFactory
         using (var stream = File.OpenRead(indexFileName))
             stacDemFiles = JsonSerializer.Deserialize(stream, CoreJsonContext.Default.ListStacDemFile)
                 ?? throw new InvalidDataException($"Empty STAC index {indexFileName}.");
-        var dataSetLocalDir = Path.GetDirectoryName(indexFileName);
+        var dataSetLocalDir = Path.GetDirectoryName(indexFileName)!;
 
         return [.. stacDemFiles.Select(file => new DEMFileSource()
         {
@@ -107,7 +107,7 @@ public class StacFileService(ILogger<StacFileService> logger, IHttpClientFactory
         })];
     }
 
-    private StacDemFile GetStacDemFile(StacDataSource dataSource, Feature f)
+    private StacDemFile? GetStacDemFile(StacDataSource dataSource, Feature f)
     {
         foreach (var asset in f.Assets)
         {

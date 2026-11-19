@@ -150,7 +150,7 @@ public class BoundingBox(double xmin, double xmax, double ymin, double ymax, dou
 
     public override bool Equals(object? obj)
     {
-        BoundingBox objTyped = obj as BoundingBox;
+        BoundingBox? objTyped = obj as BoundingBox;
 
         return this == objTyped;
     }

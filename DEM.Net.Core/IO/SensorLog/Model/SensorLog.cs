@@ -8,7 +8,7 @@ namespace DEM.Net.Core.IO.SensorLog;
 
 public class SensorLog
 {
-    public List<SensorLogData> Data { get; private set; }
+    public List<SensorLogData> Data { get; private set; } = null!;
     public int LocationCount { get; private set; }
     public int Count { get; private set; }
     public int AltitudeCount { get; private set; }
@@ -27,8 +27,8 @@ public class SensorLog
             sensorLog.LocationCount += (data.LocationLongitude != 0 && data.LocationLatitude.HasValue) ? 1 : 0;
             sensorLog.AltitudeCount += (data.LocationAltitude.HasValue) ? 1 : 0;
         }
-        sensorLog.AltitudeMin = sensorLog.Data.Where(s=>s.LocationAltitude.HasValue).Min(s => s.LocationAltitude.Value);
-        sensorLog.AltitudeMax = sensorLog.Data.Where(s => s.LocationAltitude.HasValue).Max(s => s.LocationAltitude.Value);
+        sensorLog.AltitudeMin = sensorLog.Data.Where(s=>s.LocationAltitude.HasValue).Min(s => s.LocationAltitude!.Value);
+        sensorLog.AltitudeMax = sensorLog.Data.Where(s => s.LocationAltitude.HasValue).Max(s => s.LocationAltitude!.Value);
 
         return sensorLog;
     }

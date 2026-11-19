@@ -37,12 +37,12 @@ public static class ServiceCollectionExtension
         {
             return dataSourceType switch
             {
-                Datasets.DEMDataSourceType.GDALVrt => serviceProvider.GetService<GDALVRTFileService>(),
-                Datasets.DEMDataSourceType.NasaEarthData => serviceProvider.GetService<NasaGranuleFileService>(),
-                Datasets.DEMDataSourceType.Stac => serviceProvider.GetService<StacFileService>(),
-                Datasets.DEMDataSourceType.TileIndex => serviceProvider.GetService<TileIndexFileService>(),
-                Datasets.DEMDataSourceType.XyzTiles => serviceProvider.GetService<XyzTileIndexService>(),
-                Datasets.DEMDataSourceType.LocalFileSystem => serviceProvider.GetService<LocalFileSystemIndex>(),
+                Datasets.DEMDataSourceType.GDALVrt => serviceProvider.GetService<GDALVRTFileService>()!,
+                Datasets.DEMDataSourceType.NasaEarthData => serviceProvider.GetService<NasaGranuleFileService>()!,
+                Datasets.DEMDataSourceType.Stac => serviceProvider.GetService<StacFileService>()!,
+                Datasets.DEMDataSourceType.TileIndex => serviceProvider.GetService<TileIndexFileService>()!,
+                Datasets.DEMDataSourceType.XyzTiles => serviceProvider.GetService<XyzTileIndexService>()!,
+                Datasets.DEMDataSourceType.LocalFileSystem => serviceProvider.GetService<LocalFileSystemIndex>()!,
                 _ => throw new KeyNotFoundException(),// or maybe return null, up to you
             };
         });

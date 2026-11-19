@@ -12,9 +12,9 @@ namespace DEM.Net.Test;
 
 public class ConfigurationTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    readonly RasterService _rasterService = fixture.ServiceProvider.GetService<RasterService>();
-    private readonly IOptions<DEMNetOptions> _options = fixture.ServiceProvider.GetService<IOptions<DEMNetOptions>>();
-    readonly RasterIndexServiceResolver _indexServiceResolver = fixture.ServiceProvider.GetService<RasterIndexServiceResolver>();
+    readonly RasterService _rasterService = fixture.ServiceProvider.GetRequiredService<RasterService>();
+    private readonly IOptions<DEMNetOptions> _options = fixture.ServiceProvider.GetRequiredService<IOptions<DEMNetOptions>>();
+    readonly RasterIndexServiceResolver _indexServiceResolver = fixture.ServiceProvider.GetRequiredService<RasterIndexServiceResolver>();
 
     [Fact]
     public void LocalDirectoryTest()

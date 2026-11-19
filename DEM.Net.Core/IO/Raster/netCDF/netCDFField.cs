@@ -6,8 +6,8 @@ namespace DEM.Net.Core.netCDF;
 
 public class netCDFField
 {
-    public string FieldName { get; set; }
-    public Type Type { get; set; }
+    public string FieldName { get; set; } = null!;
+    public Type Type { get; set; } = null!;
 
     public static netCDFField Create<T>(string fieldName)
     {

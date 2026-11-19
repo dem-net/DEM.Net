@@ -34,7 +34,7 @@ public class GeoPointTests
         var point = new GeoPoint(1, 2, value) with { DistanceFromOriginMeters = value };
         Assert.Equal(value, point.Elevation!.Value);
         Assert.Equal(value, point.DistanceFromOriginMeters!.Value);
-        Assert.Equal(double.IsNegative(value), double.IsNegative(point.Elevation.Value));
+        Assert.Equal(double.IsNegative(value), double.IsNegative(point.Elevation!.Value));
     }
 
     [Fact]

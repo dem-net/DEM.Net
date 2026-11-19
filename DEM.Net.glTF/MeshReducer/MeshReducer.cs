@@ -24,7 +24,7 @@ public class MeshReducer(ILogger<MeshReducer> logger, IOptions<DEMNetOptions> op
         "https://github.com/gradientspace/geometry3Sharp/blob/master/LICENSE", "geometry3Sharp (GradientSpace, Ryan Schmidt)");
 
     private readonly ILogger<MeshReducer> _logger = logger;
-    private readonly DEMNetOptions _options = options?.Value;
+    private readonly DEMNetOptions _options = options?.Value!;
 
     public Triangulation Decimate(ModelRoot inputModel, float quality = 0.5F)
     {

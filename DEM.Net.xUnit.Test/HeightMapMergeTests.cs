@@ -28,11 +28,11 @@ public class HeightMapMergeTests(ITestOutputHelper output)
         {
             Coordinates = [.. coords],
             Count = coords.Count,
-            Minimum = coords.Min(p => (float)p.Elevation.Value),
-            Maximum = coords.Max(p => (float)p.Elevation.Value),
+            Minimum = coords.Min(p => (float)p.Elevation!.Value),
+            Maximum = coords.Max(p => (float)p.Elevation!.Value),
             BoundingBox = new BoundingBox(coords.Min(p => p.Longitude), coords.Max(p => p.Longitude),
                                           coords.Min(p => p.Latitude), coords.Max(p => p.Latitude),
-                                          coords.Min(p => p.Elevation.Value), coords.Max(p => p.Elevation.Value)),
+                                          coords.Min(p => p.Elevation!.Value), coords.Max(p => p.Elevation!.Value)),
         };
     }
 
@@ -44,7 +44,7 @@ public class HeightMapMergeTests(ITestOutputHelper output)
         Assert.Equal(rows * cols, points.Count);
         for (int r = 0; r < rows; r++)
             for (int c = 0; c < cols; c++)
-                Assert.Equal(Id(r, c), points[r * cols + c].Elevation.Value);
+                Assert.Equal(Id(r, c), points[r * cols + c].Elevation!.Value);
     }
 
     [Fact]

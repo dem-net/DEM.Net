@@ -25,8 +25,8 @@ public class TerrainRGBFile : IRasterFile
 
         this.filePath = filePath;
         var y = int.Parse(Path.GetFileNameWithoutExtension(fileInfo.Name));
-        var x = int.Parse(fileInfo.Directory.Name);
-        var z = int.Parse(fileInfo.Directory.Parent.Name);
+        var x = int.Parse(fileInfo.Directory!.Name);
+        var z = int.Parse(fileInfo.Directory!.Parent!.Name);
 
         tileInfo = new MapTileInfo(x, y, z, tileSize);
 
@@ -38,7 +38,7 @@ public class TerrainRGBFile : IRasterFile
 
     public void Dispose()
     {
-        pixelData = null;
+        pixelData = null!;
     }
 
     public float GetElevationAtPoint(FileMetadata metadata, int x, int y)

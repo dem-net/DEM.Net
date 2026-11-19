@@ -82,7 +82,7 @@ public class MapTileInfo
     }
     public MapTileInfo ZoomOut(int targetZoom)
     {
-        var tile = this.MemberwiseClone() as MapTileInfo;
+        var tile = (MapTileInfo)this.MemberwiseClone();
         while (tile.Zoom>targetZoom)
         {
             tile = tile.ZoomOut();

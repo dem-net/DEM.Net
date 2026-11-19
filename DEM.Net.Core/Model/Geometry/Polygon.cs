@@ -10,7 +10,7 @@ public class Polygon<T>(List<T> outerRing, params List<T>[] innerRings) : IPolyg
 {
     public List<T> ExteriorRing { get; set; } = outerRing;
 
-    public List<List<T>> InteriorRings { get; set; } = innerRings == null ? null : new List<List<T>>(innerRings);
+    public List<List<T>> InteriorRings { get; set; } = innerRings == null ? null! : new List<List<T>>(innerRings);
 
     public int NumPoints => ExteriorRing.Count + (InteriorRings?.Sum(r => r.Count) ?? 0);
 }

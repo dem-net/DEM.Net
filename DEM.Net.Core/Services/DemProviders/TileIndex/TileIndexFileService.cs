@@ -81,7 +81,7 @@ public class TileIndexFileService(ILogger<TileIndexFileService> logger, IHttpCli
             if (feature.TryGetProperty("properties", out var props) && props.ValueKind == JsonValueKind.Object)
             {
                 foreach (var property in props.EnumerateObject())
-                    properties[property.Name] = PropertyToString(property.Value);
+                    properties[property.Name] = PropertyToString(property.Value)!;
             }
 
             var bbox = feature.TryGetProperty("geometry", out var geometry) ? GetBoundingBox(geometry) : null;
@@ -97,7 +97,7 @@ public class TileIndexFileService(ILogger<TileIndexFileService> logger, IHttpCli
     }
 
     /// <summary>Feature property as text: numbers in invariant culture, booleans as True/False (as former versions)</summary>
-    private static string PropertyToString(JsonElement value) => value.ValueKind switch
+    private static string? PropertyToString(JsonElement value) => value.ValueKind switch
     {
         JsonValueKind.Null or JsonValueKind.Undefined => null,
         JsonValueKind.String => value.GetString(),
@@ -108,7 +108,7 @@ public class TileIndexFileService(ILogger<TileIndexFileService> logger, IHttpCli
     };
 
     /// <summary>Bounds of all the positions nested in the geometry coordinates (any geometry type but Point)</summary>
-    private static double[] GetBoundingBox(JsonElement geometry)
+    private static double[]? GetBoundingBox(JsonElement geometry)
     {
         if (geometry.ValueKind != JsonValueKind.Object
             || !geometry.TryGetProperty("coordinates", out var coordinates) || coordinates.ValueKind != JsonValueKind.Array)
@@ -189,8 +189,8 @@ public class TileIndexFileService(ILogger<TileIndexFileService> logger, IHttpCli
 
     internal class TileIndexEntry
     {
-        public string FileName { get; set; }
-        public string Url { get; set; }
-        public double[] Box { get; set; } // xMin, yMin, xMax, yMax
+        public string FileName { get; set; } = null!;
+        public string Url { get; set; } = null!;
+        public double[] Box { get; set; } = null!; // xMin, yMin, xMax, yMax
     }
 }

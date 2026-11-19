@@ -178,7 +178,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
     /// <param name="behavior">Action to use when no data is found in dataset</param>
     /// <remarks>Output can be BIG, as all elevations will be returned.</remarks>
     /// <returns></returns>
-    public List<GeoPoint> GetLineGeometryElevation(string lineWKT, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
+    public List<GeoPoint>? GetLineGeometryElevation(string lineWKT, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
     {
         Geometry geom = GeometryService.ParseWKTAsGeometry(lineWKT);
 
@@ -467,7 +467,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
             span[i] = span[i] with { Elevation = elevated[offset + i].Elevation };
     }
 
-    public List<GeoPoint> GetLineGeometryElevation(IEnumerable<GeoPoint> lineGeoPoints, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
+    public List<GeoPoint>? GetLineGeometryElevation(IEnumerable<GeoPoint> lineGeoPoints, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear, NoDataBehavior behavior = NoDataBehavior.SetToZero)
     {
         if (lineGeoPoints == null)
             throw new ArgumentNullException(nameof(lineGeoPoints), "Point list is null");
@@ -537,7 +537,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
         {
             { metadata, raster }
         };
-        return GetElevationAtPoint(raster, rasters, metadata, lat, lon, 0, interpolator, NoDataBehavior.UseNoDataDefinedInDem);
+        return GetElevationAtPoint(raster, rasters, metadata, lat, lon, 0, interpolator!, NoDataBehavior.UseNoDataDefinedInDem);
 
     }
 
@@ -564,7 +564,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
     public GeoPoint GetPointElevation(double lat, double lon, DEMDataSet dataSet, InterpolationMode interpolationMode = InterpolationMode.Bilinear)
     {
         GeoPoint geoPoint = new GeoPoint(lat, lon).ReprojectTo(Reprojection.SRID_GEODETIC, dataSet.SRID);
-        FileMetadata tile = this.GetCoveringFile(geoPoint.Latitude, geoPoint.Longitude, dataSet);
+        FileMetadata? tile = this.GetCoveringFile(geoPoint.Latitude, geoPoint.Longitude, dataSet);
 
         if (tile == null)
         {
@@ -573,7 +573,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
         }
         else
         {
-            IEnumerable<FileMetadata> adjacentRasters = null;
+            IEnumerable<FileMetadata>? adjacentRasters = null;
             // for cell registered rasters, we need adjacent tiles for edge locations
             if (dataSet.FileFormat.Registration == DEMFileRegistrationMode.Cell)
             {
@@ -914,7 +914,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
 
     public HeightMap GetHeightMap(BoundingBox bbox, string rasterFilePath, DEMFileDefinition format)
     {
-        HeightMap heightMap = null;
+        HeightMap heightMap;
         using (IRasterFile raster = _RasterService.OpenFile(rasterFilePath, format.Type))
         {
             var metaData = raster.ParseMetaData(format);
@@ -931,7 +931,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
     /// <returns></returns>
     public HeightMap GetHeightMap(FileMetadata metadata)
     {
-        HeightMap map = null;
+        HeightMap map;
         using (IRasterFile raster = _RasterService.OpenFile(metadata.Filename, metadata.FileFormat.Type))
         {
             map = raster.GetHeightMap(metadata);
@@ -962,8 +962,8 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
     {
         // Adjacent tiles are only needed near the tile edges: the search (one list per point) is skipped elsewhere
         var noAdjacentTiles = new List<FileMetadata>(0);
-        FileMetadata lastTile = null;
-        FileMetadata FindTile(GeoPoint point)
+        FileMetadata? lastTile = null;
+        FileMetadata? FindTile(GeoPoint point)
         {
             if (lastTile != null && this.IsPointInTile(lastTile, point))
                 return lastTile;
@@ -982,10 +982,10 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
         var tiles = new List<FileMetadata>();
         var tilePoints = new List<List<int>>();
         var tileIndex = new Dictionary<FileMetadata, int>();
-        List<int> outsidePoints = null;
+        List<int>? outsidePoints = null;
         for (int i = 0; i < points.Length; i++)
         {
-            FileMetadata tile = FindTile(points[i]);
+            FileMetadata? tile = FindTile(points[i]);
             if (tile == null)
             {
                 (outsidePoints ??= []).Add(i);
@@ -1031,7 +1031,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
         }
     }
 
-    private void PopulateRasterFileDictionary(RasterFileDictionary dictionary, FileMetadata mainTile, RasterService rasterService, IEnumerable<FileMetadata> fileMetadataList)
+    private void PopulateRasterFileDictionary(RasterFileDictionary dictionary, FileMetadata mainTile, RasterService rasterService, IEnumerable<FileMetadata>? fileMetadataList)
     {
         // Add main tile
         if (!dictionary.ContainsKey(mainTile))
@@ -1615,7 +1615,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
             return nullValue;
         }
 
-        if (tiles.TryGetValue(goodTile, out IRasterFile raster))
+        if (tiles.TryGetValue(goodTile, out IRasterFile? raster))
         {
             return raster.GetElevationAtPoint(goodTile, xRemap, yRemap);
         }
@@ -1639,7 +1639,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
             // AW3D30's 4.9999999999999964, and silently read pixels from the opposite side of the main tile.)
             double lon = PixelCenterLon(mainTile, x);
             double lat = PixelCenterLat(mainTile, y);
-            FileMetadata tile = null;
+            FileMetadata? tile = null;
             newX = newY = 0;
             foreach (var t in tiles.Keys)
             {
@@ -1713,7 +1713,7 @@ public class ElevationService(RasterService rasterService, IAppCache memCache, I
                 await this.DownloadMissingFilesAsync(dataSet, elevationLine.GetBoundingBox(), cancellationToken).ConfigureAwait(false);
 
             // WGS84 points, whatever the dataset projection
-            var geoPoints = this.GetLineGeometryElevation(elevationLine, dataSet, interpolationMode);
+            var geoPoints = this.GetLineGeometryElevation(elevationLine, dataSet, interpolationMode)!;
 
             var metrics = geoPoints.ComputeVisibilityMetrics(sourceVerticalOffset, targetVerticalOffset, dataSet.NoDataValue);
 

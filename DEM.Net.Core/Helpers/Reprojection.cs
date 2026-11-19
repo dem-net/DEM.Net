@@ -46,7 +46,7 @@ public static class Reprojection
 
     // Parsing a projection costs more than reprojecting a few points (one parse per call before). Cached per thread:
     // DotSpatial projections are not documented as thread safe.
-    [ThreadStatic] private static Dictionary<int, ProjectionInfo> t_projections;
+    [ThreadStatic] private static Dictionary<int, ProjectionInfo>? t_projections;
 
     private static ProjectionInfo GetProjection(int epsgCode)
     {
@@ -271,7 +271,7 @@ public static class Reprojection
         }
         else
         {
-            double[] inputPoints = null;
+            double[]? inputPoints = null;
 
             return [.. points.Select((p, index) =>
             {

@@ -20,7 +20,7 @@ internal static class HttpDownload
     public static async Task<bool> DownloadToFileAsync(HttpClient client, string url, string localFileName,
         CancellationToken cancellationToken, Action<HttpRequestMessage>? configureRequest = null, bool notFoundIsMissing = false)
     {
-        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(localFileName)));
+        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(localFileName))!);
         string tempFile = TempFileName(localFileName);
         try
         {

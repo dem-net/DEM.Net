@@ -19,7 +19,7 @@ public class GpxProperties
     {
         GpxProperties Properties_ = properties;
         string Name_ = name;
-        IList<T> Items_ = properties.GetObjectProperty<IList<T>>(name);
+        IList<T>? Items_ = properties.GetObjectProperty<IList<T>>(name);
 
         public int IndexOf(T item)
         {
@@ -116,26 +116,26 @@ public class GpxProperties
         }
     }
 
-    Dictionary<string, object> Properties_ = null;
+    Dictionary<string, object>? Properties_ = null;
 
     public Nullable<T> GetValueProperty<T>(string name) where T : struct
     {
         if (Properties_ == null) return null;
 
-        object value;
+        object? value;
         if (!Properties_.TryGetValue(name, out value)) return null;
 
-        return (T)value;
+        return (T)value!;
     }
 
-    public T GetObjectProperty<T>(string name) where T : class
+    public T? GetObjectProperty<T>(string name) where T : class
     {
         if (Properties_ == null) return null;
 
-        object value;
+        object? value;
         if (!Properties_.TryGetValue(name, out value)) return null;
 
-        return (T)value;
+        return (T)value!;
     }
 
     public IList<T> GetListProperty<T>(string name)
@@ -156,7 +156,7 @@ public class GpxProperties
         }
     }
 
-    public void SetObjectProperty<T>(string name, T value) where T : class
+    public void SetObjectProperty<T>(string name, T? value) where T : class
     {
         if (value != null)
         {

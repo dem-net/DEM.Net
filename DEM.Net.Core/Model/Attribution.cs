@@ -33,7 +33,7 @@ namespace DEM.Net.Core;
 
 // Source : Brutile
 // Inherits from Dictionary to allow Json serialization in SharpGlTF
-public class Attribution : Dictionary<string, string>
+public class Attribution : Dictionary<string, string?>
 {
     public Attribution() : this("Subject not set", null, null, null)
     {
@@ -49,28 +49,28 @@ public class Attribution : Dictionary<string, string>
 
     public string Subject
     {
-        get { return GetValue(nameof(Subject)); }
+        get { return GetValue(nameof(Subject))!; }
         set { base[nameof(Subject)] = value; }
     }
-    public string Text
+    public string? Text
     {
         get { return GetValue(nameof(Text)); }
         set { base[nameof(Text)] = value;}
     }
-    public string Url
+    public string? Url
     {
         get { return GetValue(nameof(Url)); }
         set { base[nameof(Url)] = value; }
     }
-    public string Acknowledgement
+    public string? Acknowledgement
     {
         get { return GetValue(nameof(Acknowledgement)); }
         set { base[nameof(Acknowledgement)] = value; }
     }
 
-    private string GetValue(string key)
+    private string? GetValue(string key)
     {
-        base.TryGetValue(key, out string value);
+        base.TryGetValue(key, out string? value);
         return value;
     }
 }

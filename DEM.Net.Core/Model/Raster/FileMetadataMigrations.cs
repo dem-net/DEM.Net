@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Logging;
@@ -32,7 +33,8 @@ namespace DEM.Net.Core;
 
 internal static class FileMetadataMigrations
 {
-    public static FileMetadata Migrate(RasterService rasterService, ILogger logger, FileMetadata oldMetadata, string dataRootDirectory, DEMDataSet dataSet)
+    [return: NotNullIfNotNull(nameof(oldMetadata))]
+    public static FileMetadata? Migrate(RasterService rasterService, ILogger logger, FileMetadata? oldMetadata, string dataRootDirectory, DEMDataSet dataSet)
     {
         if (oldMetadata != null)
         {

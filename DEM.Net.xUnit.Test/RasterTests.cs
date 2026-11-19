@@ -9,8 +9,8 @@ namespace DEM.Net.Test;
 
 public class RasterTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
 {
-    RasterService _rasterService = fixture.ServiceProvider.GetService<RasterService>();
-    ElevationService _elevationService = fixture.ServiceProvider.GetService<ElevationService>();
+    RasterService _rasterService = fixture.ServiceProvider.GetRequiredService<RasterService>();
+    ElevationService _elevationService = fixture.ServiceProvider.GetRequiredService<ElevationService>();
 
     [Fact]
     public void Test_FileFormat_GeoTIFF()

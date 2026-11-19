@@ -100,7 +100,7 @@ public class AsyncInfrastructureTests : IDisposable
         await Assert.ThrowsAsync<IOException>(() => HttpDownload.DownloadToFileAsync(client, "http://test/tile.tif", target, CancellationToken.None));
 
         Assert.False(File.Exists(target));
-        Assert.Empty(Directory.GetFiles(Path.GetDirectoryName(target)));
+        Assert.Empty(Directory.GetFiles(Path.GetDirectoryName(target)!));
     }
 
     [Fact]
@@ -216,10 +216,10 @@ public class AsyncInfrastructureTests : IDisposable
         try
         {
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("fr-FR");
-            Assert.Equal(-9999.5f, new FileMetadata("a.tif", null) { NoDataValue = "-9999.5" }.NoDataValueFloat);
+            Assert.Equal(-9999.5f, new FileMetadata("a.tif", null!) { NoDataValue = "-9999.5" }.NoDataValueFloat);
             // manifests written by former versions on a French machine
-            Assert.Equal(-9999.5f, new FileMetadata("a.tif", null) { NoDataValue = "-9999,5" }.NoDataValueFloat);
-            Assert.Equal(-32768f, new FileMetadata("a.tif", null) { NoDataValue = "-32768" }.NoDataValueFloat);
+            Assert.Equal(-9999.5f, new FileMetadata("a.tif", null!) { NoDataValue = "-9999,5" }.NoDataValueFloat);
+            Assert.Equal(-32768f, new FileMetadata("a.tif", null!) { NoDataValue = "-32768" }.NoDataValueFloat);
         }
         finally
         {
@@ -257,7 +257,7 @@ public class AsyncInfrastructureTests : IDisposable
                 }
         }
 
-        var metadata = new FileMetadata(path, null) { Width = width, Height = height, BitsPerSample = 16, SampleFormat = RasterSampleFormat.INTEGER, NoDataValue = "-32768" };
+        var metadata = new FileMetadata(path, null!) { Width = width, Height = height, BitsPerSample = 16, SampleFormat = RasterSampleFormat.INTEGER, NoDataValue = "-32768" };
         using var geoTiff = new GeoTiff(path);
         foreach (var (x, y) in new[] { (0, 0), (5, 3), (31, 15), (32, 15), (40, 17), (63, 47), (10, 40) })
             Assert.Equal(Value(x, y), geoTiff.GetElevationAtPoint(metadata, x, y));
