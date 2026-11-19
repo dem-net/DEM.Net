@@ -320,6 +320,14 @@ public class ImageryService(MeshService meshService,
 
     public TextureInfo ConstructTextureWithGpxTrack(TileRange tiles, BoundingBox bbox, string fileName,
         TextureImageFormat mimeType, IEnumerable<GeoPoint> gpxPoints, bool drawGpxVertices = false, Rgba32 color = default(Rgba32), float lineWidth = 5f)
+        => ConstructTextureWithGpxTrack(tiles, bbox, fileName, mimeType, [gpxPoints], drawGpxVertices, color, lineWidth);
+
+    /// <summary>
+    /// Texture with the GPX track drawn on it: one line per segment (track segment or route), so separate
+    /// segments are not joined by a straight line.
+    /// </summary>
+    public TextureInfo ConstructTextureWithGpxTrack(TileRange tiles, BoundingBox bbox, string fileName,
+        TextureImageFormat mimeType, IEnumerable<IEnumerable<GeoPoint>> gpxSegments, bool drawGpxVertices = false, Rgba32 color = default(Rgba32), float lineWidth = 5f)
     {
         // where is the bbox in the final image ?
 
@@ -334,9 +342,10 @@ public class ImageryService(MeshService meshService,
         //DrawDebugBmpBbox(tiles, localBbox, tilesBbox, fileName, mimeType);
         int tileSize = tiles.TileSize;
 
-        var pointsOnTexture = gpxPoints
+        List<PointF[]> segmentsOnTexture = [.. gpxSegments.Select(segment => segment
             .Select(pt => TileUtils.PositionToGlobalPixel(new LatLong(pt.Latitude, pt.Longitude), zoomLevel, tiles.TileSize))
-            .Select(pt => new PointF((float)(pt.X - (int)projectedBbox.xMin), (float)(pt.Y - (int)projectedBbox.yMin)));
+            .Select(pt => new PointF((float)(pt.X - (int)projectedBbox.xMin), (float)(pt.Y - (int)projectedBbox.yMin)))
+            .ToArray())];
 
 
         using (Image<Rgba32> outputImage = new Image<Rgba32>((int)projectedBbox.Width, (int)projectedBbox.Height))
@@ -352,13 +361,15 @@ public class ImageryService(MeshService meshService,
                 );
             }
 
-            outputImage.Mutate(o => o
-                .DrawLine(color == default(Rgba32) ? new Rgba32(1, 0, 0, 1f) : color, lineWidth, [.. pointsOnTexture])
-            );
+            var lineColor = color == default(Rgba32) ? new Rgba32(1, 0, 0, 1f) : color;
+            foreach (var segment in segmentsOnTexture.Where(seg => seg.Length >= 2))
+            {
+                outputImage.Mutate(o => o.DrawLine(lineColor, lineWidth, segment));
+            }
 
             if (drawGpxVertices)
             {
-                PathCollection pc = new PathCollection(pointsOnTexture.Select(p => new EllipsePolygon(p, new SizeF(10f, 10f))));
+                PathCollection pc = new PathCollection(segmentsOnTexture.SelectMany(seg => seg).Select(p => new EllipsePolygon(p, new SizeF(10f, 10f))));
                 outputImage.Mutate(o => o.Draw(Pens.Solid(Color.Violet, 3), pc));
             }
 
