@@ -242,7 +242,7 @@ public class ImageryService(MeshService meshService,
                         _logger.LogWarning($"Tile {tile.Uri} is empty. Skipping.");
                         continue;
                     }
-                    using Image<Rgba32> tileImg = Image.Load<Rgba32>(SafeImageDecoding.Options, tile.Image);
+                    using Image<Rgba32> tileImg = LoadTile(tile, tileSize);
                     outputImage.Mutate(o => o
                         .DrawImage(tileImg, new Point(x, y), 1f)
                     );
@@ -301,6 +301,23 @@ public class ImageryService(MeshService meshService,
         x |= x >> 16;
         return x + 1;
     }
+
+    /// <summary>
+    /// Decodes a tile and resizes it to <paramref name="tileSize"/> when the provider sent another size
+    /// (e.g. a 1024px "@2x" tile in a 512px grid), so it is never drawn over its neighbours.
+    /// Same behaviour as <see cref="TileDecoder"/> in the streamed path.
+    /// </summary>
+    private Image<Rgba32> LoadTile(MapTile tile, int tileSize)
+    {
+        var tileImg = Image.Load<Rgba32>(SafeImageDecoding.Options, tile.Image);
+        if (tileImg.Width != tileSize || tileImg.Height != tileSize)
+        {
+            _logger.LogWarning("Tile {Uri} is {Width}x{Height}px, expected {TileSize}px. Resizing.", tile.Uri, tileImg.Width, tileImg.Height, tileSize);
+            tileImg.Mutate(o => o.Resize(tileSize, tileSize));
+        }
+        return tileImg;
+    }
+
     private void SaveImage(Image outputImage, string fileName, float quality = 0.98f)
     {
         IImageEncoder imageEncoder = GetEncoder(fileName, quality)!;
@@ -352,7 +369,7 @@ public class ImageryService(MeshService meshService,
         {
             foreach (var tile in tiles.Tiles)
             {
-                using Image<Rgba32> tileImg = Image.Load<Rgba32>(SafeImageDecoding.Options, tile.Image);
+                using Image<Rgba32> tileImg = LoadTile(tile, tileSize);
                 int x = (tile.TileInfo.X - tiles.Start.X) * tileSize + xOffset;
                 int y = (tile.TileInfo.Y - tiles.Start.Y) * tileSize + yOffset;
 

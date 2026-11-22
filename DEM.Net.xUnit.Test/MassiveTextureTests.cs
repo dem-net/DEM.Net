@@ -61,30 +61,45 @@ public class MassiveTextureTests
         }
     }
 
-    [Fact]
-    public void TilesWithUnexpectedSizeAreResized()
+    [Theory]
+    // Tile range declares 512px tiles but the provider returned other sizes
+    // (1024px: Mapbox styles "512 @2x" tiles, which used to be drawn over their neighbours)
+    [InlineData(true, 256)]
+    [InlineData(false, 256)]
+    [InlineData(true, 1024)]
+    [InlineData(false, 1024)]
+    public void TilesWithUnexpectedSizeAreResized(bool massive, int imageSize)
     {
-        // Tile range declares 512px tiles but the provider returned 256px images
+        // Tile 0 is red, tile 1 is blue: each must stay in its own half of the texture.
+        // Red is added (so drawn) last: unresized, it would cover the blue tile.
         var tiles = new TileRange(new MapTileInfo(StartX, StartY, Zoom, 512), new MapTileInfo(StartX + 1, StartY, Zoom, 512), 512);
-        for (int c = 0; c < 2; c++)
-        {
-            tiles.Add(new MapTile(CreateTileImage(256, c, 0), 512, null, new MapTileInfo(StartX + c, StartY, Zoom, 512)));
-        }
-        var bbox = CreateBbox(512, 0.1, 0.1, 1.9, 0.9);
+        tiles.Add(new MapTile(CreateSolidTileImage(imageSize, new Rgba32(0, 0, 255, 255)), 512, null, new MapTileInfo(StartX + 1, StartY, Zoom, 512)));
+        tiles.Add(new MapTile(CreateSolidTileImage(imageSize, new Rgba32(255, 0, 0, 255)), 512, null, new MapTileInfo(StartX, StartY, Zoom, 512)));
+        var bbox = CreateBbox(512, 0.0, 0.1, 2.0, 0.9);
 
         string file = Path.Combine(Path.GetTempPath(), "demnet-massive-" + Guid.NewGuid().ToString("N") + ".png");
         try
         {
-            var info = CreateService(massive: true).ConstructTexture(tiles, bbox, file, TextureImageFormat.image_png);
+            var info = CreateService(massive).ConstructTexture(tiles, bbox, file, TextureImageFormat.image_png);
             using var image = Image.Load<Rgba32>(file);
             Assert.Equal(info.Width, image.Width);
             Assert.Equal(info.Height, image.Height);
-            Assert.Equal(255, image[image.Width / 2, image.Height / 2].A);
+            int y = image.Height / 2;
+            Assert.Equal(new Rgba32(255, 0, 0, 255), image[image.Width / 4, y]);
+            Assert.Equal(new Rgba32(0, 0, 255, 255), image[image.Width * 3 / 4, y]);
         }
         finally
         {
             File.Delete(file);
         }
+    }
+
+    private static byte[] CreateSolidTileImage(int size, Rgba32 color)
+    {
+        using var img = new Image<Rgba32>(size, size, color);
+        using var ms = new MemoryStream();
+        img.SaveAsPng(ms);
+        return ms.ToArray();
     }
 
     private static ImageryService CreateService(bool massive)

@@ -32,6 +32,12 @@ public class ImageryTests(DemNetFixture fixture) : IClassFixture<DemNetFixture>
         Assert.NotNull(result);
         Assert.Single(result.Tiles);
         Assert.True(result.Tiles[0].Image.Length > 0);
+
+        // The tile grid uses provider.TileSize: a provider sending another size
+        // (e.g. Mapbox styles "512 @2x" = 1024px) misplaces every tile.
+        var size = SixLabors.ImageSharp.Image.Identify(result.Tiles[0].Image);
+        Assert.Equal(provider.TileSize, size.Width);
+        Assert.Equal(provider.TileSize, size.Height);
     }
 
     public static IEnumerable<object[]> ImageryProviders =>
