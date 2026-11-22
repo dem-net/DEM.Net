@@ -170,13 +170,13 @@ public static class TerrainBoxBuilder
     }
 
     /// <summary>Directed edge A→B of a triangle, its horizontal outward normal.</summary>
-    private readonly record struct BoundaryEdge(int A, int B, Vector3 Normal);
+    internal readonly record struct BoundaryEdge(int A, int B, Vector3 Normal);
 
     /// <summary>
     /// Edges used by a single triangle. Sorting the edge keys keeps memory to 12 bytes per triangle corner,
     /// with no per-edge object.
     /// </summary>
-    private static List<BoundaryEdge> FindBoundaryEdges(IReadOnlyList<Vector3> positions, IReadOnlyList<int> indices)
+    internal static List<BoundaryEdge> FindBoundaryEdges(IReadOnlyList<Vector3> positions, IReadOnlyList<int> indices)
     {
         int numCorners = indices.Count / 3 * 3;
         var keys = new long[numCorners];

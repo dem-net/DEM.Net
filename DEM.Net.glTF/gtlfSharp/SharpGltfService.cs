@@ -25,6 +25,7 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
     private const string TERRAIN_MESH_NAME = "TerrainMesh";
     public const string TERRAIN_BOX_NODE_NAME = "TerrainBox";
     public const string TERRAIN_BOX_MONUMENTS_NODE_NAME = "TerrainBoxMonuments";
+    public const string WATER_NODE_NAME = "Water";
 
     public ModelRoot CreateNewModel()
     {
@@ -158,8 +159,9 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
     }
 
     /// <param name="box">If set, adds walls and a bottom under the terrain (<see cref="AddTerrainBox"/>)</param>
-    public ModelRoot CreateTerrainMesh(HeightMap heightMap, PBRTexture? textures, float reduceFactor, TerrainBoxOptions? box = null)
-    { return AddTerrainMesh(CreateNewModel(), heightMap, textures, reduceFactor, box); }
+    /// <param name="water">If set, adds water over the terrain (<see cref="AddTerrainWater"/>)</param>
+    public ModelRoot CreateTerrainMesh(HeightMap heightMap, PBRTexture? textures, float reduceFactor, TerrainBoxOptions? box = null, TerrainWaterOptions? water = null)
+    { return AddTerrainMesh(CreateNewModel(), heightMap, textures, reduceFactor, box, water); }
 
     /// <summary>Terrain without its missing or zero elevation regions: not a whole grid, reduced with <see cref="MeshReducer"/> (QEM)</summary>
     public ModelRoot CreateTerrainMesh_NonRectangular(HeightMap heightMap, PBRTexture? textures, float reduceFactor)
@@ -175,24 +177,28 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
 
     /// <summary>Terrain mesh of the whole height map grid, reduced with Delatin (<see cref="MeshService.TriangulateHeightMapReduced"/>)</summary>
     /// <param name="box">If set, adds walls and a bottom under the terrain (<see cref="AddTerrainBox"/>)</param>
-    public ModelRoot AddTerrainMesh(ModelRoot? model, HeightMap heightMap, PBRTexture? textures, float reduceFactor, TerrainBoxOptions? box = null)
+    /// <param name="water">If set, adds water over the terrain (<see cref="AddTerrainWater"/>)</param>
+    public ModelRoot AddTerrainMesh(ModelRoot? model, HeightMap heightMap, PBRTexture? textures, float reduceFactor, TerrainBoxOptions? box = null, TerrainWaterOptions? water = null)
     {
         Triangulation triangulation = _meshService.TriangulateHeightMapReduced(heightMap, reduceFactor);
 
-        model = AddTerrainMesh(model, triangulation, textures, box: box);
+        model = AddTerrainMesh(model, triangulation, textures, box: box, water: water);
         return model;
 
     }
     public ModelRoot CreateTerrainMesh(Triangulation triangulation, PBRTexture? textures, bool doubleSided = true)
     { return AddTerrainMesh(CreateNewModel(), triangulation, textures, doubleSided); }
     /// <param name="box">If set, adds walls and a bottom under the terrain (<see cref="AddTerrainBox"/>)</param>
-    public ModelRoot AddTerrainMesh(ModelRoot? model, Triangulation triangulation, PBRTexture? textures, bool doubleSided = true, Matrix4x4 matrix = default, TerrainBoxOptions? box = null)
+    /// <param name="water">If set, adds water over the terrain (<see cref="AddTerrainWater"/>)</param>
+    public ModelRoot AddTerrainMesh(ModelRoot? model, Triangulation triangulation, PBRTexture? textures, bool doubleSided = true, Matrix4x4 matrix = default, TerrainBoxOptions? box = null, TerrainWaterOptions? water = null)
     {
         var indexedTriangulation = new IndexedTriangulation(triangulation, matrix);
         var normals = _meshService.ComputeMeshNormals(indexedTriangulation.Positions, indexedTriangulation.Indices);
         model = AddMesh(model, TERRAIN_NODE_NAME, indexedTriangulation, normals, textures, doubleSided);
         if (box != null)
             model = AddTerrainBox(model, indexedTriangulation.Positions, indexedTriangulation.Indices, box);
+        if (water != null)
+            model = AddTerrainWater(model, indexedTriangulation.Positions, indexedTriangulation.Indices, water);
 
         indexedTriangulation.Clear();
         indexedTriangulation = null;
@@ -303,6 +309,41 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
     /// Monument decals as their own node (<see cref="TERRAIN_BOX_MONUMENTS_NODE_NAME"/>): one quad each, textured with
     /// the shared silhouette atlas (<see cref="MonumentAtlas"/>), alpha masked.
     /// </summary>
+    /// <summary>
+    /// Adds water over a terrain mesh, as its own node (<see cref="WATER_NODE_NAME"/>): a flat translucent surface over
+    /// the terrain outline at <see cref="TerrainWaterOptions.Level"/>, and with <see cref="TerrainWaterOptions.Walls"/>,
+    /// walls on the sides where the terrain is below it (<see cref="TerrainWaterBuilder"/>).
+    /// </summary>
+    /// <param name="positions">Terrain positions, glTF space (as written in the model)</param>
+    /// <param name="indices">Terrain triangles</param>
+    public ModelRoot AddTerrainWater(ModelRoot model, IReadOnlyList<Vector3> positions, IReadOnlyList<int> indices, TerrainWaterOptions water)
+    {
+        var waterMesh = TerrainWaterBuilder.Build(positions, indices, water);
+        if (waterMesh == null)
+        {
+            _logger.LogWarning("Terrain mesh has no boundary: no water added");
+            return model;
+        }
+
+        model ??= CreateNewModel();
+        var scene = model.UseScene(TERRAIN_SCENE_NAME);
+        var rnode = scene.FindNode(n => n.Name == WATER_NODE_NAME) ?? scene.CreateNode(WATER_NODE_NAME);
+        var rmesh = rnode.Mesh = FindOrCreateMesh(model, string.Concat(WATER_NODE_NAME, "Mesh"));
+
+        var material = model.CreateMaterial(string.Concat(WATER_NODE_NAME, "Material"))
+            .WithPBRMetallicRoughness(water.Color, null, null, 0f, 0.2f)
+            .WithDoubleSide(true); // seen from under the surface too
+        material.Alpha = water.Color.W < 1f ? SharpGLTF.Schema2.AlphaMode.BLEND : SharpGLTF.Schema2.AlphaMode.OPAQUE;
+
+        rmesh.CreatePrimitive()
+            .WithVertexAccessor("POSITION", waterMesh.Positions)
+            .WithVertexAccessor("NORMAL", waterMesh.Normals)
+            .WithIndicesAccessor(PrimitiveType.TRIANGLES, waterMesh.Indices)
+            .WithMaterial(material);
+
+        return model;
+    }
+
     private void AddTerrainBoxMonuments(ModelRoot model, List<MonumentDecal> decals, Vector4 color)
     {
         if (decals.Count == 0)
