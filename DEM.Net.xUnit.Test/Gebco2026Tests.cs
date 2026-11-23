@@ -12,12 +12,12 @@ using Xunit;
 namespace DEM.Net.Test;
 
 /// <summary>
-/// GEBCO_2026 (one remote COG) and the <see cref="RemoteFileDataSource"/> flow, offline: the file is already in the
-/// dataset directory, so nothing is downloaded. TestData/GEBCO_2026_Gibraltar.tif is a 3°x2° window (7°W-4°W, 35°N-37°N)
+/// GEBCO_2026, a local file system dataset (one COG), offline: the dataset directory holds a sample of the published
+/// file instead of the 3.3 GB global grid. TestData/GEBCO_2026_Gibraltar.tif is a 3°x2° window (7°W-4°W, 35°N-37°N)
 /// cut from the published COG with the same encoding (BigTIFF, Int16, Deflate + predictor 2, 512px tiles, PixelIsArea).
 /// Expected values were read with GDAL (gdallocationinfo) at pixel centers.
 /// </summary>
-public sealed class RemoteFileDataSetTests : IDisposable
+public sealed class Gebco2026Tests : IDisposable
 {
     private const string SampleFile = "GEBCO_2026_Gibraltar.tif";
 
@@ -27,11 +27,10 @@ public sealed class RemoteFileDataSetTests : IDisposable
     private readonly RasterService _raster;
     private readonly DEMDataSet _dataSet;
 
-    public RemoteFileDataSetTests()
+    public Gebco2026Tests()
     {
         _dataSet = (DEMDataSet)DEMDataSet.GEBCO_2026.Clone();
         _dataSet.Name = "GEBCO-" + Guid.NewGuid().ToString("N"); // catalogs are cached by dataset name
-        _dataSet.DataSource = new RemoteFileDataSource("https://example.invalid/" + SampleFile, new BoundingBox(-7, -4, 35, 37));
 
         var services = new ServiceCollection()
             .AddLogging(b => b.SetMinimumLevel(LogLevel.Warning))
@@ -60,21 +59,18 @@ public sealed class RemoteFileDataSetTests : IDisposable
         // archived, still usable by name
         Assert.Contains(DEMDataSet.RegisteredDatasets, d => d.Name == nameof(DEMDataSet.GEBCO_2019));
 
-        var source = Assert.IsType<RemoteFileDataSource>(DEMDataSet.GEBCO_2026.DataSource);
-        Assert.Equal("https://data.source.coop/ausantarctic/gebco/GEBCO_2026.tif", source.Url);
-        Assert.Equal("GEBCO_2026.tif", source.FileName);
-        Assert.Equal(DEMDataSourceType.RemoteFile, source.DataSourceType);
-        Assert.Contains(DEMDataSet.GEBCO_2026, DEMDataSet.RegisteredNonLocalDatasets);
+        Assert.IsType<LocalFileSystem>(DEMDataSet.GEBCO_2026.DataSource);
+        Assert.Equal(DEMFileType.GEOTIFF, DEMDataSet.GEBCO_2026.FileFormat.Type);
+        Assert.Equal(DEMFileRegistrationMode.Cell, DEMDataSet.GEBCO_2026.FileFormat.Registration);
     }
 
     [Fact]
-    public async Task ReportListsTheSingleFileOnlyInsideItsExtent()
+    public async Task ReportListsTheFileOnlyInsideItsExtent()
     {
         var inside = await _raster.GenerateReportAsync(_dataSet, new BoundingBox(-5.5, -5.2, 36.0, 36.2));
         var report = Assert.Single(inside);
         Assert.True(report.IsExistingLocally);
         Assert.Equal(Path.Combine(_raster.GetLocalDEMPath(_dataSet), SampleFile), report.LocalName);
-        Assert.Equal("https://example.invalid/" + SampleFile, report.URL);
 
         Assert.Empty(await _raster.GenerateReportAsync(_dataSet, new BoundingBox(10, 11, 45, 46)));
     }

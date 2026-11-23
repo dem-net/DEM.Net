@@ -312,9 +312,9 @@ public partial class DEMDataSet : ICloneable
             Description = "GEBCO 2026 global grid with bathymetry, 15 arc-second (~460m)",
             PublicUrl = "https://www.gebco.net/data-products/gridded-bathymetry-data",
             // Single cloud optimized GeoTIFF (BigTIFF, 86400x43200 int16, Deflate, 512px tiles, PixelIsArea, ~3.3 GB)
-            // published by the Australian Antarctic Division on Source Cooperative (https://source.coop/ausantarctic/gebco)
-            DataSource = new RemoteFileDataSource("https://data.source.coop/ausantarctic/gebco/GEBCO_2026.tif",
-                extent: new BoundingBox(-180, 180, -90, 90)),
+            // published by the Australian Antarctic Division on Source Cooperative, downloaded manually:
+            // https://data.source.coop/ausantarctic/gebco/GEBCO_2026.tif
+            DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "GEBCO_2026")),
             FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Cell),
             AllowMissingDataGeneration = false,
             ResolutionMeters = 464,
@@ -393,7 +393,8 @@ public partial class DEMDataSet : ICloneable
     public static DEMDataSet GEBCO_2019 => Datasets.Value[nameof(GEBCO_2019)];
 
     /// <summary>
-    /// GEBCO 2026 global grid with bathymetry (15 arc-second, ~460m). One remote COG, downloaded once on first use (~3.3 GB).
+    /// GEBCO 2026 global grid with bathymetry (15 arc-second, ~460m). Local dataset: one COG (~3.3 GB) from
+    /// https://data.source.coop/ausantarctic/gebco/GEBCO_2026.tif, placed in the GEBCO_2026 dataset directory.
     /// </summary>
     public static DEMDataSet GEBCO_2026 => Datasets.Value[nameof(GEBCO_2026)];
     public static DEMDataSet GEBCO_2020 => Datasets.Value[nameof(GEBCO_2020)];
