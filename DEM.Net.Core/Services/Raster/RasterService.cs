@@ -214,6 +214,7 @@ public class RasterService : IRasterDownloader
             else if (_metadataCatalogCache.TryGetValue(localPath, out cached))
                 return cached;
 
+            bool indexMissingOrEmpty = true;
             if (File.Exists(globalManifestPath))
             {
                 List<FileMetadata> indexedMetadata;
@@ -221,17 +222,31 @@ public class RasterService : IRasterDownloader
                 {
                     indexedMetadata = Serializer.Deserialize<List<FileMetadata>>(inStream);
                 }
+                indexMissingOrEmpty = indexedMetadata.Count == 0;
 
-                if (indexedMetadata.All(m => !IsMetadataStale(m, dataset)))
+                // An empty index can be one saved before the files were copied (local datasets): never trust it
+                if (indexedMetadata.Count > 0 && indexedMetadata.All(m => !IsMetadataStale(m, dataset)))
                 {
                     _logger.LogInformation($"{dataset.Name} metadata read from protobuf index");
                     _metadataCatalogCache[localPath] = indexedMetadata;
                     return _metadataCatalogCache[localPath];
                 }
 
-                // Bounds were computed with another registration mode: rebuild from the json manifests (migrated below)
-                _logger.LogWarning($"{dataset.Name} protobuf index is out of date (dataset registration is {dataset.FileFormat.Registration}), rebuilding it.");
+                if (indexMissingOrEmpty)
+                    _logger.LogWarning($"{dataset.Name} protobuf index is empty, rebuilding it.");
+                else // Bounds were computed with another registration mode: rebuild from the json manifests (migrated below)
+                    _logger.LogWarning($"{dataset.Name} protobuf index is out of date (dataset registration is {dataset.FileFormat.Registration}), rebuilding it.");
                 File.Delete(globalManifestPath);
+            }
+
+            // Local datasets are copied by hand: a file has no manifest until it is indexed once.
+            // Only without a usable index (a new dataset): large datasets are not scanned again on a stale index rebuild.
+            if (indexMissingOrEmpty && dataset.DataSource.DataSourceType == Datasets.DEMDataSourceType.LocalFileSystem && Directory.Exists(localPath))
+            {
+                foreach (var file in Directory.EnumerateFiles(localPath, "*" + dataset.FileFormat.FileExtension, SearchOption.AllDirectories))
+                {
+                    GenerateFileMetadata(file, dataset.FileFormat, force: false);
+                }
             }
 
             var manifestDirectories = Directory.EnumerateDirectories(localPath, MANIFEST_DIR, SearchOption.AllDirectories);
