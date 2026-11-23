@@ -4,6 +4,7 @@ using System.Text;
 using DEM.Net.Core.Datasets;
 using DEM.Net.Core.EarthData;
 using DEM.Net.Core.Imagery;
+using DEM.Net.Core.RemoteFile;
 using DEM.Net.Core.Services.Imagery;
 using DEM.Net.Core.Stac;
 using DEM.Net.Core.TileIndex;
@@ -31,6 +32,7 @@ public static class ServiceCollectionExtension
         services.AddSingleton<StacFileService>();
         services.AddSingleton<TileIndexFileService>();
         services.AddSingleton<XyzTileIndexService>();
+        services.AddSingleton<RemoteFileService>();
         services.AddSingleton<TileDownloadThrottle>();
 
         services.AddTransient<RasterIndexServiceResolver>(serviceProvider => dataSourceType =>
@@ -43,6 +45,7 @@ public static class ServiceCollectionExtension
                 Datasets.DEMDataSourceType.TileIndex => serviceProvider.GetService<TileIndexFileService>()!,
                 Datasets.DEMDataSourceType.XyzTiles => serviceProvider.GetService<XyzTileIndexService>()!,
                 Datasets.DEMDataSourceType.LocalFileSystem => serviceProvider.GetService<LocalFileSystemIndex>()!,
+                Datasets.DEMDataSourceType.RemoteFile => serviceProvider.GetService<RemoteFileService>()!,
                 _ => throw new KeyNotFoundException(),// or maybe return null, up to you
             };
         });

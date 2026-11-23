@@ -29,5 +29,9 @@ public enum DEMDataSourceType
     /// <summary>
     /// Data comes from a XYZ (slippy map) tile pyramid of encoded elevation images (e.g. Mapterhorn Terrarium tiles)
     /// </summary>
-    XyzTiles = 6
+    XyzTiles = 6,
+    /// <summary>
+    /// Data comes from one remote raster file, downloaded once on first use (e.g. GEBCO global grid COG)
+    /// </summary>
+    RemoteFile = 7
 }

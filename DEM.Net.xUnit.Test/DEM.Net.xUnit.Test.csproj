@@ -20,6 +20,9 @@
 		<Content Include="TestData\N43E005.hgt.zip">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
+		<Content Include="TestData\GEBCO_2026_Gibraltar.tif">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="BitMiracle.LibTiff.NET" />
