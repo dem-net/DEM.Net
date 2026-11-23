@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -97,5 +97,34 @@ public sealed class Gebco2026Tests : IDisposable
         Assert.True(heightMap.Minimum < -1000, $"Minimum {heightMap.Minimum} m: the Alboran Sea floor is below -1000 m");
         Assert.True(heightMap.Maximum > 500, $"Maximum {heightMap.Maximum} m");
         Assert.Equal(heightMap.Width * heightMap.Height, heightMap.Coordinates.Count());
+    }
+
+    /// <summary>
+    /// A file copied into a local dataset directory has no manifest yet: the startup preload (WebAPI PreloadService)
+    /// must index it rather than cache (and save to globalmanifest.bin) an empty catalog.
+    /// </summary>
+    [Fact]
+    public async Task PreloadIndexesAFileWithoutManifest()
+    {
+        var catalog = _raster.LoadManifestMetadata(_dataSet, force: false);
+        Assert.Single(catalog);
+
+        var heightMap = await _elevation.GetHeightMapAsync(new BoundingBox(-5.5, -5.2, 36.0, 36.2) { SRID = _dataSet.SRID }, _dataSet);
+        Assert.True(heightMap.Count > 0);
+    }
+
+    /// <summary>An empty index saved by a former version is rebuilt, not trusted.</summary>
+    [Fact]
+    public void EmptyIndexOnDiskIsRebuilt()
+    {
+        string dataSetDir = _raster.GetLocalDEMPath(_dataSet);
+        File.Move(Path.Combine(dataSetDir, SampleFile), Path.Combine(_root, SampleFile));
+        Assert.Empty(_raster.LoadManifestMetadata(_dataSet, force: false)); // no file: empty index written
+
+        File.Move(Path.Combine(_root, SampleFile), Path.Combine(dataSetDir, SampleFile));
+        using var restarted = new ServiceCollection().AddLogging().AddDemNetCore()
+            .Configure<DEMNetOptions>(o => o.LocalDirectory = Path.Combine(_root, "data"))
+            .BuildServiceProvider();
+        Assert.Single(restarted.GetRequiredService<RasterService>().LoadManifestMetadata(_dataSet, force: false));
     }
 }
