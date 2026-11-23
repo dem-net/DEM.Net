@@ -154,4 +154,37 @@ public class TerrainWaterTests(DemNetFixture fixture) : IClassFixture<DemNetFixt
         var model = _sharpGltfService.CreateTerrainMesh(TerrainBoxTests.CreateHeightMap(), null, 1f);
         Assert.Null(model.LogicalScenes[0].FindNode(n => n.Name == SharpGltfService.WATER_NODE_NAME));
     }
+
+    /// <summary>
+    /// The reduction of a model with water keeps the shore: no grid point is shown on the wrong side of the water
+    /// level (land under the water, or sea above it), with the same triangle count.
+    /// </summary>
+    [Theory]
+    [InlineData(0.05f)]
+    [InlineData(0.1f)]
+    public void Reduced_terrain_keeps_the_shore_under_the_water(float reduceFactor)
+    {
+        const float level = 550f; // crosses the hills of the test terrain
+        var hMap = TerrainBoxTests.CreateHeightMap();
+        var data = hMap.Coordinates.Select(c => (float)c.Elevation!.Value).ToArray();
+        var meshService = fixture.ServiceProvider.GetRequiredService<MeshService>();
+
+        int WrongSide(Triangulation t)
+        {
+            // positions are grid points: back to grid coordinates (see CreateHeightMap)
+            var coords = t.Positions.SelectMany(p => new[] { (int)Math.Round(p.Longitude / Cell), H - 1 - (int)Math.Round(p.Latitude / Cell) }).ToArray();
+            return DelatinTests.WrongSideCount(W, H, coords, t.Indices.ToArray(), data, level);
+        }
+        var plain = meshService.TriangulateHeightMapReduced(hMap, reduceFactor);
+        var shore = meshService.TriangulateHeightMapReduced(hMap, reduceFactor, level);
+
+        Assert.True(WrongSide(plain) > 0, "Without the level, the reduction moves the shore (else this test proves nothing)");
+        Assert.Equal(0, WrongSide(shore));
+        Assert.InRange(shore.NumIndices / 3, plain.NumIndices / 3 - 1, plain.NumIndices / 3 + 1);
+
+        // The water option passes its level to the reduction
+        var model = _sharpGltfService.CreateTerrainMesh(hMap, null, reduceFactor, null, new TerrainWaterOptions { Level = level });
+        var terrain = model.LogicalScenes[0].FindNode(n => n.Name == "TerrainNode").Mesh.Primitives[0];
+        Assert.Equal(shore.NumPositions, terrain.GetVertices("POSITION").AsVector3Array().Count);
+    }
 }

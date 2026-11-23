@@ -71,7 +71,12 @@ public class MeshService(ILogger<MeshService>? logger = null)
     /// rectangle. Missing elevations count as 0, as in <see cref="TriangulateHeightMap"/>.
     /// </remarks>
     /// <param name="reduceFactor">Kept fraction of the triangles; 1 or more: the regular grid (<see cref="TriangulateHeightMap"/>)</param>
-    public Triangulation TriangulateHeightMapReduced(HeightMap heightMap, float reduceFactor)
+    /// <param name="level">
+    /// Optional level, in the height map's elevation units (e.g. a water surface): the reduced mesh crosses it where
+    /// the grid does, so the shore under the water follows the data (see <see cref="Delatin"/>'s level), within the same
+    /// triangle count.
+    /// </param>
+    public Triangulation TriangulateHeightMapReduced(HeightMap heightMap, float reduceFactor, double? level = null)
     {
         ArgumentNullException.ThrowIfNull(heightMap);
         if (reduceFactor >= 1 || heightMap.Width < 2 || heightMap.Height < 2)
@@ -85,7 +90,7 @@ public class MeshService(ILogger<MeshService>? logger = null)
             heights[i] = (float)(coords[i].Elevation ?? 0);
 
         int target = (int)Math.Min(int.MaxValue - 2, Math.Max(reduceFactor, 0) * 2.0 * (width - 1) * (heightMap.Height - 1));
-        var delatin = new Delatin(heights, width, heightMap.Height, target);
+        var delatin = new Delatin(heights, width, heightMap.Height, target, level);
         delatin.RunToTriangleCount(target);
 
         var vertices = delatin.Coordinates;

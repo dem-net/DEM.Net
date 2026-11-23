@@ -52,13 +52,25 @@ public sealed class Delatin
 
     private double _rmsSum;
 
+    // Level (e.g. the sea at 0 m): a grid point the mesh puts on the wrong side of it is inserted first
+    private readonly bool _hasLevel;
+    private readonly double _level;
+    private readonly double _levelPenalty; // added to the error of such points: more than any height error
+
     /// <summary>Credit for the algorithm (ISC license), for the attributions of generated models</summary>
     public static Attribution Attribution => new("Mesh reduction", "Delatin (Mapbox, Vladimir Agafonkin), ISC License",
         "https://github.com/mapbox/delatin", "Delatin (Mapbox), ported to C# in DEM.Net");
 
     /// <param name="data">Heights, row by row (<paramref name="width"/> values per row)</param>
     /// <param name="triangleCapacity">Expected triangle count, to size the buffers once (they grow otherwise)</param>
-    public Delatin(float[] data, int width, int height, int triangleCapacity = 0)
+    /// <param name="level">
+    /// Optional level, in height units (e.g. the sea at 0 m): grid points that the mesh puts on the wrong side of it
+    /// (above it while the data is below, or the reverse) are inserted before any other, so that the mesh crosses the
+    /// level where the data does (a coastline under a water surface at that level). See <see cref="HasWrongSide"/>.
+    /// The coast is refined within the same triangle budget: from about 10 % of the grid's triangles it costs little
+    /// accuracy elsewhere, but with far fewer triangles a long coast takes most of them.
+    /// </param>
+    public Delatin(float[] data, int width, int height, int triangleCapacity = 0, double? level = null)
     {
         ArgumentNullException.ThrowIfNull(data);
         if (width < 2 || height < 2)
@@ -69,6 +81,19 @@ public sealed class Delatin
         _data = data;
         _width = width;
         _height = height;
+
+        if (level is double l)
+        {
+            float min = float.PositiveInfinity, max = float.NegativeInfinity;
+            for (int i = 0; i < width * height; i++)
+            {
+                min = Math.Min(min, data[i]);
+                max = Math.Max(max, data[i]);
+            }
+            _hasLevel = true;
+            _level = l;
+            _levelPenalty = (double)max - min + 1;
+        }
 
         // + 2: an insertion can add 2 triangles past the target
         int initialTriangles = Math.Max(64, triangleCapacity + 2);
@@ -105,16 +130,32 @@ public sealed class Delatin
     /// <summary>Vertex indices, three per triangle</summary>
     public ReadOnlySpan<int> Triangles => _triangles.AsSpan(0, _triangleCount * 3);
 
-    /// <summary>Largest vertical error of the current mesh, in height units</summary>
-    public double MaxError => _queueCount > 0 ? _errors[0] : 0;
+    /// <summary>
+    /// Largest vertical error of the current mesh, in height units. With a level, the error of the next point to
+    /// insert: a point on the wrong side of the level comes first, even when its error is smaller.
+    /// </summary>
+    public double MaxError => _queueCount == 0 ? 0 : HasWrongSide ? _errors[0] - _levelPenalty : _errors[0];
+
+    /// <summary>With a level, whether the mesh still puts a grid point on the wrong side of it</summary>
+    public bool HasWrongSide => _hasLevel && _queueCount > 0 && _errors[0] >= _levelPenalty;
 
     /// <summary>Root mean square vertical error of the current mesh over all the grid points</summary>
     public double Rmsd => _rmsSum > 0 ? Math.Sqrt(_rmsSum / ((double)_width * _height)) : 0;
 
-    /// <summary>Refines until the largest error is at most <paramref name="maxError"/></summary>
+    /// <summary>
+    /// Refines until the largest error is at most <paramref name="maxError"/> (with a level, and no grid point on
+    /// the wrong side of it)
+    /// </summary>
     public void Run(double maxError)
     {
-        while (MaxError > maxError)
+        while (MaxError > maxError || HasWrongSide)
+            Refine();
+    }
+
+    /// <summary>With a level, refines until no grid point is on the wrong side of it</summary>
+    public void RunToLevel()
+    {
+        while (HasWrongSide)
             Refine();
     }
 
@@ -194,11 +235,13 @@ public sealed class Delatin
                 {
                     wasInside = true;
                     double z = z0 * w0 + z1 * w1 + z2 * w2;
-                    double dz = Math.Abs(z - _data[row + (int)x]);
+                    double h = _data[row + (int)x];
+                    double dz = Math.Abs(z - h);
                     rms += dz * dz;
-                    if (dz > maxError)
+                    double priority = _hasLevel && (z > _level) != (h > _level) ? dz + _levelPenalty : dz;
+                    if (priority > maxError)
                     {
-                        maxError = dz;
+                        maxError = priority;
                         mx = (int)x;
                         my = y;
                     }

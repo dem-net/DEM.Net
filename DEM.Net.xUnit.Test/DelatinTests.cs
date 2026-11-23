@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DEM.Net.Core;
 using Xunit;
 
@@ -193,5 +194,98 @@ public class DelatinTests
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => new Delatin(new float[10], 1, 10));
         Assert.Throws<ArgumentException>(() => new Delatin(new float[10], 4, 4));
+    }
+
+    /// <summary>
+    /// Grid points that the mesh puts on the other side of <paramref name="level"/> than the data (independent of the
+    /// rasterization in <see cref="Delatin"/>). <paramref name="coords"/>: grid x, y per vertex.
+    /// </summary>
+    internal static int WrongSideCount(int w, int h, ReadOnlySpan<int> coords, ReadOnlySpan<int> triangles, float[] data, double level)
+    {
+        var wrong = new bool?[w * h];
+        for (int i = 0; i < triangles.Length; i += 3)
+        {
+            int ax = coords[2 * triangles[i]], ay = coords[2 * triangles[i] + 1];
+            int bx = coords[2 * triangles[i + 1]], by = coords[2 * triangles[i + 1] + 1];
+            int cx = coords[2 * triangles[i + 2]], cy = coords[2 * triangles[i + 2] + 1];
+            double area = Orient(ax, ay, bx, by, cx, cy);
+            if (area == 0)
+                continue;
+            for (int y = Math.Min(ay, Math.Min(by, cy)); y <= Math.Max(ay, Math.Max(by, cy)); y++)
+                for (int x = Math.Min(ax, Math.Min(bx, cx)); x <= Math.Max(ax, Math.Max(bx, cx)); x++)
+                {
+                    long w0 = Orient(bx, by, cx, cy, x, y), w1 = Orient(cx, cy, ax, ay, x, y), w2 = Orient(ax, ay, bx, by, x, y);
+                    if (area > 0 ? (w0 < 0 || w1 < 0 || w2 < 0) : (w0 > 0 || w1 > 0 || w2 > 0))
+                        continue;
+                    double z = (w0 * data[ay * w + ax] + w1 * data[by * w + bx] + w2 * data[cy * w + cx]) / area;
+                    // on a shared edge, the point is on the right side if one of its triangles has it there
+                    bool isWrong = (z > level) != (data[y * w + x] > level);
+                    wrong[y * w + x] = wrong[y * w + x] is bool b ? b && isWrong : isWrong;
+                }
+        }
+        Assert.DoesNotContain(null, wrong); // every grid point is in the mesh
+        return wrong.Count(b => b == true);
+    }
+
+    /// <summary>A coast: the level crosses the hills, so that a reduced mesh puts points on the wrong side</summary>
+    const float CoastLevel = 520f;
+
+    /// <remarks>
+    /// From 10 % of the triangles (the Elevation API's minimum): the coast costs little elsewhere. With far fewer
+    /// triangles, the coast takes most of them (2 %: RMS error 10 m → 28 m on this terrain).
+    /// </remarks>
+    [Theory]
+    [InlineData(0.1f)]
+    [InlineData(0.25f)]
+    [InlineData(0.5f)]
+    public void Level_puts_no_grid_point_on_the_wrong_side_within_the_same_budget(float reduceFactor)
+    {
+        const int w = 120, h = 90;
+        var data = Terrain(w, h);
+        int target = (int)(reduceFactor * 2 * (w - 1) * (h - 1));
+
+        var plain = new Delatin(data, w, h, target);
+        plain.RunToTriangleCount(target);
+        Assert.True(WrongSideCount(w, h, plain.Coordinates, plain.Triangles, data, CoastLevel) > 0,
+            "Without the level, the reduced mesh moves the coast (else this test proves nothing)");
+
+        var coast = new Delatin(data, w, h, target, CoastLevel);
+        coast.RunToTriangleCount(target);
+        Assert.False(coast.HasWrongSide);
+        Assert.Equal(0, WrongSideCount(w, h, coast.Coordinates, coast.Triangles, data, CoastLevel));
+        Assert.InRange(coast.TriangleCount, target, target + 1);
+        Assert.InRange(coast.Rmsd, 0, plain.Rmsd * 1.1);
+    }
+
+    [Fact]
+    public void Level_outside_the_data_changes_nothing()
+    {
+        const int w = 80, h = 60;
+        var data = Terrain(w, h);
+        int target = 2 * (w - 1) * (h - 1) / 10;
+
+        var plain = new Delatin(data, w, h, target);
+        plain.RunToTriangleCount(target);
+        var under = new Delatin(data, w, h, target, level: -1000);
+        under.RunToTriangleCount(target);
+
+        Assert.False(under.HasWrongSide);
+        Assert.Equal(plain.Coordinates.ToArray(), under.Coordinates.ToArray());
+        Assert.Equal(plain.Triangles.ToArray(), under.Triangles.ToArray());
+        Assert.Equal(plain.MaxError, under.MaxError);
+    }
+
+    [Fact]
+    public void Run_to_an_error_also_fixes_the_level()
+    {
+        const int w = 100, h = 70;
+        var data = Terrain(w, h);
+        var delatin = new Delatin(data, w, h, level: CoastLevel);
+        delatin.Run(30);
+
+        Assert.False(delatin.HasWrongSide);
+        Assert.True(delatin.MaxError <= 30);
+        Assert.Equal(0, WrongSideCount(w, h, delatin.Coordinates, delatin.Triangles, data, CoastLevel));
+        Assert.True(MaxErrorAtGridPoints(delatin, data) <= 30 + 1e-6);
     }
 }
