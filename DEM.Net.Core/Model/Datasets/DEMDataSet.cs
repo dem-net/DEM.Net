@@ -286,11 +286,13 @@ public partial class DEMDataSet : ICloneable
                                             "https://doi.org/10.13127/tinitaly/1.1",
                                             "arquini S., I. Isola, M. Favalli, A. Battistini, G. Dotta (2023). TINITALY, a digital elevation model of Italy with a 10 meters cell size (Version 1.1). Istituto Nazionale di Geofisica e Vulcanologia (INGV). https://doi.org/10.13127/tinitaly/1.1.")
         });
+        // Archived: superseded by GEBCO_2026. Unlisted, still usable by name (older links and generation records).
         datasets.Add("GEBCO_2019", new DEMDataSet()
         {
             Name = nameof(GEBCO_2019),
+            IsListed = false,
             ExtentInfo = "Global + oceans",
-            Description = "400m with bathymetry",
+            Description = "400m with bathymetry (archived, superseded by GEBCO_2026)",
             PublicUrl = "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2019/gebco_2019_info.html",
             DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "GEBCO_2019")),
             FileFormat = new DEMFileDefinition("netCDF file", DEMFileType.CF_NetCDF, ".nc", DEMFileRegistrationMode.Cell),
@@ -302,6 +304,26 @@ public partial class DEMDataSet : ICloneable
             Attribution = new Attribution(ATTRIBUTION_SUBJECT, "GEBCO Compilation Group (2019) GEBCO 2019 Grid (doi:10.5285/836f016a-33be-6ddc-e053-6c86abc0788e)",
                                             "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2019/gebco_2019_info.html",
                                             "GEBCO Compilation Group (2019) GEBCO 2019 Grid (doi:10.5285/836f016a-33be-6ddc-e053-6c86abc0788e)")
+        });
+        datasets.Add("GEBCO_2026", new DEMDataSet()
+        {
+            Name = nameof(GEBCO_2026),
+            ExtentInfo = "Global + oceans",
+            Description = "GEBCO 2026 global grid with bathymetry, 15 arc-second (~460m)",
+            PublicUrl = "https://www.gebco.net/data-products/gridded-bathymetry-data",
+            // Single cloud optimized GeoTIFF (BigTIFF, 86400x43200 int16, Deflate, 512px tiles, PixelIsArea, ~3.3 GB)
+            // published by the Australian Antarctic Division on Source Cooperative, downloaded manually:
+            // https://data.source.coop/ausantarctic/gebco/GEBCO_2026.tif
+            DataSource = new LocalFileSystem(localDirectory: Path.Combine("Data", "GEBCO_2026")),
+            FileFormat = new DEMFileDefinition("GeoTiff file", DEMFileType.GEOTIFF, ".tif", DEMFileRegistrationMode.Cell),
+            AllowMissingDataGeneration = false,
+            ResolutionMeters = 464,
+            ResolutionArcSeconds = 15,
+            PointsPerDegree = 240,
+            NoDataValue = -32767,
+            Attribution = new Attribution(ATTRIBUTION_SUBJECT, "GEBCO Bathymetric Compilation Group 2026 (2026) The GEBCO_2026 Grid (doi:10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa)",
+                                            "https://doi.org/10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa",
+                                            "GEBCO Bathymetric Compilation Group 2026 (2026). The GEBCO_2026 Grid - a continuous terrain model for oceans and land at 15 arc-second intervals. doi:10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa. Public domain.")
         });
         //datasets.Add("GEBCO_2020", new DEMDataSet()
         //{
@@ -366,9 +388,15 @@ public partial class DEMDataSet : ICloneable
     public static DEMDataSet FABDEM => Datasets.Value[nameof(FABDEM)];
 
     /// <summary>
-    /// Global medium res coverage with bathymetry (500m resolution)
+    /// Global medium res coverage with bathymetry (500m resolution). Archived (unlisted): use <see cref="GEBCO_2026"/>.
     /// </summary>
     public static DEMDataSet GEBCO_2019 => Datasets.Value[nameof(GEBCO_2019)];
+
+    /// <summary>
+    /// GEBCO 2026 global grid with bathymetry (15 arc-second, ~460m). Local dataset: one COG (~3.3 GB) from
+    /// https://data.source.coop/ausantarctic/gebco/GEBCO_2026.tif, placed in the GEBCO_2026 dataset directory.
+    /// </summary>
+    public static DEMDataSet GEBCO_2026 => Datasets.Value[nameof(GEBCO_2026)];
     public static DEMDataSet GEBCO_2020 => Datasets.Value[nameof(GEBCO_2020)];
 
     /// <summary>
