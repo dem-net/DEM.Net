@@ -177,10 +177,13 @@ public partial class SharpGltfService(MeshService meshService, MeshReducer meshR
 
     /// <summary>Terrain mesh of the whole height map grid, reduced with Delatin (<see cref="MeshService.TriangulateHeightMapReduced"/>)</summary>
     /// <param name="box">If set, adds walls and a bottom under the terrain (<see cref="AddTerrainBox"/>)</param>
-    /// <param name="water">If set, adds water over the terrain (<see cref="AddTerrainWater"/>)</param>
+    /// <param name="water">
+    /// If set, adds water over the terrain (<see cref="AddTerrainWater"/>). The reduction then keeps the shore: the
+    /// mesh crosses the water level where the height map does.
+    /// </param>
     public ModelRoot AddTerrainMesh(ModelRoot? model, HeightMap heightMap, PBRTexture? textures, float reduceFactor, TerrainBoxOptions? box = null, TerrainWaterOptions? water = null)
     {
-        Triangulation triangulation = _meshService.TriangulateHeightMapReduced(heightMap, reduceFactor);
+        Triangulation triangulation = _meshService.TriangulateHeightMapReduced(heightMap, reduceFactor, water?.Level);
 
         model = AddTerrainMesh(model, triangulation, textures, box: box, water: water);
         return model;
