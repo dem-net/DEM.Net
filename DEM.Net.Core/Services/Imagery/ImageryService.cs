@@ -887,7 +887,7 @@ public class ImageryService(MeshService meshService,
         List<ImageryProvider> providers = [];
         foreach (var f in predefinedStaticProviders.Value)
         {
-            providers.Add((ImageryProvider)f.GetValue(this)!);
+            providers.Add((ImageryProvider)f.GetValue(null)!);
         }
 
         if (options.ImageryProviders != null)
@@ -905,7 +905,8 @@ public class ImageryService(MeshService meshService,
     {
         Type t = typeof(ImageryProvider);
         string? providerTypeName = t.FullName;
-        var fields = t.GetRuntimeFields().Where(f => f.FieldType.FullName == providerTypeName).ToList();
+        // static only: ImageryProvider also has instance fields of its own type (FallbackProvider)
+        var fields = t.GetRuntimeFields().Where(f => f.IsStatic && f.FieldType.FullName == providerTypeName).ToList();
 
         return fields;
     }

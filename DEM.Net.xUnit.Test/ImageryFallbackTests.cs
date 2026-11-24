@@ -80,6 +80,18 @@ public class ImageryFallbackTests
         Assert.Same(ImageryProvider.MapTilerSatellite, ImageryProvider.SwissImage.FallbackProvider);
     }
 
+    [Fact]
+    public void RegisteredProvidersAreThePredefinedOnesOnly()
+    {
+        // FallbackProvider is an instance field of type ImageryProvider: it must not be taken for a predefined provider
+        var providers = Service(new StubHandler(_ => HttpStatusCode.OK)).GetRegisteredProviders();
+
+        Assert.Contains(ImageryProvider.OrtoIGNfr, providers);
+        Assert.Contains(ImageryProvider.MapTilerSatellite, providers);
+        Assert.Equal(providers.Count, providers.Distinct().Count());
+        Assert.DoesNotContain(null, providers);
+    }
+
     private static ImageryService Service(StubHandler handler)
     {
         var options = Options.Create(new DEMNetOptions { UseImageryDiskCache = false });
