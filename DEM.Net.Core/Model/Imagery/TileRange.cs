@@ -121,6 +121,12 @@ public class TileRange
 
     public int Zoom => Start.Zoom;
 
+    /// <summary>
+    /// Set by the download when at least one tile came from the provider's <see cref="ImageryProvider.FallbackProvider"/>:
+    /// its attribution must be added too.
+    /// </summary>
+    public ImageryProvider? FallbackProviderUsed { get; set; }
+
     private BoundingBox? _areaOfInterest;
     public BoundingBox AreaOfInterest 
     {

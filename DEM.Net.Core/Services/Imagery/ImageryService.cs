@@ -29,6 +29,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Numerics;
 using System.Reflection;
 using System.Threading;
@@ -154,13 +156,26 @@ public class ImageryService(MeshService meshService,
         Stopwatch swProgress = Stopwatch.StartNew();
         const int progressIntervalMs = 1000;
         int numTilesDownloaded = 0;
+        int numFallbackTiles = 0;
         _logger?.LogInformation($"Downloading {range.Count} tiles...");
 
         await Parallel.ForEachAsync(range, parallelOptions, async (tile, ct) =>
         {
             Uri tileUri = BuildUri(provider, tile.X, tile.Y, tile.Zoom);
 
-            var contentBytes = await cache.GetTileAsync(tileUri, provider, tile, ct).ConfigureAwait(false);
+            byte[] contentBytes;
+            try
+            {
+                contentBytes = await cache.GetTileAsync(tileUri, provider, tile, ct).ConfigureAwait(false);
+            }
+            catch (HttpRequestException ex) when (IsOutOfCoverage(ex) && provider.FallbackProvider is { } fallback)
+            {
+                // outside the provider's coverage: same tile from the fallback
+                tileUri = BuildUri(fallback, tile.X, tile.Y, tile.Zoom);
+                contentBytes = await cache.GetTileAsync(tileUri, fallback, tile, ct).ConfigureAwait(false);
+                tiles.FallbackProviderUsed = fallback;
+                Interlocked.Increment(ref numFallbackTiles);
+            }
 
             tiles.Add(new MapTile(contentBytes, provider.TileSize, tileUri, tile));
 
@@ -172,9 +187,19 @@ public class ImageryService(MeshService meshService,
             }
         }).ConfigureAwait(false);
 
+        if (numFallbackTiles > 0)
+            _logger?.LogInformation("{Count:N0}/{Total:N0} tiles outside {Provider} coverage taken from {Fallback}",
+                numFallbackTiles, range.Count, provider.Name, tiles.FallbackProviderUsed?.Name);
         _logger?.LogInformation($"DownloadImages done in : {swDownload.Elapsed:g}");
         return tiles;
     }
+
+    /// <summary>
+    /// A tile the provider doesn't have: 404 (IGN.fr), or 400 for a tile outside the server's grid
+    /// (SwissImage: "Tile out of bounds").
+    /// </summary>
+    private static bool IsOutOfCoverage(HttpRequestException ex)
+        => ex.StatusCode is HttpStatusCode.NotFound or HttpStatusCode.BadRequest;
 
     public Task<TileRange> DownloadTilesAsync(BoundingBox bbox, ImageryProvider provider, int minTilesPerImage = 4, CancellationToken cancellationToken = default)
     {

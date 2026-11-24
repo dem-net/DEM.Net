@@ -186,6 +186,7 @@ public partial class ImageryProvider
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN.es", "https://www.ign.es", "ign.es"),
         UrlModel = new UrlModel("http://www.ign.es/wmts/pnoa-ma?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=OI.OrthoimageCoverage&FORMAT=image/jpeg&TILEMATRIXSET=GoogleMapsCompatible&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}", null),
         MaxZoom = 20,
+        // no fallback: outside Spain the server answers 200 with its own low-resolution filler, not 404
         MaxDegreeOfParallelism = 8,
         MaxConcurrentDownloads = 8
     };
@@ -195,6 +196,7 @@ public partial class ImageryProvider
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "swisstopo", "https://www.swisstopo.admin.ch", "ign.es"),
         UrlModel = new UrlModel("https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg", null),
         MaxZoom = 20,
+        FallbackProvider = MapTilerSatellite,
         MaxDegreeOfParallelism = 8,
         MaxConcurrentDownloads = 8
     };
@@ -204,6 +206,7 @@ public partial class ImageryProvider
         Attribution = new Attribution(ATTRIBUTION_SUBJECT, "IGN.fr", "https://geoservices.ign.fr", "Ign.fr"),
         UrlModel = new UrlModel("https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIXSET=PM&TILEMATRIX={z}&TILECOL={x}&TILEROW={y}&STYLE=normal&FORMAT=image/jpeg", null),
         MaxZoom = 19,
+        FallbackProvider = MapTilerSatellite,
         MaxDegreeOfParallelism = 16,
         MaxConcurrentDownloads = 32
     };

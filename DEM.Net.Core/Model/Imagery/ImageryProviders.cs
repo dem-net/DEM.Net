@@ -42,6 +42,13 @@ public partial class ImageryProvider
     public int MaxConcurrentDownloads { get; set; } = 8;
     public int MaxZoom { get; set; } = 19;
     public bool PrivateUseOnly { get; set; }
+    /// <summary>
+    /// Provider used for a tile this one doesn't have (HTTP 404, or 400 for a tile outside the server's grid),
+    /// e.g. outside a national coverage.
+    /// Same tile grid (z/x/y), any tile size: tiles are resized when the texture is built.
+    /// A predefined fallback must be declared above the provider using it (static fields are initialized in order).
+    /// </summary>
+    public ImageryProvider? FallbackProvider { get; set; }
 
     public override string ToString()
     {
