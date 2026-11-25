@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -55,12 +56,11 @@ public class AdornmentsService(MeshService meshService, ILogger<AdornmentsServic
             .RotateZ(PI / 2f)
             .Translate(new Vector3(projWidth / 2, -projHeight / 2 - projHeight * 0.05f, zCenter));
 
-        var text = $"{dataset.Attribution.Subject}: {dataset.Attribution.Text}";
-        if (imageryProvider != null)
-            text = string.Concat(text, $"{Environment.NewLine}{imageryProvider.Attribution.Subject}: {imageryProvider.Attribution.Text}");
-        var text3D = this.CreateText(text, VectorsExtensions.CreateColor(255, 255, 255)).ToGlTFSpace();
+        // Dataset short name only: the full attributions are in the model credits
+        var text3D = this.CreateText(ShortName(dataset), VectorsExtensions.CreateColor(255, 255, 255)).ToGlTFSpace();
         var textWidth = (float)text3D.GetBoundingBox().Width;
-        var scale = (float)(((projWidth - scaleBarSize) * 0.9f) / textWidth);
+        // Fit between the west edge and the scale bar, but no larger than the other labels
+        var scale = Math.Min((float)((projWidth - scaleBarSize) * 0.9f / textWidth), LabelScale(projHeight));
 
         text3D = text3D.Scale((float)scale)
                         .RotateX(-PI / 2)
@@ -69,6 +69,63 @@ public class AdornmentsService(MeshService meshService, ILogger<AdornmentsServic
 
         return adornments;
 
+    }
+
+    /// <summary>Dataset name shown on the model: <see cref="DEMDataSet.Name"/>, without the zoom suffix for Mapterhorn.</summary>
+    public static string ShortName(DEMDataSet dataset) => dataset.IsMapterhorn ? DEMDataSet.MapterhornName : dataset.Name;
+
+    /// <summary>Text scale of the labels (north, scale bar, altitudes): 1/1000 of the model's north-south size per font pixel.</summary>
+    private static float LabelScale(float projHeight) => projHeight / 200f / 5f;
+
+    /// <summary>
+    /// Vertical bar at the north-east corner of the model, from its lowest to its highest point, labelled with
+    /// those altitudes. Model space (Z up), in final coordinates: not to be moved with the other adornments.
+    /// </summary>
+    /// <param name="bboxModelSpace">Model extent (X, Y)</param>
+    /// <param name="zBottom">Model Z of the lowest terrain point</param>
+    /// <param name="zTop">Model Z of the highest terrain point</param>
+    /// <param name="minMeters">Lowest altitude, in meters (label)</param>
+    /// <param name="maxMeters">Highest altitude, in meters (label)</param>
+    public TriangulationList<Vector3> CreateElevationBar(BoundingBox bboxModelSpace, float zBottom, float zTop, float minMeters, float maxMeters)
+    {
+        float projWidth = (float)bboxModelSpace.Width;
+        float projHeight = (float)bboxModelSpace.Height;
+        float radius = projHeight / 200f;
+        float x = (float)bboxModelSpace.xMax + projWidth * 0.05f;
+        float y = (float)bboxModelSpace.yMax;
+        float tickLength = radius * 8f;
+        var white = VectorsExtensions.CreateColor(255, 255, 255);
+        bool flat = maxMeters - minMeters < 1f || zTop - zBottom <= 0f;
+
+        TriangulationList<Vector3> bar = new();
+        if (!flat)
+            bar += _meshService.CreateCylinder(new Vector3(x, y, zBottom), radius, zTop - zBottom, white);
+
+        var labels = flat ? new[] { (z: zBottom, meters: minMeters) } : [(z: zBottom, meters: minMeters), (z: zTop, meters: maxMeters)];
+        var texts = labels.Select(l => CreateText(string.Create(CultureInfo.InvariantCulture, $"{l.meters:F0} m"), white)
+                                        .ToGlTFSpace() // upright, facing south (the default view)
+                                        .Scale(LabelScale(projHeight))).ToList();
+        float textHeight = texts.Max(t => (float)t.GetBoundingBox().Depth);
+
+        // Labels centered on their tick, moved apart when the bar is shorter than them
+        float[] textZ = [.. labels.Select(l => l.z)];
+        if (!flat && zTop - zBottom < textHeight * 1.2f)
+        {
+            float mid = (zBottom + zTop) / 2f;
+            textZ = [mid - textHeight * 0.6f, mid + textHeight * 0.6f];
+        }
+
+        for (int i = 0; i < labels.Length; i++)
+        {
+            // Tick: a cylinder along Z turned to point east
+            bar += _meshService.CreateCylinder(Vector3.Zero, radius * 0.6f, tickLength, white)
+                .RotateY((float)Math.PI / 2f)
+                .Translate(new Vector3(x, y, labels[i].z));
+            float textWidth = (float)texts[i].GetBoundingBox().Width;
+            bar += texts[i].Translate(new Vector3(x + tickLength + radius * 2f + textWidth / 2f, y, textZ[i]));
+        }
+
+        return bar;
     }
 
     public TriangulationList<Vector3> CreateText(string text, Vector4 color)
